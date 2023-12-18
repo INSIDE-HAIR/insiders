@@ -25,7 +25,7 @@ export default function MarketingSalon() {
   // const [categoryTypeLanguage, setCategoryTypeLanguage] = useState(
   //   searchParams.get("language")
   // );
-  const [list, setList] = useState<any[]>([]);
+  const [itemlist, setItemList] = useState(false);
 
   useEffect(() => {
     if (category === "physicalContent") {
@@ -47,16 +47,71 @@ export default function MarketingSalon() {
             aria-label={`Plan de Marketing ${
               month && month?.charAt(0).toUpperCase() + month?.slice(1)
             } ${year ?? ""}`}
-            className="w-full h-full z-30 flex items-center   justify-center flex-col gap-y-10"
+            className="w-full h-full z-30 flex items-center justify-center flex-col gap-y-0"
           >
-            <strong className="font-extrabold">
-              {month && month?.charAt(0).toUpperCase() + month?.slice(1)}{" "}
+            <strong className="font-extrabold mb-2">
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "January" &&
+                "Enero "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "February " &&
+                "Febrero "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "March" &&
+                "Marzo "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "April" &&
+                "Abril "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "May" &&
+                "Mayo "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "June" &&
+                "Junio "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "July" &&
+                "Julio "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) === "August" &&
+                "Agosto "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "September" &&
+                "Septiembre "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "October" &&
+                "Octubre "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "November" &&
+                "Noviembre "}
+
+              {month &&
+                month?.charAt(0).toUpperCase() + month?.slice(1) ===
+                  "December" &&
+                "Diciembre "}
+
               {year ?? ""}
             </strong>
             {sideMenu.list.map((items, index) => (
               <li
                 key={index + items.id}
-                className="relative cursor-pointer mt-2 first:mt-0 flex items-center justify-start mx-auto text-center"
+                className={`relative cursor-pointer rounded-lg  py-2 mt-1  first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-11/12 ${
+                  items.id === tab && "font-semibold bg-gray-700/30  "
+                }}`}
                 onClick={(event: React.MouseEvent<HTMLLIElement>) => {
                   // Solo actualiza el estado si el id del item es diferente al tab actual
                   if (items.id !== tab) {
