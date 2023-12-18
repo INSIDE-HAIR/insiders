@@ -1,35 +1,19 @@
 "use client";
 import TailwindGrid from "@/components/grid/TailwindGrid";
+import PhysicalContentTabs from "@/components/sections/marketing-salon/physical-content-tabs-mkt/PhysicalContentTabs";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import CardsPressable from "@/components/cards/Cards";
-import { postersCardsES, postersCardsCA } from "@/lib/helpers/postersCards";
-import { Tabs, Tab } from "@nextui-org/tabs";
-import { Card, CardBody } from "@nextui-org/react";
 
 const sideMenu = {
   name: "Plan de Enero",
   list: [
     { name: "Plan de Marketing", id: "marketingPlan" },
-    { name: "Cartelería", id: "signage" },
+    { name: "Cartelería", id: "posters" },
     { name: "Redes Sociales", id: "socialNetworks" },
     { name: "Contenido SMS y WhatsApp", id: "smsWhatsap" },
     { name: "Formación de Campaña", id: "campaignFormation" },
   ],
 };
-
-let tabs = [
-  {
-    id: "es",
-    label: "Español",
-    content: postersCardsES,
-  },
-  {
-    id: "ca",
-    label: "Catalán",
-    content: postersCardsCA,
-  },
-];
 
 export default function MarketingSalon() {
   const searchParams = useSearchParams();
@@ -88,55 +72,12 @@ export default function MarketingSalon() {
         <div className="relative col-span-full max-w-full  bg-orange-500/0 ">
           <TailwindGrid>
             <main className="self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center">
-              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-center items-center">
+              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen">
                 <h3 className="text-center w-full font-bold text-4xl ">
                   {sideMenu.list.find((item) => item.id === tab)?.name}
                 </h3>
-                <div className="flex w-full flex-col items-center">
-                  <Tabs aria-label="Options">
-                    <Tab key="posters" title="Cartelería">
-                      <div className="flex w-full flex-col items-center">
-                        <Tabs aria-label="Options">
-                          <Tab key="es" title="Español">
-                            <CardsPressable list={postersCardsES} lang={"es"} />
-                          </Tab>
-                          <Tab key="ca" title="Catalán">
-                            <CardsPressable list={postersCardsCA} lang={"ca"} />
-                          </Tab>
-                        </Tabs>
-                      </div>
-                    </Tab>
-                    <Tab key="stoppers" title="Stopper">
-                      <Card>
-                        <CardBody>
-                          Ut enim ad minim veniam, quis nostrud exercitation
-                          ullamco laboris nisi ut aliquip ex ea commodo
-                          consequat. Duis aute irure dolor in reprehenderit in
-                          voluptate velit esse cillum dolore eu fugiat nulla
-                          pariatur.
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab key="tests" title="Tests">
-                      <Card>
-                        <CardBody>
-                          Excepteur sint occaecat cupidatat non proident, sunt
-                          in culpa qui officia deserunt mollit anim id est
-                          laborum.
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                    <Tab key="cards" title="Tarjetas">
-                      <Card>
-                        <CardBody>
-                          Excepteur sint occaecat cupidatat non proident, sunt
-                          in culpa qui officia deserunt mollit anim id est
-                          laborum.
-                        </CardBody>
-                      </Card>
-                    </Tab>
-                  </Tabs>
-                </div>
+                {sideMenu.list.find((item) => item.id === tab)?.id ===
+                  "posters" && <PhysicalContentTabs />}
               </div>
             </main>
           </TailwindGrid>

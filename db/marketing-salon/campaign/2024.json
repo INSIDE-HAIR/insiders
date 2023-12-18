@@ -711,13 +711,21 @@
         "es": [
           {
             "name": "Stopper/A240100_01-01.pdf",
-            "id": "https://drive.google.com/file/d/1wHCY-Z-VlzyXpSBWdLn3X3L9lGF5YLua/view?usp=drivesdk"
+            "url": "https://drive.google.com/file/d/1wHCY-Z-VlzyXpSBWdLn3X3L9lGF5YLua/view?usp=drivesdk"
+          },
+          {
+            "name": "Preview/A240100_01-01.pdf",
+            "url": "https://drive.google.com/uc?id=1t31ND_COANohM39NWlBYfsdf505we0Hd&export=download"
           }
         ],
         "ca": [
           {
-            "id": "Stopper/A240100_02-01.pdf",
+            "name": "Stopper/A240100_02-01.pdf",
             "url": "https://drive.google.com/file/d/1PYKK7R6U20lTM_rKihgyo7Rl9bA_Z0Nu/view?usp=drivesdk"
+          },
+          {
+            "name": "Preview/A240100_02-01.pdf",
+            "url": "https://drive.google.com/uc?id=1_N-R_lJHxQDd3CZ22EiOVSWTlXG3FIN0&export=download"
           }
         ]
       },
@@ -728,197 +736,229 @@
       "cards": {
         "es": [
           {
-            "name": "TARJETAS/Tarjeta-3x2-A.pdf",
+            "name": "Preview/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/190nJ9_r-Vfw7gjuMVnhYPmZJM9_T39-G/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-A-L.pdf",
+            "name": "Normal_3x2/Tarjeta_Alisado-Orgánico.pdf",
+            "url": "https://drive.google.com/file/d/190nJ9_r-Vfw7gjuMVnhYPmZJM9_T39-G/view?usp=drivesdk"
+          },
+          {
+            "name": "Ligth_3x2/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1OOxylJALSY-GJa1EbBICfkkeyJwfk1VB/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-A-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1NIW9bgHv_yyArMXzDm-q00kBWXnaaTND/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-E.pdf",
+            "name": "Preview/Tarjeta_Enzimoterapia.pdf",
+            "url": "https://drive.google.com/file/d/190nJ9_r-Vfw7gjuMVnhYPmZJM9_T39-G/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/19CfaksKa-HF7eRW3L__HM4q4ru6jaGFo/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-E-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1phe69EoaA2EZTVDBQQytwJYfENw-LeLx/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-E-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1EiO9PQyZsW-Z7cg1fffKWA3LTUA-qUEU/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-K.pdf",
+            "name": "Preview/Tarjeta_Keratina.pdf",
+            "url": "https://drive.google.com/file/d/190nJ9_r-Vfw7gjuMVnhYPmZJM9_T39-G/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/10PjuwHWRERJYGHv8VRcu4jPR64suiUc-/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-K-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1v2LbblQVJUyQ-UDr1V4ZJOkWoGEiBco2/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-K-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1fozIw27Ia9adMflwyehZhc8ka6jBsEBY/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-T.pdf",
+            "name": "Preview/Tarjeta_Taninoplastia.pdf",
+            "url": "https://drive.google.com/file/d/190nJ9_r-Vfw7gjuMVnhYPmZJM9_T39-G/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1OigcUTJ2Ovkk2OVOjAxY8Oe89hB58so4/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-T-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1ZHfi31u3oryitRUHyc9BOwjiOErbGlf8/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-3x2-T-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1zG_rtP1Y8t17LvjDQytz-lrjEfyRl9tM/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-A.pdf",
+            "name": "Normal_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1Z8iu7BNr5zEigDQ1kdtR4ZKhzpjFXJQw/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-A-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1OmXgK214AK51_O2Bqs8cAQwJ9vzsSHYh/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-A-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1jg1oQe0bSDu2WRwYHB85OMaU2LUQJDrW/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-E.pdf",
+            "name": "Normal_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1kQv1xs9HuThLzHcVoXK5V8XceL8J5mQl/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-E-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1vbF8EvhwYzckcEOOtd6c_mAusa7rKlPw/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-E-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1gIXzist6dm-cek2MbSiLK7HQ3ng7Gto5/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-K.pdf",
+            "name": "Normal_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1faKIXCY7KaiHopstdqKQt_sU3wuxsA8J/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-K-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1pWf6OtJYsIx8_eI4eVxGMMMUt2etmZnq/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-K-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1R13xGHKziM-KWU2jGahuEieX_Z6DS5fX/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-T.pdf",
+            "name": "Normal_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/12GAaK0FTagVeJdet4SwjNF8Ca5M8zlj-/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-T-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1RCNWpj9dPUVU0dzVTuOhRMkOWQStCzd3/view?usp=drivesdk"
           },
           {
-            "name": "TARJETAS/Tarjeta-4x3-T-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1FWhkQEz1PYg34tSTAedTkLMUnqgm1nJF/view?usp=drivesdk"
           }
         ],
         "ca": [
           {
-            "id": "TARJETAS/Tarjeta-3x2-A.pdf",
+            "name": "Preview/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-A-L.pdf",
+            "name": "Normal_3x2/Tarjeta_Alisado-Orgánico.pdf",
+            "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
+          },
+          {
+            "name": "Ligth_3x2/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1nfbSmiYvU4ELZcqQlZQoTD3MIF6mXHSv/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-A-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1UMUOcaEdzNR6wmSAkiR9WmZ0uCOEVdf3/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-E.pdf",
+            "name": "Preview/Tarjeta_Enzimoterapia.pdf",
+            "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1W5QoM8tR5I_GmcUIGWV5d2E_4kIFl0Ip/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-E-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1Sx_17WUjjSk9s9SDW2oQRxRcG87dQpwA/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-E-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1pMHOG0n31YYtgnmlMDsJ-yJnXrnuVfWr/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-K.pdf",
+            "name": "Preview/Tarjeta_Keratina.pdf",
+            "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1T0z0OP3twvtGUNwDICU0mKxFfI9TDkGI/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-K-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1RxzAbBdNfrQc5-Un-A2ueGfvE0EWC2b3/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-K-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1fu6JT_ll1sm4PzewOv5bzuoJg1bmd99L/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-T.pdf",
+            "name": "Preview/Tarjeta_Taninoplastia.pdf",
+            "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
+          },
+          {
+            "name": "Normal_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1vn9MrRGTPo5PzjGul8sTHtttRirp_D44/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-T-L.pdf",
+            "name": "Ligth_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1ObnpLOlXx5Pfasue30cvIegeAEMWW7B_/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-3x2-T-P.pdf",
+            "name": "Premium_3x2/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1v8RoMrGthIAXX0A0iSpAG8eGnb3feZvI/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-A.pdf",
+            "name": "Normal_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/17PIdYdItVSz4sU1--qdURpcRd6gYVI3g/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-A-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1O3GY_CKeOaNc5PSAqSXR4bVnawpPUhG3/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-A-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Alisado-Orgánico.pdf",
             "url": "https://drive.google.com/file/d/1v65uPuqIWchv03sttJQMBQ4J2p5cwOxQ/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-E.pdf",
+            "name": "Normal_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/11dlPl3KAFgXakkEOKBm-CX4fvuxMtaca/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-E-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1WgxXdODeb5Ps21u01NrbwuFHXNq4lC7m/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-E-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Enzimoterapia.pdf",
             "url": "https://drive.google.com/file/d/1bbeAZas10UAXjUtjk4f3WXfd5j-RsBuf/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-K.pdf",
+            "name": "Normal_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1tIF4g_Eyfeq5uLBCuJ_05mhGHLlZe_yF/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-K-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/1zfcMRNhLkmqVb0jVuXA51nIaPPG3B06G/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-K-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Keratina.pdf",
             "url": "https://drive.google.com/file/d/187-RPlLj2oDiRyGzC1HqcBpsLS3DudAx/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-T.pdf",
+            "name": "Normal_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1w8ecNY60Y32puADWBS3GJdz2GI9bRCnQ/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-T-L.pdf",
+            "name": "Ligth_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1vUWvHlV2kSMPQBxNFnHJ6Hb-d3j8v-mq/view?usp=drivesdk"
           },
           {
-            "id": "TARJETAS/Tarjeta-4x3-T-P.pdf",
+            "name": "Premium_4x3/Tarjeta_Taninoplastia.pdf",
             "url": "https://drive.google.com/file/d/1f_sqqAyIXUZk7dayYJRJvClJIK9Fv-IH/view?usp=drivesdk"
           }
         ]
