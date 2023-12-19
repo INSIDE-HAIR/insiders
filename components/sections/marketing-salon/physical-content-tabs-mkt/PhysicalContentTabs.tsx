@@ -8,7 +8,6 @@ import {
 } from "@/lib/helpers/postersCards";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
-import React from "react";
 import PostersMkt from "../posters-mkt/PostersMkt";
 import StoppersMkt from "../stoppers-mkt/StoppersMkt";
 import CardsMkt from "../cards-mkt/CardsMkt";

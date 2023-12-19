@@ -62,6 +62,7 @@ function CardsPosters({
       className="border-none gap-2 px-2 py-3 flex items-center justify-center col-span-1 bg-white"
       key={item.name}
     >
+      {item.name}
       {item.files.A5 && item.files.A5.imgEmbed && (
         <div className="relative">
           <div className="  absolute right-0 top-0">
@@ -137,6 +138,58 @@ function CardsPosters({
             className="object-cover border-gray-700/20 border-1 shadow-sm w-52"
             height={200}
             src={item.files.TARJETAS.imgEmbed}
+            width={200}
+          />
+        </div>
+      )}
+
+      {item.files.Story && item.files.Story.imgEmbed && (
+        <div className="relative">
+          <div className="  absolute right-0 top-0">
+            <Tooltip content="+ Zoom" size="sm">
+              <Button
+                onPress={onOpen}
+                isIconOnly
+                variant="faded"
+                className=" hover:opacity-100 rounded-full"
+              >
+                <EyeFilledIcon />
+              </Button>
+            </Tooltip>
+            <ImageModal alt={item.name} src={item.files.Story.imgEmbed} />
+          </div>
+
+          <Image
+            alt={item.name}
+            className="object-cover border-gray-700/20 border-1 shadow-sm w-52"
+            height={200}
+            src={item.files.Story.imgEmbed}
+            width={200}
+          />
+        </div>
+      )}
+
+{item.files.Post && item.files.Post.imgEmbed && (
+        <div className="relative">
+          <div className="  absolute right-0 top-0">
+            <Tooltip content="+ Zoom" size="sm">
+              <Button
+                onPress={onOpen}
+                isIconOnly
+                variant="faded"
+                className=" hover:opacity-100 rounded-full"
+              >
+                <EyeFilledIcon />
+              </Button>
+            </Tooltip>
+            <ImageModal alt={item.name} src={item.files.Post.imgEmbed} />
+          </div>
+
+          <Image
+            alt={item.name}
+            className="object-cover border-gray-700/20 border-1 shadow-sm w-52"
+            height={200}
+            src={item.files.Post.imgEmbed}
             width={200}
           />
         </div>

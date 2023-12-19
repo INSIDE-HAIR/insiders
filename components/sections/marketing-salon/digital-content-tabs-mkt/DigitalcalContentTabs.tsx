@@ -1,61 +1,67 @@
 import {
-  postersCardsES,
-  postersCardsCA,
-  stoppersCardsES,
-  stoppersCardsCA,
-  cardsCardsES,
-  cardsCardsCA,
+  actionPostsCardsCA,
+  actionPostsCardsES,
+  actionStoriesCardsCA,
+  actionStoriesCardsES,
 } from "@/lib/helpers/postersCards";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
-import React from "react";
-import PostersMkt from "../posters-mkt/PostersMkt";
-import StoppersMkt from "../stoppers-mkt/StoppersMkt";
-import CardsMkt from "../cards-mkt/CardsMkt";
+import ActionPostsAndStories from "../action-post-and-stories/ActionPostsAndStories";
+
 
 function DigitalcalContentTabs() {
   return (
     <div className="flex w-full flex-col items-center">
       <Tabs aria-label="Options">
-        <Tab key="posters" title="Cartelería">
+        <Tab key="actionPosts" title="Post de Acción">
           <div className="flex w-full flex-col items-center">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
-                <PostersMkt list={postersCardsES} lang={"es"} />
+                <ActionPostsAndStories list={actionPostsCardsES} lang={"es"} />
               </Tab>
               <Tab key="ca" title="Catalán">
-                <PostersMkt list={postersCardsCA} lang={"ca"} />
+                <ActionPostsAndStories list={actionPostsCardsCA} lang={"ca"} />
               </Tab>
             </Tabs>
           </div>
         </Tab>
-        <Tab key="stoppers" title="Stopper">
+        <Tab key="actionStories" title="Story de Acción">
           <div className="flex w-full flex-col items-center">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
-                <StoppersMkt list={stoppersCardsES} lang={"es"} />
+                <ActionPostsAndStories
+                  list={actionStoriesCardsES}
+                  lang={"es"}
+                  story
+                />
               </Tab>
               <Tab key="ca" title="Catalán">
-                <StoppersMkt list={stoppersCardsCA} lang={"ca"} />
+                <ActionPostsAndStories
+                  list={actionStoriesCardsCA}
+                  lang={"ca"}
+                  story
+                />
               </Tab>
             </Tabs>
           </div>
         </Tab>
-        <Tab key="tests" title="Tests">
+        <Tab key="valueStories" title="Tests">
           <Card>
             <CardBody>Muy Pronto</CardBody>
           </Card>
         </Tab>
-        <Tab key="cards" title="Tarjetas">
+        <Tab key="videos" title="Videos">
           <div className="flex w-full flex-col items-center">
-            <Tabs aria-label="Options">
-              <Tab key="es" title="Español">
-                <CardsMkt list={cardsCardsES} lang={"es"} />
-              </Tab>
-              <Tab key="ca" title="Catalán">
-                <CardsMkt list={cardsCardsCA} lang={"ca"} />
-              </Tab>
-            </Tabs>
+            <Card>
+              <CardBody>Muy Pronto</CardBody>
+            </Card>
+          </div>
+        </Tab>
+        <Tab key="smsAndWhatsapp" title="SMS & WhatsApp">
+          <div className="flex w-full flex-col items-center">
+            <Card>
+              <CardBody>Muy Pronto</CardBody>
+            </Card>
           </div>
         </Tab>
       </Tabs>

@@ -1,5 +1,6 @@
 "use client";
 import TailwindGrid from "@/components/grid/TailwindGrid";
+import DigitalcalContentTabs from "@/components/sections/marketing-salon/digital-content-tabs-mkt/DigitalcalContentTabs";
 import PhysicalContentTabs from "@/components/sections/marketing-salon/physical-content-tabs-mkt/PhysicalContentTabs";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,22 +11,36 @@ const sideMenu = {
     { name: "Plan de Marketing", id: "marketingPlan" },
     { name: "Cartelería", id: "posters" },
     { name: "Redes Sociales", id: "socialNetworks" },
-    { name: "Contenido SMS y WhatsApp", id: "smsWhatsap" },
     { name: "Formación de Campaña", id: "campaignFormation" },
   ],
 };
 
 export default function MarketingSalon() {
   const searchParams = useSearchParams();
-  const [tab, setTab] = useState(searchParams.get("tab"));
-  const [year, setYear] = useState(searchParams.get("year"));
-  const [month, setMonth] = useState(searchParams.get("month"));
+  const [tab, setTab] = useState(searchParams.get("tab") ?? "marketingPlan");
+  const [year, setYear] = useState(searchParams.get("year") ?? "2024");
+  const [month, setMonth] = useState(searchParams.get("month") ?? "january");
   const [category, setCategory] = useState(searchParams.get("category"));
   const [categoryType, setCategoryType] = useState(searchParams.get("type"));
   // const [categoryTypeLanguage, setCategoryTypeLanguage] = useState(
   //   searchParams.get("language")
   // );
   const [itemlist, setItemList] = useState(false);
+
+  const monthTranslations: { [key: string]: string } = {
+    january: "Enero",
+    february: "Febrero",
+    march: "Marzo",
+    april: "Abril",
+    may: "Mayo",
+    june: "Junio",
+    july: "Julio",
+    august: "Agosto",
+    september: "Septiembre",
+    october: "Octubre",
+    november: "Noviembre",
+    december: "Diciembre",
+  };
 
   useEffect(() => {
     if (category === "physicalContent") {
@@ -37,6 +52,8 @@ export default function MarketingSalon() {
         // }
       }
     }
+
+    console.log(tab);
   }, [category, categoryType]);
 
   return (
@@ -44,67 +61,14 @@ export default function MarketingSalon() {
       <TailwindGrid fullSize>
         <div className="col-span-1 col-start-1 col-end-2 h-screen fixed w-2/12  top-0 z-30 border-r box-border border-zinc-500 bg-white-950/40 backdrop-blur-lg bg-clip-padding backdrop-filter opacity-75 hidden lg:block">
           <ul
-            aria-label={`Plan de Marketing ${
-              month && month?.charAt(0).toUpperCase() + month?.slice(1)
-            } ${year ?? ""}`}
+            aria-label={`Plan de Marketing ${monthTranslations[month] + " "} ${
+              year ?? ""
+            }`}
             className="w-full h-full z-30 flex items-center justify-center flex-col gap-y-0"
           >
-            <strong className="font-extrabold mb-2">
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "January" &&
-                "Enero "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "February " &&
-                "Febrero "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "March" &&
-                "Marzo "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "April" &&
-                "Abril "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "May" &&
-                "Mayo "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "June" &&
-                "Junio "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "July" &&
-                "Julio "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) === "August" &&
-                "Agosto "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "September" &&
-                "Septiembre "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "October" &&
-                "Octubre "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "November" &&
-                "Noviembre "}
-
-              {month &&
-                month?.charAt(0).toUpperCase() + month?.slice(1) ===
-                  "December" &&
-                "Diciembre "}
-
-              {year ?? ""}
+            <strong className="font-extrabold mb-2 ">
+              {monthTranslations[month] + " "}
+              {year}
             </strong>
             {sideMenu.list.map((items, index) => (
               <li
@@ -133,6 +97,8 @@ export default function MarketingSalon() {
                 </h3>
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
                   "posters" && <PhysicalContentTabs />}
+                {sideMenu.list.find((item) => item.id === tab)?.id ===
+                  "socialNetworks" && <DigitalcalContentTabs />}
               </div>
             </main>
           </TailwindGrid>
