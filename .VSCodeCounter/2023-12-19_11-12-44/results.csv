@@ -1,0 +1,36 @@
+"filename", "language", "JavaScript", "JSON with Comments", "Markdown", "TypeScript", "SVG", "JSON", "CSS", "TypeScript JSX", "comment", "blank", "total"
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\.eslintrc.json", "JSON with Comments", 0, 3, 0, 0, 0, 0, 0, 0, 0, 1, 4
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\README.md", "Markdown", 0, 0, 23, 0, 0, 0, 0, 0, 0, 14, 37
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\globals.css", "CSS", 0, 0, 0, 0, 0, 0, 24, 0, 0, 4, 28
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 22, 0, 4, 26
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\marketing-salon\campaign\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 94, 9, 7, 110
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\marketing-salon\crystal-care\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 3
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\marketing-salon\primelady\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 3
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\page.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 107, 0, 7, 114
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\app\providers.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 9, 1, 2, 12
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\cards\cards-group\CardGroupList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 18, 0, 4, 22
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\cards\cards-list\CardList.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 21, 1, 3, 25
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\cards\posters\CardsPosters.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 213, 3, 15, 231
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\grid\TailwindGrid.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 109, 0, 5, 114
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\action-post-and-stories\ActionPostsAndStories.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 42, 1, 5, 48
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\cards-mkt\CardsMkt.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 38, 1, 5, 44
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\digital-content-tabs-mkt\DigitalcalContentTabs.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 68, 0, 5, 73
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\physical-content-tabs-mkt\PhysicalContentTabs.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 62, 0, 4, 66
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\posters-mkt\PostersMkt.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 45, 1, 5, 51
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\stoppers-mkt\StoppersMkt.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 38, 1, 5, 44
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\components\sections\marketing-salon\tests-mkt\TestMkt.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 34, 1, 6, 41
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\db\marketing-salon\campaign\2024.json", "JSON", 0, 0, 0, 0, 0, 1698, 0, 0, 0, 1, 1699
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\icons\eyes-icon\EyeFilledIcon.jsx", "JavaScript", 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\lib\helpers\mappedCards.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\lib\helpers\postersCards.js", "JavaScript", 168, 0, 0, 0, 0, 0, 0, 0, 20, 30, 218
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\lib\helpers\stoppersCards.js", "JavaScript", 115, 0, 0, 0, 0, 0, 0, 0, 19, 22, 156
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\lib\server-actions\getXXXXX.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\next.config.js", "JavaScript", 8, 0, 0, 0, 0, 0, 0, 0, 1, 2, 11
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\package-lock.json", "JSON", 0, 0, 0, 0, 0, 6990, 0, 0, 0, 1, 6991
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\package.json", "JSON", 0, 0, 0, 0, 0, 29, 0, 0, 0, 1, 30
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\postcss.config.js", "JavaScript", 6, 0, 0, 0, 0, 0, 0, 0, 0, 1, 7
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\public\next.svg", "SVG", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\public\vercel.svg", "SVG", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\tailwind.config.ts", "TypeScript", 0, 0, 0, 22, 0, 0, 0, 0, 0, 3, 25
+"c:\Users\LEUM_\Desktop\INSIDE\insiders\tsconfig.json", "JSON with Comments", 0, 27, 0, 0, 0, 0, 0, 0, 0, 1, 28
+"Total", "-", 319, 30, 23, 22, 2, 8717, 24, 924, 59, 167, 10287

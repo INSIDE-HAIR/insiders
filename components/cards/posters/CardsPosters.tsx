@@ -62,7 +62,7 @@ function CardsPosters({
       className="border-none gap-2 px-2 py-3 flex items-center justify-center col-span-1 bg-white"
       key={item.name}
     >
-      {item.name}
+      {item.name.replace(/-/g, " ")}
       {item.files.A5 && item.files.A5.imgEmbed && (
         <div className="relative">
           <div className="  absolute right-0 top-0">

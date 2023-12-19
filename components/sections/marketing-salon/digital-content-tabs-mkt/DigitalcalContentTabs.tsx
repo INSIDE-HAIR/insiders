@@ -3,16 +3,24 @@ import {
   actionPostsCardsES,
   actionStoriesCardsCA,
   actionStoriesCardsES,
+  monthlyContentPlanCardsES,
 } from "@/lib/helpers/postersCards";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
-import ActionPostsAndStories from "../action-post-and-stories/ActionPostsAndStories";
-
+import ActionPostsAndStories from "../action-post-and-stories/ActionPostsAndStoriesMkt";
+import MonthlyContentPlanMkt from "../monthly-content-plan/MonthlyContentPlanMkt";
 
 function DigitalcalContentTabs() {
   return (
-    <div className="flex w-full flex-col items-center">
-      <Tabs aria-label="Options">
+    <div className="flex  flex-col items-center max-w-full ">
+      <Tabs aria-label="Options" className="max-w-full" >
+        <Tab key="monthlyContentPlan" title="Plan de Contenido Mensual">
+          <div className="flex w-full flex-col items-center">
+            <Card>
+              <MonthlyContentPlanMkt list={monthlyContentPlanCardsES} />
+            </Card>
+          </div>
+        </Tab>
         <Tab key="actionPosts" title="Post de Acción">
           <div className="flex w-full flex-col items-center">
             <Tabs aria-label="Options">
@@ -45,7 +53,7 @@ function DigitalcalContentTabs() {
             </Tabs>
           </div>
         </Tab>
-        <Tab key="valueStories" title="Tests">
+        <Tab key="valueStories" title="Stories de Valor">
           <Card>
             <CardBody>Muy Pronto</CardBody>
           </Card>
@@ -57,7 +65,7 @@ function DigitalcalContentTabs() {
             </Card>
           </div>
         </Tab>
-        <Tab key="smsAndWhatsapp" title="SMS & WhatsApp">
+        <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
           <div className="flex w-full flex-col items-center">
             <Card>
               <CardBody>Muy Pronto</CardBody>

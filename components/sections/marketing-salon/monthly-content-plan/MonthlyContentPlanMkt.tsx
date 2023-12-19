@@ -2,14 +2,10 @@
 import CardGroupList from "@/components/cards/cards-group/CardGroupList";
 import { Button } from "@nextui-org/react";
 
-function ActionPostsAndStories({
+function MonthlyContentPlanMkt({
   list,
-  lang,
-  story = false,
 }: {
   list: any[];
-  lang: string;
-  story?: boolean;
 }) {
   const renderButtons = (item: any) => {
     return Object.keys(item.files).map((fileType: string, index: number) => {
@@ -27,7 +23,7 @@ function ActionPostsAndStories({
             window.open(file.download, "_blank");
           }}
         >
-          {fileType}
+          Post {fileType.replace(/-/g, " ")}
         </Button>
       );
     });
@@ -36,7 +32,7 @@ function ActionPostsAndStories({
   return (
     <div className="w-full">
       <CardGroupList
-        title={story ? (lang === "es" ? "Stories de Acción" : "Stories d’Acció") : (lang === "es" ? "Posts de Acción" : "Posts d’Acció")}
+        title={"Plan de Contenido Mensual"}
         list={list}
         renderButtons={renderButtons}
       />
@@ -44,4 +40,4 @@ function ActionPostsAndStories({
   );
 }
 
-export default ActionPostsAndStories;
+export default MonthlyContentPlanMkt;
