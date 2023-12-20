@@ -8,26 +8,29 @@ function TestsMkt({ list, lang }: { list: any[]; lang: string }) {
       const file = item.files[fileType];
 
       return (
-        <Button
-          className="text-tiny text-white bg-gray-700 m-1"
-          variant="flat"
-          key={index}
-          color="default"
-          radius="lg"
-          size="sm"
-          onClick={() => {
-            window.open(file.download, "_blank");
-          }}
-        >
-          {fileType}
-        </Button>
+        <>
+          {fileType !== "Preview" && (
+            <Button
+              className="text-tiny text-white bg-gray-700 m-1"
+              variant="flat"
+              key={index}
+              color="default"
+              radius="lg"
+              size="sm"
+              onClick={() => {
+                window.open(file.download, "_blank");
+              }}
+            >
+              {fileType.replace(/_/g, " ").replace(/-/g, " ")}
+            </Button>
+          )}
+        </>
       );
     });
   };
 
   return (
     <div className="w-full">
-
       <CardGroupList
         title={lang === "es" ? "Stoppers en Español" : "Stoppers en Català"}
         list={list.filter((item) => Object.keys(item.files).length >= 0)}
