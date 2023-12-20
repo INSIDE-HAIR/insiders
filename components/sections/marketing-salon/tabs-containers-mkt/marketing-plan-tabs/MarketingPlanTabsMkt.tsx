@@ -1,5 +1,6 @@
 import VideoPlayer from "@/components/video-player/VideoPlayer";
-import { Tab, Tabs } from "@nextui-org/react";
+import { Button, Tab, Tabs } from "@nextui-org/react";
+import { marketingPlanJanuary2024Data } from "@/lib/helpers/mapperMarketingCampaignJSON";
 
 function MarketingPlanTabsMkt() {
   return (
@@ -22,46 +23,44 @@ function MarketingPlanTabsMkt() {
           width: "100%",
         }}
       >
+        <Button
+          variant="faded"
+          className="flex bg-gray-700 mb-4 text-white"
+          onClick={() => {
+            window.open(marketingPlanJanuary2024Data.formButton.url, "_blank");
+          }}
+        >
+          {marketingPlanJanuary2024Data.formButton.active &&
+            marketingPlanJanuary2024Data.formButton.title}
+        </Button>
         <Tabs
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          <Tab
-            key="contextAndOpportunities"
-            title="Contexto & Oportunidades"
-            className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
-          >
-            <div className="flex w-full flex-col items-center self-center  ">
-              <VideoPlayer
-                title="Contexto & Oportunidades"
-                url="https://player.vimeo.com/video/880849604?h=684733f68c&amp;badge=0&amp;autopause=0&amp;quality_selector=1&amp;player_id=0&amp;app_id=58479"
-              />
-            </div>
-          </Tab>
-          <Tab
-            key="marketingPlan"
-            title="Plan de Marketing"
-            className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
-          >
-            <div className="flex w-full flex-col items-center self-center  ">
-              <VideoPlayer
-                title="Plan de Marketing"
-                url="https://player.vimeo.com/video/880849685?h=e3d7c0773b&amp;badge=0&amp;autopause=0&amp;quality_selector=1&amp;player_id=0&amp;app_id=58479"
-              />
-            </div>
-          </Tab>
-          <Tab
-            key="SellingPlan"
-            title="Plan de Ventas"
-            className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
-          >
-            <div className="flex w-full flex-col items-center self-center  ">
-            <VideoPlayer
-                title="Plan de Marketing"
-                url="https://player.vimeo.com/video/880850715?h=cac4284ef1&amp;badge=0&amp;autopause=0&amp;quality_selector=1&amp;player_id=0&amp;app_id=58479"
-              />
-            </div>
-          </Tab>
+          {marketingPlanJanuary2024Data.tabs.map((tab, index) => (
+            <Tab
+              key={tab.id}
+              title={tab.title}
+              className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
+            >
+              <div className="flex w-full flex-col items-center self-center  ">
+                {tab.type === "video" && (
+                  <VideoPlayer title={tab.title} url={tab.url} />
+                )}
+                {tab.type === "button" && (
+                  <Button
+                    variant="faded"
+                    className="flex bg-gray-700 text-white mt-4"
+                    onClick={() => {
+                      window.open(tab.url, "_blank");
+                    }}
+                  >
+                    {tab.title}
+                  </Button>
+                )}
+              </div>
+            </Tab>
+          ))}
         </Tabs>
       </div>
     </div>

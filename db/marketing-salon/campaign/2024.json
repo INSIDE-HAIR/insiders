@@ -1,6 +1,38 @@
 {
   "january": {
-    "marketingPlan": {},
+    "marketingPlan": {
+      "tabs": [
+        {
+          "id": "contextAndOportunities",
+          "title": "Contexto & Oportunidades",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/885659642?h=8e3a9cd755"
+        },
+        {
+          "id": "marketingPlan",
+          "title": "Plan de Marketing",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/885659715?h=13bf3773b8"
+        },
+        {
+          "id": "sellingPlan",
+          "title": "Plan de Ventas",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/885660544?h=e0c33dc072"
+        },
+        {
+          "id": "libertyCard",
+          "title": "Calculadora Liberty Card",
+          "type": "button",
+          "url": "https://docs.google.com/spreadsheets/d/1BVM62EMe5xHN7b8HeDg7tU5NFq-7cmMPDzb4b8GJ8M0/copy"
+        }
+      ],
+      "formButton": {
+        "title": "Enlace al formulario",
+        "active": true,
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLScryRtS-vEbcdracD5G5-pjgawveoXG_BSNOZH2HreMSTtzCQ/viewform?usp=sf_link"
+      }
+    },
     "digitalContent": {
       "monthlyContentPlan": {
         "es": [
