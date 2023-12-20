@@ -33,7 +33,7 @@ function ValueStoriesMkt({ list }: { list: any[] }) {
   return (
     <div className="w-full">
       <h3 className="text-center w-full font-bold text-2xl mt-4">
-        Plan Mensual
+        Stories de Valor
       </h3>
       {Array.from(groupNames).map((groupName) => (
         <CardGroupList

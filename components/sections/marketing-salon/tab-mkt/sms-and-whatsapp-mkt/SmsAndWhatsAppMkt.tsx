@@ -26,20 +26,6 @@ function SmsAndWhatsAppMkt({ list }: { list: any[] }) {
           >
             Copiar Texto
           </Button>
-          <Button
-            className="text-tiny text-white bg-gray-700 m-1"
-            variant="flat"
-            key={index}
-            color="default"
-            radius="lg"
-            size="sm"
-            onClick={() => {
-              window.open(file.download, "_blank");
-            }}
-          >
-            Descargar Imagen
-          </Button>
-
           <textarea
             defaultValue={item.copy}
             disabled
@@ -58,7 +44,7 @@ function SmsAndWhatsAppMkt({ list }: { list: any[] }) {
   return (
     <div className="w-full">
       <h3 className="text-center w-full font-bold text-2xl mt-4">
-        Plan Mensual
+        SMS & WhatsApp
       </h3>
       {Array.from(groupNames).map((groupName) => (
         <CardGroupList

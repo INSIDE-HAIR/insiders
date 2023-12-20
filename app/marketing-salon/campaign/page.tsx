@@ -1,7 +1,9 @@
 "use client";
 import TailwindGrid from "@/components/grid/TailwindGrid";
-import DigitalcalContentTabs from "@/components/sections/marketing-salon/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
-import PhysicalContentTabs from "@/components/sections/marketing-salon/physical-content-tabs-mkt/PhysicalContentTabsMkt";
+import MarketingPlanTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/marketing-plan-tabs/MarketingPlanTabsMkt";
+import DigitalcalContentTabs from "@/components/sections/marketing-salon/tabs-containers-mkt/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
+import CampaignFormationTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/campaign-formation-tabs/CampaignFormationTabsMkt";
+import PhysicalContentTabs from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -91,14 +93,18 @@ export default function MarketingSalon() {
         <div className="relative col-span-full max-w-full  bg-orange-500/0 ">
           <TailwindGrid>
             <main className="self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center">
-              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen">
+              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full">
                 <h3 className="text-center w-full font-bold text-4xl ">
                   {sideMenu.list.find((item) => item.id === tab)?.name}
                 </h3>
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
+                  "marketingPlan" && <MarketingPlanTabsMkt />}
+                {sideMenu.list.find((item) => item.id === tab)?.id ===
                   "posters" && <PhysicalContentTabs />}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
                   "socialNetworks" && <DigitalcalContentTabs />}
+                {sideMenu.list.find((item) => item.id === tab)?.id ===
+                  "campaignFormation" && <CampaignFormationTabsMkt />}
               </div>
             </main>
           </TailwindGrid>
