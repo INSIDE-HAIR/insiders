@@ -914,9 +914,7 @@
             "groupName": ""
           }
         ],
-        "ca": [
-
-        ]
+        "ca": []
       },
       "videos": {
         "es": [
@@ -1677,8 +1675,26 @@
         ]
       },
       "tests": {
-        "es": [],
-        "ca": []
+        "es": [
+          {
+            "name": "Test-clientes/Test-Clientes_01.pdf",
+            "url": "https://drive.google.com/uc?id=1HrnrrLmUsfx9CPjCqGN55Kabp6lt0t2g&export=download"
+          },
+          {
+            "name": "Test-Peluqueros/Test-Peluqueros_01.pdf",
+            "url": "https://drive.google.com/uc?id=1K8j83vrrqsTlE6-_ApXNqQz0qVK2lvsD&export=download"
+          }
+        ],
+        "ca": [
+          {
+            "name": "Test-Peluqueros/Test-Peluqueros_02.pdf",
+            "url": "https://drive.google.com/uc?id=1Uqz2VA_jWdpJ-mB5HfZlf52QPFkQhBRL&export=download"
+          },
+          {
+            "name": "Test-clientes/Test-Clientes_02.pdf ",
+            "url": "https://drive.google.com/uc?id=182bgdnGtor5roOlQCaNlC5P9Mvpa5fhF&export=download"
+          }
+        ]
       },
       "cards": {
         "es": [
