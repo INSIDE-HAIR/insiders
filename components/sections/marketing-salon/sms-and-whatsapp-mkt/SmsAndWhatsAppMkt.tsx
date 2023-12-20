@@ -2,7 +2,7 @@
 import CardGroupList from "@/components/cards/cards-group/CardGroupList";
 import { Button } from "@nextui-org/react";
 
-function MonthlyContentPlanMkt({ list }: { list: any[] }) {
+function SmsAndWhatsAppMkt({ list }: { list: any[] }) {
   const renderButtons = (item: any) => {
     return Object.keys(item.files).map((fileType: string, index: number) => {
       const file = item.files[fileType];
@@ -72,4 +72,4 @@ function MonthlyContentPlanMkt({ list }: { list: any[] }) {
   );
 }
 
-export default MonthlyContentPlanMkt;
+export default SmsAndWhatsAppMkt;

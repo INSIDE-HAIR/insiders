@@ -4,14 +4,16 @@ import {
   actionStoriesCardsCA,
   actionStoriesCardsES,
   monthlyContentPlanCardsES,
+  smsAndWhatsAppCardsES,
   valueStoriesCardsES,
 } from "@/lib/helpers/mapperJSON";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
 import ActionPostsAndStories from "../action-post-and-stories-mkt/ActionPostsAndStoriesMkt";
-import MonthlyContentPlanMkt from "../monthly-content-plan-mkt/MonthlyContentPlanMkt";
+import MonthlyContentPlanMkt from "../monthly-plan-mkt/MonthlyPlanMkt";
 import { useEffect } from "react";
 import ValueStoriesMkt from "../value-stories-mkt/ValueStoriesMkt";
+import SmsAndWhatsAppMkt from "../sms-and-whatsapp-mkt/SmsAndWhatsAppMkt";
 
 function DigitalcalContentTabsMkt() {
   useEffect(() => {
@@ -79,9 +81,7 @@ function DigitalcalContentTabsMkt() {
         </Tab>
         <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
           <div className="flex w-full flex-col items-center mb-0">
-            <Card>
-              <CardBody>Muy Pronto</CardBody>
-            </Card>
+            <SmsAndWhatsAppMkt list={smsAndWhatsAppCardsES} />
           </div>
         </Tab>
       </Tabs>
