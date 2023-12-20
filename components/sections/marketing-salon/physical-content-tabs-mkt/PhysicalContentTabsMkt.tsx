@@ -5,19 +5,19 @@ import {
   stoppersCardsCA,
   cardsCardsES,
   cardsCardsCA,
-} from "@/lib/helpers/postersCards";
+} from "@/lib/helpers/mapperJSON";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
 import PostersMkt from "../posters-mkt/PostersMkt";
 import StoppersMkt from "../stoppers-mkt/StoppersMkt";
 import CardsMkt from "../cards-mkt/CardsMkt";
 
-function PhysicalContentTabs() {
+function PhysicalContentTabsMkt() {
   return (
     <div className="flex w-full flex-col items-center">
       <Tabs aria-label="Options">
         <Tab key="posters" title="Cartelería">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
                 <PostersMkt list={postersCardsES} lang={"es"} />
@@ -29,7 +29,7 @@ function PhysicalContentTabs() {
           </div>
         </Tab>
         <Tab key="stoppers" title="Stopper">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
                 <StoppersMkt list={stoppersCardsES} lang={"es"} />
@@ -46,7 +46,7 @@ function PhysicalContentTabs() {
           </Card>
         </Tab>
         <Tab key="cards" title="Tarjetas">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
                 <CardsMkt list={cardsCardsES} lang={"es"} />
@@ -62,4 +62,4 @@ function PhysicalContentTabs() {
   );
 }
 
-export default PhysicalContentTabs;
+export default PhysicalContentTabsMkt;

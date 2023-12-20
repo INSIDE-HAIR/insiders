@@ -4,25 +4,39 @@ import {
   actionStoriesCardsCA,
   actionStoriesCardsES,
   monthlyContentPlanCardsES,
-} from "@/lib/helpers/postersCards";
+  valueStoriesCardsES,
+} from "@/lib/helpers/mapperJSON";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
-import ActionPostsAndStories from "../action-post-and-stories/ActionPostsAndStoriesMkt";
-import MonthlyContentPlanMkt from "../monthly-content-plan/MonthlyContentPlanMkt";
+import ActionPostsAndStories from "../action-post-and-stories-mkt/ActionPostsAndStoriesMkt";
+import MonthlyContentPlanMkt from "../monthly-content-plan-mkt/MonthlyContentPlanMkt";
+import { useEffect } from "react";
+import ValueStoriesMkt from "../value-stories-mkt/ValueStoriesMkt";
 
-function DigitalcalContentTabs() {
+function DigitalcalContentTabsMkt() {
+  useEffect(() => {
+    window.addEventListener("DOMContentLoaded", (event) => {
+      const tabContainer = document.getElementById("tabContainer");
+      if (tabContainer && tabContainer.firstChild) {
+        (tabContainer.firstChild as HTMLElement).classList.add("flex-wrap");
+      }
+    });
+
+    return () => {};
+  }, []);
+
   return (
-    <div className="flex  flex-col items-center max-w-full ">
-      <Tabs aria-label="Options" className="max-w-full" >
-        <Tab key="monthlyContentPlan" title="Plan de Contenido Mensual">
-          <div className="flex w-full flex-col items-center">
-            <Card>
-              <MonthlyContentPlanMkt list={monthlyContentPlanCardsES} />
-            </Card>
-          </div>
+    <div className="flex  flex-col items-center max-w-full mb-4">
+      <Tabs
+        aria-label="Options"
+        id="tabContainer"
+        className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
+      >
+        <Tab key="monthlyContentPlan" title="Plan Mensual">
+          <MonthlyContentPlanMkt list={monthlyContentPlanCardsES} />
         </Tab>
         <Tab key="actionPosts" title="Post de Acción">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
                 <ActionPostsAndStories list={actionPostsCardsES} lang={"es"} />
@@ -34,7 +48,7 @@ function DigitalcalContentTabs() {
           </div>
         </Tab>
         <Tab key="actionStories" title="Story de Acción">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Tabs aria-label="Options">
               <Tab key="es" title="Español">
                 <ActionPostsAndStories
@@ -54,19 +68,17 @@ function DigitalcalContentTabs() {
           </div>
         </Tab>
         <Tab key="valueStories" title="Stories de Valor">
-          <Card>
-            <CardBody>Muy Pronto</CardBody>
-          </Card>
+          <ValueStoriesMkt list={valueStoriesCardsES} />
         </Tab>
         <Tab key="videos" title="Videos">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Card>
               <CardBody>Muy Pronto</CardBody>
             </Card>
           </div>
         </Tab>
         <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
-          <div className="flex w-full flex-col items-center">
+          <div className="flex w-full flex-col items-center mb-0">
             <Card>
               <CardBody>Muy Pronto</CardBody>
             </Card>
@@ -77,4 +89,4 @@ function DigitalcalContentTabs() {
   );
 }
 
-export default DigitalcalContentTabs;
+export default DigitalcalContentTabsMkt;

@@ -1,7 +1,7 @@
 "use client";
 import TailwindGrid from "@/components/grid/TailwindGrid";
-import DigitalcalContentTabs from "@/components/sections/marketing-salon/digital-content-tabs-mkt/DigitalcalContentTabs";
-import PhysicalContentTabs from "@/components/sections/marketing-salon/physical-content-tabs-mkt/PhysicalContentTabs";
+import DigitalcalContentTabs from "@/components/sections/marketing-salon/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
+import PhysicalContentTabs from "@/components/sections/marketing-salon/physical-content-tabs-mkt/PhysicalContentTabsMkt";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
