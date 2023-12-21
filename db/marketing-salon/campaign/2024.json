@@ -952,14 +952,39 @@
       "videos": {
         "es": [
           {
-            "name": "",
-            "url": ""
+            "name": "ES/ESP_Vertical.mp4",
+            "url": "https://drive.google.com/uc?id=1mdMohygvzlymYkJ8SYog5XTXnPv2RnWy&export=download"
+          },
+          {
+            "name": "ES/ESP_Horizontal.mp4",
+            "url": "https://drive.google.com/uc?id=1b2F6zTjcDmey6h87cYj7p6MezfukX_LN&export=download"
+          },
+
+          {
+            "name": "Preview/ESP_Vertical.png",
+            "url": "https://drive.google.com/uc?id=1-LdYqqANJvXRL9cZQypJ3SESTbImVh3M&export=download"
+          },
+          {
+            "name": "Preview/ESP_Horizontal.png",
+            "url": "https://drive.google.com/uc?id=1CChfSckLVrJHXLr-1hoHcHU1XwPNYzV9&export=download"
           }
         ],
         "ca": [
           {
-            "name": "",
-            "url": ""
+            "name": "CA/CAT_Vertical.mp4",
+            "url": "https://drive.google.com/uc?id=1sIln47jnkfyDHboRbsE-nyfLYdRhRhtE&export=download"
+          },
+          {
+            "name": "CA/CAT_Horizontal.mp4",
+            "url": "https://drive.google.com/uc?id=1in1fb3Ju2nnhr3nlt7-DIvYSYXap1DKR&export=download"
+          },
+          {
+            "name": "Preview/CAT_Horizontal.png",
+            "url": "https://drive.google.com/uc?id=1eANkwDG_Am-XUDXOVTUAq-R2CjeiU3qR&export=download"
+          },
+          {
+            "name": "Preview/CAT_Vertical.png",
+            "url": "https://drive.google.com/uc?id=1xGXRa9F9-1M0CRr2X-V8mJBMkU-25r2W&export=download"
           }
         ]
       },

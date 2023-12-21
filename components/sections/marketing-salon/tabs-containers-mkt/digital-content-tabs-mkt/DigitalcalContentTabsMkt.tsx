@@ -6,6 +6,8 @@ import {
   monthlyContentPlanCardsES,
   smsAndWhatsAppCardsES,
   valueStoriesCardsES,
+  videosCardsCA,
+  videosCardsES,
 } from "@/lib/helpers/mapperJSON";
 
 import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
@@ -13,6 +15,7 @@ import ActionPostsAndStories from "../../tab-mkt/action-post-and-stories-mkt/Act
 import MonthlyContentPlanMkt from "../../tab-mkt/monthly-plan-mkt/MonthlyPlanMkt";
 import ValueStoriesMkt from "../../tab-mkt/value-stories-mkt/ValueStoriesMkt";
 import SmsAndWhatsAppMkt from "../../tab-mkt/sms-and-whatsapp-mkt/SmsAndWhatsAppMkt";
+import VideosMkt from "../../tab-mkt/videos-mkt/VideosMkt";
 
 function DigitalcalContentTabsMkt() {
   return (
@@ -75,10 +78,21 @@ function DigitalcalContentTabsMkt() {
             <ValueStoriesMkt list={valueStoriesCardsES} />
           </Tab>
           <Tab key="videos" title="Videos">
-            <div className="flex w-full flex-col items-center mb-0">
-              <Card>
-                <CardBody>Muy Pronto</CardBody>
-              </Card>
+          <div className="flex w-full flex-col items-center mb-0">
+              <Tabs aria-label="Options">
+                <Tab key="es" title="Español">
+                <VideosMkt 
+                    list={videosCardsES}
+                    lang={"es"}
+                  />
+                </Tab>
+                <Tab key="ca" title="Catalán">
+                  <VideosMkt
+                    list={videosCardsCA}
+                    lang={"ca"}
+                  />
+                </Tab>
+              </Tabs>
             </div>
           </Tab>
           <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
