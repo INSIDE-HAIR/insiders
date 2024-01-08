@@ -33,7 +33,7 @@ function ActionPostsAndStoriesMkt({
     });
   };
 
-  return (
+  return list ? (
     <div className="w-full">
       <CardGroupList
         title={
@@ -48,6 +48,11 @@ function ActionPostsAndStoriesMkt({
         list={list}
         renderButtons={renderButtons}
       />
+    </div>
+  ) : (
+    <div>
+      {lang === "es" && "Muy Pronto"}
+      {lang === "ca" && "Molt Aviat"}
     </div>
   );
 }

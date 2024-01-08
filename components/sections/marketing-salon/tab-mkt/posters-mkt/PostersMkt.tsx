@@ -31,7 +31,7 @@ function PostersMkt({ list, lang }: { list: any[]; lang: string }) {
     });
   };
 
-  return (
+  return list ? (
     <div className="w-full">
       <CardGroupList
         title={lang === "es" ? "Acciones Principales" : "Accions Principals"}
@@ -43,6 +43,11 @@ function PostersMkt({ list, lang }: { list: any[]; lang: string }) {
         list={list.filter((item) => Object.keys(item.files).length <= 2)}
         renderButtons={renderButtons}
       />
+    </div>
+  ) : (
+    <div>
+      {lang === "es" && "Muy Pronto"}
+      {lang === "ca" && "Molt Aviat"}
     </div>
   );
 }

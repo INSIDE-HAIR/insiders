@@ -28,9 +28,9 @@ function ValueStoriesMkt({ list }: { list: any[] }) {
   };
 
   // Obtén un conjunto único de nombres de grupo
-  const groupNames = new Set(list.map((item) => item.groupName));
+  const groupNames = new Set(list?.map((item) => item.groupName));
 
-  return (
+  return list ? (
     <div className="w-full">
       <h3 className="text-center w-full font-bold text-2xl mt-4">
         Stories de Valor
@@ -44,6 +44,8 @@ function ValueStoriesMkt({ list }: { list: any[] }) {
         />
       ))}
     </div>
+  ) : (
+    <div>Muy Pronto</div>
   );
 }
 

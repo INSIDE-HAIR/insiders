@@ -31,6 +31,10 @@
         "title": "Enlace al formulario",
         "active": true,
         "url": "https://docs.google.com/forms/d/e/1FAIpQLScryRtS-vEbcdracD5G5-pjgawveoXG_BSNOZH2HreMSTtzCQ/viewform?usp=sf_link"
+      },
+      "slides": {
+        "url": "https://docs.google.com/presentation/d/e/2PACX-1vTVg50zHoEV4enUi_7og7ieo9P5jpbynKaKkROcjF9cSzZAdxY4ikR17vSvaiu8LJXx1fz9G9KbfS22/embed?start=false&loop=true&delayms=3000",
+        "active": true
       }
     },
     "digitalContent": {
@@ -1765,31 +1769,31 @@
       "cards": {
         "es": [
           {
-            "name":"Liberty_Color/Tarjeta_Liberty-Color.pdf",
+            "name": "Liberty_Color/Tarjeta_Liberty-Color.pdf",
             "url": "https://drive.google.com/uc?id=1-lmTknmPxuUJHYxVQorgsBLEaQ9WJacl&export=download"
           },
           {
-            "name":"Liberty_Corte-3/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-3/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1C5T4aBUl9cmLKXiOG1HsAIUNjYm02SG6&export=download"
           },
           {
-            "name":"Liberty_Corte-4/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-4/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=19mQrCc0rzX_0HBSj1c-cnp499iTD9ECT&export=download"
           },
           {
-            "name":"Liberty_Corte-5/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-5/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1Kr-6mNIvwlGIVU_Q2tT_my6aCMR4Fdxp&export=download"
           },
           {
-            "name":"Liberty_Corte-6/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-6/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1u0SCqfpz6jRnrpKHWvgKDTNnzy1wchsJ&export=download"
           },
           {
-            "name":"Liberty_Corte-10/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-10/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1Y_VskB5VxI-vKjkyd3OjI5FAZyF5SqqJ&export=download"
           },
           {
-            "name":"Liberty_Corte-12/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-12/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1532JZwAYHNxGpJ-CmbkD-e8ZEERc9TCS&export=download"
           },
           {
@@ -1907,31 +1911,31 @@
         ],
         "ca": [
           {
-            "name":"Liberty_Color/Tarjeta_Liberty-Color.pdf",
+            "name": "Liberty_Color/Tarjeta_Liberty-Color.pdf",
             "url": "https://drive.google.com/uc?id=121s_cMSYPQD3BNjnt4_rm-at9m5lDcMZ&export=download"
           },
           {
-            "name":"Liberty_Corte-3/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-3/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=17-QuNMbMAQLG2f9rMwXhecNYkWfY_q72&export=download"
           },
           {
-            "name":"Liberty_Corte-4/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-4/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=16-r4BOQidXJVRhiN3vKIBqcpOquMAQBd&export=download"
           },
           {
-            "name":"Liberty_Corte-5/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-5/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1naS_W98vkbwIlrPozTbotV1xU89N0ZrW&export=download"
           },
           {
-            "name":"Liberty_Corte-6/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-6/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1opP7f7Qg66umA6_6i8cpkJ-3Z-2adJvp&export=download"
           },
           {
-            "name":"Liberty_Corte-10/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-10/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1sImAG5pFHcJYTlHtLX1DabokUTihM3et&export=download"
           },
           {
-            "name":"Liberty_Corte-12/Tarjeta_Liberty-Corte.pdf",
+            "name": "Liberty_Corte-12/Tarjeta_Liberty-Corte.pdf",
             "url": "https://drive.google.com/uc?id=1QLsoo4VxaZ9MtHhF3LBAsTcWXM9htkBk&export=download"
           },
           {
@@ -2050,5 +2054,38 @@
       }
     },
     "campaignFormation": {}
+  },
+  "february": {
+    "marketingPlan": {
+      "tabs": [
+        {
+          "id": "contextAndOportunities",
+          "title": "Contexto & Oportunidades",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/900704002?h=557436604d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        },
+        {
+          "id": "marketingPlan",
+          "title": "Plan de Marketing",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/900704082?h=7cbd2ba7c5&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        },
+        {
+          "id": "sellingPlan",
+          "title": "Plan de Ventas",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/900704358?h=76a2fb9e0b&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        }
+      ],
+      "formButton": {
+        "title": "Enlace al formulario",
+        "active": false,
+        "url": ""
+      },
+      "slides": {
+        "url": "https://docs.google.com/presentation/d/e/2PACX-1vQcp0XzRN1bGt-zgQbJbwdGj9UEdhudqCRr_S2BI1OfA1Sl8N2uwA8W4qSZVI5U_oJwamgW2i-PEMgt/embed?start=false&loop=false&delayms=3000",
+        "active": true
+      }
+    }
   }
 }

@@ -29,13 +29,18 @@ function CardsMkt({ list, lang }: { list: any[]; lang: string }) {
     });
   };
 
-  return (
+  return list ? (
     <div className="w-full">
       <CardGroupList
         title={lang === "es" ? "Tarjetas" : "Targetes"}
         list={list.filter((item) => Object.keys(item.files).length >= 0)}
         renderButtons={renderButtons}
       />
+    </div>
+  ) : (
+    <div>
+      {lang === "es" && "Muy Pronto"}
+      {lang === "ca" && "Molt Aviat"}
     </div>
   );
 }

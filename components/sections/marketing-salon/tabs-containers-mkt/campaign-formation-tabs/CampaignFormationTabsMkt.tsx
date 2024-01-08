@@ -1,11 +1,27 @@
-import { Card, CardBody } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 
-function CampaignFormationTabsMkt() {
+function CampaignFormationTabsMkt({
+  marketingSalonContent,
+}: {
+  marketingSalonContent: any;
+}) {
+  const [content, setContent] = useState(marketingSalonContent);
+
+  useEffect(() => {
+    setContent(marketingSalonContent);
+
+    return () => {};
+  }, [content, marketingSalonContent]);
+
   return (
     <div className="flex w-full flex-col items-center mb-0">
-      <Card>
-        <CardBody>Muy Pronto</CardBody>
-      </Card>
+      <Tabs
+        aria-label="Options"
+        className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
+      >
+        <Tab key="comingSoon" title="Muy Pronto" className="cursor-default" />
+      </Tabs>
     </div>
   );
 }

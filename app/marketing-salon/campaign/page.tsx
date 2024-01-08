@@ -6,6 +6,8 @@ import CampaignFormationTabsMkt from "@/components/sections/marketing-salon/tabs
 import PhysicalContentTabs from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { marketingPlanFebruary2024Data, marketingPlanJanuary2024Data } from "@/lib/helpers/mapperMarketingCampaignJSON";
+import { marketingSalonJanuary2024, marketingSalonFebruary2024 } from "@/lib/helpers/mapperJSON";
 
 const sideMenu = {
   name: "Plan de Enero",
@@ -28,6 +30,8 @@ export default function MarketingSalon() {
   //   searchParams.get("language")
   // );
   const [itemlist, setItemList] = useState(false);
+  const [marketingPlanContent, setmarketingPlanContent] = useState(marketingPlanJanuary2024Data);
+  const [marketingSalonContent, setmarketingSalonContent] = useState(marketingSalonJanuary2024);
 
   const monthTranslations: { [key: string]: string } = {
     january: "Enero",
@@ -45,18 +49,18 @@ export default function MarketingSalon() {
   };
 
   useEffect(() => {
-    if (category === "physicalContent") {
-      if (categoryType === "posters") {
-        // if (categoryTypeLanguage === "es") {
-        //   setList(postersCardsES);
-        // } else if (categoryTypeLanguage === "ca") {
-        //   setList(postersCardsCA);
-        // }
-      }
+    if (month === "january") {
+      setmarketingPlanContent(marketingPlanJanuary2024Data)
+      setmarketingSalonContent(marketingSalonJanuary2024)
     }
-
+    if (month === "february") {
+      setmarketingPlanContent(marketingPlanFebruary2024Data)
+      setmarketingSalonContent(marketingSalonFebruary2024)
+    }
     console.log(tab);
-  }, [category, categoryType]);
+  }, [category, categoryType, month, tab]);
+
+
 
   return (
     <>
@@ -130,13 +134,13 @@ export default function MarketingSalon() {
                   {sideMenu.list.find((item) => item.id === tab)?.name}
                 </h3>
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "marketingPlan" && <MarketingPlanTabsMkt />}
+                  "marketingPlan" && <MarketingPlanTabsMkt contentData={marketingPlanContent}/>}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "posters" && <PhysicalContentTabs />}
+                  "posters" && <PhysicalContentTabs marketingSalonContent={marketingSalonContent} />}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "socialNetworks" && <DigitalcalContentTabs />}
+                  "socialNetworks" && <DigitalcalContentTabs marketingSalonContent={marketingSalonContent}/>}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "campaignFormation" && <CampaignFormationTabsMkt />}
+                  "campaignFormation" && <CampaignFormationTabsMkt marketingSalonContent={marketingSalonContent}/>}
               </div>
             </main>
           </TailwindGrid>
