@@ -46,7 +46,7 @@ function MarketingPlanTabsMkt({ contentData }: { contentData: any }) {
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {content &&
+          {content.tabs &&
             content.tabs.map((tab: any) => (
               <Tab
                 key={tab.id}

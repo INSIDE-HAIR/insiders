@@ -2,12 +2,20 @@
 import TailwindGrid from "@/components/grid/TailwindGrid";
 import MarketingPlanTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/marketing-plan-tabs/MarketingPlanTabsMkt";
 import DigitalcalContentTabs from "@/components/sections/marketing-salon/tabs-containers-mkt/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
-import CampaignFormationTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/campaign-formation-tabs/CampaignFormationTabsMkt";
+import RepeatsTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/repeats-tabs/RepeatsTabsMkt";
 import PhysicalContentTabs from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { marketingPlanFebruary2024Data, marketingPlanJanuary2024Data } from "@/lib/helpers/mapperMarketingCampaignJSON";
-import { marketingSalonJanuary2024, marketingSalonFebruary2024 } from "@/lib/helpers/mapperJSON";
+import {
+  repeatsFebruary2024Data,
+  repeatsJanuary2024Data,
+  marketingPlanFebruary2024Data,
+  marketingPlanJanuary2024Data,
+} from "@/lib/helpers/mapperMarketingCampaignJSON";
+import {
+  marketingSalonJanuary2024,
+  marketingSalonFebruary2024,
+} from "@/lib/helpers/mapperJSON";
 
 const sideMenu = {
   name: "Plan de Enero",
@@ -15,7 +23,7 @@ const sideMenu = {
     { name: "Plan de Marketing", id: "marketingPlan" },
     { name: "Cartelería", id: "posters" },
     { name: "Redes Sociales", id: "socialNetworks" },
-    { name: "Formación de Campaña", id: "campaignFormation" },
+    { name: "Repeticiones", id: "repeats" },
   ],
 };
 
@@ -30,8 +38,13 @@ export default function MarketingSalon() {
   //   searchParams.get("language")
   // );
   const [itemlist, setItemList] = useState(false);
-  const [marketingPlanContent, setmarketingPlanContent] = useState(marketingPlanJanuary2024Data);
-  const [marketingSalonContent, setmarketingSalonContent] = useState(marketingSalonJanuary2024);
+  const [marketingPlanContent, setmarketingPlanContent] = useState(
+    marketingPlanJanuary2024Data
+  );
+  const [marketingSalonContent, setmarketingSalonContent] = useState(
+    marketingSalonJanuary2024
+  );
+  const [repeatsContent, setRepeatsContent] = useState(repeatsJanuary2024Data);
 
   const monthTranslations: { [key: string]: string } = {
     january: "Enero",
@@ -50,17 +63,17 @@ export default function MarketingSalon() {
 
   useEffect(() => {
     if (month === "january") {
-      setmarketingPlanContent(marketingPlanJanuary2024Data)
-      setmarketingSalonContent(marketingSalonJanuary2024)
+      setmarketingPlanContent(marketingPlanJanuary2024Data);
+      setmarketingSalonContent(marketingSalonJanuary2024);
+      setRepeatsContent(repeatsJanuary2024Data);
     }
     if (month === "february") {
-      setmarketingPlanContent(marketingPlanFebruary2024Data)
-      setmarketingSalonContent(marketingSalonFebruary2024)
+      setmarketingPlanContent(marketingPlanFebruary2024Data);
+      setmarketingSalonContent(marketingSalonFebruary2024);
+      setRepeatsContent(repeatsFebruary2024Data);
     }
     console.log(tab);
   }, [category, categoryType, month, tab]);
-
-
 
   return (
     <>
@@ -134,13 +147,25 @@ export default function MarketingSalon() {
                   {sideMenu.list.find((item) => item.id === tab)?.name}
                 </h3>
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "marketingPlan" && <MarketingPlanTabsMkt contentData={marketingPlanContent}/>}
+                  "marketingPlan" && (
+                  <MarketingPlanTabsMkt contentData={marketingPlanContent} />
+                )}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "posters" && <PhysicalContentTabs marketingSalonContent={marketingSalonContent} />}
+                  "posters" && (
+                  <PhysicalContentTabs
+                    marketingSalonContent={marketingSalonContent}
+                  />
+                )}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "socialNetworks" && <DigitalcalContentTabs marketingSalonContent={marketingSalonContent}/>}
+                  "socialNetworks" && (
+                  <DigitalcalContentTabs
+                    marketingSalonContent={marketingSalonContent}
+                  />
+                )}
                 {sideMenu.list.find((item) => item.id === tab)?.id ===
-                  "campaignFormation" && <CampaignFormationTabsMkt marketingSalonContent={marketingSalonContent}/>}
+                  "repeats" && (
+                  <RepeatsTabsMkt marketingSalonContent={repeatsContent} />
+                )}
               </div>
             </main>
           </TailwindGrid>

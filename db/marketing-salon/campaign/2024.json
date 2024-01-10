@@ -2053,7 +2053,16 @@
         ]
       }
     },
-    "campaignFormation": {}
+    "repeats": {
+      "tabs": [
+        {
+          "id": "implementationSession",
+          "title": "Sesión de Implementación",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/901446976?h=716e21575a"
+        }
+      ]
+    }
   },
   "february": {
     "marketingPlan": {
