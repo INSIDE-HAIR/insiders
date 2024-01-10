@@ -27,9 +27,6 @@ export default async function handler(req, res) {
 }
 
 
-
-
-
 // Función para mapear datos de un mes específico
 function mapDataForMonth(data, month, contentType, content, prefix) {
   if (
