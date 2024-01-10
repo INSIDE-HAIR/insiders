@@ -7,6 +7,7 @@ import MarketingPlanTabsMkt from "@/components/sections/marketing-salon/tabs-con
 import PhysicalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
 import DigitalcalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
 import RepeatsTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/repeats-tabs/RepeatsTabsMkt";
+import { Button } from "@nextui-org/react";
 
 interface VideoTab {
   id: string;

@@ -1,5 +1,34 @@
-import json2024Data from "@/db/marketing-salon/campaign/2024.json";
-import monthsData from "@/db/dates/months.json";
+import fs from 'fs/promises';
+import path from 'path';
+
+export default async function handler(req, res) {
+  const { year, month } = req.query;
+
+  try {
+    const filePath = path.resolve('./db/marketing-salon/campaign', `${year}.json`);
+    const data = await fs.readFile(filePath, 'utf8');
+    const jsonData = JSON.parse(data);
+    const { digitalContent, physicalContent } = processDataForMonth(jsonData, month);
+    jsonData[month].digitalContent = digitalContent;
+    jsonData[month].physicalContent = physicalContent;
+
+    if (jsonData) {
+      res.status(200).json(jsonData[month]);
+    } else {
+      res.status(404).json({ message: 'Month data not found.' });
+    }
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      res.status(404).json({ message: 'Year data not found.' });
+    } else {
+      res.status(500).json({ message: 'Error reading file.' });
+    }
+  }
+}
+
+
+
+
 
 // Función para mapear datos de un mes específico
 function mapDataForMonth(data, month, contentType, content, prefix) {
@@ -54,7 +83,7 @@ function mapDataForMonth(data, month, contentType, content, prefix) {
             },
             []
           );
-          result[`${content}Cards${lang.toUpperCase()}`] = items;
+          result[`${lang}`] = items;
         } else {
           // Handle the case where the data is not an array
           console.info(
@@ -68,9 +97,9 @@ function mapDataForMonth(data, month, contentType, content, prefix) {
     );
   } else {
     // Handle the case where the necessary data does not exist
-    // console.info(
-    //   `Data for ${month}, ${contentType}, ${content} does not exist`
-    // );
+    console.info(
+      `Data for ${month}, ${contentType}, ${content} does not exist`
+    );
     return {};
   }
 }
@@ -177,73 +206,29 @@ const contentTypes = {
 
 // Función para procesar todos los contenidos de un mes
 function processDataForMonth(data, month) {
-  let monthData = {};
+  let digitalContent = {};
+  let physicalContent = {};
 
   for (let contentType in contentTypes) {
     for (let content in contentTypes[contentType]) {
       const prefix = contentTypes[contentType][content];
-      const key = `${content}Cards`;
-      monthData[key] = processMonthData(
-        data,
-        month,
-        contentType,
-        content,
-        prefix
-      );
+      const processedData = processMonthData(data, month, contentType, content, prefix);
+      
+      // Dividir entre contenido digital y físico
+      if (contentType === 'digitalContent') {
+        digitalContent[content] = {};
+        for (let langCode in processedData) {
+          digitalContent[content][langCode] = processedData[langCode];
+        }
+      } else if (contentType === 'physicalContent') {
+        physicalContent[content] = {};
+        for (let langCode in processedData) {
+          physicalContent[content][langCode] = processedData[langCode];
+        }
+      }
     }
   }
 
-  return monthData;
+  return { digitalContent, physicalContent };
 }
 
-
-
-const marketingSalon2024Data = processDataForAllMonths(
-  json2024Data,
-  monthsData.months
-);
-
-console.log("marketingSalon2024Data", marketingSalon2024Data);
-
-const marketingSalonJanuary2024 = processDataForMonth(json2024Data, "january");
-const marketingSalonFebruary2024 = processDataForMonth(
-  json2024Data,
-  "february"
-);
-
-// Función dinámica para obtener los datos en base al año
-async function getDataForYear(year) {
-  try {
-    const data = await import(`@/db/marketing-salon/campaign/${year}.json`);
-    return data.default;
-  } catch (error) {
-    console.error(`No se pudieron cargar los datos para el año ${year}:`, error);
-    return {}; // O maneja el error como sea adecuado
-  }
-}
-
-// Función para procesar los datos de todos los meses de un año específico
-async function processDataForAllMonths(year, months) {
-  const data = await getDataForYear(year);
-  const allMonthsData = {};
-
-  months?.forEach((month) => {
-    allMonthsData[month.id] = processDataForMonth(data, month.id);
-  });
-
-  return allMonthsData;
-}
-
-// Uso de la función
-async function main() {
-  const monthsData = "january";
-  const year = "2024"; // o cualquier otro año
-  const marketingSalonData = await processDataForAllMonths(year, monthsData.months);
-
-  console.log(`marketingSalon${year}Data`, marketingSalonData);
-}
-
-
-console.log(main(json2024Data, "january"));
-
-export { marketingSalonJanuary2024, marketingSalonFebruary2024 };

@@ -33,20 +33,20 @@ function PhysicalContentTabsMkt({
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {(marketingSalonContent.postersCardsES ||
-            marketingSalonContent.postersCardsCA) && (
+          {(marketingSalonContent.posters.es ||
+            marketingSalonContent.posters.ca) && (
             <Tab key="posters" title="Cartelería">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <PostersMkt
-                      list={marketingSalonContent.postersCardsES}
+                      list={marketingSalonContent.posters.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <PostersMkt
-                      list={marketingSalonContent.postersCardsCA}
+                      list={marketingSalonContent.posters.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -54,20 +54,20 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.stoppersCardsES ||
-            marketingSalonContent.stoppersCardsCA) && (
+          {(marketingSalonContent.stoppers.es ||
+            marketingSalonContent.stoppers.ca) && (
             <Tab key="stoppers" title="Stopper">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <StoppersMkt
-                      list={marketingSalonContent.stoppersCardsES}
+                      list={marketingSalonContent.stoppers.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <StoppersMkt
-                      list={marketingSalonContent.stoppersCardsCA}
+                      list={marketingSalonContent.stoppers.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -75,20 +75,20 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.testsCardsES ||
-            marketingSalonContent.testsCardsCA) && (
+          {(marketingSalonContent.tests.es ||
+            marketingSalonContent.tests.ca) && (
             <Tab key="tests" title="Tests">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <TestsMkt
-                      list={marketingSalonContent.testsCardsES}
+                      list={marketingSalonContent.tests.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <TestsMkt
-                      list={marketingSalonContent.testsCardsCA}
+                      list={marketingSalonContent.tests.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -96,20 +96,20 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.cardsCardsES ||
-            marketingSalonContent.cardsCardsCA) && (
+          {(marketingSalonContent.cards.es ||
+            marketingSalonContent.cards.ca) && (
             <Tab key="cards" title="Tarjetas">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <CardsMkt
-                      list={marketingSalonContent.cardsCardsES}
+                      list={marketingSalonContent.cards.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <CardsMkt
-                      list={marketingSalonContent.cardsCardsCA}
+                      list={marketingSalonContent.cards.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -117,15 +117,19 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(!marketingSalonContent.postersCardsES ||
-            !marketingSalonContent.postersCardsCA ||
-            !marketingSalonContent.stoppersCardsES ||
-            !marketingSalonContent.stoppersCardsCA ||
-            !marketingSalonContent.testsCardsES ||
-            !marketingSalonContent.testsCardsCA ||
-            !marketingSalonContent.cardsCardsES ||
-            !marketingSalonContent.cardsCardsCA) && (
-            <Tab key="comingSoon" title="Muy Pronto" className="cursor-default" />
+          {(!marketingSalonContent.posters.es ||
+            !marketingSalonContent.posters.ca ||
+            !marketingSalonContent.stoppers.es ||
+            !marketingSalonContent.stoppers.ca ||
+            !marketingSalonContent.tests.es ||
+            !marketingSalonContent.tests.ca ||
+            !marketingSalonContent.cards.es ||
+            !marketingSalonContent.cards.ca) && (
+            <Tab
+              key="comingSoon"
+              title="Muy Pronto"
+              className="cursor-default"
+            />
           )}
         </Tabs>
       </div>

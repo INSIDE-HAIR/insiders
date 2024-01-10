@@ -19,6 +19,9 @@ function DigitalcalContentTabsMkt({
     return () => {};
   }, [content, marketingSalonContent]);
 
+
+    console.log(content);
+
   return (
     <div className="flex w-full flex-col items-center justify-center content-center  [&>*]:w-full ">
       <div
@@ -34,27 +37,27 @@ function DigitalcalContentTabsMkt({
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {marketingSalonContent.monthlyContentPlanCardsES && (
+          {marketingSalonContent.monthlyContentPlan.es && (
             <Tab key="monthlyContentPlan" title="Plan Mensual">
               <MonthlyContentPlanMkt
-                list={marketingSalonContent.monthlyContentPlanCardsES}
+                list={marketingSalonContent.monthlyContentPlan.es}
               />
             </Tab>
           )}
-          {(marketingSalonContent.actionPostsCardsES ||
-            marketingSalonContent.actionPostsCardsCA) && (
+          {(marketingSalonContent.actionPosts.es ||
+            marketingSalonContent.actionPosts.ca) && (
             <Tab key="actionPosts" title="Post de Acción">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <ActionPostsAndStories
-                      list={marketingSalonContent.actionPostsCardsES}
+                      list={marketingSalonContent.actionPosts.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <ActionPostsAndStories
-                      list={marketingSalonContent.actionPostsCardsCA}
+                      list={marketingSalonContent.actionPosts.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -62,21 +65,21 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.actionStoriesCardsES ||
-            marketingSalonContent.actionStoriesCardsCA) && (
+          {(marketingSalonContent.actionStories.es ||
+            marketingSalonContent.actionStories.ca) && (
             <Tab key="actionStories" title="Story de Acción">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <ActionPostsAndStories
-                      list={marketingSalonContent.actionStoriesCardsES}
+                      list={marketingSalonContent.actionStories.es}
                       lang={"es"}
                       story
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <ActionPostsAndStories
-                      list={marketingSalonContent.actionStoriesCardsCA}
+                      list={marketingSalonContent.actionStories.ca}
                       lang={"ca"}
                       story
                     />
@@ -85,27 +88,27 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {marketingSalonContent.valueStoriesCardsES && (
+          {marketingSalonContent.valueStories.es && (
             <Tab key="valueStories" title="Stories de Valor">
               <ValueStoriesMkt
-                list={marketingSalonContent.valueStoriesCardsES}
+                list={marketingSalonContent.valueStories.es}
               />
             </Tab>
           )}
-          {(marketingSalonContent.videosCardsES ||
-            marketingSalonContent.videosCardsCA) && (
+          {(marketingSalonContent.videos.es ||
+            marketingSalonContent.videos.ca) && (
             <Tab key="videos" title="Videos">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
                   <Tab key="es" title="Español">
                     <VideosMkt
-                      list={marketingSalonContent.videosCardsES}
+                      list={marketingSalonContent.videos.es}
                       lang={"es"}
                     />
                   </Tab>
                   <Tab key="ca" title="Catalán">
                     <VideosMkt
-                      list={marketingSalonContent.videosCardsCA}
+                      list={marketingSalonContent.videos.ca}
                       lang={"ca"}
                     />
                   </Tab>
@@ -113,26 +116,26 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {marketingSalonContent.smsAndWhatsAppCardsES && (
+          {marketingSalonContent.smsAndWhatsApp.es && (
             <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
               <div className="flex w-full flex-col items-center mb-0">
                 <SmsAndWhatsAppMkt
-                  list={marketingSalonContent.smsAndWhatsAppCardsES}
+                  list={marketingSalonContent.smsAndWhatsApp.es}
                 />
               </div>
             </Tab>
           )}
-          {(!marketingSalonContent.monthlyContentPlanCardsES ||
-            !marketingSalonContent.actionPostsCardsES ||
-            !marketingSalonContent.actionPostsCardsCA ||
-            !marketingSalonContent.actionStoriesCardsES ||
-            !marketingSalonContent.actionStoriesCardsCA ||
-            !marketingSalonContent.actionPostsCardsES ||
-            !marketingSalonContent.actionPostsCardsCA ||
-            !marketingSalonContent.valueStoriesCardsES ||
-            !marketingSalonContent.videosCardsES ||
-            !marketingSalonContent.videosCardsCA ||
-            !marketingSalonContent.smsAndWhatsAppCardsES) && (
+          {(!marketingSalonContent.monthlyContentPlan.es ||
+            !marketingSalonContent.actionPosts.es ||
+            !marketingSalonContent.actionPosts.ca ||
+            !marketingSalonContent.actionStories.es ||
+            !marketingSalonContent.actionStories.ca ||
+            !marketingSalonContent.actionPosts.es ||
+            !marketingSalonContent.actionPosts.ca ||
+            !marketingSalonContent.valueStories.es ||
+            !marketingSalonContent.videos.es ||
+            !marketingSalonContent.videos.ca ||
+            !marketingSalonContent.smsAndWhatsApp.es) && (
             <Tab key="comingSoon" title="Muy Pronto" className="cursor-default" />
           )}
         </Tabs>

@@ -21,7 +21,7 @@ function VideosMkt({ list, lang }: { list: any[]; lang: string }) {
                 window.open(file.download, "_blank");
               }}
             >
-              {fileType.replace(/_/g, " ")}
+              Descargar {fileType} 
             </Button>
           )}
         </>

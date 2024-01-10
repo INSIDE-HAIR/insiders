@@ -7,7 +7,6 @@ function MarketingPlanTabsMkt({ contentData }: { contentData: any }) {
 
   useEffect(() => {
     setContent(contentData);
-
     return () => {};
   }, [content, contentData]);
 
@@ -31,7 +30,7 @@ function MarketingPlanTabsMkt({ contentData }: { contentData: any }) {
           width: "100%",
         }}
       >
-        {content.formButton.active && (
+        {content && content.formButton.active && (
           <Button
             variant="faded"
             className="flex bg-gray-700 mb-4 text-white"
@@ -46,7 +45,7 @@ function MarketingPlanTabsMkt({ contentData }: { contentData: any }) {
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {content.tabs &&
+          {content &&
             content.tabs.map((tab: any) => (
               <Tab
                 key={tab.id}
@@ -75,7 +74,7 @@ function MarketingPlanTabsMkt({ contentData }: { contentData: any }) {
         <h3 className="text-center w-full font-bold text-4xl mt-10 mb-5">
           Diapositivas
         </h3>
-        {content.slides.url && content.slides.active ? (
+        {content && content.slides.active ? (
           <iframe
             src={content.slides.url}
             className="border-5 rounded-2xl border-black overflow-hidden max-w-full bg-zinc-300 "

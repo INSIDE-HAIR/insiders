@@ -1,6 +1,8 @@
 {
   "january": {
     "marketingPlan": {
+      "id": "marketingPlan",
+      "name": "Plan de Marketing",
       "tabs": [
         {
           "id": "contextAndOportunities",
@@ -38,6 +40,8 @@
       }
     },
     "digitalContent": {
+      "id": "digitalContent",
+      "name": "Redes Sociales",
       "monthlyContentPlan": {
         "es": [
           {
@@ -956,11 +960,11 @@
       "videos": {
         "es": [
           {
-            "name": "ES/ESP_Vertical.mp4",
+            "name": "Video/ESP_Vertical.mp4",
             "url": "https://drive.google.com/uc?id=1mdMohygvzlymYkJ8SYog5XTXnPv2RnWy&export=download"
           },
           {
-            "name": "ES/ESP_Horizontal.mp4",
+            "name": "Video/ESP_Horizontal.mp4",
             "url": "https://drive.google.com/uc?id=1b2F6zTjcDmey6h87cYj7p6MezfukX_LN&export=download"
           },
 
@@ -975,11 +979,11 @@
         ],
         "ca": [
           {
-            "name": "CA/CAT_Vertical.mp4",
+            "name": "Video/CAT_Vertical.mp4",
             "url": "https://drive.google.com/uc?id=1sIln47jnkfyDHboRbsE-nyfLYdRhRhtE&export=download"
           },
           {
-            "name": "CA/CAT_Horizontal.mp4",
+            "name": "Video/CAT_Horizontal.mp4",
             "url": "https://drive.google.com/uc?id=1in1fb3Ju2nnhr3nlt7-DIvYSYXap1DKR&export=download"
           },
           {
@@ -1020,6 +1024,8 @@
       }
     },
     "physicalContent": {
+      "id": "physicalContent",
+      "name": "Cartelería",
       "posters": {
         "es": [
           {
@@ -2054,6 +2060,8 @@
       }
     },
     "repeats": {
+      "id": "repeats",
+      "title": "Repeticiones",
       "tabs": [
         {
           "id": "implementationSession",
@@ -2066,6 +2074,8 @@
   },
   "february": {
     "marketingPlan": {
+      "id": "marketingPlan",
+      "name": "Plan de Marketing",
       "tabs": [
         {
           "id": "contextAndOportunities",
@@ -2095,6 +2105,576 @@
         "url": "https://docs.google.com/presentation/d/e/2PACX-1vQcp0XzRN1bGt-zgQbJbwdGj9UEdhudqCRr_S2BI1OfA1Sl8N2uwA8W4qSZVI5U_oJwamgW2i-PEMgt/embed?start=false&loop=false&delayms=3000",
         "active": true
       }
+    }
+  },
+  "march": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "april": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "may": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "june": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "july": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "august": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "september": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "october": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "november": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
+    }
+  },
+  "december": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "title": "",
+      "tabs": []
     }
   }
 }

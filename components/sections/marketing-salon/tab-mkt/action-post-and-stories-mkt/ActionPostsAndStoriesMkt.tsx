@@ -27,7 +27,7 @@ function ActionPostsAndStoriesMkt({
             window.open(file.download, "_blank");
           }}
         >
-          {fileType}
+          Descargar {fileType}
         </Button>
       );
     });
