@@ -29,9 +29,17 @@ function RepeatsTabsMkt({
               className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
             >
               <div className="flex w-full flex-col items-center self-center  ">
-                {tab.type === "video" && (
-                  <VideoPlayer title={tab.title} url={tab.url} />
-                )}
+                {tab.type === "video" &&
+                  tab.videos.map((video: any) => (
+                    <>
+                      <h4 className="mb-4 mt-2 font-bold">{video.title}</h4>
+                      <VideoPlayer
+                        key={video.id}
+                        url={video.url}
+                        title={video.title}
+                      />
+                    </>
+                  ))}
                 {tab.type === "button" && (
                   <Button
                     variant="faded"

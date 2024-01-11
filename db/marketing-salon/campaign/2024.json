@@ -1968,7 +1968,7 @@
             "url": "https://drive.google.com/file/d/1fE2s-fRYRTRSbHMA8mGDtOdmi_7jal4P/view?usp=drivesdk"
           },
           {
-            "name": "Normal_3x2/Tarjeta_Enzimoterapia.pdf",
+            "name": "Normal_3x2/Tarjeta_Enzimoterapia_.pdf",
             "url": "https://drive.google.com/file/d/1W5QoM8tR5I_GmcUIGWV5d2E_4kIFl0Ip/view?usp=drivesdk"
           },
           {
@@ -2069,9 +2069,32 @@
       "tabs": [
         {
           "id": "implementationSession",
-          "title": "Sesión de Implementación",
+          "title": "Sesiones de Implementación",
           "type": "video",
-          "url": "https://player.vimeo.com/video/901446976?h=716e21575a"
+          "videos": [
+            {
+              "id": "implementationSessionRobert",
+              "title": "Sesión con Robert",
+              "url": "https://player.vimeo.com/video/901446976?h=716e21575a"
+            }
+          ]
+        },
+        {
+          "id": "launchSession",
+          "title": "Sesiones de Lanzamiento",
+          "type": "video",
+          "videos": [
+            {
+              "id": "launchSessionLorena",
+              "title": "Sesión con Lorena",
+              "url": "https://player.vimeo.com/video/901925395?h=50ed5b0075"
+            },
+            {
+              "id": "launchSessionPedro",
+              "title": "Sesión con Pedro",
+              "url": "https://player.vimeo.com/video/901926087?h=6e2c04e313"
+            }
+          ]
         }
       ]
     }

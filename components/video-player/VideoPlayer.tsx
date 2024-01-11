@@ -1,6 +1,6 @@
-function VideoPlayer({ title, url }: { title: string, url: string }) {
+function VideoPlayer({ title, url, className }: { title: string, url: string, className?: string}) {
   return (
-    <div className="mx-2 md:mx-14 lg:mx-32 aspect-video rounded-3xl overflow-hidden flex w-full  max-w-3xl ">
+    <div className="mx-2 md:mx-14 lg:mx-32 aspect-video rounded-3xl overflow-hidden flex w-full  max-w-3xl">
       <iframe
         className="aspect-video"
         width="100%"
