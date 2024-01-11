@@ -1,31 +1,49 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
 export default async function handler(req, res) {
   const { year, month } = req.query;
 
   try {
-    const filePath = path.resolve('./db/marketing-salon/campaign', `${year}.json`);
-    const data = await fs.readFile(filePath, 'utf8');
+    const filePath = path.resolve(
+      "./db/marketing-salon/campaign",
+      `${year}.json`
+    );
+    const data = await fs.readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
-    const { digitalContent, physicalContent } = processDataForMonth(jsonData, month);
-    jsonData[month].digitalContent = digitalContent;
-    jsonData[month].physicalContent = physicalContent;
+    const { digitalContent, physicalContent } = processDataForMonth(
+      jsonData,
+      month
+    );
+
+    try {
+      digitalContent.id = jsonData[month].digitalContent.id;
+      digitalContent.name = jsonData[month].digitalContent.name;
+      digitalContent.order = jsonData[month].digitalContent.order;
+      jsonData[month].digitalContent = digitalContent;
+
+      physicalContent.id = jsonData[month].physicalContent.id;
+      physicalContent.name = jsonData[month].physicalContent.name;
+      physicalContent.order = jsonData[month].physicalContent.order;
+      jsonData[month].physicalContent = physicalContent;
+    } catch (error) {
+      jsonData[month].digitalContent = digitalContent;
+      jsonData[month].physicalContent = physicalContent;
+    }
 
     if (jsonData) {
       res.status(200).json(jsonData[month]);
     } else {
-      res.status(404).json({ message: 'Month data not found.' });
+      res.status(404).json({ message: "Month data not found." });
     }
   } catch (error) {
-    if (error.code === 'ENOENT') {
-      res.status(404).json({ message: 'Year data not found.' });
+    if (error.code === "ENOENT") {
+      res.status(404).json({ message: "Year data not found." });
     } else {
-      res.status(500).json({ message: 'Error reading file.' });
+      res.status(500).json({ message: "Error reading file." });
     }
   }
 }
-
 
 // Función para mapear datos de un mes específico
 function mapDataForMonth(data, month, contentType, content, prefix) {
@@ -209,15 +227,21 @@ function processDataForMonth(data, month) {
   for (let contentType in contentTypes) {
     for (let content in contentTypes[contentType]) {
       const prefix = contentTypes[contentType][content];
-      const processedData = processMonthData(data, month, contentType, content, prefix);
-      
+      const processedData = processMonthData(
+        data,
+        month,
+        contentType,
+        content,
+        prefix
+      );
+
       // Dividir entre contenido digital y físico
-      if (contentType === 'digitalContent') {
+      if (contentType === "digitalContent") {
         digitalContent[content] = {};
         for (let langCode in processedData) {
           digitalContent[content][langCode] = processedData[langCode];
         }
-      } else if (contentType === 'physicalContent') {
+      } else if (contentType === "physicalContent") {
         physicalContent[content] = {};
         for (let langCode in processedData) {
           physicalContent[content][langCode] = processedData[langCode];
@@ -228,4 +252,3 @@ function processDataForMonth(data, month) {
 
   return { digitalContent, physicalContent };
 }
-

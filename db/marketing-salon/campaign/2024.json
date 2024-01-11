@@ -3,6 +3,7 @@
     "marketingPlan": {
       "id": "marketingPlan",
       "name": "Plan de Marketing",
+      "order": 1,
       "tabs": [
         {
           "id": "contextAndOportunities",
@@ -42,6 +43,7 @@
     "digitalContent": {
       "id": "digitalContent",
       "name": "Redes Sociales",
+      "order": 3,
       "monthlyContentPlan": {
         "es": [
           {
@@ -1026,6 +1028,7 @@
     "physicalContent": {
       "id": "physicalContent",
       "name": "Cartelería",
+      "order": 2,
       "posters": {
         "es": [
           {
@@ -2061,7 +2064,8 @@
     },
     "repeats": {
       "id": "repeats",
-      "title": "Repeticiones",
+      "name": "Repeticiones",
+      "order": 4,
       "tabs": [
         {
           "id": "implementationSession",
@@ -2076,6 +2080,8 @@
     "marketingPlan": {
       "id": "marketingPlan",
       "name": "Plan de Marketing",
+      "order": 1,
+
       "tabs": [
         {
           "id": "contextAndOportunities",
@@ -2111,6 +2117,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2118,6 +2125,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2141,6 +2149,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2160,7 +2169,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2168,6 +2178,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2175,6 +2186,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2198,6 +2210,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2217,7 +2230,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2225,6 +2239,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2232,6 +2247,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2255,6 +2271,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2274,7 +2291,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2282,6 +2300,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2289,6 +2308,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2312,6 +2332,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2331,7 +2352,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2339,6 +2361,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2346,6 +2369,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2369,6 +2393,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2388,7 +2413,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2396,6 +2422,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2403,6 +2430,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2426,6 +2454,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2445,7 +2474,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2453,6 +2483,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2460,6 +2491,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2483,6 +2515,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2502,7 +2535,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2510,6 +2544,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2517,6 +2552,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2540,6 +2576,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2559,7 +2596,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2567,6 +2605,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2574,6 +2613,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2597,6 +2637,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2616,7 +2657,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   },
@@ -2624,6 +2666,7 @@
     "marketingPlan": {
       "id": "",
       "name": "",
+      "order": 1,
       "tabs": [],
       "formButton": {},
       "slides": {}
@@ -2631,6 +2674,7 @@
     "digitalContent": {
       "id": "",
       "name": "",
+      "order": 3,
       "monthlyContentPlan": {
         "es": []
       },
@@ -2654,6 +2698,7 @@
     "physicalContent": {
       "id": "",
       "name": "",
+      "order": 2,
       "posters": {
         "es": [],
         "ca": []
@@ -2673,7 +2718,8 @@
     },
     "repeats": {
       "id": "",
-      "title": "",
+      "name": "",
+      "order": 4,
       "tabs": []
     }
   }

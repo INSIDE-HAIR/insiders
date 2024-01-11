@@ -29,6 +29,7 @@ interface Slides {
 interface MarketingPlan {
   id: string;
   name: string;
+  order: number;
   tabs: VideoTab[];
   formButton: FormButton;
   slides: Slides;
@@ -42,6 +43,7 @@ interface ContentPlan {
 interface DigitalContent {
   id: string;
   name: string;
+  order: number;
   monthlyContentPlan: ContentPlan;
   actionStories: ContentPlan;
   valueStories: ContentPlan;
@@ -52,6 +54,7 @@ interface DigitalContent {
 interface PhysicalContent {
   id: string;
   name: string;
+  order: number;
   posters: ContentPlan;
   stoppers: ContentPlan;
   tests: ContentPlan;
@@ -60,7 +63,8 @@ interface PhysicalContent {
 
 interface Repeats {
   id: string;
-  title: string;
+  name: string;
+  order: number;
   tabs: any[]; // Reemplaza any con una interfaz más específica si es necesario
 }
 
@@ -70,16 +74,6 @@ interface MonthlyData {
   physicalContent?: PhysicalContent;
   repeats?: Repeats;
 }
-
-const sideMenu = {
-  name: "Plan de Enero",
-  list: [
-    { name: "Plan de Marketing", id: "marketingPlan" },
-    { name: "Cartelería", id: "posters" },
-    { name: "Redes Sociales", id: "socialNetworks" },
-    { name: "Repeticiones", id: "repeats" },
-  ],
-};
 
 function Page() {
   const searchParams = useSearchParams();
@@ -93,14 +87,17 @@ function Page() {
   const [month, setMonth] = useState<string>(
     (searchParams?.get("month") as string) ?? "january"
   );
-
   const monthTranslations = dataMonths.months.find((item) => item.id === month);
+  // Update the type of sideMenu state
+  const [sideMenu, setSideMenu] = useState<{ list: any[] } | null>(null);
 
   useEffect(() => {
     async function fetchData(year: string, month: string) {
       setLoading(true);
       try {
-        const response = await fetch(`/api/data/${year}/${month}`);
+        const response = await fetch(
+          `/api/data/marketing-salon/${year}/${month}`
+        );
         if (!response.ok) {
           throw new Error(`Data fetch failed: ${response.status}`);
         }
@@ -108,6 +105,11 @@ function Page() {
         console.log(newData);
 
         setData(newData);
+        const menuItems = generateSideMenu(newData);
+
+        // Set the sideMenu state with the list property
+        setSideMenu({ list: menuItems });
+        console.log("sideMenu", sideMenu);
       } catch (err) {
         // Ahora TypeScript está de acuerdo con esta asignación
         setError(err instanceof Error ? err : new Error("An error occurred"));
@@ -139,22 +141,30 @@ function Page() {
                 {monthTranslations?.name + " "}
                 {year}
               </strong>
-              {sideMenu.list.map((items, index) => (
-                <li
-                  key={index + items.id}
-                  className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
-                    items.id === tab && "font-semibold bg-gray-700/30  "
-                  }}`}
-                  onClick={(event: React.MouseEvent<HTMLLIElement>) => {
-                    // Solo actualiza el estado si el id del item es diferente al tab actual
-                    if (items.id !== tab) {
-                      setTab(items.id);
-                    }
-                  }}
-                >
-                  {items.name}
-                </li>
-              ))}
+
+              {sideMenu &&
+                sideMenu.list.map(
+                  (
+                    item: { id: string; name: string; order: any },
+                    index: any
+                  ) =>
+                    item.name && (
+                      <li
+                        key={index + item.id}
+                        className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
+                          item.id === tab && "font-semibold bg-gray-700/30  "
+                        }}`}
+                        style={{ order: item.order }}
+                        onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                          if (item.id !== tab) {
+                            setTab(item.id);
+                          }
+                        }}
+                      >
+                        {item.name}
+                      </li>
+                    )
+                )}
             </ul>
           </div>
         </div>
@@ -170,22 +180,31 @@ function Page() {
                 {monthTranslations?.name + " "}
                 {year}
               </strong>
-              {sideMenu.list.map((items, index) => (
-                <li
-                  key={index + items.id}
-                  className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
-                    items.id === tab && "font-semibold bg-gray-700/30  "
-                  }}`}
-                  onClick={(event: React.MouseEvent<HTMLLIElement>) => {
-                    // Solo actualiza el estado si el id del item es diferente al tab actual
-                    if (items.id !== tab) {
-                      setTab(items.id);
-                    }
-                  }}
-                >
-                  {items.name}
-                </li>
-              ))}
+              {sideMenu &&
+                sideMenu &&
+                sideMenu.list.map(
+                  (
+                    item: { id: string; name: string; order: any },
+                    index: any
+                  ) =>
+                    item.name && (
+                      <li
+                        key={index + item.id}
+                        className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
+                          item.id === tab && "font-semibold bg-gray-700/30  "
+                        }}`}
+                        style={{ order: item.order }}
+                        onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+                          // Solo actualiza el estado si el id del item es diferente al tab actual
+                          if (item.id !== tab) {
+                            setTab(item.id);
+                          }
+                        }}
+                      >
+                        {item.name}
+                      </li>
+                    )
+                )}
             </ul>
           </TailwindGrid>
 
@@ -193,30 +212,42 @@ function Page() {
             <main className="self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center">
               <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full">
                 <h3 className="text-center w-full font-bold text-4xl mt-10">
-                  {sideMenu.list.find((item) => item.id === tab)?.name}
+                  {sideMenu &&
+                    sideMenu &&
+                    (sideMenu as { list: any[] }).list.find(
+                      (item: { id: string }) => item.id === tab
+                    )?.name}
                 </h3>
                 {data.marketingPlan &&
-                  sideMenu.list.find((item) => item.id === tab)?.id ===
-                    "marketingPlan" && (
+                  sideMenu &&
+                  (sideMenu as { list: any[] }).list.find(
+                    (item) => item.id === tab
+                  )?.id === data.marketingPlan.id && (
                     <MarketingPlanTabsMkt contentData={data.marketingPlan} />
                   )}
                 {data.physicalContent &&
-                  sideMenu.list.find((item) => item.id === tab)?.id ===
-                    "posters" && (
+                  sideMenu &&
+                  (sideMenu as { list: any[] }).list.find(
+                    (item) => item.id === tab
+                  )?.id === data.physicalContent.id && (
                     <PhysicalContentTabsMkt
                       marketingSalonContent={data.physicalContent}
                     />
                   )}
                 {data.digitalContent &&
-                  sideMenu.list.find((item) => item.id === tab)?.id ===
-                    "socialNetworks" && (
+                  sideMenu &&
+                  (sideMenu as { list: any[] }).list.find(
+                    (item) => item.id === tab
+                  )?.id === data.digitalContent.id && (
                     <DigitalcalContentTabsMkt
                       marketingSalonContent={data.digitalContent}
                     />
                   )}
-                {data &&
-                  sideMenu.list.find((item) => item.id === tab)?.id ===
-                    "repeats" && (
+                {data.repeats &&
+                  sideMenu &&
+                  (sideMenu as { list: any[] }).list.find(
+                    (item) => item.id === tab
+                  )?.id === data.repeats.id && (
                     <RepeatsTabsMkt marketingSalonContent={data.repeats} />
                   )}
               </div>
@@ -235,3 +266,24 @@ function Page() {
 }
 
 export default Page;
+
+function generateSideMenu(data: {
+  [x: string]: {
+    name: any;
+    order: any;
+  };
+}) {
+  let menuItems = [];
+
+  for (const key in data) {
+    if (data[key]) {
+      const name = data[key].name;
+      const order = data[key].order || 9999;
+      menuItems.push({ name: name, id: key, order: order });
+    } else {
+      menuItems.push({ name: null, id: null, order: null });
+    }
+  }
+
+  return menuItems;
+}
