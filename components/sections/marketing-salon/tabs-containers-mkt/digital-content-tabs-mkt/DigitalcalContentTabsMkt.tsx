@@ -19,8 +19,7 @@ function DigitalcalContentTabsMkt({
     return () => {};
   }, [content, marketingSalonContent]);
 
-
-    console.log(content);
+  console.log(content);
 
   return (
     <div className="flex w-full flex-col items-center justify-center content-center  [&>*]:w-full ">
@@ -37,15 +36,15 @@ function DigitalcalContentTabsMkt({
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {marketingSalonContent.monthlyContentPlan.es && (
+          {marketingSalonContent.monthlyContentPlan.es[0] && (
             <Tab key="monthlyContentPlan" title="Plan Mensual">
               <MonthlyContentPlanMkt
                 list={marketingSalonContent.monthlyContentPlan.es}
               />
             </Tab>
           )}
-          {(marketingSalonContent.actionPosts.es ||
-            marketingSalonContent.actionPosts.ca) && (
+          {(marketingSalonContent.actionPosts.es[0] ||
+            marketingSalonContent.actionPosts.ca[0]) && (
             <Tab key="actionPosts" title="Post de Acción">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -65,8 +64,8 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.actionStories.es ||
-            marketingSalonContent.actionStories.ca) && (
+          {(marketingSalonContent.actionStories.es[0] ||
+            marketingSalonContent.actionStories.ca[0]) && (
             <Tab key="actionStories" title="Story de Acción">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -88,15 +87,13 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {marketingSalonContent.valueStories.es && (
+          {marketingSalonContent.valueStories.es[0] && (
             <Tab key="valueStories" title="Stories de Valor">
-              <ValueStoriesMkt
-                list={marketingSalonContent.valueStories.es}
-              />
+              <ValueStoriesMkt list={marketingSalonContent.valueStories.es} />
             </Tab>
           )}
-          {(marketingSalonContent.videos.es ||
-            marketingSalonContent.videos.ca) && (
+          {(marketingSalonContent.videos.es[0] ||
+            marketingSalonContent.videos.ca[0]) && (
             <Tab key="videos" title="Videos">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -116,7 +113,7 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {marketingSalonContent.smsAndWhatsApp.es && (
+          {marketingSalonContent.smsAndWhatsApp.es[0] && (
             <Tab key="smsAndWhatsApp" title="SMS & WhatsApp">
               <div className="flex w-full flex-col items-center mb-0">
                 <SmsAndWhatsAppMkt
@@ -125,19 +122,23 @@ function DigitalcalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(!marketingSalonContent.monthlyContentPlan.es ||
-            !marketingSalonContent.actionPosts.es ||
-            !marketingSalonContent.actionPosts.ca ||
-            !marketingSalonContent.actionStories.es ||
-            !marketingSalonContent.actionStories.ca ||
-            !marketingSalonContent.actionPosts.es ||
-            !marketingSalonContent.actionPosts.ca ||
-            !marketingSalonContent.valueStories.es ||
-            !marketingSalonContent.videos.es ||
-            !marketingSalonContent.videos.ca ||
-            !marketingSalonContent.smsAndWhatsApp.es) && (
-            <Tab key="comingSoon" title="Muy Pronto" className="cursor-default" />
-          )}
+          {!marketingSalonContent.monthlyContentPlan.es[0] &&
+            !marketingSalonContent.actionPosts.es[0] &&
+            !marketingSalonContent.actionPosts.ca[0] &&
+            !marketingSalonContent.actionStories.es[0] &&
+            !marketingSalonContent.actionStories.ca[0] &&
+            !marketingSalonContent.actionPosts.es[0] &&
+            !marketingSalonContent.actionPosts.ca[0] &&
+            !marketingSalonContent.valueStories.es[0] &&
+            !marketingSalonContent.videos.es[0] &&
+            !marketingSalonContent.videos.ca[0] &&
+            !marketingSalonContent.smsAndWhatsApp.es[0] && (
+              <Tab
+                key="comingSoon"
+                title="Muy Pronto"
+                className="cursor-default"
+              />
+            )}
         </Tabs>
       </div>
     </div>

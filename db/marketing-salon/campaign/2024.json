@@ -2321,16 +2321,96 @@
         ]
       },
       "stoppers": {
-        "es": [],
-        "ca": []
+        "es": [
+          {
+            "name": "Stopper/A240200_01.pdf",
+            "url": ":https://drive.google.com/uc?id=1Y5DjDDC-DZT88UwPclWhVJpKCkxRBQ44&export=download"
+          },
+          {
+            "name": "Preview/A240200_01.jpg",
+            "url": ":https://drive.google.com/uc?id=1T8o1QJTUdu9D1-JZ2KRE4-nqqg6mIfcO&export=download"
+          }
+        ],
+        "ca": [
+          {
+            "name": "Preview/A240200_02.jpg",
+            "url": ":https://drive.google.com/uc?id=1eGIOo1JSfPsi_eSdVY1yMI9bv3QpXqKP&export=download"
+          },
+          {
+            "name": "Stopper/A240200_02.pdf",
+            "url": ":https://drive.google.com/uc?id=1xBiEK1KCzLNRpTNOpwg9RFxv_YqDffVx&export=download"
+          }
+        ]
       },
       "tests": {
         "es": [],
         "ca": []
       },
       "cards": {
-        "es": [],
-        "ca": []
+        "es": [
+          {
+            "name": "Preview/LIBERTY-COLOR_01.jpg",
+            "url": "https://drive.google.com/uc?id=1GBnEa4R8mT1uVf1fK-6wYen2PFpVg3AK&export=download",
+            "groupName": "LIBERTY-COLOR"
+          },
+          {
+            "name": "Preview/LIBERTY-BALAYAGE-4x3_01.jpg",
+            "url": "https://drive.google.com/uc?id=11pAi7LfExUYYJTarTblssfelbURLwWds&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Preview/LIBERTY-BALAYAGE-3x2_01.jpg",
+            "url": "https://drive.google.com/uc?id=1I5MsNEXIMNSMAf4R0y05ZPeJ0PV2o2g3&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Tarjetas/LIBERTY-BALAYAGE-4x3_01.pdf",
+            "url": "https://drive.google.com/uc?id=1WqtI7JbYFhVZovmgS0vM-B1RPSM0ufM8&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Tarjetas/LIBERTY-BALAYAGE-3x2_01.pdf",
+            "url": "https://drive.google.com/uc?id=13dUo4JvXSEnRGm0ldFMr6DQInsSDR4gW&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          }
+        ],
+        "ca": [
+          {
+            "name": "Tarjetas/LIBERTY-BALAYAGE-4x3_02.pdf",
+            "url": "https://drive.google.com/uc?id=1cve94PcJxgiK1P-SYziHtqd_Kml8eyqQ&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Tarjetas/LIBERTY-BALAYAGE-3x2_02.pdf",
+            "url": "https://drive.google.com/uc?id=1Fs2srE_KpGQqW8d-OpgClyz86-VoO8fS&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Preview/LIBERTY-COLOR_02.jpg",
+            "url": "https://drive.google.com/uc?id=11ppudoKSl6778NKk-sjMoguqVzxNrAI-&export=download",
+            "groupName": "LIBERTY-COLOR"
+          },
+          {
+            "name": "Preview/LIBERTY-BALAYAGE-4x3_02.jpg",
+            "url": "https://drive.google.com/uc?id=1kV0yFwloouUVhla_8Kjacsy9Fzlwy-Xj&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Preview/LIBERTY-BALAYAGE-3x2_02.jpg",
+            "url": "https://drive.google.com/uc?id=1aXl6fiC5KiywQYCNYEziwqSSOuNIukHH&export=download",
+            "groupName": "LIBERTY-BALAYAGE"
+          },
+          {
+            "name": "Tarjetas/LIBERTY-COLOR_01.pdf",
+            "url": "https://drive.google.com/uc?id=1zEgbrwYYYtWV8WM-YNcU6f3D4A1luHx3&export=download",
+            "groupName": "LIBERTY-COLOR"
+          },
+          {
+            "name": "Tarjetas/LIBERTY-COLOR_02.pdf",
+            "url": "https://drive.google.com/uc?id=1iRBFaU8H5fgdgEYGXj5JdaWQBUFM79VI&export=download",
+            "groupName": "LIBERTY-COLOR"
+          }
+        ]
       }
     }
   },
