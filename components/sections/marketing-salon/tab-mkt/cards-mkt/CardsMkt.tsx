@@ -28,14 +28,23 @@ function CardsMkt({ list, lang }: { list: any[]; lang: string }) {
       );
     });
   };
+  const groupNames = new Set(list?.map((item) => item.groupName));
 
   return list ? (
     <div className="w-full">
-      <CardGroupList
+      {/* <CardGroupList
         title={lang === "es" ? "Tarjetas" : "Targetes"}
         list={list.filter((item) => Object.keys(item.files).length >= 0)}
         renderButtons={renderButtons}
-      />
+      /> */}
+      {Array.from(groupNames).map((groupName) => (
+        <CardGroupList
+          key={groupName}
+          title={groupName}
+          list={list.filter((item) => item.groupName === groupName)}
+          renderButtons={renderButtons}
+        />
+      ))}
     </div>
   ) : (
     <div>
