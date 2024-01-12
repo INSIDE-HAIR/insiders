@@ -21,13 +21,16 @@ export default async function handler(req, res) {
       digitalContent.name = jsonData[month].digitalContent.name;
       digitalContent.order = jsonData[month].digitalContent.order;
       jsonData[month].digitalContent = digitalContent;
+    } catch (error) {
+      jsonData[month].digitalContent = digitalContent;
+    }
 
+    try {
       physicalContent.id = jsonData[month].physicalContent.id;
       physicalContent.name = jsonData[month].physicalContent.name;
       physicalContent.order = jsonData[month].physicalContent.order;
       jsonData[month].physicalContent = physicalContent;
     } catch (error) {
-      jsonData[month].digitalContent = digitalContent;
       jsonData[month].physicalContent = physicalContent;
     }
 

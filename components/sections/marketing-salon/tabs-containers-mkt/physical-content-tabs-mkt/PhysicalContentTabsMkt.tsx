@@ -18,6 +18,7 @@ function PhysicalContentTabsMkt({
     return () => {};
   }, [content, marketingSalonContent]);
 
+  console.log(marketingSalonContent)
   return (
     <div className="flex w-full flex-col items-center justify-center content-center  [&>*]:w-full ">
       <div
@@ -33,8 +34,8 @@ function PhysicalContentTabsMkt({
           aria-label="Options"
           className={`max-w-full  [&>*]:flex-wrap md:[&>*]:flex-nowrap `}
         >
-          {(marketingSalonContent.posters.es ||
-            marketingSalonContent.posters.ca) && (
+          {(marketingSalonContent.posters.es[0] ||
+            marketingSalonContent.posters.ca[0]) && (
             <Tab key="posters" title="Cartelería">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -54,8 +55,8 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.stoppers.es ||
-            marketingSalonContent.stoppers.ca) && (
+          {(marketingSalonContent.stoppers.es[0] ||
+            marketingSalonContent.stoppers.ca[0]) && (
             <Tab key="stoppers" title="Stopper">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -75,8 +76,8 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.tests.es ||
-            marketingSalonContent.tests.ca) && (
+          {(marketingSalonContent.tests.es[0] ||
+            marketingSalonContent.tests.ca[0]) && (
             <Tab key="tests" title="Tests">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -96,8 +97,8 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(marketingSalonContent.cards.es ||
-            marketingSalonContent.cards.ca) && (
+          {(marketingSalonContent.cards.es[0] ||
+            marketingSalonContent.cards.ca[0]) && (
             <Tab key="cards" title="Tarjetas">
               <div className="flex w-full flex-col items-center mb-0">
                 <Tabs aria-label="Options">
@@ -117,14 +118,14 @@ function PhysicalContentTabsMkt({
               </div>
             </Tab>
           )}
-          {(!marketingSalonContent.posters.es ||
-            !marketingSalonContent.posters.ca ||
-            !marketingSalonContent.stoppers.es ||
-            !marketingSalonContent.stoppers.ca ||
-            !marketingSalonContent.tests.es ||
-            !marketingSalonContent.tests.ca ||
-            !marketingSalonContent.cards.es ||
-            !marketingSalonContent.cards.ca) && (
+          {(!marketingSalonContent.posters.es[0] &&
+            !marketingSalonContent.posters.ca[0] &&
+            !marketingSalonContent.stoppers.es[0] &&
+            !marketingSalonContent.stoppers.ca[0] &&
+            !marketingSalonContent.tests.es[0] &&
+            !marketingSalonContent.tests.ca[0] &&
+            !marketingSalonContent.cards.es[0] &&
+            !marketingSalonContent.cards.ca[0]) && (
             <Tab
               key="comingSoon"
               title="Muy Pronto"
