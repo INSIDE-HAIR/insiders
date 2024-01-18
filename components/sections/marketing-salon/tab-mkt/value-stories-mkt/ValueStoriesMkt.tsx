@@ -2,7 +2,7 @@
 import CardGroupList from "@/components/cards/cards-group/CardGroupList";
 import { Button } from "@nextui-org/react";
 
-function ValueStoriesMkt({ list }: { list: any[] }) {
+function ValueStoriesMkt({ list, lang }: { list: any[], lang: string }) {
   const renderButtons = (item: any) => {
     return Object.keys(item.files).map((fileType: string, index: number) => {
       const file = item.files[fileType];
@@ -32,9 +32,6 @@ function ValueStoriesMkt({ list }: { list: any[] }) {
 
   return list ? (
     <div className="w-full">
-      <h3 className="text-center w-full font-bold text-2xl mt-4">
-        Stories de Valor
-      </h3>
       {Array.from(groupNames).map((groupName) => (
         <CardGroupList
           key={groupName}
@@ -45,7 +42,10 @@ function ValueStoriesMkt({ list }: { list: any[] }) {
       ))}
     </div>
   ) : (
-    <div>Muy Pronto</div>
+    <div>
+      {lang === "es" && "Muy Pronto"}
+      {lang === "ca" && "Molt Aviat"}
+    </div>
   );
 }
 

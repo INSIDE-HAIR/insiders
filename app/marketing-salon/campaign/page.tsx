@@ -109,7 +109,6 @@ function Page() {
 
         // Set the sideMenu state with the list property
         setSideMenu({ list: menuItems });
-        console.log("sideMenu", sideMenu);
       } catch (err) {
         // Ahora TypeScript está de acuerdo con esta asignación
         setError(err instanceof Error ? err : new Error("An error occurred"));

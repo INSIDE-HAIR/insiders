@@ -2412,6 +2412,179 @@
           }
         ]
       }
+    },
+    "digitalContent": {
+      "id": "digitalContent",
+      "name": "Redes Sociales",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionPosts": {
+        "es": [],
+        "ca": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [
+          {
+            "name": "Cortes-XXL-1/Cortes-XXL_S1-1.jpg",
+            "url": "https://drive.google.com/uc?id=1UyhEO7e6uQel4rJ8PDmeO4rIok35lfDW&export=download",
+            "groupName": "Cortes XXL",
+            "order": 1
+          },
+          {
+            "name": "Cortes-XXL-2/Cortes-XXL_S1-2.jpg",
+            "url": "https://drive.google.com/uc?id=1ByvbH66eAGFbBNHK1EIf878oMYwQUkIE&export=download",
+            "groupName": "Cortes XXL",
+            "order": 2
+          },
+          {
+            "name": "Cortes-XXL-3/Cortes-XXL_S1-3.jpg",
+            "url": "https://drive.google.com/uc?id=1bQYPm7sPbRAacUTiDsg1QO5TFnL2NEHw&export=download",
+            "groupName": "Cortes XXL",
+            "order": 3
+          },
+          {
+            "name": "Cortes-XXL-4/Cortes-XXL_S1-4.jpg",
+            "url": "https://drive.google.com/uc?id=15LjhH94mjeQxEyNzkJ-YYbBY9oFKSW3e&export=download",
+            "groupName": "Cortes XXL",
+            "order": 4
+          },
+          {
+            "name": "Regala-belleza-1/Regala-belleza_S2-1.jpg",
+            "url": "https://drive.google.com/uc?id=1DkWupwTe8NKcLy2oRyQqgV3lpDbhhdzs&export=download",
+            "groupName": "Regala Belleza",
+            "order": 1
+          },
+          {
+            "name": "Regala-belleza-2/Regala-belleza_S2-2.jpg",
+            "url": "https://drive.google.com/uc?id=140pR_gzX8A5d5RAsxekJkHDhRhrnHKqc&export=download",
+            "groupName": "Regala Belleza",
+            "order": 2
+          },
+          {
+            "name": "Regala-belleza-3/Regala-belleza_S2-3.jpg",
+            "url": "https://drive.google.com/uc?id=1hUeyYQhDrnE3Ze8yjYC7F5Wim4YbzlHX&export=download",
+            "groupName": "Regala Belleza",
+            "order": 3
+          },
+          {
+            "name": "Regala-belleza-4/Regala-belleza_S2-4.jpg",
+            "url": "https://drive.google.com/uc?id=1ygEikVez84v8HfdvKdjmoXeJMH42aPkH&export=download",
+            "groupName": "Regala Belleza",
+            "order": 4
+          },
+          {
+            "name": "Complementos-1/Complementos_S3-1.jpg",
+            "url": "https://drive.google.com/uc?id=1vM0NTolYdtMkKWf5jv0-FwqqV1gSyks7&export=download",
+            "groupName": "Complementos",
+            "order": 1
+          },
+          {
+            "name": "Complementos-2/Complementos_S3-2.jpg",
+            "url": "https://drive.google.com/uc?id=1VkviDJG5XB1VGJ5S_tSL761bx-08Pmkq&export=download",
+            "groupName": "Complementos",
+            "order": 2
+          },
+          {
+            "name": "Complementos-3/Complementos_S3-3.jpg",
+            "url": "https://drive.google.com/uc?id=10NFG0hwJ2_845DcjXHWLxlRYWQHyQ3CY&export=download",
+            "groupName": "Complementos",
+            "order": 3
+          },
+          {
+            "name": "Complementos-4/Complementos_S3-4.jpg",
+            "url": "https://drive.google.com/uc?id=1epXEbwCNQfjn2prM0X0IOU0iEhdU6cJi&export=download",
+            "groupName": "Complementos",
+            "order": 4
+          },
+          {
+            "name": "Rojizos-1/Rojizos_S4-1.jpg",
+            "url": "https://drive.google.com/uc?id=1qn_jBOePPD9NzU4zb6__M_lSPjar_hUq&export=download",
+            "groupName": "Rojizos",
+            "order": 1
+          },
+          {
+            "name": "Rojizos-2/Rojizos_S4-2.jpg",
+            "url": "https://drive.google.com/uc?id=1ylX0vt2i76R8r-eSBsHSWTSvtiY0v0pL&export=download",
+            "groupName": "Rojizos",
+            "order": 2
+          },
+          {
+            "name": "Rojizos-3/Rojizos_S4-3.jpg",
+            "url": "https://drive.google.com/uc?id=10QrZ7rOwDEKuE0lDeczFez2tL99iCSSa&export=download",
+            "groupName": "Rojizos",
+            "order": 3
+          },
+          {
+            "name": "Rojizos-4/Rojizos_S4-4.jpg",
+            "url": "https://drive.google.com/uc?id=1w9KIUd9KkjoSXHQKUyS8ODQPgLUGIJoe&export=download",
+            "groupName": "Rojizos",
+            "order": 4
+          },
+          {
+            "name": "Balayages-1/Balayages_S5-1.jpg",
+            "url": "https://drive.google.com/uc?id=1gYYX_FBJlWWeNj_2Jo3AaTiP-EZoMJNG&export=download",
+            "groupName": "Balayages",
+            "order": 1
+          },
+          {
+            "name": "Balayages-2/Balayages_S5-2.jpg",
+            "url": "https://drive.google.com/uc?id=19r_B_5pUwA3MewPz4XKb6KQycwQHI5uf&export=download",
+            "groupName": "Balayages",
+            "order": 2
+          },
+          {
+            "name": "Balayages-3/Balayages_S5-3.jpg",
+            "url": "https://drive.google.com/uc?id=1OPgH52oE8TAQUhjAEDn-p1SWBwg6Knsu&export=download",
+            "groupName": "Balayages",
+            "order": 3
+          },
+          {
+            "name": "Balayages-4/Balayages_S5-4.jpg",
+            "url": "https://drive.google.com/uc?id=1Co9sQafcyp0VDEnE13m4X7gmR0cvdYjN&export=download",
+            "groupName": "Balayages",
+            "order": 4
+          },
+          {
+            "name": "Proxima-temporada-1/Proxima-temporada_S6-1.jpg",
+            "url": "https://drive.google.com/uc?id=1V6It0C4m4vqq464GpRSz3S6ieZS5sl5l&export=download",
+            "groupName": "Próxima Temporada",
+            "order": 1
+          },
+          {
+            "name": "Proxima-temporada-2/Proxima-temporada_S6-2.jpg",
+            "url": "https://drive.google.com/uc?id=10VrRI2hZZxAxgHctsFTE5jr8VySbcNGj&export=download",
+            "groupName": "Próxima Temporada",
+            "order": 2
+          },
+          {
+            "name": "Proxima-temporada-3/Proxima-temporada_S6-3.jpg",
+            "url": "https://drive.google.com/uc?id=17D99ALLva5OSR9ycFBqWXNiEa9JyFZok&export=download",
+            "groupName": "Próxima Temporada",
+            "order": 3
+          },
+          {
+            "name": "Proxima-temporada-4/Proxima-temporada_S6-4.jpg",
+            "url": "https://drive.google.com/uc?id=1yEGWnHlKZ2Bh2_fIy1Sni6kN8wGybHLO&export=download",
+            "groupName": "Próxima Temporada",
+            "order": 4
+          }
+        ],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
     }
   },
   "march": {
@@ -2429,6 +2602,10 @@
       "order": 3,
       "monthlyContentPlan": {
         "es": []
+      },
+      "actionPosts": {
+        "es": [],
+        "ca": []
       },
       "actionStories": {
         "es": [],

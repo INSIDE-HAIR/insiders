@@ -89,7 +89,7 @@ function DigitalcalContentTabsMkt({
           )}
           {marketingSalonContent.valueStories.es[0] && (
             <Tab key="valueStories" title="Stories de Valor">
-              <ValueStoriesMkt list={marketingSalonContent.valueStories.es} />
+              <ValueStoriesMkt list={marketingSalonContent.valueStories.es}  lang={"es"}/>
             </Tab>
           )}
           {(marketingSalonContent.videos.es[0] ||

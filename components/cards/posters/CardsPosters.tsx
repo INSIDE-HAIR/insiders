@@ -11,7 +11,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
-import React from "react";
 import { EyeFilledIcon } from "@/icons/eyes-icon/EyeFilledIcon.jsx";
 function CardsPosters({
   item,
@@ -92,7 +91,7 @@ function CardsPosters({
 
       {item.imgEmbed && !item.files.Preview && (
         <div className="relative">
-          <div className="  absolute right-1 top-1">
+          <div className="absolute right-1 top-1">
             <Tooltip content="+ Zoom" size="sm">
               <Button
                 onPress={onOpen}
