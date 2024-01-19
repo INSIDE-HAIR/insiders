@@ -2815,6 +2815,35 @@
         ],
         "ca": []
       }
+    },
+    "repeats": {
+      "id": "repeats",
+      "name": "Repeticiones",
+      "order": 4,
+      "tabs": [
+        {
+          "id": "planningSession",
+          "title": "Sesiones de Implementación",
+          "type": "video",
+          "videos": [
+            {
+              "id": "planningSessionAinhoa",
+              "title": "Marketing Salon Nuevos - Planificación (Ainhoa)",
+              "url": "https://player.vimeo.com/video/904551885?h=beecfbaa5f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            },
+            {
+              "id": "planningSessionAinhoa",
+              "title": "Marketing Salon Junior - Planificación (Ainhoa)",
+              "url": "https://player.vimeo.com/video/904547397?h=37bb51c060&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            },
+            {
+              "id": "planningSessionLorena",
+              "title": "Marketing Salon Avanzado - Planificación (Lorena)",
+              "url": "https://player.vimeo.com/video/904546961?h=639992e50d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            }
+          ]
+        }
+      ]
     }
   },
   "march": {
