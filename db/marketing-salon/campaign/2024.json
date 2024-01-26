@@ -2873,7 +2873,7 @@
               "url": "https://player.vimeo.com/video/904551885?h=beecfbaa5f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
             },
             {
-              "id": "planningSessionAinhoa",
+              "id": "planningSessionAinhoa2",
               "title": "Marketing Salon Junior - Planificación (Ainhoa)",
               "url": "https://player.vimeo.com/video/904547397?h=37bb51c060&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
             },
@@ -2886,11 +2886,6 @@
               "id": "planningSessionPedro",
               "title": "Marketing Salon Avanzado - Planificación (Pedro)",
               "url": "https://player.vimeo.com/video/905894304?h=5ac6a12b1b&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-            },
-            {
-              "id": "supervisionSessionLorena",
-              "title": "Marketing Salon Avanzado - Supervisión (Lorena)",
-              "url": "https://player.vimeo.com/video/904546961?h=639992e50d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
             }
           ]
         },
@@ -2899,6 +2894,16 @@
           "title": "Sesiones de Supervisión",
           "type": "video",
           "videos": [
+            {
+              "id": "supervisionSessionAinhoa",
+              "title": "Marketing Salon Nuevos - Supervisión (Ainhoa)",
+              "url": "https://player.vimeo.com/video/906653920?h=209a18c350&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            },
+            {
+              "id": "supervisionSessionAinhoa2",
+              "title": "Marketing Salon Junior - Supervisión (Ainhoa)",
+              "url": "https://player.vimeo.com/video/906652465?h=3581e07bb4&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            },
             {
               "id": "supervisionSessionLorena",
               "title": "Marketing Salon Avanzado - Supervisión (Lorena)",
