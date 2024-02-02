@@ -1,867 +1,511 @@
 {
   "january": [
     {
-      "id": "marketingPlan",
+      "id": "planDeMarketing1",
       "name": "Plan de Marketing",
       "order": 1,
-      "content":[
-        { 
+      "classType": "default",
+      "content": [
+        {
           "id": "content1",
           "order": 1,
           "type": "video",
           "classType": "default",
-          "title": "",
-          "url": "#",
-          "active": true,
-          "available": 
-            {
-              "startDate": null,
-              "endDate": null
-            }
+          "title": null,
+          "url": null,
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
         },
-        { 
+        {
           "id": "content2",
           "order": 2,
           "type": "button",
           "classType": "default",
-          "title": "",
-          "url": "#",
-          "active": true,
-          "available": 
-            {
-              "startDate": null,
-              "endDate": null
-            }
+          "title": "Enlace de Descarga",
+          "url": null,
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
         },
-        { 
+        {
           "id": "content3",
           "order": 3,
-          "type": "googleSlide",
+          "type": "slide",
           "classType": "default",
-          "url": "#",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vQvWSrngoml5UDctPlOK9m5z4Pr5z_m0cBk8RGE3DkriOxC82J6qzWZ9gGzRNmIVC0_wdg3mJlE80Ep/embed?start=false&loop=false&delayms=3000",
           "active": true,
-          "available": 
-            {
-              "startDate": null,
-              "endDate": null
-            }
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
         },
-        { 
+        {
           "id": "content4",
           "order": 4,
-          "active": false,
-          "title": "",
           "type": "tabs",
-          "content":[]
-        }
-      ]
-    },
-    {
-      "id": "physicalContent",
-      "name": "Cartelería",
-      "order": 2,
-      "content":
-        [
-          { 
-            "id": "content1",
-            "order": 1,
-            "type": "text",
-            "classType": "h1",
-            "title": "",
-            "active": true,
-            "available": 
-              {
-                "startDate": null,
-                "endDate": null
-              }
-          },
-          {
-            "id": "content1",
-            "order": 1,
-            "active": false,
-            "title": "",
-            "type": "tabs",
-            "content":[
-              {
-                "id": "posters",
-                "order": 1,
-                "active": false,
-                "title": "Cartelería",
-                "type": "tabs",
-                "content":[
-                  {
-                    "id": "posters1",
-                    "order": 1,
-                    "active": false,
-                    "title": "Español",
-                    "type": "cardsList",
-                    "content":[
-                      {
-                        "id": null,
-                        "order": null,
-                        "category": null,
-                        "title": null,
-                        "lang": null,
-                        "type": "downloadCardPDF",
-                        "groupName": null,
-                        "url": "#"
-                      },
-                      {
-                        "id": null,
-                        "order": null,
-                        "category": null,
-                        "title": null,
-                        "lang": null,
-                        "button": "Descargar",
-                        "type": "preview",
-                        "groupName": null,
-                        "url": "#"
-                      },
-                      {
-                        "id": "poster2",
-                        "order": 2,
-                        "title": "Cartel 2",
-                        "type": "image",
-                        "url": "#"
-                      }
-                    ]
-                  },
-                  {
-                    "id": "posters2",
-                    "order": 2,
-                    "lang": "ca",
-                    "title": "Català",
-                    "type": "cardsList",
-
-                  }
-                  "es": [
-                    
-                  ],
-                  "ca": []
-                ],
-
-              },
-              "stoppers": {
-                "es": []
-              },
-              "tests": {
-                "es": [],
-                "ca": []
-              },
-              "cards": {
-                "es": [],
-                "ca": []
-              }
-            ]
+          "classType": "default",
+          "content": [],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
           }
-      ]    
-    },
-    {
-      "id": "digitalContent",
-      "name": "Redes Sociales",
-      "order": 3,
-      "content":[
-        { 
-          "id": "content1",
-          "order": 1,
-          "active": false,
-          "title": "",
-          "type": "tabs",
-          "content":[
-            "monthlyContentPlan": {
-              "es": [],
-              "ca": []
-            },
-            "actionPosts": {
-              "es": [],
-              "ca": []
-            },
-            "actionStories": {
-              "es": [],
-              "ca": []
-            },
-            "valueStories": {
-              "es": [],
-              "ca": []
-            },
-            "videos": {
-              "es": [],
-              "ca": []
-            },
-            "smsAndWhatsApp": {
-              "es": [],
-              "ca": []
-            }
-          ]
-        }
-      ]
-    }
-
-  ] ,
-    "digitalContent": {
-      "id": "digitalContent",
-      "name": "Redes Sociales",
-      "order": 3,
-
-
-    },
-    "physicalContent": {
-      "id": "physicalContent",
-      "name": "Cartelería",
-      "order": 2,
-
-    },
-    "repeats": {
-      "id": "repeats",
-      "name": "Repeticiones",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "march": {
-    "marketingPlan": {
-      "id": "marketingPlan",
-      "name": "Plan de Marketing",
-      "order": 1,
-      "tabs": [
-        {
-          "id": "context",
-          "title": "Contexto",
-          "type": "video",
-          "url": "https://player.vimeo.com/video/908604315?h=73f82d9b20&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-        },
-        {
-          "id": "marketingPlan",
-          "title": "Plan de Marketing",
-          "type": "video",
-          "url": "https://player.vimeo.com/video/908604788?h=c2a22d6df8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-        },
-        {
-          "id": "posters",
-          "title": "Cartelería",
-          "type": "video",
-          "url": "https://player.vimeo.com/video/908605393?h=e61e5f564f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-        },
-        {
-          "id": "actions",
-          "title": "Acciones",
-          "type": "video",
-          "url": "https://player.vimeo.com/video/908605730?h=1d1aa7c2b3&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
         }
       ],
-      "formButton": {
-        "title": "Enlace al formulario",
-        "active": false,
-        "url": ""
-      },
-      "slides": {
-        "url": "https://docs.google.com/presentation/d/e/2PACX-1vR0mzbkD3vhYv49VCcgzJZgXD1CTPIm7z1sZuPIqYrXDYzIWkiCgPV7lljMk4k2WnJV3-L4QInmm35n/embed?start=false&loop=false&delayms=3000",
-        "active": true
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
       }
     },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionPosts": {
-        "es": [],
-        "ca": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
+    {
+      "id": "contenidoFisico2",
+      "name": "Contenido Físico",
       "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Contenido Físico",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "carteleria1",
+              "order": 1,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Cartelería",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "stoppers1",
+              "order": 1,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Stoppers",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "tests1",
+              "order": 1,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Tests",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "tarjetas4",
+              "order": 4,
+              "type": "cardList",
+              "childrensType": "downloadCarouselCards",
+              "title": "Tarjetas",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
       }
     },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "april": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
+    {
+      "id": "contenidoDigital3",
+      "name": "Contenido Digital",
       "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Contenido Digital",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "cardList1",
+              "order": 1,
+              "type": "cardList",
+              "childrensType": "downloadImageAndCopyTextCards",
+              "title": "Plan Mensual",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "copy": "",
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "copy": "",
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "cardList2",
+              "order": 2,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Posts de Acción",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "cardLis3",
+              "order": 3,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Stories de Acción",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "cardLis4",
+              "order": 4,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Stories de Valor",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "cardLis4",
+              "order": 5,
+              "type": "cardList",
+              "childrensType": "downloadImageCards",
+              "title": "Videos",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            },
+            {
+              "id": "cardList6",
+              "order": 6,
+              "type": "cardList",
+              "childrensType": "downloadImageAndCopyTextCards",
+              "title": "Plan Mensual",
+              "content": [
+                {
+                  "id": null,
+                  "order": null,
+                  "name": "",
+                  "copy": "",
+                  "url": "#",
+                  "category": null,
+                  "lang": null,
+                  "groupName": null
+                },
+                {
+                  "copy": "",
+                  "name": "",
+                  "url": "#"
+                },
+                {
+                  "copy": "",
+                  "name": "",
+                  "url": "#"
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
       }
     },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
+    {
+      "id": "repeticiones4",
+      "name": "Repeticiones",
       "order": 4,
-      "tabs": []
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "video1",
+              "order": 1,
+              "type": "video",
+              "classType": "default",
+              "title": "",
+              "url": "#",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              }
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      }
     }
-  },
-  "may": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "june": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "july": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "august": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "september": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "october": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "november": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  },
-  "december": {
-    "marketingPlan": {
-      "id": "",
-      "name": "",
-      "order": 1,
-      "tabs": [],
-      "formButton": {},
-      "slides": {}
-    },
-    "digitalContent": {
-      "id": "",
-      "name": "",
-      "order": 3,
-      "monthlyContentPlan": {
-        "es": []
-      },
-      "actionStories": {
-        "es": [],
-        "ca": []
-      },
-      "valueStories": {
-        "es": [],
-        "ca": []
-      },
-      "videos": {
-        "es": [],
-        "ca": []
-      },
-      "smsAndWhatsApp": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "physicalContent": {
-      "id": "",
-      "name": "",
-      "order": 2,
-      "posters": {
-        "es": [],
-        "ca": []
-      },
-      "stoppers": {
-        "es": [],
-        "ca": []
-      },
-      "tests": {
-        "es": [],
-        "ca": []
-      },
-      "cards": {
-        "es": [],
-        "ca": []
-      }
-    },
-    "repeats": {
-      "id": "",
-      "name": "",
-      "order": 4,
-      "tabs": []
-    }
-  }
+  ],
+  "february": {},
+  "march": {},
+  "april": {},
+  "may": {},
+  "june": {},
+  "july": {},
+  "august": {},
+  "september": {},
+  "october": {},
+  "november": {},
+  "december": {}
 }
