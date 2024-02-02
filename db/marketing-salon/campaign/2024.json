@@ -2909,6 +2909,18 @@
               "url": "https://player.vimeo.com/video/904546961?h=639992e50d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
             }
           ]
+        },
+        {
+          "id": "implementationSession",
+          "title": "Sesiones de Implementación",
+          "type": "video",
+          "videos": [
+            {
+              "id": "implementationSessionPedro",
+              "title": "Marketing Salon - Implementación (Pedro)",
+              "url": "https://player.vimeo.com/video/909078989?h=a0b24fb307&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            }
+          ]
         }
       ]
     }

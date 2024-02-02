@@ -1,0 +1,867 @@
+{
+  "january": [
+    {
+      "id": "marketingPlan",
+      "name": "Plan de Marketing",
+      "order": 1,
+      "content":[
+        { 
+          "id": "content1",
+          "order": 1,
+          "type": "video",
+          "classType": "default",
+          "title": "",
+          "url": "#",
+          "active": true,
+          "available": 
+            {
+              "startDate": null,
+              "endDate": null
+            }
+        },
+        { 
+          "id": "content2",
+          "order": 2,
+          "type": "button",
+          "classType": "default",
+          "title": "",
+          "url": "#",
+          "active": true,
+          "available": 
+            {
+              "startDate": null,
+              "endDate": null
+            }
+        },
+        { 
+          "id": "content3",
+          "order": 3,
+          "type": "googleSlide",
+          "classType": "default",
+          "url": "#",
+          "active": true,
+          "available": 
+            {
+              "startDate": null,
+              "endDate": null
+            }
+        },
+        { 
+          "id": "content4",
+          "order": 4,
+          "active": false,
+          "title": "",
+          "type": "tabs",
+          "content":[]
+        }
+      ]
+    },
+    {
+      "id": "physicalContent",
+      "name": "Cartelería",
+      "order": 2,
+      "content":
+        [
+          { 
+            "id": "content1",
+            "order": 1,
+            "type": "text",
+            "classType": "h1",
+            "title": "",
+            "active": true,
+            "available": 
+              {
+                "startDate": null,
+                "endDate": null
+              }
+          },
+          {
+            "id": "content1",
+            "order": 1,
+            "active": false,
+            "title": "",
+            "type": "tabs",
+            "content":[
+              {
+                "id": "posters",
+                "order": 1,
+                "active": false,
+                "title": "Cartelería",
+                "type": "tabs",
+                "content":[
+                  {
+                    "id": "posters1",
+                    "order": 1,
+                    "active": false,
+                    "title": "Español",
+                    "type": "cardsList",
+                    "content":[
+                      {
+                        "id": null,
+                        "order": null,
+                        "category": null,
+                        "title": null,
+                        "lang": null,
+                        "type": "downloadCardPDF",
+                        "groupName": null,
+                        "url": "#"
+                      },
+                      {
+                        "id": null,
+                        "order": null,
+                        "category": null,
+                        "title": null,
+                        "lang": null,
+                        "button": "Descargar",
+                        "type": "preview",
+                        "groupName": null,
+                        "url": "#"
+                      },
+                      {
+                        "id": "poster2",
+                        "order": 2,
+                        "title": "Cartel 2",
+                        "type": "image",
+                        "url": "#"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "posters2",
+                    "order": 2,
+                    "lang": "ca",
+                    "title": "Català",
+                    "type": "cardsList",
+
+                  }
+                  "es": [
+                    
+                  ],
+                  "ca": []
+                ],
+
+              },
+              "stoppers": {
+                "es": []
+              },
+              "tests": {
+                "es": [],
+                "ca": []
+              },
+              "cards": {
+                "es": [],
+                "ca": []
+              }
+            ]
+          }
+      ]    
+    },
+    {
+      "id": "digitalContent",
+      "name": "Redes Sociales",
+      "order": 3,
+      "content":[
+        { 
+          "id": "content1",
+          "order": 1,
+          "active": false,
+          "title": "",
+          "type": "tabs",
+          "content":[
+            "monthlyContentPlan": {
+              "es": [],
+              "ca": []
+            },
+            "actionPosts": {
+              "es": [],
+              "ca": []
+            },
+            "actionStories": {
+              "es": [],
+              "ca": []
+            },
+            "valueStories": {
+              "es": [],
+              "ca": []
+            },
+            "videos": {
+              "es": [],
+              "ca": []
+            },
+            "smsAndWhatsApp": {
+              "es": [],
+              "ca": []
+            }
+          ]
+        }
+      ]
+    }
+
+  ] ,
+    "digitalContent": {
+      "id": "digitalContent",
+      "name": "Redes Sociales",
+      "order": 3,
+
+
+    },
+    "physicalContent": {
+      "id": "physicalContent",
+      "name": "Cartelería",
+      "order": 2,
+
+    },
+    "repeats": {
+      "id": "repeats",
+      "name": "Repeticiones",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "march": {
+    "marketingPlan": {
+      "id": "marketingPlan",
+      "name": "Plan de Marketing",
+      "order": 1,
+      "tabs": [
+        {
+          "id": "context",
+          "title": "Contexto",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/908604315?h=73f82d9b20&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        },
+        {
+          "id": "marketingPlan",
+          "title": "Plan de Marketing",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/908604788?h=c2a22d6df8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        },
+        {
+          "id": "posters",
+          "title": "Cartelería",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/908605393?h=e61e5f564f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        },
+        {
+          "id": "actions",
+          "title": "Acciones",
+          "type": "video",
+          "url": "https://player.vimeo.com/video/908605730?h=1d1aa7c2b3&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        }
+      ],
+      "formButton": {
+        "title": "Enlace al formulario",
+        "active": false,
+        "url": ""
+      },
+      "slides": {
+        "url": "https://docs.google.com/presentation/d/e/2PACX-1vR0mzbkD3vhYv49VCcgzJZgXD1CTPIm7z1sZuPIqYrXDYzIWkiCgPV7lljMk4k2WnJV3-L4QInmm35n/embed?start=false&loop=false&delayms=3000",
+        "active": true
+      }
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionPosts": {
+        "es": [],
+        "ca": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "april": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "may": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "june": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "july": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "august": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "september": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "october": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "november": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  },
+  "december": {
+    "marketingPlan": {
+      "id": "",
+      "name": "",
+      "order": 1,
+      "tabs": [],
+      "formButton": {},
+      "slides": {}
+    },
+    "digitalContent": {
+      "id": "",
+      "name": "",
+      "order": 3,
+      "monthlyContentPlan": {
+        "es": []
+      },
+      "actionStories": {
+        "es": [],
+        "ca": []
+      },
+      "valueStories": {
+        "es": [],
+        "ca": []
+      },
+      "videos": {
+        "es": [],
+        "ca": []
+      },
+      "smsAndWhatsApp": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "physicalContent": {
+      "id": "",
+      "name": "",
+      "order": 2,
+      "posters": {
+        "es": [],
+        "ca": []
+      },
+      "stoppers": {
+        "es": [],
+        "ca": []
+      },
+      "tests": {
+        "es": [],
+        "ca": []
+      },
+      "cards": {
+        "es": [],
+        "ca": []
+      }
+    },
+    "repeats": {
+      "id": "",
+      "name": "",
+      "order": 4,
+      "tabs": []
+    }
+  }
+}
