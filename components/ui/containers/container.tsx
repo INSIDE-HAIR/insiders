@@ -1,13 +1,13 @@
-import type { ReactNode } from 'react'
+import type { ReactNode } from "react";
 
 type ContainerProps = {
   children: ReactNode;
-}
+};
 
 export default function Container({ children }: ContainerProps) {
   return (
     <div
-      className="flex w-full flex-col items-center justify-center content-center  [&>*]:w-full "
+      className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full "
       style={{
         display: "flex",
         justifyContent: "center",
@@ -24,6 +24,7 @@ export default function Container({ children }: ContainerProps) {
           alignItems: "center",
           width: "100%",
         }}
+        className="gap-4"
       >
         {children}
       </div>

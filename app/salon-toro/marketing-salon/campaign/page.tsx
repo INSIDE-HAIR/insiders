@@ -3,82 +3,11 @@ import TailwindGrid from "@/components/grid/TailwindGrid";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import dataMonths from "@/db/dates/months.json";
-import MarketingPlanTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/marketing-plan-tabs/MarketingPlanTabsMkt";
-import PhysicalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
-import DigitalcalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
-import RepeatsTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/repeats-tabs/RepeatsTabsMkt";
 import Container from "@/components/ui/containers/container";
-import { title } from "process";
-import Slides from "@/components/ui/slides/slides";
-import { Button } from "@nextui-org/react";
-import VideosPlayers from "@/components/ui/videos-players/videos-players";
-
-interface VideoTab {
-  id: string;
-  title: string;
-  type: string;
-  url: string;
-}
-
-interface FormButton {
-  title: string;
-  active: boolean;
-  url: string;
-}
-
-interface Slides {
-  url: string;
-  active: boolean;
-}
-
-interface MarketingPlan {
-  id: string;
-  name: string;
-  order: number;
-  tabs: VideoTab[];
-  formButton: FormButton;
-  slides: Slides;
-}
-
-interface ContentPlan {
-  es: any[]; // Reemplaza any con una interfaz más específica si es necesario
-  ca: any[]; // Reemplaza any con una interfaz más específica si es necesario
-}
-
-interface DigitalContent {
-  id: string;
-  name: string;
-  order: number;
-  monthlyContentPlan: ContentPlan;
-  actionStories: ContentPlan;
-  valueStories: ContentPlan;
-  videos: ContentPlan;
-  smsAndWhatsApp: ContentPlan;
-}
-
-interface PhysicalContent {
-  id: string;
-  name: string;
-  order: number;
-  posters: ContentPlan;
-  stoppers: ContentPlan;
-  tests: ContentPlan;
-  cards: ContentPlan;
-}
-
-interface Repeats {
-  id: string;
-  name: string;
-  order: number;
-  tabs: any[]; // Reemplaza any con una interfaz más específica si es necesario
-}
+import ComponentSelector from "@/components/ui/components-selector/components-selector";
 
 interface MonthlyData {
-  marketingPlan?: MarketingPlan;
-  digitalContent?: DigitalContent;
-  physicalContent?: PhysicalContent;
-  repeats?: Repeats;
-  content?: any[];
+  [x: string]: any;
 }
 
 function Page() {
@@ -128,6 +57,7 @@ function Page() {
     return <p>Error: {error.message}</p>;
   }
 
+  console.log(data);
   // Renderizado condicional basado en los datos
   return data ? (
     <>
@@ -212,7 +142,7 @@ function Page() {
 
           <TailwindGrid>
             <main className="self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center">
-              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full">
+              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full ">
                 <h3 className="text-center w-full font-bold text-4xl mt-10">
                   {sideMenu &&
                     (sideMenu as { list: any[] }).list.find(
@@ -221,47 +151,62 @@ function Page() {
                 </h3>
                 <Container>
                   {data &&
-                    data[0].content.map(
-                      (
-                        item: {
+                    data.map(
+                      (tabData: {
+                        id?: string;
+                        content: {
                           id?: string;
                           order?: number;
-                          type: "slide" | "video" | "button" | "tabs" | string;
+                          type:
+                            | "slider"
+                            | "video"
+                            | "button"
+                            | "tabs"
+                            | "tab"
+                            | string;
                           classType?: string;
                           title?: string;
                           url: string;
                           active: boolean;
+                          content?: any[];
                           available?: {
                             startDateTime: string;
                             endDateTime: string;
                           };
-                        },
-                        index: number
-                      ) => (
-                        <>
-                          {item.type === "video" && item.active === true && (
-                            <VideosPlayers item={{ ...item }} index={index} />
-                          )}
-                          {item.type === "button" && item.active === true && (
-                            <Button
-                              variant="faded"
-                              className="flex bg-gray-700 mb-4 text-white"
-                              style={{ order: item.order || index }}
-                              onClick={() => {
-                                window.open(item && item.url, "_blank");
-                              }}
-                            >
-                              {item && item.title}
-                            </Button>
-                          )}
-                          {item.type === "slide" && item.active === true && (
-                            <Slides item={{ ...item }} index={index}></Slides>
-                          )}
-                          {item.type === "tabs" && item.active === true && (
-                            <></>
-                          )}
-                        </>
-                      )
+                        }[];
+                      }) =>
+                        tab === tabData.id &&
+                        tabData.content.map(
+                          (
+                            item: {
+                              id?: string;
+                              order?: number;
+                              type:
+                                | "slider"
+                                | "video"
+                                | "button"
+                                | "tabs"
+                                | "tab"
+                                | string;
+                              classType?: string;
+                              title?: string;
+                              url: string;
+                              active: boolean;
+                              content?: any[];
+                              available?: {
+                                startDateTime: string;
+                                endDateTime: string;
+                              };
+                            },
+                            itemIndex: number
+                          ) => (
+                            <ComponentSelector
+                              item={{ ...item }}
+                              index={itemIndex}
+                              key={item.order}
+                            />
+                          )
+                        )
                     )}
                 </Container>
               </div>
@@ -283,6 +228,7 @@ export default Page;
 
 function generateSideMenu(data: {
   [x: string]: {
+    id: any;
     name: any;
     order: any;
   };
@@ -291,9 +237,10 @@ function generateSideMenu(data: {
 
   for (const key in data) {
     if (data[key]) {
+      const id = data[key].id;
       const name = data[key].name;
       const order = data[key].order || 9999;
-      menuItems.push({ name: name, id: key, order: order });
+      menuItems.push({ name: name, id: id, order: order });
     } else {
       menuItems.push({ name: null, id: null, order: null });
     }

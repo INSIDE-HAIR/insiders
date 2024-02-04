@@ -3,7 +3,7 @@ type ComponentsProps = {
   item: {
     id?: string;
     order?: number;
-    type: "slide" | "video" | "button" | "tabs" | string;
+    type: "slider" | "video" | "button" | "tabs" | "tab" | string;
     title?: string;
     name?: string;
     classType?: string | "default";
