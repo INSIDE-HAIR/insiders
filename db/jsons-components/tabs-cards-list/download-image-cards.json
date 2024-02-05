@@ -8,19 +8,19 @@
     {
       "id": null,
       "order": null,
-      "name": "",
+      "title": "",
       "copy": "",
       "url": "#",
       "category": null,
       "lang": null,
-      "groupName": null
+      "groupTitle": null
     },
     {
-      "name": "",
+      "title": "",
       "url": "#"
     },
     {
-      "name": "",
+      "title": "",
       "url": "#"
     }
   ],

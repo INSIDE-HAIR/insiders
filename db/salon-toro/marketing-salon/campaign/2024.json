@@ -2,7 +2,7 @@
   "january": [
     {
       "id": "planDeMarketing1",
-      "name": "Plan de Marketing",
+      "title": "Plan de Marketing",
       "order": 1,
       "classType": "default",
       "content": [
@@ -27,7 +27,7 @@
     },
     {
       "id": "contenidoFisico2",
-      "name": "Contenido Físico",
+      "title": "Contenido Físico",
       "order": 2,
       "classType": "default",
       "content": [
@@ -65,19 +65,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -111,19 +111,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -157,19 +157,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -203,19 +203,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -248,7 +248,7 @@
     },
     {
       "id": "contenidoDigital3",
-      "name": "Contenido Digital",
+      "title": "Contenido Digital",
       "order": 3,
       "classType": "default",
       "content": [
@@ -274,19 +274,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -320,19 +320,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -366,19 +366,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -419,19 +419,19 @@
                         {
                           "id": null,
                           "order": null,
-                          "name": "",
+                          "title": "",
                           "copy": "",
                           "url": "#",
                           "category": null,
                           "lang": null,
-                          "groupName": null
+                          "groupTitle": null
                         },
                         {
-                          "name": "",
+                          "title": "",
                           "url": "#"
                         },
                         {
-                          "name": "",
+                          "title": "",
                           "url": "#"
                         }
                       ],
@@ -458,21 +458,21 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
                       "copy": "",
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
                       "copy": "",
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -506,21 +506,21 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
                       "copy": "",
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
                       "copy": "",
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -554,19 +554,19 @@
                     {
                       "id": null,
                       "order": null,
-                      "name": "",
+                      "title": "",
                       "copy": "",
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupName": null
+                      "groupTitle": null
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     },
                     {
-                      "name": "",
+                      "title": "",
                       "url": "#"
                     }
                   ],
@@ -599,7 +599,7 @@
     },
     {
       "id": "repeticiones4",
-      "name": "Repeticiones",
+      "title": "Repeticiones",
       "order": 4,
       "classType": "default",
       "content": [
