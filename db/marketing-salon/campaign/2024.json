@@ -3057,6 +3057,23 @@
               "url": "https://player.vimeo.com/video/909078989?h=a0b24fb307&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
             }
           ]
+        },
+        {
+          "id": "launchSession",
+          "title": "Sesiones de Lanzamiento",
+          "type": "video",
+          "videos": [
+            {
+              "id": "launchSessionLorena",
+              "title": "Marketing Salon - Planificación (Lorena)",
+              "url": "https://vimeo.com/911176519/04099e64df?share=copy"
+            },
+            {
+              "id": "launchSessionPedro",
+              "title": "Marketing Salon - Planificación (Pedro)",
+              "url": "https://vimeo.com/911176845/dc57732f68?share=copy"
+            }
+          ]
         }
       ]
     }
