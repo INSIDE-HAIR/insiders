@@ -131,13 +131,13 @@ function Page() {
         <div className="col-span-1 col-start-1 col-end-2 h-screen fixed w-2/12  top-0 z-30 border-r box-border border-zinc-500 bg-white-950/40 backdrop-blur-lg bg-clip-padding backdrop-filter opacity-75 hidden lg:block">
           <div className="mt-24 flex p-4">
             <ul
-              aria-label={`Plan de Marketing ${monthTranslations?.name + " "} ${
+              aria-label={`Plan de Marketing ${monthTranslations?.name || monthTranslations?.title + " "} ${
                 year ?? ""
               }`}
               className=" z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.name + " "}
+                {monthTranslations?.name || monthTranslations?.title + " "}
                 {year}
               </strong>
 
@@ -170,13 +170,13 @@ function Page() {
         <div className="relative col-span-full max-w-full  mt-10 gap-10">
           <TailwindGrid>
             <ul
-              aria-label={`Plan de Marketing ${monthTranslations?.name + " "} ${
+              aria-label={`Plan de Marketing ${monthTranslations?.name || monthTranslations?.title + " "} ${
                 year ?? ""
               }`}
               className="h-full lg:hidden z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.name + " "}
+                {monthTranslations?.name || monthTranslations?.title + " "}
                 {year}
               </strong>
               {sideMenu &&
