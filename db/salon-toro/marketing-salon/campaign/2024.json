@@ -16,14 +16,16 @@
           "available": {
             "startDateTime": null,
             "endDateTime": null
-          }
+          },
+          "auth": []
         }
       ],
       "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
-      }
+      },
+      "auth": []
     },
     {
       "id": "contenidoFisico2",
@@ -41,7 +43,8 @@
           "available": {
             "startDateTime": null,
             "endDateTime": null
-          }
+          },
+          "auth": []
         },
         {
           "id": "tabs2",
@@ -85,14 +88,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab2",
@@ -131,14 +136,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab3",
@@ -177,14 +184,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab4",
@@ -223,28 +232,32 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             }
           ],
           "active": true,
           "available": {
             "startDateTime": null,
             "endDateTime": null
-          }
+          },
+          "auth": []
         }
       ],
       "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
-      }
+      },
+      "auth": []
     },
     {
       "id": "contenidoDigital3",
@@ -294,14 +307,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab2",
@@ -340,14 +355,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab3",
@@ -386,14 +403,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab4",
@@ -439,14 +458,16 @@
                       "available": {
                         "startDateTime": null,
                         "endDateTime": null
-                      }
+                      },
+                      "auth": []
                     }
                   ],
                   "active": true,
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 },
                 {
                   "id": "cardList1",
@@ -480,14 +501,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab5",
@@ -528,14 +551,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab6",
@@ -574,28 +599,32 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             }
           ],
           "active": true,
           "available": {
             "startDateTime": null,
             "endDateTime": null
-          }
+          },
+          "auth": []
         }
       ],
       "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
-      }
+      },
+      "auth": []
     },
     {
       "id": "repeticiones4",
@@ -626,14 +655,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab2",
@@ -653,14 +684,16 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             },
             {
               "id": "tab3",
@@ -680,28 +713,32 @@
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
-                  }
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
-              }
+              },
+              "auth": []
             }
           ],
           "active": true,
           "available": {
             "startDateTime": null,
             "endDateTime": null
-          }
+          },
+          "auth": []
         }
       ],
       "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
-      }
+      },
+      "auth": []
     }
   ],
   "february": {},
