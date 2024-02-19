@@ -1,11 +1,10 @@
-// https://authjs.dev/guides/upgrade-to-v5
-
 import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { dbMongo } from "@/prisma"
-import authConfig from "@/auth.config"
-import { getUserById } from "@/data/user"
+// import { UserRole } from "@prisma/client";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
+import { dbMongo } from "@/prisma"
+import authConfig from "@/auth.config";
+import { getUserById } from "@/data/user"
 
 
 

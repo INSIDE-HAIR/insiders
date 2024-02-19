@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 
 declare global {
-  var prisma: PrismaClient 
+  var prisma: PrismaClient | undefined;  
 }
 export const dbMongo = global.prisma || new PrismaClient()
 // export const dbMongo = global.prisma || new PrismaClient().$extends(withAccelerate()) //Not supported yet until we have the serverless version of mongodb
