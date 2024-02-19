@@ -2,11 +2,11 @@
 
 import NextAuth from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { UserRole } from "@prisma/client";
- 
 import { dbMongo } from "@/prisma"
 import authConfig from "@/auth.config"
 import { getUserById } from "./data/user"
+import { Prisma } from '@prisma/client';
+
 
 
 export const {
@@ -29,7 +29,7 @@ export const {
     }
 
     if (token.role && session.user) {
-      session.user.role = token.role as UserRole;
+      session.user.role = token.role as Prisma.UserRole;
     }
 
     if (token.image && session.user) {
