@@ -3,81 +3,16 @@ import TailwindGrid from "@/components/grid/TailwindGrid";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import dataMonths from "@/db/dates/months.json";
-import MarketingPlanTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/marketing-plan-tabs/MarketingPlanTabsMkt";
-import PhysicalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/physical-content-tabs-mkt/PhysicalContentTabsMkt";
-import DigitalcalContentTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/digital-content-tabs-mkt/DigitalcalContentTabsMkt";
-import RepeatsTabsMkt from "@/components/sections/marketing-salon/tabs-containers-mkt/repeats-tabs/RepeatsTabsMkt";
-
-interface VideoTab {
-  id: string;
-  title: string;
-  type: string;
-  url: string;
-}
-
-interface FormButton {
-  title: string;
-  active: boolean;
-  url: string;
-}
-
-interface Slides {
-  url: string;
-  active: boolean;
-}
-
-interface MarketingPlan {
-  id: string;
-  name: string;
-  order: number;
-  tabs: VideoTab[];
-  formButton: FormButton;
-  slides: Slides;
-}
-
-interface ContentPlan {
-  es: any[]; // Reemplaza any con una interfaz más específica si es necesario
-  ca: any[]; // Reemplaza any con una interfaz más específica si es necesario
-}
-
-interface DigitalContent {
-  id: string;
-  name: string;
-  order: number;
-  monthlyContentPlan: ContentPlan;
-  actionStories: ContentPlan;
-  valueStories: ContentPlan;
-  videos: ContentPlan;
-  smsAndWhatsApp: ContentPlan;
-}
-
-interface PhysicalContent {
-  id: string;
-  name: string;
-  order: number;
-  posters: ContentPlan;
-  stoppers: ContentPlan;
-  tests: ContentPlan;
-  cards: ContentPlan;
-}
-
-interface Repeats {
-  id: string;
-  name: string;
-  order: number;
-  tabs: any[]; // Reemplaza any con una interfaz más específica si es necesario
-}
+import Container from "@/components/ui/containers/container";
+import ComponentSelector from "@/components/ui/components-selector/components-selector";
 
 interface MonthlyData {
-  marketingPlan?: MarketingPlan;
-  digitalContent?: DigitalContent;
-  physicalContent?: PhysicalContent;
-  repeats?: Repeats;
+  [x: string]: any;
 }
 
 function Page() {
   const searchParams = useSearchParams();
-  const [tab, setTab] = useState(searchParams?.get("tab") ?? "marketingPlan");
+  const [tab, setTab] = useState(searchParams?.get("tab") ?? null);
   const [data, setData] = useState<MonthlyData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -96,7 +31,7 @@ function Page() {
       setLoading(true);
       try {
         const response = await fetch(
-          `/api/data/marketing-salon/${year}/${month}`
+          `/api/data/salon-toro/marketing-salon/${year}/${month}`
         );
         if (!response.ok) {
           throw new Error(`Data fetch failed: ${response.status}`);
@@ -106,11 +41,9 @@ function Page() {
 
         setData(newData);
         const menuItems = generateSideMenu(newData);
-
-        // Set the sideMenu state with the list property
         setSideMenu({ list: menuItems });
+        setTab(menuItems[0].id);
       } catch (err) {
-        // Ahora TypeScript está de acuerdo con esta asignación
         setError(err instanceof Error ? err : new Error("An error occurred"));
       } finally {
         setLoading(false);
@@ -124,6 +57,7 @@ function Page() {
     return <p>Error: {error.message}</p>;
   }
 
+  console.log(data);
   // Renderizado condicional basado en los datos
   return data ? (
     <>
@@ -131,23 +65,23 @@ function Page() {
         <div className="col-span-1 col-start-1 col-end-2 h-screen fixed w-2/12  top-0 z-30 border-r box-border border-zinc-500 bg-white-950/40 backdrop-blur-lg bg-clip-padding backdrop-filter opacity-75 hidden lg:block">
           <div className="mt-24 flex p-4">
             <ul
-              aria-label={`Plan de Marketing ${
-                monthTranslations?.name || monthTranslations?.title + " "
-              } ${year ?? ""}`}
+              aria-label={`Plan de Marketing ${monthTranslations?.title + " "} ${
+                year ?? ""
+              }`}
               className=" z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.name || monthTranslations?.title + " "}
-                {" " + year}
+                {monthTranslations?.title + " "}
+                {year}
               </strong>
 
               {sideMenu &&
                 sideMenu.list.map(
                   (
-                    item: { id: string; name: string; order: any },
+                    item: { id: string; title: string; order: any },
                     index: any
                   ) =>
-                    item.name && (
+                    item.title && (
                       <li
                         key={index + item.id}
                         className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
@@ -160,7 +94,7 @@ function Page() {
                           }
                         }}
                       >
-                        {item.name}
+                        {item.title}
                       </li>
                     )
                 )}
@@ -170,23 +104,22 @@ function Page() {
         <div className="relative col-span-full max-w-full  mt-10 gap-10">
           <TailwindGrid>
             <ul
-              aria-label={`Plan de Marketing ${
-                monthTranslations?.name || monthTranslations?.title + " "
-              } ${year ?? ""}`}
+              aria-label={`Plan de Marketing ${monthTranslations?.title + " "} ${
+                year ?? ""
+              }`}
               className="h-full lg:hidden z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.name || monthTranslations?.title + " "}
-                {" " + year}
+                {monthTranslations?.title + " "}
+                {year}
               </strong>
               {sideMenu &&
-                sideMenu &&
                 sideMenu.list.map(
                   (
-                    item: { id: string; name: string; order: any },
+                    item: { id: string; title: string; order: any },
                     index: any
                   ) =>
-                    item.name && (
+                    item.title && (
                       <li
                         key={index + item.id}
                         className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
@@ -200,7 +133,7 @@ function Page() {
                           }
                         }}
                       >
-                        {item.name}
+                        {item.title}
                       </li>
                     )
                 )}
@@ -209,46 +142,73 @@ function Page() {
 
           <TailwindGrid>
             <main className="self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center">
-              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full">
+              <div className="flex-col center gap-4 inline-flex lg:pt-[1.5vw] justify-start items-center min-h-screen w-full ">
                 <h3 className="text-center w-full font-bold text-4xl mt-10">
                   {sideMenu &&
-                    sideMenu &&
                     (sideMenu as { list: any[] }).list.find(
                       (item: { id: string }) => item.id === tab
-                    )?.name}
+                    )?.title}
                 </h3>
-                {data.marketingPlan &&
-                  sideMenu &&
-                  (sideMenu as { list: any[] }).list.find(
-                    (item) => item.id === tab
-                  )?.id === data.marketingPlan.id && (
-                    <MarketingPlanTabsMkt contentData={data.marketingPlan} />
-                  )}
-                {data.physicalContent &&
-                  sideMenu &&
-                  (sideMenu as { list: any[] }).list.find(
-                    (item) => item.id === tab
-                  )?.id === data.physicalContent.id && (
-                    <PhysicalContentTabsMkt
-                      marketingSalonContent={data.physicalContent}
-                    />
-                  )}
-                {data.digitalContent &&
-                  sideMenu &&
-                  (sideMenu as { list: any[] }).list.find(
-                    (item) => item.id === tab
-                  )?.id === data.digitalContent.id && (
-                    <DigitalcalContentTabsMkt
-                      marketingSalonContent={data.digitalContent}
-                    />
-                  )}
-                {data.repeats &&
-                  sideMenu &&
-                  (sideMenu as { list: any[] }).list.find(
-                    (item) => item.id === tab
-                  )?.id === data.repeats.id && (
-                    <RepeatsTabsMkt marketingSalonContent={data.repeats} />
-                  )}
+                <Container>
+                  {data &&
+                    data.map(
+                      (tabData: {
+                        id?: string;
+                        content: {
+                          id?: string;
+                          order?: number;
+                          type:
+                            | "slider"
+                            | "video"
+                            | "button"
+                            | "tabs"
+                            | "tab"
+                            | string;
+                          classType?: string;
+                          title?: string;
+                          url: string;
+                          active: boolean;
+                          content?: any[];
+                          available?: {
+                            startDateTime: string;
+                            endDateTime: string;
+                          };
+                        }[];
+                      }) =>
+                        tab === tabData.id &&
+                        tabData.content.map(
+                          (
+                            item: {
+                              id?: string;
+                              order?: number;
+                              type:
+                                | "slider"
+                                | "video"
+                                | "button"
+                                | "tabs"
+                                | "tab"
+                                | string;
+                              classType?: string;
+                              title?: string;
+                              url: string;
+                              active: boolean;
+                              content?: any[];
+                              available?: {
+                                startDateTime: string;
+                                endDateTime: string;
+                              };
+                            },
+                            itemIndex: number
+                          ) => (
+                            <ComponentSelector
+                              item={{ ...item }}
+                              index={itemIndex}
+                              key={item.order}
+                            />
+                          )
+                        )
+                    )}
+                </Container>
               </div>
             </main>
           </TailwindGrid>
@@ -268,7 +228,8 @@ export default Page;
 
 function generateSideMenu(data: {
   [x: string]: {
-    name: any;
+    id: any;
+    title: any;
     order: any;
   };
 }) {
@@ -276,11 +237,12 @@ function generateSideMenu(data: {
 
   for (const key in data) {
     if (data[key]) {
-      const name = data[key].name;
+      const id = data[key].id;
+      const title = data[key].title;
       const order = data[key].order || 9999;
-      menuItems.push({ name: name, id: key, order: order });
+      menuItems.push({ title: title, id: id, order: order });
     } else {
-      menuItems.push({ name: null, id: null, order: null });
+      menuItems.push({ title: null, id: null, order: null });
     }
   }
 

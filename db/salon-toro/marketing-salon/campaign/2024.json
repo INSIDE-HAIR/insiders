@@ -217,7 +217,8 @@
                       "url": "#",
                       "category": null,
                       "lang": null,
-                      "groupTitle": null
+                      "groupTitle": null,
+                      "preview": []
                     },
                     {
                       "title": "",
@@ -278,7 +279,7 @@
               "classType": "default",
               "content": [
                 {
-                  "id": "cardList1",
+                  "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageAndCopyTextCards",
@@ -470,7 +471,7 @@
                   "auth": []
                 },
                 {
-                  "id": "cardList1",
+                  "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "copyTextCards",
