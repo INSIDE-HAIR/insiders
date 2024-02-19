@@ -1,6 +1,6 @@
 import { auth, signOut } from "@/auth";
 const SettingPage = async () => {
-  const session = await auth();
+  const session = await auth().catch(() => null);
 
   return (
     <div>
