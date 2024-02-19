@@ -1,4 +1,4 @@
-import { dbMongo } from "@/prisma/db-mongo";
+import { dbMongo } from "@/prisma";
 
 export const getUserByEmail = async (email:string) => {
   try {

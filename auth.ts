@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 // import { UserRole } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-import { dbMongo } from "@/prisma/db-mongo"
+import  prisma from "@/prisma"
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user"
 
@@ -16,7 +16,7 @@ export const {
 } = NextAuth({
   events: {
     async linkAccount({ user }) {
-      await dbMongo.user.update({
+      await prisma.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() }
       })
@@ -56,7 +56,7 @@ export const {
     return token
   },
   },
-  adapter: PrismaAdapter(dbMongo),
+  adapter: PrismaAdapter(prisma),
   session: {strategy: "jwt"},
   ...authConfig
 })

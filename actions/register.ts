@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { RegisterSchema } from "@/schemas/index";
 import bcrypt from "bcryptjs";
-import { dbMongo } from "@/prisma/db-mongo";
+import { dbMongo } from "@/prisma";
 import { getUserByEmail } from "@/data/user";
 
 export const register = async (values:z.infer<typeof RegisterSchema>)=>{
