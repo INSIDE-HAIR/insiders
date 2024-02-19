@@ -4,29 +4,30 @@ import "./globals.css";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
-import { dbMongo } from "@/prisma";
 interface RootLayoutProps {
   children: ReactNode;
 }
 
 export const fontSans = FontSans({
-  subsets: ["latin"]});
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "Plataforma de Insiders",
   description: "Creado por www.insidesalons.com",
 };
 
-export default async function RootLayout(props: RootLayoutProps) {
+export default function RootLayout(props: RootLayoutProps) {
   const { children } = props;
-  // const user = await dbMongo.user.findMany();
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased"
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
         )}
       >
         <Providers>{children}</Providers>
