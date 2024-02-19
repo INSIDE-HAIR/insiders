@@ -10,9 +10,7 @@ interface RootLayoutProps {
 }
 
 export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+  subsets: ["latin"]});
 
 export const metadata: Metadata = {
   title: "Plataforma de Insiders",
