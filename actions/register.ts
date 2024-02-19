@@ -2,7 +2,7 @@
 import * as z from "zod";
 import { RegisterSchema } from "@/schemas/index";
 import bcrypt from "bcryptjs";
-import { dbMongo } from "@/prisma";
+import prisma from "@/prisma";
 import { getUserByEmail } from "@/data/user";
 
 export const register = async (values:z.infer<typeof RegisterSchema>)=>{
@@ -22,7 +22,7 @@ if (existingUser){
   return {error: "El usuario ya existe"}
 }
 
-await dbMongo.user.create({
+await prisma.user.create({
   data: {
     email,
     name,
