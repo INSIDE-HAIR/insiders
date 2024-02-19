@@ -4,9 +4,6 @@ import "./globals.css";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
-interface RootLayoutProps {
-  children: ReactNode;
-}
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -18,20 +15,18 @@ export const metadata: Metadata = {
   description: "Creado por www.insidesalons.com",
 };
 
+interface RootLayoutProps {
+  children: ReactNode;
+}
+
 export default function RootLayout(props: RootLayoutProps) {
   const { children } = props;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
-      >
-        <Providers>{children}</Providers>
-      </body>
+      <body className={cn('min-h-screen bg-background font-sans antialiased', fontSans.variable)}>{children}</body>
+
     </html>
   );
 }
