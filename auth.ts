@@ -5,7 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { dbMongo } from "@/prisma"
 import authConfig from "@/auth.config"
 import { getUserById } from "./data/user"
-import { Prisma } from '@prisma/client';
+import  Prisma  from '@prisma/client';
 
 
 
