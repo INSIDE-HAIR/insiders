@@ -26,8 +26,7 @@ export default async function RootLayout(props: RootLayoutProps) {
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen bg-background font-sans antialiased"
         )}
       >
         <Providers>{children}</Providers>
