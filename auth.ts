@@ -2,7 +2,7 @@ import NextAuth from "next-auth"
 // import { UserRole } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
-import { dbMongo } from "@/prisma"
+import { dbMongo } from "@/prisma/db-mongo"
 import authConfig from "@/auth.config";
 import { getUserById } from "@/data/user"
 

@@ -8,4 +8,4 @@ declare global {
 }
 export const dbMongo = global.prisma || new PrismaClient()
 // export const dbMongo = global.prisma || new PrismaClient().$extends(withAccelerate()) //Not supported yet until we have the serverless version of mongodb
-if (process.env.NODE_ENV === 'development') global.prisma = dbMongo
+if (process.env.NODE_ENV !== "production") global.prisma = dbMongo
