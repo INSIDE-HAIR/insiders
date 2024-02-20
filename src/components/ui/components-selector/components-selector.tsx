@@ -3,12 +3,13 @@ import VideosPlayers from "../videos-players/videos-players";
 import Slides from "../slides/slides";
 import TabsAnimated from "../tabs/tabs-animated";
 import MarketingTabCardsList from "../../aaa/marketing-tab-cards-list";
+import { array } from "zod";
 
 type ComponentsProps = {
   index: number;
   dataMarketingCards: any;
   item: {
-    childrensCode?: string;
+    childrensCode?: Array<any> | [];
     id?: string;
     order?: number;
     type:
@@ -72,7 +73,7 @@ export default function ComponentsSelector({
       {item.type === "tabsCardsList" && item.active === true && (
         <MarketingTabCardsList
           dataMarketingCards={dataMarketingCards}
-          item={{ ...item, childrensCode: [] }}
+          item={{ ...item }}
           index={index}
         />
       )}

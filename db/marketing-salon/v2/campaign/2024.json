@@ -536,6 +536,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
+                  "childrensCode": ["0192"],
                   "title": "Stories Mensuales",
                   "content": [
                     {
