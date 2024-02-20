@@ -172,7 +172,6 @@
           },
           "auth": []
         },
-
         {
           "id": "slider1",
           "order": 3,
@@ -749,7 +748,7 @@
           "auth": []
         }
       ],
-      "active": true,
+      "active": false,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -816,9 +815,22 @@
                 {
                   "order": 4,
                   "type": "video",
-                  "id": "planningSessionPedr",
-                  "title": "Marketing Salon Junior - Planificación (Pedro)",
+                  "id": "planningSessionLorena",
+                  "title": "Marketing Salon Junior - Planificación (Lorena)",
                   "url": "https://player.vimeo.com/video/904546961?h=639992e50d",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 4,
+                  "type": "video",
+                  "id": "planningSessionPedro",
+                  "title": "Marketing Salon Junior - Planificación (Pedro)",
+                  "url": "https://vimeo.com/914674234/cdd5d52c74?share=copy",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -841,7 +853,7 @@
               "title": "Sesiones de Supervisión",
               "classType": "default",
               "content": [],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -855,7 +867,7 @@
               "title": "Sesiones de Planificación",
               "classType": "default",
               "content": [],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null

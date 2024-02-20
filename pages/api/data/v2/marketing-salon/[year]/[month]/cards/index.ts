@@ -51,17 +51,12 @@ function convertGoogleDriveLink(link:string) {
   };
 }
 
-// Datos de ejemplo
-const data = [
-  {
-    "title": "A-A-2403-0000-01-00-01.pdf",
-    "url": "https://drive.google.com/uc?id=1ELt0zElaTASfm-664Pxc8M1Daplw0Sdq&export=download"
-  },
-  {
-    "title": "A-A-2403-0000-01-00-01-P1.jpg",
-    "url": "https://drive.google.com/uc?id=1LAJhep7yf-Fkre76s7Y5O7KTIkim9WQw&export=download"
-  }
-];
+
+
+const langCodes = {
+  "01": "ES",
+  "02": "CA"
+};
 
 // Diccionarios para mapear códigos
 const filesCodes = {
@@ -106,10 +101,6 @@ const contentTypes = {
   },
 };
 
-const langCodes = {
-  "01": "ES",
-  "02": "CA"
-};
 
 const businessCodes = {
   "A": "INSIDE HAIR",

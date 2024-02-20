@@ -1,6 +1,7 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
+import { filesCodes } from "@/pages/api/data/v2/marketing-salon/[year]/[month]/cards";
 
 // El tipo de props puede ser más específico según la estructura de tus datos
 type MarketingTabCardsListProps = {
@@ -32,20 +33,48 @@ export default function MarketingTabCardsList({
     setGroupedByLanguage(byLanguage);
   }, [item.childrensCode, dataMarketingCards]);
 
+  const langCodes = {
+    "01": "ESp",
+    "02": "CA",
+  };
+
+  // Diccionarios para mapear códigos
+  const filesCodes = {
+    "0000": "Stopper",
+    "0080": "Alup80",
+    "0050": "Alup50",
+    "0004": "A4",
+    "0005": "A5",
+    "0085": "Tarjeta",
+    "0048": "Díptico/Tríptico",
+    "0010": "Test",
+    "0100": "Revista",
+    "0360": "Escaparatismo",
+    "0090": "GMB",
+    "0216": "Videos",
+    "1080": "Post Acción",
+    "0108": "Post Mensual",
+    "1920": "Story Acción",
+    "0192": "Story Mensuel",
+    "0002": "Guía",
+    "0500": "Filtro de Instagram",
+    "6969": "SMS/WhatsApp",
+  };
+
   return (
-    <div className="flex w-full flex-col items-center justify-center content-center  [&>*]:w-full ">
+    <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
       <Tabs
         aria-label="Languages"
-        className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center  reverse `}
-        defaultSelectedKey={"ES"}
+        className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
+        defaultValue={langCodes["ES"]} // Usa el valor mapeado para Español
       >
         {groupedByLanguage &&
           Object.entries(groupedByLanguage).map(
-            ([language, categories], index: number) => (
+            ([language, categories], tabIndex: number) => (
               <Tab
                 key={language}
-                title={language}
-                style={{ order: index * -1 }}
+                title={langCodes[language] || language} // Mapeo de idiomas
+                style={{ order: tabIndex * -1 }}
               >
                 {Object.entries(categories as { [key: string]: any }).map(
                   ([categoryCode, items]: [string, any[]]) => (
@@ -54,19 +83,14 @@ export default function MarketingTabCardsList({
                       className="gap-2 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
                     >
                       <h3 className="text-center w-full font-bold text-2xl mb-2 ">
-                        Categoría: {categoryCode}
+                        {filesCodes[categoryCode] || categoryCode}
                       </h3>
-
-                      {/* Aquí puedes renderizar los ítems de la categoría para el idioma actual */}
-                      {items.map((item, index) => (
-                        <div key={index} style={{ order: item.order }}>
-                          {/* Agregar lógica de renderizado basada en el tipo de ítem, como en el ejemplo anterior */}
-                          <MarketingSalonCards
-                            item={item}
-                            key={item.id}
-                            renderButtons={renderButtons}
-                          ></MarketingSalonCards>
-                        </div>
+                      {items.map((item, itemIndex) => (
+                        <MarketingSalonCards
+                          item={item}
+                          key={item.id}
+                          renderButtons={renderButtons}
+                        />
                       ))}
                     </div>
                   )
