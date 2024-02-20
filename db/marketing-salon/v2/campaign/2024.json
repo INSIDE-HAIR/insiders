@@ -7,11 +7,178 @@
       "classType": "default",
       "content": [
         {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          }
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "https://player.vimeo.com/video/908604315?h=73f82d9b20&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Plan de Marketing",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Plan de Marketing",
+                  "url": "https://player.vimeo.com/video/908604788?h=c2a22d6df8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Cartelería",
+                  "url": "https://player.vimeo.com/video/908605393?h=e61e5f564f&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Acciones",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "acciones1",
+                  "title": "Acciones",
+                  "url": "https://player.vimeo.com/video/908605730?h=1d1aa7c2b3&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Luminae FAQs",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "FAQs1",
+                  "title": "Luminae FAQs",
+                  "url": "https://player.vimeo.com/video/912147606?h=62ec5cb080&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+
+        {
           "id": "slider1",
           "order": 3,
           "type": "slider",
           "classType": "default",
-          "url": "https://docs.google.com/presentation/d/e/2PACX-1vQvWSrngoml5UDctPlOK9m5z4Pr5z_m0cBk8RGE3DkriOxC82J6qzWZ9gGzRNmIVC0_wdg3mJlE80Ep/embed?start=false&loop=false&delayms=3000",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vR0mzbkD3vhYv49VCcgzJZgXD1CTPIm7z1sZuPIqYrXDYzIWkiCgPV7lljMk4k2WnJV3-L4QInmm35n/embed?start=false&loop=false&delayms=3000",
           "active": true,
           "available": {
             "startDateTime": null,

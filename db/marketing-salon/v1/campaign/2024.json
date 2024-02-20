@@ -3117,7 +3117,7 @@
       ],
       "formButton": {
         "title": "Enlace al formulario",
-        "active": false,
+        "active": true,
         "url": "https://forms.gle/NpXcL8NByZz7jVYb9"
       },
       "slides": {
