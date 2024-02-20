@@ -1,5 +1,5 @@
 {
-  "january": [
+  "march": [
     {
       "id": "planDeMarketing1",
       "title": "Plan de Marketing",
@@ -742,15 +742,13 @@
       "auth": []
     }
   ],
-  "february": {},
-  "march": {},
-  "april": {},
-  "may": {},
-  "june": {},
-  "july": {},
-  "august": {},
-  "september": {},
-  "october": {},
-  "november": {},
-  "december": {}
+  "april": [],
+  "may": [],
+  "june": [],
+  "july": [],
+  "august": [],
+  "september": [],
+  "october": [],
+  "november": [],
+  "december": []
 }
