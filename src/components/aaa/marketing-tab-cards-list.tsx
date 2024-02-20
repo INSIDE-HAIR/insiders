@@ -69,12 +69,14 @@ export default function MarketingTabCardsList({
         className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
       >
         {groupedByLanguage &&
-          Object.entries(groupedByLanguage).map(
-            ([language, categories], tabIndex: number) => (
+          Object.entries(groupedByLanguage)
+            .reverse()
+            .map(([language, categories]) => (
               <Tab
                 key={language}
-                title={langCodes[language as keyof typeof langCodes] || language} // Mapeo de idiomas
-                style={{ order: tabIndex * -1 }}
+                title={
+                  langCodes[language as keyof typeof langCodes] || language
+                }
               >
                 {Object.entries(categories as { [key: string]: any }).map(
                   ([categoryCode, items]: [string, any[]]) => (
@@ -83,7 +85,8 @@ export default function MarketingTabCardsList({
                       className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
                     >
                       <h3 className="text-center w-full font-bold text-2xl mb-2 ">
-                        {filesCodes[categoryCode as keyof typeof filesCodes] || categoryCode}
+                        {filesCodes[categoryCode as keyof typeof filesCodes] ||
+                          categoryCode}
                       </h3>
                       {items.map((item, itemIndex) => (
                         <MarketingSalonCards
@@ -96,8 +99,7 @@ export default function MarketingTabCardsList({
                   )
                 )}
               </Tab>
-            )
-          )}
+            ))}
       </Tabs>
     </div>
   );
