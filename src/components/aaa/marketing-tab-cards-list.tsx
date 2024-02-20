@@ -70,7 +70,7 @@ export default function MarketingTabCardsList({
       >
         {groupedByLanguage &&
           Object.entries(groupedByLanguage)
-            .reverse()
+            .sort().reverse()
             .map(([language, categories]) => (
               <Tab
                 key={language}
