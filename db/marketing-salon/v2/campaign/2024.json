@@ -748,7 +748,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -830,7 +830,7 @@
                   "type": "video",
                   "id": "planningSessionPedro",
                   "title": "Marketing Salon Junior - Planificación (Pedro)",
-                  "url": "https://vimeo.com/914674234/cdd5d52c74?share=copy",
+                  "url": "https://player.vimeo.com/video/914674234?h=cdd5d52c74&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
