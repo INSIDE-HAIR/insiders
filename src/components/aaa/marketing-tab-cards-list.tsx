@@ -1,7 +1,6 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
-import { filesCodes } from "@/pages/api/data/v2/marketing-salon/[year]/[month]/cards";
 
 // El tipo de props puede ser más específico según la estructura de tus datos
 type MarketingTabCardsListProps = {
@@ -36,6 +35,8 @@ export default function MarketingTabCardsList({
   const langCodes = {
     "01": "ESp",
     "02": "CA",
+    ES: "Español",
+    CA: "Catalá",
   };
 
   // Diccionarios para mapear códigos
@@ -66,24 +67,23 @@ export default function MarketingTabCardsList({
       <Tabs
         aria-label="Languages"
         className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
-        defaultValue={langCodes["ES"]} // Usa el valor mapeado para Español
       >
         {groupedByLanguage &&
           Object.entries(groupedByLanguage).map(
             ([language, categories], tabIndex: number) => (
               <Tab
                 key={language}
-                title={langCodes[language] || language} // Mapeo de idiomas
+                title={langCodes[language as keyof typeof langCodes] || language} // Mapeo de idiomas
                 style={{ order: tabIndex * -1 }}
               >
                 {Object.entries(categories as { [key: string]: any }).map(
                   ([categoryCode, items]: [string, any[]]) => (
                     <div
                       key={categoryCode}
-                      className="gap-2 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
+                      className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
                     >
                       <h3 className="text-center w-full font-bold text-2xl mb-2 ">
-                        {filesCodes[categoryCode] || categoryCode}
+                        {filesCodes[categoryCode as keyof typeof filesCodes] || categoryCode}
                       </h3>
                       {items.map((item, itemIndex) => (
                         <MarketingSalonCards
