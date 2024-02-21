@@ -168,6 +168,7 @@ function Page() {
                   {dataStructure &&
                     dataStructure.map(
                       (tabData: {
+                        childrensCode?: Array<any> | [];
                         id?: string;
                         content: {
                           id?: string;
@@ -194,6 +195,7 @@ function Page() {
                         tabData.content.map(
                           (
                             item: {
+                              childrensCode?: Array<any> | [];
                               id?: string;
                               order?: number;
                               type:

@@ -161,7 +161,7 @@ const renderButtons = (item: any) => {
         window.open(item.transformedUrl.download, "_blank");
       }}
     >
-      Descargar
+      <a download={item.name}>Descargar</a>
     </Button>
   );
 };
