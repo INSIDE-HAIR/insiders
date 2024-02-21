@@ -33,7 +33,7 @@ export default function MarketingTabCardsList({
   }, [item.childrensCode, dataMarketingCards]);
 
   const langCodes = {
-    "01": "ESp",
+    "01": "ES",
     "02": "CA",
     ES: "Español",
     CA: "Catalá",
