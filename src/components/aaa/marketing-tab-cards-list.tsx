@@ -6,7 +6,7 @@ import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
 type MarketingTabCardsListProps = {
   dataMarketingCards: any;
   item: {
-    childrensCode: Array<any> | [];
+    childrensCode?: Array<any> | [];
     id?: string;
     order?: number;
     type:
@@ -43,6 +43,11 @@ export default function MarketingTabCardsList({
   useEffect(() => {
     // Primero agrupamos por idioma
     const byLanguage: { [key: string]: any } = {};
+
+    if (!item.childrensCode) {
+      item.childrensCode = [];
+    }
+
     item.childrensCode.forEach((code: string | number) => {
       Object.entries(dataMarketingCards[code] || {}).forEach(
         ([language, items]) => {

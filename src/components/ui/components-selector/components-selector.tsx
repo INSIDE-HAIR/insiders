@@ -9,7 +9,7 @@ type ComponentsProps = {
   index: number;
   dataMarketingCards: any;
   item: {
-    childrensCode: Array<any> | [];
+    childrensCode?: Array<any> | [];
     id?: string;
     order?: number;
     type:
