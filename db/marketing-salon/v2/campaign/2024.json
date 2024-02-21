@@ -591,16 +591,6 @@
                   "title": "SMS & WhatsApp",
                   "content": [
                     {
-                      "id": null,
-                      "order": null,
-                      "title": "",
-                      "copy": "",
-                      "url": "#",
-                      "category": null,
-                      "lang": null,
-                      "groupTitle": null
-                    },
-                    {
                       "copy": "",
                       "title": "",
                       "url": "#"
@@ -619,7 +609,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -670,7 +660,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -701,7 +691,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -732,7 +722,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null

@@ -5,16 +5,24 @@ type ComponentsProps = {
   index: number;
   dataMarketingCards: any;
   item: {
+    childrensCode?: Array<any> | [];
     id?: string;
     order?: number;
-    type: "slider" | "video" | "button" | "tabs" | "tab" | string;
+    type:
+      | "slider"
+      | "video"
+      | "button"
+      | "tabs"
+      | "tab"
+      | "tabsCardsList"
+      | string;
     title?: string;
     name?: string;
     classType?: string | "default";
     url: string;
     active: boolean | true;
-    available?: { startDateTime?: string; endDateTime?: string };
     content?: Array<any>;
+    available?: { startDateTime?: string; endDateTime?: string };
     childrensType?:
       | "downloadCarouselCards"
       | "copyTextCards"
@@ -22,7 +30,6 @@ type ComponentsProps = {
       | "downloadImageCards"
       | string;
   };
-  childrensCode?: string;
 };
 
 export default function TabsAnimated({

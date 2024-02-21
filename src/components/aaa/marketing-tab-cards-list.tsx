@@ -5,7 +5,32 @@ import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
 // El tipo de props puede ser más específico según la estructura de tus datos
 type MarketingTabCardsListProps = {
   dataMarketingCards: any;
-  item: any;
+  item: {
+    childrensCode: Array<any> | [];
+    id?: string;
+    order?: number;
+    type:
+      | "slider"
+      | "video"
+      | "button"
+      | "tabs"
+      | "tab"
+      | "tabsCardsList"
+      | string;
+    title?: string;
+    name?: string;
+    classType?: string | "default";
+    url: string;
+    active: boolean | true;
+    content?: Array<any>;
+    available?: { startDateTime?: string; endDateTime?: string };
+    childrensType?:
+      | "downloadCarouselCards"
+      | "copyTextCards"
+      | "downloadImageAndCopyTextCards"
+      | "downloadImageCards"
+      | string;
+  };
   index: number | string;
 };
 export default function MarketingTabCardsList({
@@ -70,36 +95,54 @@ export default function MarketingTabCardsList({
       >
         {groupedByLanguage &&
           Object.entries(groupedByLanguage)
-            .sort().reverse()
-            .map(([language, categories]) => (
-              <Tab
-                key={language}
-                title={
-                  langCodes[language as keyof typeof langCodes] || language
-                }
-              >
-                {Object.entries(categories as { [key: string]: any }).map(
-                  ([categoryCode, items]: [string, any[]]) => (
-                    <div
-                      key={categoryCode}
-                      className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
-                    >
-                      <h3 className="text-center w-full font-bold text-2xl mb-2 ">
-                        {filesCodes[categoryCode as keyof typeof filesCodes] ||
-                          categoryCode}
-                      </h3>
-                      {items.map((item, itemIndex) => (
-                        <MarketingSalonCards
-                          item={item}
-                          key={item.id}
-                          renderButtons={renderButtons}
-                        />
-                      ))}
-                    </div>
-                  )
-                )}
-              </Tab>
-            ))}
+            .sort()
+            .reverse()
+            .map(([language, categories]) => {
+              // Filtrar para asegurarnos de que solo renderizamos Tabs con ítems.
+              const categoriesWithItems = Object.entries(
+                categories as { [key: string]: any }
+              ).filter(([_, items]) => items.length > 0);
+
+              console.log("categoriesWithItems", categoriesWithItems);
+              console.log("categoriesWithItems", categories);
+              console.log("categoriesWithItems", language);
+
+              // No renderizar el Tab si no hay categorías con ítems.
+              if (categoriesWithItems.length === 0) {
+                return null;
+              }
+
+              return (
+                <Tab
+                  key={language}
+                  title={
+                    langCodes[language as keyof typeof langCodes] || language
+                  }
+                >
+                  {categoriesWithItems.map(
+                    ([categoryCode, items]: [string, any[]]) => (
+                      <div
+                        key={categoryCode}
+                        className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
+                      >
+                        <h3 className="text-center w-full font-bold text-2xl mb-2 ">
+                          {filesCodes[
+                            categoryCode as keyof typeof filesCodes
+                          ] || categoryCode}
+                        </h3>
+                        {items.map((item, itemIndex) => (
+                          <MarketingSalonCards
+                            item={item}
+                            key={item.id}
+                            renderButtons={renderButtons}
+                          />
+                        ))}
+                      </div>
+                    )
+                  )}
+                </Tab>
+              );
+            })}
       </Tabs>
     </div>
   );
