@@ -80,6 +80,7 @@ export default function MarketingTabCardsList({
     "0048": "Díptico/Tríptico",
     "0010": "Test",
     "0100": "Revista",
+    "0300": "Pop Up",
     "0360": "Escaparatismo",
     "0090": "GMB",
     "0216": "Videos",

@@ -436,7 +436,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048"],
+                  "childrensCode": ["0048", "0300"],
                   "title": "Extras",
                   "content": [
                   ],

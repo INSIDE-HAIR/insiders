@@ -70,6 +70,7 @@ const filesCodes = {
   "0010": "Test",
   "0100": "Revista",
   "0360": "Escaparatismo",
+  "0300": "Pop Up",
   "0090": "GMB",
   "0216": "Videos",
   "1080": "Post Acción",
@@ -88,7 +89,7 @@ const contentTypes = {
     stoppers: ["0000"],
     tests: ["0010"],
     cards: ["0085"],
-    extras: ["0360","0100","0048"],
+    extras: ["0360","0100","0048","0300"],
   },
   digitalContent: {
     actionPosts: ["1080"],
