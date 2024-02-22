@@ -2,6 +2,38 @@ import { Button, Tab, Tabs } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
 
+const langCodes = {
+  "01": "ES",
+  "02": "CA",
+  ES: "Español",
+  CA: "Catalá",
+};
+
+// Diccionarios para mapear códigos
+const filesCodes = {
+  "0000": "Stopper",
+  "0080": "Alup80",
+  "0050": "Alup50",
+  "0004": "A4",
+  "0005": "A5",
+  "0085": "Tarjeta",
+  "0048": "Díptico/Tríptico",
+  "0010": "Test",
+  "0100": "Revista",
+  "0300": "Pop Up",
+  "0360": "Escaparatismo",
+  "0090": "GMB",
+  "0216": "Videos",
+  "1080": "Post Acción",
+  "0108": "Post Mensual",
+  "1920": "Story Acción",
+  "0129": "Story Mensual",
+  "0002": "Guía",
+  "0500": "Filtro de Instagram",
+  "6969": "SMS/WhatsApp",
+};
+
+
 // El tipo de props puede ser más específico según la estructura de tus datos
 type MarketingTabCardsListProps = {
   dataMarketingCards: any;
@@ -41,7 +73,6 @@ export default function MarketingTabCardsList({
   const [groupedByLanguage, setGroupedByLanguage] = useState<any>(null);
 
   useEffect(() => {
-    // Primero agrupamos por idioma
     const byLanguage: { [key: string]: any } = {};
 
     if (!item.childrensCode) {
@@ -60,38 +91,8 @@ export default function MarketingTabCardsList({
     });
 
     setGroupedByLanguage(byLanguage);
-  }, [item.childrensCode, dataMarketingCards]);
+  }, [item.childrensCode, dataMarketingCards, item]);
 
-  const langCodes = {
-    "01": "ES",
-    "02": "CA",
-    ES: "Español",
-    CA: "Catalá",
-  };
-
-  // Diccionarios para mapear códigos
-  const filesCodes = {
-    "0000": "Stopper",
-    "0080": "Alup80",
-    "0050": "Alup50",
-    "0004": "A4",
-    "0005": "A5",
-    "0085": "Tarjeta",
-    "0048": "Díptico/Tríptico",
-    "0010": "Test",
-    "0100": "Revista",
-    "0300": "Pop Up",
-    "0360": "Escaparatismo",
-    "0090": "GMB",
-    "0216": "Videos",
-    "1080": "Post Acción",
-    "0108": "Post Mensual",
-    "1920": "Story Acción",
-    "0192": "Story Mensuel",
-    "0002": "Guía",
-    "0500": "Filtro de Instagram",
-    "6969": "SMS/WhatsApp",
-  };
 
   return (
     <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">

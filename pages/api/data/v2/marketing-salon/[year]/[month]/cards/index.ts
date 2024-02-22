@@ -76,7 +76,7 @@ const filesCodes = {
   "1080": "Post Acción",
   "0108": "Post Mensual",
   "1920": "Story Acción",
-  "0192": "Story Mensuel",
+  "0129": "Story Mensual",
   "0002": "Guía",
   "0500": "Filtro de Instagram",
   "6969": "SMS/WhatsApp"
@@ -95,7 +95,7 @@ const contentTypes = {
     actionPosts: ["1080"],
     actionStories: ["1920"],
     monthlyPost: ["1080"],
-    monthlyStories: ["0192"],
+    monthlyStories: ["0129"],
     smsAndWhatsApp: ["6969"],
     videos: ["0216"],
     extras: ["0500"],

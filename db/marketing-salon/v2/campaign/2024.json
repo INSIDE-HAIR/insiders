@@ -628,7 +628,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageAndCopyTextCards",
-                  "childrensCode": ["0108"],
+                  "childrensCode": ["0192"],
                   "title": "Posts Mensuales",
                   "content": [
                     {
@@ -679,7 +679,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0192"],
+                  "childrensCode": ["0129"],
                   "title": "Stories Mensuales",
                   "content": [
                   ],
@@ -691,7 +691,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
