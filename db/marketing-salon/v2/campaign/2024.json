@@ -847,24 +847,11 @@
                   "auth": []
                 },
                 {
-                  "order": 1,
-                  "type": "video",
-                  "id": "supervisionSessionAinhoa1",
-                  "title": "Marketing Salon Nuevo - Supervisión (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/915864891?h=075ac9892e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
                   "order": 2,
                   "type": "video",
-                  "id": "supervisionSessionAinhoa2",
-                  "title": "Marketing Salon Junior - Supervisión (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/915864161?h=5bd4274da6&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "id": "supervisionSessionAinhoa1",
+                  "title": "Marketing Salon Junior - Planificación (Ainhoa)",
+                  "url": "https://player.vimeo.com/video/915864891?h=075ac9892e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
