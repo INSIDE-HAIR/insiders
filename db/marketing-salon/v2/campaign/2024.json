@@ -314,8 +314,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0080", "0050", "0004", "0005"],
                   "title": "Cartelería",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -345,8 +344,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0000"],
                   "title": "Stoppers",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -376,8 +374,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0010"],
                   "title": "Tests",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -407,8 +404,7 @@
                   "childrensType": "downloadCarouselCards",
                   "childrensCode": ["0085"],
                   "title": "Tarjetas",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -438,8 +434,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0048", "0300"],
                   "title": "Extras",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -496,8 +491,7 @@
                   "childrensType": "downloadImageAndCopyTextCards",
                   "childrensCode": ["1080"],
                   "title": "Posts de Acción",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -527,8 +521,7 @@
                   "childrensType": "downloadImageCards",
                   "title": "Stories de Acción",
                   "childrensCode": ["1920"],
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -558,8 +551,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0216"],
                   "title": "Videos",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -681,8 +673,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": ["0129"],
                   "title": "Stories Mensuales",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -712,8 +703,7 @@
                   "childrensType": "downloadImageCards",
                   "childrensCode": [],
                   "title": "Extras",
-                  "content": [
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -842,7 +832,73 @@
               "type": "tab",
               "title": "Sesiones de Supervisión",
               "classType": "default",
-              "content": [],
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "supervisionSessionAinhoa",
+                  "title": "Marketing Salon Nuevo - Supervisión (Ainhoa)",
+                  "url": "https://player.vimeo.com/video/915864161?h=5bd4274da6&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "supervisionSessionAinhoa1",
+                  "title": "Marketing Salon Nuevo - Supervisión (Ainhoa)",
+                  "url": "https://player.vimeo.com/video/915864891?h=075ac9892e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 2,
+                  "type": "video",
+                  "id": "supervisionSessionAinhoa2",
+                  "title": "Marketing Salon Junior - Supervisión (Ainhoa)",
+                  "url": "https://player.vimeo.com/video/915864161?h=5bd4274da6&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 3,
+                  "type": "video",
+                  "id": "supervisionSessionPedro3",
+                  "title": "Marketing Salon Junior - Supervisión (Pedro)",
+                  "url": "https://player.vimeo.com/video/915864359?h=35dbc8dc34&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 4,
+                  "type": "video",
+                  "id": "supervisionSessionLorena4",
+                  "title": "Marketing Salon Avanzado - Supervisión (Lorena)",
+                  "url": "https://player.vimeo.com/video/915863981?h=835190f6d8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
               "active": false,
               "available": {
                 "startDateTime": null,
