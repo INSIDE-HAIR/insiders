@@ -259,6 +259,34 @@
                 "endDateTime": null
               },
               "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 3,
+              "type": "tab",
+              "title": "Tutorial Técnico de Luminae",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "tutorialPopUp1",
+                  "title": "Tutorial Técnico de servicio de campaña Luminae",
+                  "url": "https://player.vimeo.com/video/914766117?h=eb9b69d98f&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
             }
           ],
           "active": true,

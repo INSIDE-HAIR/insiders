@@ -78,6 +78,7 @@ export default function ComponentsSelector({
           index={index}
         />
       )}
+      
     </>
   );
 }
