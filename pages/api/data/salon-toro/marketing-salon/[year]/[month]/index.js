@@ -2,7 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 
 export default async function handler(req, res) {
-  const { year, month } = req.query;
+  const { year, month, client, campaign } = req.query;
 
   try {
     const filePath = path.resolve(

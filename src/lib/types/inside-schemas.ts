@@ -110,3 +110,36 @@ export const UpdateUserProfileSchema = z.object({
 // export const ResetSchema = z.object({
 //   email: z.string().email({ message: "Email is required." }),
 // });
+
+
+
+// Definición de las constantes ajustadas
+const campaignCodes = {
+  "A": "Campaña Mensual",
+  "B": "PrimeLady",
+  "C": "Start Marketing",
+};
+
+const clientsCode = {
+  "A": "INSIDERS",
+  "B": "SALÓN TORO",
+  "C": "TONI&GUY",
+  "D": "AH PELUQUEROS",
+};
+
+
+// Asegurándonos de que TypeScript interpreta los argumentos como tuplas
+const campaignKeys = Object.keys(campaignCodes) as [string, ...string[]];
+const clientKeys = Object.keys(clientsCode) as [string, ...string[]];
+
+// Creando esquemas Zod para campaign y client
+const campaignSchema = z.enum(campaignKeys);
+const clientSchema = z.enum(clientKeys);
+
+// Esquema completo que incluye campaign, year, month, client
+export const RequestMarketingSalonSchema = z.object({
+  campaign: campaignSchema,
+  year: z.number().min(2024,{message: "No hay información disponible para esta fecha."}).max(2100,{message: "No hay información disponible para esta fecha."}), // Asegurándonos de que el año sea razonable
+  month: z.number().min(1, {message: "Tiene que ser un número entre uno y doce"}).max(12, {message: "Tiene que ser un número entre uno y doce"}), // Meses de 1 a 12
+  client: clientSchema,
+});

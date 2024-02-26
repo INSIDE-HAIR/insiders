@@ -167,23 +167,35 @@ function filterAndGroupByCategoriesAndLanguages(items: any[], filesCodes: Record
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { year, month } = req.query;
+  const { campaign, year, month, client } = req.query;
 
   try {
     const filePath = path.resolve(
-      "./db/marketing-salon/v2/campaign/marketing-cards/",
+      `./db/v3/services-data/marketing-salon/`,
       `${year}.json`
     );
     const data = await fs.readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
 
+    // Crear una lista de tarjetas de marketing para el mes completo
     const fullMonthMarketingCards = createMarketingCardsList(
-      jsonData[ month as string]
+      jsonData[month as string]
     );
-    const groupedItemsByCategory = filterAndGroupByCategoriesAndLanguages(fullMonthMarketingCards, filesCodes, langCodes);
-    //console.log(groupedItemsByCategory);
+
+    // Filtro inicial por campaign y client
+    const filteredByCampaignAndClient = fullMonthMarketingCards.filter(card => {
+      const matchesCampaign = campaign ? (typeof campaign === 'string' ? card.campaign.toLowerCase() === campaign.toLowerCase() : false) : true; // Asumiendo que campaign es un texto descriptivo en el objeto
+      const matchesClient = client ? (typeof client === 'string' ? card.client.toLowerCase() === client.toLowerCase() : false) : true; // Asumiendo que client es un texto descriptivo en el objeto
+      return matchesCampaign && matchesClient;
+    });
+
+    console.log(filteredByCampaignAndClient);
+    console.log(campaign, year, month, client);
+
+    // Luego de filtrar por campaign y client, proceder con la agrupación por categorías y lenguajes
+    const groupedItemsByCategory = filterAndGroupByCategoriesAndLanguages(filteredByCampaignAndClient, filesCodes, langCodes);
     
-    if (groupedItemsByCategory) {
+    if (groupedItemsByCategory) { 
       res.status(200).json(groupedItemsByCategory);
     } else {
       res.status(404).json({ message: "Something went wrong" });

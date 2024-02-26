@@ -24,6 +24,12 @@ function Page() {
   const [month, setMonth] = useState<string>(
     (searchParams?.get("month") as string) ?? "march"
   );
+  const [client, setClient] = useState<string>(
+    (searchParams?.get("client")?.toLocaleLowerCase() as string) ?? "insiders"
+  );
+  const [campaign, setCampaign] = useState<string>(
+    (searchParams?.get("campaign")?.toLocaleLowerCase() as string) ?? "campaign"
+  );
   const monthTranslations = dataMonths.months.find((item) => item.id === month);
   // Update the type of sideMenu state
   const [sideMenu, setSideMenu] = useState<{ list: any[] } | null>(null);
@@ -33,10 +39,10 @@ function Page() {
       setLoading(true);
       try {
         const estructureData = await fetch(
-          `/api/data/v2/marketing-salon/${year}/${month}/structure`
+          `/api/data/v3/marketing-salon/${client}/${year}/${month}/${campaign}/structure`
         );
         const cardsData = await fetch(
-          `/api/data/v2/marketing-salon/${year}/${month}/cards`
+          `/api/data/v3/marketing-salon/${client}/${year}/${month}/${campaign}/cards`
         );
 
         if (!estructureData.ok) {

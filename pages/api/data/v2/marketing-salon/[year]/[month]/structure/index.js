@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
   try {
     const filePath = path.resolve(
-      "./db/marketing-salon/v2/campaign",
+      "./db/marketing-salon/v2/campaign/client-structure/",
       `${year}.json`
     );
     const data = await fs.readFile(filePath, "utf8");
