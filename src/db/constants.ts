@@ -18,6 +18,7 @@ export const filesCodes = {
   "0300": "Pop Up",
   "0090": "GMB",
   "0216": "Videos",
+  "0025": "Listas de Control",
   "1080": "Post Acción",
   "0108": "Post Mensual",
   "1920": "Story Acción",
@@ -25,6 +26,7 @@ export const filesCodes = {
   "0002": "Guía",
   "0500": "Filtro de Instagram",
   "6969": "SMS/WhatsApp"
+  
   // más códigos según sea necesario
 };
 

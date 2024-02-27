@@ -1,36 +1,13 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
+import { filesCodes } from "@/src/db/constants";
 
 const langCodes = {
   "01": "ES",
   "02": "CA",
   ES: "Español",
   CA: "Catalá",
-};
-
-// Diccionarios para mapear códigos
-const filesCodes = {
-  "0000": "Stopper",
-  "0080": "Alup80",
-  "0050": "Alup50",
-  "0004": "A4",
-  "0005": "A5",
-  "0085": "Tarjeta",
-  "0048": "Díptico/Tríptico",
-  "0010": "Test",
-  "0100": "Revista",
-  "0300": "Pop Up",
-  "0360": "Escaparatismo",
-  "0090": "GMB",
-  "0216": "Videos",
-  "1080": "Post Acción",
-  "0108": "Post Mensual",
-  "1920": "Story Acción",
-  "0129": "Story Mensual",
-  "0002": "Guía",
-  "0500": "Filtro de Instagram",
-  "6969": "SMS/WhatsApp",
 };
 
 
