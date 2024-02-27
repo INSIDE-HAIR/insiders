@@ -11,9 +11,9 @@
           "order": 1,
           "type": "button",
           "classType": "default",
-          "title": "Enlace de formulario",
+          "title": "",
           "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
-          "active": true,
+          "active": false,
           "available": {
             "startDateTime": null,
             "endDateTime": null
@@ -177,7 +177,7 @@
           "order": 3,
           "type": "slider",
           "classType": "default",
-          "url": "https://docs.google.com/presentation/d/e/2PACX-1vR0mzbkD3vhYv49VCcgzJZgXD1CTPIm7z1sZuPIqYrXDYzIWkiCgPV7lljMk4k2WnJV3-L4QInmm35n/embed?start=false&loop=false&delayms=3000",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vSaGFtv8KKcSLw5-hPRGCmFMzzjcswgRTZIemI6mLWwk1IgkUPvSg1aGgOx03m1H4Y0IGEC2V4mVy2z/embed?start=false&loop=false&delayms=3000",
           "active": true,
           "available": {
             "startDateTime": null,
@@ -272,7 +272,7 @@
                   "type": "video",
                   "id": "tutorialPopUp1",
                   "title": "Tutorial Técnico de servicio de campaña Luminae",
-                  "url": "https://player.vimeo.com/video/914766117?h=eb9b69d98f&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "url": "https://player.vimeo.com/video/916598740?h=51e30f5547&badge=0&autopause=0&player_id=0&app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -351,7 +351,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -381,7 +381,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -400,7 +400,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0010"],
+                  "childrensCode": ["0010", "0025"],
                   "title": "Tests",
                   "content": [],
                   "active": true,
@@ -441,7 +441,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -460,7 +460,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300", "0025"],
+                  "childrensCode": ["0048", "0300"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -471,7 +471,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -487,7 +487,7 @@
           "auth": []
         }
       ],
-      "active": true,
+      "active": false,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -588,7 +588,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -710,7 +710,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -740,194 +740,6 @@
                   "auth": []
                 }
               ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            }
-          ],
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        }
-      ],
-      "active": true,
-      "available": {
-        "startDateTime": null,
-        "endDateTime": null
-      },
-      "auth": []
-    },
-    {
-      "id": "repeticiones5",
-      "title": "Repeticiones",
-      "order": 5,
-      "classType": "default",
-      "content": [
-        {
-          "id": "tabs1",
-          "order": 1,
-          "type": "tabs",
-          "content": [
-            {
-              "id": "tab1",
-              "order": 1,
-              "type": "tab",
-              "title": "Sesiones de Planificación",
-              "classType": "default",
-              "content": [
-                {
-                  "order": 1,
-                  "type": "video",
-                  "id": "planningSessionAinhoa",
-                  "title": "Marketing Salon Nuevo - Planificación (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/913045342?h=72a3c1e252",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 2,
-                  "type": "video",
-                  "id": "planningSessionAinhoa2",
-                  "title": "Marketing Salon Junior - Planificación (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/913047218?h=1c0b675eca&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 3,
-                  "type": "video",
-                  "id": "planningSessionLorena",
-                  "title": "Marketing Salon Avanzado - Planificación (Lorena)",
-                  "url": "https://player.vimeo.com/video/913037729?h=cd982d2d3b",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 4,
-                  "type": "video",
-                  "id": "planningSessionLorena",
-                  "title": "Marketing Salon Junior - Planificación (Lorena)",
-                  "url": "https://player.vimeo.com/video/904546961?h=639992e50d",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 4,
-                  "type": "video",
-                  "id": "planningSessionPedro",
-                  "title": "Marketing Salon Junior - Planificación (Pedro)",
-                  "url": "https://player.vimeo.com/video/914674234?h=cdd5d52c74&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab2",
-              "order": 2,
-              "type": "tab",
-              "title": "Sesiones de Supervisión",
-              "classType": "default",
-              "content": [
-                {
-                  "order": 1,
-                  "type": "video",
-                  "id": "supervisionSessionAinhoa",
-                  "title": "Marketing Salon Nuevo - Supervisión (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/915864161?h=5bd4274da6&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 2,
-                  "type": "video",
-                  "id": "supervisionSessionAinhoa1",
-                  "title": "Marketing Salon Junior - Planificación (Ainhoa)",
-                  "url": "https://player.vimeo.com/video/915864891?h=075ac9892e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 3,
-                  "type": "video",
-                  "id": "supervisionSessionPedro3",
-                  "title": "Marketing Salon Junior - Supervisión (Pedro)",
-                  "url": "https://player.vimeo.com/video/915864359?h=35dbc8dc34&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                },
-                {
-                  "order": 4,
-                  "type": "video",
-                  "id": "supervisionSessionLorena4",
-                  "title": "Marketing Salon Avanzado - Supervisión (Lorena)",
-                  "url": "https://player.vimeo.com/video/915863981?h=835190f6d8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab3",
-              "order": 3,
-              "type": "tab",
-              "title": "Sesiones de Planificación",
-              "classType": "default",
-              "content": [],
               "active": false,
               "available": {
                 "startDateTime": null,

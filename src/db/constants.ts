@@ -49,7 +49,7 @@ export const contentTypes = {
   physicalContent: {
     posters: ["0080","0050","0004","0005",],
     stoppers: ["0000"],
-    tests: ["0010"],
+    tests: ["0010", "0025"],
     cards: ["0085"],
     extras: ["0360","0100","0048","0300"],
   },
