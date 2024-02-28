@@ -925,14 +925,14 @@
               "id": "tab3",
               "order": 3,
               "type": "tab",
-              "title": "Sesiones de Implementación",
+              "title": "Formación de Implementación",
               "classType": "default",
               "content": [
                 {
                   "order": 1,
                   "type": "video",
                   "id": "implementationSession1",
-                  "title": "Marketing Salon Junior - Implementación (Jesús & Ainhoa)",
+                  "title": "Marketing Salon - Formación de Implementación (27-02-2024)",
                   "url": "https://player.vimeo.com/video/917501089?h=3b01068cda&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
