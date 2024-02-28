@@ -925,6 +925,34 @@
               "id": "tab3",
               "order": 3,
               "type": "tab",
+              "title": "Sesiones de Implementación",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "implementationSession1",
+                  "title": "Marketing Salon Junior - Implementación (Jesús & Ainhoa)",
+                  "url": "https://player.vimeo.com/video/917501089?h=3b01068cda&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
               "title": "Sesiones de Planificación",
               "classType": "default",
               "content": [],
