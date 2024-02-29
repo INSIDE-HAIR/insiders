@@ -20,7 +20,7 @@ export const filesCodes = {
   "0216": "Videos",
   "0025": "Listas de Control",
   "1080": "Post Acción",
-  "0108": "Post Mensual",
+  "0192": "Post Mensual",
   "1920": "Story Acción",
   "0129": "Story Mensual",
   "0002": "Guía",
@@ -56,7 +56,7 @@ export const contentTypes = {
   digitalContent: {
     actionPosts: ["1080"],
     actionStories: ["1920"],
-    monthlyPost: ["1080"],
+    monthlyPost: ["0192"],
     monthlyStories: ["0129"],
     smsAndWhatsApp: ["6969"],
     videos: ["0216"],

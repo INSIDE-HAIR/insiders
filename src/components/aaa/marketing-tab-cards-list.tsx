@@ -1,7 +1,8 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
 import { filesCodes } from "@/src/db/constants";
+import {Toaster, toast} from "sonner"
 
 const langCodes = {
   "01": "ES",
@@ -9,7 +10,6 @@ const langCodes = {
   ES: "Español",
   CA: "Catalá",
 };
-
 
 // El tipo de props puede ser más específico según la estructura de tus datos
 type MarketingTabCardsListProps = {
@@ -70,7 +70,6 @@ export default function MarketingTabCardsList({
     setGroupedByLanguage(byLanguage);
   }, [item.childrensCode, dataMarketingCards, item]);
 
-
   return (
     <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
       <Tabs
@@ -118,7 +117,7 @@ export default function MarketingTabCardsList({
                           <MarketingSalonCards
                             item={item}
                             key={item.id}
-                            renderButtons={renderButtons}
+                            renderButtons={RenderButtons}
                           />
                         ))}
                       </div>
@@ -128,24 +127,66 @@ export default function MarketingTabCardsList({
               );
             })}
       </Tabs>
+      <Toaster richColors/>
     </div>
   );
 }
 
-const renderButtons = (item: any) => {
+const RenderButtons = (item: any) => {
+  const copyRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleCopyText = () => {
+    // Acceder al valor actual de la referencia y copiar su contenido
+    const copyText = copyRef.current?.value;
+    if (copyText) {
+      navigator.clipboard.writeText(copyText).then(() => {
+        toast.success("¡Texto copiado con éxito!");
+      }, (err) => {
+        console.error('Error al copiar texto: ', err);
+        toast.error('Error al copiar texto: ', err);
+        // Manejar el error, por ejemplo, mostrando un mensaje al usuario
+      });
+    }
+  };
+
   return (
-    <Button
-      className={`text-tiny text-white bg-gray-700 m-1`}
-      variant="flat"
-      key={item.id}
-      color="default"
-      radius="lg"
-      size="sm"
-      onClick={() => {
-        window.open(item.transformedUrl.download, "_blank");
-      }}
-    >
-      <a download={item.name}>Descargar</a>
-    </Button>
+    <>
+      <Button
+        className={`text-tiny text-white bg-gray-700 m-1`}
+        variant="flat"
+        key={item.id}
+        color="default"
+        radius="lg"
+        size="sm"
+        onClick={() => {
+          window.open(item.transformedUrl.download, "_blank");
+        }}
+      >
+        <a download={item.name}>Descargar</a>
+      </Button>
+      {item.copy && (
+        <>
+          <Button
+            className={`text-tiny text-white bg-gray-700 m-1`}
+            variant="flat"
+            color="default"
+            radius="lg"
+            size="sm"
+            id={"button" + item.name}
+            onClick={handleCopyText}
+          >
+            Copiar Texto
+          </Button>
+          <textarea
+            ref={copyRef}
+            defaultValue={item.copy}
+            disabled
+            id={"copy" + item.name}
+            rows={30}
+            className="max-w-full  flex border-2 rounded-sm mt-2"
+          />
+        </>
+      )}
+    </>
   );
 };
