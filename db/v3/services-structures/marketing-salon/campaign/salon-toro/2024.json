@@ -306,7 +306,7 @@
     },
     {
       "id": "contenidoFisico3",
-      "title": "Contenido Físico",
+      "title": "Carteleria",
       "order": 3,
       "classType": "default",
       "content": [
@@ -315,7 +315,7 @@
           "order": 1,
           "type": "text",
           "classType": "h1",
-          "title": "Contenido Físico",
+          "title": "Carteleria",
           "active": true,
           "available": {
             "startDateTime": null,
