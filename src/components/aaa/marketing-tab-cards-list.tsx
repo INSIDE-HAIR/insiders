@@ -162,7 +162,7 @@ const RenderButtons = (item: any) => {
           window.open(item.transformedUrl.download, "_blank");
         }}
       >
-        <a download={item.name}>Descargar</a>
+        <a download={item.title}>Descargar {item.buttonTitle} </a>
       </Button>
       {item.copy && (
         <>

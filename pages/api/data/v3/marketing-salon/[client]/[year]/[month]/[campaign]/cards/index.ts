@@ -23,6 +23,7 @@ interface BaseObject {
   url: string;
   copy?: string;
   groupTitle?: string;
+  buttonTitle?: string;
   preview: PreviewItem[];
 }
 
@@ -87,6 +88,7 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         month: Number(yearAndMonth?.substring(2, 4)),
         groupOrder: Number(family), 
         groupTitle: obj.groupTitle || "",
+        buttonTitle: obj.buttonTitle || "",
         preview: [],
       };
     }
