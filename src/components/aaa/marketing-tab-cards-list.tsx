@@ -1,8 +1,9 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
 import { filesCodes } from "@/src/db/constants";
-import {Toaster, toast} from "sonner"
+import { Toaster, toast } from "sonner";
+import { string } from "zod";
 
 const langCodes = {
   "01": "ES",
@@ -87,8 +88,6 @@ export default function MarketingTabCardsList({
               ).filter(([_, items]) => items.length > 0);
 
               console.log("categoriesWithItems", categoriesWithItems);
-              console.log("categoriesWithItems", categories);
-              console.log("categoriesWithItems", language);
 
               // No renderizar el Tab si no hay categorías con ítems.
               if (categoriesWithItems.length === 0) {
@@ -102,32 +101,47 @@ export default function MarketingTabCardsList({
                     langCodes[language as keyof typeof langCodes] || language
                   }
                 >
-                  {categoriesWithItems.map(
-                    ([categoryCode, items]: [string, any[]]) => (
-                      <div
-                        key={categoryCode}
-                        className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
-                      >
-                        <h3 className="text-center w-full font-bold text-2xl mb-2 ">
-                          {filesCodes[
-                            categoryCode as keyof typeof filesCodes
-                          ] || categoryCode}
-                        </h3>
-                        {items.map((item, itemIndex) => (
-                          <MarketingSalonCards
-                            item={item}
-                            key={item.id}
-                            renderButtons={RenderButtons}
-                          />
-                        ))}
-                      </div>
-                    )
+                  {Object.entries(categories as { [key: string]: any }).map(
+                    ([categoryCode, items]: [string, any[]]) => {
+                      // Aquí agregamos el agrupamiento por groupTitle
+                      const groupedByTitle = groupByGroupTitle(items);
+                      return (
+                        <div
+                          key={categoryCode}
+                          className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
+                        >
+                          <h3 className="text-center w-full font-bold text-2xl  -mb-6">
+                            {filesCodes[
+                              categoryCode as keyof typeof filesCodes
+                            ] || categoryCode}
+                          </h3>
+                          {groupedByTitle.map(([groupTitle, groupItems]) => (
+                            <div key={groupTitle} style={{order:groupTitle.split("-")[0]}}>
+                              {groupTitle !== "Sin Grupo de Familia" && (
+                                <h4 className="text-center w-full font-bold text-xl  mt-6">
+                                  {groupTitle.split("-")[1].replace(/_/g, "")}
+                                </h4>
+                              )}
+                              <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
+                                {groupItems.map((groupItem) => (
+                                  <MarketingSalonCards
+                                    item={groupItem}
+                                    key={groupItem.id}
+                                    renderButtons={RenderButtons}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
                   )}
                 </Tab>
               );
             })}
       </Tabs>
-      <Toaster richColors/>
+      <Toaster richColors />
     </div>
   );
 }
@@ -139,13 +153,16 @@ const RenderButtons = (item: any) => {
     // Acceder al valor actual de la referencia y copiar su contenido
     const copyText = copyRef.current?.value;
     if (copyText) {
-      navigator.clipboard.writeText(copyText).then(() => {
-        toast.success("¡Texto copiado con éxito!");
-      }, (err) => {
-        console.error('Error al copiar texto: ', err);
-        toast.error('Error al copiar texto: ', err);
-        // Manejar el error, por ejemplo, mostrando un mensaje al usuario
-      });
+      navigator.clipboard.writeText(copyText).then(
+        () => {
+          toast.success("¡Texto copiado con éxito!");
+        },
+        (err) => {
+          console.error("Error al copiar texto: ", err);
+          toast.error("Error al copiar texto: ", err);
+          // Manejar el error, por ejemplo, mostrando un mensaje al usuario
+        }
+      );
     }
   };
 
@@ -189,4 +206,19 @@ const RenderButtons = (item: any) => {
       )}
     </>
   );
+};
+
+// Esta función ayuda a agrupar los ítems por su groupTitle
+const groupByGroupTitle = (items: any[]) => {
+  const groups: { [key: string]: any[] } = {}; // Add type annotation to the groups object
+  items.forEach((item) => {
+    const title = item.groupOrder + "-" + item.groupTitle || "Sin Grupo de Familia";
+    if (!groups[title]) {
+      groups[title] = [];
+    }
+    groups[title].push(item);
+  });
+
+  console.log("groups", groups);
+  return Object.entries(groups);
 };

@@ -19,10 +19,10 @@ export const filesCodes = {
   "0090": "GMB",
   "0216": "Videos",
   "0025": "Listas de Control",
-  "1080": "Post Acción",
-  "0192": "Post Mensual",
+  "1080": "Posts de Acción",
+  "0192": "Posts Mensuales",
   "1920": "Story Acción",
-  "0129": "Story Mensual",
+  "0129": "Stories Mensuales",
   "0002": "Guía",
   "0500": "Filtro de Instagram",
   "6969": "SMS/WhatsApp"
