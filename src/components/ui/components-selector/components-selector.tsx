@@ -7,7 +7,7 @@ import { array } from "zod";
 
 type ComponentsProps = {
   index: number;
-  dataMarketingCards: any;
+  dataMarketingCards?: any;
   item: {
     childrensCode?: Array<any> | [];
     id?: string;
@@ -71,7 +71,7 @@ export default function ComponentsSelector({
         />
       )}
 
-      {item.type === "tabsCardsList" && item.active === true && (
+      {item.type === "tabsCardsList" && item.active === true && dataMarketingCards && (
         <MarketingTabCardsList
           dataMarketingCards={dataMarketingCards}
           item={{ ...item }}
