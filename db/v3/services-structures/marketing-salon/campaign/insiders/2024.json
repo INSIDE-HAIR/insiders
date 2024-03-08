@@ -953,9 +953,36 @@
               "id": "tab4",
               "order": 4,
               "type": "tab",
-              "title": "Sesiones de Planificación",
+              "title": "Sesiones de Lanzamiento",
               "classType": "default",
-              "content": [],
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "laucnhSession1",
+                  "title": "Marketing Salon - Lanzamiento (Lorena)",
+                  "url": "https://player.vimeo.com/video/921038426?h=600b539c0b&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "order": 2,
+                  "type": "video",
+                  "id": "laucnhSession2",
+                  "title": "Marketing Salon - Lanzamiento (Pedro)",
+                  "url": "https://player.vimeo.com/video/921126360?h=f996e281ba&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
               "active": false,
               "available": {
                 "startDateTime": null,
