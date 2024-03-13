@@ -981,6 +981,19 @@
                     "endDateTime": null
                   },
                   "auth": []
+                },
+                {
+                  "order": 3,
+                  "type": "video",
+                  "id": "laucnhSession3",
+                  "title": "Marketing Salon Nuevo - Lanzamiento (Ainoha)",
+                  "url": "https://player.vimeo.com/video/923016530?h=fcd0a97f2d&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
                 }
               ],
               "active": true,
