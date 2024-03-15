@@ -1,12 +1,13 @@
 {
   "id": "slider1",
-  "order": 1,
+  "order": 3,
   "type": "slider",
   "classType": "default",
-  "url": "",
+  "url": "https://docs.google.com/presentation/d/e/2PACX-1vS4dXSEj9u9iQ1K_NsUv_NAlTCCQyDWCOKqi2hFmzec8AHuu_oDQfscONc-jLCf6Ksmvh4jhqi8pFX9/embed?start=false&loop=false&delayms=3000",
   "active": true,
   "available": {
-    "startDateTime": null,
-    "endDateTime": null
-  }
+    "startDateTime": "2024-03-15 07:00",
+    "endDateTime": ""
+  },
+  "auth": []
 }

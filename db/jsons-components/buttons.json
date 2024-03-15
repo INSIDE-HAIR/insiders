@@ -3,11 +3,12 @@
   "order": 1,
   "type": "button",
   "classType": "default",
-  "title": "Enlace de Descarga",
-  "url": "",
-  "active": true,
+  "title": "Enlace de formulario",
+  "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
+  "active": false,
   "available": {
-    "startDateTime": null,
-    "endDateTime": null
-  }
+    "startDateTime": "2024-03-15 07:00",
+    "endDateTime": ""
+  },
+  "auth": []
 }

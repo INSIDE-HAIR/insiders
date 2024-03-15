@@ -4,6 +4,7 @@ import Slides from "../slides/slides";
 import TabsAnimated from "../tabs/tabs-animated";
 import MarketingTabCardsList from "../../aaa/marketing-tab-cards-list";
 import { array } from "zod";
+import useIsAvailable from "@/src/hooks/useIsAvailable";
 
 type ComponentsProps = {
   index: number;
@@ -42,13 +43,14 @@ export default function ComponentsSelector({
   dataMarketingCards,
 }: ComponentsProps) {
   console.log(dataMarketingCards);
+  const available = useIsAvailable(item.active, item.available?.startDateTime ?? "", item.available?.endDateTime ?? "");
 
   return (
     <>
-      {item.type === "video" && item.active === true && (
+      {item.type === "video" && available && (
         <VideosPlayers item={{ ...item }} index={index} />
       )}
-      {item.type === "button" && item.active === true && (
+      {item.type === "button" && available && (
         <Button
           variant="faded"
           className="flex bg-gray-700 text-white"
@@ -60,10 +62,10 @@ export default function ComponentsSelector({
           {item && item.title}
         </Button>
       )}
-      {item.type === "slider" && item.active === true && (
+      {item.type === "slider" && available && (
         <Slides item={{ ...item }} index={index}></Slides>
       )}
-      {item.type === "tabs" && item.active === true && (
+      {item.type === "tabs" && available && (
         <TabsAnimated
           item={{ ...item }}
           index={index}
@@ -71,7 +73,7 @@ export default function ComponentsSelector({
         />
       )}
 
-      {item.type === "tabsCardsList" && item.active === true && dataMarketingCards && (
+      {item.type === "tabsCardsList" && available && dataMarketingCards && (
         <MarketingTabCardsList
           dataMarketingCards={dataMarketingCards}
           item={{ ...item }}

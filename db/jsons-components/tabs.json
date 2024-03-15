@@ -2,38 +2,68 @@
   "id": "tabs1",
   "order": 1,
   "type": "tabs",
-  "classType": "default",
   "content": [
     {
       "id": "tab1",
       "order": 1,
       "type": "tab",
-      "title": "Tab 1",
+      "title": "Sesiones de Planificación",
       "classType": "default",
       "content": [],
       "active": true,
       "available": {
-        "startDateTime": null,
-        "endDateTime": null
-      }
+        "startDateTime": "2024-03-15 07:00",
+        "endDateTime": ""
+      },
+      "auth": []
     },
     {
       "id": "tab2",
       "order": 2,
       "type": "tab",
-      "title": "Tab 2",
+      "title": "Sesiones de Supervisión",
       "classType": "default",
       "content": [],
-      "active": true,
+      "active": false,
       "available": {
-        "startDateTime": null,
-        "endDateTime": null
-      }
+        "startDateTime": "2024-03-15 07:00",
+        "endDateTime": ""
+      },
+      "auth": []
+    },
+    {
+      "id": "tab3",
+      "order": 3,
+      "type": "tab",
+      "title": "Formación de Implementación",
+      "classType": "default",
+      "content": [],
+      "active": false,
+      "available": {
+        "startDateTime": "2024-03-15 07:00",
+        "endDateTime": ""
+      },
+      "auth": []
+    },
+    {
+      "id": "tab4",
+      "order": 4,
+      "type": "tab",
+      "title": "Sesiones de Lanzamiento",
+      "classType": "default",
+      "content": [],
+      "active": false,
+      "available": {
+        "startDateTime": "2024-03-15 07:00",
+        "endDateTime": ""
+      },
+      "auth": []
     }
   ],
   "active": true,
   "available": {
-    "startDateTime": null,
-    "endDateTime": null
-  }
+    "startDateTime": "2024-03-15 07:00",
+    "endDateTime": ""
+  },
+  "auth": []
 }

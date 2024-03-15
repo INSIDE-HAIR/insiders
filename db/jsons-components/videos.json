@@ -1,13 +1,13 @@
 {
-  "id": "video1",
   "order": 1,
   "type": "video",
-  "classType": "default",
-  "title": null,
-  "url": "",
+  "id": "creativePresentation1",
+  "title": "Presentación de Creatividades",
+  "url": "https://player.vimeo.com/video/923694173?h=36931b502e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
   "active": true,
   "available": {
-    "startDateTime": null,
-    "endDateTime": null
-  }
+    "startDateTime": "2024-03-15 07:00",
+    "endDateTime": ""
+  },
+  "auth": []
 }

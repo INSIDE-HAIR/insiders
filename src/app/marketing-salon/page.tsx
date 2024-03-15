@@ -99,10 +99,16 @@ function Page() {
               {sideMenu &&
                 sideMenu.list.map(
                   (
-                    item: { id: string; title: string; order: any },
+                    item: {
+                      id: string;
+                      title: string;
+                      order: any;
+                      active: boolean;
+                    },
                     index: any
                   ) =>
-                    item.title && (
+                    item.title &&
+                    item.active && (
                       <li
                         key={index + item.id}
                         className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
@@ -137,10 +143,16 @@ function Page() {
               {sideMenu &&
                 sideMenu.list.map(
                   (
-                    item: { id: string; title: string; order: any },
+                    item: {
+                      id: string;
+                      title: string;
+                      order: any;
+                      active: boolean;
+                    },
                     index: any
                   ) =>
-                    item.title && (
+                    item.title &&
+                    item.active && (
                       <li
                         key={index + item.id}
                         className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:font-semibold hover:bg-gray-700/30 w-full ${
@@ -255,6 +267,7 @@ function generateSideMenu(dataStructure: {
     id: any;
     title: any;
     order: any;
+    active: boolean;
   };
 }) {
   let menuItems = [];
@@ -262,11 +275,12 @@ function generateSideMenu(dataStructure: {
   for (const key in dataStructure) {
     if (dataStructure[key]) {
       const id = dataStructure[key].id;
+      const active = dataStructure[key].active;
       const title = dataStructure[key].title;
       const order = dataStructure[key].order || 9999;
-      menuItems.push({ title: title, id: id, order: order });
+      menuItems.push({ title: title, id: id, order: order, active: active });
     } else {
-      menuItems.push({ title: null, id: null, order: null });
+      menuItems.push({ title: null, id: null, order: null, active: null });
     }
   }
 

@@ -1,5 +1,11 @@
-import { Tab, Tabs } from "@nextui-org/react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs/tabs";
 import ComponentSelector from "../components-selector/components-selector";
+import { useEffect, useState } from "react";
 
 type ComponentsProps = {
   index: number;
@@ -32,54 +38,75 @@ type ComponentsProps = {
   };
 };
 
-export default function TabsAnimated({
+export default function TabsAnimatedChadCN({
   item,
-  index,
   dataMarketingCards,
 }: ComponentsProps) {
+  const [defaultValue, setDefaultValue] = useState<string | undefined>();
+
+  // Filtrar, ordenar y luego ajustar el `order` de las pestañas
+  const activeAndOrderedTabs = item.content
+    ?.filter((tab) => tab.active) // Filtra por activas
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0)) // Ordena por `order`
+    .map((tab, index) => ({ ...tab, order: index + 1 })); // Ajusta `order` basándote en el índice
+
+  // Efecto para establecer el tab por defecto una vez que los datos están listos
+  useEffect(() => {
+    if (activeAndOrderedTabs && activeAndOrderedTabs.length > 0) {
+      setDefaultValue(activeAndOrderedTabs[0].id); // Establece el id de la primera pestaña como defaultValue
+    }
+  }, [activeAndOrderedTabs]); // Se recalcula si activeAndOrderedTabs cambia
+
+  console.log(defaultValue);
   return (
-    <div
-      className="max-w-full w-full flex flex-col items-center justify-center content-center"
-      style={{
-        order: item.order || index,
-      }}
-    >
-      <Tabs
-        aria-label="Options"
-        className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap [&>*]:flex`}
-      >
-        {item.content &&
-          item.content.map(
-            (tab: any, index: number) =>
-              tab.active === true && (
-                <Tab
-                  key={tab.id}
-                  title={tab.title}
-                  className="[&>*]:items-center [&>*]:flex-col [&>*]:justify-center [&>*]:content-center [&>*]:flex [&>*]:w-full w-full"
-                  style={{
-                    order: tab.order || index,
-                  }}
-                >
-                  <div
-                    className="flex w-full flex-col items-center self-center  "
-                    style={{
-                      order: tab.order || index,
-                    }}
+    <div className="flex flex-row items-center justify-center w-full content-center align-middle">
+      {defaultValue && (
+        <Tabs
+          defaultValue={defaultValue}
+          className="self-center w-full flex flex-col"
+        >
+          <div className="flex w-full justify-center">
+            <TabsList className="rounded-full">
+              {activeAndOrderedTabs &&
+                activeAndOrderedTabs.map((tab) => (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className="rounded-full"
                   >
-                    {tab.content &&
-                      tab.content.map((item: any, index: number) => (
+                    {tab.title}
+                  </TabsTrigger>
+                ))}
+            </TabsList>
+          </div>
+          {activeAndOrderedTabs &&
+            activeAndOrderedTabs.map((tab) => (
+              <TabsContent key={tab.id} value={tab.id} className="w-full">
+                <div className="flex flex-col items-center justify-center w-full">
+                  {tab.content &&
+                    tab.content.map(
+                      (
+                        contentItem: typeof item & { index: number },
+                        contentIndex: number
+                      ) => (
                         <ComponentSelector
-                          item={{ ...item }}
-                          index={index}
-                          key={item.id}
+                          key={contentItem.id}
+                          index={contentIndex}
+                          item={
+                            {
+                              ...contentItem,
+                              index: contentIndex,
+                            } as typeof item & { index: number }
+                          } // Add 'index' property to the item object
                           dataMarketingCards={dataMarketingCards}
                         />
-                      ))}
-                  </div>
-                </Tab>
-              )
-          )}
-      </Tabs>
+                      )
+                    )}
+                </div>
+              </TabsContent>
+            ))}
+        </Tabs>
+      )}
     </div>
   );
 }
