@@ -108,7 +108,7 @@ export default function MarketingTabCardsList({
                       return (
                         <div
                           key={categoryCode}
-                          className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2"
+                          className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
                         >
                           <h3 className="text-center w-full font-bold text-2xl  -mb-6">
                             {filesCodes[

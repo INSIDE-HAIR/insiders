@@ -1,9 +1,8 @@
-import { Button } from "@nextui-org/react";
 import VideosPlayers from "../videos-players/videos-players";
 import Slides from "../slides/slides";
 import TabsAnimated from "../tabs/tabs-animated";
+import Button from "@/src/components/ui/buttons/button";
 import MarketingTabCardsList from "../../aaa/marketing-tab-cards-list";
-import { array } from "zod";
 import useIsAvailable from "@/src/hooks/useIsAvailable";
 
 type ComponentsProps = {
@@ -43,7 +42,11 @@ export default function ComponentsSelector({
   dataMarketingCards,
 }: ComponentsProps) {
   console.log(dataMarketingCards);
-  const available = useIsAvailable(item.active, item.available?.startDateTime ?? "", item.available?.endDateTime ?? "");
+  const available = useIsAvailable(
+    item.active,
+    item.available?.startDateTime ?? "",
+    item.available?.endDateTime ?? ""
+  );
 
   return (
     <>
@@ -51,19 +54,10 @@ export default function ComponentsSelector({
         <VideosPlayers item={{ ...item }} index={index} />
       )}
       {item.type === "button" && available && (
-        <Button
-          variant="faded"
-          className="flex bg-gray-700 text-white"
-          style={{ order: item.order || index }}
-          onClick={() => {
-            window.open(item && item.url, "_blank");
-          }}
-        >
-          {item && item.title}
-        </Button>
+        <Button item={{ ...item }} index={index} />
       )}
       {item.type === "slider" && available && (
-        <Slides item={{ ...item }} index={index}></Slides>
+        <Slides item={{ ...item }} index={index} />
       )}
       {item.type === "tabs" && available && (
         <TabsAnimated
@@ -80,7 +74,6 @@ export default function ComponentsSelector({
           index={index}
         />
       )}
-      
     </>
   );
 }

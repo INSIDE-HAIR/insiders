@@ -490,19 +490,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          }
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -628,20 +615,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,
@@ -1366,20 +1339,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -2102,20 +2061,7 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
+
         {
           "id": "tabs1",
           "order": 1,
@@ -2840,20 +2786,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -3576,20 +3508,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,
@@ -4314,20 +4232,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -5051,20 +4955,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -5787,20 +5677,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,

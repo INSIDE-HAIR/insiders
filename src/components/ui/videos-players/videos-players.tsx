@@ -30,7 +30,7 @@ type ComponentsProps = {
 
 function VideosPlayers({ item, index }: ComponentsProps) {
   return (
-    <div className="firt:mt-0 my-5 mx-2 md:mx-14 lg:mx-32 aspect-video rounded-3xl overflow-hidden flex w-full  max-w-3xl">
+    <div className="firt:mt-0 mb-4 mx-2 md:mx-14 lg:mx-32 aspect-video rounded-3xl overflow-hidden flex w-full  max-w-3xl">
       <iframe
         className="aspect-video"
         width="100%"

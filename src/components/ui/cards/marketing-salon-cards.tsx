@@ -8,7 +8,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
@@ -111,16 +110,14 @@ function MarketingSalonCards({
       {item.transformedUrl.imgEmbed && (
         <div className="relative">
           <div className="  absolute right-1 top-1">
-            <Tooltip content="+ Zoom" size="sm">
-              <Button
-                onPress={onOpen}
-                isIconOnly
-                variant="faded"
-                className=" hover:opacity-100 rounded-full"
-              >
-                <EyeFilledIcon />
-              </Button>
-            </Tooltip>
+            <Button
+              onPress={onOpen}
+              isIconOnly
+              variant="faded"
+              className=" hover:opacity-100 rounded-full"
+            >
+              <EyeFilledIcon />
+            </Button>
             <ImageModal
               alt={item.title}
               src={

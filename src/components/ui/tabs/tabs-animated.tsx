@@ -82,7 +82,7 @@ export default function TabsAnimatedChadCN({
           {activeAndOrderedTabs &&
             activeAndOrderedTabs.map((tab) => (
               <TabsContent key={tab.id} value={tab.id} className="w-full">
-                <div className="flex flex-col items-center justify-center w-full">
+                <div className="flex flex-col items-center justify-center w-full mb-4">
                   {tab.content &&
                     tab.content.map(
                       (

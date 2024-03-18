@@ -72,7 +72,7 @@ function Page() {
     }
 
     fetchData(year, month);
-  }, [year, month]);
+  }, [year, month, client, campaign]);
 
   if (error) {
     return <p>Error: {error.message}</p>;

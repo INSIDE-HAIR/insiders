@@ -14,7 +14,7 @@ import {
 } from "@/src/components/ui/form";
 
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Button } from "../ui/buttons/chadcn-button";
 import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import { useRouter, useSearchParams } from "next/navigation";

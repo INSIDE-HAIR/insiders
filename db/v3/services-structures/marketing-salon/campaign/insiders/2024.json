@@ -7,8 +7,22 @@
       "classType": "default",
       "content": [
         {
-          "id": "tabs1",
+          "id": "button1",
           "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
+          "active": true,
+          "available": {
+            "startDateTime": "2024-03-16 07:00",
+            "endDateTime": ""
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 2,
           "type": "tabs",
           "content": [
             {
@@ -760,8 +774,8 @@
           "auth": []
         },
         {
-          "id": "tabs1",
-          "order": 1,
+          "id": "tabs2",
+          "order": 2,
           "type": "tabs",
           "content": [
             {

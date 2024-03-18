@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../ui/buttons/chadcn-button";
 import { cn } from "@/src/lib/utils/utils";
 import LoadingSpinner from "./LoadingSpinner";
 

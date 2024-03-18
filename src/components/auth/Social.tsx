@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button } from "../ui/button";
+import { Button } from "../ui/buttons/chadcn-button";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { signIn, signOut } from "next-auth/react";

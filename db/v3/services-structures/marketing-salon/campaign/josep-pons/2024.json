@@ -7,19 +7,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "https://forms.gle/NpXcL8NByZz7jVYb9",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          }
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -241,132 +228,7 @@
       "title": "Plan de Marketing",
       "order": 1,
       "classType": "default",
-      "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "tabs1",
-          "order": 1,
-          "type": "tabs",
-          "content": [
-            {
-              "id": "tab1",
-              "order": 1,
-              "type": "tab",
-              "title": "Contexto",
-              "classType": "default",
-              "content": [
-                {
-                  "order": 1,
-                  "type": "video",
-                  "id": "Contexto1",
-                  "title": "Contexto",
-                  "url": "",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab2",
-              "order": 2,
-              "type": "tab",
-              "title": "Acción principal",
-              "classType": "default",
-              "content": [
-                {
-                  "order": 1,
-                  "type": "video",
-                  "id": "planDeMarketing1",
-                  "title": "Acción principal",
-                  "url": "",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab3",
-              "order": 3,
-              "type": "tab",
-              "title": "Acciones complementarias",
-              "classType": "default",
-              "content": [
-                {
-                  "order": 1,
-                  "type": "video",
-                  "id": "Carteleria1",
-                  "title": "Acciones complementarias",
-                  "url": "",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            }
-          ],
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "slider1",
-          "order": 3,
-          "type": "slider",
-          "classType": "default",
-          "url": "",
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        }
-      ],
+      "content": [],
       "active": true,
       "available": {
         "startDateTime": null,
@@ -979,20 +841,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,
@@ -1717,20 +1565,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -2453,20 +2287,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,
@@ -3191,20 +3011,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -3927,20 +3733,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,
@@ -4665,20 +4457,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 1,
           "type": "tabs",
@@ -5401,20 +5179,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-        {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
         {
           "id": "tabs1",
           "order": 1,

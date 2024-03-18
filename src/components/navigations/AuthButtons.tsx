@@ -5,7 +5,7 @@ import UserButton from "./UserButton";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { cn } from "@/src/lib/utils/utils";
-import { buttonVariants } from "../ui/button";
+import { buttonVariants } from "../ui/buttons/chadcn-button";
 
 type Props = {};
 

@@ -1,5 +1,5 @@
 import LogoutButton from "@/src/components/share/LogoutButton";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/src/components/ui/buttons/chadcn-button";
 import { auth, signOut } from "@/src/lib/actions/auth/auth";
 import Image from "next/image";
 

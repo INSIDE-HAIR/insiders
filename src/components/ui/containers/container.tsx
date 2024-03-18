@@ -9,7 +9,6 @@ export default function Container({ children }: ContainerProps) {
     <div
       className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full "
       style={{
-        display: "flex",
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
@@ -24,9 +23,8 @@ export default function Container({ children }: ContainerProps) {
           alignItems: "center",
           width: "100%",
         }}
-        className="gap-4"
       >
-        {children}
+        <div >{children}</div>
       </div>
     </div>
   );

@@ -33,7 +33,7 @@ export default function Slides({ index, item }: ComponentsProps) {
     item.active && (
       <iframe
         src={item.url}
-        className="border-5 rounded-2xl border-black overflow-hidden max-w-full bg-zinc-300 "
+        className="border-5 rounded-2xl border-black overflow-hidden max-w-full bg-zinc-300 mb-4"
         width="750"
         height="460"
         style={{ order: item.order || index }}
