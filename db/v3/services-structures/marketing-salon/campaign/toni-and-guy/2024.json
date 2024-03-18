@@ -903,12 +903,5900 @@
       "auth": []
     }
   ],
-  "may": [],
-  "june": [],
-  "july": [],
-  "august": [],
-  "september": [],
-  "october": [],
-  "november": [],
-  "december": []
+  "may": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "june": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "july": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "august": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "september": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "october": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "november": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "december": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "tutoriales2",
+      "title": "Tutoriales",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Presentación de Creatividades",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Presentación de Creatividades",
+                  "url": "",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Carteleria",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadCarouselCards",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0048", "0300"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "repeticiones5",
+      "title": "Repeticiones",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Sesiones de Supervisión",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Formación de Implementación",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Sesiones de Lanzamiento",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ]
 }
