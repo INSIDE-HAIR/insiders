@@ -1,4 +1,4 @@
-import { campaignCodes, clientsCodes, filesCodes, langCodes } from "@/src/db/constants";
+import { campaignCodes, clientsCodes, filesCodes, langCodes } from "@/db/constants";
 import fs from "fs/promises";
 import { NextApiRequest, NextApiResponse } from "next";
 import path from "path";

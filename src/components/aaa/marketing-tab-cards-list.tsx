@@ -1,7 +1,7 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import React, { useEffect, useRef, useState } from "react";
 import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
-import { filesCodes } from "@/src/db/constants";
+import { filesCodes } from "@/db/constants";
 import { Toaster, toast } from "sonner";
 import { string } from "zod";
 
@@ -116,7 +116,10 @@ export default function MarketingTabCardsList({
                             ] || categoryCode}
                           </h3>
                           {groupedByTitle.map(([groupTitle, groupItems]) => (
-                            <div key={groupTitle} style={{order:groupTitle.split("-")[0]}}>
+                            <div
+                              key={groupTitle}
+                              style={{ order: groupTitle.split("-")[0] }}
+                            >
                               {groupTitle !== "Sin Grupo de Familia" && (
                                 <h4 className="text-center w-full font-bold text-xl  mt-6">
                                   {groupTitle.split("-")[1].replace(/_/g, "")}
@@ -212,7 +215,8 @@ const RenderButtons = (item: any) => {
 const groupByGroupTitle = (items: any[]) => {
   const groups: { [key: string]: any[] } = {}; // Add type annotation to the groups object
   items.forEach((item) => {
-    const title = item.groupOrder + "-" + item.groupTitle || "Sin Grupo de Familia";
+    const title =
+      item.groupOrder + "-" + item.groupTitle || "Sin Grupo de Familia";
     if (!groups[title]) {
       groups[title] = [];
     }
