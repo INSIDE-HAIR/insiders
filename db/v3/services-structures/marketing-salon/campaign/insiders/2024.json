@@ -495,6 +495,275 @@
       },
       "auth": []
     },
+        {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Videos",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0216"],
+                  "title": "Videos",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": "SMS & WhatsApp",
+                  "content": [
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Posts Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageAndCopyTextCards",
+                  "childrensCode": ["0192"],
+                  "title": "Posts Mensuales",
+                  "content": [
+                    {
+                      "id": null,
+                      "order": null,
+                      "title": "",
+                      "copy": "",
+                      "url": "#",
+                      "category": null,
+                      "lang": null,
+                      "groupTitle": null
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    },
+                    {
+                      "copy": "",
+                      "title": "",
+                      "url": "#"
+                    }
+                  ],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab6",
+              "order": 6,
+              "type": "tab",
+              "title": "Stories Mensuales",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": ["0129"],
+                  "title": "Stories Mensuales",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab7",
+              "order": 7,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "downloadImageCards",
+                  "childrensCode": [],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
     {
       "id": "repeticiones5",
       "title": "Repeticiones",
@@ -774,8 +1043,8 @@
           "auth": []
         },
         {
-          "id": "tabs2",
-          "order": 2,
+          "id": "tabs",
+          "order": 3,
           "type": "tabs",
           "content": [
             {
