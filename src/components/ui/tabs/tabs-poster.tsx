@@ -1,6 +1,5 @@
 import { Tab, Tabs } from "@nextui-org/react";
-import ComponentSelector from "../components-selector/components-selector";
-
+import ComponentSelector from "../../components-selector/components-selector";
 
 type ComponentsProps = {
   index: number;

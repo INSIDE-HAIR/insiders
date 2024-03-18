@@ -17,7 +17,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../carousel/carousel";
+} from "../ui/carousel/carousel";
 
 function MarketingSalonCards({
   item,

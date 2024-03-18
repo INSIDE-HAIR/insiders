@@ -1,8 +1,8 @@
-import VideosPlayers from "../videos-players/videos-players";
-import Slides from "../slides/slides";
-import TabsAnimated from "../tabs/tabs-animated";
+import VideosPlayers from "../ui/videos-players/videos-players";
+import Slides from "../ui/slides/slides";
+import TabsAnimated from "../ui/tabs/tabs-animated";
 import Button from "@/src/components/ui/buttons/button";
-import MarketingTabCardsList from "../../aaa/marketing-tab-cards-list";
+import MarketingTabCardsList from "../marketing-salon/marketing-tab-cards-list";
 import useIsAvailable from "@/src/hooks/useIsAvailable";
 
 type ComponentsProps = {

@@ -1,9 +1,8 @@
 import { Button, Tab, Tabs } from "@nextui-org/react";
 import React, { useEffect, useRef, useState } from "react";
-import MarketingSalonCards from "../ui/cards/marketing-salon-cards";
+import MarketingSalonCards from "./marketing-salon-cards";
 import { filesCodes } from "@/db/constants";
 import { Toaster, toast } from "sonner";
-import { string } from "zod";
 
 const langCodes = {
   "01": "ES",

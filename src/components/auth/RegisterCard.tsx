@@ -1,4 +1,4 @@
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/cards/card";
 import Header from "./Header";
 import Social from "./Social";
 import EmailLoginForm from "./EmailLoginForm";

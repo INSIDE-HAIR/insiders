@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dataMonths from "@/db/dates/months.json";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import Container from "@/src/components/ui/containers/container";
-import ComponentsSelector from "@/src/components/ui/components-selector/components-selector";
+import ComponentsSelector from "@/src/components/components-selector/components-selector";
 
 interface MonthlyData {
   [x: string]: any;

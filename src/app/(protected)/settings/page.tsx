@@ -1,6 +1,6 @@
 import { auth, signOut } from "@/src/lib/actions/auth/auth";
 import prisma from "@/prisma/database";
-import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/src/components/ui/cards/card";
 import SettingsForm from "@/src/components/protected/SettingsForm";
 import { SettingsUser } from "@/src/next-auth";
 import { redirect } from "next/navigation";

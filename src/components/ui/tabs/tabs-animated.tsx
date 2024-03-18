@@ -4,7 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/src/components/ui/tabs/tabs";
-import ComponentSelector from "../components-selector/components-selector";
+import ComponentSelector from "../../components-selector/components-selector";
 import { useEffect, useState } from "react";
 
 type ComponentsProps = {
