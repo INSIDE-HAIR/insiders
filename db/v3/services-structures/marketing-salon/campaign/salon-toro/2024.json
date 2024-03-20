@@ -875,6 +875,89 @@
         "endDateTime": null
       },
       "auth": []
+    },
+    {
+      "id": "adaptedActions2",
+      "title": "Acciones Adaptadas",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Plan Adaptado",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "slider1",
+                  "order": 3,
+                  "type": "slider",
+                  "classType": "default",
+                  "url": "https://docs.google.com/presentation/d/e/2PACX-1vRV8gLPz6EITDxkAOsYzdkKtMiwWZtE8b_e4-iC00UR_DMES9ZT4JVcrKh_ADmXr_9VWvigoo1lY33a/embed?start=false&loop=false&delayms=3000",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Plan Final",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
     }
   ],
   "may": [
