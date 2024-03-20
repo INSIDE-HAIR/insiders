@@ -35,8 +35,7 @@ export const clientsCodes = {
   "B": "salon-toro",
   "C": "toni-and-guy",
   "D": "ah-peluqueros",
-  "E": "josep-pons",
-  "F": "miguelito"
+  "E": "josep-pons"
   // más códigos según sea necesario
 };
 
