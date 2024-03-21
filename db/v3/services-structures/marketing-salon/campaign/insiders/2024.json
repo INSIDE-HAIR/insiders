@@ -461,7 +461,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -495,7 +495,7 @@
       },
       "auth": []
     },
-        {
+    {
       "id": "contenidoDigital4",
       "title": "Contenido Digital",
       "order": 4,
@@ -1352,7 +1352,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -1371,7 +1371,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -1398,7 +1398,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -1667,7 +1667,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -2025,7 +2025,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -2762,7 +2762,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -3499,7 +3499,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -4236,7 +4236,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -4973,7 +4973,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -5710,7 +5710,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -6447,7 +6447,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -7184,7 +7184,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,

@@ -447,7 +447,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -944,7 +944,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -1667,7 +1667,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -2061,7 +2061,6 @@
       "order": 1,
       "classType": "default",
       "content": [
-
         {
           "id": "tabs1",
           "order": 1,
@@ -2391,7 +2390,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -3114,7 +3113,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -3501,7 +3500,7 @@
       "auth": []
     }
   ],
-  "september":[
+  "september": [
     {
       "id": "planDeMarketing1",
       "title": "Plan de Marketing",
@@ -3837,7 +3836,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -4560,7 +4559,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -5283,7 +5282,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -6006,7 +6005,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,

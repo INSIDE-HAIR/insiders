@@ -5,28 +5,28 @@ export const langCodes = {
 };
 
 export const filesCodes = {
-  "0000": "Stopper",
+  "0000": "Stoppers",
   "0080": "Alup80",
   "0050": "Alup50",
   "0004": "A4",
   "0005": "A5",
-  "0085": "Tarjeta",
-  "0048": "Díptico/Tríptico",
-  "0010": "Test",
-  "0100": "Revista",
+  "0085": "Tarjetas",
+  "0048": "Dípticos/Trípticos",
+  "0010": "Tests",
+  "0100": "Revistas",
   "0360": "Escaparatismo",
-  "0300": "Pop Up",
+  "0300": "Pop Ups",
   "0090": "GMB",
   "0216": "Videos",
   "0025": "Listas de Control",
   "1080": "Posts de Acción",
   "0192": "Posts Mensuales",
-  "1920": "Story Acción",
+  "1920": "Stories Acción",
   "0129": "Stories Mensuales",
-  "0002": "Guía",
-  "0500": "Filtro de Instagram",
-  "6969": "SMS/WhatsApp"
-  
+  "0002": "Guías",
+  "0500": "Filtros de Instagram",
+  "6969": "SMS/WhatsApp",
+  "0009" : "Logos"
   // más códigos según sea necesario
 };
 
@@ -52,7 +52,7 @@ export const contentTypes = {
     stoppers: ["0000"],
     tests: ["0010", "0025"],
     cards: ["0085"],
-    extras: ["0360","0100","0048","0300"],
+    extras: ["0360","0100","0048","0300","0009"],
   },
   digitalContent: {
     actionPosts: ["1080"],

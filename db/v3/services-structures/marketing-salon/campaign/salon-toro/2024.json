@@ -447,7 +447,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -944,7 +944,7 @@
         "endDateTime": null
       },
       "auth": []
-    }, 
+    },
     {
       "id": "contenidoFisico3",
       "title": "Carteleria",
@@ -1101,7 +1101,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -1404,7 +1404,6 @@
       },
       "auth": []
     }
-
   ],
   "may": [
     {
@@ -1742,7 +1741,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensType": "downloadImageCards",
-                  "childrensCode": ["0048", "0300"],
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
