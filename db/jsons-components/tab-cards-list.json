@@ -1,0 +1,15 @@
+{
+  "id": "tabsCardsList1",
+  "order": 1,
+  "type": "tabsCardsList",
+  "childrensType": "copyTextCards",
+  "childrensCode": ["6969"],
+  "title": "SMS & WhatsApp",
+  "content": [],
+  "active": true,
+  "available": {
+    "startDateTime": null,
+    "endDateTime": null
+  },
+  "auth": []
+}

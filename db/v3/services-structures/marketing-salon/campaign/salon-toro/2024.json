@@ -326,7 +326,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0080", "0050", "0004", "0005"],
                   "title": "Cartelería",
                   "content": [],
@@ -356,7 +356,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0000"],
                   "title": "Stoppers",
                   "content": [],
@@ -386,7 +386,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0010", "0025"],
                   "title": "Tests",
                   "content": [],
@@ -416,7 +416,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadCarouselCards",
                   "childrensCode": ["0085"],
                   "title": "Tarjetas",
                   "content": [],
@@ -446,7 +445,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
                   "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
@@ -503,7 +501,6 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageAndCopyTextCards",
                   "childrensCode": ["1080"],
                   "title": "Posts de Acción",
                   "content": [],
@@ -533,7 +530,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "title": "Stories de Acción",
                   "childrensCode": ["1920"],
                   "content": [],
@@ -563,7 +560,7 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0216"],
                   "title": "Videos",
                   "content": [],
@@ -593,21 +590,9 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "copyTextCards",
                   "childrensCode": ["6969"],
                   "title": "SMS & WhatsApp",
-                  "content": [
-                    {
-                      "copy": "",
-                      "title": "",
-                      "url": "#"
-                    },
-                    {
-                      "copy": "",
-                      "title": "",
-                      "url": "#"
-                    }
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -634,7 +619,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageAndCopyTextCards",
                   "childrensCode": ["0192"],
                   "title": "Posts Mensuales",
                   "content": [
@@ -685,7 +669,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0129"],
                   "title": "Stories Mensuales",
                   "content": [],
@@ -715,7 +699,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": [],
                   "title": "Extras",
                   "content": [],
@@ -980,7 +964,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0080", "0050", "0004", "0005"],
                   "title": "Cartelería",
                   "content": [],
@@ -1010,7 +994,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0000"],
                   "title": "Stoppers",
                   "content": [],
@@ -1040,7 +1024,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0010", "0025"],
                   "title": "Tests",
                   "content": [],
@@ -1070,7 +1054,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadCarouselCards",
                   "childrensCode": ["0085"],
                   "title": "Tarjetas",
                   "content": [],
@@ -1100,7 +1083,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
@@ -1157,7 +1140,6 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageAndCopyTextCards",
                   "childrensCode": ["1080"],
                   "title": "Posts de Acción",
                   "content": [],
@@ -1187,7 +1169,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "title": "Stories de Acción",
                   "childrensCode": ["1920"],
                   "content": [],
@@ -1217,7 +1199,7 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0216"],
                   "title": "Videos",
                   "content": [],
@@ -1247,21 +1229,9 @@
                   "id": "tabsCardsList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "copyTextCards",
                   "childrensCode": ["6969"],
                   "title": "SMS & WhatsApp",
-                  "content": [
-                    {
-                      "copy": "",
-                      "title": "",
-                      "url": "#"
-                    },
-                    {
-                      "copy": "",
-                      "title": "",
-                      "url": "#"
-                    }
-                  ],
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -1288,7 +1258,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageAndCopyTextCards",
                   "childrensCode": ["0192"],
                   "title": "Posts Mensuales",
                   "content": [
@@ -1339,7 +1308,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": ["0129"],
                   "title": "Stories Mensuales",
                   "content": [],
@@ -1369,7 +1338,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensType": "downloadImageCards",
+
                   "childrensCode": [],
                   "title": "Extras",
                   "content": [],
