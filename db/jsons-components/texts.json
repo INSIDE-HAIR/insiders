@@ -1,0 +1,13 @@
+{
+  "id": "text1",
+  "order": 1,
+  "type": "text",
+  "classType": "h1",
+  "title": "Carteleria",
+  "active": true,
+  "available": {
+    "startDateTime": null,
+    "endDateTime": null
+  },
+  "auth": []
+}

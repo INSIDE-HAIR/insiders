@@ -933,21 +933,8 @@
       "classType": "default",
       "content": [
         {
-          "id": "text1",
+          "id": "tabs1",
           "order": 1,
-          "type": "text",
-          "classType": "h1",
-          "title": "Carteleria",
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "tabs2",
-          "order": 2,
           "type": "tabs",
           "content": [
             {
@@ -1104,7 +1091,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -1179,150 +1166,6 @@
                 "endDateTime": null
               },
               "auth": []
-            },
-            {
-              "id": "tab3",
-              "order": 3,
-              "type": "tab",
-              "title": "Videos",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "tabsCardsList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["0216"],
-                  "title": "Videos",
-                  "content": [],
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab4",
-              "order": 4,
-              "type": "tab",
-              "title": "SMS & WhatsApp",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "tabsCardsList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["6969"],
-                  "title": "SMS & WhatsApp",
-                  "content": [],
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab5",
-              "order": 5,
-              "type": "tab",
-              "title": "Posts Mensuales",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "cardList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["0192"],
-                  "title": "Posts Mensuales",
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab6",
-              "order": 6,
-              "type": "tab",
-              "title": "Stories Mensuales",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "cardList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["0129"],
-                  "title": "Stories Mensuales",
-                  "content": [],
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            },
-            {
-              "id": "tab7",
-              "order": 7,
-              "type": "tab",
-              "title": "Extras",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "cardList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": [],
-                  "title": "Extras",
-                  "content": [],
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": false,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
             }
           ],
           "active": true,
@@ -1333,7 +1176,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null

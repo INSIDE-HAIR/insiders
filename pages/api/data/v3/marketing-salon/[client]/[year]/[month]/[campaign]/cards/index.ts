@@ -191,8 +191,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return matchesCampaign && matchesClient;
     });
 
-    console.log(filteredByCampaignAndClient);
-    console.log(campaign, year, month, client);
 
     // Luego de filtrar por campaign y client, proceder con la agrupación por categorías y lenguajes
     const groupedItemsByCategory = filterAndGroupByCategoriesAndLanguages(filteredByCampaignAndClient, filesCodes, langCodes);

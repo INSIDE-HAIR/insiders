@@ -59,9 +59,9 @@ function MarketingSalonCards({
                           <Image
                             alt={`${alt} ${index + 1}`}
                             className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
-                            height={200}
+                            height={1080}
                             src={preview.transformedUrl.imgEmbed}
-                            width={200}
+                            width={1080}
                           />
                         </CarouselItem>
                       ))
@@ -70,9 +70,9 @@ function MarketingSalonCards({
                         <Image
                           alt={alt}
                           className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
-                          height={200}
+                          height={1080}
                           src={src}
-                          width={200}
+                          width={1080}
                         />
                       </CarouselItem>
                     )}

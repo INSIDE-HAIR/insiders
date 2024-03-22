@@ -7,8 +7,7 @@
 export const publicRoutes = [
   "/", 
   "/auth/new-verification",  
-  "/marketing-salon/campaign-test",
-  "/marketing-salon/campaign"
+  "/marketing-salon",
 ];
 
 /**

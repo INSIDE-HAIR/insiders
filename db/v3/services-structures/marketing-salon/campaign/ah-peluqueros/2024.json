@@ -602,6 +602,263 @@
         "endDateTime": null
       },
       "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Carteleria",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "title": "Cartelería",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stoppers",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0000"],
+                  "title": "Stoppers",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Tests",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0010", "0025"],
+                  "title": "Tests",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Tarjetas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0085"],
+                  "title": "Tarjetas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Extras",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
+                  "title": "Extras",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "contenidoDigital4",
+      "title": "Contenido Digital",
+      "order": 4,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Posts de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["1080"],
+                  "title": "Posts de Acción",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Stories de Acción",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "title": "Stories de Acción",
+                  "childrensCode": ["1920"],
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
     }
   ],
   "may": [],

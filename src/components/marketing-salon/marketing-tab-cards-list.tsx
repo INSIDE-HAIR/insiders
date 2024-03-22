@@ -86,8 +86,6 @@ export default function MarketingTabCardsList({
                 categories as { [key: string]: any }
               ).filter(([_, items]) => items.length > 0);
 
-              console.log("categoriesWithItems", categoriesWithItems);
-
               // No renderizar el Tab si no hay categorías con ítems.
               if (categoriesWithItems.length === 0) {
                 return null;

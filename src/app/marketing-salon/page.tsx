@@ -78,7 +78,6 @@ function Page() {
     return <p>Error: {error.message}</p>;
   }
 
-  console.log(dataStructure);
   // Renderizado condicional basado en los datos
   return dataStructure ? (
     <>
