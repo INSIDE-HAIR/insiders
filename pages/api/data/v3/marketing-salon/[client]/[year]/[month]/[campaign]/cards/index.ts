@@ -56,9 +56,11 @@ function convertGoogleDriveLink(link:string) {
 
 // Función para crear una lista de tarjetas (objetos transformados) a partir de los datos originales.
 function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
+  const sortedObjects = objects.sort((a, b) => b.title.localeCompare(a.title));
+
   const grouped: { [key: string]: TransformedObject } = {};
 
-  objects.forEach(obj => {
+  sortedObjects.forEach(obj => {
     const baseIdMatch = obj.title.match(/^(.+?)-P\d+/) || obj.title.match(/^(.+?)(\.\w+)$/);
     const baseId = baseIdMatch ? baseIdMatch[1] : obj.title;
     const transformedUrl = convertGoogleDriveLink(obj.url);
