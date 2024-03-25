@@ -1139,8 +1139,22 @@
                   "order": 1,
                   "type": "video",
                   "id": "creativePresentation1",
-                  "title": "Presentación de Creatividades",
-                  "url": "https://player.vimeo.com/video/914766157?h=35578dbe72&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "title": "Vídeo de presentación de creatividades",
+                  "url": "",
+                  "active": false,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "id": "cardList1",
+                  "order": 2,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0003"],
+                  "title": "Presentación",
+                  "content": [],
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -1165,7 +1179,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
