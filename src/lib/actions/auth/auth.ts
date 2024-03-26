@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
 import GitHubProvider from "next-auth/providers/github";
-
 import GoogleProvider from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../prisma/database";
