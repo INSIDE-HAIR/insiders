@@ -1141,7 +1141,7 @@
                   "id": "creativePresentation1",
                   "title": "Vídeo de presentación de Cartelería",
                   "url": "https://player.vimeo.com/video/927538989?h=63eb9b6356&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": false,
+                  "active": true,
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
@@ -1183,7 +1183,7 @@
                   "id": "creativePresentation1",
                   "title": "Vídeo de Novedades Campañas",
                   "url": "https://player.vimeo.com/video/927537333?h=c0e49e8250&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": false,
+                  "active": true,
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
@@ -1211,7 +1211,7 @@
                   "id": "creativePresentation1",
                   "title": "Aplicaciones Campañas",
                   "url": "https://player.vimeo.com/video/927537472?h=3b83797144&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
-                  "active": false,
+                  "active": true,
                   "available": {
                     "startDateTime": null,
                     "endDateTime": null
