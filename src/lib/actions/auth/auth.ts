@@ -4,8 +4,8 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
-import GitHubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
+import Github from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../prisma/database";
 
@@ -80,8 +80,14 @@ export const {
         });
       },
     }),
-    GitHubProvider,
-    GoogleProvider,
+    Github({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
   ],
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
@@ -99,7 +105,7 @@ export const {
     async signIn({ user, account }) {
       console.log("callback signIn", { user, account });
 
-      // todo: add a check if the provider is one of my settings in authConfig.
+      // TODO: add a check if the provider is one of my settings in authConfig.
 
       // Allow OAuth without email verification
       if (account?.provider !== "credentials") return true;

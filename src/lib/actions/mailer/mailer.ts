@@ -1,28 +1,28 @@
 import nodemailer from "nodemailer";
 
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 465,
-//   secure: true,
-//   auth: {
-//     type: "OAuth2",
-//     user: process.env.GOOGLE_CLIENT_ID,
-//     clientId: process.env.GOOGLE_CLIENT_ID,
-//     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-//     accessToken: process.env.GOOGLE_ACCESS_TOKEN,
-//   },
-// });
-
 const transporter = nodemailer.createTransport({
-  service: "Gmail",
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
   auth: {
+    type: "OAuth2",
     user: process.env.GOOGLE_CLIENT_ID,
-    pass: process.env.GOOGLE_CLIENT_SECRET,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    accessToken: process.env.GOOGLE_ACCESS_TOKEN,
   },
 });
+
+// const transporter = nodemailer.createTransport({
+//   service: "Gmail",
+//   host: "smtp.gmail.com",
+//   port: 465,
+//   secure: true,
+//   auth: {
+//     user: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
+//     pass: "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",
+//   },
+// });
 
 const domain = process.env.NEXT_PUBLIC_APP_URL;
 console.log("process.env.NEXT_PUBLIC_APP_URL", process.env.NEXT_PUBLIC_APP_URL);
@@ -32,7 +32,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
   // send email
   const mailOptions = {
-    from: process.env.GOOGLE_CLIENT_ID,
+    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
     to: email,
     subject: "Confirm your email",
     html: htmlOne({
@@ -61,7 +61,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
   // send email
   const mailOptions = {
-    from: process.env.GOOGLE_CLIENT_ID,
+    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
     to: email,
     subject: "Reset your password",
     html: htmlOne({
@@ -87,7 +87,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   const mailOptions = {
-    from: process.env.GOOGLE_CLIENT_ID,
+    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
     to: email,
     subject: "2FA Code",
 

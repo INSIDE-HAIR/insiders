@@ -11,8 +11,8 @@ import { getUserByEmail } from "@/src/lib/actions/user/get-user";
 export default {
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
+      clientSecret: "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",
     }),
     Github({
       clientId: process.env.GITHUB_CLIENT_ID,
