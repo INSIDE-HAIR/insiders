@@ -139,8 +139,8 @@
       "auth": []
     },
     {
-      "id": "tutoriales2",
-      "title": "Tutoriales",
+      "id": "adaptedActions2",
+      "title": "Acciones Adaptadas",
       "order": 2,
       "classType": "default",
       "content": [
@@ -153,15 +153,15 @@
               "id": "tab1",
               "order": 1,
               "type": "tab",
-              "title": "Presentación de Creatividades",
+              "title": "Plan Adaptado",
               "classType": "default",
               "content": [
                 {
-                  "order": 1,
-                  "type": "video",
-                  "id": "creativePresentation1",
-                  "title": "Presentación de Creatividades",
-                  "url": "https://player.vimeo.com/video/914766157?h=35578dbe72&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "id": "slider1",
+                  "order": 3,
+                  "type": "slider",
+                  "classType": "default",
+                  "url": "https://docs.google.com/presentation/d/e/2PACX-1vQOSkYzbeRQG1Ug0z_wkK2tSBRw1YpMLEeyvkmWZBjeS0AmbhUwGtZvZUi-2TBnuZAYu_uNDrxNrKdy/embed?start=false&loop=false&delayms=3000",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -171,6 +171,20 @@
                 }
               ],
               "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Formación",
+              "classType": "default",
+              "content": [],
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -186,7 +200,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null

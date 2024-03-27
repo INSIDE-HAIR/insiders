@@ -7,6 +7,7 @@ import { signIn } from "@/src/lib/actions/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes/routes";
 import { getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/src/lib/actions/auth/tokens";
+import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 
 export const login = async (values:z.infer<typeof LoginSchema>)=>{
   const validatedFields = LoginSchema.safeParse(values)
@@ -24,6 +25,12 @@ if (!existingUser || !existingUser.email || !existingUser.password){
 
 if(!existingUser.emailVerified){
   const verificationToken = await generateVerificationToken(existingUser.email);
+
+  await sendVerificationEmailResend(
+    verificationToken.identifier,
+    verificationToken.token
+  );
+  
   return{error: "El email no ha sido verificado, por favor revisa tu bandeja de entrada."}
 }
 

@@ -6,6 +6,7 @@ import prisma from "@/prisma/database";
 import { getUserByEmail } from "@/data/user";
 import { generateVerificationToken } from "@/src/lib/actions/auth/tokens";
 import { sendVerificationEmail } from "@/src/lib/actions/mailer/mailer";
+import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 
 export const register = async (values:z.infer<typeof RegisterSchema>)=>{
   const validatedFields = RegisterSchema.safeParse(values)
@@ -38,11 +39,10 @@ await prisma.user.create({
 console.log(values)
 const verificationToken = await generateVerificationToken(email);
 
-await sendVerificationEmail(
+await sendVerificationEmailResend(
   verificationToken.identifier,
   verificationToken.token
 );
-//TODO: Send email confirmation
 
 return {success: "Usuario Creado con exito!"}
 }
