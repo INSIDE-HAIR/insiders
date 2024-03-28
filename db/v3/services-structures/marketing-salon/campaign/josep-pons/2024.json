@@ -719,56 +719,56 @@
                 "endDateTime": null
               },
               "auth": []
-            }
-          ],
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "tab4",
-          "order": 4,
-          "type": "tab",
-          "title": "Cartelería",
-          "classType": "default",
-          "content": [
+            },
             {
-              "order": 1,
-              "type": "video",
-              "id": "Carteleria1",
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
               "title": "Cartelería",
-              "url": "https://player.vimeo.com/video/928058053?h=f6cc19ce7a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Cartelería",
+                  "url": "https://player.vimeo.com/video/928058053?h=f6cc19ce7a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
               "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
               },
               "auth": []
-            }
-          ],
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "tab5",
-          "order": 5,
-          "type": "tab",
-          "title": "Novedades Campañas",
-          "classType": "default",
-          "content": [
+            },
             {
-              "order": 1,
-              "type": "video",
-              "id": "creativePresentation1",
-              "title": "Vídeo de Novedades Campañas",
-              "url": "https://player.vimeo.com/video/928058754?h=8ecd29d3fa&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Novedades Campañas",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "creativePresentation1",
+                  "title": "Vídeo de Novedades Campañas",
+                  "url": "https://player.vimeo.com/video/928058754?h=8ecd29d3fa&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
               "active": true,
               "available": {
                 "startDateTime": null,
