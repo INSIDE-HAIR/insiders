@@ -1184,7 +1184,188 @@
       "auth": []
     }
   ],
-  "may": [],
+  "may": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de Marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "tabs1",
+          "order": 1,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "https://player.vimeo.com/video/928055411?h=ac9133aa7a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "planDeMarketing1",
+                  "title": "Acción principal",
+                  "url": "https://player.vimeo.com/video/928055678?h=58359c2f92&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acciones complementarias",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Carteleria1",
+                  "title": "Acciones complementarias",
+                  "url": "https://player.vimeo.com/video/928058053?h=f6cc19ce7a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tab4",
+          "order": 4,
+          "type": "tab",
+          "title": "Cartelería",
+          "classType": "default",
+          "content": [
+            {
+              "order": 1,
+              "type": "video",
+              "id": "Carteleria1",
+              "title": "Cartelería",
+              "url": "https://player.vimeo.com/video/928058053?h=f6cc19ce7a&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tab5",
+          "order": 5,
+          "type": "tab",
+          "title": "Novedades Campañas",
+          "classType": "default",
+          "content": [
+            {
+              "order": 1,
+              "type": "video",
+              "id": "creativePresentation1",
+              "title": "Vídeo de Novedades Campañas",
+              "url": "https://player.vimeo.com/video/928058754?h=8ecd29d3fa&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vRbb4rSarfshAzMgB1-IT6mNgTIeSDa2wJbKuuXu5BpMdZ4PDgR7kzzbq4gH3uFE1tHfHrTwwNWFq2V/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
   "june": [],
   "july": [],
   "august": [],
