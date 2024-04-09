@@ -3,10 +3,10 @@
   "order": 3,
   "type": "slider",
   "classType": "default",
-  "url": "https://docs.google.com/presentation/d/e/2PACX-1vS4dXSEj9u9iQ1K_NsUv_NAlTCCQyDWCOKqi2hFmzec8AHuu_oDQfscONc-jLCf6Ksmvh4jhqi8pFX9/embed?start=false&loop=false&delayms=3000",
+  "url": "https://docs.google.com/presentation/d/e/2PACX-1vRIr8XJiM96q8oRJq6POix1U5Ejf0NYeinaQdCusBIgA95cKli8MEDyR-JeCIg4aB6nnQP2nMVMqgGh/embed?start=false&loop=false&delayms=3000",
   "active": true,
   "available": {
-    "startDateTime": "2024-03-15 07:00",
+    "startDateTime": "",
     "endDateTime": ""
   },
   "auth": []

@@ -1177,16 +1177,15 @@
                   "auth": []
                 },
                 {
-                  "id": "cardList1",
-                  "order": 2,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["0003"],
-                  "title": "Presentación",
-                  "content": [],
+                  "id": "slider1",
+                  "order": 3,
+                  "type": "slider",
+                  "classType": "default",
+                  "url": "https://docs.google.com/presentation/d/e/2PACX-1vRIr8XJiM96q8oRJq6POix1U5Ejf0NYeinaQdCusBIgA95cKli8MEDyR-JeCIg4aB6nnQP2nMVMqgGh/embed?start=false&loop=false&delayms=3000",
                   "active": true,
                   "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
+                    "startDateTime": "",
+                    "endDateTime": ""
                   },
                   "auth": []
                 }
