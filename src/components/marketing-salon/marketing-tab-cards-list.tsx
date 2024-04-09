@@ -115,7 +115,7 @@ export default function MarketingTabCardsList({
                           {groupedByTitle.map(([groupTitle, groupItems]) => (
                             <div
                               key={groupTitle}
-                              style={{ order: groupTitle.split("-")[0] }}
+                              style={{ order: parseInt(groupTitle.split("-")[0]) === 0 ? groupTitle.split(" ")[1] : groupTitle.split("-")[0]}}
                             >
                               {groupTitle !== "Sin Grupo de Familia" && (
                                 <h4 className="text-center w-full font-bold text-xl  mt-6">
