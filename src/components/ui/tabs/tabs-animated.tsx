@@ -66,7 +66,7 @@ export default function TabsAnimatedChadCN({
           className="self-center w-full flex flex-col "
         >
           <div className=" flex flex-wrap w-full justify-center">
-            <TabsList className="rounded-full w-[90vw]  flex flex-wrap h-full">
+            <TabsList className="rounded-full flex flex-wrap h-full">
               {activeAndOrderedTabs &&
                 activeAndOrderedTabs.map((tab) => (
                   <TabsTrigger
