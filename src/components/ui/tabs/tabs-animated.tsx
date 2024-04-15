@@ -59,14 +59,14 @@ export default function TabsAnimatedChadCN({
 
   console.log(defaultValue);
   return (
-    <div className="flex flex-row items-center justify-center w-full content-center align-middle">
+    <div className="flex flex-row items-center justify-center w-full content-center align-middle ">
       {defaultValue && (
         <Tabs
           defaultValue={defaultValue}
-          className="self-center w-full flex flex-col"
+          className="self-center w-full flex flex-col "
         >
-          <div className="flex w-full justify-center">
-            <TabsList className="rounded-full">
+          <div className=" flex flex-wrap w-full justify-center">
+            <TabsList className="rounded-full w-[90vw]  flex flex-wrap h-full">
               {activeAndOrderedTabs &&
                 activeAndOrderedTabs.map((tab) => (
                   <TabsTrigger
@@ -82,7 +82,7 @@ export default function TabsAnimatedChadCN({
           {activeAndOrderedTabs &&
             activeAndOrderedTabs.map((tab) => (
               <TabsContent key={tab.id} value={tab.id} className="w-full">
-                <div className="flex flex-col items-center justify-center w-full mb-4">
+                <div className="flex flex-col items-center justify-center w-full mb-4 ">
                   {tab.content &&
                     tab.content.map(
                       (
