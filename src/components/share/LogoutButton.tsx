@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Button } from "../ui/buttons/chadcn-button";
-import { logout } from "@/src/lib/server-actions.ts/server-actions";
+import  {logout} from "@/actions/logout"
 
 type Props = {};
 

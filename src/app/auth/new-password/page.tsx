@@ -9,7 +9,7 @@ const NewPasswordPage = (props: Props) => {
     <section className="pagewrapper">
       <CardWrapper
         headerLabel="Enter a new password"
-        backButtonLabel="Back to login"
+        backButtonLabel="<- Regresar a página de login"
         backButtonHref="/auth/login"
       >
         <NewPasswordForm />

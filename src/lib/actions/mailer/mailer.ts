@@ -32,7 +32,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 
   // send email
   const mailOptions = {
-    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
+    from: process.env.EMAIL_FROM,
     to: email,
     subject: "Confirm your email",
     html: htmlOne({
@@ -61,7 +61,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
   // send email
   const mailOptions = {
-    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
+    from: process.env.EMAIL_FROM,
     to: email,
     subject: "Reset your password",
     html: htmlOne({
@@ -87,7 +87,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   const mailOptions = {
-    from: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
+    from: process.env.EMAIL_FROM,
     to: email,
     subject: "2FA Code",
 

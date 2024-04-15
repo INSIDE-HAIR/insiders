@@ -19,7 +19,7 @@ const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
   let success: boolean = false;
 
   if (!existingToken) {
-    message = "Verification failed, try register again.";
+    message = "Fallo inesperado en la verificación. Vuelva a intentar, si el problema persiste contacte al soporte.";
   } else {
     const hasExpired = new Date(existingToken.expires) < new Date();
     if (hasExpired) {
@@ -28,13 +28,13 @@ const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
         where: { id: existingToken.id },
       });
 
-      message = "Token has expired!";
+      message = "!Tiempo expirado, vuelva a solicitar otro correo de verificación. Intenta ingresar de nuevo a tu cuenta.";
     } else {
       const existingUser = await prisma.user.findUnique({
         where: { email: existingToken.identifier },
       });
       if (!existingUser) {
-        message = "Email does not exist!";
+        message = "¡El email no existe!";
       } else {
         await prisma.user.update({
           where: { id: existingUser.id },
@@ -48,14 +48,14 @@ const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
           where: { id: existingToken.id },
         });
 
-        message = "Email verified!";
+        message = "¡Email verificado con éxito!";
         success = true;
       }
     }
   }
 
   return (
-    <div className="pagewrapper shadow-2xl">
+    <div className="pagewrapper shadow-2xl h-screen flex items-center justify-center">
       <NewVerificationForm message={message} success={success} />
     </div>
   );

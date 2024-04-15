@@ -1,7 +1,6 @@
 "use server"
 import * as z from "zod";
 import { signIn } from "@/src/lib/actions/auth/auth";
-import { redirect } from "next/dist/server/api-utils";
 import { AuthError } from "next-auth";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes/routes";
 import { LoginSchema } from "../types/inside-schemas";

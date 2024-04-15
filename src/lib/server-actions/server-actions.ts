@@ -26,9 +26,6 @@ import {
 import { AuthError } from "next-auth";
 import { DEFAULT_LOGIN_REDIRECT } from "../routes/routes";
 
-export const logout = async () => {
-  await signOut();
-};
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const validatedFields = RegisterSchema.safeParse(values);

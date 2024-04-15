@@ -8,8 +8,8 @@ const ResetPasswordPage = (props: Props) => {
   return (
     <div className="pagewrapper ">
       <CardWrapper
-        headerLabel="Forgot your password"
-        backButtonLabel="Back to login"
+        headerLabel="¿Olvidaste tu contraseña?"
+        backButtonLabel="<- Regresar a página de login"
         backButtonHref="/auth/login"
       >
         <ResetPasswordForm />

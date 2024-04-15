@@ -44,5 +44,5 @@ await sendVerificationEmailResend(
   verificationToken.token
 );
 
-return {success: "Usuario Creado con exito!"}
+return {success: "Usuario Creado con exito!. Se ha enviado un email de verificación a tu correo."}
 }

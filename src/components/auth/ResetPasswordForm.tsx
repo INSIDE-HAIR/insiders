@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { reset } from "@/src/lib/server-actions.ts/server-actions";
+import { reset } from "@/src/lib/server-actions/server-actions";
 import { ResetSchema } from "@/src/lib/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
@@ -75,7 +75,7 @@ const ResetPasswordForm = (props: Props) => {
           className="w-full relative"
           isLoading={isPending}
         >
-          Send reset email
+          Enviar email de recuperación
         </LoadingButton>
       </form>
     </Form>
