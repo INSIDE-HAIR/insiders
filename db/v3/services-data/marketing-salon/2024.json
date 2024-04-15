@@ -1775,11 +1775,13 @@
     },
     {
       "title": "B-A-2405-0010-01-01-01.pdf",
-      "url": "https://drive.google.com/uc?id=1xsrY8t2aAWnvcn7kFWdKCDOptmO3r49S&export=download"
+      "url": "https://drive.google.com/uc?id=1xsrY8t2aAWnvcn7kFWdKCDOptmO3r49S&export=download",
+      "buttonTitle": "T. Clientes"
     },
     {
       "title": "B-A-2405-0010-01-01-02.pdf",
-      "url": "https://drive.google.com/uc?id=1l8rK_K91abjuoFZQDrxt9xE4_xyJrca_&export=download"
+      "url": "https://drive.google.com/uc?id=1l8rK_K91abjuoFZQDrxt9xE4_xyJrca_&export=download",
+      "buttonTitle": "T. Peluqueros"
     },
     {
       "title": "B-A-2405-0050-01-01-01.pdf",
