@@ -2020,7 +2020,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": [],
+                  "childrensCode": ["0002"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -2031,7 +2031,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
