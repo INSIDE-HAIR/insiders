@@ -26,7 +26,7 @@ export const filesCodes = {
   "0002": "Guías",
   "0500": "Filtros de Instagram",
   "6969": "SMS/WhatsApp",
-  "0009" : "Logos",
+  "0009" : "Logotipos para Camisetas y Bolsas",
   "0003" : "Presentaciones",
   // más códigos según sea necesario
 };
