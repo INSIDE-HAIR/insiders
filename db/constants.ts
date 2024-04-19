@@ -67,3 +67,50 @@ export const contentTypes = {
   // más códigos según sea necesario
 };
 
+
+
+export const serviceOptions = [
+  {
+    id: 'marketingServices',
+    name: 'Marketing',
+    order: 1,
+    services: [
+      { id: 'marketingSalon', name: 'Marketing Salón', order: 1 },
+      { id: 'guiaMarketingDigital', name: 'Guía Marketing Digital', order: 2 },
+      { id: 'startMarketing', name: 'Start Marketing', order: 3 },
+      { id: 'teams', name: 'Teams', order: 4 },
+    ],
+  },
+  {
+    id: 'formationServices',
+    name: 'Formaciones',
+    order: 2,
+    services: [
+      { id: 'scalingS', name: 'Scaling-S', order: 1 },
+      { id: 'salonHiperventas', name: 'Salón Hiperventas', order: 2 },
+      { id: 'consultoria360', name: 'Consultoría 360º', order: 3 },
+      { id: 'ibm', name: 'IBM', order: 4 },
+      { id: 'starClub', name: 'Star Club', order: 5 },
+      { id: 'salonExperience', name: 'Salón Experience', order: 6 },
+    ],
+  },
+  {
+    id: 'mentoringServices',
+    name: 'Consultoría',
+    order: 3,
+    services: [
+      { id: 'gestionDirectiva', name: 'Gestión Directiva', order: 1 },
+      { id: 'sesionesIndividuales', name: 'Sesiones Individuales', order: 2 },
+      { id: 'insideClub', name: 'INSIDE Club', order: 3 },
+      { id: 'consultoriasGrupales', name: 'Consultorías Grupales', order: 4 },
+    ],
+  },
+  {
+    id: 'toolsServices',
+    name: 'Herramientas',
+    order: 4,
+    services: [
+      { id: 'menuServicios', name: 'Menú de Servicios', order: 1 },
+    ],
+  },
+];
