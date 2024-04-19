@@ -170,7 +170,7 @@ const data: Client[] = [
   },
 ];
 
-export type Client = {
+type Client = {
   id: string;
   name: string;
   lastName: string;
@@ -208,7 +208,7 @@ interface ServiceFilter {
   [category: string]: ServiceSelection[];
 }
 
-export const columns: ColumnDef<Client>[] = [
+const columns: ColumnDef<Client>[] = [
   {
     id: "select",
     header: ({ table }) => (
