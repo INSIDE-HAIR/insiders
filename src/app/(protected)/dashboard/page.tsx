@@ -43,7 +43,7 @@ import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { serviceOptions } from "@/db/constants";
-import { SelectScrollable } from "@/src/components/select/select-scrollable";
+import Filter from "./Filter";
 
 const data: Client[] = [
   {
@@ -186,13 +186,6 @@ type Client = {
   endDate: string; // ISO date string;
 };
 
-interface Category {
-  id: string;
-  name: string;
-  order: number;
-  services: Service[];
-}
-
 interface Service {
   id: string;
   name: string;
@@ -204,9 +197,7 @@ interface ServiceSelection {
   name: string;
 }
 
-interface ServiceFilter {
-  [category: string]: ServiceSelection[];
-}
+
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -509,7 +500,6 @@ export default function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [serviceFilter, setServiceFilter] = React.useState<ServiceFilter>({});
 
   const table = useReactTable({
     data,
@@ -564,6 +554,12 @@ export default function DataTableDemo() {
               }
               className="max-w-sm"
             />
+            <div>
+              <Filter
+                column={table.getColumn("email")}
+                table={table}
+              />
+            </div>
             <Input
               placeholder="Nombre"
               value={
@@ -584,78 +580,6 @@ export default function DataTableDemo() {
               }
               className="max-w-sm"
             />
-            <div className="flex items-center py-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="ml-auto">
-                    Services <ChevronDownIcon className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {serviceOptions
-                    .sort((a, b) => a.order - b.order) // Ordena las categorías de servicios por su orden
-                    .map((category) => (
-                      <DropdownMenuGroup key={category.id}>
-                        <DropdownMenuLabel>
-                          {category.name.toUpperCase()}
-                        </DropdownMenuLabel>
-                        {category.services
-                          .sort((a, b) => a.order - b.order) // Ordena los servicios por su orden
-                          .map((service) => (
-                            <DropdownMenuCheckboxItem
-                              key={service.id}
-                              checked={
-                                serviceFilter[category.id]?.some(
-                                  (selectedService) =>
-                                    selectedService.id === service.id
-                                ) || false
-                              }
-                              onCheckedChange={(checked) => {
-                                // Obtiene la lista actual de servicios seleccionados para esta categoría,
-                                // o inicialízala como un array vacío si aún no hay nada seleccionado.
-                                const currentServices =
-                                  serviceFilter[category.id] || [];
-
-                                // Determina si el servicio actual ya está seleccionado.
-                                const isServiceSelected = currentServices.some(
-                                  (selectedService) =>
-                                    selectedService.id === service.id
-                                );
-
-                                // Si `checked` es true y el servicio no está ya seleccionado, añádelo.
-                                // Si `checked` es false, filtra el servicio para eliminarlo.
-                                const updatedServices = checked
-                                  ? isServiceSelected
-                                    ? currentServices // Si ya está seleccionado, no hagas cambios.
-                                    : [
-                                        ...currentServices,
-                                        { id: service.id, name: service.name },
-                                      ] // Añade el servicio.
-                                  : currentServices.filter(
-                                      (selectedService) =>
-                                        selectedService.id !== service.id
-                                    ); // Elimina el servicio.
-
-                                // Actualiza el filtro completo con los servicios actualizados para esta categoría.
-                                const newFilter = {
-                                  ...serviceFilter,
-                                  [category.id]: updatedServices,
-                                };
-
-                                setServiceFilter(newFilter);
-                                console.log("serviceFilter", serviceFilter);
-                                // A continuación, debes adaptar cómo quieres aplicar este estado de filtro a la tabla.
-                                // Esto podría implicar convertir `serviceFilter` a un formato que tu lógica de filtrado en la tabla pueda manejar.
-                              }}
-                            >
-                              {service.name.toUpperCase()}
-                            </DropdownMenuCheckboxItem>
-                          ))}
-                      </DropdownMenuGroup>
-                    ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
           </fieldset>
           <div className="flex items-center py-4">
             <DropdownMenu>
