@@ -1,0 +1,123 @@
+{
+  "adminRoutes": [
+    {
+      "id": "admin",
+      "icon": "HomeIcon",
+      "path": "",
+      "translations": {
+        "en": "Home",
+        "es": "Inicio"
+      }
+    },
+    {
+      "id": "products",
+      "icon": "PackageIcon",
+      "path": "/products",
+      "translations": {
+        "en": "Products",
+        "es": "Productos"
+      }
+    },
+    {
+      "id": "users",
+      "icon": "UsersIcon",
+      "path": "/users",
+      "translations": {
+        "en": "Users",
+        "es": "Usuarios"
+      }
+    },
+    {
+      "id": "metrics",
+      "icon": "LineChartIcon",
+      "path": "/metrics",
+      "translations": {
+        "en": "Metrics",
+        "es": "Métricas"
+      }
+    },
+    {
+      "id": "messages",
+      "icon": "EnvelopeClosedIcon",
+      "path": "/messages",
+      "translations": {
+        "en": "Messages",
+        "es": "Mensajes"
+      }
+    },
+    {
+      "id": "pages",
+      "icon": "FilesIcon",
+      "path": "/pages",
+      "translations": {
+        "en": "Pages",
+        "es": "Páginas"
+      }
+    },
+    {
+      "id": "menu",
+      "icon": "WorkflowIcon",
+      "path": "/menu",
+      "translations": {
+        "en": "Menu",
+        "es": "Menú"
+      }
+    }
+  ],
+  "actionsRoutes": [
+    {
+      "id": "create",
+      "icon": "",
+      "path": "/create",
+      "translations": {
+        "en": "Create",
+        "es": "Crear"
+      }
+    },
+    {
+      "id": "edit",
+      "icon": "",
+      "path": "/edit",
+      "translations": {
+        "en": "Edit",
+        "es": "Editar"
+      }
+    },
+    {
+      "id": "delete",
+      "icon": "",
+      "path": "/delete",
+      "translations": {
+        "en": "Delete",
+        "es": "Eliminar"
+      }
+    },
+    {
+      "id": "view",
+      "icon": "",
+      "path": "/view",
+      "translations": {
+        "en": "View",
+        "es": "Ver"
+      }
+    },
+    {
+      "id": "list",
+      "icon": "",
+      "path": "/list",
+      "translations": {
+        "en": "List",
+        "es": "Listar"
+      }
+    },
+    {
+      "id": "search",
+      "icon": "",
+      "path": "/search",
+      "translations": {
+        "en": "Search",
+        "es": "Buscar"
+      }
+    }
+  ]
+}

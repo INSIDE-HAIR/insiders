@@ -105,7 +105,6 @@ function TailwindGrid({ children, show, className, fullSize }: TailwindGridProps
       <section className={` ${!fullSize && "px-4 md:px-6 lg:px-8"} min-w-[320px] w-full   gap-4 grid-cols-4  md:gap-6 md:grid-cols-8 lg:gap-6  lg:grid-cols-12 grid relative  items-center justify-center`}>
         {children}
       </section>
-      
     </>
   );
 }

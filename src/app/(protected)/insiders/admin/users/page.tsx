@@ -44,6 +44,8 @@ import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { serviceOptions } from "@/db/constants";
 import Filter from "./Filter";
+import DebouncedInput from "./DebouncedInput";
+import { Breadcrumb } from "@/src/components/ui/breadcrumb";
 
 const data: Client[] = [
   {
@@ -196,8 +198,6 @@ interface ServiceSelection {
   id: string;
   name: string;
 }
-
-
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -520,8 +520,17 @@ export default function DataTableDemo() {
     },
   });
 
+  let emailColumn = table.getColumn("role");
+  if (emailColumn) {
+    // Now TypeScript knows that emailColumn is not undefined in this block
+    let emailFilterValue = emailColumn.getFilterValue() as Array<string>;
+    // Use emailFilterValue...
+  }
+
+  const dataListId = "role" + "list";
+
   return (
-    <div className=" flex-col flex col-span-full items-start">
+    <>
       <TailwindGrid fullSize>
         <header className="max-w-full col-start-1 col-end-full md:col-end-6 lg:col-start-3 lg:col-end-13 flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 col-span-full">
           <Link className="lg:hidden" href="#">
@@ -555,10 +564,7 @@ export default function DataTableDemo() {
               className="max-w-sm"
             />
             <div>
-              <Filter
-                column={table.getColumn("email")}
-                table={table}
-              />
+              {emailColumn && <Filter column={emailColumn} table={table} />}
             </div>
             <Input
               placeholder="Nombre"
@@ -685,6 +691,6 @@ export default function DataTableDemo() {
           </div>
         </main>
       </TailwindGrid>
-    </div>
+    </>
   );
 }

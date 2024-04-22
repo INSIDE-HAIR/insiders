@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Providers from "@/src/components/providers/Providers";
-import TopNavbar from "@/src/components/navigations/TopNavbar";
-import { cn, inter } from "@/src/lib/utils/utils";
-import { DashboardIcon } from "@radix-ui/react-icons";
 import Dashboard from "@/src/components/dashboard/dashboard";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 // import ToastContainerWrapper from "@/src/components/share/ToastContainerWrapper";
+import BreadcrumbAdmin from "@/src/components/ui/breadcrumbs/breadcrumb-admin";
+import AdminHeader from "@/src/components/admin-header/AdminHeader";
 
 export const metadata: Metadata = {
   title: "DASHBOARD | INSIDERS",
@@ -22,7 +20,10 @@ export default function RootLayout({
     <TailwindGrid fullSize>
       <Dashboard />
       {/* <ToastContainerWrapper /> */}
-      {children}
+      <div className=" flex-col flex col-span-full items-start">
+        <AdminHeader />
+        {children}
+      </div>
     </TailwindGrid>
   );
 }
