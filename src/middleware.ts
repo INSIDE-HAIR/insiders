@@ -5,7 +5,6 @@ const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const { nextUrl } = req;
-  console.log("ROUTE: ", nextUrl.pathname);
   if (nextUrl.pathname === "/register")
     return Response.redirect(new URL("/auth/register", nextUrl));
 

@@ -36,7 +36,6 @@ await prisma.user.create({
   }
 })
 
-console.log(values)
 const verificationToken = await generateVerificationToken(email);
 
 await sendVerificationEmailResend(

@@ -30,7 +30,6 @@ export const {
       },
       async authorize(credentials) {
         const validatedFields = CredentialSigninSchema.safeParse(credentials);
-        console.log("validatedFields", validatedFields);
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
@@ -141,7 +140,6 @@ export const {
       return true;
     },
     async jwt({ token, user }) {
-      console.log("callback jwt:", { token, user }); // token.sub is the user.id
 
       if (!token.sub) return token;
 
@@ -165,7 +163,6 @@ export const {
 
     //@ts-expect-error
     async session({ session, token }) {
-      console.log("callback session: ", { session, token });
 
       if (token.sub && session.user) {
         session.user.id = token.sub;

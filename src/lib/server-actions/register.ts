@@ -34,7 +34,6 @@ await prisma.user.create({
   }
 })
 
-console.log(values)
 
 //TODO: Send email confirmation
 

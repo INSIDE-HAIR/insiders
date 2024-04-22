@@ -50,7 +50,6 @@ const CredentialsLoginForm = (props: Props) => {
   };
 
   const onSubmit = (values: z.infer<typeof CredentialSigninSchema>) => {
-    console.log("onSubmit values", values, "isPending=", isPending);
     // reset states
     setErrorMessage("");
     setSuccessMessage("");
@@ -58,7 +57,6 @@ const CredentialsLoginForm = (props: Props) => {
     startTransition(() => {
       credentialsLogin(values, callbackUrl)
         .then((data) => {
-          console.log("credentialsLogin data", data);
 
           if (data?.error) {
             if (data.error !== "Code mismatched!") {

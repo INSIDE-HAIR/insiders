@@ -10,7 +10,6 @@ type Props = {};
 
 const SettingsPage = async (props: Props) => {
   const session = await auth();
-  console.log("session", session);
 
   if (!session) {
     redirect("/auth/login?error=unauthenticated");
