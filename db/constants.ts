@@ -29,6 +29,8 @@ export const filesCodes = {
   "0009": "Logotipos para Camisetas y Bolsas",
   "0003": "Presentaciones",
   "1602": "GIFs",
+  "0087": "Escaparate Josep Pons",
+  "0057": "Horizontal Josep Pons",
   // más códigos según sea necesario
 };
 

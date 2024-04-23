@@ -896,7 +896,14 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0080", "0050", "0004", "0005"],
+                  "childrensCode": [
+                    "0080",
+                    "0050",
+                    "0004",
+                    "0005",
+                    "0057",
+                    "0087"
+                  ],
                   "title": "Cartelería",
                   "content": [],
                   "active": true,
