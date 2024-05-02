@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,8 +19,8 @@ import FormSuccess from "../share/MessageSuccessBox";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CredentialSigninSchema } from "@/src/lib/types/zod-schemas";
-import { credentialsLogin } from "@/src/lib/server-actions/server-actions";
 import LoadingButton from "../share/LoadingButton";
+import { credentialsLogin } from "@/actions/auth/credentials-login";
 
 type Props = {};
 

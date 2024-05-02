@@ -1,13 +1,12 @@
 "use server";
 import * as z from "zod";
 import { LoginSchema } from "@/src/schemas/index";
-// import { redirect } from "next/dist/server/api-utils";
 import { AuthError } from "next-auth";
 import { signIn } from "@/src/lib/actions/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes/routes";
 import { getUserByEmail } from "@/data/user";
-import { generateVerificationToken } from "@/src/lib/actions/auth/tokens";
 import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
+import { generateVerificationToken } from "./tokens";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validatedFields = LoginSchema.safeParse(values);

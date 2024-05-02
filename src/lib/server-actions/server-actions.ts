@@ -1,58 +1,11 @@
 "use server";
-
 import bcrypt from "bcryptjs";
 import * as z from "zod";
-
-import { auth, signIn, unstable_update as update } from "../actions/auth/auth";
-import {
-  EmailSchema,
-  NewPasswordSchema,
-  SettingsSchema,
-} from "../types/zod-schemas";
+import { auth, unstable_update as update } from "../actions/auth/auth";
+import { SettingsSchema } from "../types/zod-schemas";
 import prisma from "../../../prisma/database";
-import {
-  generateVerificationToken,
-} from "../actions/auth/tokens";
-import { AuthError } from "next-auth";
-import { DEFAULT_LOGIN_REDIRECT } from "../routes/routes";
 import { sendVerificationEmailResend } from "../mail/mail";
-
-export const emailLogin = async (
-  values: z.infer<typeof EmailSchema>,
-  callbackUrl?: string | null
-) => {
-  const validatedFields = EmailSchema.safeParse(values);
-
-  if (!validatedFields.success) {
-    return { error: "Campos incorrectos!" };
-  }
-
-  const { email } = validatedFields.data;
-  console.log("email", email);
-
-  try {
-    await signIn("email", {
-      email,
-      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      console.log(error);
-      switch (error.type) {
-        case "EmailSignInError":
-          return { error: `Email SignIn Error: ${error.message}` };
-        default:
-          return { error: "Algo salio mal." };
-      }
-    }
-
-    throw error; // if not throw error, next-auth doesn't redirect
-  }
-
-  return { success: "Email enviado!" };
-};
-
-
+import { generateVerificationToken } from "@/actions/auth/tokens";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const session = await auth();

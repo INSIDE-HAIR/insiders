@@ -298,7 +298,10 @@ export const sendVerificationEmailResend = async (
   }
 };
 
-export const sendPasswordResetEmail = async (email: string, token: string) => {
+export const sendPasswordResetEmailResend = async (
+  email: string,
+  token: string
+) => {
   const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-password?token=${token}`;
   try {
     // Intenta enviar el email
@@ -569,6 +572,31 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     </tr></table>
     </td></tr><tr><td><div class="t49" style="mso-line-height-rule:exactly;mso-line-height-alt:20px;line-height:20px;font-size:1px;display:block;">&nbsp;</div></td></tr></table></td></tr></table></div></body>
     </html>`,
+    });
+    console.info("Email reenviado con éxito a:", email);
+    // Puedes retornar algo o manejar el éxito aquí
+  } catch (error) {
+    // Maneja cualquier error que ocurra durante el envío del email
+    console.error("Error al reenviar el email:", error);
+    // Podrías lanzar el error nuevamente o manejarlo según sea necesario
+    throw error;
+  }
+};
+
+export const sendTwoFactorTokenEmailResend = async (
+  email: string,
+  token: string
+) => {
+  const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL}/auth/new-verification?token=${token}&email=${email}`;
+
+  try {
+    // Intenta enviar el email
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM as string,
+      to: email,
+      subject: "Confirma tu email",
+      html: `<a href=${confirmLink} target="_blank">Two Factor Token Email!</a>
+`,
     });
     console.info("Email reenviado con éxito a:", email);
     // Puedes retornar algo o manejar el éxito aquí
