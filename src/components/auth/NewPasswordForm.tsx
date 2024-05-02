@@ -1,6 +1,5 @@
 "use client";
 
-import { newPassword } from "@/src/lib/server-actions/server-actions";
 import { NewPasswordSchema } from "@/src/lib/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +19,7 @@ import { Input } from "../ui/input";
 import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import LoadingButton from "../share/LoadingButton";
+import { newPassword } from "@/actions/auth/new-password";
 
 type Props = {};
 

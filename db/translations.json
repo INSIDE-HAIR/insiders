@@ -119,5 +119,65 @@
         "es": "Buscar"
       }
     }
+  ],
+  "authRoutes": [
+    {
+      "id": "authError",
+      "icon": "",
+      "path": "/auth-error",
+      "translations": { "en": "Auth Error", "es": "Error de Autenticación" }
+    },
+    {
+      "id": "login",
+      "icon": "",
+      "path": "/login",
+      "translations": {
+        "en": "Login",
+        "es": "Iniciar Sesión"
+      }
+    },
+
+    {
+      "id": "new-password",
+      "icon": "",
+      "path": "/new-password",
+      "translations": { "en": "New Password", "es": "Nueva Contraseña" }
+    },
+    {
+      "id": "new-verification",
+      "icon": "",
+      "path": "/new-verification",
+      "translations": {
+        "en": "New Verification",
+        "es": "Nueva Verificación"
+      }
+    },
+    {
+      "id": "register",
+      "icon": "",
+      "path": "/register",
+      "translations": {
+        "en": "Register",
+        "es": "Registrarse"
+      }
+    },
+    {
+      "id": "reset",
+      "icon": "",
+      "path": "/reset",
+      "translations": {
+        "en": "Reset Password",
+        "es": "Restablecer Contraseña"
+      }
+    },
+    {
+      "id": "verifyRequest",
+      "icon": "",
+      "path": "/verify-request",
+      "translations": {
+        "en": "Verify Request",
+        "es": "Verificar Solicitud"
+      }
+    }
   ]
 }

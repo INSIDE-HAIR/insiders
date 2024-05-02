@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Dashboard from "@/src/components/dashboard/dashboard";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import AdminHeader from "@/src/components/admin-header/AdminHeader";
+import AuthHeader from "@/src/components/auth-header/AuthHeader";
 
 export const metadata: Metadata = {
-  title: "DASHBOARD | INSIDERS",
+  title: "AUTH | INSIDERS",
   description:
     "En INSIDE HAIR nos dedicamos a ayudar a managers de Peluquería a conseguir sus objetivos en consultoría, formación y Marketing para salones de Peluquería.",
 };
@@ -16,9 +16,8 @@ export default function RootLayout({
 }>) {
   return (
     <TailwindGrid fullSize>
-      <Dashboard />
       <div className=" flex-col flex col-span-full items-start">
-        <AdminHeader />
+        <AuthHeader />
         {children}
       </div>
     </TailwindGrid>

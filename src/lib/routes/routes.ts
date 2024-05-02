@@ -4,11 +4,7 @@
  * logged-in user is also allowed to access /auth/new-verification to verify their email
  * @type {sting[]}
  */
-export const publicRoutes = [
-  "/", 
-  "/auth/new-verification",  
-  "/marketing-salon",
-];
+export const publicRoutes = ["/", "/auth/new-verification", "/marketing-salon"];
 
 /**
  * An array of routes that are used for authentication.
@@ -35,7 +31,7 @@ export const apiAuthPrefix = "/api/auth";
  * the default redirect path after logging
  * @type{string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = "/insiders/admin";
 
 /**
  * auth routes need the redirection

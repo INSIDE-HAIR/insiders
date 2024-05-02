@@ -9,7 +9,7 @@ const VerifyRequestPage = (props: Props) => {
   const domain = headersList.get("host") || "";
 
   return (
-    <div className="pagewrapper">
+    <section className="shadow-2xl h-screen flex items-center justify-center w-screen">
       <CardWrapper
         headerLabel="Check your email"
         backButtonHref="/"
@@ -18,7 +18,7 @@ const VerifyRequestPage = (props: Props) => {
         <p className="text-center">A sign in link has been sent to</p>
         <p className="text-center">your email address</p>
       </CardWrapper>
-    </div>
+    </section>
   );
 };
 

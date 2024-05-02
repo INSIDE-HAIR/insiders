@@ -8,27 +8,28 @@ type Props = {
 const AuthErrorPage = ({ searchParams: { error } }: Props) => {
   if (error === "Verification") {
     return (
-      <section className="pagewrapper">
+      <section className="shadow-2xl h-screen flex items-center justify-center w-screen">
         <CardWrapper
-          headerLabel="Unable to sign in"
+          headerLabel="No se puede iniciar sesión"
           backButtonHref="/auth/login"
-          backButtonLabel={"Back to sign in"}
+          backButtonLabel={"<- Regresar a página de iniciar sesión"}
         >
           <p className="text-center text-lg mb-4">
-            The sign in link is no longer valid.
+            El enlace de registro ya no es válido.
           </p>
-          <p className="text-center">It may have been used already or</p>
-          <p className="text-center">it may have expired</p>
+          <p className="text-center">
+            Puede que ya se haya utilizado o <br /> que haya caducado.
+          </p>
         </CardWrapper>
       </section>
     );
   } else {
     return (
-      <section className="pagewrapper">
+      <section className="shadow-2xl h-screen flex items-center justify-center w-screen">
         <CardWrapper
-          headerLabel="Unable to sign in"
+          headerLabel="No se puede iniciar sesión"
           backButtonHref="/auth/login"
-          backButtonLabel="Back to sign in"
+          backButtonLabel="<- Regresar a página de iniciar sesión"
         >
           <p className="text-center text-lg mb-4">{error}</p>
         </CardWrapper>

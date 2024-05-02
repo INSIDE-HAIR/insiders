@@ -37,5 +37,5 @@ await prisma.user.create({
 
 //TODO: Send email confirmation
 
-return {success: "Usuario Creado con exito!"}
+return {success: "¡Usuario Creado con exito!"}
 }

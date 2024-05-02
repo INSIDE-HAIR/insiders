@@ -1,7 +1,6 @@
 import React from "react";
 import TailwindGrid from "../grid/TailwindGrid";
 import BreadcrumbAdmin from "@/src/components/ui/breadcrumbs/breadcrumb-admin";
-import GoBackButton from "../ui/breadcrumbs/go-back-button";
 
 function AdminHeader() {
   return (

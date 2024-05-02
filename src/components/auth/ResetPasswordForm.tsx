@@ -8,7 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { reset } from "@/src/lib/server-actions/server-actions";
 import { ResetSchema } from "@/src/lib/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
@@ -18,6 +17,7 @@ import { Input } from "../ui/input";
 import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import LoadingButton from "../share/LoadingButton";
+import { reset } from "@/actions/auth/reset-password";
 
 type Props = {};
 

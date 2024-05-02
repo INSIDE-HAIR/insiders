@@ -20,7 +20,7 @@ import React from "react";
 import Link from "next/link";
 import GoBackButton from "./go-back-button";
 
-export default function BreadcrumbAdmin() {
+export default function BreadcrumbAuth() {
   const pathname = usePathname() ?? "/";
   const pathSegments = pathname.split("/").filter(Boolean);
 
@@ -49,12 +49,12 @@ export default function BreadcrumbAdmin() {
 
   // Crear el enlace para GoBackButton dinámicamente
   const goBackHref =
-    pathSegments.length > 1 ? `/${pathSegments.slice(0, -1).join("/")}` : "/"; // Si sólo hay un segmento o ninguno, vuelve al inicio
+    pathSegments.length > 2 ? `/${pathSegments.slice(0, -1).join("/")}` : "/"; // Si sólo hay un segmento o ninguno, vuelve al inicio
 
   const goBackLabel =
-    pathSegments.length > 1
-      ? "Ir a " + getTranslation(pathSegments[pathSegments.length - 2], "es")
-      : "Ir a Inicio";
+    pathSegments.length > 2
+      ? "Ir a " + getTranslation(pathSegments[pathSegments.length - 1], "es")
+      : "Ir a INSIDE HAIR";
 
   return (
     <>
@@ -63,7 +63,7 @@ export default function BreadcrumbAdmin() {
       <Breadcrumb className="[&>*]:text-zinc-800  [&>*]:font-medium  ">
         <BreadcrumbList>
           <BreadcrumbItem className="capitalize underline [&>*]:hover:text-zinc-400">
-            <BreadcrumbLink href="/insiders/">Insiders</BreadcrumbLink>
+            <BreadcrumbLink href="/auth/login">Autenticación</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           {showDropdown && (

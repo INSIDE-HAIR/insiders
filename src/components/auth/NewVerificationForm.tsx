@@ -11,7 +11,7 @@ const NewVerificationForm = ({ message, success }: Props) => {
   return (
     <CardWrapper
       headerLabel="Confirmando tu verificación de email."
-      backButtonLabel="<- Regresar a página de login"
+      backButtonLabel="<- Regresar a página de iniciar sesión"
       backButtonHref="/auth/login"
     >
       <div className="flex items-center justify-center w-full">

@@ -9,7 +9,7 @@ const NewVerificationPageLoading = (props: Props) => {
     <div className="pagewrapper shadow-2xl">
       <CardWrapper
         headerLabel="Confirm you verification"
-        backButtonLabel="<- Regresar a página de login"
+        backButtonLabel="<- Regresar a página de iniciar sesión"
         backButtonHref="/auth/login"
       >
         <div className="flex items-center justify-center w-full">
