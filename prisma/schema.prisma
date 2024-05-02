@@ -11,24 +11,29 @@ datasource db {
 
 enum UserRole {
   ADMIN
-  USER
-  SUPERADMIN
+  CLIENT
+  EMPLOYEE
 }
 
 model User {
   id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
   name                  String?
   lastName              String?
-  email                 String?                @unique
+  email                 String                 @unique
   emailVerified         DateTime?
   image                 String?
   password              String?
   contactNumber         String?
   terms                 Boolean                @default(true)
-  role                  UserRole               @default(USER)
+  role                  UserRole               @default(CLIENT)
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   accounts              Account[]
+  holdedId              String?
+  holdedData            HoldedData[]
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  // Otros campos y configuraciones...
 }
 
 model VerificationToken {
@@ -58,6 +63,7 @@ model Account {
 
   @@unique([provider, providerAccountId])
 }
+
 //TODO: REVISAR
 model TwoFactorConfirmation {
   id String @id @default(auto()) @map("_id") @db.ObjectId
@@ -86,5 +92,109 @@ model TwoFactorToken {
   @@unique([email, token])
 }
 
+// HOLDED DATA
+model HoldedData {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  customId        String?
+  name            String
+  code            String
+  vatnumber       String
+  tradeName       String
+  email           String
+  mobile          String
+  phone           String
+  type            String
+  iban            String
+  swift           String
+  groupId         String
+  clientRecord    String
+  supplierRecord  String
+  billAddress     BillAddress?
+  customFields    CustomField[]
+  defaults        Json?
+  socialNetworks  Json?
+  tags            String[]
+  notes           String[]
+  contactPersons  ContactPerson[]
+  shippingAddress String[]
+  isPerson        Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  updatedHash     String?
+  userId          String          @unique @db.ObjectId
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
+model ContactPerson {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  personId      String
+  name          String
+  job           String?
+  phone         String?
+  email         String?
+  sendDocuments Boolean     @default(false)
+  HoldedData    HoldedData? @relation(fields: [holdedDataId], references: [id])
+  holdedDataId  String?     @db.ObjectId
+}
 
+model BillAddress {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  address      String
+  city         String
+  postalCode   Int
+  province     String
+  country      String
+  countryCode  String
+  info         String?
+  holdedDataId String     @unique @db.ObjectId
+  holdedData   HoldedData @relation(fields: [holdedDataId], references: [id], onDelete: Cascade)
+}
+
+model CustomField {
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  field        CustomFieldType
+  holdedDataId String          @db.ObjectId
+  holdedData   HoldedData      @relation(fields: [holdedDataId], references: [id], onDelete: Cascade)
+  value        String
+}
+
+enum CustomFieldType {
+  EtapaDelSalon
+  NumeroColaboradores
+  NumeroSalones
+  FacturacionPromediaMensual
+  EtapaDelManager
+  ServiciosRecurrentesDeRenovacionAnual
+  EstadoDelCliente
+  FechaDeAltaCliente
+  FechaDeBajaCliente
+  ResponsableDeSesionDeBienvenida
+  FechaDeAltaMKTSALON
+  FechaDeBajaMKTSALON
+  NivelMKTSALON
+  TEAMS
+  STARTMKT
+  HIPERVENTAS
+  MasterIBM
+  MasterSTARCLUB
+  MasterSALONEXPERIENCE
+  TallerScallingS
+  FechaDeAltaClubINSIDE
+  FechaDeBajaClubINSIDE
+  NivelClubINSIDE
+  FechaDeAltaGestionDirectiva
+  FechaDeBajaGestionDirectiva
+  NivelGestionDirectiva
+  MENUSERVICIOS
+  CM
+  Mentoring
+  ResponsableDeConsultoria
+  SOCIALMKT
+  ADSMKT
+  MKTDIRECTOWEBMKT
+  FUNNELMKT
+  ResponsableAGENCIA
+  BRANDING
+  Consultoria360
+  insidersID
+}

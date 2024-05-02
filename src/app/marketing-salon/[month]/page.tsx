@@ -5,15 +5,13 @@ import dataMonths from "@/db/dates/months.json";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import Container from "@/src/components/ui/containers/container";
 import ComponentsSelector from "@/src/components/components-selector/components-selector";
-import { usePathname } from "next/navigation";
 
 interface MonthlyData {
   [x: string]: any;
 }
 
-export default function Page() {
+export default function Page({ params }: { params: { month: string } }) {
   const searchParams = useSearchParams();
-  const pathname = usePathname() ?? "/";
   const [tab, setTab] = useState(searchParams?.get("tab") ?? null);
   const [dataStructure, setDataStructure] = useState<MonthlyData | null>(null);
   const [dataMarketingCards, setDataMarketingCards] =
@@ -24,7 +22,7 @@ export default function Page() {
     (searchParams?.get("year") as string) ?? new Date().getFullYear().toString()
   );
   const [month, setMonth] = useState<string>(
-    (searchParams?.get("month") as string) ?? "march"
+    (searchParams?.get("month") as string) ?? params.month ?? "march"
   );
   const [client, setClient] = useState<string>(
     (searchParams?.get("client")?.toLocaleLowerCase() as string) ?? "insiders"

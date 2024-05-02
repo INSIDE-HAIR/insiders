@@ -171,8 +171,11 @@ const SettingsForm = ({ user }: Props) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                    <SelectItem value={UserRole.USER}>User</SelectItem>
+                    <SelectItem value={UserRole.ADMIN}>
+                      Administrador
+                    </SelectItem>
+                    <SelectItem value={UserRole.CLIENT}>Cliente</SelectItem>
+                    <SelectItem value={UserRole.EMPLOYEE}>Empleado</SelectItem>
                   </SelectContent>
                 </Select>
 

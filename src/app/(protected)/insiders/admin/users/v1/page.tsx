@@ -42,157 +42,162 @@ import {
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { getListUsers } from "@/actions/contacts/list-contacts";
-import { UserRole } from "@prisma/client";
+import { serviceOptions } from "@/db/constants";
+import Filter from "./Filter";
+import DebouncedInput from "./DebouncedInput";
+import { Breadcrumb } from "@/src/components/ui/breadcrumb";
 
-// let data: Client[] = [
-//   {
-//     id: "1",
-//     name: "Alejandra",
-//     lastName: "González",
-//     email: "alejandra.gonzalez@example.com",
-//     phone: "555-0101",
-//     role: "Administrador",
-//     marketingServices: [
-//       { id: "marketingSalon", name: "Marketing Salón", order: 1 },
-//       { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
-//       { id: "startMarketing", name: "Start Marketing", order: 3 },
-//       { id: "teams", name: "Teams", order: 4 },
-//     ],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [
-//       { id: "gestionDirectiva", name: "Gestión Directiva", order: 1 },
-//       { id: "sesionesIndividuales", name: "Sesiones Individuales", order: 2 },
-//       { id: "insideClub", name: "INSIDE Club", order: 3 },
-//       { id: "consultoriasGrupales", name: "Consultorías Grupales", order: 4 },
-//     ],
-//     toolsServices: [],
-//     lastConnection: "2024-04-15T10:00:00Z",
-//     startDate: "2023-01-01T00:00:00Z",
-//     endDate: "2025-12-31T23:59:59Z",
-//   },
-//   {
-//     id: "2",
-//     name: "Carlos",
-//     lastName: "Martínez",
-//     email: "carlos.martinez@example.com",
-//     phone: "555-0102",
-//     role: "Cliente",
-//     marketingServices: [
-//       { id: "marketingSalon", name: "Marketing Salón", order: 1 },
-//       { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
-//       { id: "startMarketing", name: "Start Marketing", order: 3 },
-//       { id: "teams", name: "Teams", order: 4 },
-//     ],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [],
-//     lastConnection: "2024-04-14T09:30:00Z",
-//     startDate: "2023-02-15T00:00:00Z",
-//     endDate: "2025-11-15T23:59:59Z",
-//   },
-//   {
-//     id: "3",
-//     name: "Sofía",
-//     lastName: "López",
-//     email: "sofia.lopez@example.com",
-//     phone: "555-0103",
-//     role: "Cliente",
-//     marketingServices: [],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [],
-//     lastConnection: "2024-04-13T11:20:00Z",
-//     startDate: "2023-03-20T00:00:00Z",
-//     endDate: "2025-10-20T23:59:59Z",
-//   },
-//   {
-//     id: "4",
-//     name: "Miguel",
-//     lastName: "Hernández",
-//     email: "miguel.hernandez@example.com",
-//     phone: "555-0104",
-//     role: "Cliente",
-//     marketingServices: [],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [
-//       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
-//     ],
-//     lastConnection: "2024-04-16T12:45:00Z",
-//     startDate: "2023-04-25T00:00:00Z",
-//     endDate: "2025-09-25T23:59:59Z",
-//   },
-//   {
-//     id: "5",
-//     name: "Daniela",
-//     lastName: "Pérez",
-//     email: "daniela.perez@example.com",
-//     phone: "555-0105",
-//     role: "Empleado",
-//     marketingServices: [],
-//     formationServices: [],
-//     mentoringServices: [],
-//     toolsServices: [
-//       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
-//     ],
-//     lastConnection: "2024-04-17T08:00:00Z",
-//     startDate: "2023-05-30T00:00:00Z",
-//     endDate: "2025-08-30T23:59:59Z",
-//   },
-// ];
+const data: Client[] = [
+  {
+    id: "1",
+    name: "Alejandra",
+    lastName: "González",
+    email: "alejandra.gonzalez@example.com",
+    phone: "555-0101",
+    role: "Administrador",
+    marketingServices: [
+      { id: "marketingSalon", name: "Marketing Salón", order: 1 },
+      { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
+      { id: "startMarketing", name: "Start Marketing", order: 3 },
+      { id: "teams", name: "Teams", order: 4 },
+    ],
+    formationServices: [
+      { id: "scalingS", name: "Scaling-S", order: 1 },
+      { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
+      { id: "consultoria360", name: "Consultoría 360º", order: 3 },
+      { id: "ibm", name: "IBM", order: 4 },
+      { id: "starClub", name: "Star Club", order: 5 },
+      { id: "salonExperience", name: "Salón Experience", order: 6 },
+    ],
+    mentoringServices: [
+      { id: "gestionDirectiva", name: "Gestión Directiva", order: 1 },
+      { id: "sesionesIndividuales", name: "Sesiones Individuales", order: 2 },
+      { id: "insideClub", name: "INSIDE Club", order: 3 },
+      { id: "consultoriasGrupales", name: "Consultorías Grupales", order: 4 },
+    ],
+    toolsServices: [],
+    lastConnection: "2024-04-15T10:00:00Z",
+    startDate: "2023-01-01T00:00:00Z",
+    endDate: "2025-12-31T23:59:59Z",
+  },
+  {
+    id: "2",
+    name: "Carlos",
+    lastName: "Martínez",
+    email: "carlos.martinez@example.com",
+    phone: "555-0102",
+    role: "Cliente",
+    marketingServices: [
+      { id: "marketingSalon", name: "Marketing Salón", order: 1 },
+      { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
+      { id: "startMarketing", name: "Start Marketing", order: 3 },
+      { id: "teams", name: "Teams", order: 4 },
+    ],
+    formationServices: [
+      { id: "scalingS", name: "Scaling-S", order: 1 },
+      { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
+      { id: "consultoria360", name: "Consultoría 360º", order: 3 },
+      { id: "ibm", name: "IBM", order: 4 },
+      { id: "starClub", name: "Star Club", order: 5 },
+      { id: "salonExperience", name: "Salón Experience", order: 6 },
+    ],
+    mentoringServices: [],
+    toolsServices: [],
+    lastConnection: "2024-04-14T09:30:00Z",
+    startDate: "2023-02-15T00:00:00Z",
+    endDate: "2025-11-15T23:59:59Z",
+  },
+  {
+    id: "3",
+    name: "Sofía",
+    lastName: "López",
+    email: "sofia.lopez@example.com",
+    phone: "555-0103",
+    role: "Cliente",
+    marketingServices: [],
+    formationServices: [
+      { id: "scalingS", name: "Scaling-S", order: 1 },
+      { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
+      { id: "consultoria360", name: "Consultoría 360º", order: 3 },
+      { id: "ibm", name: "IBM", order: 4 },
+      { id: "starClub", name: "Star Club", order: 5 },
+      { id: "salonExperience", name: "Salón Experience", order: 6 },
+    ],
+    mentoringServices: [],
+    toolsServices: [],
+    lastConnection: "2024-04-13T11:20:00Z",
+    startDate: "2023-03-20T00:00:00Z",
+    endDate: "2025-10-20T23:59:59Z",
+  },
+  {
+    id: "4",
+    name: "Miguel",
+    lastName: "Hernández",
+    email: "miguel.hernandez@example.com",
+    phone: "555-0104",
+    role: "Cliente",
+    marketingServices: [],
+    formationServices: [
+      { id: "scalingS", name: "Scaling-S", order: 1 },
+      { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
+      { id: "consultoria360", name: "Consultoría 360º", order: 3 },
+      { id: "ibm", name: "IBM", order: 4 },
+      { id: "starClub", name: "Star Club", order: 5 },
+      { id: "salonExperience", name: "Salón Experience", order: 6 },
+    ],
+    mentoringServices: [],
+    toolsServices: [
+      { id: "menuServicios", name: "Menú de Servicios", order: 1 },
+    ],
+    lastConnection: "2024-04-16T12:45:00Z",
+    startDate: "2023-04-25T00:00:00Z",
+    endDate: "2025-09-25T23:59:59Z",
+  },
+  {
+    id: "5",
+    name: "Daniela",
+    lastName: "Pérez",
+    email: "daniela.perez@example.com",
+    phone: "555-0105",
+    role: "Empleado",
+    marketingServices: [],
+    formationServices: [],
+    mentoringServices: [],
+    toolsServices: [
+      { id: "menuServicios", name: "Menú de Servicios", order: 1 },
+    ],
+    lastConnection: "2024-04-17T08:00:00Z",
+    startDate: "2023-05-30T00:00:00Z",
+    endDate: "2025-08-30T23:59:59Z",
+  },
+];
 
 type Client = {
   id: string;
-  name: string | null;
-  lastName: string | null;
+  name: string;
+  lastName: string;
   email: string;
-  emailVerified: Date | null;
-  image: string | null;
-  password: string | null;
-  contactNumber: string | null;
-  terms: boolean;
-  role: UserRole;
-  isTwoFactorEnabled: boolean;
-  holdedId: string | null;
-  marketingServices?: any[] | undefined; // Changed to optional
-  formationServices?: any[] | undefined; // Changed to optional
-  mentoringServices?: any[] | undefined; // Changed to optional
-  toolsServices?: any[] | undefined; // Changed to optional
-  lastConnection?: Date | undefined; // Made optional if it can be missing
-  createdAt: Date;
-  updatedAt: Date;
-  startDate?: Date | undefined; // Made optional
-  endDate?: Date | undefined; // Made optional
+  phone: string;
+  role: string;
+  marketingServices: Service[];
+  formationServices: Service[];
+  mentoringServices: Service[];
+  toolsServices: Service[];
+  lastConnection: string; // ISO date string
+  startDate: string; // ISO date string
+  endDate: string; // ISO date string;
 };
+
+interface Service {
+  id: string;
+  name: string;
+  order: number;
+}
+
+interface ServiceSelection {
+  id: string;
+  name: string;
+}
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -216,24 +221,6 @@ const columns: ColumnDef<Client>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
-  },
-  {
-    accessorKey: "holdedId",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          className="p-0 text-left"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Holded ID
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("holdedId")}</div>
-    ),
   },
   {
     accessorKey: "email",
@@ -443,7 +430,7 @@ const columns: ColumnDef<Client>[] = [
       new Date(row.getValue("lastConnection")).toLocaleDateString(),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "startDate",
     header: ({ column }) => {
       return (
         <Button
@@ -451,27 +438,12 @@ const columns: ColumnDef<Client>[] = [
           className="p-0 text-left"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Fecha de Creación
+          Fecha de Alta
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      function formatDate(dateString: string | number | Date) {
-        const date = new Date(dateString);
-        let day = date.getDate().toString().padStart(2, "0");
-        let month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
-        let year = date.getFullYear().toString().slice(2); // Get last two digits of the year
-        let hours = date.getHours().toString().padStart(2, "0");
-        let minutes = date.getMinutes().toString().padStart(2, "0");
-
-        return `${day}/${month}/${year} ${hours}:${minutes}`; // Returns the date in dd/mm/yy HH:mm format
-      }
-
-      return (
-        <div className="lowercase">{formatDate(row.getValue("createdAt"))}</div>
-      );
-    },
+    cell: ({ row }) => new Date(row.getValue("startDate")).toLocaleDateString(),
   },
   {
     accessorKey: "endDate",
@@ -494,6 +466,7 @@ const columns: ColumnDef<Client>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const client = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -503,36 +476,15 @@ const columns: ColumnDef<Client>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Acciones:</DropdownMenuLabel>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(client.id)}
             >
-              Copiar ID
+              Copy client ID
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(client.email)}
-            >
-              Copiar Email
-            </DropdownMenuItem>
-            {client.contactNumber && (
-              <DropdownMenuItem
-                onClick={() =>
-                  navigator.clipboard.writeText(client.contactNumber ?? "")
-                }
-              >
-                Copiar Teléfono
-              </DropdownMenuItem>
-            )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sincronizar con Holded</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <Link href={`/insiders/admin/users/${client.id}`}>
-              <DropdownMenuItem>Ver</DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
-            <DropdownMenuItem className="text-danger-500">
-              Eliminar
-            </DropdownMenuItem>
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem>View client details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -540,7 +492,7 @@ const columns: ColumnDef<Client>[] = [
   },
 ];
 
-export default function Page() {
+export default function DataTableDemo() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -548,8 +500,6 @@ export default function Page() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pageSize, setPageSize] = React.useState(10); // TODO: Tengo que hacer que este valor sea dinámico
-  const [data, setData] = React.useState<Client[]>([]); // TypeScript now knows that data is an array of User objects
 
   const table = useReactTable({
     data,
@@ -569,25 +519,6 @@ export default function Page() {
       rowSelection,
     },
   });
-
-  // Block I added to update the data:
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const users = await getListUsers();
-        if (users !== null) {
-          setData(users);
-        } else {
-          // Handle the null case, maybe set data to an empty array
-          setData([]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-        setData([]); // Set an empty array in case of an error
-      }
-    };
-    fetchData();
-  }, [pageSize]); // Dependency array includes pageSize which triggers re-fetching when changed
 
   let emailColumn = table.getColumn("role");
   if (emailColumn) {
@@ -614,9 +545,7 @@ export default function Page() {
               <SearchIcon className="h-4 w-4" />
               <span className="sr-only">Search</span>
             </Button>
-            <Link href={"/insiders/admin/users/create"}>
-              <Button size="sm">Crear nuevo cliente</Button>
-            </Link>
+            <Button size="sm">Crear nuevo cliente</Button>
           </div>
         </header>
       </TailwindGrid>
@@ -634,7 +563,9 @@ export default function Page() {
               }
               className="max-w-sm"
             />
-
+            <div>
+              {emailColumn && <Filter column={emailColumn} table={table} />}
+            </div>
             <Input
               placeholder="Nombre"
               value={

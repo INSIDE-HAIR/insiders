@@ -48,18 +48,18 @@ export default function BreadcrumbDemo() {
 
   const showDropdown = pathSegments.length > 3;
 
+  // Crear el enlace para GoBackButton dinámicamente
+  const goBackHref =
+    pathSegments.length > 1 ? `/${pathSegments.slice(0, -1).join("/")}` : "/"; // Si sólo hay un segmento o ninguno, vuelve al inicio
+
+  const goBackLabel =
+    pathSegments.length > 1
+      ? "Ir a " + getTranslation(pathSegments[pathSegments.length - 2], "es")
+      : "Ir a Inicio";
+
   return (
     <>
-      <GoBackButton
-        href={"/insiders/" + pathSegments[pathSegments.length - 2]}
-        label={
-          pathSegments[pathSegments.length - 2] === "admin"
-            ? "Ir a Inicio"
-            : "Ir a " +
-              pathSegments[pathSegments.length - 2].charAt(0).toUpperCase() +
-              pathSegments[pathSegments.length - 2].slice(1)
-        }
-      />
+      <GoBackButton href={goBackHref} label={goBackLabel} />
 
       <Breadcrumb className="[&>*]:text-zinc-800  [&>*]:font-medium  ">
         <BreadcrumbList>

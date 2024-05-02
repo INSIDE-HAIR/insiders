@@ -16,7 +16,7 @@ const SettingsPage = async (props: Props) => {
   }
 
   const user = await prisma.user.findFirst({
-    where: { email: session?.user?.email },
+    where: { email: session?.user?.email ?? "" },
   });
 
   if (!user) {
@@ -29,7 +29,7 @@ const SettingsPage = async (props: Props) => {
     emailVerified: !!user?.emailVerified,
     image: user?.image ?? "",
     password: "",
-    role: user?.role ?? "USER",
+    role: user?.role ?? "CLIENT",
     isTwoFactorEnabled: user?.isTwoFactorEnabled ?? false,
     isOAuth: session?.user.isOAuth || false,
   };
