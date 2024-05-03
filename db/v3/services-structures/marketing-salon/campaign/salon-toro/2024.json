@@ -2056,7 +2056,7 @@
     },
     {
       "id": "repeticiones5",
-      "title": "Repeticiones",
+      "title": "Formación Implementación",
       "order": 5,
       "classType": "default",
       "content": [
@@ -2069,14 +2069,14 @@
               "id": "tab1",
               "order": 1,
               "type": "tab",
-              "title": "Repetición de Sesión",
+              "title": "Formación Implementación",
               "classType": "default",
               "content": [
                 {
                   "order": 1,
                   "type": "video",
                   "id": "sessionsToro1",
-                  "title": "Repetición de Sesión",
+                  "title": "Formación Implementación",
                   "url": "https://player.vimeo.com/video/942257939?h=faebf98cc9&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
