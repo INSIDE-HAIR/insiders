@@ -2056,7 +2056,7 @@
     },
     {
       "id": "repeticiones5",
-      "title": "Formación Implementación",
+      "title": "Formación",
       "order": 5,
       "classType": "default",
       "content": [
@@ -2069,7 +2069,7 @@
               "id": "tab1",
               "order": 1,
               "type": "tab",
-              "title": "Formación Implementación",
+              "title": "Formación",
               "classType": "default",
               "content": [
                 {
