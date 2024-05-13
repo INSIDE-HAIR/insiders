@@ -2505,6 +2505,75 @@
         "endDateTime": null
       },
       "auth": []
+    },
+    {
+      "id": "contenidoFisico3",
+      "title": "Listas de Control",
+      "order": 2,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Listas de Control",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs2",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Listas de Control",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0025"],
+                  "title": "Listas de Control",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
     }
   ],
   "july": [],

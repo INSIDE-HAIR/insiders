@@ -1764,7 +1764,6 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-
                   "childrensCode": ["0360", "0100", "0048", "0300", "0009"],
                   "title": "Extras",
                   "content": [],
