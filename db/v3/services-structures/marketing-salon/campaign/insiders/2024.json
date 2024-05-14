@@ -2511,7 +2511,35 @@
       "title": "Como Se Aplica",
       "order": 2,
       "classType": "default",
-      "content": [],
+      "content": [
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vT72jcHr2Dzt4ZNgYSOyhIGJn5EO9ZE3enU1SsqlD03d12msPTMjRvssZG0aEbjyA/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Descargar Presentación",
+          "url": "https://drive.google.com/uc?id=1It-ml2d0Yivkmf3pJRJekUM8keA7NgRT&export=download",
+          "active": true,
+          "available": {
+            "startDateTime": "",
+            "endDateTime": ""
+          },
+          "auth": []
+        }
+      ],
       "active": true,
       "available": {
         "startDateTime": null,
