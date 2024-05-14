@@ -42,6 +42,7 @@ type MarketingTabCardsListProps = {
   };
   index: number | string;
 };
+
 export default function MarketingTabCardsList({
   dataMarketingCards,
   item,
@@ -68,79 +69,139 @@ export default function MarketingTabCardsList({
     });
 
     setGroupedByLanguage(byLanguage);
+    console.log("byLanguage", byLanguage);
   }, [item.childrensCode, dataMarketingCards, item]);
+
+  // Verificar si solo hay un valor en groupedByLanguage
+  const languageEntries = groupedByLanguage
+    ? Object.entries(groupedByLanguage)
+    : [];
 
   return (
     <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
-      <Tabs
-        aria-label="Languages"
-        className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
-      >
-        {groupedByLanguage &&
-          Object.entries(groupedByLanguage)
-            .sort()
-            .reverse()
-            .map(([language, categories]) => {
-              // Filtrar para asegurarnos de que solo renderizamos Tabs con ítems.
-              const categoriesWithItems = Object.entries(
-                categories as { [key: string]: any }
-              ).filter(([_, items]) => items.length > 0);
-
-              // No renderizar el Tab si no hay categorías con ítems.
-              if (categoriesWithItems.length === 0) {
-                return null;
-              }
-
+      {languageEntries.length === 1 ? (
+        // Si solo hay un idioma, renderizar el contenido directamente
+        languageEntries.map(([language, categories]) =>
+          Object.entries(categories as { [key: string]: any }).map(
+            ([categoryCode, items]: [string, any[]]) => {
+              const groupedByTitle = groupByGroupTitle(items);
               return (
-                <Tab
-                  key={language}
-                  title={
-                    langCodes[language as keyof typeof langCodes] || language
-                  }
+                <div
+                  key={categoryCode}
+                  className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
                 >
-                  {Object.entries(categories as { [key: string]: any }).map(
-                    ([categoryCode, items]: [string, any[]]) => {
-                      // Aquí agregamos el agrupamiento por groupTitle
-                      const groupedByTitle = groupByGroupTitle(items);
-                      return (
-                        <div
-                          key={categoryCode}
-                          className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
-                        >
-                          <h3 className="text-center w-full font-bold text-2xl  -mb-6">
-                            {filesCodes[
-                              categoryCode as keyof typeof filesCodes
-                            ] || categoryCode}
-                          </h3>
-                          {groupedByTitle.map(([groupTitle, groupItems]) => (
-                            <div
-                              key={groupTitle}
-                              style={{ order: parseInt(groupTitle.split("-")[0]) === 0 ? groupTitle.split(" ")[1] : groupTitle.split("-")[0]}}
-                            >
-                              {groupTitle !== "Sin Grupo de Familia" && (
-                                <h4 className="text-center w-full font-bold text-xl  mt-6">
-                                  {groupTitle.split("-")[1].replace(/_/g, "")}
-                                </h4>
-                              )}
-                              <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
-                                {groupItems.map((groupItem) => (
-                                  <MarketingSalonCards
-                                    item={groupItem}
-                                    key={groupItem.id}
-                                    renderButtons={RenderButtons}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      );
-                    }
+                  {item.title !== " " && (
+                    <h3 className="text-center w-full font-bold text-2xl  -mb-6">
+                      {item.title ||
+                        filesCodes[categoryCode as keyof typeof filesCodes] ||
+                        categoryCode}
+                    </h3>
                   )}
-                </Tab>
+                  {groupedByTitle.map(([groupTitle, groupItems]) => (
+                    <div
+                      key={groupTitle}
+                      style={{
+                        order:
+                          parseInt(groupTitle.split("-")[0]) === 0
+                            ? groupTitle.split(" ")[1]
+                            : groupTitle.split("-")[0],
+                      }}
+                    >
+                      {groupTitle !== "Sin Grupo de Familia" && (
+                        <h4 className="text-center w-full font-bold text-xl  mt-6">
+                          {groupTitle.split("-")[1].replace(/_/g, "")}
+                        </h4>
+                      )}
+                      <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
+                        {groupItems.map((groupItem) => (
+                          <MarketingSalonCards
+                            item={groupItem}
+                            key={groupItem.id}
+                            renderButtons={RenderButtons}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               );
-            })}
-      </Tabs>
+            }
+          )
+        )
+      ) : (
+        // Si hay múltiples idiomas, renderizar las pestañas
+        <Tabs
+          aria-label="Languages"
+          className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
+        >
+          {groupedByLanguage &&
+            languageEntries
+              .sort()
+              .reverse()
+              .map(([language, categories]) => {
+                const categoriesWithItems = Object.entries(
+                  categories as { [key: string]: any }
+                ).filter(([_, items]) => items.length > 0);
+
+                if (categoriesWithItems.length === 0) {
+                  return null;
+                }
+
+                return (
+                  <Tab
+                    key={language}
+                    title={
+                      langCodes[language as keyof typeof langCodes] || language
+                    }
+                  >
+                    {Object.entries(categories as { [key: string]: any }).map(
+                      ([categoryCode, items]: [string, any[]]) => {
+                        const groupedByTitle = groupByGroupTitle(items);
+                        return (
+                          <div
+                            key={categoryCode}
+                            className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
+                          >
+                            <h3 className="text-center w-full font-bold text-2xl  -mb-6">
+                              {filesCodes[
+                                categoryCode as keyof typeof filesCodes
+                              ] || categoryCode}
+                            </h3>
+                            {groupedByTitle.map(([groupTitle, groupItems]) => (
+                              <div
+                                key={groupTitle}
+                                style={{
+                                  order:
+                                    parseInt(groupTitle.split("-")[0]) === 0
+                                      ? groupTitle.split(" ")[1]
+                                      : groupTitle.split("-")[0],
+                                }}
+                              >
+                                {groupTitle !== "Sin Grupo de Familia" && (
+                                  <h4 className="text-center w-full font-bold text-xl  mt-6">
+                                    {groupTitle.split("-")[1].replace(/_/g, "")}
+                                  </h4>
+                                )}
+                                <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
+                                  {groupItems.map((groupItem) => (
+                                    <MarketingSalonCards
+                                      item={groupItem}
+                                      key={groupItem.id}
+                                      renderButtons={RenderButtons}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }
+                    )}
+                  </Tab>
+                );
+              })}
+        </Tabs>
+      )}
       <Toaster richColors />
     </div>
   );

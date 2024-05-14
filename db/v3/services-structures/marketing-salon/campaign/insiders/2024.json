@@ -2507,9 +2507,9 @@
       "auth": []
     },
     {
-      "id": "contenidoFisico3",
+      "id": "controlList4",
       "title": "Listas de Control",
-      "order": 2,
+      "order": 4,
       "classType": "default",
       "content": [
         {
@@ -2526,40 +2526,12 @@
           "auth": []
         },
         {
-          "id": "tabs2",
-          "order": 2,
-          "type": "tabs",
-          "content": [
-            {
-              "id": "tab1",
-              "order": 1,
-              "type": "tab",
-              "title": "Listas de Control",
-              "classType": "default",
-              "content": [
-                {
-                  "id": "cardList1",
-                  "order": 1,
-                  "type": "tabsCardsList",
-                  "childrensCode": ["0025"],
-                  "title": "Listas de Control",
-                  "content": [],
-                  "active": true,
-                  "available": {
-                    "startDateTime": null,
-                    "endDateTime": null
-                  },
-                  "auth": []
-                }
-              ],
-              "active": true,
-              "available": {
-                "startDateTime": null,
-                "endDateTime": null
-              },
-              "auth": []
-            }
-          ],
+          "id": "cardList1",
+          "order": 1,
+          "type": "tabsCardsList",
+          "childrensCode": ["0025"],
+          "title": " ",
+          "content": [],
           "active": true,
           "available": {
             "startDateTime": null,
