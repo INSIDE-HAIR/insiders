@@ -5,11 +5,11 @@ export const langCodes = {
 };
 
 export const filesCodes = {
-  "0000": "Stoppers",
-  "0080": "Alup80",
-  "0050": "Alup50",
-  "0004": "A4",
-  "0005": "A5",
+  "0000": "Vinilos Puerta",
+  "0080": "Carteles 80x120cm",
+  "0050": "Carteles 50x70cm",
+  "0004": "Carteles A4 21x29,7cm",
+  "0005": "Carteles A5 14,8x21cm",
   "0085": "Tarjetas",
   "0048": "Dípticos/Trípticos",
   "0010": "Tests",
@@ -18,7 +18,7 @@ export const filesCodes = {
   "0300": "Pop Ups",
   "0090": "GMB",
   "0216": "Videos",
-  "0025": "Listas de Control",
+  "1111": "Listas de Control",
   "1080": "Posts de Acción",
   "0192": "Posts Mensuales",
   "1920": "Stories Acción",
@@ -31,6 +31,11 @@ export const filesCodes = {
   "1602": "Cartel Animado",
   "0087": "Escaparate",
   "0057": "Horizontal Josep Pons",
+  "0330": "Pegatinas",
+  "0014": "Carteles A4 21x29,7cm",
+  "0015": "Carteles A5 14,8x21cm",
+  "0024": "Carteles A4 21x29,7cm",
+  "0025": "Carteles A5 14,8x21cm"
   // más códigos según sea necesario
 };
 
