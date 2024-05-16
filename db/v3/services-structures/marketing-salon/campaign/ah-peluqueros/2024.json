@@ -2,7 +2,7 @@
   "march": [
     {
       "id": "planDeMarketing1",
-      "title": "Plan de Marketing",
+      "title": "Plan de marketing",
       "order": 1,
       "classType": "default",
       "content": [
@@ -43,14 +43,14 @@
               "id": "tab2",
               "order": 2,
               "type": "tab",
-              "title": "Plan de Marketing",
+              "title": "Plan de marketing",
               "classType": "default",
               "content": [
                 {
                   "order": 1,
                   "type": "video",
                   "id": "planDeMarketing1",
-                  "title": "Plan de Marketing",
+                  "title": "Plan de marketing",
                   "url": "https://player.vimeo.com/video/908604788?h=c2a22d6df8&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
@@ -481,7 +481,7 @@
   "april": [
     {
       "id": "planDeMarketing1",
-      "title": "Plan de Marketing",
+      "title": "Plan de marketing",
       "order": 1,
       "classType": "default",
       "content": [
@@ -777,7 +777,7 @@
     },
     {
       "id": "contenidoDigital4",
-      "title": "Contenido Digital",
+      "title": "Contenido digital",
       "order": 4,
       "classType": "default",
       "content": [
@@ -864,7 +864,7 @@
   "may": [
     {
       "id": "planDeMarketing1",
-      "title": "Plan de Marketing",
+      "title": "Plan de marketing",
       "order": 1,
       "classType": "default",
       "content": [

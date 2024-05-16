@@ -80,7 +80,7 @@ export default function MarketingTabCardsList({
   return (
     <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
       {languageEntries.length === 1 ? (
-        // Si solo hay un idioma, renderizar el contenido directamente
+        // Si solo hay un idioma, renderizar el Contenido directamente
         languageEntries.map(([language, categories]) =>
           Object.entries(categories as { [key: string]: any }).map(
             ([categoryCode, items]: [string, any[]]) => {

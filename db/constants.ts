@@ -35,7 +35,9 @@ export const filesCodes = {
   "0014": "Carteles A4 21x29,7cm",
   "0015": "Carteles A5 14,8x21cm",
   "0024": "Carteles A4 21x29,7cm",
-  "0025": "Carteles A5 14,8x21cm"
+  "0025": "Carteles A5 14,8x21cm",
+  "0248": "Dípticos",
+  "0348": "Trípticos",
   // más códigos según sea necesario
 };
 
