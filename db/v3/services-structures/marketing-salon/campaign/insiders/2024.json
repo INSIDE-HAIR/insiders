@@ -2513,25 +2513,95 @@
       "classType": "default",
       "content": [
         {
-          "id": "slider1",
-          "order": 3,
-          "type": "slider",
-          "classType": "default",
-          "url": "https://docs.google.com/presentation/d/e/2PACX-1vQsErDV1WsXaGTkVbBAKGgesXmCU-whwPR6rXKP922mC1NHihe3rgUcFdkHacxOCg/embed?start=false&loop=false&delayms=3000",
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
-        },
-        {
-          "id": "button1",
+          "id": "tabs1",
           "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Descargar Presentación",
-          "url": "https://drive.google.com/uc?id=1It-ml2d0Yivkmf3pJRJekUM8keA7NgRT&export=download",
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Sesiones de Planificación",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "slider1",
+                  "order": 1,
+                  "type": "slider",
+                  "classType": "default",
+                  "url": "https://docs.google.com/presentation/d/e/2PACX-1vQsErDV1WsXaGTkVbBAKGgesXmCU-whwPR6rXKP922mC1NHihe3rgUcFdkHacxOCg/embed?start=false&loop=false&delayms=3000",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "id": "button1",
+                  "order": 2,
+                  "type": "button",
+                  "classType": "default",
+                  "title": "Descargar Presentación",
+                  "url": "https://drive.google.com/uc?id=1It-ml2d0Yivkmf3pJRJekUM8keA7NgRT&export=download",
+                  "active": true,
+                  "available": {
+                    "startDateTime": "",
+                    "endDateTime": ""
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": "",
+                "endDateTime": ""
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Manual de Instalación de Filtros",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "slider1",
+                  "order": 1,
+                  "type": "slider",
+                  "classType": "default",
+                  "url": "https://docs.google.com/presentation/d/e/2PACX-1vRsEDU0oeWK94uTkvaTOiDBY-jjr2VgypuM1IXCMGTS6wGu8g34xqgykpCIn0b4AA/embed?start=false&loop=false&delayms=3000",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "id": "button1",
+                  "order": 2,
+                  "type": "button",
+                  "classType": "default",
+                  "title": "Descargar Manual",
+                  "url": "https://drive.google.com/uc?id=17_FrwW-BTdkOTT0vfkAAdSP7x1njsgEC&export=download",
+                  "active": true,
+                  "available": {
+                    "startDateTime": "",
+                    "endDateTime": ""
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": "",
+                "endDateTime": ""
+              },
+              "auth": []
+            }
+          ],
           "active": true,
           "available": {
             "startDateTime": "",
