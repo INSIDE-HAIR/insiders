@@ -2968,7 +2968,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0330", "0360", "0100", "0300"],
+                  "childrensCode": ["0330", "0360", "0100", "0300","0249"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -3138,7 +3138,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -3147,7 +3147,7 @@
     },
     {
       "id": "weeklyContent7",
-      "title": "Comunicación Semanal",
+      "title": "Comunicación semanal",
       "order": 7,
       "classType": "default",
       "content": [
@@ -3253,7 +3253,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null

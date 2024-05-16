@@ -38,6 +38,7 @@ export const filesCodes = {
   "0025": "Carteles A5 14,8x21cm",
   "0248": "Dípticos",
   "0348": "Trípticos",
+  "0249": "Dípticos Transparentes",
   // más códigos según sea necesario
 };
 
