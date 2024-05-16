@@ -2521,7 +2521,35 @@
               "id": "tab1",
               "order": 1,
               "type": "tab",
-              "title": "Sesiones de Planificación",
+              "title": "Aplicaciones",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "https://player.vimeo.com/video/946498533?h=b57f912043&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": "",
+                "endDateTime": ""
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Presentación de aplicaciones",
               "classType": "default",
               "content": [
                 {
@@ -2560,8 +2588,8 @@
               "auth": []
             },
             {
-              "id": "tab2",
-              "order": 2,
+              "id": "tab3",
+              "order": 3,
               "type": "tab",
               "title": "Manual de Instalación de Filtros",
               "classType": "default",
@@ -2968,7 +2996,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0330", "0360", "0100", "0300","0249"],
+                  "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
