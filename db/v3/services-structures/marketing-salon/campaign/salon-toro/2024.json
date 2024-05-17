@@ -387,7 +387,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0010", "0025"],
+                  "childrensCode": ["0010", "0011", "0025"],
                   "title": "Tests",
                   "content": [],
                   "active": true,
@@ -561,7 +561,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0216"],
+                  "childrensCode": ["0216", "0217"],
                   "title": "Videos",
                   "content": [],
                   "active": true,
@@ -1025,7 +1025,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0010", "0025"],
+                  "childrensCode": ["0010", "0011", "0025"],
                   "title": "Tests",
                   "content": [],
                   "active": true,
@@ -1200,7 +1200,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0216"],
+                  "childrensCode": ["0216", "0217"],
                   "title": "Videos",
                   "content": [],
                   "active": true,
@@ -1706,7 +1706,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0010", "0025"],
+                  "childrensCode": ["0010", "0011", "0025"],
                   "title": "Tests",
                   "content": [],
                   "active": true,
@@ -1880,7 +1880,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
 
-                  "childrensCode": ["0216"],
+                  "childrensCode": ["0216", "0217"],
                   "title": "Videos",
                   "content": [],
                   "active": true,

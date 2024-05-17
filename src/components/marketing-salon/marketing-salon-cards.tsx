@@ -105,8 +105,10 @@ function MarketingSalonCards({
       key={item.title}
       style={{ order: item.order }}
     >
-      {item.title.replace(/-/g, " ").replace(/.jpg/g, " ")}
-
+      <div className="flex flex-col items-center">
+        <span className="text-xs">{item.title.split(":")[1].trim()}</span>
+        <span>{item.title.replace(/:.*/, "")}</span>
+      </div>
       {item.transformedUrl.imgEmbed && (
         <div className="relative">
           <div className="  absolute right-1 top-1">
