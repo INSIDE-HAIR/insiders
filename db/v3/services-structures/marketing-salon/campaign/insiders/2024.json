@@ -2778,7 +2778,7 @@
                           "order": 1,
                           "type": "tabsCardsList",
                           "childrensCode": ["0014", "0015"],
-                          "title": "Acción principal",
+                          "title": "",
                           "content": [],
                           "active": true,
                           "available": {
@@ -2806,8 +2806,8 @@
                           "id": "cardList1",
                           "order": 1,
                           "type": "tabsCardsList",
-                          "childrensCode": ["0024", "1111", "1112"],
-                          "title": "Acción secundaria",
+                          "childrensCode": ["0024", "0025"],
+                          "title": "",
                           "content": [],
                           "active": true,
                           "available": {
