@@ -1926,7 +1926,7 @@
               "id": "tab1",
               "order": 1,
               "type": "tab",
-              "title": "Posts de Acción",
+              "title": "Posts",
               "classType": "default",
               "content": [
                 {
@@ -1934,7 +1934,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["1080"],
-                  "title": "Posts de Acción",
+                  "title": "Posts",
                   "content": [],
                   "active": true,
                   "available": {
@@ -1955,14 +1955,14 @@
               "id": "tab2",
               "order": 2,
               "type": "tab",
-              "title": "Stories de Acción",
+              "title": "Stories",
               "classType": "default",
               "content": [
                 {
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "title": "Stories de Acción",
+                  "title": "Stories",
                   "childrensCode": ["1920"],
                   "content": [],
                   "active": true,

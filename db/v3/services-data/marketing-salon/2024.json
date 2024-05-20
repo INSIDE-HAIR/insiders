@@ -5029,6 +5029,14 @@
       "url": "https://drive.google.com/uc?id=19W8eozZLDsRPwVBuKkizn7Wm7uEzFpv0&export=download"
     },
     {
+      "title": "A-A-2406-0216-02-00-03.mp4",
+      "url": "https://drive.google.com/uc?id=1lSkUt6yUBbcJz45zyQ3P93XLu4A_FD9e&export=download"
+    },
+    {
+      "title": "A-A-2406-0216-02-00-03-P1.png",
+      "url": "https://drive.google.com/uc?id=1coniq9pPliAzqFAaplolZWtCuf_DKLyu&export=download"
+    },
+    {
       "title": "A-A-2406-0216-02-00-04-P1.png",
       "url": "https://drive.google.com/uc?id=1lkMVhwGe2Q9aXE1E46TB8EJLj8M0KB8B&export=download"
     },
@@ -5675,24 +5683,42 @@
       "copy": "🌞 Descubre si eres VITAL: ¡Tu solución para un verano sin encrespamiento! 🌞\n\nSi este verano te has decidido a recuperar el control de tu cabello y decir adiós al temido encrespamiento, tenemos la solución perfecta para ti. Nuestro servicio VITAL está diseñado para cuidar tu melena sin alterar su estado natural ni su forma. 🌿💪\n\nCon VITAL, puedes disfrutar del verano sin preocupaciones. No dejes que el encrespamiento domine tu verano. Prueba VITAL y siente la diferencia. ¡Tu cabello te lo agradecerá! 🌊🙌\n\nContacta con nuestro equipo y te informaremos de todo 📞.\n\n#Keratina #KeratinaSinSecretos #vital #natur #extreme #CabelloControl #DescubreVITAL #AdiósFriz #ControlDeCabello #VeranoSinFrizz #CuidadoNatural #BellezaSostenible"
     },
     {
-      "title": "A-A-2406-0500-01-00-01.mp4",
-      "url": "https://drive.google.com/uc?id=1bxmqWp7F-Xvnm9Z7ThpJy7VddRefHBWN&export=download",
-      "groupTitle": "Keratina"
-    },
-    {
-      "title": "A-A-2406-0500-01-00-01-P1.png",
+      "title": "A-A-2406-0500-01-00-01",
       "url": "https://drive.google.com/uc?id=18-Sri_iRU0UTsDXwSiZGSMsS9s2PZImD&export=download",
-      "groupTitle": "Keratina"
+      "groupTitle": "Keratina",
+      "buttons": [
+        {
+          "title": "Descargar video",
+          "url": "https://drive.google.com/uc?id=1x4QWHffILDzv6Sy_c-M7-jrCwCAMwsfx&export=download"
+        },
+        {
+          "title": "Descargar imagen",
+          "url": "https://drive.google.com/uc?id=18-Sri_iRU0UTsDXwSiZGSMsS9s2PZImD&export=download"
+        },
+        {
+          "title": "Descargar filtro",
+          "url": "https://drive.google.com/uc?id=1bxmqWp7F-Xvnm9Z7ThpJy7VddRefHBWN&export=download"
+        }
+      ]
     },
     {
-      "title": "A-A-2406-0500-01-00-02-P1.png",
+      "title": "A-A-2406-0500-01-00-02",
       "url": "https://drive.google.com/uc?id=1Dzu1Jn-9ZcjJ9rf9ABZqpbxTXrXWhS1J&export=download",
-      "groupTitle": "Prime"
-    },
-    {
-      "title": "A-A-2406-0500-01-00-02.mp4",
-      "url": "https://drive.google.com/uc?id=1UXyNtuBqHDAf-awsy08QvMhFQHoP77V1&export=download",
-      "groupTitle": "Prime"
+      "groupTitle": "Prime",
+      "buttons": [
+        {
+          "title": "Descargar video",
+          "url": "https://drive.google.com/uc?id=1hGf3RDxatDZrgHMG6_nKveOVYavoqd76&export=download"
+        },
+        {
+          "title": "Descargar imagen",
+          "url": "https://drive.google.com/uc?id=1Dzu1Jn-9ZcjJ9rf9ABZqpbxTXrXWhS1J&export=download"
+        },
+        {
+          "title": "Descargar filtro",
+          "url": "https://drive.google.com/uc?id=1UXyNtuBqHDAf-awsy08QvMhFQHoP77V1&export=download"
+        }
+      ]
     }
   ],
   "july": [],

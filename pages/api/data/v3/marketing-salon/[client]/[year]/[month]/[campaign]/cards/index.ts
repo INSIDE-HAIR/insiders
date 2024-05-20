@@ -25,6 +25,12 @@ interface BaseObject {
   groupTitle?: string;
   buttonTitle?: string;
   preview: PreviewItem[];
+  buttons?: Buttons[];
+}
+
+interface Buttons{
+  title: string;
+  url: string;
 }
 
 interface TransformedObject extends BaseObject {
@@ -39,6 +45,7 @@ interface TransformedObject extends BaseObject {
   year: number;
   month: number;
   groupOrder: number;
+  buttons?: Buttons[];
 }
 
 // Función para convertir enlaces de Google Drive
@@ -92,6 +99,7 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         groupTitle: obj.groupTitle || "",
         buttonTitle: obj.buttonTitle || "",
         preview: [],
+        buttons: obj.buttons || [], 
       };
     }
 
@@ -128,6 +136,7 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
           groupOrder: Number(family),
           groupTitle: obj.groupTitle || "",
           preview: [previewItem],
+          buttons: obj.buttons || [], 
         };
       }
     }
