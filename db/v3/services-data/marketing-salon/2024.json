@@ -5684,41 +5684,27 @@
     },
     {
       "title": "A-A-2406-0500-01-00-01",
+      "url": "https://drive.google.com/uc?id=15Z-My1qFVDs6SfxeMEqpZTqh3sc9T097&export=download",
+      "groupTitle": "Filtro de Instagram",
+      "buttonTitle": "Filtro de Keratina"
+    },
+    {
+      "title": "A-A-2406-0500-01-00-01-P1",
       "url": "https://drive.google.com/uc?id=18-Sri_iRU0UTsDXwSiZGSMsS9s2PZImD&export=download",
-      "groupTitle": "Keratina",
-      "buttons": [
-        {
-          "title": "Descargar video",
-          "url": "https://drive.google.com/uc?id=1x4QWHffILDzv6Sy_c-M7-jrCwCAMwsfx&export=download"
-        },
-        {
-          "title": "Descargar imagen",
-          "url": "https://drive.google.com/uc?id=18-Sri_iRU0UTsDXwSiZGSMsS9s2PZImD&export=download"
-        },
-        {
-          "title": "Descargar filtro",
-          "url": "https://drive.google.com/uc?id=1bxmqWp7F-Xvnm9Z7ThpJy7VddRefHBWN&export=download"
-        }
-      ]
+      "groupTitle": "Filtro de Instagram",
+      "buttonTitle": "Filtro de Keratina"
     },
     {
       "title": "A-A-2406-0500-01-00-02",
+      "url": "https://drive.google.com/uc?id=18-Sri_iRU0UTsDXwSiZGSMsS9s2PZImD&export=download",
+      "groupTitle": "Filtro de Instagram",
+      "buttonTitle": "Filtro de PRIME"
+    },
+    {
+      "title": "A-A-2406-0500-01-00-02-P1",
       "url": "https://drive.google.com/uc?id=1Dzu1Jn-9ZcjJ9rf9ABZqpbxTXrXWhS1J&export=download",
-      "groupTitle": "Prime",
-      "buttons": [
-        {
-          "title": "Descargar video",
-          "url": "https://drive.google.com/uc?id=1hGf3RDxatDZrgHMG6_nKveOVYavoqd76&export=download"
-        },
-        {
-          "title": "Descargar imagen",
-          "url": "https://drive.google.com/uc?id=1Dzu1Jn-9ZcjJ9rf9ABZqpbxTXrXWhS1J&export=download"
-        },
-        {
-          "title": "Descargar filtro",
-          "url": "https://drive.google.com/uc?id=1UXyNtuBqHDAf-awsy08QvMhFQHoP77V1&export=download"
-        }
-      ]
+      "groupTitle": "Filtro de Instagram",
+      "buttonTitle": "Filtro de PRIME"
     }
   ],
   "july": [],
