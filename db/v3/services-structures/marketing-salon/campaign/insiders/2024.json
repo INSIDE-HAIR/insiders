@@ -3134,12 +3134,12 @@
               "type": "tab",
               "title": "Novedades",
               "classType": "default",
-              "content": [
+              "content": [             
                 {
-                  "id": "cardList1",
-                  "order": 1,
+                  "id": "cardList3",
+                  "order": 3,
                   "type": "tabsCardsList",
-                  "childrensCode": [],
+                  "childrensCode": ["0500"],
                   "title": "Novedades",
                   "content": [],
                   "active": true,
@@ -3150,7 +3150,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
