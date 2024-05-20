@@ -229,19 +229,6 @@ const RenderButtons = (item: any) => {
 
   return (
     <>
-      <Button
-        className={`text-tiny text-white bg-gray-700 m-1`}
-        variant="flat"
-        key={item.id}
-        color="default"
-        radius="lg"
-        size="sm"
-        onClick={() => {
-          window.open(item.transformedUrl.download, "_blank");
-        }}
-      >
-        <a download={item.title}>Descargar {item.buttonTitle} </a>
-      </Button>
       {item.copy && (
         <>
           <Button
@@ -264,6 +251,40 @@ const RenderButtons = (item: any) => {
             className="max-w-full  flex border-2 rounded-sm mt-2"
           />
         </>
+      )}
+
+      {item.buttons && item.buttons.length > 0 ? (
+        <>
+          {item.buttons.map((button: any, index: number) => (
+            <Button
+              className={`text-tiny text-white bg-gray-700 m-1`}
+              variant="flat"
+              color="default"
+              radius="lg"
+              size="sm"
+              key={index}
+              onClick={() => {
+                window.open(button.url, "_blank");
+              }}
+            >
+              {button.title}
+            </Button>
+          ))}
+        </>
+      ) : (
+        <Button
+          className={`text-tiny text-white bg-gray-700 m-1`}
+          variant="flat"
+          key={item.id}
+          color="default"
+          radius="lg"
+          size="sm"
+          onClick={() => {
+            window.open(item.transformedUrl.download, "_blank");
+          }}
+        >
+          <a download={item.title}>Descargar {item.buttonTitle} </a>
+        </Button>
       )}
     </>
   );
