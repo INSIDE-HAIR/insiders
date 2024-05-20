@@ -2839,7 +2839,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0249"],
+                  "childrensCode": [],
                   "title": "Novedades",
                   "content": [],
                   "active": true,

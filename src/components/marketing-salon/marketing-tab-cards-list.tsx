@@ -88,7 +88,7 @@ export default function MarketingTabCardsList({
               return (
                 <div
                   key={categoryCode}
-                  className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
+                  className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-start justify-center text-center mt-6 first:mt-0"
                 >
                   {item.title !== " " && (
                     <h3 className="text-center w-full font-bold text-2xl  -mb-6">
@@ -108,11 +108,11 @@ export default function MarketingTabCardsList({
                       }}
                     >
                       {groupTitle !== "Sin Grupo de Familia" && (
-                        <h4 className="text-center w-full font-bold text-xl  mt-6">
+                        <h4 className="text-center w-full font-bold text-xl  mt-6 ">
                           {groupTitle.split("-")[1].replace(/_/g, "")}
                         </h4>
                       )}
-                      <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
+                      <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
                         {groupItems.map((groupItem) => (
                           <MarketingSalonCards
                             item={groupItem}
@@ -160,7 +160,7 @@ export default function MarketingTabCardsList({
                         return (
                           <div
                             key={categoryCode}
-                            className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-0"
+                            className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0"
                           >
                             <h3 className="text-center w-full font-bold text-2xl  -mb-6">
                               {filesCodes[
@@ -178,11 +178,11 @@ export default function MarketingTabCardsList({
                                 }}
                               >
                                 {groupTitle !== "Sin Grupo de Familia" && (
-                                  <h4 className="text-center w-full font-bold text-xl  mt-6">
+                                  <h4 className="text-center w-full font-bold text-xl  mt-6 ">
                                     {groupTitle.split("-")[1].replace(/_/g, "")}
                                   </h4>
                                 )}
-                                <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2">
+                                <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
                                   {groupItems.map((groupItem) => (
                                     <MarketingSalonCards
                                       item={groupItem}
