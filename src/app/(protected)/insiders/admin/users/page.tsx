@@ -42,133 +42,9 @@ import {
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { getListUsers } from "@/actions/contacts/list-contacts";
+import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 import { UserRole } from "@prisma/client";
-
-// let data: Client[] = [
-//   {
-//     id: "1",
-//     name: "Alejandra",
-//     lastName: "González",
-//     email: "alejandra.gonzalez@example.com",
-//     phone: "555-0101",
-//     role: "Administrador",
-//     marketingServices: [
-//       { id: "marketingSalon", name: "Marketing Salón", order: 1 },
-//       { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
-//       { id: "startMarketing", name: "Start Marketing", order: 3 },
-//       { id: "teams", name: "Teams", order: 4 },
-//     ],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [
-//       { id: "gestionDirectiva", name: "Gestión Directiva", order: 1 },
-//       { id: "sesionesIndividuales", name: "Sesiones Individuales", order: 2 },
-//       { id: "insideClub", name: "INSIDE Club", order: 3 },
-//       { id: "consultoriasGrupales", name: "Consultorías Grupales", order: 4 },
-//     ],
-//     toolsServices: [],
-//     lastConnection: "2024-04-15T10:00:00Z",
-//     startDate: "2023-01-01T00:00:00Z",
-//     endDate: "2025-12-31T23:59:59Z",
-//   },
-//   {
-//     id: "2",
-//     name: "Carlos",
-//     lastName: "Martínez",
-//     email: "carlos.martinez@example.com",
-//     phone: "555-0102",
-//     role: "Cliente",
-//     marketingServices: [
-//       { id: "marketingSalon", name: "Marketing Salón", order: 1 },
-//       { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
-//       { id: "startMarketing", name: "Start Marketing", order: 3 },
-//       { id: "teams", name: "Teams", order: 4 },
-//     ],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [],
-//     lastConnection: "2024-04-14T09:30:00Z",
-//     startDate: "2023-02-15T00:00:00Z",
-//     endDate: "2025-11-15T23:59:59Z",
-//   },
-//   {
-//     id: "3",
-//     name: "Sofía",
-//     lastName: "López",
-//     email: "sofia.lopez@example.com",
-//     phone: "555-0103",
-//     role: "Cliente",
-//     marketingServices: [],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [],
-//     lastConnection: "2024-04-13T11:20:00Z",
-//     startDate: "2023-03-20T00:00:00Z",
-//     endDate: "2025-10-20T23:59:59Z",
-//   },
-//   {
-//     id: "4",
-//     name: "Miguel",
-//     lastName: "Hernández",
-//     email: "miguel.hernandez@example.com",
-//     phone: "555-0104",
-//     role: "Cliente",
-//     marketingServices: [],
-//     formationServices: [
-//       { id: "scalingS", name: "Scaling-S", order: 1 },
-//       { id: "salonHiperventas", name: "Salón Hiperventas", order: 2 },
-//       { id: "consultoria360", name: "Consultoría 360º", order: 3 },
-//       { id: "ibm", name: "IBM", order: 4 },
-//       { id: "starClub", name: "Star Club", order: 5 },
-//       { id: "salonExperience", name: "Salón Experience", order: 6 },
-//     ],
-//     mentoringServices: [],
-//     toolsServices: [
-//       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
-//     ],
-//     lastConnection: "2024-04-16T12:45:00Z",
-//     startDate: "2023-04-25T00:00:00Z",
-//     endDate: "2025-09-25T23:59:59Z",
-//   },
-//   {
-//     id: "5",
-//     name: "Daniela",
-//     lastName: "Pérez",
-//     email: "daniela.perez@example.com",
-//     phone: "555-0105",
-//     role: "Empleado",
-//     marketingServices: [],
-//     formationServices: [],
-//     mentoringServices: [],
-//     toolsServices: [
-//       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
-//     ],
-//     lastConnection: "2024-04-17T08:00:00Z",
-//     startDate: "2023-05-30T00:00:00Z",
-//     endDate: "2025-08-30T23:59:59Z",
-//   },
-// ];
+import { getListHoldedContacts } from "@/src/server-actions/holded/list-contacts";
 
 type Client = {
   id: string;
@@ -550,6 +426,9 @@ export default function Page() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [pageSize, setPageSize] = React.useState(10); // TODO: Tengo que hacer que este valor sea dinámico
   const [data, setData] = React.useState<Client[]>([]); // TypeScript now knows that data is an array of User objects
+  const [dataListHoldedContacts, setDataListHoldedContacts] = React.useState<
+    HoldedContact[]
+  >([]); // TypeScript now knows that data is an array of User objects
 
   const table = useReactTable({
     data,
@@ -575,6 +454,7 @@ export default function Page() {
     const fetchData = async () => {
       try {
         const users = await getListUsers();
+
         if (users !== null) {
           setData(users);
         } else {
@@ -585,9 +465,25 @@ export default function Page() {
         console.error("Failed to fetch data:", error);
         setData([]); // Set an empty array in case of an error
       }
+
+      try {
+        const holdedContacts = await getListHoldedContacts();
+
+        if (holdedContacts !== null) {
+          setDataListHoldedContacts(holdedContacts);
+
+          console.log(holdedContacts);
+        } else {
+          // Handle the null case, maybe set data to an empty array
+          setDataListHoldedContacts([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+        setDataListHoldedContacts([]); // Set an empty array in case of an error
+      }
     };
     fetchData();
-  }, [pageSize]); // Dependency array includes pageSize which triggers re-fetching when changed
+  }, []); // Dependency array includes pageSize which triggers re-fetching when changed
 
   let emailColumn = table.getColumn("role");
   if (emailColumn) {

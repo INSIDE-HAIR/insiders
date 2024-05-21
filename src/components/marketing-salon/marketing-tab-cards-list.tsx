@@ -88,10 +88,10 @@ export default function MarketingTabCardsList({
               return (
                 <div
                   key={categoryCode}
-                  className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-start justify-center text-center mt-6 first:mt-0"
+                  className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-start justify-center text-center mt-6 first:mt-0 "
                 >
                   {item.title !== " " && (
-                    <h3 className="text-center w-full font-bold text-2xl  -mb-6">
+                    <h3 className="text-center w-full font-bold text-2xl  -mb-6 ">
                       {item.title ||
                         filesCodes[categoryCode as keyof typeof filesCodes] ||
                         categoryCode}
@@ -160,7 +160,7 @@ export default function MarketingTabCardsList({
                         return (
                           <div
                             key={categoryCode}
-                            className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0"
+                            className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0  "
                           >
                             <h3 className="text-center w-full font-bold text-2xl  -mb-6">
                               {filesCodes[

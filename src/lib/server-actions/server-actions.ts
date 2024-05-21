@@ -5,7 +5,7 @@ import { auth, unstable_update as update } from "../actions/auth/auth";
 import { SettingsSchema } from "../types/zod-schemas";
 import prisma from "../../../prisma/database";
 import { sendVerificationEmailResend } from "../mail/mail";
-import { generateVerificationToken } from "@/actions/auth/tokens";
+import { generateVerificationToken } from "@/src/server-actions/auth/tokens";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const session = await auth();

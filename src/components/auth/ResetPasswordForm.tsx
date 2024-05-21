@@ -17,7 +17,7 @@ import { Input } from "../ui/input";
 import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import LoadingButton from "../share/LoadingButton";
-import { reset } from "@/actions/auth/reset-password";
+import { reset } from "@/src/server-actions/auth/reset-password";
 
 type Props = {};
 

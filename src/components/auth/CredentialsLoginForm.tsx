@@ -20,7 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CredentialSigninSchema } from "@/src/lib/types/zod-schemas";
 import LoadingButton from "../share/LoadingButton";
-import { credentialsLogin } from "@/actions/auth/credentials-login";
+import { credentialsLogin } from "@/src/server-actions/auth/credentials-login";
 
 type Props = {};
 
@@ -56,7 +56,6 @@ const CredentialsLoginForm = (props: Props) => {
     startTransition(() => {
       credentialsLogin(values, callbackUrl)
         .then((data) => {
-
           if (data?.error) {
             if (data.error !== "Code mismatched!") {
               form.reset();

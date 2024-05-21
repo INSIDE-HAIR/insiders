@@ -39,10 +39,10 @@ export default function Page({ params }: { params: { month: string } }) {
       setLoading(true);
       try {
         const estructureData = await fetch(
-          `/api/data/v3/marketing-salon/${client}/${year}/${month}/${campaign}/structure`
+          `/api/marketing-salon/${client}/${year}/${month}/${campaign}/structure`
         );
         const cardsData = await fetch(
-          `/api/data/v3/marketing-salon/${client}/${year}/${month}/${campaign}/cards`
+          `/api/marketing-salon/${client}/${year}/${month}/${campaign}/cards`
         );
 
         if (!estructureData.ok) {

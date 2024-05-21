@@ -19,7 +19,7 @@ import SuccessMessageBox from "../share/MessageSuccessBox";
 
 import LoadingButton from "../share/LoadingButton";
 import { EmailSchema } from "@/src/lib/types/zod-schemas";
-import { emailLogin } from "@/actions/auth/email-login";
+import { emailLogin } from "@/src/server-actions/auth/email-login";
 
 type Props = {};
 

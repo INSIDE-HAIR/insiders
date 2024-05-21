@@ -19,16 +19,16 @@ import { Icons } from "../icons";
 
 function Dashboard() {
   const navLinks = translations.adminRoutes.map((route) => {
-    const IconComponent = Icons[route.icon as keyof typeof Icons]; 
+    const IconComponent = Icons[route.icon as keyof typeof Icons];
 
     return (
       <Link
         key={route.id}
         className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-        href={`/insiders/admin/${route.path}`} 
+        href={`/insiders/admin/${route.path}`}
       >
         <IconComponent className="h-4 w-4 " />
-        {route.translations.es} 
+        {route.translations.es}
       </Link>
     );
   });
