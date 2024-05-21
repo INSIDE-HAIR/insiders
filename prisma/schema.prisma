@@ -33,7 +33,7 @@ model User {
   holdedData            HoldedData[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
-  lastLogin             DateTime?
+  lastLogin             DateTime               @default(now())
   // Otros campos y configuraciones...
 }
 
