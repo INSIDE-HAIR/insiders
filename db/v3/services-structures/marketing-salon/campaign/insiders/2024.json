@@ -2305,8 +2305,22 @@
       "classType": "default",
       "content": [
         {
-          "id": "tabs1",
+          "id": "button1",
           "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "https://docs.google.com/forms/d/e/1FAIpQLSdZkvTOeBfHHy3Cxc3CphyEx4vnMYxIxdfpWRo9Dp8UruEL6A/viewform?usp=sf_link",
+          "active": true,
+          "available": {
+            "startDateTime": "",
+            "endDateTime": ""
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 2,
           "type": "tabs",
           "content": [
             {
@@ -2487,7 +2501,7 @@
         },
         {
           "id": "slider1",
-          "order": 2,
+          "order": 3,
           "type": "slider",
           "classType": "default",
           "url": "https://docs.google.com/presentation/d/e/2PACX-1vT-M2g7R267H8U2QCzhkY0cB2tb8vL-8kt-MYlMb4TP_tCMypjC1cbAjIxIDHrHW4HUrs-qBqVKuXIi/embed?start=false&loop=false&delayms=3000",
