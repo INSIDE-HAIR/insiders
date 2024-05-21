@@ -1,5 +1,4 @@
 "use client";
-import { SettingsSchema } from "@/src/lib/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -28,6 +27,7 @@ import { Switch } from "@/src/components/ui/switch";
 import { settings } from "@/src/lib/server-actions/server-actions";
 import { SettingsUser } from "@/src/next-auth";
 import LoadingButton from "../share/LoadingButton";
+import { SettingsSchema } from "@/src/lib/types/inside-schemas";
 
 type Props = {
   user: SettingsUser;

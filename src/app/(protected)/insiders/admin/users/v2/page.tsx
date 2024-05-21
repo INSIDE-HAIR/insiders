@@ -42,9 +42,9 @@ import {
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
+import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 import { UserRole } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/server-actions/holded/list-contacts";
-import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 
 type Client = {
   id: string;
@@ -402,9 +402,10 @@ const columns: ColumnDef<Client>[] = [
             <DropdownMenuSeparator />
             <DropdownMenuItem>Sincronizar con Holded</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link href={`/insiders/admin/users/${client.email}`}>
-              <DropdownMenuItem>Ver o Editar</DropdownMenuItem>
+            <Link href={`/insiders/admin/users/${client.id}`}>
+              <DropdownMenuItem>Ver</DropdownMenuItem>
             </Link>
+            <DropdownMenuItem>Editar</DropdownMenuItem>
             <DropdownMenuItem className="text-danger-500">
               Eliminar
             </DropdownMenuItem>

@@ -1,33 +1,48 @@
 import prisma from "@/prisma/database";
 
-export const getUserByEmail = async (email:string) => {
+export const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
-      where: {email}
+      where: { email },
+      include: {
+        accounts: true,
+        holdedData: true,
+        twoFactorConfirmation: true,
+      },
     });
-    return user
-  } catch  {
-    return null
+    return user;
+  } catch {
+    return null;
   }
 };
 
-export const getUserById = async (id:string) => {
+export const getUserById = async (id: string) => {
   try {
     const user = await prisma.user.findUnique({
-      where: {id}
+      where: { id },
+      include: {
+        accounts: true,
+        holdedData: true,
+        twoFactorConfirmation: true,
+      },
     });
-    return user
-  } catch  {
-    return null
+    return user;
+  } catch {
+    return null;
   }
 };
 
 export const getUsers = async () => {
   try {
-    const users = await prisma.user.findMany();
-    return users
-  } catch  {
-    return null
+    const users = await prisma.user.findMany({
+      include: {
+        accounts: true,
+        holdedData: true,
+        twoFactorConfirmation: true,
+      },
+    });
+    return users;
+  } catch {
+    return null;
   }
-}
-
+};
