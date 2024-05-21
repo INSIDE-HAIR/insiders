@@ -41,5 +41,5 @@ export type UpdateUser = {
   createdAt?: Date | null;
   updatedAt?: Date | null;
   isOAuth: boolean;
-  lastConnection?: Date | null;
+  lastLogin?: Date | null;
 };

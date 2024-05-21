@@ -76,7 +76,7 @@ const data: Client[] = [
       { id: "consultoriasGrupales", name: "Consultorías Grupales", order: 4 },
     ],
     toolsServices: [],
-    lastConnection: "2024-04-15T10:00:00Z",
+    lastLogin: "2024-04-15T10:00:00Z",
     startDate: "2023-01-01T00:00:00Z",
     endDate: "2025-12-31T23:59:59Z",
   },
@@ -103,7 +103,7 @@ const data: Client[] = [
     ],
     mentoringServices: [],
     toolsServices: [],
-    lastConnection: "2024-04-14T09:30:00Z",
+    lastLogin: "2024-04-14T09:30:00Z",
     startDate: "2023-02-15T00:00:00Z",
     endDate: "2025-11-15T23:59:59Z",
   },
@@ -125,7 +125,7 @@ const data: Client[] = [
     ],
     mentoringServices: [],
     toolsServices: [],
-    lastConnection: "2024-04-13T11:20:00Z",
+    lastLogin: "2024-04-13T11:20:00Z",
     startDate: "2023-03-20T00:00:00Z",
     endDate: "2025-10-20T23:59:59Z",
   },
@@ -149,7 +149,7 @@ const data: Client[] = [
     toolsServices: [
       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
     ],
-    lastConnection: "2024-04-16T12:45:00Z",
+    lastLogin: "2024-04-16T12:45:00Z",
     startDate: "2023-04-25T00:00:00Z",
     endDate: "2025-09-25T23:59:59Z",
   },
@@ -166,7 +166,7 @@ const data: Client[] = [
     toolsServices: [
       { id: "menuServicios", name: "Menú de Servicios", order: 1 },
     ],
-    lastConnection: "2024-04-17T08:00:00Z",
+    lastLogin: "2024-04-17T08:00:00Z",
     startDate: "2023-05-30T00:00:00Z",
     endDate: "2025-08-30T23:59:59Z",
   },
@@ -183,7 +183,7 @@ type Client = {
   formationServices: Service[];
   mentoringServices: Service[];
   toolsServices: Service[];
-  lastConnection: string; // ISO date string
+  lastLogin: string; // ISO date string
   startDate: string; // ISO date string
   endDate: string; // ISO date string;
 };
@@ -413,7 +413,7 @@ const columns: ColumnDef<Client>[] = [
     },
   },
   {
-    accessorKey: "lastConnection",
+    accessorKey: "lastLogin",
     header: ({ column }) => {
       return (
         <Button
@@ -426,8 +426,7 @@ const columns: ColumnDef<Client>[] = [
         </Button>
       );
     },
-    cell: ({ row }) =>
-      new Date(row.getValue("lastConnection")).toLocaleDateString(),
+    cell: ({ row }) => new Date(row.getValue("lastLogin")).toLocaleDateString(),
   },
   {
     accessorKey: "startDate",

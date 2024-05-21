@@ -47,9 +47,7 @@ const UpdateUserForm = ({ user }: Props) => {
       holdedId: user?.holdedId || null,
       createdAt: user?.createdAt ? new Date(user.createdAt) : undefined,
       updatedAt: user?.updatedAt ? new Date(user.updatedAt) : undefined,
-      lastConnection: user?.lastConnection
-        ? new Date(user.lastConnection)
-        : null,
+      lastLogin: user?.lastLogin ? new Date(user.lastLogin) : undefined,
     },
   });
 
@@ -204,7 +202,7 @@ const UpdateUserForm = ({ user }: Props) => {
             />
           </div>
         </fieldset>
-        
+
         <fieldset className="space-y-4">
           <legend className="text-lg font-medium">Fechas de Interés</legend>
           <div className="flex space-x-4">
@@ -242,7 +240,7 @@ const UpdateUserForm = ({ user }: Props) => {
             {/* Last Connection */}
             <FormField
               control={form.control}
-              name="lastConnection"
+              name="lastLogin"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center gap-x-1">

@@ -63,7 +63,7 @@ type Client = {
   formationServices?: any[] | undefined; // Changed to optional
   mentoringServices?: any[] | undefined; // Changed to optional
   toolsServices?: any[] | undefined; // Changed to optional
-  lastConnection?: Date | undefined; // Made optional if it can be missing
+  lastLogin?: Date | undefined; // Made optional if it can be missing
   createdAt: Date;
   updatedAt: Date;
   startDate?: Date | undefined; // Made optional
@@ -302,7 +302,7 @@ const columns: ColumnDef<Client>[] = [
     },
   },
   {
-    accessorKey: "lastConnection",
+    accessorKey: "lastLogin",
     header: ({ column }) => {
       return (
         <Button
@@ -315,8 +315,7 @@ const columns: ColumnDef<Client>[] = [
         </Button>
       );
     },
-    cell: ({ row }) =>
-      new Date(row.getValue("lastConnection")).toLocaleDateString(),
+    cell: ({ row }) => new Date(row.getValue("lastLogin")).toLocaleDateString(),
   },
   {
     accessorKey: "createdAt",

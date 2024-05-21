@@ -183,7 +183,7 @@ export const UserSchema = z.object({
   holdedId: z.optional(z.string().nullable()),
   createdAt: z.optional(z.date()),
   updatedAt: z.optional(z.date()),
-  lastConnection: z.optional(z.date()),
+  lastLogin: z.optional(z.date()),
 });
 
 export const SettingsSchema = z.object({

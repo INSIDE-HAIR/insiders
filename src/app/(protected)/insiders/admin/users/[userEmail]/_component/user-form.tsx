@@ -1,61 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { Button } from "@/src/components/ui/buttons/chadcn-button";
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/src/components/ui/form";
-import { Input } from "@/src/components/ui/input";
-import { userSchema } from "@/src/lib/types/inside-schemas";
 
 export default function UserForm({ user }: { user: any }) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user);
-
-  const form = useForm({
-    defaultValues: formData,
-    resolver: async (values) => {
-      const result = userSchema.safeParse(values);
-      return {
-        values: result.success ? result.data : {},
-        errors: result.success ? {} : result.error.flatten(),
-      };
-    },
-  });
-
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleSaveClick = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const isValid = await form.trigger();
-    if (!isValid) return;
-
-    const response = await fetch("/api/updateUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form.getValues()),
-    });
-
-    if (response.ok) {
-      setIsEditing(false);
-    } else {
-      console.error("Error al actualizar el usuario");
-    }
-  };
 
   return (
     <>
@@ -73,11 +24,11 @@ export default function UserForm({ user }: { user: any }) {
             <span className="sr-only">Search</span>
           </Button>
           {isEditing ? (
-            <Button size="sm" onClick={handleSaveClick}>
+            <Button size="sm" onClick={() => {}}>
               Guardar
             </Button>
           ) : (
-            <Button size="sm" onClick={handleEditClick}>
+            <Button size="sm" onClick={() => {}}>
               Editar
             </Button>
           )}
@@ -88,46 +39,6 @@ export default function UserForm({ user }: { user: any }) {
           <h2 className="text-2xl font-semibold mb-4">
             Información del Usuario
           </h2>
-          <Form {...form}>
-            <form onSubmit={handleSaveClick} className="space-y-8">
-              {Object.keys(formData).map((key) => (
-                <FormField
-                  key={key}
-                  control={form.control}
-                  name={key as keyof typeof formData}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="text"
-                          value={field.value ?? ""}
-                          onChange={(e) =>
-                            form.setValue(
-                              key as keyof typeof formData,
-                              e.target.value
-                            )
-                          }
-                          disabled={!isEditing}
-                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        {key === "email"
-                          ? "This is your public display email."
-                          : null}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-              <Button type="submit">Submit</Button>
-            </form>
-          </Form>
         </div>
       </main>
     </>
