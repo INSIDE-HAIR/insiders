@@ -63,7 +63,7 @@ type Client = {
   formationServices?: any[] | undefined; // Changed to optional
   mentoringServices?: any[] | undefined; // Changed to optional
   toolsServices?: any[] | undefined; // Changed to optional
-  lastLogin?: Date | undefined; // Made optional if it can be missing
+  lastLogin: Date | null | undefined;
   createdAt: Date;
   updatedAt: Date;
   startDate?: Date | undefined; // Made optional
