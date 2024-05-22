@@ -45,30 +45,8 @@ import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 import { UserRole } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/server-actions/holded/list-contacts";
+import { Client } from "@/src/next-auth";
 
-type Client = {
-  id: string;
-  name: string | null;
-  lastName: string | null;
-  email: string;
-  emailVerified: Date | null;
-  image: string | null;
-  password: string | null;
-  contactNumber: string | null;
-  terms: boolean;
-  role: UserRole;
-  isTwoFactorEnabled: boolean;
-  holdedId: string | null;
-  marketingServices?: any[] | undefined; // Changed to optional
-  formationServices?: any[] | undefined; // Changed to optional
-  mentoringServices?: any[] | undefined; // Changed to optional
-  toolsServices?: any[] | undefined; // Changed to optional
-  lastLogin: Date | null | undefined;
-  createdAt: Date;
-  updatedAt: Date;
-  startDate?: Date | undefined; // Made optional
-  endDate?: Date | undefined; // Made optional
-};
 
 const columns: ColumnDef<Client>[] = [
   {

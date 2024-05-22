@@ -96,7 +96,7 @@ export const {
       console.log("linkAccount event called");
       await prisma.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() }, // this can't be boolean for furture check.
+        data: { emailVerified: new Date(), lastLogin: new Date() },
       });
     },
   },
@@ -107,7 +107,14 @@ export const {
       // TODO: add a check if the provider is one of my settings in authConfig.
 
       // Allow OAuth without email verification
-      if (account?.provider !== "credentials") return true;
+      if (account?.provider !== "credentials") {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { lastLogin: new Date() },
+        });
+
+        return true;
+      }
 
       // Prevent sign in without email verification
       if (user.id) {
@@ -137,10 +144,14 @@ export const {
         }
       }
 
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLogin: new Date() },
+      });
+
       return true;
     },
     async jwt({ token, user }) {
-
       if (!token.sub) return token;
 
       const existingUser = await prisma.user.findFirst({
@@ -158,12 +169,12 @@ export const {
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
+
       return token;
     },
 
     //@ts-expect-error
     async session({ session, token }) {
-
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
@@ -171,7 +182,7 @@ export const {
       if (token.role && session.user) {
         session.user.role = token.role;
       }
-      
+
       if (token.image && session.user) {
         session.user.image = token.image;
       }
