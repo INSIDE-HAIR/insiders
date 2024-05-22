@@ -2536,7 +2536,7 @@
           "order": 1,
           "type": "tabsCardsList",
           "childrensCode": ["1111", "1112"],
-          "title": " ",
+          "title": null,
           "content": [],
           "active": true,
           "available": {
@@ -2691,7 +2691,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0000"],
-                  "title": "Vinilo Puerta",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -2720,7 +2720,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0248", "0348", "0048"],
-                  "title": "Dipticos & Trípticos",
+                  "title": "",
                   "content": [],
                   "active": true,
                   "available": {
@@ -2749,7 +2749,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0085"],
-                  "title": "Tarjetas",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -2778,7 +2778,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0009"],
-                  "title": "Camisetas & Bolsas",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -2807,7 +2807,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0010", "0011"],
-                  "title": "Tests",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -2836,7 +2836,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
-                  "title": "Extras",
+                  "title": "",
                   "content": [],
                   "active": true,
                   "available": {
@@ -2892,7 +2892,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["1080"],
-                  "title": "Posts",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -2920,7 +2920,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "title": "Stories",
+                  "title": null,
                   "childrensCode": ["1920"],
                   "content": [],
                   "active": true,
@@ -2979,7 +2979,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": [],
-                  "title": "Novedades",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {
@@ -3035,7 +3035,7 @@
                   "order": 1,
                   "type": "tabsCardsList",
                   "childrensCode": ["0192"],
-                  "title": "Posts Semanales",
+                  "title": null,
                   "content": [],
                   "active": true,
                   "available": {

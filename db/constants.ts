@@ -18,14 +18,14 @@ export const filesCodes = {
   "0360": "Escaparatismo",
   "0300": "Pop Up",
   "0090": "GMB",
-  "0216": "Video móvil",
-  "0217": "Video televisión",
+  "0216": "Móvil", // Video Móvil
+  "0217": "Televisión", // Video TV
   "1111": "Lista de Control de Manager",
   "1112": "Lista de Control de Colaborador",
-  "1080": "Post de Acción",
-  "0192": "Post Mensual",
-  "1920": "Story de Acción",
-  "0129": "Story Mensual",
+  "1080": "Post", // Post de Acción
+  "0192": "Post", // Post Mensual
+  "1920": "Story", // Story de Acción
+  "0129": "Story", // Story Mensual
   "0002": "Guía",
   "0500": "Filtro de Instagram",
   "6969": "SMS/WhatsApp",
@@ -33,7 +33,7 @@ export const filesCodes = {
   "0003": "Presentación",
   "1602": "Cartel Animado",
   "0087": "Escaparate",
-  "0057": "Horizontal Josep Pons",
+  "0057": "Horizontal", //Josep Pons
   "0330": "Pegatina",
   "0014": "Cartel A4 21x29,7cm",
   "0015": "Cartel A5 14,8x21cm",
@@ -42,6 +42,10 @@ export const filesCodes = {
   "0248": "Díptico",
   "0348": "Tríptico",
   "0249": "Díptico Transparente",
+  "1109": "Semana 1", // Stories Semanales 1
+  "2109": "Semana 2", // Stories Semanales 2
+  "3109": "Semana 3", // Stories Semanales 3
+  "4109": "Semana 4", // Stories Semanales 4
 };
 
 export const clientsCodes = {
