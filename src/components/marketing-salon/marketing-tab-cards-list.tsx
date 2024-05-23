@@ -231,30 +231,6 @@ const RenderButtons = (item: any) => {
 
   return (
     <>
-      {item.copy && (
-        <>
-          <Button
-            className={`text-tiny text-white bg-gray-700 m-1`}
-            variant="flat"
-            color="default"
-            radius="lg"
-            size="sm"
-            id={"button" + item.name}
-            onClick={handleCopyText}
-          >
-            Copiar Texto
-          </Button>
-          <textarea
-            ref={copyRef}
-            defaultValue={item.copy}
-            disabled
-            id={"copy" + item.name}
-            rows={30}
-            className="max-w-full  flex border-2 rounded-sm mt-2"
-          />
-        </>
-      )}
-
       {item.buttons && item.buttons.length > 0 ? (
         <>
           {item.buttons.map((button: any, index: number) => (
@@ -287,6 +263,30 @@ const RenderButtons = (item: any) => {
         >
           <a download={item.title}>Descargar {item.buttonTitle} </a>
         </Button>
+      )}
+      
+      {item.copy && (
+        <>
+          <Button
+            className={`text-tiny text-white bg-gray-700 m-1`}
+            variant="flat"
+            color="default"
+            radius="lg"
+            size="sm"
+            id={"button" + item.name}
+            onClick={handleCopyText}
+          >
+            Copiar Texto
+          </Button>
+          <textarea
+            ref={copyRef}
+            defaultValue={item.copy}
+            disabled
+            id={"copy" + item.name}
+            rows={30}
+            className="max-w-full  flex border-2 rounded-sm mt-2"
+          />
+        </>
       )}
     </>
   );
