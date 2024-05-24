@@ -2374,9 +2374,37 @@
       "auth": []
     },
     {
-      "id": "instructions3",
-      "title": "Como se aplica",
+      "id": "guide3",
+      "title": "Guía",
       "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "cardList1",
+          "order": 1,
+          "type": "tabsCardsList",
+          "childrensCode": ["0002"],
+          "title": null,
+          "content": [],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": false,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
+      "id": "instructions4",
+      "title": "Como se aplica",
+      "order": 4,
       "classType": "default",
       "content": [
         {
@@ -2513,9 +2541,9 @@
       "auth": []
     },
     {
-      "id": "controlList4",
+      "id": "controlList5",
       "title": "Listas de control",
-      "order": 4,
+      "order": 5,
       "classType": "default",
       "content": [
         {
@@ -2554,9 +2582,9 @@
       "auth": []
     },
     {
-      "id": "contenidoFisico5",
+      "id": "contenidoFisico6",
       "title": "Contenido físico",
-      "order": 5,
+      "order": 6,
       "classType": "default",
       "content": [
         {
@@ -2870,9 +2898,9 @@
       "auth": []
     },
     {
-      "id": "contenidoDigital4",
+      "id": "contenidoDigital7",
       "title": "Contenido digital",
-      "order": 6,
+      "order": 7,
       "classType": "default",
       "content": [
         {
@@ -3013,9 +3041,9 @@
       "auth": []
     },
     {
-      "id": "weeklyContent7",
+      "id": "weeklyContent8",
       "title": "Comunicación semanal",
-      "order": 7,
+      "order": 8,
       "classType": "default",
       "content": [
         {
