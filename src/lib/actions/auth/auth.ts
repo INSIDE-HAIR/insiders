@@ -4,8 +4,8 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
-import Github from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
+import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../prisma/database";
 
@@ -23,7 +23,7 @@ export const {
   providers: [
     CredentialsProvider({
       id: "credentials",
-      name: "credentials",
+      name: "Credentials",
       credentials: {
         email: { label: "UserEmail", type: "email", placeholder: "your email" },
         password: { label: "Password", type: "password" },
@@ -33,11 +33,10 @@ export const {
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
-
           const user = await prisma.user.findUnique({ where: { email } });
 
           if (!user || !user.password) {
-            return null; // means authentication failed.
+            return null; // Authentication failed
           }
 
           const passwordMatch = await bcrypt.compare(password, user.password);
@@ -50,7 +49,7 @@ export const {
     }),
     EmailProvider({
       id: "email",
-      name: "email",
+      name: "Email",
       server: {
         service: "Gmail",
         host: "smtp.gmail.com",
@@ -63,7 +62,6 @@ export const {
       },
       from: process.env.EMAIL_FROM,
       async sendVerificationRequest({
-        //THIS IS FOR EMAIL CUSTOMIZATION
         identifier: email,
         url,
         provider: { server, from },
@@ -79,11 +77,11 @@ export const {
         });
       },
     }),
-    Github({
+    GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
@@ -92,7 +90,6 @@ export const {
   session: { strategy: "jwt" },
   events: {
     async linkAccount({ user }) {
-      // Sent when an account in a given provider is linked to a user in our user database.
       console.log("linkAccount event called");
       await prisma.user.update({
         where: { id: user.id },
@@ -101,51 +98,113 @@ export const {
     },
   },
   callbacks: {
-    async signIn({ user, account }) {
-      console.log("callback signIn", { user, account });
+    async signIn({ user, account, profile }) {
+      console.log("callback signIn", { user, account, profile });
 
-      // TODO: add a check if the provider is one of my settings in authConfig.
-
-      // Allow OAuth without email verification
       if (account?.provider !== "credentials") {
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { lastLogin: new Date() },
+        let existingUser = await prisma.user.findUnique({
+          where: { email: user.email ?? "" },
         });
+
+        if (existingUser) {
+          // If the user already exists but is not linked to the provider
+          const existingAccount = await prisma.account.findFirst({
+            where: {
+              provider: account?.provider,
+              providerAccountId: account?.providerAccountId,
+            },
+          });
+
+          if (!existingAccount) {
+            // Link the OAuth account to the existing user
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                type: account?.type || "", // Add default value of an empty string
+                provider: account?.provider || "",
+                providerAccountId: account?.providerAccountId || "",
+                refresh_token: account?.refresh_token,
+                access_token: account?.access_token,
+                expires_at: account?.expires_at,
+                token_type: account?.token_type,
+                scope: account?.scope,
+                id_token: account?.id_token,
+                session_state: account?.session_state?.toString() ?? "", // Convert session_state to string or use an empty string as default
+              },
+            });
+          }
+
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              lastLogin: new Date(),
+              providerAccountId: user.id, // Ensure the providerAccountId is updated
+              image: user.image || existingUser.image, // Update the image if it exists
+            },
+          });
+        } else {
+          // Create a new user if no account exists
+          existingUser = await prisma.user.create({
+            data: {
+              name: user.name,
+              email: user?.email ?? "",
+              image: user.image, // Save the profile image
+              providerAccountId: user.id, // Save providerAccountId for future lookups
+              emailVerified: new Date(),
+              lastLogin: new Date(),
+              accounts: {
+                createMany: {
+                  data: [
+                    {
+                      type: account?.type || "", // Add default value of an empty string
+                      provider: account?.provider || "", // Add default value of an empty string
+                      providerAccountId: account?.providerAccountId || "", // Add default value of an empty string
+                      refresh_token: account?.refresh_token,
+                      access_token: account?.access_token,
+                      expires_at: account?.expires_at,
+                      token_type: account?.token_type,
+                      scope: account?.scope,
+                      id_token: account?.id_token,
+                      session_state: account?.session_state?.toString() ?? "", // Convert session_state to string or use an empty string as default
+                    },
+                  ],
+                },
+              },
+            },
+          });
+        }
 
         return true;
       }
 
-      // Prevent sign in without email verification
-      if (user.id) {
-        const existingUser = await prisma.user.findUnique({
-          where: { id: user.id },
-        });
-        if (!existingUser || !existingUser.emailVerified) {
+      const userId = user.id; // This will be a valid ObjectId for non-OAuth logins
+
+      const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+      if (!existingUser || !existingUser.emailVerified) {
+        return false;
+      }
+
+      if (existingUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation =
+          await prisma.twoFactorConfirmation.findUnique({
+            where: { userId: existingUser.id },
+          });
+
+        console.log("twoFactorConfirmation", twoFactorConfirmation);
+
+        if (!twoFactorConfirmation) {
           return false;
         }
 
-        if (existingUser.isTwoFactorEnabled) {
-          const twoFactorConfirmation =
-            await prisma.twoFactorConfirmation.findUnique({
-              where: { userId: existingUser.id },
-            });
-
-          console.log("twoFactorConfirmation", twoFactorConfirmation);
-
-          if (!twoFactorConfirmation) {
-            return false;
-          }
-
-          // Delete two factor confirmation for next sign in. in order words, every signin must be 2FA
-          await prisma.twoFactorConfirmation.delete({
-            where: { id: twoFactorConfirmation.id },
-          });
-        }
+        await prisma.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        });
       }
 
       await prisma.user.update({
-        where: { id: user.id },
+        where: { id: userId },
         data: { lastLogin: new Date() },
       });
 
@@ -169,10 +228,8 @@ export const {
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
-
       return token;
     },
-
     //@ts-expect-error
     async session({ session, token }) {
       if (token.sub && session.user) {

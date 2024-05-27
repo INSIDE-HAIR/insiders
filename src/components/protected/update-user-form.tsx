@@ -21,6 +21,9 @@ import { UserSchema } from "@/src/lib/types/inside-schemas";
 import { UpdateUser } from "@/src/next-auth";
 import Image from "next/image";
 import { CheckCircleIcon, XCircleIcon } from "lucide-react";
+import { Button } from "@nextui-org/react";
+import ModalResetPassword from "../modals/modal-reset-password";
+import ModalHoldedSync from "../modals/holded-sync/modal-holded-sync";
 
 type Props = {
   user: UpdateUser;
@@ -54,7 +57,7 @@ const UpdateUserForm = ({ user }: Props) => {
   const onSubmit = (values: z.infer<typeof UserSchema>) => {
     setError("");
     setSuccess("");
-
+    
     startTransition(() => {
       updateUser(values)
         .then((data) => {
@@ -72,8 +75,11 @@ const UpdateUserForm = ({ user }: Props) => {
   return (
     <>
       <Form {...form}>
-        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col items-center space-y-4">
+        <form
+          className="space-y-6 w-full flex flex-col justify-center content-center items-center py-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-col items-center space-y-4 w-full">
             {/* Image */}
             <Image
               src={user?.image || "/default-profile.png"}
@@ -83,19 +89,18 @@ const UpdateUserForm = ({ user }: Props) => {
               className="rounded-full"
             />
           </div>
+          <hr className="w-full border-t-2 border-gray-200" />
 
-          <fieldset className="space-y-4">
-            <legend className="text-lg font-medium">
-              Personal Information
-            </legend>
-            <div className="flex space-x-4">
+          <fieldset className="space-y-4 w-full">
+            <legend className="font-bold">Informacion de Contacto</legend>
+            <div className="flex flex-wrap gap-x-2 gap-y-4">
               {/* Name */}
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Name
                     </FormLabel>
                     <FormControl>
@@ -116,7 +121,7 @@ const UpdateUserForm = ({ user }: Props) => {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Last Name
                     </FormLabel>
                     <FormControl>
@@ -131,21 +136,13 @@ const UpdateUserForm = ({ user }: Props) => {
                   </FormItem>
                 )}
               />
-            </div>
-          </fieldset>
-
-          <fieldset className="space-y-4">
-            <legend className="text-lg font-medium">
-              Informacion de Contacto
-            </legend>
-            <div className="flex space-x-4">
               {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Email
                     </FormLabel>
                     <FormControl>
@@ -167,7 +164,7 @@ const UpdateUserForm = ({ user }: Props) => {
                 name="contactNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Telefono
                     </FormLabel>
                     <FormControl>
@@ -184,18 +181,19 @@ const UpdateUserForm = ({ user }: Props) => {
               />
             </div>
           </fieldset>
+          <hr className="w-full border-t-2 border-gray-200" />
 
-          <fieldset className="space-y-4">
-            <legend className="text-lg font-medium">Fechas de Interés</legend>
-            <div className="flex space-x-4">
+          <fieldset className="space-y-4 w-full">
+            <legend className="font-bold">Fechas de Interés</legend>
+            <div className="flex flex-wrap gap-x-2 gap-y-4">
               {/* Email Verified */}
               <FormField
                 control={form.control}
                 name="emailVerified"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
-                      Email Verified
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      Verificación de Email:
                       {user.emailVerified ? (
                         <CheckCircleIcon className="text-green-500 w-3 h-3" />
                       ) : (
@@ -227,8 +225,8 @@ const UpdateUserForm = ({ user }: Props) => {
                 name="lastLogin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
-                      Last Connection
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      Última Conexión:
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -249,16 +247,14 @@ const UpdateUserForm = ({ user }: Props) => {
                   </FormItem>
                 )}
               />
-            </div>
-            <div className="flex space-x-4">
               {/* Created At */}
               <FormField
                 control={form.control}
                 name="createdAt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
-                      Created At
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      Creación del contacto:
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -285,8 +281,8 @@ const UpdateUserForm = ({ user }: Props) => {
                 name="updatedAt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
-                      Updated At
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      Fecha de Actualización:
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -309,17 +305,18 @@ const UpdateUserForm = ({ user }: Props) => {
               />
             </div>
           </fieldset>
+          <hr className="w-full border-t-2 border-gray-200" />
 
-          <fieldset className="space-y-4">
-            <legend className="text-lg font-medium">INSIDERS:</legend>
-            <div className="flex space-x-4">
+          <fieldset className="space-y-4 w-full">
+            <legend className="font-bold">INSIDERS:</legend>
+            <div className="flex flex-wrap gap-x-2 gap-y-4">
               {/* Role */}
               <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Nivel de Acceso:
                     </FormLabel>
                     <FormControl>
@@ -334,13 +331,33 @@ const UpdateUserForm = ({ user }: Props) => {
                   </FormItem>
                 )}
               />
-              {/* Holded */}
+              {/* ID INSIDERS */}
+              <FormField
+                control={form.control}
+                name="id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      ID:
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        value={field.value || ""}
+                        disabled
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* ID Holded */}
               <FormField
                 control={form.control}
                 name="holdedId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       ID de Holded:
                     </FormLabel>
                     <FormControl>
@@ -354,33 +371,48 @@ const UpdateUserForm = ({ user }: Props) => {
                   </FormItem>
                 )}
               />
+              <div className="flex flex-col  gap-x-2 gap-y-2">
+                <FormLabel className="flex items-center gap-x-1 text-tiny">
+                  Acciones:
+                </FormLabel>
+                <div className="flex flex-wrap gap-x-2 gap-y-4">
+                  <ModalHoldedSync holdedId={user?.holdedId} insidersId={user?.id} />
+                  <ModalResetPassword email={user?.email} />
+                </div>
+              </div>
             </div>
           </fieldset>
+          <hr className="w-full border-t-2 border-gray-200" />
 
-          {/* Terms */}
-          <FormField
-            control={form.control}
-            name="terms"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center gap-x-1">
-                  Acuerdos & Condiciones aceptados:
-                </FormLabel>
-                <FormControl>
-                  <div className="flex items-center gap-x-2 text-xs">
-                    <p>No</p>
-                    <Switch
-                      disabled
-                      checked={field.value || true}
-                      onCheckedChange={field.onChange}
-                    />
-                    <p>Si</p>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <fieldset className="space-y-4 w-full">
+            <legend className="font-bold">Acuerdos legales:</legend>
+            <div className="flex flex-wrap gap-x-2 gap-y-4">
+              {/* Terms */}
+              <FormField
+                control={form.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
+                      Acuerdos & Condiciones aceptados:
+                    </FormLabel>
+                    <FormControl>
+                      <div className="flex items-center gap-x-2 text-xs">
+                        <p>No</p>
+                        <Switch
+                          disabled
+                          checked={field.value || true}
+                          onCheckedChange={field.onChange}
+                        />
+                        <p>Si</p>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </fieldset>
 
           {user?.isOAuth === false && (
             <FormField
@@ -389,7 +421,7 @@ const UpdateUserForm = ({ user }: Props) => {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                   <div className="space-y-0.5">
-                    <FormLabel className="flex items-center gap-x-1">
+                    <FormLabel className="flex items-center gap-x-1 text-tiny">
                       Two Factor Authentication
                     </FormLabel>
                   </div>
@@ -408,13 +440,10 @@ const UpdateUserForm = ({ user }: Props) => {
           <FormError message={error} />
           <FormSuccess message={success} />
           <LoadingButton type="submit" isLoading={isPending} className="w-full">
-            Save
+            Guardar
           </LoadingButton>
         </form>
       </Form>
-
-
-      
     </>
   );
 };

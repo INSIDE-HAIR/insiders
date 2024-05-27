@@ -29,11 +29,13 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   accounts              Account[]
+  providerAccountId     String?                @unique // Add this line to store OAuth provider account IDs
   holdedId              String?
+  lastHoldedSync        DateTime?
   holdedData            HoldedData[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
-  lastLogin             DateTime?               @default(now())
+  lastLogin             DateTime?              @default(now())
   // Otros campos y configuraciones...
 }
 

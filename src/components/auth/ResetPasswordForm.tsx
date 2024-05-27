@@ -13,13 +13,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Input } from "../ui/input";
-import FormError from "../share/MessageErrorBox";
-import FormSuccess from "../share/MessageSuccessBox";
-import LoadingButton from "../share/LoadingButton";
+import { Input } from "@/src/components/ui/input";
+import FormError from "@/src/components/share/MessageErrorBox";
+import FormSuccess from "@/src/components/share/MessageSuccessBox";
+import LoadingButton from "@/src/components/share/LoadingButton";
 import { reset } from "@/src/server-actions/auth/reset-password";
 
-type Props = {};
+type Props = {
+  email?: string | null | undefined;
+};
 
 const ResetPasswordForm = (props: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
@@ -28,7 +30,7 @@ const ResetPasswordForm = (props: Props) => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof ResetSchema>>({
     resolver: zodResolver(ResetSchema),
-    defaultValues: { email: "" },
+    defaultValues: { email: props.email || "" },
   });
 
   const onSubmit = (values: z.infer<typeof ResetSchema>) => {
@@ -60,7 +62,8 @@ const ResetPasswordForm = (props: Props) => {
                     {...field}
                     placeholder="johs.doe@example.com"
                     type="email"
-                    disabled={isPending}
+                    disabled={(props?.email && true) || isPending}
+                    value={props?.email || ""}
                   />
                 </FormControl>
                 <FormMessage />

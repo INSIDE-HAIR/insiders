@@ -44,9 +44,8 @@ import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 import { UserRole } from "@prisma/client";
-import { getListHoldedContacts } from "@/src/server-actions/holded/list-contacts";
+import { getListHoldedContacts } from "@/src/server-actions/holded/contacts";
 import { Client } from "@/src/next-auth";
-
 
 const columns: ColumnDef<Client>[] = [
   {

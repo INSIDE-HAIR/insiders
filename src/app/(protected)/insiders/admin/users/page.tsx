@@ -42,10 +42,9 @@ import {
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { getListHoldedContacts } from "@/src/server-actions/holded/list-contacts";
+import { getListHoldedContacts } from "@/src/server-actions/holded/contacts";
 import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
 import { Client } from "@/src/next-auth";
-
 
 const columns: ColumnDef<Client>[] = [
   {
@@ -376,7 +375,9 @@ const columns: ColumnDef<Client>[] = [
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sincronizar con Holded</DropdownMenuItem>
+            <Link href={`/insiders/admin/users/${client.email}/sync-holded`}>
+              <DropdownMenuItem>Sincronizar con Holded</DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
             <Link href={`/insiders/admin/users/${client.email}`}>
               <DropdownMenuItem>Ver o Editar</DropdownMenuItem>

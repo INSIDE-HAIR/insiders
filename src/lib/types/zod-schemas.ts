@@ -31,7 +31,6 @@ export const RegisterSchema = z.object({
     .max(50, "Name is too long!"),
 });
 
-
 // .refine(
 //   (data) => {
 //     if (data.password && !data.newPassword) return false;
@@ -54,4 +53,11 @@ export const NewPasswordSchema = z.object({
 
 export const ResetSchema = z.object({
   email: z.string().email({ message: "Email is required." }),
+});
+
+export const HoldedSyncSchema = z.object({
+  holdedId: z.string().nullable(),
+  holdedSynced: z.boolean(),
+  holdedSyncDate: z.date().nullable(),
+  insidersId: z.string().nullable(),
 });

@@ -1,9 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { contactId: string };
+  }
+) {
+  const { contactId } = params;
+  console.log("contactId", contactId);
+
+  if (!contactId) {
+    return NextResponse.json(
+      { message: "Missing query parameters" },
+      { status: 400 }
+    );
+  }
+
   try {
     const response = await fetch(
-      "https://api.holded.com/api/invoicing/v1/contacts",
+      "https://api.holded.com/api/invoicing/v1/contacts/" + contactId,
       options
     );
     if (!response.ok) {

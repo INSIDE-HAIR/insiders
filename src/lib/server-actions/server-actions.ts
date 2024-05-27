@@ -6,6 +6,7 @@ import prisma from "@/prisma/database";
 import { sendVerificationEmailResend } from "../mail/mail";
 import { generateVerificationToken } from "@/src/server-actions/auth/tokens";
 import { SettingsSchema, UserSchema } from "../types/inside-schemas";
+import { ObjectId } from "mongodb";
 
 export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   const session = await auth();
@@ -16,12 +17,12 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
   }
 
   if (user.id) {
+    if (!ObjectId.isValid(user.id)) {
+      return { error: "Invalid user ID." };
+    }
+
     const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
     if (!dbUser) return { error: "Sin autorización!" };
-
-    // const account = await prisma.account.findFirst({
-    //   where: { userId: dbUser.id },
-    // });
 
     if (user.isOAuth) {
       values.email = undefined;
@@ -38,10 +39,10 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
         return { error: "Este correo esta en uso." };
       }
 
-      const verifiationToken = await generateVerificationToken(values.email);
+      const verificationToken = await generateVerificationToken(values.email);
       await sendVerificationEmailResend(
-        verifiationToken.identifier,
-        verifiationToken.token
+        verificationToken.identifier,
+        verificationToken.token
       );
 
       return { success: "Email de verificación enviado!" };
@@ -64,9 +65,7 @@ export const settings = async (values: z.infer<typeof SettingsSchema>) => {
 
     const updatedUser = await prisma.user.update({
       where: { id: dbUser.id },
-      data: {
-        ...values,
-      },
+      data: values,
     });
 
     update({
@@ -91,6 +90,10 @@ export const updateUser = async (values: z.infer<typeof UserSchema>) => {
   }
 
   if (user.id) {
+    if (!ObjectId.isValid(user.id)) {
+      return { error: "Invalid user ID." };
+    }
+
     const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
     if (!dbUser) return { error: "Sin autorización!" };
 
@@ -133,7 +136,6 @@ export const updateUser = async (values: z.infer<typeof UserSchema>) => {
       values.newPassword = undefined;
     }
 
-    // Remover el campo `id` de `values` si existe
     const { id, ...updateValues } = values;
 
     const updatedUser = await prisma.user.update({

@@ -15,7 +15,7 @@ declare module "next-auth" {
 
 export type SettingsUser = {
   name: string | null;
-  email: string | null;
+  email: string ;
   emailVerified: boolean | null;
   image: string | null;
   password: string | null;
@@ -28,7 +28,7 @@ export type UpdateUser = {
   id?: string;
   name: string | null;
   lastName: string | null;
-  email: string | null;
+  email: string;
   emailVerified: Date | null;
   image: string | null;
   password: string | null;

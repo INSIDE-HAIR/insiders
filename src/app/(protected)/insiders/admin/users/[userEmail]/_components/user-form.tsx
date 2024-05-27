@@ -6,7 +6,6 @@ import Link from "next/link";
 
 export default function UserForm({ user }: { user: any }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(user);
 
   return (
     <>
