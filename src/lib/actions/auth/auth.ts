@@ -138,7 +138,6 @@ export const {
             where: { id: existingUser.id },
             data: {
               lastLogin: new Date(),
-              providerAccountId: user.id, // Ensure the providerAccountId is updated
               image: user.image || existingUser.image, // Update the image if it exists
             },
           });
@@ -149,7 +148,6 @@ export const {
               name: user.name,
               email: user?.email ?? "",
               image: user.image, // Save the profile image
-              providerAccountId: user.id, // Save providerAccountId for future lookups
               emailVerified: new Date(),
               lastLogin: new Date(),
               accounts: {

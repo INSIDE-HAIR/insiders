@@ -15,6 +15,7 @@ enum UserRole {
   EMPLOYEE
 }
 
+
 model User {
   id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
   name                  String?
@@ -29,14 +30,12 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   accounts              Account[]
-  providerAccountId     String?                @unique // Add this line to store OAuth provider account IDs
   holdedId              String?
   lastHoldedSync        DateTime?
   holdedData            HoldedData[]
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   lastLogin             DateTime?              @default(now())
-  // Otros campos y configuraciones...
 }
 
 model VerificationToken {
