@@ -41,6 +41,11 @@ export const {
 
           const passwordMatch = await bcrypt.compare(password, user.password);
           if (passwordMatch) {
+            // Update lastLogin on successful login
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { lastLogin: new Date() },
+            });
             return user;
           }
         }
@@ -93,7 +98,10 @@ export const {
       console.log("linkAccount event called");
       await prisma.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date(), lastLogin: new Date() },
+        data: {
+          emailVerified: user.emailVerified ?? new Date(),
+          lastLogin: new Date(),
+        },
       });
     },
   },
@@ -148,7 +156,7 @@ export const {
               name: user.name,
               email: user?.email ?? "",
               image: user.image, // Save the profile image
-              emailVerified: new Date(),
+              emailVerified: user.emailVerified ?? new Date(), // Only set if not already set
               lastLogin: new Date(),
               accounts: {
                 createMany: {

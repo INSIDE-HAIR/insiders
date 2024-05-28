@@ -57,7 +57,7 @@ const UpdateUserForm = ({ user }: Props) => {
   const onSubmit = (values: z.infer<typeof UserSchema>) => {
     setError("");
     setSuccess("");
-    
+
     startTransition(() => {
       updateUser(values)
         .then((data) => {
@@ -240,7 +240,7 @@ const UpdateUserForm = ({ user }: Props) => {
                         }
                         disabled
                         type="date"
-                        placeholder="Last Connection"
+                        placeholder="Last Login"
                       />
                     </FormControl>
                     <FormMessage />
@@ -341,11 +341,7 @@ const UpdateUserForm = ({ user }: Props) => {
                       ID:
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        value={field.value || ""}
-                        disabled
-                      />
+                      <Input {...field} value={field.value || ""} disabled />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -376,7 +372,10 @@ const UpdateUserForm = ({ user }: Props) => {
                   Acciones:
                 </FormLabel>
                 <div className="flex flex-wrap gap-x-2 gap-y-4">
-                  <ModalHoldedSync holdedId={user?.holdedId} insidersId={user?.id} />
+                  <ModalHoldedSync
+                    holdedId={user?.holdedId}
+                    insidersId={user?.id}
+                  />
                   <ModalResetPassword email={user?.email} />
                 </div>
               </div>

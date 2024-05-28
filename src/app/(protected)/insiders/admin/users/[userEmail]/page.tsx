@@ -38,6 +38,7 @@ export default async function Page({
     role: user?.role ?? "CLIENT",
     isTwoFactorEnabled: user?.isTwoFactorEnabled ?? false,
     holdedId: user?.holdedId ?? null,
+    lastLogin: user?.lastLogin ?? null,
     createdAt: user?.createdAt ?? null,
     updatedAt: user?.updatedAt ?? null,
     isOAuth: session?.user.isOAuth || false,
