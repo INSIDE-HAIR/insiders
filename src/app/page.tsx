@@ -1,6 +1,6 @@
 import LogoutButton from "@/src/components/share/LogoutButton";
 import { Button } from "@/src/components/ui/buttons/chadcn-button";
-import { auth, signOut } from "@/src/lib/actions/auth/auth";
+import { auth, signOut } from "@/src/lib/server-actions/auth/config/auth";
 import Image from "next/image";
 
 export default async function Home() {

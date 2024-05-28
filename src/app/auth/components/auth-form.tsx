@@ -2,7 +2,8 @@
 
 import * as React from "react";
 
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/lib/utils/utils";
+
 import EmailProvider from "@/src/components/auth/providers/email-provider";
 import GithubProvider from "@/src/components/auth/providers/github-provider";
 import GoogleProvider from "@/src/components/auth/providers/google-provider";

@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-import authConfig from "./lib/actions/auth/auth.config";
+import authConfig from "./lib/server-actions/auth/config/auth.config";
 
 const { auth } = NextAuth(authConfig);
 

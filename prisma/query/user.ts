@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/prisma/database";
 import { User } from "@prisma/client";
 
@@ -47,7 +48,6 @@ export const getUsers = async () => {
     return null;
   }
 };
-
 
 export const updateUserById = async (id: string, data: Partial<User>) => {
   return prisma.user.update({

@@ -2,14 +2,17 @@
 import prisma from "@/prisma/database";
 import { CredentialSigninSchema } from "@/src/lib/types/zod-schemas";
 import { z } from "zod";
-import { generateTwoFactorToken, generateVerificationToken } from "./tokens";
 import {
   sendTwoFactorTokenEmailResend,
   sendVerificationEmailResend,
 } from "@/src/lib/mail/mail";
-import { signIn } from "@/src/lib/actions/auth/auth";
+import { signIn } from "@/src/lib/server-actions/auth/config/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes/routes";
 import { AuthError } from "next-auth";
+import {
+  generateTwoFactorToken,
+  generateVerificationToken,
+} from "../register/tokens";
 
 export const credentialsLogin = async (
   values: z.infer<typeof CredentialSigninSchema>,

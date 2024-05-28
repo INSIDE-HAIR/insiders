@@ -1,10 +1,8 @@
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
-
 import { AuthForm } from "../components/auth-form";
 import { buttonVariants } from "@/src/components/ui/buttons/chadcn-button";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/lib/utils/utils";
 
 export const metadata: Metadata = {
   title: "Insiders - Register Page",

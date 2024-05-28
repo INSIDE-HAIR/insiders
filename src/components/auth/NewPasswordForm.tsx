@@ -19,7 +19,7 @@ import { Input } from "../ui/input";
 import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import LoadingButton from "../share/LoadingButton";
-import { newPassword } from "@/src/server-actions/auth/new-password";
+import { newPassword } from "@/src/lib/server-actions/auth/user/password/new-password";
 
 type Props = {};
 

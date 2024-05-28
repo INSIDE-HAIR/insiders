@@ -5,7 +5,7 @@ import { LoginButton } from "../login-button";
 import { Input } from "../../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, RegisterSchema } from "@/src/schemas/index";
+import { LoginSchema, RegisterSchema } from "@/src/lib/schemas/index";
 import {
   Form,
   FormControl,
@@ -15,8 +15,8 @@ import {
   FormMessage,
 } from "../../ui/form";
 import * as z from "zod";
-import { login } from "@/src/server-actions/auth/login";
-import { register } from "@/src/server-actions/auth/register";
+import { login } from "@/src/lib/server-actions/auth/user/login/login";
+import { register } from "@/src/lib/server-actions/auth/user/register/register";
 import { useTransition } from "react";
 import { Button } from "../../ui/buttons/chadcn-button";
 import { FormError } from "../../messages/form-error";

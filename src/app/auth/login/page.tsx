@@ -1,8 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/lib/utils/utils";
 import { AuthForm } from "../components/auth-form";
 import { buttonVariants } from "@/src/components/ui/buttons/chadcn-button";
 

@@ -1,12 +1,12 @@
 import { getUserByEmail } from "@/prisma/query/user"; // app/users/[userEmail]/page.tsx
 import React from "react";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
-import { UpdateUser } from "@/src/next-auth";
 import UpdateUserForm from "@/src/components/protected/update-user-form";
-import { auth, signOut } from "@/src/lib/actions/auth/auth";
+import { auth, signOut } from "@/src/lib/server-actions/auth/config/auth";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardHeader } from "@/src/components/ui/cards/card";
+import { Card, CardContent } from "@/src/components/ui/cards/card";
+import { HoldedProvider } from "@/src/components/providers/HoldedProvider";
+import { User } from "@prisma/client";
 
 export default async function Page({
   params,
@@ -24,23 +24,27 @@ export default async function Page({
     await signOut();
   }
 
-  const clientUser: UpdateUser = {
-    id: user?.id ?? undefined,
+  interface UserWithOauth extends User {
+    isOAuth: boolean;
+  }
+
+  const clientUser: UserWithOauth = {
+    id: user?.id ?? "",
     lastName: user?.lastName ?? "",
     name: user?.name ?? "",
     email: user?.email ?? "",
     emailVerified: user?.emailVerified ?? null,
     image: user?.image ?? "",
     password: "",
-    newPassword: null,
     contactNumber: user?.contactNumber ?? null,
-    terms: user?.terms ?? undefined,
+    terms: user?.terms || true,
     role: user?.role ?? "CLIENT",
     isTwoFactorEnabled: user?.isTwoFactorEnabled ?? false,
     holdedId: user?.holdedId ?? null,
+    lastHoldedSync: user?.lastHoldedSync ?? null,
     lastLogin: user?.lastLogin ?? null,
-    createdAt: user?.createdAt ?? null,
-    updatedAt: user?.updatedAt ?? null,
+    createdAt: (user?.createdAt as Date) ?? null,
+    updatedAt: (user?.updatedAt as Date) ?? null,
     isOAuth: session?.user.isOAuth || false,
   };
 
@@ -53,7 +57,7 @@ export default async function Page({
   }
 
   return (
-    <>
+    <HoldedProvider>
       <TailwindGrid fullSize>
         <header className="max-w-full col-start-1 col-end-full md:col-end-6 lg:col-start-3 lg:col-end-13 flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 col-span-full">
           <div className="flex-1">
@@ -70,6 +74,6 @@ export default async function Page({
           </Card>{" "}
         </main>
       </TailwindGrid>
-    </>
+    </HoldedProvider>
   );
 }

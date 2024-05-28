@@ -16,11 +16,14 @@ import { Input } from "@/src/components/ui/input";
 import FormError from "@/src/components/share/MessageErrorBox";
 import FormSuccess from "@/src/components/share/MessageSuccessBox";
 import LoadingButton from "@/src/components/share/LoadingButton";
-import { getHoldedContactById } from "@/src/server-actions/holded/contacts";
+import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/contacts";
 import moment from "moment-timezone";
 import "moment/locale/es"; // Importar el idioma español
 import ErrorMessageBox from "@/src/components/share/MessageErrorBox";
 import SuccessMessageBox from "@/src/components/share/MessageSuccessBox";
+import { useHolded } from "@/src/components/providers/HoldedProvider";
+import { useDebounce } from "@uidotdev/usehooks";
+import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 
 type Props = {
   holdedId?: string | null | undefined;
@@ -28,31 +31,37 @@ type Props = {
 };
 
 const HoldedSyncForm = (props: Props) => {
+  const { holdedId, insidersId, setHoldedId, setInsidersId } = useHolded();
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
   const [successMessage, setSuccessMessage] = useState<string | undefined>("");
   const [holdedContact, setHoldedContact] = useState<any>({});
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isValidId, setIsValidId] = useState<boolean>(false);
-
   const [isPending, startTransition] = useTransition();
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof HoldedSyncSchema>>({
     resolver: zodResolver(HoldedSyncSchema),
     defaultValues: {
-      holdedId: props.holdedId || "",
-      insidersId: props.insidersId || "",
+      holdedId: holdedId || "",
+      insidersId: insidersId || "",
     },
   });
 
+  const debouncedHoldedId = useDebounce(holdedId, 500);
+
   useEffect(() => {
-    if (props.holdedId) {
-      form.setValue("holdedId", props.holdedId);
-      checkConnection(props.holdedId);
+    form.setValue("holdedId", holdedId || "");
+    form.setValue("insidersId", insidersId || "");
+    if (debouncedHoldedId) {
+      checkConnection(debouncedHoldedId);
     }
-  }, [props.holdedId, form]);
+  }, [debouncedHoldedId, insidersId, form, holdedId]);
 
   const onSubmitHoldedId = async (holdedId: string) => {
     setErrorMessage("");
     setSuccessMessage("");
+    setLoading(true);
 
     startTransition(async () => {
       const data = await getHoldedContactById(holdedId || "");
@@ -64,7 +73,9 @@ const HoldedSyncForm = (props: Props) => {
         setIsValidId(true);
         setHoldedContact(data);
         setIsConnected(true);
+        setHoldedId(holdedId); // Update context when Holded ID is found
       }
+      setLoading(false);
     });
   };
 
@@ -75,10 +86,12 @@ const HoldedSyncForm = (props: Props) => {
 
   const disconnectFromHolded = async () => {
     // Lógica para desconectar de Holded
+    setHoldedId("");
     setIsConnected(false);
   };
 
   const checkConnection = async (holdedId: string) => {
+    setLoading(true);
     // Lógica para comprobar si ya está conectado
     const data = await getHoldedContactById(holdedId);
     if (data && !data.error) {
@@ -88,6 +101,7 @@ const HoldedSyncForm = (props: Props) => {
       setIsConnected(false);
       setHoldedContact({});
     }
+    setLoading(false);
   };
 
   // Get the value of the custom field "CLIENTES - Insiders ID"
@@ -104,19 +118,25 @@ const HoldedSyncForm = (props: Props) => {
         className="space-y-6"
       >
         <div className="space-y-4">
+          {/* Holded ID */}
           <FormField
             control={form.control}
             name="holdedId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>holdedId</FormLabel>
+                <FormLabel className="flex items-center gap-x-1 text-tiny">
+                  Holded ID
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="Código de cliente en Holded"
-                    type="text"
+                    value={field.value || ""}
                     disabled={isPending}
-                    value={field.value || ""} // Fix: Ensure value is always a string
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setHoldedId(e.target.value);
+                    }}
+                    placeholder="Holded ID"
                   />
                 </FormControl>
                 <FormMessage />
@@ -132,9 +152,9 @@ const HoldedSyncForm = (props: Props) => {
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder={props.insidersId || ""}
+                    placeholder={insidersId || ""}
                     type="text"
-                    value={props.insidersId || ""}
+                    value={insidersId || ""}
                     disabled
                   />
                 </FormControl>
@@ -143,6 +163,7 @@ const HoldedSyncForm = (props: Props) => {
             )}
           />
         </div>
+
         <FormError message={errorMessage} />
         <FormSuccess message={successMessage} />
         <LoadingButton
@@ -150,7 +171,9 @@ const HoldedSyncForm = (props: Props) => {
           className="w-full relative"
           isLoading={isPending}
           onClick={() =>
-            form.handleSubmit((values) => checkConnection(values.holdedId || ""))()
+            form.handleSubmit((values) =>
+              checkConnection(values.holdedId || "")
+            )()
           }
         >
           Probar conexión
@@ -206,19 +229,34 @@ const HoldedSyncForm = (props: Props) => {
                 {insidersIdValue}
               </p>
               <div className="mt-4">
-                {insidersIdValue === props.insidersId ? (
+                {insidersIdValue === insidersId ? (
                   <SuccessMessageBox message={"Conexión correcta"} />
                 ) : (
-                  <ErrorMessageBox
-                    message={"No se ha encontrado ningún contacto"}
-                  />
+                  <>
+                    {insidersId === "" ? (
+                      <ErrorMessageBox
+                        message={"El contacto no tiene un Insiders ID"}
+                      />
+                    ) : (
+                      <ErrorMessageBox
+                        message={"No coinciden los Insiders ID."}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </>
+          ) : loading ? (
+            <div className=" w-full h-10 flex justify-center max-w-full overflow-hidden">
+              <div className="text-center h-8 w-8 items-center justify-center content-center flex overflow-hidden m-auto">
+                <LoadingSpinner />
+              </div>
+            </div>
           ) : (
             <p>
-              Sin conexión con Holded. Introduce un Holded ID y haz clic en
-              &quot;Probar conexión&quot;
+              <b>No se ha encontrado ningún contacto en Holded.</b> Introduce un
+              Holded ID y haz clic en
+              <b> &quot;Probar conexión&quot;</b>
             </p>
           )}
         </div>

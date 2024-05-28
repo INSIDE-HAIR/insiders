@@ -42,11 +42,11 @@ import {
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { getListHoldedContacts } from "@/src/server-actions/holded/contacts";
-import { getListUsers } from "@/src/server-actions/contacts/list-contacts";
-import { Client } from "@/src/next-auth";
+import { getListHoldedContacts } from "@/src/lib/server-actions/vendors/holded/contacts";
+import { getUsers } from "@/prisma/query/user";
+import { User } from "@prisma/client";
 
-const columns: ColumnDef<Client>[] = [
+const columns: ColumnDef<User>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -401,7 +401,7 @@ export default function Page() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [pageSize, setPageSize] = React.useState(10); // TODO: Tengo que hacer que este valor sea dinámico
-  const [data, setData] = React.useState<Client[]>([]); // TypeScript now knows that data is an array of User objects
+  const [data, setData] = React.useState<User[]>([]); // TypeScript now knows that data is an array of User objects
   const [dataListHoldedContacts, setDataListHoldedContacts] = React.useState<
     HoldedContact[]
   >([]); // TypeScript now knows that data is an array of User objects
@@ -429,7 +429,7 @@ export default function Page() {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const users = await getListUsers();
+        const users = await getUsers();
 
         if (users !== null) {
           setData(users);
