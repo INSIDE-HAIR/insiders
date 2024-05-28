@@ -55,7 +55,10 @@ export const ResetSchema = z.object({
 });
 
 export const HoldedSyncSchema = z.object({
-  holdedId: z.string().nullable(),
+  holdedId: z
+    .string()
+    .min(24, { message: "Min. 24 caracteres requeridos." })
+    .nullable(),
   holdedSynced: z.boolean(),
   holdedSyncDate: z.date().nullable(),
   insidersId: z.string().nullable(),

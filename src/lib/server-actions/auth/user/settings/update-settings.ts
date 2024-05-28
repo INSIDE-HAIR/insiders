@@ -111,3 +111,15 @@ export const updateUser = async (values: z.infer<typeof UserSchema>) => {
 
   return { success: "Ajustes actualizados!" };
 };
+
+export const updateHoldedId = async (userId: string, holdedId: string) => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      holdedId,
+      lastHoldedSync: new Date(),
+    },
+  });
+
+  return updatedUser;
+};

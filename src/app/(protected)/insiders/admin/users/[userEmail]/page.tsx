@@ -1,12 +1,11 @@
 import { getUserByEmail } from "@/prisma/query/user"; // app/users/[userEmail]/page.tsx
 import React from "react";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import UpdateUserForm from "@/src/components/protected/update-user-form";
 import { auth, signOut } from "@/src/lib/server-actions/auth/config/auth";
 import { redirect } from "next/navigation";
-import { Card, CardContent } from "@/src/components/ui/cards/card";
 import { HoldedProvider } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
+import TabsUserSettings from "@/src/app/(protected)/insiders/admin/users/[userEmail]/_components/tabs-user-setttings";
 
 export default async function Page({
   params,
@@ -67,11 +66,7 @@ export default async function Page({
       </TailwindGrid>
       <TailwindGrid fullSize>
         <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1 md:col-end-6 lg:col-start-3 lg:col-end-13  order-2 md:order-1 z-30  col-span-full">
-          <Card className="w-full rounded-none">
-            <CardContent className="">
-              <UpdateUserForm user={clientUser} />
-            </CardContent>
-          </Card>{" "}
+          <TabsUserSettings user={clientUser} />
         </main>
       </TailwindGrid>
     </HoldedProvider>

@@ -25,7 +25,7 @@ export default function ModalHoldedSync({
         className=" hover:opacity-100 rounded-full"
         onPress={onOpen}
       >
-        Sincronizar con Holded
+        Validar ID de Holded
       </Button>
       <Modal
         backdrop={"blur"}
@@ -37,7 +37,7 @@ export default function ModalHoldedSync({
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Sincronziar con Holded
+                Validar ID con Holded
               </ModalHeader>
               <ModalBody className="relative w-full">
                 <HoldedSyncForm
@@ -45,11 +45,7 @@ export default function ModalHoldedSync({
                   insidersId={insidersId && insidersId}
                 />
               </ModalBody>
-              <ModalFooter className="justify-center align-middle items-center">
-                <Button color="danger" variant="solid" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
+              <ModalFooter className="justify-center align-middle items-center" />
             </>
           )}
         </ModalContent>
