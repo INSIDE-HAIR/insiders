@@ -19,7 +19,7 @@ function ModalResetPassword({ email }: { email: string }) {
         className=" hover:opacity-100 rounded-full"
         onPress={onOpen}
       >
-        Resetear Contraseña
+        Reestablecer Contraseña
       </Button>
       <Modal
         backdrop={"blur"}
@@ -32,7 +32,7 @@ function ModalResetPassword({ email }: { email: string }) {
             <>
               <ModalHeader className="flex flex-col gap-1">
                 {" "}
-                Resetear Contraseña
+                Reestablecer Contraseña
               </ModalHeader>
               <ModalBody className="relative w-full">
                 <ResetPasswordForm email={email && email} />

@@ -417,7 +417,7 @@ const InsidersSection = ({
           render={({ field }) => (
             <FormItem>
               <FormLabel className="flex items-center gap-x-1 text-tiny">
-                ID de Holded:
+                Holded ID:
               </FormLabel>
               <FormControl>
                 <Input
@@ -428,7 +428,7 @@ const InsidersSection = ({
                     field.onChange(e);
                     setHoldedId(e.target.value);
                   }}
-                  placeholder="Holded ID"
+                  placeholder="ID"
                 />
               </FormControl>
               <FormMessage />
