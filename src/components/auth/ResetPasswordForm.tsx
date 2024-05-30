@@ -20,29 +20,32 @@ import LoadingButton from "@/src/components/share/LoadingButton";
 import { reset } from "@/src/lib/server-actions/auth/user/password/reset-password";
 
 type Props = {
-  email?: string | null | undefined;
+  email?: string | null;
 };
 
-const ResetPasswordForm = (props: Props) => {
+const ResetPasswordForm = ({ email }: Props) => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
   const [successMessage, setSuccessMessage] = useState<string | undefined>("");
-
   const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof ResetSchema>>({
     resolver: zodResolver(ResetSchema),
-    defaultValues: { email: props.email || "" },
+    defaultValues: { email: email || "" },
   });
 
   const onSubmit = (values: z.infer<typeof ResetSchema>) => {
-    // reset states
+    // Reset states
     setErrorMessage("");
     setSuccessMessage("");
 
-    // console.log(values);
     startTransition(() => {
       reset(values).then((data) => {
-        if (data?.error) setErrorMessage(data.error);
-        if (data?.success) setSuccessMessage(data.success);
+        if (data?.error) {
+          setErrorMessage(data.error);
+        }
+        if (data?.success) {
+          setSuccessMessage(data.success);
+        }
       });
     });
   };
@@ -62,8 +65,8 @@ const ResetPasswordForm = (props: Props) => {
                     {...field}
                     placeholder="johs.doe@example.com"
                     type="email"
-                    disabled={(props?.email && true) || isPending}
-                    value={props?.email || ""}
+                    disabled={isPending || !!email}
+                    value={email || field.value}
                   />
                 </FormControl>
                 <FormMessage />

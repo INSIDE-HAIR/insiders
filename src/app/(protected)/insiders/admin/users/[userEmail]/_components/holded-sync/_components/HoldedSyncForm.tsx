@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Form,
   FormControl,
@@ -22,12 +23,13 @@ import SuccessMessageBox from "@/src/components/share/MessageSuccessBox";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { useDebounce } from "@uidotdev/usehooks";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
-import { updateHoldedId } from "@/src/lib/server-actions/auth/user/settings/update-settings";
 import { z } from "zod";
+import { updateUserHoldedData } from "@/src/lib/server-actions/auth/user/settings/user-holded-update";
+import { Button } from "@/src/components/ui/buttons/chadcn-button";
 
 type Props = {
-  holdedId?: string | null | undefined;
-  insidersId?: string | null | undefined;
+  holdedId?: string | null;
+  insidersId?: string | null;
 };
 
 const HoldedSyncForm = ({
@@ -72,7 +74,7 @@ const HoldedSyncForm = ({
       return;
     }
 
-    startTransition(async () => {
+    try {
       const data = await getHoldedContactById(holdedId || "");
       if (data?.error) {
         setErrorMessage(data.error);
@@ -80,26 +82,53 @@ const HoldedSyncForm = ({
         setSuccessMessage("Holded ID encontrado con éxito");
         setHoldedContact(data);
         setHoldedId(holdedId);
-
-        // Update Holded ID in the server
-        const result = await updateHoldedId(holdedId ?? "", insidersId ?? ""); // Pass two arguments to updateHoldedId function
-        console.log("Update result:", result);
       }
+    } catch (error) {
+      setErrorMessage("Error al conectar con Holded.");
+    } finally {
       setLoading(false);
-    });
+    }
+  };
+
+  const onUpdateHoldedId = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    setLoading(true);
+
+    try {
+      const result = await updateUserHoldedData(
+        insidersId ?? "",
+        holdedId ?? ""
+      );
+      if (result.error) {
+        setErrorMessage(result.error);
+      } else {
+        setSuccessMessage("Holded ID actualizado exitosamente");
+      }
+    } catch (error) {
+      setErrorMessage("Error al actualizar el Holded ID.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const checkConnection = async (holdedId: string) => {
     setLoading(true);
-    const data = await getHoldedContactById(holdedId);
-    if (data && !data.error) {
-      setIsValidId(true);
-      setHoldedContact(data);
-    } else {
+    try {
+      const data = await getHoldedContactById(holdedId);
+      if (data && !data.error) {
+        setIsValidId(true);
+        setHoldedContact(data);
+      } else {
+        setIsValidId(false);
+        setHoldedContact({});
+      }
+    } catch (error) {
       setIsValidId(false);
       setHoldedContact({});
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const insidersIdValue = holdedContact.customFields?.find(
@@ -133,6 +162,7 @@ const HoldedSyncForm = ({
             insidersId={insidersId}
             insidersIdValue={insidersIdValue}
             isValidId={isValidId}
+            onUpdateHoldedId={onUpdateHoldedId}
           />
         )}
         {debouncedHoldedId?.length !== 24 && <NoContactFoundMessage />}
@@ -188,7 +218,7 @@ const InsidersIdField = ({
     name="insidersId"
     render={({ field }) => (
       <FormItem>
-        <FormLabel>insidersId</FormLabel>
+        <FormLabel>Insiders ID</FormLabel>
         <FormControl>
           <Input
             {...field}
@@ -210,17 +240,17 @@ const ContactInfo = ({
   insidersId,
   insidersIdValue,
   isValidId,
+  onUpdateHoldedId,
 }: {
   loading: boolean;
   holdedContact: any; // Replace 'any' with the appropriate type for holdedContact
   insidersId: any;
   insidersIdValue: any;
   isValidId: boolean;
+  onUpdateHoldedId: () => void;
 }) => (
   <div className="text-tiny">
-    <h3 className="font-bold text-center mb-2 font">
-      Información del contacto
-    </h3>
+    <h3 className="font-bold text-center mb-2">Información del contacto</h3>
     {loading ? (
       <LoadingIndicator />
     ) : (
@@ -253,7 +283,14 @@ const ContactInfo = ({
             </p>
             <div className="mt-4">
               {insidersIdValue === insidersId ? (
-                <SuccessMessageBox message={"ID correcto."} />
+                <>
+                  <SuccessMessageBox message={"ID correcto."} />
+                  <div className="flex">
+                    <Button onClick={onUpdateHoldedId} className="mt-4 mx-auto">
+                      Actualizar Holded ID en el servidor
+                    </Button>
+                  </div>
+                </>
               ) : (
                 <>
                   {insidersId === "" ? (

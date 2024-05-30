@@ -13,7 +13,8 @@ export type ExtendedUser = DefaultSession["user"] & {
   role: UserRole;
   isTwoFactorEnabled: boolean;
   holdedId: string | null;
-  lastHoldedSync: Date | null;
+  createdHoldedSyncAt: Date | null;
+  lastHoldedSyncAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
   lastLogin: Date | null;

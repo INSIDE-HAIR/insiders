@@ -5,7 +5,7 @@ import { auth, signOut } from "@/src/lib/server-actions/auth/config/auth";
 import { redirect } from "next/navigation";
 import { HoldedProvider } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
-import TabsUserSettings from "@/src/app/(protected)/insiders/admin/users/[userEmail]/_components/tabs-user-setttings";
+import TabsUserSettings from "@/src/app/(protected)/insiders/admin/users/[userEmail]/_components/tabs/tabs-user-setttings";
 
 export default async function Page({
   params,
@@ -40,7 +40,8 @@ export default async function Page({
     role: user?.role ?? "CLIENT",
     isTwoFactorEnabled: user?.isTwoFactorEnabled ?? false,
     holdedId: user?.holdedId ?? null,
-    lastHoldedSync: user?.lastHoldedSync ?? null,
+    createdHoldedSyncAt: user?.createdHoldedSyncAt ?? null,
+    lastHoldedSyncAt: user?.lastHoldedSyncAt ?? null,
     lastLogin: user?.lastLogin ?? null,
     createdAt: (user?.createdAt as Date) ?? null,
     updatedAt: (user?.updatedAt as Date) ?? null,

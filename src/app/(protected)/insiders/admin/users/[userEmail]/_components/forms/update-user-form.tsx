@@ -15,13 +15,13 @@ import { Input } from "@/src/components/ui/input";
 import FormError from "@/src/components/share/MessageErrorBox";
 import FormSuccess from "@/src/components/share/MessageSuccessBox";
 import { Switch } from "@/src/components/ui/switch";
-import { updateUser } from "@/src/lib/server-actions/auth/user/settings/update-settings";
-import LoadingButton from "../share/LoadingButton";
+import { updateUser } from "@/src/lib/server-actions/auth/user/settings/user-settings-update";
+import LoadingButton from "@/src/components/share/LoadingButton";
 import { UserSchema } from "@/src/lib/types/inside-schemas";
 import Image from "next/image";
 import { CheckCircleIcon, XCircleIcon } from "lucide-react";
-import ModalResetPassword from "../modals/modal-reset-password";
-import ModalHoldedSync from "../modals/holded-sync/modal-holded-sync";
+import ModalResetPassword from "@/src/components/modals/modal-reset-password";
+import ModalHoldedSync from "../holded-sync/modal-holded-sync";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
 
@@ -257,7 +257,7 @@ const DateSection = ({
               {user.emailVerified ? (
                 <CheckCircleIcon className="text-green-500 w-3 h-3" />
               ) : (
-                <XCircleIcon className="text-red-500" />
+                <XCircleIcon className="text-red-500 w-3 h-3" />
               )}
             </FormLabel>
             <FormControl>
@@ -423,7 +423,7 @@ const InsidersSection = ({
                 <Input
                   {...field}
                   value={field.value || ""}
-                  disabled={isPending}
+                  disabled
                   onChange={(e) => {
                     field.onChange(e);
                     setHoldedId(e.target.value);
@@ -435,6 +435,7 @@ const InsidersSection = ({
             </FormItem>
           )}
         />
+        {/* Actions */}
         <div className="flex flex-col gap-x-2 gap-y-2">
           <FormLabel className="flex items-center gap-x-1 text-tiny">
             Acciones:

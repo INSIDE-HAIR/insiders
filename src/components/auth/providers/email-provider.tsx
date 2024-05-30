@@ -5,7 +5,7 @@ import { LoginButton } from "../login-button";
 import { Input } from "../../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, RegisterSchema } from "@/src/lib/schemas/index";
+import { LoginSchema, RegisterSchema } from "@/src/lib/types/general-schemas";
 import {
   Form,
   FormControl,

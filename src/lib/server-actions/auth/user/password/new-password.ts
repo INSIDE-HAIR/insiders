@@ -11,6 +11,8 @@ export const newPassword = async (
   if (!token) {
     return { error: "Token perdido." };
   }
+
+  // Validamos los campos utilizando el esquema de Zod
   const validatedFields = NewPasswordSchema.safeParse(values);
 
   if (!validatedFields.success) {
@@ -19,41 +21,61 @@ export const newPassword = async (
 
   const { password } = validatedFields.data;
 
-  const existingToken = await prisma.passwordResetToken.findUnique({
-    where: { token },
-  });
-  if (!existingToken) {
-    return { error: "Token invalido." };
-  }
+  try {
+    // Buscamos el token en la base de datos
+    const existingToken = await prisma.passwordResetToken.findUnique({
+      where: { token },
+    });
 
-  const hasExpired = new Date(existingToken.expires) < new Date();
-  if (hasExpired) {
-    // remove expired token
+    // Si el token no existe, devolvemos un error
+    if (!existingToken) {
+      return { error: "Token invalido." };
+    }
+
+    // Verificamos si el token ha expirado
+    const hasExpired = new Date(existingToken.expires) < new Date();
+    if (hasExpired) {
+      // Eliminamos el token expirado de la base de datos
+      await prisma.passwordResetToken.delete({
+        where: { id: existingToken.id },
+      });
+
+      return { error: "Token expirado." };
+    }
+
+    // Buscamos el usuario correspondiente al email del token
+    const existingUser = await prisma.user.findUnique({
+      where: { email: existingToken.email },
+    });
+
+    // Si el usuario no existe, devolvemos un error
+    if (!existingUser) {
+      return { error: "El email no existe." };
+    }
+
+    // Hashamos la nueva contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Actualizamos la contraseña del usuario en la base de datos
+    await prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    // Eliminamos el token de restablecimiento de contraseña de la base de datos
     await prisma.passwordResetToken.delete({
       where: { id: existingToken.id },
     });
 
-    return { error: "Token expirado." };
+    return { success: "Contraseña actualizada!" };
+  } catch (error) {
+    // Registramos cualquier error inesperado
+    console.error("Error al actualizar la contraseña:", error);
+    return {
+      error:
+        "Hubo un problema al actualizar la contraseña. Por favor, inténtalo de nuevo más tarde.",
+    };
   }
-
-  const existingUser = await prisma.user.findUnique({
-    where: { email: existingToken.email },
-  });
-  if (!existingUser) {
-    return { error: "El email no existe." };
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  await prisma.user.update({
-    where: { id: existingUser.id },
-    data: {
-      password: hashedPassword,
-    },
-  });
-
-  await prisma.passwordResetToken.delete({
-    where: { id: existingToken.id },
-  });
-
-  return { success: "Contraseña actualizada!" };
 };

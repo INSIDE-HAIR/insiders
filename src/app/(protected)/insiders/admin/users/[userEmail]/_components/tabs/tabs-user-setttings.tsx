@@ -13,7 +13,7 @@ import {
   CardContent,
 } from "@/src/components/ui/cards/card";
 import { User } from "@prisma/client";
-import UpdateUserForm from "@/src/components/protected/update-user-form";
+import UpdateUserForm from "../forms/update-user-form";
 
 type Props = {
   user: User;

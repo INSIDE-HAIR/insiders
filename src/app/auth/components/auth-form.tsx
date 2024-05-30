@@ -65,6 +65,14 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
           Google
         </Button>{" "}
       </div>
+      <div className="text-center mt-2">
+        <a
+          href="http://localhost:3000/auth/reset"
+          className="text-tiny text-primary hover:underline"
+        >
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
     </div>
   );
 }
