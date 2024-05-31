@@ -62,12 +62,12 @@ const CredentialsLoginForm = (props: Props) => {
             }
             setErrorMessage(data.error);
           }
-          if (data?.success) {
+          if ("success" in data && data.success) {
             form.reset();
             setSuccessMessage(data.success);
           }
 
-          if (data?.twoFactor) {
+          if ("twoFactor" in data && data.twoFactor) {
             setShowTwoFactor(true);
             setSuccessMessage("Please check your email for Two Factor Code.");
           }
