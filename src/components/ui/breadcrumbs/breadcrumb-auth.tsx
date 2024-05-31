@@ -38,7 +38,7 @@ export default function BreadcrumbAuth() {
 
   // Prepara los segmentos para el menú desplegable
   const dropdownItems = pathSegments.slice(1, -2).map((segment, index) => (
-    <DropdownMenuItem key={index} className="capitalize">
+    <DropdownMenuItem key={index} className="capitalize text-tiny">
       <Link href={`/${pathSegments.slice(0, index + 2).join("/")}`}>
         {getTranslation(segment, "es")}
       </Link>
@@ -60,7 +60,7 @@ export default function BreadcrumbAuth() {
     <>
       <GoBackButton href={goBackHref} label={goBackLabel} />
 
-      <Breadcrumb className="[&>*]:text-zinc-800  [&>*]:font-medium  ">
+      <Breadcrumb className="[&>*]:text-zinc-800  [&>*]:text-tiny  ">
         <BreadcrumbList>
           <BreadcrumbItem className="capitalize underline [&>*]:hover:text-zinc-400">
             <BreadcrumbLink href="/auth/login">Autenticación</BreadcrumbLink>
@@ -95,7 +95,7 @@ export default function BreadcrumbAuth() {
               <BreadcrumbSeparator />
             </>
           )}
-          <BreadcrumbItem className="capitalize hover:underline [&>*]:hover:text-zinc-400 pointer-events-none [&>*]:font-medium">
+          <BreadcrumbItem className="capitalize hover:underline [&>*]:hover:text-zinc-400 pointer-events-none [&>*]:text-tiny">
             <BreadcrumbPage>
               {getTranslation(pathSegments[pathSegments.length - 1], "es")}
             </BreadcrumbPage>

@@ -1,16 +1,21 @@
 "use client";
-
 import React from "react";
 import { Button } from "../ui/buttons/chadcn-button";
 import { logout } from "@/src/lib/server-actions/auth/user/login/logout";
 import { LogOutIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-type Props = {};
+const LogoutButton = () => {
+  const router = useRouter();
 
-const LogoutButton = (props: Props) => {
   return (
     <div>
-      <Button onClick={async () => await logout()}>
+      <Button
+        onClick={async () => {
+          await logout();
+          await router.push("/auth/login");
+        }}
+      >
         <LogOutIcon className="h-4 w-4 mr-2 max-w-full" />
         Cerrar sesión
       </Button>

@@ -24,6 +24,8 @@ import ModalResetPassword from "@/src/components/modals/modal-reset-password";
 import ModalHoldedSync from "../holded-sync/modal-holded-sync";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
+import ModalDeleteUser from "../delete-user/modal-delete-user";
+import ModalDeleteUserHoldedData from "../delete-user-holded-data/modal-delete-user-holded-data";
 
 type Props = {
   user: User;
@@ -443,6 +445,11 @@ const InsidersSection = ({
           <div className="flex flex-wrap gap-x-2 gap-y-4">
             <ModalHoldedSync holdedId={user?.holdedId} insidersId={user?.id} />
             <ModalResetPassword email={user?.email} />
+            <ModalDeleteUser holdedId={user?.holdedId} insidersId={user?.id} />
+            <ModalDeleteUserHoldedData
+              holdedId={user?.holdedId}
+              insidersId={user?.id}
+            />
           </div>
         </div>
       </div>

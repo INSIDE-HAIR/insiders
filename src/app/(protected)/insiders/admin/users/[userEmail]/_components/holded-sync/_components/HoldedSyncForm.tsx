@@ -24,7 +24,7 @@ import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { useDebounce } from "@uidotdev/usehooks";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { z } from "zod";
-import { updateUserHoldedData } from "@/src/lib/server-actions/auth/user/settings/user-holded-update";
+import { updateUserHoldedData } from "@/src/lib/server-actions/auth/user/settings/user-holded-data-update";
 import { Button } from "@/src/components/ui/buttons/chadcn-button";
 
 type Props = {

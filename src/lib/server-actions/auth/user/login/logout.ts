@@ -1,5 +1,6 @@
 "use server";
 import { signOut } from "@/src/lib/server-actions/auth/config/auth";
+import { useRouter } from "next/navigation";
 
 export const logout = async () => {
   try {

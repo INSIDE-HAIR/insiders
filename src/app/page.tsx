@@ -1,7 +1,5 @@
 import LogoutButton from "@/src/components/share/LogoutButton";
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
-import { auth, signOut } from "@/src/lib/server-actions/auth/config/auth";
-import Image from "next/image";
+import { auth } from "@/src/lib/server-actions/auth/config/auth";
 
 export default async function Home() {
   const session = await auth();

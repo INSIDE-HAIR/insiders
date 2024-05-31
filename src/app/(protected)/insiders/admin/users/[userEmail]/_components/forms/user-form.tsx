@@ -9,7 +9,7 @@ export default function UserForm({ user }: { user: any }) {
 
   return (
     <>
-      <header className="max-w-full col-start-1 col-end-full md:col-end-6 lg:col-start-3 lg:col-end-13 flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 col-span-full">
+      <header className="max-w-full col-start-1 col-end-full  lg:col-start-3 lg:col-end-13 flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 col-span-full">
         <Link className="lg:hidden" href="#">
           <Package2Icon className="h-6 w-6" />
           <span className="sr-only">Home</span>
@@ -33,7 +33,7 @@ export default function UserForm({ user }: { user: any }) {
           )}
         </div>
       </header>
-      <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1 md:col-end-6 lg:col-start-3 lg:col-end-13 order-2 md:order-1 z-30 col-span-full">
+      <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-3 lg:col-end-13 order-2 md:order-1 z-30 col-span-full">
         <div className="p-4">
           <h2 className="text-2xl font-semibold mb-4">
             Información del Usuario

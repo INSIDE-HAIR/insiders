@@ -92,7 +92,10 @@ export const {
     }),
   ],
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60, // Expiration Session date 24 hours in seconds
+  },
   events: {
     async linkAccount({ user }) {
       console.log("linkAccount event called");
@@ -255,6 +258,16 @@ export const {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.isOAuth = token.isOAuth;
+      }
+
+      // Check if the user still exists in the database
+      const userExists = await prisma.user.findUnique({
+        where: { id: token.sub },
+      });
+
+      if (!userExists) {
+        // Invalidate session if user no longer exists
+        return null;
       }
 
       return session;

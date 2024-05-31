@@ -63,3 +63,7 @@ export const HoldedSyncSchema = z.object({
   holdedSyncDate: z.date().nullable(),
   insidersId: z.string().nullable(),
 });
+
+export const HoldedDataDeleteSchema = z.object({
+  confirmation: z.string().min(1, "La confirmación es requerida"),
+});

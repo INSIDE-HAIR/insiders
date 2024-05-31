@@ -21,8 +21,7 @@ const GoBackButton = ({ label, href, className }: Props) => {
       href={href}
     >
       <ArrowLeftCircle className="w-4 h-4 mr-2" />
-
-      {label}
+      <p className="text-tiny md:block hidden">{label}</p>
     </Link>
   );
 };
