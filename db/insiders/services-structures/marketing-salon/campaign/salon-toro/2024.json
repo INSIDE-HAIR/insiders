@@ -3135,7 +3135,7 @@
                   "type": "video",
                   "id": "Contexto1",
                   "title": "Contexto",
-                  "url": "https://vimeo.com/manage/videos/951821785/e66e2b749e",
+                  "url": "https://player.vimeo.com/video/951821785?h=e66e2b749e&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -3163,7 +3163,7 @@
                   "type": "video",
                   "id": "accionPrincipal1",
                   "title": "Acción principal",
-                  "url": "https://vimeo.com/manage/videos/951821892/05c0faec93",
+                  "url": "https://player.vimeo.com/video/951821892?h=05c0faec93&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -3191,7 +3191,7 @@
                   "type": "video",
                   "id": "accionesComplementarias1",
                   "title": "Acción secundaria y Cartelería",
-                  "url": "https://vimeo.com/manage/videos/951822826/1f4735fad7",
+                  "url": "https://player.vimeo.com/video/951822826?h=1f4735fad7&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
