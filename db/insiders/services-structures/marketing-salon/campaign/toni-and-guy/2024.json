@@ -1631,7 +1631,146 @@
       "auth": []
     }
   ],
-  "july": [],
+  "july": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": "",
+            "endDateTime": ""
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "https://vimeo.com/manage/videos/951821785/e66e2b749e",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "accionPrincipal1",
+                  "title": "Acción principal",
+                  "url": "https://vimeo.com/manage/videos/951821892/05c0faec93",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Acción secundaria y Cartelería",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "accionesComplementarias1",
+                  "title": "Acción secundaria y Cartelería",
+                  "url": "https://vimeo.com/manage/videos/951822826/1f4735fad7",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vRpr701rCbMfcMm4uGfUWNO20vo8Ekelu4-YHAlM9-8H871vZqWoLZTFeuCkXaTSSolst9IKZ2LDSbk/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
   "august": [],
   "september": [],
   "october": [],
