@@ -3316,8 +3316,8 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "https://drive.google.com/drive/u/0/folders/1CkGoiFJRgzqdn8SrOSVCwKxJhCtjS8TS",
-          "active": true,
+          "url": "",
+          "active": false,
           "available": {
             "startDateTime": "",
             "endDateTime": ""
@@ -3643,7 +3643,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
