@@ -150,6 +150,7 @@ export const dataBaseTranslation = {
     CLIENTESFechaDeAlta: "Fecha de Alta",
     CLIENTESFechaDeBaja: "Fecha de Baja",
     CLIENTESInsidersID: "Insiders ID",
+    {}
     MARKETINGSALONFechaDeInicio: "MARKETING SALON - Fecha de Inicio",
     MARKETINGSALONFechaDeFin: "MARKETING SALON - Fecha de Fin",
     MARKETINGSALONNivel: "MARKETING SALON -Nivel",

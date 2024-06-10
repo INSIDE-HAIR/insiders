@@ -68,9 +68,9 @@ export default function ComponentsSelector({
           dataMarketingCards={dataMarketingCards}
         />
       )}
-      {item.type === "modal" && available && (
+      {/* {item.type === "modal" && available && (
         <CustomModal item={{ ...item }} index={index} />
-      )}
+      )} */}
 
       {item.type === "tabsCardsList" && available && dataMarketingCards && (
         <MarketingTabCardsList
