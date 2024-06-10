@@ -9,12 +9,13 @@ import {
 } from "@nextui-org/react";
 import DeleteHoldedDataUserForm from "./_components/DeleteHoldedDataUserForm";
 
-export default function ModalDeleteUser({
+export default function ModalDeleteUserHoldedData({
   holdedId,
   insidersId,
 }: {
   holdedId: string | null | undefined;
   insidersId: string | null | undefined;
+
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

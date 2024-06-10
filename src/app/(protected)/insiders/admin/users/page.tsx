@@ -45,6 +45,7 @@ import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { getListHoldedContacts } from "@/src/lib/server-actions/vendors/holded/contacts";
 import { getUsers } from "@/prisma/query/user";
 import { User } from "@prisma/client";
+import ModalDeleteUser from "./[userEmail]/_components/delete-user/modal-delete-user";
 
 const columns: ColumnDef<User>[] = [
   {
@@ -375,16 +376,11 @@ const columns: ColumnDef<User>[] = [
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
-            <Link href={`/insiders/admin/users/${client.email}/sync-holded`}>
-              <DropdownMenuItem>Sincronizar con Holded</DropdownMenuItem>
-            </Link>
-            <DropdownMenuSeparator />
             <Link href={`/insiders/admin/users/${client.email}`}>
-              <DropdownMenuItem>Ver o Editar</DropdownMenuItem>
+              <DropdownMenuItem className="text-blue-500">
+                Ver o Editar
+              </DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="text-danger-500">
-              Eliminar
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

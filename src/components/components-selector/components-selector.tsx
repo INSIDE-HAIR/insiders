@@ -4,6 +4,7 @@ import TabsAnimated from "../ui/tabs/tabs-animated";
 import Button from "@/src/components/ui/buttons/button";
 import MarketingTabCardsList from "../marketing-salon/marketing-tab-cards-list";
 import useIsAvailable from "@/src/hooks/useIsAvailable";
+import CustomModal from "../customizable/modal/custom-modal";
 
 type ComponentsProps = {
   index: number;
@@ -19,6 +20,7 @@ type ComponentsProps = {
       | "tabs"
       | "tab"
       | "tabsCardsList"
+      | "modal"
       | string;
     title?: string;
     name?: string;
@@ -65,6 +67,9 @@ export default function ComponentsSelector({
           index={index}
           dataMarketingCards={dataMarketingCards}
         />
+      )}
+      {item.type === "modal" && available && (
+        <CustomModal item={{ ...item }} index={index} />
       )}
 
       {item.type === "tabsCardsList" && available && dataMarketingCards && (
