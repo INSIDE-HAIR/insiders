@@ -6,37 +6,7 @@ import {
 } from "@/src/components/ui/tabs/tabs";
 import ComponentSelector from "../../components-selector/components-selector";
 import { useEffect, useState } from "react";
-
-type ComponentsProps = {
-  index: number;
-  dataMarketingCards: any;
-  item: {
-    childrensCode?: Array<any> | [];
-    id?: string;
-    order?: number;
-    type:
-      | "slider"
-      | "video"
-      | "button"
-      | "tabs"
-      | "tab"
-      | "tabsCardsList"
-      | string;
-    title?: string;
-    name?: string;
-    classType?: string | "default";
-    url: string;
-    active: boolean | true;
-    content?: Array<any>;
-    available?: { startDateTime?: string; endDateTime?: string };
-    childrensType?:
-      | "downloadCarouselCards"
-      | "copyTextCards"
-      | "downloadImageAndCopyTextCards"
-      | "downloadImageCards"
-      | string;
-  };
-};
+import { ComponentsProps } from "@/src/lib/types/components-schemas";
 
 export default function TabsAnimatedChadCN({
   item,

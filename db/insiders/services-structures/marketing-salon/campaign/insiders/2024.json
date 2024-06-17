@@ -3330,6 +3330,20 @@
           "type": "tabs",
           "content": [
             {
+              "id": "image1",
+              "order": 1,
+              "type": "image",
+              "title": "Ubicación Cartelería",
+              "url": "https://lh3.googleusercontent.com/d/1VQYBa57lpPnWU7m5q8evVELUq1pLhH6p",
+              "darkModeUrl": "https://lh3.googleusercontent.com/d/1hgb-dTSZxzXTxbqMdmvYsdXF8yg2xM0N",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
               "id": "tab1",
               "order": 1,
               "type": "tab",
@@ -3959,7 +3973,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -4102,7 +4116,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -4217,7 +4231,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null

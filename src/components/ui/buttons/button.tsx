@@ -1,6 +1,7 @@
 import { Button } from "@nextui-org/react";
+import { ComponentsProps } from "@/src/lib/types/components-schemas";
 
-function button({ item, index }: { item: any, index: any }) {
+function button({ index, item }: ComponentsProps) {
   return (
     <Button
       variant="faded"

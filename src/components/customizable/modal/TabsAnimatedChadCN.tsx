@@ -38,7 +38,7 @@ export default function TabsAnimatedChadCN({
               <ModalHeader className="flex flex-col gap-1">
                 {item && item.title}
               </ModalHeader>
-              <ModalBody className="relative w-full max-w-screen-md">
+              <ModalBody className="relative w-full">
                 {item.content &&
                   item.content.map(
                     (
