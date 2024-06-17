@@ -3588,7 +3588,7 @@
           "auth": []
         }
       ],
-      "active": false,
+      "active": true,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -3683,6 +3683,20 @@
               "classType": "default",
               "content": [
                 {
+                  "id": "image1",
+                  "order": 1,
+                  "type": "image",
+                  "title": "Ubicación Cartelería",
+                  "url": "https://lh3.googleusercontent.com/d/1mdYNDirpky3GmDAfuKPuWd8w9K_sh3pH",
+                  "darkModeUrl": "https://lh3.googleusercontent.com/d/19Gz63YMS9Qd4xzU8HwQvK7khd-BaGZkH",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
@@ -3724,6 +3738,20 @@
                       "classType": "default",
                       "content": [
                         {
+                          "id": "image1",
+                          "order": 1,
+                          "type": "image",
+                          "title": "Ubicación Cartelería",
+                          "url": "https://lh3.googleusercontent.com/d/1Exp-lEX-_ve77bl-1hJfV2D9HNszFj6P",
+                          "darkModeUrl": "https://lh3.googleusercontent.com/d/1_VWSgiIRDk2iz3qr4UbryjgLXKH2q804",
+                          "active": true,
+                          "available": {
+                            "startDateTime": null,
+                            "endDateTime": null
+                          },
+                          "auth": []
+                        },
+                        {
                           "id": "cardList1",
                           "order": 1,
                           "type": "tabsCardsList",
@@ -3752,6 +3780,20 @@
                       "title": "Acción secundaria",
                       "classType": "default",
                       "content": [
+                        {
+                          "id": "image1",
+                          "order": 1,
+                          "type": "image",
+                          "title": "Ubicación Cartelería",
+                          "url": "https://lh3.googleusercontent.com/d/1CQmXf1iBwJk88XqiBKfF8MIeTJFz6jCw",
+                          "darkModeUrl": "https://lh3.googleusercontent.com/d/1yZd_FeIdw7RdeLVfndhhuq1aMzMSdHNA",
+                          "active": true,
+                          "available": {
+                            "startDateTime": null,
+                            "endDateTime": null
+                          },
+                          "auth": []
+                        },
                         {
                           "id": "cardList1",
                           "order": 1,
@@ -3798,6 +3840,20 @@
               "classType": "default",
               "content": [
                 {
+                  "id": "image1",
+                  "order": 1,
+                  "type": "image",
+                  "title": "Ubicación Cartelería",
+                  "url": "https://lh3.googleusercontent.com/d/1OYkdHCrLg9iy4aDykx2LagHfSZCoDDmT",
+                  "darkModeUrl": "https://lh3.googleusercontent.com/d/1YLb8K_sc9z0ZuUZSkVNU84talwFC8vyP",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
@@ -3826,6 +3882,20 @@
               "title": "Dipticos & Trípticos",
               "classType": "default",
               "content": [
+                {
+                  "id": "image1",
+                  "order": 1,
+                  "type": "image",
+                  "title": "Ubicación Cartelería",
+                  "url": "https://lh3.googleusercontent.com/d/1fwiJqQS8wMhti7YSjvLaptJ0nTVeXU4o",
+                  "darkModeUrl": "https://lh3.googleusercontent.com/d/14JUTK2KyY7lhsNUdy-J4QLv0eG0RApAa",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
                 {
                   "id": "cardList1",
                   "order": 1,
