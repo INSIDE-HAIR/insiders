@@ -3010,7 +3010,14 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
+                  "childrensCode": [
+                    "0330",
+                    "0360",
+                    "0100",
+                    "0300",
+                    "0249",
+                    "0085"
+                  ],
                   "title": "Extras",
                   "content": [],
                   "active": true,
@@ -3960,7 +3967,14 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
+                  "childrensCode": [
+                    "0330",
+                    "0360",
+                    "0100",
+                    "0300",
+                    "0249",
+                    "0085"
+                  ],
                   "title": "Extras",
                   "content": [],
                   "active": true,
