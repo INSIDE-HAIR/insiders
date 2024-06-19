@@ -18,7 +18,7 @@ export default function CustomImageModal({ item }: ComponentsProps) {
     <>
       <Button
         variant="ghost"
-        className="hover:opacity-100 rounded-full my-2"
+        className="hover:opacity-100 rounded-full mb-3"
         onPress={onOpen}
       >
         Donde ponerlo
