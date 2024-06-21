@@ -1,0 +1,362 @@
+{
+  "clients": {
+    "jesus": {
+      "languages": ["es"],
+      "images": {
+        "odd": {
+          "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
+        },
+        "even": {
+          "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
+        }
+      }
+    },
+    "josep-pons": {
+      "languages": ["es"],
+      "images": {
+        "odd": {
+          "vertical": "https://drive.google.com/uc?id=1G4GpHYWqEEK0Lw0AdIcZgd0xMef_iDYE&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1DaI_IiQ2cv0S9RHekV4R3mNtgBi1uxlO&export=download"
+        },
+        "even": {
+          "vertical": "https://drive.google.com/uc?id=1cyIuvdg5RzXsesX1ffe1x7TZiCDKH6wN&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1vPgmKDyAhB2RPbgHpMhhktUxfA3kyNih&export=download"
+        }
+      }
+    },
+    "insiders": {
+      "languages": ["es", "ca"],
+      "images": {
+        "odd": {
+          "vertical": "https://drive.google.com/uc?id=1xawUC-QYDkoiSShbjenv9wvn9UnZYByt&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1MGO0K5s0Z210d1DfWQNVSFZmg-H_HbNY&export=download"
+        },
+        "even": {
+          "vertical": "https://drive.google.com/uc?id=1FkzcJhqtR1ukM_1gTzmBoToOLc-a8xq3&export=download",
+          "horizontal": "https://drive.google.com/uc?id=1Kn77YifN1igj14T0MBtYlKqxlRa12Wjv&export=download"
+        }
+      }
+    }
+  },
+  "content": {
+    "July": {
+      "es": {
+        "1": {
+          "header": "Comienza tus vacaciones con un cabello brillante",
+          "desciption": "Hidrátalo con una mascarilla capilar, al menos una vez a la semana desde hoy, para mantenerlo suave y brillante.",
+          "footer": ""
+        },
+        "2": {
+          "header": "¿Hoy toca disfrutar del día al aire libre?",
+          "desciption": "Usa un sombrero o pañuelo SUMMERSTYLE para proteger tu melena del sol directo y evitar daños.",
+          "footer": ""
+        },
+        "3": {
+          "header": "Si planeas nadar en la piscina o el mar",
+          "desciption": "Aplica aceite de coco en las puntas antes de nadar para protegerlas del cloro y la sal.",
+          "footer": ""
+        },
+        "4": {
+          "header": "Hoy toca un look con peinado práctico",
+          "desciption": "Opta por un recogido suelto para reducir el daño causado por el sol y el agua ¡Y además estar a la moda!",
+          "footer": ""
+        },
+        "5": {
+          "header": "¡Acuérdate después de nadar en el mar!",
+          "desciption": "Aclara tu cabello con agua dulce para eliminar restos de sal y evitar la sequedad.",
+          "footer": ""
+        },
+        "6": {
+          "header": "No te olvides de desenredar tu melena",
+          "desciption": "Utiliza un peine de dientes anchos para desenredar tu cabello mojado y evitar roturas.",
+          "footer": ""
+        },
+        "7": {
+          "header": "Notas el cabello algo seco ¿Verdad?",
+          "desciption": "Incorpora un acondicionador sin aclarado a tu bolso para mantener tu cabello hidratado todo el día.",
+          "footer": ""
+        },
+        "8": {
+          "header": "¡Cuidado con tu secador y plancha!",
+          "desciption": "Evita el uso excesivo para no dañar tu cabello durante las próximas semanas.",
+          "footer": ""
+        },
+        "9": {
+          "header": "Hoy puedes darle a la plancha",
+          "desciption": "¡Eso sí! Usa un spray con protección térmica antes para proteger tu cabello del calor.",
+          "footer": ""
+        },
+        "10": {
+          "header": "No te olvides de hidratarte",
+          "desciption": "Bebe mucha agua para mantener tu cabello hidratado desde el interior.",
+          "footer": ""
+        },
+        "11": {
+          "header": "Al encrespamiento, ni un día de descanso",
+          "desciption": "Aplica un serum anti-frizz para controlar el encrespamiento causado por la humedad.",
+          "footer": ""
+        },
+        "12": {
+          "header": "No te olvides estimular el crecimiento del cabello",
+          "desciption": "Realiza masajes capilares con aceites esenciales para mantener el cuero cabelludo saludable.",
+          "footer": ""
+        },
+        "13": {
+          "header": "Dale un descanso a tu melena",
+          "desciption": "Evita lavar tu cabello a diario (aunque tengas que prescindir de nadar en la piscina) para no eliminar los aceites naturales esenciales para su salud.",
+          "footer": ""
+        },
+        "14": {
+          "header": "Si tienes el cabello teñido",
+          "desciption": "Usa champús y acondicionadores específicos para mantener el color vibrante.",
+          "footer": ""
+        },
+        "15": {
+          "header": "Si quieres fortalecer tu cabello",
+          "desciption": "Incluye el aguacate en alguno de tus platos para conseguir nutrientes esenciales como las vitaminas B y E.",
+          "footer": ""
+        },
+        "16": {
+          "header": "¿Hoy tienes planeada una buena sesión de sol?",
+          "desciption": "Aplica después una mascarilla para calmar y nutrir el cuero cabelludo.",
+          "footer": ""
+        },
+        "17": {
+          "header": "Otro tip para combatir el frizz",
+          "desciption": "Utiliza un peine de madera para reducir la electricidad estática en el cabello.",
+          "footer": ""
+        },
+        "18": {
+          "header": "Si te preocupa la rotura",
+          "desciption": "Aplica unas gotas de aceite capilar en las puntas antes de dormir para mantener tu cabello suave y manejable.",
+          "footer": ""
+        },
+        "19": {
+          "header": "Si vas a la piscina",
+          "desciption": "Moja tu cabello con agua dulce (con la de las duchas es suficiente) antes de entrar para que no absorba tanto cloro.",
+          "footer": ""
+        },
+        "20": {
+          "header": "Si quieres disfrutar de un peinado muy trendy",
+          "desciption": "Realiza trenzas antes de dormir para mantener tu cabello desenredado y con ondas naturales al despertar.",
+          "footer": ""
+        },
+        "21": {
+          "header": "Hoy dale un cuidado natural a tu cabello",
+          "desciption": "Usa productos con ingredientes naturales como el argán o la jojoba para nutrir tu cabello.",
+          "footer": ""
+        },
+        "22": {
+          "header": "Si quieres un look fresco para hoy",
+          "desciption": "Prueba hacerte ondas suaves con una trenza suelta, ¡lucirás un estilo playero natural al soltarlas!",
+          "footer": ""
+        },
+        "23": {
+          "header": "Si notas tu cabello muy dañado",
+          "desciption": "Aplica un tratamiento intensivo de hidratación cada 15 días para combatir el daño del sol.",
+          "footer": ""
+        },
+        "24": {
+          "header": "Hoy darte un capricho y pide salmón",
+          "desciption": "Este súper alimento incorpora vitaminas para el cabello, como biotina y vitamina E.",
+          "footer": ""
+        },
+        "25": {
+          "header": "Vamos a eliminar la suciedad de las vacaciones",
+          "desciption": "Realiza hoy un tratamiento exfoliante capilar para eliminar impurezas.",
+          "footer": ""
+        },
+        "26": {
+          "header": "Si quieres evitar que tu cuero cabelludo se engrase",
+          "desciption": "Usa acondicionador solo en las puntas.",
+          "footer": ""
+        },
+        "27": {
+          "header": "Un truco espectacular para cuando salgas de la piscina o la playa",
+          "desciption": "Desenreda tu cabello de abajo hacia arriba para evitar tirones y roturas.",
+          "footer": ""
+        },
+        "28": {
+          "header": "¡No te olvides de que el sol va a continuar hasta el otoño!",
+          "desciption": "Usa un protector solar específico para el cabello.",
+          "footer": ""
+        },
+        "29": {
+          "header": "Si buscas darle más brillo a tu cabello",
+          "desciption": "Enjuaga tu cabello con agua fría al final de la ducha para cerrar las cutículas.",
+          "footer": ""
+        },
+        "30": {
+          "header": "Si quieres empezar la vuelta a la rutina con buen pie",
+          "desciption": "Hazte un corte de puntas antes para mantener tu cabello saludable.",
+          "footer": ""
+        },
+        "31": {
+          "header": "",
+          "desciption": "",
+          "footer": ""
+        }
+      },
+      "ca": {
+        "1": {
+          "header": "Comença les teves vacances amb un cabell brillant",
+          "desciption": "Hidrata'l amb una màscara capil·lar, almenys una vegada a la setmana des d'avui, per mantenir-lo suau i brillant.",
+          "footer": ""
+        },
+        "2": {
+          "header": "Avui toca gaudir del dia a l'aire lliure?",
+          "desciption": "Usa un barret o mocador SUMMERSTYLE per protegir la teva cabellera del sol directe i evitar danys.",
+          "footer": ""
+        },
+        "3": {
+          "header": "Si planeges nedar a la piscina o al mar",
+          "desciption": "Aplica oli de coco a les puntes abans de nedar per protegir-les del clor i la sal.",
+          "footer": ""
+        },
+        "4": {
+          "header": "Avui toca un look amb pentinat pràctic",
+          "desciption": "Opta per un recollit solt per reduir el dany causat pel sol i l'aigua. A més, estaràs a la moda!",
+          "footer": ""
+        },
+        "5": {
+          "header": "Recorda després de nedar al mar!",
+          "desciption": "Aclareix el teu cabell amb aigua dolça per eliminar restes de sal i evitar la sequedat.",
+          "footer": ""
+        },
+        "6": {
+          "header": "No oblidis desenredar la teva cabellera",
+          "desciption": "Utilitza un pinta de dents amples per desenredar el teu cabell mullat i evitar trencaments.",
+          "footer": ""
+        },
+        "7": {
+          "header": "Notes el cabell una mica sec, oi?",
+          "desciption": "Incorpora un condicionador sense aclarit a la teva bossa per mantenir el teu cabell hidratat tot el dia.",
+          "footer": ""
+        },
+        "8": {
+          "header": "Compte amb el teu assecador i planxa!",
+          "desciption": "Evita l'ús excessiu per no danyar el teu cabell durant les pròximes setmanes.",
+          "footer": ""
+        },
+        "9": {
+          "header": "Avui pots fer servir la planxa",
+          "desciption": "Això sí! Usa un esprai amb protecció tèrmica abans per protegir el teu cabell de la calor.",
+          "footer": ""
+        },
+        "10": {
+          "header": "No oblidis hidratar-te",
+          "desciption": "Beu molta aigua per mantenir el teu cabell hidratat des de l'interior.",
+          "footer": ""
+        },
+        "11": {
+          "header": "A l'encrespament, ni un dia de descans",
+          "desciption": "Aplica un sèrum anti-frizz per controlar l'encrespament causat per la humitat.",
+          "footer": ""
+        },
+        "12": {
+          "header": "No oblidis estimular el creixement del cabell",
+          "desciption": "Realitza massatges capil·lars amb olis essencials per mantenir el cuir cabellut saludable.",
+          "footer": ""
+        },
+        "13": {
+          "header": "Dóna un descans a la teva cabellera",
+          "desciption": "Evita rentar el teu cabell diàriament (encara que hagis de prescindir de nedar a la piscina) per no eliminar els olis naturals essencials per a la seva salut.",
+          "footer": ""
+        },
+        "14": {
+          "header": "Si tens el cabell tenyit",
+          "desciption": "Usa xampús i condicionadors específics per mantenir el color vibrant.",
+          "footer": ""
+        },
+        "15": {
+          "header": "Si vols enfortir el teu cabell",
+          "desciption": "Inclou l'alvocat en algun dels teus plats per obtenir nutrients essencials com les vitamines B i E.",
+          "footer": ""
+        },
+        "16": {
+          "header": "Avui tens planejada una bona sessió de sol?",
+          "desciption": "Aplica després una màscara per calmar i nodrir el cuir cabellut.",
+          "footer": ""
+        },
+        "17": {
+          "header": "Un altre consell per combatre l'encrespament",
+          "desciption": "Utilitza una pinta de fusta per reduir l'electricitat estàtica al cabell.",
+          "footer": ""
+        },
+        "18": {
+          "header": "Si et preocupa la trencadissa",
+          "desciption": "Aplica unes gotes d'oli capil·lar a les puntes abans de dormir per mantenir el teu cabell suau i manejable.",
+          "footer": ""
+        },
+        "19": {
+          "header": "Si vas a la piscina",
+          "desciption": "Mulla el teu cabell amb aigua dolça (amb la de les dutxes és suficient) abans d'entrar perquè no absorbeixi tant de clor.",
+          "footer": ""
+        },
+        "20": {
+          "header": "Si vols gaudir d'un pentinat molt trendy",
+          "desciption": "Fes trenes abans de dormir per mantenir el teu cabell desenredat i amb ones naturals en despertar.",
+          "footer": ""
+        },
+        "21": {
+          "header": "Avui dona un cuidat natural al teu cabell",
+          "desciption": "Usa productes amb ingredients naturals com l'argània o la jojoba per nodrir el teu cabell.",
+          "footer": ""
+        },
+        "22": {
+          "header": "Si vols un look fresc per avui",
+          "desciption": "Prova a fer-te ones suaus amb una trena solta, lluiràs un estil de platja natural en desfer-les!",
+          "footer": ""
+        },
+        "23": {
+          "header": "Si notes el teu cabell molt danyat",
+          "desciption": "Aplica un tractament intensiu d'hidratació cada 15 dies per combatre el dany del sol.",
+          "footer": ""
+        },
+        "24": {
+          "header": "Avui dona't un caprici i demana salmó",
+          "desciption": "Aquest súper aliment incorpora vitamines per al cabell, com la biotina i la vitamina E.",
+          "footer": ""
+        },
+        "25": {
+          "header": "Eliminem la brutícia de les vacances",
+          "desciption": "Realitza avui un tractament exfoliant capil·lar per eliminar impureses.",
+          "footer": ""
+        },
+        "26": {
+          "header": "Si vols evitar que el teu cuir cabellut s'engreixi",
+          "desciption": "Usa condicionador només a les puntes.",
+          "footer": ""
+        },
+        "27": {
+          "header": "Un truc espectacular per quan surtis de la piscina o la platja",
+          "desciption": "Desenreda el teu cabell de baix a dalt per evitar estirades i trencaments.",
+          "footer": ""
+        },
+        "28": {
+          "header": "No oblidis que el sol continuarà fins a la tardor!",
+          "desciption": "Usa un protector solar específic per al cabell.",
+          "footer": ""
+        },
+        "29": {
+          "header": "Si busques donar més brillantor al teu cabell",
+          "desciption": "Esbandeix el teu cabell amb aigua freda al final de la dutxa per tancar les cutícules.",
+          "footer": ""
+        },
+        "30": {
+          "header": "Si vols començar la tornada a la rutina amb bon peu",
+          "desciption": "Fes-te un tall de puntes abans per mantenir el teu cabell saludable.",
+          "footer": ""
+        },
+        "31": {
+          "header": "",
+          "desciption": "",
+          "footer": ""
+        }
+      }
+    }
+  },
+  "colors": ["#79B82D", "#4FC0DB", "#E73E8E", "#FAB802"]
+}
