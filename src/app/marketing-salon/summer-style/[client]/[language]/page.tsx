@@ -226,7 +226,7 @@ export default function DynamicJulyPage() {
       <div className="text-white mt-6">
         <CountdownTimer
           targetDate={getNextMidnight()}
-          header="Siguiente consejo:"
+          header="No te pierdas el siguiente consejo:"
         />
       </div>
     </div>

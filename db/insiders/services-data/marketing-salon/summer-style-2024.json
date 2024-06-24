@@ -1,6 +1,6 @@
 {
   "clients": {
-    "jesus-baez": {
+    "jesus": {
       "languages": ["es"],
       "images": {
         "es": {
@@ -51,6 +51,21 @@
           "even": {
             "vertical": "https://drive.google.com/uc?id=1ru9idDJGzTyoNbd4x6BzgQzt15vefQqR&export=download",
             "horizontal": "https://drive.google.com/uc?id=1GZwl9eM1BUnxQIVcsozin5t1EhQrDmyy&export=download"
+          }
+        }
+      }
+    },
+    "salon-toro": {
+      "languages": ["es"],
+      "images": {
+        "es": {
+          "odd": {
+            "vertical": "https://drive.google.com/uc?id=1KCKAvxQTI-Sn5C1Abh7lxvuv9VHGoRwR&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1Uk62EkarUVsfi2s33-UYj7YXi8XsuqxB&export=download"
+          },
+          "even": {
+            "vertical": "https://drive.google.com/uc?id=1KCKAvxQTI-Sn5C1Abh7lxvuv9VHGoRwR&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1Uk62EkarUVsfi2s33-UYj7YXi8XsuqxB&export=download"
           }
         }
       }
