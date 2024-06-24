@@ -5,6 +5,8 @@ import Image from "next/image";
 import summerSyle2024Data from "@/db/insiders/services-data/marketing-salon/summer-style-2024.json";
 import { useParams } from "next/navigation";
 import { Be_Vietnam_Pro } from "next/font/google";
+import moment from "moment-timezone";
+import CountdownTimer from "@/src/components/timer/CountdownTimer";
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin"],
@@ -23,13 +25,15 @@ type LanguageTips = {
 
 type Client = {
   images: {
-    odd: {
-      vertical: string;
-      horizontal: string;
-    };
-    even: {
-      vertical: string;
-      horizontal: string;
+    [language: string]: {
+      odd: {
+        vertical: string;
+        horizontal: string;
+      };
+      even: {
+        vertical: string;
+        horizontal: string;
+      };
     };
   };
   languages: string[];
@@ -60,16 +64,15 @@ export default function DynamicJulyPage() {
     client: string;
     language: string;
   }>();
-  const [lang, setLang] = useState<string>(
-    typeof language === "string" ? language : "es"
-  );
-  const [day, setDay] = useState<string>("21");
-  const [month, setMonth] = useState<string>("July"); // Por defecto, Julio
+
+  // Get the current date using moment-timezone
+  const currentDate = moment().tz("Europe/Madrid"); // Zona horaria de Madrid
+  const month = currentDate.format("MMMM");
+  const day = currentDate.format("D");
 
   useEffect(() => {
-    // Ensure the client exists and has content for the day
     if (client) {
-      const clientData = summerSyle2024DataTyped.clients[client as string];
+      const clientData = summerSyle2024DataTyped.clients[client];
       if (!clientData) {
         console.warn(`No client data found for client ${client}.`);
         return;
@@ -81,9 +84,9 @@ export default function DynamicJulyPage() {
         return;
       }
 
-      const dailyContent = monthContent[lang as string];
+      const dailyContent = monthContent[language];
       if (!dailyContent) {
-        console.warn(`No content found for language ${lang}.`);
+        console.warn(`No content found for language ${language}.`);
         return;
       }
 
@@ -91,26 +94,89 @@ export default function DynamicJulyPage() {
         setCurrentContent(dailyContent[day]);
         setBgColor(summerSyle2024DataTyped.colors[(parseInt(day) - 1) % 4]);
       } else {
-        // Handle case where there's no content for the day
         console.warn(
-          `No content found for day ${day} for client ${client} in language ${lang}.`
+          `No content found for day ${day} for client ${client} in language ${language}.`
         );
         setCurrentContent(null);
       }
     }
-  }, [client, lang, day, month]);
+  }, [client, language, day, month]);
+
+  const getNextMidnight = () => {
+    const nextMidnight = moment()
+      .tz("Europe/Madrid")
+      .add(1, "days")
+      .startOf("day");
+    return nextMidnight.format();
+  };
+
+  const firstContentDate = moment("2024-07-01T00:00:00+02:00").format(); // Hora de Madrid
+
+  const getRandomColor = () => {
+    const colors = summerSyle2024DataTyped.colors;
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
 
   if (!currentContent) {
+    const targetDate = currentDate.isBefore(firstContentDate)
+      ? firstContentDate
+      : getNextMidnight();
+
+    const clientData = summerSyle2024DataTyped.clients[client];
+    const clientImages = clientData.images[language];
+    const isEvenDay = parseInt(day) % 2 === 0;
+
+    const message = currentDate.isBefore(firstContentDate)
+      ? "Pronto comenzaremos la campaña."
+      : "Campaña finalizada.";
+
     return (
-      <div className="bg-green-500 min-h-screen flex items-center justify-center p-4 w-screen">
-        <p className="text-white">No content available for today.</p>
+      <div
+        style={{
+          fontFamily: beVietnamPro.style.fontFamily,
+          backgroundColor: getRandomColor(),
+        }}
+        className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
+      >
+        <div className="w-full flex justify-center mb-4 md:mb-0">
+          <div className="md:hidden">
+            <Image
+              src={
+                isEvenDay
+                  ? clientImages.even.vertical
+                  : clientImages.odd.vertical
+              }
+              alt="Client Image Vertical"
+              width={300}
+              height={600}
+              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+            />
+          </div>
+          <div className="hidden md:block">
+            <Image
+              src={
+                isEvenDay
+                  ? clientImages.even.horizontal
+                  : clientImages.odd.horizontal
+              }
+              alt="Client Image Horizontal"
+              width={600}
+              height={300}
+              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+            />
+          </div>
+        </div>
+        <p className="text-white mt-6 text-2xl">{message}</p>
+        <div className="text-white mt-6">
+          <CountdownTimer targetDate={targetDate} />
+        </div>
       </div>
     );
   }
 
   const isEvenDay = parseInt(day) % 2 === 0;
-
-  const clientData = summerSyle2024DataTyped.clients[client as string];
+  const clientData = summerSyle2024DataTyped.clients[client];
+  const clientImages = clientData.images[language];
 
   return (
     <div
@@ -120,58 +186,14 @@ export default function DynamicJulyPage() {
       }}
       className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
     >
-      <div className="flex flex-row gap-4 items-center mb-6">
-        <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Mes:</label>
-          <select
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            className="mb-4 p-2 rounded"
-          >
-            {Object.keys(summerSyle2024DataTyped.content).map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Día:</label>
-          <select
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-            className="mb-4 p-2 rounded"
-          >
-            {[...Array(31).keys()].map((d) => (
-              <option key={d + 1} value={d + 1}>
-                {d + 1}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Idioma:</label>
-          <select
-            value={lang}
-            onChange={(e) => setLang(e.target.value)}
-            className="mb-4 p-2 rounded"
-          >
-            {clientData.languages.map((language) => (
-              <option key={language} value={language}>
-                {language === "es" ? "Español" : "Catalán"}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div className="flex flex-col md:flex-row items-center p-6 rounded-lg shadow-lg uppercase">
+      <div className="flex flex-col md:flex-row items-center p-6 uppercase">
         <div className="w-full flex justify-center mb-4 md:mb-0">
           <div className="md:hidden">
             <Image
               src={
                 isEvenDay
-                  ? clientData.images.even.vertical
-                  : clientData.images.odd.vertical
+                  ? clientImages.even.vertical
+                  : clientImages.odd.vertical
               }
               alt="Holiday Image Vertical"
               width={300}
@@ -183,8 +205,8 @@ export default function DynamicJulyPage() {
             <Image
               src={
                 isEvenDay
-                  ? clientData.images.even.horizontal
-                  : clientData.images.odd.horizontal
+                  ? clientImages.even.horizontal
+                  : clientImages.odd.horizontal
               }
               alt="Holiday Image Horizontal"
               width={600}
@@ -204,6 +226,12 @@ export default function DynamicJulyPage() {
             <p className="text-white">{currentContent.footer}</p>
           )}
         </div>
+      </div>
+      <div className="text-white mt-6">
+        <CountdownTimer
+          targetDate={getNextMidnight()}
+          header="Siguiente consejo:"
+        />
       </div>
     </div>
   );

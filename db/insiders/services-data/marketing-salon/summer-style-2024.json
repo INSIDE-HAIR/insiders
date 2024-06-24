@@ -1,41 +1,57 @@
 {
   "clients": {
-    "jesus": {
+    "jesus-baez": {
       "languages": ["es"],
       "images": {
-        "odd": {
-          "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
-        },
-        "even": {
-          "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
+        "es": {
+          "odd": {
+            "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
+          },
+          "even": {
+            "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
+          }
         }
       }
     },
     "josep-pons": {
       "languages": ["es"],
       "images": {
-        "odd": {
-          "vertical": "https://drive.google.com/uc?id=1G4GpHYWqEEK0Lw0AdIcZgd0xMef_iDYE&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1DaI_IiQ2cv0S9RHekV4R3mNtgBi1uxlO&export=download"
-        },
-        "even": {
-          "vertical": "https://drive.google.com/uc?id=1cyIuvdg5RzXsesX1ffe1x7TZiCDKH6wN&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1vPgmKDyAhB2RPbgHpMhhktUxfA3kyNih&export=download"
+        "es": {
+          "odd": {
+            "vertical": "https://drive.google.com/uc?id=1G4GpHYWqEEK0Lw0AdIcZgd0xMef_iDYE&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1DaI_IiQ2cv0S9RHekV4R3mNtgBi1uxlO&export=download"
+          },
+          "even": {
+            "vertical": "https://drive.google.com/uc?id=1cyIuvdg5RzXsesX1ffe1x7TZiCDKH6wN&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1vPgmKDyAhB2RPbgHpMhhktUxfA3kyNih&export=download"
+          }
         }
       }
     },
     "insiders": {
       "languages": ["es", "ca"],
       "images": {
-        "odd": {
-          "vertical": "https://drive.google.com/uc?id=1xawUC-QYDkoiSShbjenv9wvn9UnZYByt&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1MGO0K5s0Z210d1DfWQNVSFZmg-H_HbNY&export=download"
+        "es": {
+          "odd": {
+            "vertical": "https://drive.google.com/uc?id=1xawUC-QYDkoiSShbjenv9wvn9UnZYByt&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1MGO0K5s0Z210d1DfWQNVSFZmg-H_HbNY&export=download"
+          },
+          "even": {
+            "vertical": "https://drive.google.com/uc?id=1FkzcJhqtR1ukM_1gTzmBoToOLc-a8xq3&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1Kn77YifN1igj14T0MBtYlKqxlRa12Wjv&export=download"
+          }
         },
-        "even": {
-          "vertical": "https://drive.google.com/uc?id=1FkzcJhqtR1ukM_1gTzmBoToOLc-a8xq3&export=download",
-          "horizontal": "https://drive.google.com/uc?id=1Kn77YifN1igj14T0MBtYlKqxlRa12Wjv&export=download"
+        "ca": {
+          "odd": {
+            "vertical": "https://drive.google.com/uc?id=1IJyxHE-Te7vIyAj2RTuuQCM1TIlFhe5Q&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1XUm7ktLQT9jIPTvDBvulWMKvTAg71p1b&export=download"
+          },
+          "even": {
+            "vertical": "https://drive.google.com/uc?id=1ru9idDJGzTyoNbd4x6BzgQzt15vefQqR&export=download",
+            "horizontal": "https://drive.google.com/uc?id=1GZwl9eM1BUnxQIVcsozin5t1EhQrDmyy&export=download"
+          }
         }
       }
     }
@@ -194,8 +210,8 @@
           "footer": ""
         },
         "31": {
-          "header": "",
-          "desciption": "",
+          "header": "Si sientes tu cabello pesado",
+          "desciption": "Usa un champú ligero sin sulfatos para una limpieza suave.",
           "footer": ""
         }
       },
@@ -351,8 +367,324 @@
           "footer": ""
         },
         "31": {
-          "header": "",
-          "desciption": "",
+          "header": "Si sents el teu cabell pesat",
+          "desciption": "Usa un xampú lleuger sense sulfats per a una neteja suau.",
+          "footer": ""
+        }
+      }
+    },
+    "August": {
+      "es": {
+        "1": {
+          "header": "Si tu cabello está seco por el cloro",
+          "desciption": "Lávalo con un champú clarificante para eliminar los residuos de cloro.",
+          "footer": ""
+        },
+        "2": {
+          "header": "Si necesitas protección diaria",
+          "desciption": "Aplica productos con filtro UV antes de salir al sol.",
+          "footer": ""
+        },
+        "3": {
+          "header": "Si te expones mucho al sol",
+          "desciption": "Realiza un tratamiento reparador semanal con productos ricos en keratina.",
+          "footer": ""
+        },
+        "4": {
+          "header": "Si tu cabello está quebradizo",
+          "desciption": "Evita el uso de herramientas de calor y opta por secar al aire.",
+          "footer": ""
+        },
+        "5": {
+          "header": "Si quieres un look elegante",
+          "desciption": "Usa accesorios para el cabello como horquillas decorativas o diademas para un toque sofisticado.",
+          "footer": ""
+        },
+        "6": {
+          "header": "Si buscas un estilo playero",
+          "desciption": "Aplica un poco de mousse en las raíces para dar volumen y textura a tu cabello.",
+          "footer": ""
+        },
+        "7": {
+          "header": "Si quieres restaurar la elasticidad",
+          "desciption": "Usa una mascarilla con ingredientes específicos para tu tipo de cabello.",
+          "footer": ""
+        },
+        "8": {
+          "header": "Si buscas un estilo playero",
+          "desciption": "Aplica un poco de mousse en las raíces para dar volumen y textura a tu cabello.",
+          "footer": ""
+        },
+        "9": {
+          "header": "Si tu cabello está opaco",
+          "desciption": "Incorpora productos con vitamina E para darle vida y brillo.",
+          "footer": ""
+        },
+        "10": {
+          "header": "Si notas pérdida de cabello",
+          "desciption": "Realiza masajes capilares para estimular el crecimiento y fortalecer las raíces.",
+          "footer": ""
+        },
+        "11": {
+          "header": "Si quieres eliminar residuos",
+          "desciption": "Lava tu cabello con un champú detox para purificar y revitalizar.",
+          "footer": ""
+        },
+        "12": {
+          "header": "Si quieres mantener tu cabello saludable",
+          "desciption": "Realiza un tratamiento de hidratación profunda una vez a la semana.",
+          "footer": ""
+        },
+        "13": {
+          "header": "Si notas tu cuero cabelludo seco",
+          "desciption": "Usa un exfoliante capilar para eliminar células muertas y estimular la circulación.",
+          "footer": ""
+        },
+        "14": {
+          "header": "Si tu cabello está deshidratado",
+          "desciption": "Bebe mucha agua y consume alimentos ricos en omega-3.",
+          "footer": ""
+        },
+        "15": {
+          "header": "Si necesitas un cuidado extra",
+          "desciption": "Aplica un tratamiento de noche para restaurar tu cabello mientras duermes.",
+          "footer": ""
+        },
+        "16": {
+          "header": "Si tu cabello se siente áspero",
+          "desciption": "Incorpora un tratamiento de acondicionamiento profundo semanal para mantener la suavidad.",
+          "footer": ""
+        },
+        "17": {
+          "header": "Si tu cabello está quebradizo",
+          "desciption": "Evita el uso de herramientas de calor y opta por secar al aire.",
+          "footer": ""
+        },
+        "18": {
+          "header": "Si tu cuero cabelludo está seco",
+          "desciption": "Usa un exfoliante capilar para eliminar células muertas y estimular la circulación.",
+          "footer": ""
+        },
+        "19": {
+          "header": "Si tu cabello está opaco",
+          "desciption": "Incorpora productos con vitamina E para darle vida y brillo.",
+          "footer": ""
+        },
+        "20": {
+          "header": "Si tu cabello está seco por el cloro",
+          "desciption": "Lávalo con un champú clarificante para eliminar los residuos de cloro.",
+          "footer": ""
+        },
+        "21": {
+          "header": "Si necesitas protección diaria",
+          "desciption": "Aplica productos con filtro UV antes de salir al sol.",
+          "footer": ""
+        },
+        "22": {
+          "header": "Si te expones mucho al sol",
+          "desciption": "Realiza un tratamiento reparador semanal con productos ricos en queratina.",
+          "footer": ""
+        },
+        "23": {
+          "header": "Si quieres evitar el daño del agua salada",
+          "desciption": "Aplica aceites en las puntas antes de nadar en el mar.",
+          "footer": ""
+        },
+        "24": {
+          "header": "Si te gustan los accesorios",
+          "desciption": "Prueba con pañuelos o bandanas para darle un toque de estilo a tu look.",
+          "footer": ""
+        },
+        "25": {
+          "header": "Si quieres preparar tu cabello para el otoño",
+          "desciption": "Realiza un corte de puntas y llama al salón para que revisemos el estado de tu cabello y comencemos a recuperar su salud.",
+          "footer": ""
+        },
+        "26": {
+          "header": "Si quieres un look elegante",
+          "desciption": "Usa accesorios para el cabello como horquillas decorativas o diademas para un toque sofisticado.",
+          "footer": ""
+        },
+        "27": {
+          "header": "Revisa tu cabello",
+          "desciption": "Cada vez queda menos para volver a la rutina. Explora tu cabello para ver si el verano te ha producido anomalías.",
+          "footer": ""
+        },
+        "28": {
+          "header": "Anticípate y coge cita en el salón",
+          "desciption": "Septiembre es un mes con mucha frecuencia de visitas en el salón. Anticípate y pide ya tu cita.",
+          "footer": ""
+        },
+        "29": {
+          "header": "Apuesta por un peinado wet",
+          "desciption": "Despide el verano como se merece y apuesta por un estilo wet para este fin de semana.",
+          "footer": ""
+        },
+        "30": {
+          "header": "Aumenta la frecuencia con la mascarilla",
+          "desciption": "Una manera de ir trabajando la recuperación del cabello es añadir un día más de mascarilla.",
+          "footer": ""
+        },
+        "31": {
+          "header": "Si quieres preparar tu cabello para el otoño",
+          "desciption": "Realiza un corte de puntas y llama al salón para que revisemos el estado de tu cabello y comencemos a recuperar su salud.",
+          "footer": ""
+        }
+      },
+      "ca": {
+        "1": {
+          "header": "Si el teu cabell està sec pel clor",
+          "desciption": "Renta-ho amb un xampú clarificant per a eliminar els residus de clor.",
+          "footer": ""
+        },
+        "2": {
+          "header": "Si necessites protecció diària",
+          "desciption": "Aplica productes amb filtre UV abans de sortir al sol.",
+          "footer": ""
+        },
+        "3": {
+          "header": "Si t'exposes molt al sol",
+          "desciption": "Realitza un tractament reparador setmanal amb productes rics en queratina.",
+          "footer": ""
+        },
+        "4": {
+          "header": "Si el teu cabell està trencadís",
+          "desciption": "Evita l'ús d'eines de calor i opta per assecar a l'aire.",
+          "footer": ""
+        },
+        "5": {
+          "header": "Si vols un look elegant",
+          "desciption": "Usa accessoris per al cabell com a forquetes decoratives o diademes per a un toc sofisticat.",
+          "footer": ""
+        },
+        "6": {
+          "header": "Si busques un estil playero",
+          "desciption": "Aplica una mica de mousse en les arrels per a donar volum i textura al teu cabell.",
+          "footer": ""
+        },
+        "7": {
+          "header": "Si vols restaurar l'elasticitat",
+          "desciption": "Usa una màscara amb ingredients específics per al teu tipus de cabell.",
+          "footer": ""
+        },
+        "8": {
+          "header": "Si busques un estil playero",
+          "desciption": "Aplica una mica de mousse en les arrels per a donar volum i textura al teu cabell.",
+          "footer": ""
+        },
+        "9": {
+          "header": "Si el teu cabell està opac",
+          "desciption": "Incorpora productes amb vitamina E per a donar-li vida i lluentor.",
+          "footer": ""
+        },
+        "10": {
+          "header": "Si notes pèrdua de cabell",
+          "desciption": "Realitza massatges capil·lars per a estimular el creixement i enfortir les arrels.",
+          "footer": ""
+        },
+        "11": {
+          "header": "Si vols eliminar residus",
+          "desciption": "Lava el teu cabell amb un xampú detox per a purificar i revitalitzar.",
+          "footer": ""
+        },
+        "12": {
+          "header": "Si vols mantenir el teu cabell saludable",
+          "desciption": "Realitza un tractament d'hidratació profunda una vegada a la setmana.",
+          "footer": ""
+        },
+        "13": {
+          "header": "Si notes el teu cuir cabellut sec",
+          "desciption": "Usa un exfoliant capil·lar per a eliminar cèl·lules mortes i estimular la circulació.",
+          "footer": ""
+        },
+        "14": {
+          "header": "Si el teu cabell està deshidratat",
+          "desciption": "Beu molta aigua i consumeix aliments rics en omega-3.",
+          "footer": ""
+        },
+        "15": {
+          "header": "Si necessites una cura extra",
+          "desciption": "Aplica un tractament de nit per a restaurar el teu cabell mentre dorms.",
+          "footer": ""
+        },
+        "16": {
+          "header": "Si el teu cabell se sent aspre",
+          "desciption": "Incorpora un tractament de condicionament profund setmanal per a mantenir la suavitat.",
+          "footer": ""
+        },
+        "17": {
+          "header": "Si el teu cabell està trencadís",
+          "desciption": "Evita l'ús d'eines de calor i opta per assecar a l'aire.",
+          "footer": ""
+        },
+        "18": {
+          "header": "Si el teu cuir cabellut està sec",
+          "desciption": "Usa un exfoliant capil·lar per a eliminar cèl·lules mortes i estimular la circulació.",
+          "footer": ""
+        },
+        "19": {
+          "header": "Si el teu cabell està opac",
+          "desciption": "Incorpora productes amb vitamina E per a donar-li vida i lluentor.",
+          "footer": ""
+        },
+        "20": {
+          "header": "Si el teu cabell està sec pel clor",
+          "desciption": "Renta-ho amb un xampú clarificant per a eliminar els residus de clor.",
+          "footer": ""
+        },
+        "21": {
+          "header": "Si necessites protecció diària",
+          "desciption": "Aplica productes amb filtre UV abans de sortir al sol.",
+          "footer": ""
+        },
+        "22": {
+          "header": "Si t'exposes molt al sol",
+          "desciption": "Realitza un tractament reparador setmanal amb productes rics en queratina.",
+          "footer": ""
+        },
+        "23": {
+          "header": "Si vols evitar el mal de l'aigua salada",
+          "desciption": "Aplica olis en les puntes abans de nedar en la mar.",
+          "footer": ""
+        },
+        "24": {
+          "header": "Si t'agraden els accessoris",
+          "desciption": "Prova amb mocadors o bandanes per a donar-li un toc d'estil al teu look.",
+          "footer": ""
+        },
+        "25": {
+          "header": "Si vols preparar el teu cabell per a la tardor",
+          "desciption": "Realitza un tall de puntes i crida al saló perquè revisem l'estat del teu cabell i comencem a recuperar la seva salut.",
+          "footer": ""
+        },
+        "26": {
+          "header": "Si vols un look elegant",
+          "desciption": "Usa accessoris per al cabell com a forquetes decoratives o diademes per a un toc sofisticat.",
+          "footer": ""
+        },
+        "27": {
+          "header": "Revisa el teu cabell",
+          "desciption": "Cada vegada queda menys per a tornar a la rutina. Explora el teu cabell per a veure si l'estiu t'ha produït anomalies.",
+          "footer": ""
+        },
+        "28": {
+          "header": "Anticipa't i agafa cita en el saló",
+          "desciption": "Setembre és un mes amb molta freqüència de visites en el saló. Anticipa't i demana ja la teva cita.",
+          "footer": ""
+        },
+        "29": {
+          "header": "Aposta per un pentinat wet",
+          "desciption": "Acomiada l'estiu com es mereix i aposta per un estil wet per a aquest cap de setmana.",
+          "footer": ""
+        },
+        "30": {
+          "header": "Augmenta la freqüència amb la màscara",
+          "desciption": "Una manera d'anar treballant la recuperació del cabell és afegir un dia més de màscara.",
+          "footer": ""
+        },
+        "31": {
+          "header": "Si vols preparar el teu cabell per a la tardor",
+          "desciption": "Realitza un tall de puntes i crida al saló perquè revisem l'estat del teu cabell i comencem a recuperar la seva salut.",
           "footer": ""
         }
       }
