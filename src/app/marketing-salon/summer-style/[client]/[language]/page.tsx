@@ -19,10 +19,6 @@ type DailyTip = {
   footer: string;
 };
 
-type LanguageTips = {
-  [key: string]: { [day: string]: DailyTip };
-};
-
 type Client = {
   images: {
     [language: string]: {
