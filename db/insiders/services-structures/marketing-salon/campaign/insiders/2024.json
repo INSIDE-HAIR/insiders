@@ -3547,6 +3547,47 @@
       "auth": []
     },
     {
+      "id": "implementation3",
+      "title": "Inspiración de implementación",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "slider1",
+          "order": 1,
+          "type": "slider",
+          "classType": "default",
+          "url": "",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "button1",
+          "order": 2,
+          "type": "button",
+          "classType": "default",
+          "title": "Descargar Presentación",
+          "url": "https://drive.google.com/uc?id=1It-ml2d0Yivkmf3pJRJekUM8keA7NgRT&export=download",
+          "active": true,
+          "available": {
+            "startDateTime": "",
+            "endDateTime": ""
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
       "id": "guide3",
       "title": "Guía",
       "order": 3,
