@@ -6,7 +6,7 @@ import summerSyle2024Data from "@/db/insiders/services-data/marketing-salon/summ
 import { useParams } from "next/navigation";
 import { Be_Vietnam_Pro } from "next/font/google";
 import moment from "moment-timezone";
-import CountdownTimer from "@/src/components/timer/CountdownTimer";
+import { CountdownTimer } from "@/src/components/timer/CountdownTimer";
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ["latin"],
@@ -22,18 +22,13 @@ type DailyTip = {
 type Client = {
   images: {
     [language: string]: {
-      odd: {
-        vertical: string;
-        horizontal: string;
-      };
-      even: {
-        vertical: string;
-        horizontal: string;
-      };
+      odd: string;
+      even: string;
     };
   };
   languages: string[];
   bgColors: string[];
+  textColors: string[];
 };
 
 type SummerStyleObject = {
@@ -56,6 +51,7 @@ const summerSyle2024DataTyped: SummerStyleObject =
 export default function DynamicJulyPage() {
   const [currentContent, setCurrentContent] = useState<DailyTip | null>(null);
   const [bgColor, setBgColor] = useState<string>("");
+  const [textColor, setTextColor] = useState<string>("");
   const { client, language } = useParams<{
     client: string;
     language: string;
@@ -63,7 +59,7 @@ export default function DynamicJulyPage() {
 
   // Get the current date using moment-timezone
   const currentDate = moment().tz("Europe/Madrid"); // Zona horaria de Madrid
-  const month = currentDate.format("MMMM");
+  const month = "July"; // "July
   const day = currentDate.format("D");
 
   useEffect(() => {
@@ -90,6 +86,11 @@ export default function DynamicJulyPage() {
         setCurrentContent(dailyContent[day]);
         setBgColor(
           clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length]
+        );
+        setTextColor(
+          clientData.textColors[
+            (parseInt(day) - 1) % clientData.textColors.length
+          ]
         );
       } else {
         console.warn(
@@ -140,34 +141,13 @@ export default function DynamicJulyPage() {
       >
         <div className="w-full flex justify-center mb-4 md:mb-0">
           {clientImages && (
-            <>
-              <div className="md:hidden">
-                <Image
-                  src={
-                    isEvenDay
-                      ? clientImages.even.vertical
-                      : clientImages.odd.vertical
-                  }
-                  alt="Client Image Vertical"
-                  width={300}
-                  height={600}
-                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-                />
-              </div>
-              <div className="hidden md:block">
-                <Image
-                  src={
-                    isEvenDay
-                      ? clientImages.even.horizontal
-                      : clientImages.odd.horizontal
-                  }
-                  alt="Client Image Horizontal"
-                  width={600}
-                  height={300}
-                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-                />
-              </div>
-            </>
+            <Image
+              src={isEvenDay ? clientImages.even : clientImages.odd}
+              alt="Client Image"
+              width={600}
+              height={300}
+              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+            />
           )}
         </div>
         <p className="text-white mt-6 text-2xl">{message}</p>
@@ -187,58 +167,33 @@ export default function DynamicJulyPage() {
       style={{
         fontFamily: beVietnamPro.style.fontFamily,
         backgroundColor: bgColor,
+        color: textColor,
       }}
       className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
     >
       <div className="flex flex-col md:flex-row items-center p-6 uppercase">
         <div className="w-full flex justify-center mb-4 md:mb-0">
           {clientImages && (
-            <>
-              <div className="md:hidden">
-                <Image
-                  src={
-                    isEvenDay
-                      ? clientImages.even.vertical
-                      : clientImages.odd.vertical
-                  }
-                  alt="Holiday Image Vertical"
-                  width={300}
-                  height={600}
-                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-                />
-              </div>
-              <div className="hidden md:block">
-                <Image
-                  src={
-                    isEvenDay
-                      ? clientImages.even.horizontal
-                      : clientImages.odd.horizontal
-                  }
-                  alt="Holiday Image Horizontal"
-                  width={600}
-                  height={300}
-                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-                />
-              </div>
-            </>
+            <Image
+              src={isEvenDay ? clientImages.even : clientImages.odd}
+              alt="Client Image"
+              width={600}
+              height={300}
+              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+            />
           )}
         </div>
         <div className="w-full max-w-[50rem] text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">
-            {currentContent.header}
-          </h1>
-          <p className="text-white mb-4 text-xl px-10">
-            {currentContent.desciption}
-          </p>
-          {currentContent.footer && (
-            <p className="text-white">{currentContent.footer}</p>
-          )}
+          <h1 className="text-3xl font-bold mb-4">{currentContent.header}</h1>
+          <p className="mb-4 text-xl px-10">{currentContent.desciption}</p>
+          {currentContent.footer && <p>{currentContent.footer}</p>}
         </div>
       </div>
       <div className="text-white mt-6">
         <CountdownTimer
           targetDate={getNextMidnight()}
           header="No te pierdas el siguiente consejo:"
+          textColor={textColor}
         />
       </div>
     </div>

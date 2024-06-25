@@ -1,21 +1,30 @@
-import { useEffect, useState } from "react";
-import moment from "moment-timezone";
+import React, { useCallback, useState, useEffect } from "react";
+import moment from "moment";
 
-type CountdownTimerProps = {
-  targetDate: string; // La fecha objetivo en formato ISO 8601
+interface CountdownTimerProps {
+  targetDate: string;
   header?: string;
-};
+  textColor?: string;
+}
 
-const CountdownTimer: React.FC<CountdownTimerProps> = ({
+interface TimeLeft {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   targetDate,
   header,
+  textColor,
 }) => {
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback((): TimeLeft => {
     const now = moment();
     const target = moment(targetDate);
     const difference = target.diff(now);
 
-    let timeLeft = {
+    let timeLeft: TimeLeft = {
       days: 0,
       hours: 0,
       minutes: 0,
@@ -32,9 +41,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     }
 
     return timeLeft;
-  };
+  }, [targetDate]);
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,10 +51,13 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, [targetDate, calculateTimeLeft]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div
+      className={`flex flex-col items-center`}
+      style={{ color: textColor ? textColor : "black" }}
+    >
       {header && <h2 className="text-sm font-bold mb-2">{header}</h2>}
       <div className="text-sm font-bold">
         {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}
@@ -54,5 +66,3 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
     </div>
   );
 };
-
-export default CountdownTimer;
