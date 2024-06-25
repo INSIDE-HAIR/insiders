@@ -33,6 +33,7 @@ type Client = {
     };
   };
   languages: string[];
+  bgColors: string[];
 };
 
 type SummerStyleObject = {
@@ -46,7 +47,6 @@ type SummerStyleObject = {
       };
     };
   };
-  colors: string[];
 };
 
 // Type assertion for the imported JSON
@@ -67,7 +67,7 @@ export default function DynamicJulyPage() {
   const day = currentDate.format("D");
 
   useEffect(() => {
-    if (client) {
+    if (client && language) {
       const clientData = summerSyle2024DataTyped.clients[client];
       if (!clientData) {
         console.warn(`No client data found for client ${client}.`);
@@ -88,7 +88,9 @@ export default function DynamicJulyPage() {
 
       if (dailyContent[day]) {
         setCurrentContent(dailyContent[day]);
-        setBgColor(summerSyle2024DataTyped.colors[(parseInt(day) - 1) % 4]);
+        setBgColor(
+          clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length]
+        );
       } else {
         console.warn(
           `No content found for day ${day} for client ${client} in language ${language}.`
@@ -109,8 +111,10 @@ export default function DynamicJulyPage() {
   const firstContentDate = moment("2024-07-01T00:00:00+02:00").format(); // Hora de Madrid
 
   const getRandomColor = () => {
-    const colors = summerSyle2024DataTyped.colors;
-    return colors[Math.floor(Math.random() * colors.length)];
+    const clientData = summerSyle2024DataTyped.clients[client];
+    return clientData.bgColors[
+      Math.floor(Math.random() * clientData.bgColors.length)
+    ];
   };
 
   if (!currentContent) {
@@ -119,7 +123,7 @@ export default function DynamicJulyPage() {
       : getNextMidnight();
 
     const clientData = summerSyle2024DataTyped.clients[client];
-    const clientImages = clientData.images[language];
+    const clientImages = clientData?.images[language];
     const isEvenDay = parseInt(day) % 2 === 0;
 
     const message = currentDate.isBefore(firstContentDate)
@@ -130,37 +134,41 @@ export default function DynamicJulyPage() {
       <div
         style={{
           fontFamily: beVietnamPro.style.fontFamily,
-          backgroundColor: getRandomColor(),
+          backgroundColor: clientData ? getRandomColor() : "#000", // Default to black if no clientData
         }}
         className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
       >
         <div className="w-full flex justify-center mb-4 md:mb-0">
-          <div className="md:hidden">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.vertical
-                  : clientImages.odd.vertical
-              }
-              alt="Client Image Vertical"
-              width={300}
-              height={600}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.horizontal
-                  : clientImages.odd.horizontal
-              }
-              alt="Client Image Horizontal"
-              width={600}
-              height={300}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
+          {clientImages && (
+            <>
+              <div className="md:hidden">
+                <Image
+                  src={
+                    isEvenDay
+                      ? clientImages.even.vertical
+                      : clientImages.odd.vertical
+                  }
+                  alt="Client Image Vertical"
+                  width={300}
+                  height={600}
+                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+                />
+              </div>
+              <div className="hidden md:block">
+                <Image
+                  src={
+                    isEvenDay
+                      ? clientImages.even.horizontal
+                      : clientImages.odd.horizontal
+                  }
+                  alt="Client Image Horizontal"
+                  width={600}
+                  height={300}
+                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+                />
+              </div>
+            </>
+          )}
         </div>
         <p className="text-white mt-6 text-2xl">{message}</p>
         <div className="text-white mt-6">
@@ -172,7 +180,7 @@ export default function DynamicJulyPage() {
 
   const isEvenDay = parseInt(day) % 2 === 0;
   const clientData = summerSyle2024DataTyped.clients[client];
-  const clientImages = clientData.images[language];
+  const clientImages = clientData?.images[language];
 
   return (
     <div
@@ -184,32 +192,36 @@ export default function DynamicJulyPage() {
     >
       <div className="flex flex-col md:flex-row items-center p-6 uppercase">
         <div className="w-full flex justify-center mb-4 md:mb-0">
-          <div className="md:hidden">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.vertical
-                  : clientImages.odd.vertical
-              }
-              alt="Holiday Image Vertical"
-              width={300}
-              height={600}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.horizontal
-                  : clientImages.odd.horizontal
-              }
-              alt="Holiday Image Horizontal"
-              width={600}
-              height={300}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
+          {clientImages && (
+            <>
+              <div className="md:hidden">
+                <Image
+                  src={
+                    isEvenDay
+                      ? clientImages.even.vertical
+                      : clientImages.odd.vertical
+                  }
+                  alt="Holiday Image Vertical"
+                  width={300}
+                  height={600}
+                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+                />
+              </div>
+              <div className="hidden md:block">
+                <Image
+                  src={
+                    isEvenDay
+                      ? clientImages.even.horizontal
+                      : clientImages.odd.horizontal
+                  }
+                  alt="Holiday Image Horizontal"
+                  width={600}
+                  height={300}
+                  className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+                />
+              </div>
+            </>
+          )}
         </div>
         <div className="w-full max-w-[50rem] text-center">
           <h1 className="text-3xl font-bold text-white mb-4">

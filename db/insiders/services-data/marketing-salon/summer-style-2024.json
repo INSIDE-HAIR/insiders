@@ -2,71 +2,49 @@
   "clients": {
     "jesus-baez": {
       "languages": ["es"],
+      "bgColors": ["#dadada", "#dbd9c6"],
+      "textColors": ["#4c4c4c", "#4c4c4c"],
       "images": {
         "es": {
-          "odd": {
-            "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
-          },
-          "even": {
-            "vertical": "https://drive.google.com/uc?id=1NClDhYdmeM3lgjH2lfv174Ynq8C1Rb7h&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1KWPHMK-mFah5IL2K6z4k4uG1HJEl2NBQ&export=download"
-          }
+          "odd": "https://drive.google.com/uc?id=1j9884Qypd6KzHMHTKAySDNU6ODznaevu&export=download",
+          "even": "https://drive.google.com/uc?id=1j9884Qypd6KzHMHTKAySDNU6ODznaevu&export=download"
         }
       }
     },
     "josep-pons": {
       "languages": ["es"],
+      "bgColors": ["#e0f1fd", "#cbd7c4"],
+      "textColors": ["#4c4c4c", "#ffff"],
       "images": {
         "es": {
-          "odd": {
-            "vertical": "https://drive.google.com/uc?id=1G4GpHYWqEEK0Lw0AdIcZgd0xMef_iDYE&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1DaI_IiQ2cv0S9RHekV4R3mNtgBi1uxlO&export=download"
-          },
-          "even": {
-            "vertical": "https://drive.google.com/uc?id=1cyIuvdg5RzXsesX1ffe1x7TZiCDKH6wN&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1vPgmKDyAhB2RPbgHpMhhktUxfA3kyNih&export=download"
-          }
+          "odd": "https://drive.google.com/uc?id=1UFufhU7lXJXY3CCIAi9n20180C4oxHuc&export=download",
+          "even": "https://drive.google.com/uc?id=1_RziKNqBrhafWZy3De8KzD0b-t-CFbTR&export=download"
         }
       }
     },
     "insiders": {
       "languages": ["es", "ca"],
+      "bgColors": ["#79B82D", "#4FC0DB", "#E73E8E", "#FAB802"],
+      "textColors": ["#ffff", "#ffff", "#ffff", "#19213B"],
       "images": {
         "es": {
-          "odd": {
-            "vertical": "https://drive.google.com/uc?id=1xawUC-QYDkoiSShbjenv9wvn9UnZYByt&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1MGO0K5s0Z210d1DfWQNVSFZmg-H_HbNY&export=download"
-          },
-          "even": {
-            "vertical": "https://drive.google.com/uc?id=1FkzcJhqtR1ukM_1gTzmBoToOLc-a8xq3&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1Kn77YifN1igj14T0MBtYlKqxlRa12Wjv&export=download"
-          }
+          "odd": "https://drive.google.com/uc?id=1v0x1GGn9VAtTE8UA6P7-0cIH4SBkdnsd&export=download",
+          "even": "https://drive.google.com/uc?id=1jyLC_0EYMC38N1roqTKXmlTkKCX-N6UO&export=download"
         },
         "ca": {
-          "odd": {
-            "vertical": "https://drive.google.com/uc?id=1IJyxHE-Te7vIyAj2RTuuQCM1TIlFhe5Q&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1XUm7ktLQT9jIPTvDBvulWMKvTAg71p1b&export=download"
-          },
-          "even": {
-            "vertical": "https://drive.google.com/uc?id=1ru9idDJGzTyoNbd4x6BzgQzt15vefQqR&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1GZwl9eM1BUnxQIVcsozin5t1EhQrDmyy&export=download"
-          }
+          "odd": "https://drive.google.com/uc?id=1nnC7AHcZC9yuBxEpS-AHrjWBPWUIIgV9&export=download",
+          "even": "https://drive.google.com/uc?id=1weNONL7V8PHlwN-wIYQBk3qzhqGnFb3J&export=download"
         }
       }
     },
     "salon-toro": {
       "languages": ["es"],
+      "bgColors": ["#BCB2AA"],
+      "textColors": ["#ffff"],
       "images": {
         "es": {
-          "odd": {
-            "vertical": "https://drive.google.com/uc?id=1KCKAvxQTI-Sn5C1Abh7lxvuv9VHGoRwR&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1Uk62EkarUVsfi2s33-UYj7YXi8XsuqxB&export=download"
-          },
-          "even": {
-            "vertical": "https://drive.google.com/uc?id=1KCKAvxQTI-Sn5C1Abh7lxvuv9VHGoRwR&export=download",
-            "horizontal": "https://drive.google.com/uc?id=1Uk62EkarUVsfi2s33-UYj7YXi8XsuqxB&export=download"
-          }
+          "odd": "https://drive.google.com/uc?id=1tfpgC3ZuBsPQgE8CvqZQ7tZvjWScw-sj&export=download",
+          "even": "https://drive.google.com/uc?id=1tfpgC3ZuBsPQgE8CvqZQ7tZvjWScw-sj&export=download"
         }
       }
     }
@@ -704,6 +682,5 @@
         }
       }
     }
-  },
-  "colors": ["#79B82D", "#4FC0DB", "#E73E8E", "#FAB802"]
+  }
 }

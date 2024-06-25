@@ -19,17 +19,13 @@ type DailyTip = {
 type Client = {
   images: {
     [language: string]: {
-      odd: {
-        vertical: string;
-        horizontal: string;
-      };
-      even: {
-        vertical: string;
-        horizontal: string;
-      };
+      odd: string;
+      even: string;
     };
   };
   languages: string[];
+  bgColors: string[];
+  textColors: string[];
 };
 
 type SummerStyleObject = {
@@ -43,7 +39,6 @@ type SummerStyleObject = {
       };
     };
   };
-  colors: string[];
 };
 
 // Type assertion for the imported JSON
@@ -53,6 +48,7 @@ const summerSyle2024DataTyped: SummerStyleObject =
 export default function DynamicJulyPage() {
   const [currentContent, setCurrentContent] = useState<DailyTip | null>(null);
   const [bgColor, setBgColor] = useState<string>("");
+  const [textColor, setTextColor] = useState<string>("");
   const [client, setClient] = useState<string>("insiders");
   const [lang, setLang] = useState<string>("es");
   const [day, setDay] = useState<string>("1");
@@ -79,7 +75,8 @@ export default function DynamicJulyPage() {
 
     if (dailyContent[day]) {
       setCurrentContent(dailyContent[day]);
-      setBgColor(summerSyle2024DataTyped.colors[(parseInt(day) - 1) % 4]);
+      setBgColor(clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length]);
+      setTextColor(clientData.textColors[(parseInt(day) - 1) % clientData.textColors.length]);
     } else {
       console.warn(
         `No content found for day ${day} for client ${client} in language ${lang}.`
@@ -91,7 +88,7 @@ export default function DynamicJulyPage() {
   if (!currentContent) {
     return (
       <div className="bg-green-500 min-h-screen flex items-center justify-center p-4 w-screen">
-        <p className="text-white">No content available for today.</p>
+        <p className="text-black">No content available for today.</p>
       </div>
     );
   }
@@ -108,62 +105,63 @@ export default function DynamicJulyPage() {
       style={{
         fontFamily: beVietnamPro.style.fontFamily,
         backgroundColor: bgColor,
+        color: textColor,
       }}
       className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
     >
       <div className="flex flex-row gap-4 items-center mb-6">
         <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Cliente:</label>
+          <label className="text-black mb-2">Selecciona el Cliente:</label>
           <select
             value={client}
             onChange={(e) => setClient(e.target.value)}
-            className="mb-4 p-2 rounded"
+            className="mb-4 p-2 rounded text-black"
             disabled={isCaSelected}
           >
             {Object.keys(summerSyle2024DataTyped.clients).map((client) => (
-              <option key={client} value={client}>
+              <option className="text-black" key={client} value={client}>
                 {client}
               </option>
             ))}
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Mes:</label>
+          <label className="text-black mb-2">Selecciona el Mes:</label>
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className="mb-4 p-2 rounded"
+            className="mb-4 p-2 rounded text-black"
           >
             {Object.keys(summerSyle2024DataTyped.content).map((m) => (
-              <option key={m} value={m}>
+              <option className="text-black" key={m} value={m}>
                 {m}
               </option>
             ))}
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Día:</label>
+          <label className="text-black mb-2">Selecciona el Día:</label>
           <select
             value={day}
             onChange={(e) => setDay(e.target.value)}
-            className="mb-4 p-2 rounded"
+            className="mb-4 p-2 rounded text-black"
           >
             {[...Array(31).keys()].map((d) => (
-              <option key={d + 1} value={d + 1}>
+              <option className="text-black" key={d + 1} value={d + 1}>
                 {d + 1}
               </option>
             ))}
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="text-white mb-2">Selecciona el Idioma:</label>
+          <label className="text-black mb-2">Selecciona el Idioma:</label>
           <select
             value={lang}
             onChange={(e) => setLang(e.target.value)}
-            className="mb-4 p-2 rounded"
+            className="mb-4 p-2 rounded text-black"
           >
             {clientData.languages.map((language) => (
-              <option key={language} value={language}>
+              <option className="text-black" key={language} value={language}>
                 {language === "es" ? "Español" : "Catalán"}
               </option>
             ))}
@@ -172,42 +170,23 @@ export default function DynamicJulyPage() {
       </div>
       <div className="flex flex-col md:flex-row items-center p-6 uppercase">
         <div className="w-full flex justify-center mb-4 md:mb-0">
-          <div className="md:hidden">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.vertical
-                  : clientImages.odd.vertical
-              }
-              alt="Holiday Image Vertical"
-              width={300}
-              height={600}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
-          <div className="hidden md:block">
-            <Image
-              src={
-                isEvenDay
-                  ? clientImages.even.horizontal
-                  : clientImages.odd.horizontal
-              }
-              alt="Holiday Image Horizontal"
-              width={600}
-              height={300}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
-            />
-          </div>
+          <Image
+            src={isEvenDay ? clientImages.even : clientImages.odd}
+            alt="Client Image"
+            width={600}
+            height={300}
+            className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+          />
         </div>
         <div className="w-full max-w-[50rem] text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">
+          <h1 className="text-3xl font-bold mb-4" style={{ color: textColor }}>
             {currentContent.header}
           </h1>
-          <p className="text-white mb-4 text-xl px-10">
+          <p className="mb-4 text-xl px-10" style={{ color: textColor }}>
             {currentContent.desciption}
           </p>
           {currentContent.footer && (
-            <p className="text-white">{currentContent.footer}</p>
+            <p style={{ color: textColor }}>{currentContent.footer}</p>
           )}
         </div>
       </div>
