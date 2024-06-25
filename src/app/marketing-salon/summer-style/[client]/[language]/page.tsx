@@ -178,8 +178,8 @@ export default function DynamicJulyPage() {
               src={isEvenDay ? clientImages.even : clientImages.odd}
               alt="Client Image"
               width={600}
-              height={300}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+              height={600}
+              className="rounded w-full h-full object-cover max-w-96 md:max-w-full aspect-square"
             />
           )}
         </div>
