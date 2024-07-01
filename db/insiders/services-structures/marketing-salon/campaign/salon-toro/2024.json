@@ -3993,8 +3993,8 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "https://forms.gle/5n4soGWB5taWXKL19",
-          "active": true,
+          "url": "",
+          "active": false,
           "available": {
             "startDateTime": "",
             "endDateTime": ""
