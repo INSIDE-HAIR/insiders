@@ -17,13 +17,13 @@ enum UserRole {
 
 model User {
   id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
-  name                  String?
-  lastName              String?
+  name                  String?                @default("")
+  lastName              String?                @default("")
   email                 String                 @unique
   emailVerified         DateTime?
-  image                 String?
+  image                 String?                @default("")
   password              String?
-  contactNumber         String?
+  contactNumber         String?                @default("")
   terms                 Boolean                @default(true)
   role                  UserRole               @default(CLIENT)
   isTwoFactorEnabled    Boolean                @default(false)
@@ -332,6 +332,7 @@ enum DocsProvider {
 }
 
 enum CustomFieldType {
+  // Campos de salesFields
   VENTASMesDeCreacionDelContacto
   VENTASAnoDeCreacionDelContacto
   VENTASOrigenDelLead
@@ -339,34 +340,48 @@ enum CustomFieldType {
   VENTASResponsableDeSesionEstrategicaInicial
   VENTASPlanDeCrecimiento360
   VENTASResponsableDeSesionDeBienvenida
+
+  // Campos de clientFields
   CLIENTESEstadoDelCliente
   CLIENTESEtapaDelManager
   CLIENTESEtapaDelSalon
   CLIENTESNumeroDeColaboradores
   CLIENTESNumeroDeSalones
-  CLIENTESFacturacionPromediaMensual
+  CLIENTESFacturacionPromedioMensual
   CLIENTESFechaDeAlta
   CLIENTESFechaDeBaja
   CLIENTESInsidersID
-  MARKETINGSALONFechaDeInicio
-  MARKETINGSALONFechaDeFin
-  MARKETINGSALONNivel
-  STARTMARKETINGEdicion
-  TEAMSFechaDeAlta
-  TEAMSFechaDeBaja
-  SALONHIPERVENTASEdicion
-  IBMedicion
-  STARCLUBEdicion
-  SALONEXPERIENCEEdicion
-  SCALINGSEdicion
+  CLIENTESFechaDeStandby
+  CLIENTESFechaDeFinDeServiciosActivos
+
+  // Campos de servicesFields - consultoriaMentoring
   CONSULTORIA360Edicion
-  MENUSERVICIOSEdicion
+  MENTORINGResponsable
+  MENTORINGFechaDeAlta
+  MENTORINGFechaDeBaja
+  MENTORINGEXTRANumeroContratado
+  MENTORINGEXTRANumeroRealizado
+  MENTORINGEXTRAResponsable
+  CMResponsable
+  CMFechaDeAlta
+  CMFechaDeBaja
+
+  // Campos de servicesFields - formaciones
+  FORMACIONINPEdicion
   INSIDECLUBFechaDeInicio
   INSIDECLUBFechaDeFin
   INSIDECLUBNivel
   GESTIONDIRECTIVAFechaDeInicio
   GESTIONDIRECTIVAFechaDeFin
   GESTIONDIRECTIVALevel
+  SALONHIPERVENTASEdicion
+  IBMedicion
+  STARCLUBEdicion
+  SALONEXPERIENCEEdicion
+  SCALINGSEdicion
+  MENUSERVICIOSEdicion
+
+  // Campos de servicesFields - agencia
   SOCIALMKTFechaDeInicio
   SOCIALMKTFechaDeFin
   ADSMKTFechaDeInicio
@@ -384,10 +399,14 @@ enum CustomFieldType {
   DISENODEFACHADAFechaDeInicio
   DISENODEINTERIORISMOFechaDeInicio
   DISENOWEBFechaDeInicio
-  CMResponsable
-  CMEstadoDelServicio
-  MENTORINGResponsable
-  MENTORINGEstadoDelServicio
-  PRODUCTOSACTIVOSFechaDeFin
-  FORMACIONINPEdicion
+
+  // Campos de servicesFields - marketing
+  MARKETINGSALONFechaDeInicio
+  MARKETINGSALONFechaDeFin
+  MARKETINGSALONNivel
+  MARKETINGSALONMesesNUEVOS
+  MARKETINGSALONMesesJUNIOR
+  MARKETINGSALONMesesAVANZADO
+  MARKETINGSALONMesesMASTER
+  STARTMARKETINGEdicion
 }
