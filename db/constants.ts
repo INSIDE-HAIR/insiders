@@ -465,7 +465,7 @@ export const dataBaseTranslation: {
         es: "INSIDE CLUB - Nivel",
         en: "INSIDE CLUB - Level",
         type: "selection",
-        options: ["Nivel 1", "Nivel 2", "Nivel 3"],
+        options: ["AVANZADO", "EXPERTO", "EMBAJADOR"],
       },
       GESTIONDIRECTIVAFechaDeInicio: {
         id: "GESTIONDIRECTIVAFechaDeInicio",

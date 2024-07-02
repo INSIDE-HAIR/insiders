@@ -14,6 +14,7 @@ type CheckboxFilterHeaderProps<T> = {
   title: string;
   data: T[];
   accessorKey: keyof T;
+  options?: string[]; // Opciones opcionales del JSON
 };
 
 function CheckboxFilterHeader<T>({
@@ -21,6 +22,7 @@ function CheckboxFilterHeader<T>({
   title,
   data,
   accessorKey,
+  options,
 }: CheckboxFilterHeaderProps<T>) {
   const [uniqueValues, setUniqueValues] = useState<string[]>([]);
   const [selectedValues, setSelectedValues] = useState<string[]>(
@@ -28,11 +30,11 @@ function CheckboxFilterHeader<T>({
   );
 
   useEffect(() => {
-    const values = Array.from(
-      new Set(data.map((item) => String(item[accessorKey])))
-    );
+    const values = options
+      ? options
+      : Array.from(new Set(data.map((item) => String(item[accessorKey]))));
     setUniqueValues(values);
-  }, [data, accessorKey]);
+  }, [data, accessorKey, options]);
 
   const toggleValue = (value: string) => {
     setSelectedValues((prev) => {

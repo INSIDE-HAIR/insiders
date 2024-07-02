@@ -158,36 +158,60 @@ export default function UsersTable() {
 
   const createCustomColumns = (
     fields: Record<string, Field>,
-    category: string
+    category: string,
+    data: ExtendedUser[] // Pasar los datos para los encabezados
   ): ColumnDef<ExtendedUser>[] => {
-    return Object.entries(fields || {}).map(([key, field]) => ({
-      accessorKey: `${category}.${field.es}`,
-      header: ({ column }) => (
-        <TextFilterHeader column={column} title={field.es} />
-      ),
-      cell: ({ row }: any) => {
-        const customField = row.original.holdedData?.customFields?.find(
-          (cf: { field: string }) => cf.field === field.es
-        );
-        return <div>{customField?.value || "N/A"}</div>;
-      },
-      filterFn:
-        field.type === "text" || field.type === "selection"
-          ? (row, columnId, filterValue) => {
-              if (!Array.isArray(filterValue) || filterValue.length === 0)
-                return true;
-              const customField = row.original.holdedData?.customFields?.find(
-                (cf: { field: string }) => cf.field === field.es
-              );
-              const rowValue =
-                (customField?.value as string)?.toLowerCase() ?? "";
-              return (filterValue as string[]).some((value) =>
-                rowValue.includes(value.toLowerCase())
-              );
-            }
-          : undefined,
-    }));
+    return Object.entries(fields || {}).map(([key, field]) => {
+      return {
+        accessorKey: `${category}.${field.es}`,
+        header: ({ column }) => {
+          if (field.type === "selection") {
+            return (
+              <CheckboxFilterHeader
+                column={column}
+                title={field.es}
+                data={data}
+                accessorKey={`${category}.${field.es}` as keyof ExtendedUser}
+                options={field.options} // Pasar las opciones si están disponibles
+              />
+            );
+          } else if (field.type === "date") {
+            return (
+              <DateRangeFilterHeader
+                column={column}
+                title={field.es}
+                onAddFilter={handleAddFilter}
+              />
+            );
+          } else {
+            return <TextFilterHeader column={column} title={field.es} />;
+          }
+        },
+        cell: ({ row }: any) => {
+          const customField = row.original.holdedData?.customFields?.find(
+            (cf: { field: string }) => cf.field === field.es
+          );
+          return <div>{customField?.value || "N/A"}</div>;
+        },
+        filterFn:
+          field.type === "text" || field.type === "selection"
+            ? (row, columnId, filterValue) => {
+                if (!Array.isArray(filterValue) || filterValue.length === 0)
+                  return true;
+                const customField = row.original.holdedData?.customFields?.find(
+                  (cf: { field: string }) => cf.field === field.es
+                );
+                const rowValue =
+                  (customField?.value as string)?.toLowerCase() ?? "";
+                return (filterValue as string[]).some((value) =>
+                  rowValue.includes(value.toLowerCase())
+                );
+              }
+            : undefined,
+      };
+    });
   };
+
 
   const columns: ColumnDef<ExtendedUser>[] = [
     {
@@ -309,39 +333,52 @@ export default function UsersTable() {
       },
     },
     ...(salesFieldsActive
-      ? createCustomColumns(dataBaseTranslation.salesFields.sales, "sales")
+      ? createCustomColumns(
+          dataBaseTranslation.salesFields.sales,
+          "sales",
+          data
+        )
       : []),
     ...(clientFieldsActive
-      ? createCustomColumns(dataBaseTranslation.clientsFields.client, "client")
+      ? createCustomColumns(
+          dataBaseTranslation.clientsFields.client,
+          "clientFields",
+          data
+        )
       : []),
     ...(insidersFieldsActive
       ? createCustomColumns(
           dataBaseTranslation.clientsFields.insiders,
-          "insiders"
+          "clientFields",
+          data
         )
       : []),
     ...(marketingActive
       ? createCustomColumns(
           dataBaseTranslation.servicesFields.marketing,
-          "marketing"
+          "marketing",
+          data
         )
       : []),
     ...(consultoriaMentoringActive
       ? createCustomColumns(
           dataBaseTranslation.servicesFields.consultoriaMentoring,
-          "consultoriaMentoring"
+          "consultoriaMentoring",
+          data
         )
       : []),
     ...(formacionesActive
       ? createCustomColumns(
           dataBaseTranslation.servicesFields.formaciones,
-          "formaciones"
+          "formaciones",
+          data
         )
       : []),
     ...(creativitiesActive
       ? createCustomColumns(
           dataBaseTranslation.servicesFields.creativities,
-          "creativities"
+          "creativities",
+          data
         )
       : []),
     {
