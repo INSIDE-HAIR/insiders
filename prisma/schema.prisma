@@ -182,7 +182,7 @@ model BillAddress {
 
 model CustomField {
   id           String          @id @default(auto()) @map("_id") @db.ObjectId
-  field        CustomFieldType
+  field        String
   holdedDataId String          @db.ObjectId
   holdedData   HoldedData      @relation(fields: [holdedDataId], references: [id], onDelete: Cascade)
   value        String?
@@ -329,84 +329,4 @@ enum DocsProvider {
   GOOGLE_DRIVE
   HOLDED
   LOCAL
-}
-
-enum CustomFieldType {
-  // Campos de salesFields
-  VENTASMesDeCreacionDelContacto
-  VENTASAnoDeCreacionDelContacto
-  VENTASOrigenDelLead
-  VENTASResponsablePrimerContacto
-  VENTASResponsableDeSesionEstrategicaInicial
-  VENTASPlanDeCrecimiento360
-  VENTASResponsableDeSesionDeBienvenida
-
-  // Campos de clientFields
-  CLIENTESEstadoDelCliente
-  CLIENTESEtapaDelManager
-  CLIENTESEtapaDelSalon
-  CLIENTESNumeroDeColaboradores
-  CLIENTESNumeroDeSalones
-  CLIENTESFacturacionPromedioMensual
-  CLIENTESFechaDeAlta
-  CLIENTESFechaDeBaja
-  CLIENTESInsidersID
-  CLIENTESFechaDeStandby
-  CLIENTESFechaDeFinDeServiciosActivos
-
-  // Campos de servicesFields - consultoriaMentoring
-  CONSULTORIA360Edicion
-  MENTORINGResponsable
-  MENTORINGFechaDeAlta
-  MENTORINGFechaDeBaja
-  MENTORINGEXTRANumeroContratado
-  MENTORINGEXTRANumeroRealizado
-  MENTORINGEXTRAResponsable
-  CMResponsable
-  CMFechaDeAlta
-  CMFechaDeBaja
-
-  // Campos de servicesFields - formaciones
-  FORMACIONINPEdicion
-  INSIDECLUBFechaDeInicio
-  INSIDECLUBFechaDeFin
-  INSIDECLUBNivel
-  GESTIONDIRECTIVAFechaDeInicio
-  GESTIONDIRECTIVAFechaDeFin
-  GESTIONDIRECTIVALevel
-  SALONHIPERVENTASEdicion
-  IBMedicion
-  STARCLUBEdicion
-  SALONEXPERIENCEEdicion
-  SCALINGSEdicion
-  MENUSERVICIOSEdicion
-
-  // Campos de servicesFields - agencia
-  SOCIALMKTFechaDeInicio
-  SOCIALMKTFechaDeFin
-  ADSMKTFechaDeInicio
-  ADSMKTFechaDeFin
-  MKTDIRECTOWEBMKTFechaDeInicio
-  MKTDIRECTOWEBMKTFechaDeFin
-  FUNNELMKTFechaDeInicio
-  FUNNELMKTFechaDeFin
-  FUNNELMKTResponsable
-  AGENCIAResponsable
-  CREACIONDEMARCAFechaDeInicio
-  DISENODEMARCAFechaDeInicio
-  DESARROLLODEMARCAFechaDeInicio
-  CREACIONDELOGOTIPOFechaDeInicio
-  DISENODEFACHADAFechaDeInicio
-  DISENODEINTERIORISMOFechaDeInicio
-  DISENOWEBFechaDeInicio
-
-  // Campos de servicesFields - marketing
-  MARKETINGSALONFechaDeInicio
-  MARKETINGSALONFechaDeFin
-  MARKETINGSALONNivel
-  MARKETINGSALONMesesNUEVOS
-  MARKETINGSALONMesesJUNIOR
-  MARKETINGSALONMesesAVANZADO
-  MARKETINGSALONMesesMASTER
-  STARTMARKETINGEdicion
 }

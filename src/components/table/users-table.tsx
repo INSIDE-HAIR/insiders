@@ -40,7 +40,16 @@ import TextFilterHeader from "@/src/components/table/filters/text-filter-header"
 import CheckboxFilterHeader from "@/src/components/table/filters/checkbox-filter-header";
 import DateRangeFilterHeader from "@/src/components/table/filters/date-range-filter-header";
 import FilterBadges from "@/src/components/table/filters/filter-badges";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
 
+// Extend the User type to include HoldedData and CustomFields
 type ExtendedUser = User & {
   holdedData?: HoldedData & {
     customFields: CustomField[];
@@ -48,6 +57,7 @@ type ExtendedUser = User & {
 };
 
 export default function UsersTable() {
+  const pageSizeOptions = [1, 5, 10, 25, 50, 100, 500, 1000, 2000];
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -56,12 +66,25 @@ export default function UsersTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState<ExtendedUser[]>([]);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  const [insidersFieldsActive, setInsidersFieldsActive] = React.useState(false);
+  const [marketingActive, setMarketingActive] = React.useState(false);
+  const [salesFieldsActive, setSalesFieldsActive] = React.useState(false);
+  const [clientFieldsActive, setClientFieldsActive] = React.useState(false);
+  const [consultoriaMentoringActive, setConsultoriaMentoringActive] =
+    React.useState(false);
+  const [formacionesActive, setFormacionesActive] = React.useState(false);
+  const [creativitiesActive, setCreativitiesActive] = React.useState(false);
+  const [pageIndex, setPageIndex] = React.useState(0);
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const users = await getUsers();
         if (users !== null) {
+          // Verifica si los datos incluyen holdedData y customFields
+          console.log(users);
           setData(users as unknown as ExtendedUser[]);
         } else {
           setData([]);
@@ -116,29 +139,48 @@ export default function UsersTable() {
     });
   };
 
+  const handleAddFilter = (
+    id: string,
+    value: { from?: number; to?: number }
+  ) => {
+    setColumnFilters((filters) => {
+      const existingFilter = filters.find((filter) => filter.id === id);
+      if (existingFilter) {
+        const newValue = { ...(existingFilter.value as object), ...value };
+        return filters.map((filter) =>
+          filter.id === id ? { ...filter, value: newValue } : filter
+        );
+      } else {
+        return [...filters, { id, value }];
+      }
+    });
+  };
 
   const createCustomColumns = (
     fields: Record<string, Field>,
     category: string
   ): ColumnDef<ExtendedUser>[] => {
     return Object.entries(fields || {}).map(([key, field]) => ({
-      accessorKey: `customFields.${key}`,
+      accessorKey: `${category}.${field.es}`,
       header: ({ column }) => (
         <TextFilterHeader column={column} title={field.es} />
       ),
       cell: ({ row }: any) => {
         const customField = row.original.holdedData?.customFields?.find(
-          (cf: { field: string }) => cf.field === key
-        ) ?? { value: "N/A" };
-        return <div>{customField.value || "N/A"}</div>;
+          (cf: { field: string }) => cf.field === field.es
+        );
+        return <div>{customField?.value || "N/A"}</div>;
       },
       filterFn:
-        field.type === "selection"
+        field.type === "text" || field.type === "selection"
           ? (row, columnId, filterValue) => {
               if (!Array.isArray(filterValue) || filterValue.length === 0)
                 return true;
+              const customField = row.original.holdedData?.customFields?.find(
+                (cf: { field: string }) => cf.field === field.es
+              );
               const rowValue =
-                (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+                (customField?.value as string)?.toLowerCase() ?? "";
               return (filterValue as string[]).some((value) =>
                 rowValue.includes(value.toLowerCase())
               );
@@ -172,10 +214,21 @@ export default function UsersTable() {
     },
     {
       accessorKey: "holdedId",
-      header: "Holded ID",
+      header: ({ column }) => (
+        <TextFilterHeader column={column} title="Holded ID" />
+      ),
       cell: ({ row }) => (
         <div>{row.original.holdedData?.holdedId || "N/A"}</div>
       ),
+      filterFn: (row, columnId, filterValue) => {
+        if (!Array.isArray(filterValue) || filterValue.length === 0)
+          return true;
+        const rowValue =
+          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+        return (filterValue as string[]).some((value) =>
+          rowValue.includes(value.toLowerCase())
+        );
+      },
     },
     {
       accessorKey: "email",
@@ -255,23 +308,50 @@ export default function UsersTable() {
           .includes(rowValue);
       },
     },
-    ...createCustomColumns(dataBaseTranslation.clientFields, "clientFields"),
-    ...createCustomColumns(
-      dataBaseTranslation.servicesFields.consultoriaMentoring,
-      "consultoriaMentoring"
-    ),
-    ...createCustomColumns(
-      dataBaseTranslation.servicesFields.formaciones,
-      "formaciones"
-    ),
-    ...createCustomColumns(
-      dataBaseTranslation.servicesFields.creativities,
-      "creativities"
-    ),
+    ...(salesFieldsActive
+      ? createCustomColumns(dataBaseTranslation.salesFields.sales, "sales")
+      : []),
+    ...(clientFieldsActive
+      ? createCustomColumns(dataBaseTranslation.clientsFields.client, "client")
+      : []),
+    ...(insidersFieldsActive
+      ? createCustomColumns(
+          dataBaseTranslation.clientsFields.insiders,
+          "insiders"
+        )
+      : []),
+    ...(marketingActive
+      ? createCustomColumns(
+          dataBaseTranslation.servicesFields.marketing,
+          "marketing"
+        )
+      : []),
+    ...(consultoriaMentoringActive
+      ? createCustomColumns(
+          dataBaseTranslation.servicesFields.consultoriaMentoring,
+          "consultoriaMentoring"
+        )
+      : []),
+    ...(formacionesActive
+      ? createCustomColumns(
+          dataBaseTranslation.servicesFields.formaciones,
+          "formaciones"
+        )
+      : []),
+    ...(creativitiesActive
+      ? createCustomColumns(
+          dataBaseTranslation.servicesFields.creativities,
+          "creativities"
+        )
+      : []),
     {
       accessorKey: "lastLogin",
       header: ({ column }) => (
-        <DateRangeFilterHeader column={column} title="Última conexión" />
+        <DateRangeFilterHeader
+          column={column}
+          title="Última conexión"
+          onAddFilter={handleAddFilter}
+        />
       ),
       cell: ({ row }) =>
         new Date(row.getValue("lastLogin")).toLocaleDateString(),
@@ -292,7 +372,11 @@ export default function UsersTable() {
     {
       accessorKey: "createdAt",
       header: ({ column }) => (
-        <DateRangeFilterHeader column={column} title="Fecha de Creación" />
+        <DateRangeFilterHeader
+          column={column}
+          title="Fecha de Creación"
+          onAddFilter={handleAddFilter}
+        />
       ),
       cell: ({ row }) => {
         const date = new Date(row.getValue("createdAt"));
@@ -363,7 +447,12 @@ export default function UsersTable() {
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageSize,
+        pageIndex,
+      },
     },
+    manualPagination: true,
   });
 
   const appliedFilters = columnFilters.map((filter) => ({
@@ -373,11 +462,67 @@ export default function UsersTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
+        <h2 className="text-sm font-medium">Filtros aplicados</h2>
+        <FilterBadges filters={appliedFilters} onRemove={handleRemoveFilter} />
+      </div>
+
+      <div className="flex items-center justify-end gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
-              Columnas <ChevronDownIcon className="ml-2 h-4 w-4" />
+              Grupos de Columnas <ChevronDownIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuCheckboxItem
+              checked={salesFieldsActive}
+              onCheckedChange={setSalesFieldsActive}
+            >
+              Ventas
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={clientFieldsActive}
+              onCheckedChange={setClientFieldsActive}
+            >
+              Clientes
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={insidersFieldsActive}
+              onCheckedChange={setInsidersFieldsActive}
+            >
+              Insiders
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={marketingActive}
+              onCheckedChange={setMarketingActive}
+            >
+              Marketing
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={consultoriaMentoringActive}
+              onCheckedChange={setConsultoriaMentoringActive}
+            >
+              Consultoría y Mentoring
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={formacionesActive}
+              onCheckedChange={setFormacionesActive}
+            >
+              Formaciones
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={creativitiesActive}
+              onCheckedChange={setCreativitiesActive}
+            >
+              Creatividades
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">
+              Columnas Individuales <ChevronDownIcon className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
@@ -401,10 +546,7 @@ export default function UsersTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="space-y-4">
-        <h2 className="text-lg font-medium">Filtros aplicados</h2>
-        <FilterBadges filters={appliedFilters} onRemove={handleRemoveFilter} />
-      </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -412,7 +554,7 @@ export default function UsersTable() {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="table-header">
+                    <TableHead key={header.id} className="table-header py-2">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -457,8 +599,8 @@ export default function UsersTable() {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredSelectedRowModel().rows.length} de{" "}
+          {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
         </div>
         <div className="space-x-2">
           <Button
@@ -467,7 +609,7 @@ export default function UsersTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            Anterior
           </Button>
           <Button
             variant="outline"
@@ -475,9 +617,32 @@ export default function UsersTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Siguiente
           </Button>
         </div>
+      </div>
+      <div className="flex gap-2 items-center">
+        <h2 className="text-sm text-slate-600">Mostrar en lista:</h2>
+        <Select
+          value={pageSize.toString()}
+          onValueChange={(value) => {
+            const newPageSize = Number(value);
+            setPageSize(newPageSize);
+            setPageIndex(0);
+            table.setPageSize(newPageSize);
+          }}
+        >
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="Usuarios por página" />
+          </SelectTrigger>
+          <SelectContent>
+            {pageSizeOptions.map((size) => (
+              <SelectItem key={size} value={size.toString()}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

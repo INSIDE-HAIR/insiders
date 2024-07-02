@@ -1,14 +1,8 @@
 import React from "react";
 
 interface FilterBadgesProps {
-  filters: {
-    id: string;
-    value: string | string[] | { from?: number; to?: number };
-  }[];
-  onRemove: (
-    id: string,
-    value?: string | { from?: number; to?: number }
-  ) => void;
+  filters: { id: string; value: string | string[] | { from?: number; to?: number } }[];
+  onRemove: (id: string, value?: string | { from?: number; to?: number }) => void;
 }
 
 const FilterBadges: React.FC<FilterBadgesProps> = ({ filters, onRemove }) => {
@@ -35,19 +29,13 @@ const FilterBadges: React.FC<FilterBadgesProps> = ({ filters, onRemove }) => {
               {value.from && (
                 <div key={`${filter.id}-from`} className="badge">
                   {filter.id} Desde: {formatDate(value.from)}
-                  <button
-                    onClick={() => onRemove(filter.id, { from: value.from })}
-                  >
-                    X
-                  </button>
+                  <button onClick={() => onRemove(filter.id, { from: value.from })}>X</button>
                 </div>
               )}
               {value.to && (
                 <div key={`${filter.id}-to`} className="badge">
                   {filter.id} Hasta: {formatDate(value.to)}
-                  <button onClick={() => onRemove(filter.id, { to: value.to })}>
-                    X
-                  </button>
+                  <button onClick={() => onRemove(filter.id, { to: value.to })}>X</button>
                 </div>
               )}
             </>

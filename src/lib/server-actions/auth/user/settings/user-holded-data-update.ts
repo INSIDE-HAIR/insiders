@@ -2,8 +2,8 @@
 import prisma from "@/prisma/database";
 import * as z from "zod";
 import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/contacts";
-
-// Define the validation schema with Zod
+import { transformHoldedData } from "@/src/lib/utils/clean-fields"; // Adjust the import path as necessary
+// Definir el esquema de validación con Zod
 const UpdateHoldedIdSchema = z.object({
   userId: z.string().min(24, "El ID del usuario es requerido"),
   holdedId: z
@@ -12,126 +12,11 @@ const UpdateHoldedIdSchema = z.object({
     .length(24, "El Holded ID debe tener 24 caracteres"),
 });
 
-// Function to clean and transform Holded data
-const transformHoldedData = (data: any) => {
-  const transformFieldName = (field: string): string => {
-    const accentsMap: { [key: string]: string } = {
-      á: "a",
-      é: "e",
-      í: "i",
-      ó: "o",
-      ú: "u",
-      Á: "A",
-      É: "E",
-      Í: "I",
-      Ó: "O",
-      Ú: "U",
-    };
-
-    return field
-      .replace(/[áéíóúÁÉÍÓÚ]/g, (match) => accentsMap[match])
-      .replace(/[\s-]/g, "");
-  };
-
-  return {
-    holdedId: data.id,
-    customId: data.customId || null,
-    name: data.name || "",
-    code: data.code || "",
-    vatnumber: data.vatnumber || "",
-    tradeName: data.tradeName ? String(data.tradeName) : "",
-    email: data.email || "",
-    mobile: data.mobile || "",
-    phone: data.phone || "",
-    type: data.type || "",
-    iban: data.iban || "",
-    swift: data.swift || "",
-    groupId: data.groupId || "",
-    clientRecord: data.clientRecord
-      ? { connect: { id: data.clientRecord.id } }
-      : undefined,
-    supplierRecord: data.supplierRecord
-      ? { connect: { id: data.supplierRecord.id } }
-      : undefined,
-    billAddress: data.billAddress
-      ? {
-          address: data.billAddress.address || "",
-          city: data.billAddress.city || "",
-          postalCode: data.billAddress.postalCode
-            ? parseInt(data.billAddress.postalCode, 10)
-            : 0,
-          province: data.billAddress.province || "",
-          country: data.billAddress.country || "",
-          countryCode: data.billAddress.countryCode || "",
-          info: data.billAddress.info || "",
-        }
-      : undefined,
-    customFields: data.customFields
-      ? data.customFields.map((field: any) => ({
-          field: transformFieldName(field.field),
-          value: field.value,
-        }))
-      : undefined,
-    defaults: data.defaults
-      ? {
-          create: {
-            salesChannel: data.defaults.salesChannel || 0,
-            expensesAccount: data.defaults.expensesAccount || 0,
-            dueDays: data.defaults.dueDays || 0,
-            paymentDay: data.defaults.paymentDay || 0,
-            paymentMethod: data.defaults.paymentMethod || 0,
-            discount: data.defaults.discount || 0,
-            language: data.defaults.language || "es",
-            currency: data.defaults.currency || "eur",
-            salesTax: data.defaults.salesTax || [],
-            purchasesTax: data.defaults.purchasesTax || [],
-            accumulateInForm347: data.defaults.accumulateInForm347 || "yes",
-          },
-        }
-      : undefined,
-    socialNetworks: data.socialNetworks
-      ? {
-          create: {
-            facebook: data.socialNetworks.facebook || "",
-            twitter: data.socialNetworks.twitter || "",
-            instagram: data.socialNetworks.instagram || "",
-            google: data.socialNetworks.google || "",
-            linkedin: data.socialNetworks.linkedin || "",
-            pinterest: data.socialNetworks.pinterest || "",
-            foursquare: data.socialNetworks.foursquare || "",
-            youtube: data.socialNetworks.youtube || "",
-            vimeo: data.socialNetworks.vimeo || "",
-            wordpress: data.socialNetworks.wordpress || "",
-            website: data.socialNetworks.website || "",
-          },
-        }
-      : undefined,
-    tags: data.tags || [],
-    notes: data.notes
-      ? {
-          create: data.notes.map((note: any) => ({
-            noteId: note.noteId || "",
-            name: note.name || "",
-            description: note.description || "",
-            color: note.color || "",
-            updatedAt: note.updatedAt ? parseInt(note.updatedAt, 10) : 0,
-          })),
-        }
-      : undefined,
-    contactPersons: data.contactPersons || [],
-    shippingAddresses: data.shippingAddresses || [],
-    isPerson: data.isPerson === 1,
-    createdAt: data.createdAt ? new Date(data.createdAt * 1000) : new Date(),
-    updatedAt: data.updatedAt ? new Date(data.updatedAt * 1000) : new Date(),
-    updatedHash: data.updatedHash || "",
-  };
-};
-
 export const updateUserHoldedData = async (
   userId: string,
   holdedId: string
 ) => {
-  // Validate the input parameters using the Zod schema
+  // Validar los parámetros de entrada usando el esquema de Zod
   const validatedFields = UpdateHoldedIdSchema.safeParse({ userId, holdedId });
 
   if (!validatedFields.success) {
@@ -142,7 +27,7 @@ export const updateUserHoldedData = async (
   }
 
   try {
-    // Get the user from the database
+    // Obtener el usuario de la base de datos
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -164,7 +49,7 @@ export const updateUserHoldedData = async (
       };
     }
 
-    // Get the Holded data
+    // Obtener los datos de Holded
     const holdedContact = await getHoldedContactById(holdedId);
     if (!holdedContact) {
       return {
@@ -172,71 +57,14 @@ export const updateUserHoldedData = async (
       };
     }
 
-    // Transform the Holded data
-    const transformedHoldedData = transformHoldedData(holdedContact);
+    // Transformar los datos de Holded
+    const transformedHoldedData = transformHoldedData(
+      holdedContact,
+      user.holdedData
+    );
 
     if (user.holdedData) {
-      // Update or create customFields if they exist
-      const updatedCustomFields = transformedHoldedData.customFields
-        ? await Promise.all(
-            transformedHoldedData.customFields.map(async (field: any) => {
-              // Fetch existing custom field to get the ID if it exists
-              const existingCustomField = await prisma.customField.findFirst({
-                where: {
-                  field: field.field,
-                  holdedDataId: user.holdedData!.id,
-                },
-              });
-
-              return prisma.customField.upsert({
-                where: { id: existingCustomField?.id ?? "" },
-                update: {
-                  value: field.value,
-                },
-                create: {
-                  field: field.field,
-                  value: field.value,
-                  holdedDataId: user.holdedData!.id,
-                },
-              });
-            })
-          )
-        : [];
-
-      // Update or create contactPersons
-      const updatedContactPersons = await Promise.all(
-        transformedHoldedData.contactPersons.map(async (person: any) => {
-          // Fetch existing contact person to get the ID if it exists
-          const existingContactPerson = await prisma.contactPerson.findFirst({
-            where: {
-              personId: person.personId,
-              holdedDataId: user.holdedData!.id,
-            },
-          });
-
-          return prisma.contactPerson.upsert({
-            where: { id: existingContactPerson?.id ?? "" },
-            update: {
-              name: person.name || "",
-              job: person.job || "",
-              phone: person.phone || "",
-              email: person.email || "",
-              sendDocuments: person.sendDocuments ? 1 : 0,
-            },
-            create: {
-              personId: person.personId,
-              name: person.name || "",
-              job: person.job || "",
-              phone: person.phone || "",
-              email: person.email || "",
-              sendDocuments: person.sendDocuments ? 1 : 0,
-              holdedDataId: user.holdedData!.id,
-            },
-          });
-        })
-      );
-
-      // Update HoldedData without setting customFields or contactPersons directly
+      // Actualizar HoldedData sin establecer customFields o contactPersons directamente
       const updatedHoldedData = await prisma.holdedData.update({
         where: { userId: userId },
         data: {
@@ -255,26 +83,74 @@ export const updateUserHoldedData = async (
           groupId: transformedHoldedData.groupId,
           clientRecord: transformedHoldedData.clientRecord,
           supplierRecord: transformedHoldedData.supplierRecord,
-          billAddress: transformedHoldedData.billAddress
-            ? {
-                update: transformedHoldedData.billAddress,
-              }
-            : undefined,
-          defaults: transformedHoldedData.defaults
-            ? {
-                update: transformedHoldedData.defaults.create,
-              }
-            : undefined,
-          socialNetworks: transformedHoldedData.socialNetworks
-            ? {
-                update: transformedHoldedData.socialNetworks.create,
-              }
-            : undefined,
+          billAddress: transformedHoldedData.billAddress,
+          defaults: transformedHoldedData.defaults,
+          socialNetworks: transformedHoldedData.socialNetworks,
           // Removing customFields and contactPersons from direct update
         },
       });
 
-      // Update the user
+      // Actualizar o crear customFields si existen
+      await Promise.all(
+        (transformedHoldedData.customFields?.create || []).map(
+          async (field: any) => {
+            const existingCustomField = await prisma.customField.findFirst({
+              where: {
+                field: field.field,
+                holdedDataId: user.holdedData!.id,
+              },
+            });
+
+            return prisma.customField.upsert({
+              where: { id: existingCustomField?.id ?? "" },
+              update: {
+                value: field.value,
+              },
+              create: {
+                field: field.field,
+                value: field.value,
+                holdedDataId: user.holdedData!.id,
+              },
+            });
+          }
+        )
+      );
+
+      // Actualizar o crear contactPersons
+      await Promise.all(
+        (transformedHoldedData.contactPersons?.create || []).map(
+          async (person: any) => {
+            const existingContactPerson = await prisma.contactPerson.findFirst({
+              where: {
+                personId: person.personId,
+                holdedDataId: user.holdedData!.id,
+              },
+            });
+
+            return prisma.contactPerson.upsert({
+              where: { id: existingContactPerson?.id ?? "" },
+              update: {
+                name: person.name || "",
+                job: person.job || "",
+                phone: person.phone?.toString() || "",
+                email: person.email || "",
+                sendDocuments: person.sendDocuments ? 1 : 0,
+              },
+              create: {
+                personId: person.personId,
+                name: person.name || "",
+                job: person.job || "",
+                phone: person.phone?.toString() || "",
+                email: person.email || "",
+                sendDocuments: person.sendDocuments ? 1 : 0,
+                holdedDataId: user.holdedData!.id,
+              },
+            });
+          }
+        )
+      );
+
+      // Actualizar el usuario
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -290,44 +166,11 @@ export const updateUserHoldedData = async (
         lastHoldedSyncAt: updatedUser.lastHoldedSyncAt,
       };
     } else {
-      const newContactPersons = transformedHoldedData.contactPersons.map(
-        (person: any) => ({
-          personId: person.personId,
-          name: person.name || "",
-          job: person.job || "",
-          phone: person.phone || "",
-          email: person.email || "",
-          sendDocuments: person.sendDocuments ? 1 : 0,
-        })
-      );
-
-      const newCustomFields = transformedHoldedData.customFields || [];
-
+      // Crear nuevos datos de Holded
       const newHoldedData = await prisma.holdedData.create({
         data: {
           ...transformedHoldedData,
           userId: userId,
-          contactPersons: {
-            create: newContactPersons,
-          },
-          customFields: {
-            create: newCustomFields,
-          },
-          billAddress: transformedHoldedData.billAddress
-            ? {
-                create: transformedHoldedData.billAddress,
-              }
-            : undefined,
-          defaults: transformedHoldedData.defaults
-            ? {
-                create: transformedHoldedData.defaults.create,
-              }
-            : undefined,
-          socialNetworks: transformedHoldedData.socialNetworks
-            ? {
-                create: transformedHoldedData.socialNetworks.create,
-              }
-            : undefined,
         },
       });
 

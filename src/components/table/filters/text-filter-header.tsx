@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input } from "@/src/components/ui/input";
 import { Column } from "@tanstack/react-table";
 import { XIcon } from "lucide-react";
+import { Badge } from "@/src/components/ui/badge";
 
 type TextFilterHeaderProps<T> = {
   column: Column<T>;
@@ -36,7 +37,7 @@ function TextFilterHeader<T>({ column, title }: TextFilterHeaderProps<T>) {
   return (
     <div className="flex flex-col">
       {title}
-      <div className="mt-1">
+      <div className="">
         <Input
           placeholder={`Filtrar ${title.toLowerCase()}...`}
           value={inputValue}
@@ -44,20 +45,21 @@ function TextFilterHeader<T>({ column, title }: TextFilterHeaderProps<T>) {
           onKeyDown={handleKeyDown}
           className="mt-1"
         />
-        <div className="mt-1 space-y-1">
+        <div className="my-1 space-y-1">
           {filterValues.map((value) => (
-            <div
+            <Badge
               key={value}
-              className="flex items-center justify-between bg-gray-200 rounded px-2 py-1"
+              className="flex items-center justify-between bg-slate-200 hover:bg-slate-300"
             >
-              <span>{value}</span>
+              <span className="text-slate-500">{value}</span>
               <button
                 onClick={() => removeFilter(value)}
                 aria-label="Remove filter"
+                className="ml-2"
               >
-                <XIcon className="h-4 w-4 text-red-500" />
+                <XIcon className="h-4 w-4 text-red-600" />
               </button>
-            </div>
+            </Badge>
           ))}
         </div>
       </div>

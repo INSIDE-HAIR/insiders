@@ -39,7 +39,11 @@ export const getUsers = async () => {
     const users = await prisma.user.findMany({
       include: {
         accounts: true,
-        holdedData: true,
+        holdedData: {
+          include: {
+            customFields: true,
+          },
+        },
         twoFactorConfirmation: true,
       },
     });
