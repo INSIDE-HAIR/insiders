@@ -48,6 +48,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
+import { Pagination } from "@/src/components/table/pagination/pagination";
 
 // Extend the User type to include HoldedData and CustomFields
 type ExtendedUser = User & {
@@ -96,6 +97,10 @@ export default function UsersTable() {
     };
     fetchData();
   }, []);
+  
+  React.useEffect(() => {
+    table.setPageCount(Math.ceil(data.length / pageSize));
+  }, [data, pageSize]);
 
   const handleRemoveFilter = (
     id: string,
@@ -211,7 +216,6 @@ export default function UsersTable() {
       };
     });
   };
-
 
   const columns: ColumnDef<ExtendedUser>[] = [
     {
@@ -468,17 +472,17 @@ export default function UsersTable() {
     },
   ];
 
+  // Dentro de tu componente UsersTable
+  const paginatedData = React.useMemo(() => {
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    return data.slice(start, end);
+  }, [data, pageIndex, pageSize]);
+
   const table = useReactTable({
-    data,
+    data: paginatedData,
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    pageCount: Math.ceil(data.length / pageSize),
     state: {
       sorting,
       columnFilters,
@@ -489,6 +493,21 @@ export default function UsersTable() {
         pageIndex,
       },
     },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newState = updater({ pageIndex, pageSize });
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      }
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     manualPagination: true,
   });
 
@@ -639,24 +658,12 @@ export default function UsersTable() {
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
         </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-          </Button>
-        </div>
+        <Pagination
+          table={table}
+          pageIndex={pageIndex}
+          pageCount={table.getPageCount()}
+          setPageIndex={setPageIndex}
+        />
       </div>
       <div className="flex gap-2 items-center">
         <h2 className="text-sm text-slate-600">Mostrar en lista:</h2>
@@ -664,12 +671,12 @@ export default function UsersTable() {
           value={pageSize.toString()}
           onValueChange={(value) => {
             const newPageSize = Number(value);
-            setPageSize(newPageSize);
-            setPageIndex(0);
             table.setPageSize(newPageSize);
+            setPageSize(newPageSize);
+            setPageIndex(0); // Resetear a la primera página
           }}
         >
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Usuarios por página" />
           </SelectTrigger>
           <SelectContent>
