@@ -2496,6 +2496,36 @@
                 "endDateTime": null
               },
               "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "SMS & WhatsApp",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "tabsCardsList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensType": "copyTextCards",
+                  "childrensCode": ["6969"],
+                  "title": null,
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
             }
           ],
           "active": true,
