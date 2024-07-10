@@ -44,7 +44,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
@@ -68,25 +67,24 @@ export default function UsersTable() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [data, setData] = React.useState<ExtendedUser[]>([]);
   const [pageSize, setPageSize] = React.useState(10);
-
-  const [insidersFieldsActive, setInsidersFieldsActive] = React.useState(false);
-  const [marketingActive, setMarketingActive] = React.useState(false);
-  const [salesFieldsActive, setSalesFieldsActive] = React.useState(false);
-  const [clientFieldsActive, setClientFieldsActive] = React.useState(false);
-  const [consultoriaMentoringActive, setConsultoriaMentoringActive] =
-    React.useState(false);
-  const [formacionesActive, setFormacionesActive] = React.useState(false);
-  const [creativitiesActive, setCreativitiesActive] = React.useState(false);
   const [pageIndex, setPageIndex] = React.useState(0);
+
+  const [activeFields, setActiveFields] = React.useState({
+    insidersFields: false,
+    marketing: false,
+    salesFields: false,
+    clientFields: false,
+    consultoriaMentoring: false,
+    formaciones: false,
+    creativities: false,
+  });
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const users = await getUsers();
         if (users !== null) {
-          // Verifica si los datos incluyen holdedData y customFields
-          console.log(users);
-          setData(users as unknown as ExtendedUser[]);
+          setData(users as ExtendedUser[]);
         } else {
           setData([]);
         }
@@ -97,10 +95,247 @@ export default function UsersTable() {
     };
     fetchData();
   }, []);
+
+  const createCustomColumns = React.useCallback(
+    (
+      fields: Field[],
+      category: string,
+      data: ExtendedUser[]
+    ): ColumnDef<ExtendedUser>[] => {
+      return fields.map((field) => ({
+        accessorKey: `${category}.${field.es}`,
+        header: ({ column }) => {
+          if (field.type === "selection") {
+            return (
+              <CheckboxFilterHeader
+                column={column}
+                title={field.es}
+                data={data}
+                accessorKey={`${category}.${field.es}` as keyof ExtendedUser}
+                options={field.options}
+              />
+            );
+          } else if (field.type === "date") {
+            return (
+              <DateRangeFilterHeader
+                column={column}
+                title={field.es}
+                onAddFilter={handleAddFilter}
+              />
+            );
+          } else {
+            return <TextFilterHeader column={column} title={field.es} />;
+          }
+        },
+        cell: ({ row }: any) => {
+          const customField = row.original.holdedData?.customFields?.find(
+            (cf: { field: string }) => cf.field === field.es
+          );
+          return <div>{customField?.value || "N/A"}</div>;
+        },
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0)
+            return true;
+          const customField = row.original.holdedData?.customFields?.find(
+            (cf: { field: string }) => cf.field === field.es
+          );
+          const rowValue = (customField?.value as string)?.toLowerCase() ?? "";
+          return (filterValue as string[]).some((value) =>
+            rowValue.includes(value.toLowerCase())
+          );
+        },
+      }));
+    },
+    []
+  );
+
+  const columns = React.useMemo<ColumnDef<ExtendedUser>[]>(() => {
+    const baseColumns: ColumnDef<ExtendedUser>[] = [
+      // Your existing base columns
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }: { row: any }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "holdedId",
+        header: ({ column }) => (
+          <TextFilterHeader column={column} title="Holded ID" />
+        ),
+        cell: ({ row }) => (
+          <div>{row.original.holdedData?.holdedId || "N/A"}</div>
+        ),
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0)
+            return true;
+          const rowValue =
+            (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+          return (filterValue as string[]).some((value) =>
+            rowValue.includes(value.toLowerCase())
+          );
+        },
+      },
+      {
+        accessorKey: "email",
+        header: ({ column }) => (
+          <TextFilterHeader column={column} title="Email" />
+        ),
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("email")}</div>
+        ),
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0)
+            return true;
+          const rowValue =
+            (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+          return (filterValue as string[]).some((value) =>
+            rowValue.includes(value.toLowerCase())
+          );
+        },
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <TextFilterHeader column={column} title="Nombre" />
+        ),
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("name")}</div>
+        ),
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0)
+            return true;
+          const rowValue =
+            (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+          return (filterValue as string[]).some((value) =>
+            rowValue.includes(value.toLowerCase())
+          );
+        },
+      },
+      {
+        accessorKey: "lastName",
+        header: ({ column }) => (
+          <TextFilterHeader column={column} title="Apellido" />
+        ),
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("lastName")}</div>
+        ),
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0)
+            return true;
+          const rowValue =
+            (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+          return (filterValue as string[]).some((value) =>
+            rowValue.includes(value.toLowerCase())
+          );
+        },
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => (
+          <CheckboxFilterHeader
+            column={column}
+            title="Rol"
+            data={data}
+            accessorKey="role"
+          />
+        ),
+        cell: ({ row }) => (
+          <div className="capitalize">{row.getValue("role")}</div>
+        ),
+        filterFn: (row, columnId, filterValue) => {
+          if (!Array.isArray(filterValue) || filterValue.length === 0) {
+            return true;
+          }
+          const rowValue =
+            (row.getValue(columnId) as string)?.toLowerCase() ?? "";
+          return (filterValue as string[])
+            .map((val) => val.toLowerCase())
+            .includes(rowValue);
+        },
+      },
+    ];
+
+    const customColumns = Object.entries(activeFields).flatMap(
+      ([key, isActive]) =>
+        isActive
+          ? createCustomColumns(
+              dataBaseTranslation
+                .find((group) => group.id === key)
+                ?.groups.flatMap((group) => group.fields) || [],
+              key,
+              data
+            )
+          : []
+    );
+
+    return [...baseColumns, ...customColumns];
+  }, [activeFields, data, createCustomColumns]);
   
-  React.useEffect(() => {
-    table.setPageCount(Math.ceil(data.length / pageSize));
-  }, [data, pageSize]);
+  const filteredData = React.useMemo(() => {
+    if (!data || !columns) return [];
+  
+    const filteredModel = getFilteredRowModel({
+      data,
+      state: { columnFilters },
+      columns,
+    });
+    
+    return filteredModel.rows ? filteredModel.rows.map((row) => row.original) : [];
+  }, [data, columnFilters, columns]);
+
+  const paginatedData = React.useMemo(() => {
+    const start = pageIndex * pageSize;
+    const end = start + pageSize;
+    return filteredData.slice(start, end);
+  }, [filteredData, pageIndex, pageSize]);
+
+  const table = useReactTable({
+    data: paginatedData,
+    columns,
+    pageCount: Math.ceil(filteredData.length / pageSize),
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      pagination: { pageIndex, pageSize },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newState = updater({ pageIndex, pageSize });
+        setPageIndex(newState.pageIndex);
+        setPageSize(newState.pageSize);
+      }
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    manualPagination: true,
+  });
 
   const handleRemoveFilter = (
     id: string,
@@ -161,356 +396,6 @@ export default function UsersTable() {
     });
   };
 
-  const createCustomColumns = (
-    fields: Record<string, Field>,
-    category: string,
-    data: ExtendedUser[] // Pasar los datos para los encabezados
-  ): ColumnDef<ExtendedUser>[] => {
-    return Object.entries(fields || {}).map(([key, field]) => {
-      return {
-        accessorKey: `${category}.${field.es}`,
-        header: ({ column }) => {
-          if (field.type === "selection") {
-            return (
-              <CheckboxFilterHeader
-                column={column}
-                title={field.es}
-                data={data}
-                accessorKey={`${category}.${field.es}` as keyof ExtendedUser}
-                options={field.options} // Pasar las opciones si están disponibles
-              />
-            );
-          } else if (field.type === "date") {
-            return (
-              <DateRangeFilterHeader
-                column={column}
-                title={field.es}
-                onAddFilter={handleAddFilter}
-              />
-            );
-          } else {
-            return <TextFilterHeader column={column} title={field.es} />;
-          }
-        },
-        cell: ({ row }: any) => {
-          const customField = row.original.holdedData?.customFields?.find(
-            (cf: { field: string }) => cf.field === field.es
-          );
-          return <div>{customField?.value || "N/A"}</div>;
-        },
-        filterFn:
-          field.type === "text" || field.type === "selection"
-            ? (row, columnId, filterValue) => {
-                if (!Array.isArray(filterValue) || filterValue.length === 0)
-                  return true;
-                const customField = row.original.holdedData?.customFields?.find(
-                  (cf: { field: string }) => cf.field === field.es
-                );
-                const rowValue =
-                  (customField?.value as string)?.toLowerCase() ?? "";
-                return (filterValue as string[]).some((value) =>
-                  rowValue.includes(value.toLowerCase())
-                );
-              }
-            : undefined,
-      };
-    });
-  };
-
-  const columns: ColumnDef<ExtendedUser>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }: { row: any }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: "holdedId",
-      header: ({ column }) => (
-        <TextFilterHeader column={column} title="Holded ID" />
-      ),
-      cell: ({ row }) => (
-        <div>{row.original.holdedData?.holdedId || "N/A"}</div>
-      ),
-      filterFn: (row, columnId, filterValue) => {
-        if (!Array.isArray(filterValue) || filterValue.length === 0)
-          return true;
-        const rowValue =
-          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
-        return (filterValue as string[]).some((value) =>
-          rowValue.includes(value.toLowerCase())
-        );
-      },
-    },
-    {
-      accessorKey: "email",
-      header: ({ column }) => (
-        <TextFilterHeader column={column} title="Email" />
-      ),
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("email")}</div>
-      ),
-      filterFn: (row, columnId, filterValue) => {
-        if (!Array.isArray(filterValue) || filterValue.length === 0)
-          return true;
-        const rowValue =
-          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
-        return (filterValue as string[]).some((value) =>
-          rowValue.includes(value.toLowerCase())
-        );
-      },
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <TextFilterHeader column={column} title="Nombre" />
-      ),
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("name")}</div>
-      ),
-      filterFn: (row, columnId, filterValue) => {
-        if (!Array.isArray(filterValue) || filterValue.length === 0)
-          return true;
-        const rowValue =
-          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
-        return (filterValue as string[]).some((value) =>
-          rowValue.includes(value.toLowerCase())
-        );
-      },
-    },
-    {
-      accessorKey: "lastName",
-      header: ({ column }) => (
-        <TextFilterHeader column={column} title="Apellido" />
-      ),
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("lastName")}</div>
-      ),
-      filterFn: (row, columnId, filterValue) => {
-        if (!Array.isArray(filterValue) || filterValue.length === 0)
-          return true;
-        const rowValue =
-          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
-        return (filterValue as string[]).some((value) =>
-          rowValue.includes(value.toLowerCase())
-        );
-      },
-    },
-    {
-      accessorKey: "role",
-      header: ({ column }) => (
-        <CheckboxFilterHeader
-          column={column}
-          title="Rol"
-          data={data}
-          accessorKey="role"
-        />
-      ),
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("role")}</div>
-      ),
-      filterFn: (row, columnId, filterValue) => {
-        if (!Array.isArray(filterValue) || filterValue.length === 0) {
-          return true;
-        }
-        const rowValue =
-          (row.getValue(columnId) as string)?.toLowerCase() ?? "";
-        return (filterValue as string[])
-          .map((val) => val.toLowerCase())
-          .includes(rowValue);
-      },
-    },
-    ...(salesFieldsActive
-      ? createCustomColumns(
-          dataBaseTranslation.salesFields.sales,
-          "sales",
-          data
-        )
-      : []),
-    ...(clientFieldsActive
-      ? createCustomColumns(
-          dataBaseTranslation.clientsFields.client,
-          "clientFields",
-          data
-        )
-      : []),
-    ...(insidersFieldsActive
-      ? createCustomColumns(
-          dataBaseTranslation.clientsFields.insiders,
-          "clientFields",
-          data
-        )
-      : []),
-    ...(marketingActive
-      ? createCustomColumns(
-          dataBaseTranslation.servicesFields.marketing,
-          "marketing",
-          data
-        )
-      : []),
-    ...(consultoriaMentoringActive
-      ? createCustomColumns(
-          dataBaseTranslation.servicesFields.consultoriaMentoring,
-          "consultoriaMentoring",
-          data
-        )
-      : []),
-    ...(formacionesActive
-      ? createCustomColumns(
-          dataBaseTranslation.servicesFields.formaciones,
-          "formaciones",
-          data
-        )
-      : []),
-    ...(creativitiesActive
-      ? createCustomColumns(
-          dataBaseTranslation.servicesFields.creativities,
-          "creativities",
-          data
-        )
-      : []),
-    {
-      accessorKey: "lastLogin",
-      header: ({ column }) => (
-        <DateRangeFilterHeader
-          column={column}
-          title="Última conexión"
-          onAddFilter={handleAddFilter}
-        />
-      ),
-      cell: ({ row }) =>
-        new Date(row.getValue("lastLogin")).toLocaleDateString(),
-      filterFn: (row, columnId, filterValue) => {
-        if (!filterValue) return true;
-        const rowValue = new Date(row.getValue(columnId)).getTime();
-        const { from, to } = filterValue as { from?: number; to?: number };
-        if (from && to) {
-          return rowValue >= from && rowValue <= to;
-        } else if (from) {
-          return rowValue >= from;
-        } else if (to) {
-          return rowValue <= to;
-        }
-        return true;
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: ({ column }) => (
-        <DateRangeFilterHeader
-          column={column}
-          title="Fecha de Creación"
-          onAddFilter={handleAddFilter}
-        />
-      ),
-      cell: ({ row }) => {
-        const date = new Date(row.getValue("createdAt"));
-        return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-      },
-      filterFn: (row, columnId, filterValue) => {
-        if (!filterValue) return true;
-        const rowValue = new Date(row.getValue(columnId)).getTime();
-        const { from, to } = filterValue as { from?: number; to?: number };
-        if (from && to) {
-          return rowValue >= from && rowValue <= to;
-        } else if (from) {
-          return rowValue >= from;
-        } else if (to) {
-          return rowValue <= to;
-        }
-        return true;
-      },
-    },
-    {
-      id: "actions",
-      cell: ({ row }) => {
-        const user = row.original;
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Abrir menú</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(user.id)}
-              >
-                Copiar ID
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(user.email)}
-              >
-                Copiar Email
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <Link href={`/insiders/admin/users/${user.email}`}>
-                <DropdownMenuItem>Ver o Editar</DropdownMenuItem>
-              </Link>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
-      },
-    },
-  ];
-
-  // Dentro de tu componente UsersTable
-  const paginatedData = React.useMemo(() => {
-    const start = pageIndex * pageSize;
-    const end = start + pageSize;
-    return data.slice(start, end);
-  }, [data, pageIndex, pageSize]);
-
-  const table = useReactTable({
-    data: paginatedData,
-    columns,
-    pageCount: Math.ceil(data.length / pageSize),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-      pagination: {
-        pageSize,
-        pageIndex,
-      },
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater === "function") {
-        const newState = updater({ pageIndex, pageSize });
-        setPageIndex(newState.pageIndex);
-        setPageSize(newState.pageSize);
-      }
-    },
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    manualPagination: true,
-  });
-
   const appliedFilters = columnFilters.map((filter) => ({
     id: filter.id,
     value: filter.value as string | string[] | { from?: number; to?: number },
@@ -531,48 +416,21 @@ export default function UsersTable() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuCheckboxItem
-              checked={salesFieldsActive}
-              onCheckedChange={setSalesFieldsActive}
-            >
-              Ventas
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={clientFieldsActive}
-              onCheckedChange={setClientFieldsActive}
-            >
-              Clientes
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={insidersFieldsActive}
-              onCheckedChange={setInsidersFieldsActive}
-            >
-              Insiders
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={marketingActive}
-              onCheckedChange={setMarketingActive}
-            >
-              Marketing
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={consultoriaMentoringActive}
-              onCheckedChange={setConsultoriaMentoringActive}
-            >
-              Consultoría y Mentoring
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={formacionesActive}
-              onCheckedChange={setFormacionesActive}
-            >
-              Formaciones
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              checked={creativitiesActive}
-              onCheckedChange={setCreativitiesActive}
-            >
-              Creatividades
-            </DropdownMenuCheckboxItem>
+            {Object.keys(activeFields).map((key) => (
+              <DropdownMenuCheckboxItem
+                key={key}
+                checked={activeFields[key as keyof typeof activeFields]}
+                onCheckedChange={(value) =>
+                  setActiveFields((prev) => ({
+                    ...prev,
+                    [key]: value,
+                  }))
+                }
+              >
+                {dataBaseTranslation.find((group) => group.id === key)?.es ||
+                  key}
+              </DropdownMenuCheckboxItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
@@ -656,12 +514,12 @@ export default function UsersTable() {
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} fila(s) seleccionadas.
+          {filteredData.length} fila(s) seleccionadas.
         </div>
         <Pagination
           table={table}
           pageIndex={pageIndex}
-          pageCount={table.getPageCount()}
+          pageCount={Math.ceil(filteredData.length / pageSize)}
           setPageIndex={setPageIndex}
         />
       </div>
@@ -671,9 +529,9 @@ export default function UsersTable() {
           value={pageSize.toString()}
           onValueChange={(value) => {
             const newPageSize = Number(value);
-            table.setPageSize(newPageSize);
             setPageSize(newPageSize);
-            setPageIndex(0); // Resetear a la primera página
+            setPageIndex(0); // Reset to first page
+            table.setPageSize(newPageSize);
           }}
         >
           <SelectTrigger className="w-[180px]">

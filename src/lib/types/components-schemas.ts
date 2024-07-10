@@ -2,6 +2,7 @@ export type ComponentsProps = {
   index: number;
   dataMarketingCards: any;
   item: {
+    auth?: string[];
     childrensCode?: Array<any> | [];
     id?: string;
     order?: number;

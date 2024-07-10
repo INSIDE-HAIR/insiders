@@ -3,7 +3,7 @@ import prisma from "@/prisma/database";
 import * as z from "zod";
 import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/contacts";
 import { transformHoldedData } from "@/src/lib/utils/clean-fields"; // Adjust the import path as necessary
-// Definir el esquema de validación con Zod
+
 const UpdateHoldedIdSchema = z.object({
   userId: z.string().min(24, "El ID del usuario es requerido"),
   holdedId: z
@@ -16,7 +16,6 @@ export const updateUserHoldedData = async (
   userId: string,
   holdedId: string
 ) => {
-  // Validar los parámetros de entrada usando el esquema de Zod
   const validatedFields = UpdateHoldedIdSchema.safeParse({ userId, holdedId });
 
   if (!validatedFields.success) {
@@ -27,7 +26,6 @@ export const updateUserHoldedData = async (
   }
 
   try {
-    // Obtener el usuario de la base de datos
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
@@ -49,7 +47,6 @@ export const updateUserHoldedData = async (
       };
     }
 
-    // Obtener los datos de Holded
     const holdedContact = await getHoldedContactById(holdedId);
     if (!holdedContact) {
       return {
@@ -57,14 +54,12 @@ export const updateUserHoldedData = async (
       };
     }
 
-    // Transformar los datos de Holded
     const transformedHoldedData = transformHoldedData(
       holdedContact,
       user.holdedData
     );
 
     if (user.holdedData) {
-      // Actualizar HoldedData sin establecer customFields o contactPersons directamente
       const updatedHoldedData = await prisma.holdedData.update({
         where: { userId: userId },
         data: {
@@ -86,11 +81,9 @@ export const updateUserHoldedData = async (
           billAddress: transformedHoldedData.billAddress,
           defaults: transformedHoldedData.defaults,
           socialNetworks: transformedHoldedData.socialNetworks,
-          // Removing customFields and contactPersons from direct update
         },
       });
 
-      // Actualizar o crear customFields si existen
       await Promise.all(
         (transformedHoldedData.customFields?.create || []).map(
           async (field: any) => {
@@ -102,7 +95,16 @@ export const updateUserHoldedData = async (
             });
 
             return prisma.customField.upsert({
-              where: { id: existingCustomField?.id ?? "" },
+              where: {
+                ...(existingCustomField?.id
+                  ? { id: existingCustomField.id }
+                  : {
+                      field_holdedDataId: {
+                        field: field.field,
+                        holdedDataId: user.holdedData!.id,
+                      },
+                    }),
+              },
               update: {
                 value: field.value,
               },
@@ -116,7 +118,6 @@ export const updateUserHoldedData = async (
         )
       );
 
-      // Actualizar o crear contactPersons
       await Promise.all(
         (transformedHoldedData.contactPersons?.create || []).map(
           async (person: any) => {
@@ -150,7 +151,6 @@ export const updateUserHoldedData = async (
         )
       );
 
-      // Actualizar el usuario
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -166,7 +166,6 @@ export const updateUserHoldedData = async (
         lastHoldedSyncAt: updatedUser.lastHoldedSyncAt,
       };
     } else {
-      // Crear nuevos datos de Holded
       const newHoldedData = await prisma.holdedData.create({
         data: {
           ...transformedHoldedData,

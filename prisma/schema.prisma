@@ -16,29 +16,119 @@ enum UserRole {
 }
 
 model User {
-  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
-  name                  String?                @default("")
-  lastName              String?                @default("")
-  email                 String                 @unique
-  emailVerified         DateTime?
-  image                 String?                @default("")
-  password              String?
-  contactNumber         String?                @default("")
-  terms                 Boolean                @default(true)
-  role                  UserRole               @default(CLIENT)
-  isTwoFactorEnabled    Boolean                @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
-  accounts              Account[]
-  holdedId              String?
-  createdHoldedSyncAt   DateTime?
-  lastHoldedSyncAt      DateTime?
-  docs                  Document[]
-  holdedData            HoldedData?
-  createdAt             DateTime               @default(now())
-  updatedAt             DateTime               @updatedAt
-  lastLogin             DateTime?              @default(now())
+  id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
+  name                         String?                       @default("")
+  lastName                     String?                       @default("")
+  email                        String                        @unique
+  emailVerified                DateTime?
+  image                        String?                       @default("")
+  password                     String?
+  contactNumber                String?                       @default("")
+  terms                        Boolean                       @default(true)
+  role                         UserRole                      @default(CLIENT)
+  isTwoFactorEnabled           Boolean                       @default(false)
+  twoFactorConfirmation        TwoFactorConfirmation?
+  accounts                     Account[]
+  holdedId                     String?                       @unique
+  createdHoldedSyncAt          DateTime?
+  lastHoldedSyncAt             DateTime?
+  docs                         Document[]
+  holdedData                   HoldedData?
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  lastLogin                    DateTime?                     @default(now())
   // Offers             Offer[]
-  // Services           Servicep[]              
+  salesFields                  SalesField[]
+  clientsFields                ClientField[]
+  consultingAndMentoringFields ConsultingAndMentoringField[]
+  trainingsFields              TrainingField[]
+  marketingFields              MarketingField[]
+  creativitiesFields           CreativityField[]
+  CustomField                  CustomField[]
+}
+
+model SalesField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
+}
+
+model ClientField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
+}
+
+model ConsultingAndMentoringField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
+}
+
+model TrainingField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
+}
+
+model MarketingField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
+}
+
+model CreativityField {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  holdedFieldName String
+  es              String
+  en              String
+  value           String
+  options         String[]
+  category        String
+  userId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, holdedFieldName])
 }
 
 // INICIO DE AUTH
@@ -181,11 +271,13 @@ model BillAddress {
 }
 
 model CustomField {
-  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
   field        String
-  holdedDataId String          @db.ObjectId
-  holdedData   HoldedData      @relation(fields: [holdedDataId], references: [id], onDelete: Cascade)
-  value        String?
+  value        String?    @default("")
+  holdedDataId String     @db.ObjectId
+  holdedData   HoldedData @relation(fields: [holdedDataId], references: [id], onDelete: Cascade)
+  User         User?      @relation(fields: [userId], references: [id])
+  userId       String?    @db.ObjectId
 
   @@unique([field, holdedDataId])
 }
