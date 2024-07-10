@@ -4,6 +4,7 @@ import * as z from "zod";
 import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/contacts";
 import { transformHoldedData } from "@/src/lib/utils/clean-fields";
 import { dataBaseTranslation } from "@/db/constants";
+import { ObjectId } from "mongodb";
 
 const UpdateHoldedIdSchema = z.object({
   userId: z.string().min(24, "El ID del usuario es requerido"),
@@ -41,77 +42,121 @@ const findUser = async (userId: string) => {
   });
 };
 
+
 const updateCustomFields = async (
   customFields: any[],
   holdedDataId: string
 ) => {
-  await Promise.all(
-    (customFields || []).map(async (field: any) => {
-      const existingCustomField = await prisma.customField.findFirst({
+  const today = new Date();
+
+  // Eliminar registros antiguos para este holdedDataId
+  await prisma.customField.deleteMany({
+    where: {
+      holdedDataId: holdedDataId,
+      createdAt: {
+        lt: today
+      }
+    }
+  });
+
+  // Crear o actualizar los nuevos registros
+  for (const field of customFields || []) {
+    try {
+      // Buscar si existe un registro con el mismo field y holdedDataId
+      const existingField = await prisma.customField.findFirst({
         where: {
           field: field.field,
-          holdedDataId,
-        },
+          holdedDataId: holdedDataId,
+        }
       });
 
-      return prisma.customField.upsert({
-        where: {
-          ...(existingCustomField?.id
-            ? { id: existingCustomField.id }
-            : {
-                field_holdedDataId: {
-                  field: field.field,
-                  holdedDataId,
-                },
-              }),
-        },
-        update: {
-          value: field.value,
-        },
-        create: {
-          field: field.field,
-          value: field.value,
-          holdedDataId,
-        },
-      });
-    })
-  );
+      if (existingField) {
+        // Si existe, actualizar
+        await prisma.customField.update({
+          where: { id: existingField.id },
+          data: {
+            value: field.value || "",
+            createdAt: new Date() // Actualizar el timestamp
+          }
+        });
+      } else {
+        // Si no existe, crear nuevo
+        await prisma.customField.create({
+          data: {
+            id: new ObjectId().toString(), // Generar un nuevo ObjectId
+            field: field.field,
+            value: field.value || "",
+            holdedDataId: holdedDataId,
+            createdAt: new Date()
+          }
+        });
+      }
+    } catch (error) {
+      console.error(`Error updating/creating custom field: ${error}`);
+    }
+  }
 };
 
 const updateContactPersons = async (
   contactPersons: any[],
   holdedDataId: string
 ) => {
-  await Promise.all(
-    (contactPersons || []).map(async (person: any) => {
-      const existingContactPerson = await prisma.contactPerson.findFirst({
+  const today = new Date();
+
+  // Eliminar registros antiguos para este holdedDataId
+  await prisma.contactPerson.deleteMany({
+    where: {
+      holdedDataId: holdedDataId,
+      createdAt: {
+        lt: today,
+      },
+    },
+  });
+
+  // Crear o actualizar los nuevos registros
+  for (const person of contactPersons || []) {
+    try {
+      // Buscar si existe un registro con el mismo personId y holdedDataId
+      const existingPerson = await prisma.contactPerson.findFirst({
         where: {
           personId: person.personId,
-          holdedDataId,
+          holdedDataId: holdedDataId,
         },
       });
 
-      return prisma.contactPerson.upsert({
-        where: { id: existingContactPerson?.id ?? "" },
-        update: {
-          name: person.name || "",
-          job: person.job || "",
-          phone: person.phone?.toString() || "",
-          email: person.email || "",
-          sendDocuments: person.sendDocuments ? 1 : 0,
-        },
-        create: {
-          personId: person.personId,
-          name: person.name || "",
-          job: person.job || "",
-          phone: person.phone?.toString() || "",
-          email: person.email || "",
-          sendDocuments: person.sendDocuments ? 1 : 0,
-          holdedDataId,
-        },
-      });
-    })
-  );
+      if (existingPerson) {
+        // Si existe, actualizar
+        await prisma.contactPerson.update({
+          where: { id: existingPerson.id },
+          data: {
+            name: person.name || "",
+            job: person.job || "",
+            phone: person.phone?.toString() || "",
+            email: person.email || "",
+            sendDocuments: person.sendDocuments ? 1 : 0,
+            createdAt: new Date(), // Actualizar el timestamp
+          },
+        });
+      } else {
+        // Si no existe, crear nuevo
+        await prisma.contactPerson.create({
+          data: {
+            id: new ObjectId().toString(), // Generar un nuevo ObjectId
+            personId: person.personId,
+            name: person.name || "",
+            job: person.job || "",
+            phone: person.phone?.toString() || "",
+            email: person.email || "",
+            sendDocuments: person.sendDocuments ? 1 : 0,
+            holdedDataId: holdedDataId,
+            createdAt: new Date(),
+          },
+        });
+      }
+    } catch (error) {
+      console.error(`Error updating/creating contact person: ${error}`);
+    }
+  }
 };
 
 const updateClientFields = async (userId: string, customFields: any[]) => {

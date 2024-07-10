@@ -9,13 +9,6 @@ import {
   CreativityField as PrismaCreativityField,
 } from "@prisma/client";
 
-export interface Field {
-  holdedFieldName: string;
-  es: string;
-  en: string;
-  value: string;
-}
-
 export interface User extends PrismaUser {
   salesFields: PrismaSalesField[];
   clientsFields: PrismaClientField[];
