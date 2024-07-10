@@ -5,6 +5,7 @@ import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/co
 import { transformHoldedData } from "@/src/lib/utils/clean-fields";
 import { dataBaseTranslation } from "@/db/constants";
 import { ObjectId } from "mongodb";
+import { sub } from "date-fns";
 
 const UpdateHoldedIdSchema = z.object({
   userId: z.string().min(24, "El ID del usuario es requerido"),
@@ -42,7 +43,6 @@ const findUser = async (userId: string) => {
   });
 };
 
-
 const updateCustomFields = async (
   customFields: any[],
   holdedDataId: string
@@ -54,9 +54,9 @@ const updateCustomFields = async (
     where: {
       holdedDataId: holdedDataId,
       createdAt: {
-        lt: today
-      }
-    }
+        lt: today,
+      },
+    },
   });
 
   // Crear o actualizar los nuevos registros
@@ -67,7 +67,7 @@ const updateCustomFields = async (
         where: {
           field: field.field,
           holdedDataId: holdedDataId,
-        }
+        },
       });
 
       if (existingField) {
@@ -76,8 +76,8 @@ const updateCustomFields = async (
           where: { id: existingField.id },
           data: {
             value: field.value || "",
-            createdAt: new Date() // Actualizar el timestamp
-          }
+            createdAt: new Date(), // Actualizar el timestamp
+          },
         });
       } else {
         // Si no existe, crear nuevo
@@ -87,8 +87,8 @@ const updateCustomFields = async (
             field: field.field,
             value: field.value || "",
             holdedDataId: holdedDataId,
-            createdAt: new Date()
-          }
+            createdAt: new Date(),
+          },
         });
       }
     } catch (error) {
@@ -161,21 +161,26 @@ const updateContactPersons = async (
 
 const updateClientFields = async (userId: string, customFields: any[]) => {
   const fieldModels = [
-    { name: "salesFields", model: prisma.salesField },
-    { name: "clientsFields", model: prisma.clientField },
+    { name: "Ventas", id: "salesFields", model: prisma.salesField },
+    { name: "Cliente", id: "clientsFields", model: prisma.clientField },
     {
-      name: "consultingAndMentoringFields",
+      name: "Consultoría y Mentoring",
+      id: "consultingAndMentoringFields",
       model: prisma.consultingAndMentoringField,
     },
-    { name: "trainingsFields", model: prisma.trainingField },
-    { name: "marketingFields", model: prisma.marketingField },
-    { name: "creativitiesFields", model: prisma.creativityField },
+    { name: "Formación", id: "trainingsFields", model: prisma.trainingField },
+    { name: "Marketing", id: "marketingFields", model: prisma.marketingField },
+    {
+      name: "Creatividad",
+      id: "creativitiesFields",
+      model: prisma.creativityField,
+    },
   ];
 
-  for (const { name, model } of fieldModels) {
+  for (const { id, model, name } of fieldModels) {
     const fields =
       dataBaseTranslation
-        .find((group) => group.id === name)
+        .find((group) => group.id === id)
         ?.groups.flatMap((g) => g.fields) || [];
 
     for (const field of fields) {
@@ -184,6 +189,10 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
       );
 
       if (customField) {
+        console.log(customField);
+        console.log(id);
+        console.log(name);
+
         await (model as any).upsert({
           where: {
             userId_holdedFieldName: {
@@ -192,7 +201,17 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
             },
           },
           update: {
+            holdedFieldName: field.holdedFieldName,
+            es: field.es,
+            en: field.en,
             value: customField.value,
+            options: field.options || [],
+            type: field.type,
+            categoryId: id,
+            categoryName: name,
+            subCategoryId: field.subCategoryId,
+            subCategoryName: field.subCategoryName,
+            updatedAt: new Date(),
           },
           create: {
             userId,
@@ -201,7 +220,12 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
             en: field.en,
             value: customField.value,
             options: field.options || [],
-            category: name,
+            type: field.type,
+            categoryId: id,
+            categoryName: name,
+            subCategoryId: field.subCategoryId,
+            subCategoryName: field.subCategoryName,
+            createdAt: new Date(),
           },
         });
       }

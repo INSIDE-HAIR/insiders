@@ -134,6 +134,8 @@ export type Field = {
   holdedFieldName: string;
   es: string;
   en: string;
+  subCategoryId: string;
+  subCategoryName: string;
   type: FieldType;
   options?: string[];
 };
@@ -165,6 +167,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "VENTAS - Mes de Creación del Contacto",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Mes de Creación del Contacto",
             en: "Month of Contact Creation",
             type: "selection",
@@ -185,6 +189,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "VENTAS - Año de Creación del Contacto",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Año de Creación del Contacto",
             en: "Year of Contact Creation",
             type: "selection",
@@ -192,6 +198,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "VENTAS - Origen del Lead",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Origen del Lead",
             en: "Lead Source",
             type: "selection",
@@ -214,6 +222,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "VENTAS - Responsable Primer Contacto",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Responsable Primer Contacto",
             en: "First Contact Responsible",
             type: "selection",
@@ -222,6 +232,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName:
               "VENTAS - Responsable de Sesión Estratégica Inicial",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Responsable de Sesión Estratégica Inicial",
             en: "Initial Strategic Session Responsible",
             type: "selection",
@@ -229,6 +241,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "VENTAS - Plan de Crecimiento 360",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Plan de Crecimiento 360",
             en: "360 Growth Plan",
             type: "selection",
@@ -236,6 +250,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "VENTAS - Responsable de Sesión de Bienvenida",
+            subCategoryId: "sales",
+            subCategoryName: "Ventas",
             es: "Responsable de Sesión de Bienvenida",
             en: "Welcome Session Responsible",
             type: "selection",
@@ -257,6 +273,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CLIENTES - Etapa del Manager",
+            subCategoryId: "client",
+            subCategoryName: "Clientes",
             es: "Etapa del Manager",
             en: "Manager Stage",
             type: "selection",
@@ -271,6 +289,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CLIENTES - Etapa del Salón",
+            subCategoryId: "client",
+            subCategoryName: "Clientes",
             es: "Etapa del Salón",
             en: "Salon Stage",
             type: "selection",
@@ -286,6 +306,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CLIENTES - Número de Colaboradores",
+            subCategoryId: "client",
+            subCategoryName: "Clientes",
             es: "Número de Colaboradores",
             en: "Number of Collaborators",
             type: "selection",
@@ -316,6 +338,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CLIENTES - Número de Salones",
+            subCategoryId: "client",
+            subCategoryName: "Clientes",
             es: "Número de Salones",
             en: "Number of Salons",
             type: "selection",
@@ -336,6 +360,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CLIENTES - Facturación Promedio Mensual",
+            subCategoryId: "client",
+            subCategoryName: "Clientes",
             es: "Facturación Promedio Mensual",
             en: "Average Monthly Billing",
             type: "selection",
@@ -364,6 +390,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CLIENTES - Estado del Cliente",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Estado del Cliente",
             en: "Client Status",
             type: "selection",
@@ -371,30 +399,40 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Alta",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Fecha de Alta",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Baja",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Fecha de Baja",
             en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Insiders ID",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Insiders ID",
             en: "Insiders ID",
             type: "text",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Standby",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Fecha de Standby",
             en: "Standby Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Fin de Servicios Activos",
+            subCategoryId: "insiders",
+            subCategoryName: "Insiders",
             es: "Fecha de Fin de Servicios Activos",
             en: "End Date of Active Services",
             type: "date",
@@ -415,6 +453,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "MENTORING - Responsable",
+            subCategoryId: "Mentoring",
+            subCategoryName: "Mentoring",
             es: "Responsable",
             en: "Responsible",
             type: "selection",
@@ -422,12 +462,16 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MENTORING - Fecha de Alta",
+            subCategoryId: "Mentoring",
+            subCategoryName: "Mentoring",
             es: "Fecha de Alta",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "MENTORING - Fecha de Baja",
+            subCategoryId: "Mentoring",
+            subCategoryName: "Mentoring",
             es: "Fecha de Baja",
             en: "End Date",
             type: "date",
@@ -435,24 +479,30 @@ export const dataBaseTranslation: CoreGroup[] = [
         ],
       },
       {
-        id: "mentoringExtra",
+        id: "extraMentoring",
         es: "Mentoría Extra",
         en: "Mentoring Extra",
         fields: [
           {
             holdedFieldName: "MENTORING EXTRA - Nº Contratado",
+            subCategoryId: "extraMentoring",
+            subCategoryName: "Mentoría Extra",
             es: "Nº Contratado",
             en: "Contracted Nº",
             type: "number",
           },
           {
             holdedFieldName: "MENTORING EXTRA - Nº Realizado",
+            subCategoryId: "extraMentoring",
+            subCategoryName: "Mentoría Extra",
             es: "Nº Realizado",
             en: "Realized Nº",
             type: "number",
           },
           {
             holdedFieldName: "MENTORING EXTRA - Responsable",
+            subCategoryId: "extraMentoring",
+            subCategoryName: "Mentoría Extra",
             es: "Responsable",
             en: "Responsible",
             type: "selection",
@@ -467,6 +517,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CM - Responsable",
+            subCategoryId: "cm",
+            subCategoryName: "CM",
             es: "Responsable",
             en: "Responsible",
             type: "selection",
@@ -474,12 +526,16 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "CM - Fecha de Alta",
+            subCategoryId: "cm",
+            subCategoryName: "CM",
             es: "Fecha de Alta",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "CM - Fecha de Baja",
+            subCategoryId: "cm",
+            subCategoryName: "CM",
             es: "Fecha de Baja",
             en: "End Date",
             type: "date",
@@ -500,6 +556,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CONSULTORÍA 360º - Edición",
+            subCategoryId: "consulting360",
+            subCategoryName: "Consultoría 360º",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -514,6 +572,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "FORMACIÓN INP - Edición",
+            subCategoryId: "inpTraining",
+            subCategoryName: "Formación INP",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -534,18 +594,24 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "INSIDE CLUB - Fecha de Inicio",
+            subCategoryId: "insideClub",
+            subCategoryName: "Inside Club",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "INSIDE CLUB - Fecha de Fin",
+            subCategoryId: "insideClub",
+            subCategoryName: "Inside Club",
             es: "Fecha de Fin",
             en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "INSIDE CLUB - Nivel",
+            subCategoryId: "insideClub",
+            subCategoryName: "Inside Club",
             es: "Nivel",
             en: "Level",
             type: "selection",
@@ -560,18 +626,24 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Fecha de Inicio",
+            subCategoryId: "directiveManagement",
+            subCategoryName: "Gestión Directiva",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Fecha de Fin",
+            subCategoryId: "directiveManagement",
+            subCategoryName: "Gestión Directiva",
             es: "Fecha de Fin",
             en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Nivel",
+            subCategoryId: "directiveManagement",
+            subCategoryName: "Gestión Directiva",
             es: "Nivel",
             en: "Level",
             type: "selection",
@@ -582,10 +654,12 @@ export const dataBaseTranslation: CoreGroup[] = [
       {
         id: "hypersalesSalon",
         es: "Salón Hiperventas",
-        en: "Hypersales Salon",
+        en: "Hypersales Salón",
         fields: [
           {
             holdedFieldName: "SALÓN HIPERVENTAS - Edición",
+            subCategoryId: "hypersalesSalon",
+            subCategoryName: "Salón Hiperventas",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -610,6 +684,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "IBM - Edición",
+            subCategoryId: "ibm",
+            subCategoryName: "IBM",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -634,6 +710,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "STAR CLUB - Edición",
+            subCategoryId: "starClub",
+            subCategoryName: "Star Club",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -653,6 +731,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "SALÓN EXPERIENCE - Edición",
+            subCategoryId: "salonExperience",
+            subCategoryName: "Salón Experience",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -672,6 +752,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "SCALING-S - Edición",
+            subCategoryId: "scalingS",
+            subCategoryName: "Scaling-S",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -692,6 +774,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "MENÚ DE SERVICIOS - Edición",
+            subCategoryId: "servicesMenu",
+            subCategoryName: "Menú de Servicios",
             es: "Edición",
             en: "Edition",
             type: "selection",
@@ -713,18 +797,24 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "MARKETING SALÓN - Fecha de Inicio",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "MARKETING SALÓN - Fecha de Fin",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Fecha de Fin",
             en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "MARKETING SALÓN - Nivel",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Nivel",
             en: "Level",
             type: "selection",
@@ -732,6 +822,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses NUEVOS",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Meses NUEVOS",
             en: "NEW Months",
             type: "selection",
@@ -774,6 +866,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses JUNIOR",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Meses JUNIOR",
             en: "JUNIOR Months",
             type: "selection",
@@ -816,6 +910,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses AVANZADO",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Meses AVANZADO",
             en: "ADVANCED Months",
             type: "selection",
@@ -858,6 +954,8 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses MÁSTER",
+            subCategoryId: "marketingSalon",
+            subCategoryName: "Marketing Salón",
             es: "Meses MÁSTER",
             en: "MASTER Months",
             type: "selection",
@@ -914,6 +1012,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CREACIÓN DE MARCA - Fecha de Inicio",
+            subCategoryId: "brandCreation",
+            subCategoryName: "Creación de Marca",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -927,6 +1027,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "DISEÑO DE MARCA - Fecha de Inicio",
+            subCategoryId: "brandDesign",
+            subCategoryName: "Diseño de Marca",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -940,6 +1042,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "DESARROLLO DE MARCA - Fecha de Inicio",
+            subCategoryId: "brandDevelopment",
+            subCategoryName: "Desarrollo de Marca",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -953,6 +1057,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "CREACIÓN DE LOGOTIPO - Fecha de Inicio",
+            subCategoryId: "logoCreation",
+            subCategoryName: "Creación de Logotipo",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -966,6 +1072,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "DISEÑO DE FACHADA - Fecha de Inicio",
+            subCategoryId: "facadeDesign",
+            subCategoryName: "Diseño de Fachada",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -979,6 +1087,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "DISEÑO DE INTERIORISMO - Fecha de Inicio",
+            subCategoryId: "interiorDesign",
+            subCategoryName: "Diseño de Interiorismo",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",
@@ -992,6 +1102,8 @@ export const dataBaseTranslation: CoreGroup[] = [
         fields: [
           {
             holdedFieldName: "DISEÑO WEB - Fecha de Inicio",
+            subCategoryId: "webDesign",
+            subCategoryName: "Diseño Web",
             es: "Fecha de Inicio",
             en: "Start Date",
             type: "date",

@@ -48,85 +48,121 @@ model User {
 }
 
 model SalesField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
 
 model ClientField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
 
 model ConsultingAndMentoringField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
 
 model TrainingField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
 
 model MarketingField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
 
 model CreativityField {
-  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   es              String
   en              String
   value           String
   options         String[]
-  category        String
-  userId          String   @db.ObjectId
-  user            User     @relation(fields: [userId], references: [id])
+  type            String
+  categoryId      String?
+  categoryName    String?
+  subCategoryId   String?
+  subCategoryName String?
+  userId          String    @db.ObjectId
+  user            User      @relation(fields: [userId], references: [id])
+  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime? @default(now())
 
   @@unique([userId, holdedFieldName])
 }
