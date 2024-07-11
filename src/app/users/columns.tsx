@@ -10,9 +10,18 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
-import { ServiceUser } from "./lib/types/user";
+import { ServiceUser, FieldType } from "./lib/types/user";
 
 export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
+  const categoryNames: Record<FieldType, string> = {
+    clientsFields: "Clientes",
+    salesFields: "Ventas",
+    consultingAndMentoringFields: "Consultoría y Mentoring",
+    marketingFields: "Marketing",
+    trainingsFields: "Formación",
+    creativitiesFields: "Creatividad",
+  };
+
   return useMemo(() => {
     if (!data || data.length === 0) return [];
 
@@ -43,16 +52,18 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
+        enableHiding: false,
       },
       {
         accessorKey: "email",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Email" />
         ),
+        enableHiding: false,
       },
     ];
 
-    const fieldTypes = [
+    const fieldTypes: FieldType[] = [
       "clientsFields",
       "salesFields",
       "consultingAndMentoringFields",
@@ -64,29 +75,34 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     const dynamicColumns: ColumnDef<ServiceUser>[] = [];
 
     fieldTypes.forEach((fieldType) => {
-      const allFields = data.flatMap(
-        (user) => user[fieldType as keyof ServiceUser] || []
-      );
+      const allFields = data.flatMap((user) => user[fieldType] || []);
       const uniqueFields = Array.from(
-        new Set(allFields.map((field) => field.es))
+        new Set(allFields.map((field) => field.holdedFieldName))
       );
 
       uniqueFields.forEach((fieldName) => {
-        dynamicColumns.push({
-          id: `${fieldType}_${fieldName}`,
-          accessorFn: (row: ServiceUser) => {
-            const fields = row[fieldType as keyof ServiceUser];
-            if (Array.isArray(fields)) {
-              const field = fields.find((f) => f.es === fieldName);
-              return field ? field.value : "";
-            }
-            return "";
-          },
-          header: ({ column }) => (
-            <DataTableColumnHeader column={column} title={fieldName} />
-          ),
-          cell: ({ getValue }) => getValue() || "",
-        });
+        const field = allFields.find((f) => f.holdedFieldName === fieldName);
+        if (field) {
+          dynamicColumns.push({
+            id: `${fieldType}_${fieldName}`,
+            accessorFn: (row: ServiceUser) => {
+              const fields = row[fieldType];
+              if (Array.isArray(fields)) {
+                const field = fields.find(
+                  (f) => f.holdedFieldName === fieldName
+                );
+                return field ? field.value : "";
+              }
+              return "";
+            },
+            header: field.es,
+            cell: ({ getValue }) => getValue() || "",
+            meta: {
+              category: categoryNames[fieldType],
+              subCategory: field.subCategoryName,
+            },
+          });
+        }
       });
     });
 
@@ -118,5 +134,6 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     };
 
     return [...baseColumns, ...dynamicColumns, actionsColumn];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 };

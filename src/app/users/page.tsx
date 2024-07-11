@@ -6,8 +6,9 @@ import { getUsers, syncUsersWithHolded } from "./lib/api/api";
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import { DataTable } from "@/src/components/table/data-table";
+
 import { useColumns } from "./columns"; // Asegúrate de que la ruta de importación sea correcta
+import { DataTable } from "./components/DataTable";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<ServiceUser[]>([]);
@@ -34,8 +35,6 @@ export default function UsersPage() {
     fetchUsers();
   }, [fetchUsers]);
 
-
-  
   const handleSync = async () => {
     try {
       setIsSyncing(true);
