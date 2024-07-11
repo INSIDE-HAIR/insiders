@@ -1,8 +1,8 @@
-// src/lib/api.ts
+// src/app/users/lib/api/api.ts
 import axios from "axios";
-import { User } from "../types/user";
+import { ServiceUser } from "../types/user";
 
-export async function getUsers(): Promise<User[]> {
+export async function getUsers(): Promise<ServiceUser[]> {
   try {
     const response = await axios.get("/api/users");
     return response.data;

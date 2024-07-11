@@ -5,7 +5,6 @@ import { getHoldedContactById } from "@/src/lib/server-actions/vendors/holded/co
 import { transformHoldedData } from "@/src/lib/utils/clean-fields";
 import { dataBaseTranslation } from "@/db/constants";
 import { ObjectId } from "mongodb";
-import { sub } from "date-fns";
 
 const UpdateHoldedIdSchema = z.object({
   userId: z.string().min(24, "El ID del usuario es requerido"),

@@ -10,7 +10,7 @@ import { Button } from "@/src/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { User } from "@/src/lib/types/user";
 import { dataBaseTranslation } from "@/db/constants";
-import { DataTableColumnHeader } from "./DataTableColumnHeader";
+import { DataTableColumnHeader } from "../table/data-table-column-header";
 
 // Función auxiliar para obtener todas las columnas de dataBaseTranslation
 const getAllColumns = (): ColumnDef<User>[] => {

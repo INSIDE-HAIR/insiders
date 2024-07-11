@@ -8,6 +8,12 @@ export async function GET(request: NextRequest) {
   try {
     const users = await prisma.user.findMany({
       include: {
+        clientsFields: true,
+        salesFields: true,
+        consultingAndMentoringFields: true,
+        marketingFields: true,
+        trainingsFields: true,
+        creativitiesFields: true,
         holdedData: {
           include: {
             customFields: true,
