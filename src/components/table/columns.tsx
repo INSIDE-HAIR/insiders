@@ -2,8 +2,8 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ServiceUser } from "@/src/app/users/lib/types/user";
 import { DataTableColumnHeader } from "./data-table-column-header";
+import { ServiceUser } from "@/src/app/(protected)/insiders/admin/users/lib/types/user";
 
 export const columns: ColumnDef<ServiceUser>[] = [
   {

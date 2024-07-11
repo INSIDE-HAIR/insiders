@@ -2,13 +2,13 @@
 "use client";
 
 import React from "react";
-import { ServiceUser } from "@/src/app/users/lib/types/user";
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { syncUsersWithHolded } from "@/src/app/users/lib/api/api";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { syncUsersWithHolded } from "@/src/app/(protected)/insiders/admin/users/lib/api/api";
+import { ServiceUser } from "@/src/app/(protected)/insiders/admin/users/lib/types/user";
 
 interface UsersTableProps {
   users: ServiceUser[];
