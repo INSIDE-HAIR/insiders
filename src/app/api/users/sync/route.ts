@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
           );
 
           const result = await updateUserHoldedData(user.id, user.holdedId);
-          if (result.success) {
+          if ("success" in result && result.success) {
             updateResults.updated.push(user.id);
             updatedUsersCount++;
           } else {
