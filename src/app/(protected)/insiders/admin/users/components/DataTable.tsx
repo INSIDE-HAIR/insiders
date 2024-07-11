@@ -23,8 +23,6 @@ import {
 import { Input } from "@/src/components/ui/input";
 import { DataTablePagination } from "./DataTablePagination";
 import { GroupColumnSelector } from "./GroupColumnSelector";
-import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];

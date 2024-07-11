@@ -9,10 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { ServiceUser, FieldType } from "./lib/types/user";
 import moment from "moment-timezone";
 import "moment/locale/es"; // Importar el idioma español
+import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 
 export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
   const categoryNames: Record<FieldType, string> = {
