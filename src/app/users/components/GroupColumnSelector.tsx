@@ -67,17 +67,13 @@ export function GroupColumnSelector<TData>({
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
         {Object.entries(categories).map(([category, subCategories]) => {
-          const allColumnsVisible = Object.values(subCategories)
-            .flat()
-            .every((column) => column.getIsVisible());
+          const allColumnsVisible = Object.values(subCategories).flat().every((column) => column.getIsVisible());
           return (
             <DropdownMenuSub key={category}>
               <DropdownMenuSubTrigger>
                 <DropdownMenuCheckboxItem
                   checked={allColumnsVisible}
-                  onCheckedChange={(value) =>
-                    toggleCategoryVisibility(category, !!value)
-                  }
+                  onCheckedChange={(value) => toggleCategoryVisibility(category, !!value)}
                 >
                   {category}
                 </DropdownMenuCheckboxItem>

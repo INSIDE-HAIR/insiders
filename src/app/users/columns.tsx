@@ -11,6 +11,8 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { ServiceUser, FieldType } from "./lib/types/user";
+import moment from "moment-timezone";
+import "moment/locale/es"; // Importar el idioma español
 
 export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
   const categoryNames: Record<FieldType, string> = {
@@ -52,6 +54,15 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "lastName",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Apellido" />
+        ),
+        enableSorting: false,
         enableHiding: false,
       },
       {
@@ -59,6 +70,58 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Email" />
         ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Rol" />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "contactNumber",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Número de Contacto" />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "lastLogin",
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title="Último Inicio de Sesión"
+          />
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() as Date;
+          return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "lastHoldedSyncAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Última Sync Holded" />
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() as Date;
+          return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
+        },
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "holdedId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Holded ID" />
+        ),
+        enableSorting: false,
         enableHiding: false,
       },
     ];
