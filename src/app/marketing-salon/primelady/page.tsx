@@ -1,7 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import dataMonths from "@/db/dates/months.json";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import Container from "@/src/components/ui/containers/container";
 import ComponentsSelector from "@/src/components/components-selector/components-selector";
@@ -23,26 +22,23 @@ export default function Page() {
   const [year, setYear] = useState<string>(
     (searchParams?.get("year") as string) ?? new Date().getFullYear().toString()
   );
-  const [month, setMonth] = useState<string>(
-    (searchParams?.get("month") as string) ?? "march"
-  );
+
   const [client, setClient] = useState<string>(
     (searchParams?.get("client")?.toLocaleLowerCase() as string) ?? "insiders"
   );
 
-  const monthTranslations = dataMonths.months.find((item) => item.id === month);
   // Update the type of sideMenu state
   const [sideMenu, setSideMenu] = useState<{ list: any[] } | null>(null);
 
   useEffect(() => {
-    async function fetchData(year: string, month: string) {
+    async function fetchData(year: string) {
       setLoading(true);
       try {
         const estructureData = await fetch(
-          `/api/marketing-salon/${client}/${year}/${month}/structure`
+          `/api/marketing-salon/primelady/${year}/structure`
         );
         const cardsData = await fetch(
-          `/api/marketing-salon/${client}/${year}/${month}/cards`
+          `/api/marketing-salon/primelady/${year}/cards`
         );
 
         if (!estructureData.ok) {
@@ -71,8 +67,8 @@ export default function Page() {
       }
     }
 
-    fetchData(year, month);
-  }, [year, month, client]);
+    fetchData(year);
+  }, [year, client]);
 
   if (error) {
     return <p>Error: {error.message}</p>;
@@ -85,16 +81,12 @@ export default function Page() {
         <div className="col-span-1 col-start-1 col-end-2 h-screen fixed w-2/12  top-0 z-30 border-r box-border border-zinc-500 bg-white-950/40 backdrop-blur-lg bg-clip-padding backdrop-filter opacity-75 hidden lg:block">
           <div className="mt-24 flex p-4">
             <ul
-              aria-label={`Plan de marketing ${
-                monthTranslations?.title + " "
-              } ${year ?? ""}`}
+              aria-label="PRIMELADY"
               className=" z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.title + " "}
-                {year}
+                PRIMELADY
               </strong>
-
               {sideMenu &&
                 sideMenu.list.map(
                   (
@@ -130,14 +122,11 @@ export default function Page() {
         <div className="relative col-span-full max-w-full  mt-10 gap-10">
           <TailwindGrid>
             <ul
-              aria-label={`Plan de marketing ${
-                monthTranslations?.title + " "
-              } ${year ?? ""}`}
+              aria-label="PRIMELADY"
               className="h-full lg:hidden z-30 gap-y-0 self-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13 w-full flex flex-col bg-red-300/0 justify-center items-center overflow-hidden border-gray-700/30 border-4 rounded-2xl "
             >
               <strong className="font-bold py-2 bg-gray-900 text-white w-full text-center">
-                {monthTranslations?.title + " "}
-                {year}
+                PRIMELADY
               </strong>
               {sideMenu &&
                 sideMenu.list.map(

@@ -7,17 +7,12 @@ export async function GET(
   {
     params,
   }: {
-    params: { campaign: string; year: string; month: string; client: string };
+    params: { year: string };
   }
 ) {
-  const { campaign, client, month, year } = params;
+  const { year } = params;
 
-  console.log("campaign", campaign);
-  console.log("year", year);
-  console.log("month", month);
-  console.log("client", client);
-
-  if (!campaign || !year || !month || !client) {
+  if (!year) {
     return NextResponse.json(
       { message: "Missing query parameters" },
       { status: 400 }
@@ -27,14 +22,14 @@ export async function GET(
   try {
     const filePath = path.resolve(
       process.cwd(),
-      `./db/insiders/services-structures/marketing-salon/${campaign}/${client}/${year}.json`
+      `./db/insiders/services-structures/marketing-salon/primelady/${year}.json`
     );
 
     const data = await fs.readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
-    const monthData = jsonData[month] || {}; // Provide a default value if jsonData[month] is undefined
+    const yearData = jsonData || {}; // Provide a default value if jsonData is undefined
 
-    return NextResponse.json(monthData, { status: 200 });
+    return NextResponse.json(yearData, { status: 200 });
   } catch (error) {
     console.error(error);
     if ((error as NodeJS.ErrnoException).code === "ENOENT") {

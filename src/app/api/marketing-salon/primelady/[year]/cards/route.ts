@@ -197,17 +197,12 @@ export async function GET(
   {
     params,
   }: {
-    params: { campaign: string; year: string; month: string; client: string };
+    params: { year: string };
   }
 ) {
-  const { campaign, client, month, year } = params;
+  const { year } = params;
 
-  console.log("campaign", campaign);
-  console.log("year", year);
-  console.log("month", month);
-  console.log("client", client);
-
-  if (!campaign || !year || !month || !client) {
+  if (!year) {
     return NextResponse.json(
       { message: "Missing query parameters" },
       { status: 400 }
@@ -217,29 +212,19 @@ export async function GET(
   try {
     const filePath = path.resolve(
       process.cwd(),
-      `./db/insiders/services-data/marketing-salon/${year}.json`
+      `./db/insiders/services-data/marketing-salon/primelady/${year}.json`
     );
     const data = await fs.readFile(filePath, "utf8");
     const jsonData = JSON.parse(data);
 
-    const fullMonthMarketingCards = createMarketingCardsList(
-      jsonData[month as string]
-    );
+    console.log("jsonData", jsonData);
 
-    const filteredByCampaignAndClient = fullMonthMarketingCards.filter(
-      (card) => {
-        const matchesCampaign = campaign
-          ? card.campaign.toLowerCase() === campaign.toLowerCase()
-          : true;
-        const matchesClient = client
-          ? card.client.toLowerCase() === client.toLowerCase()
-          : true;
-        return matchesCampaign && matchesClient;
-      }
+    const fullSeasonMarketingCards = createMarketingCardsList(
+      jsonData as BaseObject[]
     );
 
     const groupedItemsByCategory = filterAndGroupByCategoriesAndLanguages(
-      filteredByCampaignAndClient,
+      fullSeasonMarketingCards,
       filesCodes,
       langCodes
     );
