@@ -6,6 +6,19 @@
     "classType": "default",
     "content": [
       {
+        "id": "button1",
+        "order": 1,
+        "type": "button",
+        "classType": "default",
+        "title": "Enlace a Zoom - Contraseña: MENT",
+        "url": "https://us06web.zoom.us/j/81326576740?pwd=ONPbTf6IZEc0SS4SA7I3ZpWxWUSjwZ.1#success",
+        "active": true,
+        "available": {
+          "startDateTime": null,
+          "endDateTime": null
+        }
+      },
+      {
         "id": "slider1",
         "order": 1,
         "type": "slider",
