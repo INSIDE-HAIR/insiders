@@ -1,5 +1,6 @@
 const nextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       { hostname: "localhost" },
       { hostname: "images.unsplash.com" },
