@@ -4861,7 +4861,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -4937,14 +4937,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": [
-                    "0330",
-                    "0360",
-                    "0100",
-                    "0300",
-                    "0249",
-                    "0085"
-                  ],
+                  "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
                   "title": "Extras",
                   "content": [],
                   "active": true,
