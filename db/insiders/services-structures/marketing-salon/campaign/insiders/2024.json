@@ -4451,7 +4451,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": "",
                 "endDateTime": ""
@@ -4484,7 +4484,7 @@
                   "type": "button",
                   "classType": "default",
                   "title": "Descargar Presentación",
-                  "url": "",
+                  "url": "https://drive.google.com/uc?id=1w-PLIfo_Ixr3LOld_I-mDHvLnBWbgS9X&export=download",
                   "active": true,
                   "available": {
                     "startDateTime": "",
