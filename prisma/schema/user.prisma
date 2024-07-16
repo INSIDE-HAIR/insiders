@@ -1,0 +1,39 @@
+
+model User {
+  id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
+  name                         String?                       @default("")
+  lastName                     String?                       @default("")
+  email                        String                        @unique
+  emailVerified                DateTime?
+  image                        String?                       @default("")
+  password                     String?
+  contactNumber                String?                       @default("")
+  terms                        Boolean                       @default(true)
+  role                         UserRole                      @default(CLIENT)
+  isTwoFactorEnabled           Boolean                       @default(false)
+  twoFactorConfirmation        TwoFactorConfirmation?
+  accounts                     Account[]
+  holdedId                     String?                       @unique
+  createdHoldedSyncAt          DateTime?
+  lastHoldedSyncAt             DateTime?
+  docs                         Document[]
+  holdedData                   HoldedData?
+  createdAt                    DateTime                      @default(now())
+  updatedAt                    DateTime                      @updatedAt
+  lastLogin                    DateTime?                     @default(now())
+  // Offers             Offer[]
+  salesFields                  SalesField[]
+  clientsFields                ClientField[]
+  consultingAndMentoringFields ConsultingAndMentoringField[]
+  trainingsFields              TrainingField[]
+  marketingFields              MarketingField[]
+  creativitiesFields           CreativityField[]
+  CustomField                  CustomField[]
+}
+
+
+enum UserRole {
+  ADMIN
+  CLIENT
+  EMPLOYEE
+}
