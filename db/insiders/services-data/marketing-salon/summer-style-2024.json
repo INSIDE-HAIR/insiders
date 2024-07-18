@@ -11,6 +11,17 @@
         }
       }
     },
+    "toni-and-guy": {
+      "languages": ["es"],
+      "bgColors": ["#e14893", "#e14893"],
+      "textColors": ["#4c4c4c", "#4c4c4c"],
+      "images": {
+        "es": {
+          "odd": "https://lh3.googleusercontent.com/d/17YUYZcmJ1yEF6FTRr1mHvEHC9zkImLB5",
+          "even": "https://lh3.googleusercontent.com/d/17YUYZcmJ1yEF6FTRr1mHvEHC9zkImLB5"
+        }
+      }
+    },
     "josep-pons": {
       "languages": ["es"],
       "bgColors": ["#e0f1fd", "#cbd7c4"],
