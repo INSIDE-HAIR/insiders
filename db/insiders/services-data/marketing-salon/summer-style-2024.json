@@ -14,7 +14,7 @@
     "toni-and-guy": {
       "languages": ["es"],
       "bgColors": ["#e14893", "#e14893"],
-      "textColors": ["#4c4c4c", "#4c4c4c"],
+      "textColors": ["#ffff", "#ffff"],
       "images": {
         "es": {
           "odd": "https://lh3.googleusercontent.com/d/17YUYZcmJ1yEF6FTRr1mHvEHC9zkImLB5",
