@@ -1,29 +1,16 @@
 [
   {
     "id": "createPrimeDay",
-    "title": "Crea tu propio PRIMEDAY",
+    "title": "Venta Anticipada",
     "order": 1,
     "classType": "default",
     "content": [
-      {
-        "id": "button1",
-        "order": 1,
-        "type": "button",
-        "classType": "default",
-        "title": "Enlace a Zoom - Contraseña: MENT",
-        "url": "https://us06web.zoom.us/j/81326576740?pwd=ONPbTf6IZEc0SS4SA7I3ZpWxWUSjwZ.1#success",
-        "active": true,
-        "available": {
-          "startDateTime": null,
-          "endDateTime": "2024-07-20 00:00"
-        }
-      },
       {
         "id": "slider1",
         "order": 1,
         "type": "slider",
         "classType": "default",
-        "url": "https://docs.google.com/presentation/d/e/2PACX-1vQTiDV3AlyWkcsGXw-AlcitG2rjDw-N4gesB-83qIAPZdFZGyq6g2XmB3QkNLQQ7usnDNr_09g1_XgT/embed?start=false&loop=false&delayms=3000",
+        "url": "https://docs.google.com/presentation/d/e/2PACX-1vRp4Rgzm0tOUEjH4d08ILAlE8rocoTKT0OtdIdqqyEQmRRFBb56_Av2drLRVHiudw/embed?start=false&loop=false&delayms=3000",
         "active": true,
         "available": {
           "startDateTime": null,
@@ -42,7 +29,7 @@
   {
     "id": "contenidoFisico5",
     "title": "Contenido físico",
-    "order": 5,
+    "order": 2,
     "classType": "default",
     "content": [
       {
@@ -54,50 +41,7 @@
             "id": "tab1",
             "order": 1,
             "type": "tab",
-            "title": "Cartelería Exterior",
-            "classType": "default",
-            "content": [
-              {
-                "id": "image1",
-                "order": 1,
-                "type": "image",
-                "title": "Ubicación Cartelería",
-                "url": "https://lh3.googleusercontent.com/d/1mdYNDirpky3GmDAfuKPuWd8w9K_sh3pH",
-                "darkModeUrl": "https://lh3.googleusercontent.com/d/19Gz63YMS9Qd4xzU8HwQvK7khd-BaGZkH",
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              },
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0080", "0050"],
-                "title": "Cartelería",
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": true,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab2",
-            "order": 2,
-            "type": "tab",
-            "title": "Cartelería Interior",
+            "title": "Cartelería",
             "classType": "default",
             "content": [
               {
@@ -109,29 +53,15 @@
                     "id": "tab1",
                     "order": 1,
                     "type": "tab",
-                    "title": "Acción principal",
+                    "title": "80x120",
                     "classType": "default",
                     "content": [
-                      {
-                        "id": "image1",
-                        "order": 1,
-                        "type": "image",
-                        "title": "Ubicación Cartelería",
-                        "url": "https://lh3.googleusercontent.com/d/1Exp-lEX-_ve77bl-1hJfV2D9HNszFj6P",
-                        "darkModeUrl": "https://lh3.googleusercontent.com/d/1_VWSgiIRDk2iz3qr4UbryjgLXKH2q804",
-                        "active": true,
-                        "available": {
-                          "startDateTime": null,
-                          "endDateTime": null
-                        },
-                        "auth": []
-                      },
                       {
                         "id": "cardList1",
                         "order": 1,
                         "type": "tabsCardsList",
-                        "childrensCode": ["0014", "0015"],
-                        "title": "",
+                        "childrensCode": ["0080"],
+                        "title": "80x120",
                         "content": [],
                         "active": true,
                         "available": {
@@ -152,29 +82,73 @@
                     "id": "tab2",
                     "order": 2,
                     "type": "tab",
-                    "title": "Acción secundaria",
+                    "title": "50x70",
                     "classType": "default",
                     "content": [
                       {
-                        "id": "image1",
+                        "id": "cardList1",
                         "order": 1,
-                        "type": "image",
-                        "title": "Ubicación Cartelería",
-                        "url": "https://lh3.googleusercontent.com/d/1CQmXf1iBwJk88XqiBKfF8MIeTJFz6jCw",
-                        "darkModeUrl": "https://lh3.googleusercontent.com/d/1yZd_FeIdw7RdeLVfndhhuq1aMzMSdHNA",
+                        "type": "tabsCardsList",
+                        "childrensCode": ["0050"],
+                        "title": "Tarjetas",
+                        "content": [],
                         "active": true,
                         "available": {
                           "startDateTime": null,
                           "endDateTime": null
                         },
                         "auth": []
-                      },
+                      }
+                    ],
+                    "active": true,
+                    "available": {
+                      "startDateTime": null,
+                      "endDateTime": null
+                    },
+                    "auth": []
+                  },
+                  {
+                    "id": "tab3",
+                    "order": 3,
+                    "type": "tab",
+                    "title": "A4",
+                    "classType": "default",
+                    "content": [
                       {
                         "id": "cardList1",
                         "order": 1,
                         "type": "tabsCardsList",
-                        "childrensCode": ["0024", "0025"],
-                        "title": "",
+                        "childrensCode": ["0004"],
+                        "title": "A4",
+                        "content": [],
+                        "active": true,
+                        "available": {
+                          "startDateTime": null,
+                          "endDateTime": null
+                        },
+                        "auth": []
+                      }
+                    ],
+                    "active": true,
+                    "available": {
+                      "startDateTime": null,
+                      "endDateTime": null
+                    },
+                    "auth": []
+                  },
+                  {
+                    "id": "tab4",
+                    "order": 4,
+                    "type": "tab",
+                    "title": "A4",
+                    "classType": "default",
+                    "content": [
+                      {
+                        "id": "cardList1",
+                        "order": 1,
+                        "type": "tabsCardsList",
+                        "childrensCode": ["0005"],
+                        "title": "A5",
                         "content": [],
                         "active": true,
                         "available": {
@@ -208,94 +182,8 @@
             "auth": []
           },
           {
-            "id": "tab3",
-            "order": 3,
-            "type": "tab",
-            "title": "Vinilo Puerta",
-            "classType": "default",
-            "content": [
-              {
-                "id": "image1",
-                "order": 1,
-                "type": "image",
-                "title": "Ubicación Cartelería",
-                "url": "https://lh3.googleusercontent.com/d/1OYkdHCrLg9iy4aDykx2LagHfSZCoDDmT",
-                "darkModeUrl": "https://lh3.googleusercontent.com/d/1YLb8K_sc9z0ZuUZSkVNU84talwFC8vyP",
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              },
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0000"],
-                "title": null,
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab4",
-            "order": 4,
-            "type": "tab",
-            "title": "Dipticos & Trípticos",
-            "classType": "default",
-            "content": [
-              {
-                "id": "image1",
-                "order": 1,
-                "type": "image",
-                "title": "Ubicación Cartelería",
-                "url": "https://lh3.googleusercontent.com/d/1fwiJqQS8wMhti7YSjvLaptJ0nTVeXU4o",
-                "darkModeUrl": "https://lh3.googleusercontent.com/d/14JUTK2KyY7lhsNUdy-J4QLv0eG0RApAa",
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              },
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0248", "0348", "0048"],
-                "title": "Dipticos & Trípticos",
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab5",
-            "order": 5,
+            "id": "tab2",
+            "order": 2,
             "type": "tab",
             "title": "Tarjetas",
             "classType": "default",
@@ -321,93 +209,6 @@
               "endDateTime": null
             },
             "auth": []
-          },
-          {
-            "id": "tab6",
-            "order": 6,
-            "type": "tab",
-            "title": "Camisetas & Bolsas",
-            "classType": "default",
-            "content": [
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0009"],
-                "title": null,
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab7",
-            "order": 7,
-            "type": "tab",
-            "title": "Tests",
-            "classType": "default",
-            "content": [
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0010", "0011"],
-                "title": "Tests",
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab8",
-            "order": 8,
-            "type": "tab",
-            "title": "Novedades",
-            "classType": "default",
-            "content": [
-              {
-                "id": "cardList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0330", "0360", "0100", "0300", "0249"],
-                "title": "Extras",
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
           }
         ],
         "active": true,
@@ -428,7 +229,7 @@
   {
     "id": "contenidoDigital4",
     "title": "Contenido digital",
-    "order": 6,
+    "order": 3,
     "classType": "default",
     "content": [
       {
@@ -493,64 +294,6 @@
               "endDateTime": null
             },
             "auth": []
-          },
-          {
-            "id": "tab3",
-            "order": 3,
-            "type": "tab",
-            "title": "Videos",
-            "classType": "default",
-            "content": [
-              {
-                "id": "tabsCardsList1",
-                "order": 1,
-                "type": "tabsCardsList",
-                "childrensCode": ["0216", "0217"],
-                "title": "Videos",
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
-          },
-          {
-            "id": "tab4",
-            "order": 4,
-            "type": "tab",
-            "title": "Novedades",
-            "classType": "default",
-            "content": [
-              {
-                "id": "cardList3",
-                "order": 3,
-                "type": "tabsCardsList",
-                "childrensCode": ["0500"],
-                "title": null,
-                "content": [],
-                "active": true,
-                "available": {
-                  "startDateTime": null,
-                  "endDateTime": null
-                },
-                "auth": []
-              }
-            ],
-            "active": false,
-            "available": {
-              "startDateTime": null,
-              "endDateTime": null
-            },
-            "auth": []
           }
         ],
         "active": true,
@@ -571,7 +314,7 @@
   {
     "id": "weeklyContent7",
     "title": "Comunicación semanal",
-    "order": 7,
+    "order": 4,
     "classType": "default",
     "content": [
       {
