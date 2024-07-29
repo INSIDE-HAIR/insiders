@@ -1,0 +1,46 @@
+{
+  "index": {
+    "title": "Hola mundo"
+  },
+  "navbar": {
+    "title": "Esta es mi página web"
+  },
+  "TrainingIBMPage": {
+    "title": "Formación IBM",
+    "subtitle": "Formación IBM",
+    "description": "Formación IBM",
+    "button": "Formación IBM"
+  },
+  "Metadata": {
+    "trainingIBMTitle": "Formación IBM | INSIDERS",
+    "trainingIBMDescription": "Descripción de la formación IBM...",
+    "contactTitle": "Contacto | INSIDERS",
+    "contactDescription": "Descripción de la página de contacto..."
+  },
+  "PageCreator": {
+    "title": "Crear Página",
+    "form": {
+      "titleLabel": "Título",
+      "titleDescription": "Este será el título principal de la página.",
+      "titlePlaceholder": "Ingrese el título de la página",
+      "slugLabel": "Slug",
+      "slugDescription": "El slug se usará en la URL de la página. Use solo letras minúsculas, números y guiones.",
+      "slugPlaceholder": "Ingrese el slug de la página",
+      "contentLabel": "Contenido",
+      "contentDescription": "El contenido principal de la página.",
+      "contentPlaceholder": "Ingrese el contenido de la página (en formato JSON)",
+      "parentPageLabel": "Página Padre",
+      "parentPageDescription": "Seleccione una página padre si esta es una subpágina.",
+      "selectParentPage": "Seleccione una página padre",
+      "noParent": "Sin padre (página de nivel superior)",
+      "publishLabel": "Publicar",
+      "publishDescription": "¿Desea publicar esta página inmediatamente?",
+      "createButton": "Crear Página",
+      "creatingButton": "Creando...",
+      "createSuccessTitle": "Página creada con éxito",
+      "createSuccessDescription": "La página \"{title}\" ha sido creada.",
+      "errorMessage": "Ocurrió un error al crear la página",
+      "errorTitle": "Error al crear la página"
+    }
+  }
+}

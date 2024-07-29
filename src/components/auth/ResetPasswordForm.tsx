@@ -17,7 +17,7 @@ import { Input } from "@/src/components/ui/input";
 import FormError from "@/src/components/share/MessageErrorBox";
 import FormSuccess from "@/src/components/share/MessageSuccessBox";
 import LoadingButton from "@/src/components/share/LoadingButton";
-import { reset } from "@/src/lib/server-actions/auth/user/password/reset-password";
+import { reset } from "@/src/lib/actions/auth/user/password/reset-password";
 
 type Props = {
   email?: string | null;

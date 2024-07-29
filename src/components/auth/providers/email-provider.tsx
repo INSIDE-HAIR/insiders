@@ -15,8 +15,8 @@ import {
   FormMessage,
 } from "../../ui/form";
 import * as z from "zod";
-import { login } from "@/src/lib/server-actions/auth/user/login/login";
-import { register } from "@/src/lib/server-actions/auth/user/register/register";
+import { login } from "@/src/lib/actions/auth/user/login/login";
+import { register } from "@/src/lib/actions/auth/user/register/register";
 import { useTransition } from "react";
 import { Button } from "../../ui/buttons/chadcn-button";
 import { FormError } from "../../messages/form-error";

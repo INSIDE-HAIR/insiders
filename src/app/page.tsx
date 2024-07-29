@@ -1,5 +1,5 @@
 import LogoutButton from "@/src/components/share/LogoutButton";
-import { auth } from "@/src/lib/server-actions/auth/config/auth";
+import { auth } from "@/src/lib/actions/auth/config/auth";
 
 export default async function Home() {
   const session = await auth();

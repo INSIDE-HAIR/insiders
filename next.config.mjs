@@ -1,3 +1,7 @@
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin('./src/lib/actions/intl/config.ts');
+
 const nextConfig = {
   images: {
     unoptimized: true,
@@ -10,4 +14,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

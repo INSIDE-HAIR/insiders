@@ -28,12 +28,12 @@
       }
     },
     {
-      "id": "metrics",
+      "id": "analytics",
       "icon": "LineChartIcon",
-      "path": "/metrics",
+      "path": "/analytics",
       "translations": {
-        "en": "Metrics",
-        "es": "Métricas"
+        "en": "Analytics",
+        "es": "Analíticas"
       }
     },
     {

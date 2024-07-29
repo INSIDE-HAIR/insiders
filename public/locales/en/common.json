@@ -1,0 +1,46 @@
+{
+  "index": {
+    "title": "Hello world"
+  },
+  "navbar": {
+    "title": "This is my website"
+  },
+  "TrainingIBMPage": {
+    "title": "IBM Training",
+    "subtitle": "IBM Training",
+    "description": "IBM Training",
+    "button": "IBM Training"
+  },
+  "Metadata": {
+    "trainingIBMTitle": "IBM Training | INSIDERS",
+    "trainingIBMDescription": "Description of IBM...",
+    "contactTitle": "Contact | INSIDERS",
+    "contactDescription": "Description of contact page..."
+  },
+  "PageCreator": {
+    "title": "Create Page",
+    "form": {
+      "titleLabel": "Title",
+      "titleDescription": "This will be the main title of the page.",
+      "titlePlaceholder": "Enter page title",
+      "slugLabel": "Slug",
+      "slugDescription": "The slug will be used in the page URL. Use only lowercase letters, numbers, and hyphens.",
+      "slugPlaceholder": "Enter page slug",
+      "contentLabel": "Content",
+      "contentDescription": "The main content of the page.",
+      "contentPlaceholder": "Enter page content (in JSON format)",
+      "parentPageLabel": "Parent Page",
+      "parentPageDescription": "Select a parent page if this is a subpage.",
+      "selectParentPage": "Select a parent page",
+      "noParent": "No parent (top-level page)",
+      "publishLabel": "Publish",
+      "publishDescription": "Do you want to publish this page immediately?",
+      "createButton": "Create Page",
+      "creatingButton": "Creating...",
+      "createSuccessTitle": "Page created successfully",
+      "createSuccessDescription": "The page \"{title}\" has been created.",
+      "errorMessage": "An error occurred while creating the page",
+      "errorTitle": "Error creating page"
+    }
+  }
+}

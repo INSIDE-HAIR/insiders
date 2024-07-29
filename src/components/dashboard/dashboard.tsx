@@ -1,18 +1,10 @@
 import {
   BellIcon,
-  FilesIcon,
-  HomeIcon,
-  LineChartIcon,
-  LogOut,
   Package2Icon,
-  PackageIcon,
-  UsersIcon,
-  WorkflowIcon,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/buttons/chadcn-button";
-import { EnvelopeClosedIcon } from "@radix-ui/react-icons";
 import LogoutButton from "../share/LogoutButton";
 import translations from "@/db/translations.json";
 import { Icons } from "../icons";

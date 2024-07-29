@@ -1,1 +1,1 @@
-export { GET, POST } from "@/src/lib/server-actions/auth/config/auth";
+export { GET, POST } from "@/src/lib/actions/auth/config/auth";

@@ -20,7 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { CredentialSigninSchema } from "@/src/lib/types/zod-schemas";
 import LoadingButton from "../share/LoadingButton";
-import { credentialsLogin } from "@/src/lib/server-actions/auth/user/login/credentials-login";
+import { credentialsLogin } from "@/src/lib/actions/auth/user/login/credentials-login";
 
 type Props = {};
 

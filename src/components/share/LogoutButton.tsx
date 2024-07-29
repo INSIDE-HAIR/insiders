@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/buttons/chadcn-button";
-import { logout } from "@/src/lib/server-actions/auth/user/login/logout";
+import { logout } from "@/src/lib/actions/auth/user/login/logout";
 import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 

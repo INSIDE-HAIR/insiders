@@ -1,0 +1,18 @@
+model DynamicPage {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     Json
+  slug        String
+  lang        String       
+  parentId    String?       @db.ObjectId
+  parent      DynamicPage?  @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    DynamicPage[] @relation("PageHierarchy")
+  level       Int           @default(1)
+  fullPath    String        @unique
+  isPublished Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([parentId])
+}

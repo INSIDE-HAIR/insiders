@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { updateUserHoldedData } from "@/src/lib/server-actions/auth/user/settings/user-holded-data-update";
+import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
 
 const prisma = new PrismaClient();
 const HOLDED_API_BASE_URL = "https://api.holded.com/api/invoicing/v1/contacts";
