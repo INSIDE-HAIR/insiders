@@ -5,6 +5,7 @@ import TopNavbar from "@/src/components/navigations/TopNavbar";
 import { cn, inter } from "@/src/lib/utils/utils";
 // import ToastContainerWrapper from "@/src/components/share/ToastContainerWrapper";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Plataforma INSIDERS | INSIDE HAIR",
@@ -32,6 +33,7 @@ export default function RootLayout({
             {/* <ToastContainerWrapper /> */}
             {children}
             <Analytics />
+            <SpeedInsights />
           </main>
         </Providers>
       </body>
