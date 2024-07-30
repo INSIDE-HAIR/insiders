@@ -295,14 +295,27 @@ export async function DELETE(request: NextRequest) {
       }
 
       if (deleteOption === "cascade") {
-        await prisma.dynamicPage.deleteMany({
-          where: {
-            OR: [
-              { id: id },
-              { fullPath: { startsWith: pageToDelete.fullPath + "/" } },
-            ],
-          },
-        });
+        // Función recursiva para eliminar una página y sus descendientes
+        async function deletePageAndDescendants(pageId: string) {
+          const page = await prisma.dynamicPage.findUnique({
+            where: { id: pageId },
+            include: { children: true },
+          });
+
+          if (page) {
+            // Primero, eliminar recursivamente todos los descendientes
+            for (const child of page.children) {
+              await deletePageAndDescendants(child.id);
+            }
+
+            // Luego, eliminar la página actual
+            await prisma.dynamicPage.delete({ where: { id: pageId } });
+          }
+        }
+
+        // Iniciar la eliminación recursiva
+        await deletePageAndDescendants(id);
+
       } else if (deleteOption === "moveUp") {
         await prisma.$transaction(async (prisma) => {
           for (const child of pageToDelete.children) {
@@ -312,7 +325,7 @@ export async function DELETE(request: NextRequest) {
                 parentId: pageToDelete.parentId,
                 fullPath: child.fullPath.replace(
                   `${pageToDelete.fullPath}/`,
-                  ""
+                  pageToDelete.parentId ? `${pageToDelete.fullPath.split('/').slice(0, -1).join('/')}/` : ''
                 ),
                 level: child.level - 1,
               },
