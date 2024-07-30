@@ -102,5 +102,16 @@
       "updatePageError": "Error updating page",
       "duplicateFullPath": "A page with this full path already exists"
     }
+  },
+  "Common": {
+    "loading": "Loading...",
+    "pageNotFound": "Page not found",
+    "currentLanguage": "Current language",
+    "home": "Home",
+    "contact": "Contact",
+    "about": "About",
+    "services": "Services",
+    "welcome": "Welcome",
+    "logout": "Log out"
   }
 }

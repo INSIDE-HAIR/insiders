@@ -1,4 +1,3 @@
-// types/translations.d.ts
 export interface Translations {
   NotFound: {
     title: string;
@@ -103,6 +102,17 @@ export interface Translations {
       updatePageError: string;
       duplicateFullPath: string;
     };
+  };
+  Common: {
+    loading: string;
+    pageNotFound: string;
+    currentLanguage: string;
+    home: string;
+    contact: string;
+    about: string;
+    services: string;
+    welcome: string;
+    logout: string;
   };
 }
 

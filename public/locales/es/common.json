@@ -102,5 +102,16 @@
       "updatePageError": "Error al actualizar la página",
       "duplicateFullPath": "Ya existe una página con esta ruta completa"
     }
+  },
+  "Common": {
+    "loading": "Cargando...",
+    "pageNotFound": "Página no encontrada",
+    "currentLanguage": "Idioma actual",
+    "home": "Inicio",
+    "contact": "Contacto",
+    "about": "Acerca de",
+    "services": "Servicios",
+    "welcome": "Bienvenido",
+    "logout": "Cerrar sesión"
   }
 }

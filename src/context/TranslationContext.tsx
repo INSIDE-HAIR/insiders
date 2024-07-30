@@ -21,7 +21,9 @@ type NestedKeyOf<ObjectType extends object> = {
     : `${Key}`;
 }[keyof ObjectType & (string | number)];
 
-type TranslationFunction = (key: string) => string;
+type TranslationParams = Record<string, string | number>;
+
+type TranslationFunction = (key: string, params?: TranslationParams) => string;
 
 interface TranslationContextProps {
   locale: Locale;
@@ -90,7 +92,7 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
 
   const getTranslation = useCallback(
     (namespace: NestedKeyOf<Translations>): TranslationFunction =>
-      (key: string): string => {
+      (key: string, params?: TranslationParams): string => {
         const parts = namespace.split(".");
         let current: any = messages;
         for (const part of parts) {
@@ -100,7 +102,20 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({
           }
           current = current[part];
         }
-        return (current[key] as string) || key;
+        let translation = current[key] as string;
+        if (!translation) {
+          console.warn(`Missing translation: ${namespace}.${key}`);
+          return key;
+        }
+        if (params) {
+          Object.entries(params).forEach(([paramKey, paramValue]) => {
+            translation = translation.replace(
+              new RegExp(`{${paramKey}}`, "g"),
+              String(paramValue)
+            );
+          });
+        }
+        return translation;
       },
     [messages]
   );
