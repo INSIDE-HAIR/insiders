@@ -40,13 +40,11 @@ export async function GET(request: NextRequest) {
   const isPublished = searchParams.get("isPublished") === "true";
 
   try {
-    // Descomponer la búsqueda en palabras clave
     const searchKeywords = search
       .split(" ")
       .map((keyword) => keyword.trim())
       .filter((keyword) => keyword);
 
-    // Construir condiciones de búsqueda dinámicamente
     const searchConditions = searchKeywords.map((keyword) => ({
       OR: [
         { title: { contains: keyword, mode: "insensitive" as const } },
@@ -61,7 +59,6 @@ export async function GET(request: NextRequest) {
       ],
     };
 
-    // Buscar las páginas que coincidan con las condiciones
     const matchedPages = await prisma.dynamicPage.findMany({
       where: whereCondition,
       orderBy: {
@@ -69,7 +66,6 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Obtener los padres de las páginas coincidentes
     const parentIds = matchedPages
       .map((page) => page.parentId)
       .filter((id): id is string => id !== null);
@@ -80,7 +76,6 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Combinar las páginas coincidentes con sus padres
     const allPages = [...matchedPages, ...parentPages];
 
     return NextResponse.json(allPages, { status: 200 });
@@ -93,12 +88,55 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Helper function to check if slug is unique in the same level
+async function isSlugUniqueInLevel(
+  slug: string,
+  parentId: string | null,
+  currentId?: string
+): Promise<boolean> {
+  const existingPage = await prisma.dynamicPage.findFirst({
+    where: {
+      slug,
+      parentId: parentId === "root" ? null : parentId,
+      id: { not: currentId }, // Exclude the current page in case of update
+    },
+  });
+  return !existingPage;
+}
+
+// ... (resto del código GET sin cambios)
+
 // POST method to create a new page
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const data = PageSchema.parse(body);
-    const fullPath = await generateFullPath(data.slug, data.parentId);
+
+    // Check if the slug is unique in the same level
+    const isUnique = await isSlugUniqueInLevel(data.slug, data.parentId);
+    if (!isUnique) {
+      return NextResponse.json(
+        { error: "A page with this slug already exists at the same level" },
+        { status: 400 }
+      );
+    }
+
+    const fullPath = await generateFullPath(
+      data.slug,
+      data.parentId === "root" ? null : data.parentId
+    );
+
+    // Check if the fullPath already exists
+    const existingPageWithFullPath = await prisma.dynamicPage.findUnique({
+      where: { fullPath },
+    });
+    if (existingPageWithFullPath) {
+      return NextResponse.json(
+        { error: "A page with this full path already exists" },
+        { status: 400 }
+      );
+    }
+
     const newPage = await prisma.dynamicPage.create({
       data: {
         title: data.title,
@@ -107,7 +145,7 @@ export async function POST(request: NextRequest) {
         lang: data.lang,
         fullPath: fullPath,
         parentId: data.parentId === "root" ? null : data.parentId,
-        level: data.level || 1,
+        level: data.parentId === "root" ? 1 : data.level || 1,
         isPublished: data.isPublished,
         author: data.author,
         template: data.template,
@@ -148,6 +186,19 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // Check if the slug is unique in the same level
+    const isUnique = await isSlugUniqueInLevel(
+      data.slug,
+      data.parentId,
+      data.id
+    );
+    if (!isUnique) {
+      return NextResponse.json(
+        { error: "A page with this slug already exists at the same level" },
+        { status: 400 }
+      );
+    }
+
     let updatedPageData: any = {
       title: data.title,
       content: JSON.stringify({ body: data.content }),
@@ -171,6 +222,20 @@ export async function PUT(request: NextRequest) {
       updatedPageData.parentId = data.parentId;
       updatedPageData.level = parentPage.level + 1;
       updatedPageData.fullPath = `${parentPage.fullPath}/${data.slug}`;
+    }
+
+    // Check if the new fullPath already exists
+    const existingPageWithFullPath = await prisma.dynamicPage.findFirst({
+      where: {
+        fullPath: updatedPageData.fullPath,
+        id: { not: data.id }, // Exclude the current page
+      },
+    });
+    if (existingPageWithFullPath) {
+      return NextResponse.json(
+        { error: "A page with this full path already exists" },
+        { status: 400 }
+      );
     }
 
     const updatedPage = await prisma.dynamicPage.update({

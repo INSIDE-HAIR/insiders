@@ -262,17 +262,19 @@ export default function PageCreator() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        if (
-          response.status === 400 &&
-          errorData.error.includes("full path already exists")
-        ) {
-          toast.error(e("duplicateFullPath"));
+        if (response.status === 400) {
+          if (errorData.error.includes("slug already exists")) {
+            toast.error(e("duplicateFullPath"));
+          } else if (errorData.error.includes("full path already exists")) {
+            toast.error(e("duplicateFullPath"));
+          } else {
+            toast.error(data.id ? e("updatePageError") : e("createPageError"));
+          }
         } else {
           toast.error(data.id ? e("updatePageError") : e("createPageError"));
         }
         return;
       }
-
       const updatedPage: Page = await response.json();
 
       if (data.id) {
