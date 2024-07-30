@@ -1,67 +1,58 @@
-import { notFound } from "next/navigation";
-import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
-import prisma from "@/prisma/database";
+"use client";
 
-interface Params {
-  slug: string[];
-  lang: string;
+import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState, useEffect } from "react";
+
+interface PageData {
+  title: string;
+  content: string;
 }
 
-export async function generateStaticParams() {
-  const pages = await prisma.dynamicPage.findMany();
-  return pages.map((page) => ({
-    lang: page.lang,
-    slug: page.fullPath.split("/"),
-  }));
-}
+export default function DynamicPage() {
+  const params = useParams();
+  const t = useTranslations("Common");
+  const [pageData, setPageData] = useState<PageData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export async function generateMetadata({ params }: { params: Params }) {
-  const { slug, lang } = params;
-  const fullPath = slug.join("/");
+  const lang = params.lang as string;
+  const slug = Array.isArray(params.slug) ? params.slug.join("/") : params.slug;
 
-  const page = await prisma.dynamicPage.findFirst({
-    where: {
-      AND: [{ fullPath: fullPath }, { lang: lang }],
-    },
-  });
+  useEffect(() => {
+    async function fetchPageData() {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/pages?lang=${lang}&slug=${slug}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch page data");
+        }
+        const data = await response.json();
+        setPageData(data);
+      } catch (error) {
+        console.error("Error fetching page data:", error);
+        setPageData(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  if (!page) {
-    return {
-      title: "Page Not Found",
-    };
+    fetchPageData();
+  }, [lang, slug]);
+
+  if (isLoading) {
+    return <div>{t("loading")}</div>;
   }
 
-  return {
-    title: page.title,
-  };
-}
-
-export default async function DynamicPage({ params }: { params: Params }) {
-  const { slug, lang } = params;
-
-  // Set the locale for this request
-  unstable_setRequestLocale(lang);
-
-  const t = await getTranslations("Common");
-
-  const fullPath = slug.join("/");
-
-  const page = await prisma.dynamicPage.findFirst({
-    where: {
-      AND: [{ fullPath: fullPath }, { lang: lang }],
-    },
-  });
-
-  if (!page) {
-    notFound();
+  if (!pageData) {
+    return <div>{t("pageNotFound")}</div>;
   }
 
   return (
     <div>
-      <h1>{page.title}</h1>
+      <h1>{pageData.title}</h1>
       <div>
         {t("currentLanguage")}: {lang}
-        <pre>{JSON.stringify(JSON.parse(page.content as string), null, 2)}</pre>
+        <div dangerouslySetInnerHTML={{ __html: pageData.content }} />
       </div>
     </div>
   );
