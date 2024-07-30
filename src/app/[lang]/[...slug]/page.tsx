@@ -1,8 +1,7 @@
 // src/app/[lang]/[...slug]/page.tsx
-import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
-
-const prisma = new PrismaClient();
+import { getTranslations } from "next-intl/server";
+import prisma from "@/prisma/database"; // Ajusta esta ruta si es necesario
 
 interface Params {
   slug: string[];
@@ -19,10 +18,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }) {
   const { slug, lang } = params;
-  const fullPath = Array.isArray(slug) ? slug.join("/") : slug;
+  const fullPath = slug.join("/");
 
-  const page = await prisma.dynamicPage.findUnique({
-    where: { fullPath },
+  const page = await prisma.dynamicPage.findFirst({
+    where: {
+      AND: [{ fullPath: fullPath }, { lang: lang }],
+    },
   });
 
   if (!page) {
@@ -38,10 +39,14 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function DynamicPage({ params }: { params: Params }) {
   const { slug, lang } = params;
-  const fullPath = Array.isArray(slug) ? slug.join("/") : slug;
+  const t = await getTranslations("Common");
 
-  const page = await prisma.dynamicPage.findUnique({
-    where: { fullPath },
+  const fullPath = slug.join("/");
+
+  const page = await prisma.dynamicPage.findFirst({
+    where: {
+      AND: [{ fullPath: fullPath }, { lang: lang }],
+    },
   });
 
   if (!page) {
@@ -52,8 +57,9 @@ export default async function DynamicPage({ params }: { params: Params }) {
     <div>
       <h1>{page.title}</h1>
       <div>
-        {lang}
+        {t("currentLanguage")}: {lang}
         {/* Aquí se renderizará el contenido del body en el futuro */}
+        <pre>{JSON.stringify(JSON.parse(page.content as string), null, 2)}</pre>
       </div>
     </div>
   );
