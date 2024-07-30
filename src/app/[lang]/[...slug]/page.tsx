@@ -1,7 +1,6 @@
-// src/app/[lang]/[...slug]/page.tsx
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import prisma from "@/prisma/database"; // Ajusta esta ruta si es necesario
+import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
+import prisma from "@/prisma/database";
 
 interface Params {
   slug: string[];
@@ -39,6 +38,10 @@ export async function generateMetadata({ params }: { params: Params }) {
 
 export default async function DynamicPage({ params }: { params: Params }) {
   const { slug, lang } = params;
+
+  // Set the locale for this request
+  unstable_setRequestLocale(lang);
+
   const t = await getTranslations("Common");
 
   const fullPath = slug.join("/");
@@ -58,7 +61,6 @@ export default async function DynamicPage({ params }: { params: Params }) {
       <h1>{page.title}</h1>
       <div>
         {t("currentLanguage")}: {lang}
-        {/* Aquí se renderizará el contenido del body en el futuro */}
         <pre>{JSON.stringify(JSON.parse(page.content as string), null, 2)}</pre>
       </div>
     </div>
