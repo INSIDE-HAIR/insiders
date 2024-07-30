@@ -85,7 +85,14 @@
       "errorMessage": "Ocurrió un error al guardar la página",
       "templateLabel": "Plantilla",
       "selectTemplate": "Selecciona una plantilla",
-      "templateDescription": "Elige una plantilla para la página. Una vez creada, la plantilla no se puede cambiar. Tendrás que borrar la página y crear una nueva para usar una plantilla diferente."
+      "templateDescription": "Elige una plantilla para la página. Una vez creada, la plantilla no se puede cambiar. Tendrás que borrar la página y crear una nueva para usar una plantilla diferente.",
+      "fullPathLabel": "Ruta Completa",
+      "fullPathPlaceholder": "Ingrese la ruta completa"
+    },
+    "errors": {
+      "createPageError": "Error al crear la página",
+      "updatePageError": "Error al actualizar la página",
+      "duplicateFullPath": "Ya existe una página con esta ruta completa"
     }
   }
 }

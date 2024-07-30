@@ -85,7 +85,16 @@
       "errorMessage": "An error occurred while saving the page",
       "templateLabel": "Template",
       "selectTemplate": "Select a template",
-      "templateDescription": "Choose a template for the page. Once created, the template cannot be changed. You will need to delete the page and create a new one to use a different template."
+      "templateDescription": "Choose a template for the page. Once created, the template cannot be changed. You will need to delete the page and create a new one to use a different template.",
+      "fullPathLabel": "Full Path",
+      "fullPathPlaceholder": "Enter full path",
+      "fullPathDuplicateError": "A page with this full path already exists",
+      "fullPathUpdateError": "Another page with this full path already exists"
+    },
+    "errors": {
+      "createPageError": "Error creating page",
+      "updatePageError": "Error updating page",
+      "duplicateFullPath": "A page with this full path already exists"
     }
   }
 }

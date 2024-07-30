@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
     // Obtener los padres de las páginas coincidentes
     const parentIds = matchedPages
       .map((page) => page.parentId)
-      .filter((id) => id !== null);
+      .filter((id): id is string => id !== null);
 
     const parentPages = await prisma.dynamicPage.findMany({
       where: {

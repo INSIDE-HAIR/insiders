@@ -78,6 +78,7 @@ export default function PageCreator() {
   const m = useTranslations("PageCreator.messages");
   const d = useTranslations("PageCreator.deleteDialog");
   const f = useTranslations("PageCreator.form");
+  const e = useTranslations("PageCreator.errors");
 
   const router = useRouter();
 
@@ -128,7 +129,7 @@ export default function PageCreator() {
 
   useEffect(() => {
     fetchPages();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, isPublishedFilter]);
 
   const renderTemplateOptions = () => {
@@ -260,17 +261,17 @@ export default function PageCreator() {
         body: JSON.stringify(submitData),
       });
 
-      if (response.status === 403) {
-        const errorData = await response.json();
-        toast.error(errorData.error);
-        return;
-      }
-
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(
-          errorData.error || `Failed to ${data.id ? "update" : "create"} page.`
-        );
+        if (
+          response.status === 400 &&
+          errorData.error.includes("full path already exists")
+        ) {
+          toast.error(e("duplicateFullPath"));
+        } else {
+          toast.error(data.id ? e("updatePageError") : e("createPageError"));
+        }
+        return;
       }
 
       const updatedPage: Page = await response.json();
@@ -281,19 +282,14 @@ export default function PageCreator() {
       } else {
         toast.success(f("createSuccessDescription", { title: data.title }));
         setSelectedPage(null);
+        form.reset();
       }
 
       await fetchPages();
-      form.reset();
       setIsFormOpen(false);
     } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-        console.error("Submit error:", error);
-      } else {
-        toast.error(f("errorMessage"));
-        console.error("Submit error:", error);
-      }
+      console.error("Submit error:", error);
+      toast.error(data.id ? e("updatePageError") : e("createPageError"));
     } finally {
       setIsLoading(false);
       setIsUpdating(false);
@@ -302,16 +298,18 @@ export default function PageCreator() {
 
   const handleCreatePage = () => {
     setSelectedPage(null);
-    form.reset();
+    form.reset({
+      title: "",
+      content: "",
+      slug: "",
+      lang: "en",
+      parentId: null,
+      level: 1,
+      isPublished: false,
+      author: "",
+      template: Template.sideMenuAndTabs,
+    });
     setIsFormOpen(true);
-    setIsCreatingSubpage(false);
-  };
-
-  const handleCreateSubpage = () => {
-    setSelectedPage(null);
-    form.reset();
-    setIsFormOpen(true);
-    setIsCreatingSubpage(true);
   };
 
   const handleEditPage = (page: Page) => {
@@ -411,7 +409,6 @@ export default function PageCreator() {
         <h1 className="text-2xl font-bold mb-4">{t("title")}</h1>
         <div className="mb-4 flex space-x-2">
           <Button onClick={handleCreatePage}>{a("createNewPage")}</Button>
-          <Button onClick={handleCreateSubpage}>{a("createSubpage")}</Button>
         </div>
 
         <div className="mb-4 flex space-x-2">
@@ -459,7 +456,26 @@ export default function PageCreator() {
           </TableBody>
         </Table>
 
-        <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+        <Dialog
+          open={isFormOpen}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedPage(null);
+              form.reset({
+                title: "",
+                content: "",
+                slug: "",
+                lang: "en",
+                parentId: null,
+                level: 1,
+                isPublished: false,
+                author: "",
+                template: Template.sideMenuAndTabs,
+              });
+            }
+            setIsFormOpen(open);
+          }}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
