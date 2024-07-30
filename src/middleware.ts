@@ -1,43 +1,56 @@
-import NextAuth from "next-auth";
-import authConfig from "./lib/actions/auth/config/auth.config";
-import createIntlMiddleware from "next-intl/middleware";
+// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
-const { auth } = NextAuth(authConfig);
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  const currentLocale = req.cookies.get("NEXT_LOCALE")?.value || "es"; // Default to 'es' if no cookie
 
-// Crear el middleware de next-intl
-const intlMiddleware = createIntlMiddleware({
-  locales: ["en", "es"],
-  defaultLocale: "es",
-});
+  // Redirect root to current locale
+  if (pathname === "/") {
+    const response = NextResponse.redirect(
+      new URL(`/${currentLocale}`, req.url)
+    );
+    response.cookies.set("NEXT_LOCALE", currentLocale);
+    return response;
+  }
 
-// Combinar NextAuth y next-intl
-export default auth((req: NextRequest) => {
-  const { nextUrl } = req;
-
-  // No aplicar internacionalización a las rutas de API
-  if (nextUrl.pathname.startsWith("/api")) {
+  // Exclude API routes, static files, and not-found page
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname === "/not-found"
+  ) {
     return NextResponse.next();
   }
 
-  // Manejar las redirecciones de autenticación
-  if (nextUrl.pathname === "/register")
-    return Response.redirect(new URL("/auth/register", nextUrl));
+  // Handle language-specific routes and update cookie
+  if (pathname.startsWith("/es") || pathname.startsWith("/en")) {
+    const lang = pathname.startsWith("/es") ? "es" : "en";
+    const response = NextResponse.next();
+    response.cookies.set("NEXT_LOCALE", lang);
+    return response;
+  }
 
-  if (nextUrl.pathname === "/login" || nextUrl.pathname === "/signin")
-    return Response.redirect(new URL("/auth/login", nextUrl));
+  // Handle redirections for routes without language prefix
+  if (!pathname.startsWith("/es") && !pathname.startsWith("/en")) {
+    const newPathname = `/${currentLocale}${pathname}`;
+    const response = NextResponse.redirect(new URL(newPathname, req.url));
+    response.cookies.set("NEXT_LOCALE", currentLocale);
+    return response;
+  }
 
-  // Aplicar el middleware de next-intl para rutas que no son API
-  return intlMiddleware(req);
-});
+  // Add any other custom redirection logic here if needed
 
-// Ajustar el matcher para excluir explícitamente las rutas de API
+  return NextResponse.next();
+}
+
+// Adjust the matcher to explicitly exclude API routes
 export const config = {
   matcher: [
-    // Rutas internacionalizadas
+    // Routes that need to be handled by the middleware
     "/",
     "/((?!api|_next|.*\\..*).*)",
-    // Incluir explícitamente rutas de autenticación si es necesario
+    // Explicitly include authentication routes if necessary
     "/auth/:path*",
   ],
 };

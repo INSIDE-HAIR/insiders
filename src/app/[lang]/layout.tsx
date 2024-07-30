@@ -4,14 +4,10 @@ import Providers from "@/src/components/providers/Providers";
 import { cn, inter } from "@/src/lib/utils/utils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import {
-  getTranslations,
-  getMessages,
-  unstable_setRequestLocale,
-} from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
+import { TranslationProvider } from "@/src/context/TranslationContext";
 
-const locales = ["en", "es"];
+const locales = ["en", "es"] as const;
+type Locale = (typeof locales)[number];
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -22,31 +18,27 @@ export async function generateMetadata({
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  unstable_setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "Metadata" });
-
   return {
-    title: t("title", { fallback: "Plataforma INSIDERS | INSIDE HAIR" }),
-    description: t("description", {
-      fallback:
-        "En INSIDE HAIR nos dedicamos a ayudar a managers de Peluquería a conseguir sus objetivos en consultoría, formación y Marketing para salones de Peluquería.",
-    }),
+    title: "Plataforma INSIDERS | INSIDE HAIR",
+    description:
+      "En INSIDE HAIR nos dedicamos a ayudar a managers de Peluquería a conseguir sus objetivos en consultoría, formación y Marketing para salones de Peluquería.",
   };
 }
 
 export default async function RootLayout({
   children,
   params: { locale },
-}: Readonly<{
+}: {
   children: React.ReactNode;
   params: { locale: string };
-}>) {
-  if (!locales.includes(locale)) locale = "es"; // default to Spanish if locale is invalid
-  unstable_setRequestLocale(locale);
+}) {
+  if (!locales.includes(locale as Locale)) locale = "es"; // default to Spanish if locale is invalid
 
   let messages;
   try {
-    messages = await getMessages({ locale }); // Pasamos un objeto con la propiedad locale
+    messages = await import(`@/public/locales/${locale}/common.json`).then(
+      (module) => module.default
+    );
   } catch (error) {
     console.error(`Failed to load messages for locale ${locale}:`, error);
     messages = {}; // Provide empty object as fallback
@@ -62,9 +54,12 @@ export default async function RootLayout({
               inter.className
             )}
           >
-            <NextIntlClientProvider messages={messages} locale={locale}>
+            <TranslationProvider
+              initialLocale={locale as Locale}
+              initialMessages={messages}
+            >
               {children}
-            </NextIntlClientProvider>
+            </TranslationProvider>
             <Analytics />
             <SpeedInsights />
           </main>

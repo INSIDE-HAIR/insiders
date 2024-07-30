@@ -1,12 +1,5 @@
 // En la página TrainingIBMPage
-import { useTranslations } from "next-intl";
-import { createMetadataGenerator } from "@/src/lib/utils/generateMetadata";
-
-export const generateMetadata = createMetadataGenerator({
-  namespace: "Metadata",
-  titleKey: "trainingIBMTitle",
-  descriptionKey: "trainingIBMDescription",
-});
+import { useTranslations } from "@/src/context/TranslationContext";
 
 export default function TrainingIBMPage() {
   const t = useTranslations("TrainingIBMPage");

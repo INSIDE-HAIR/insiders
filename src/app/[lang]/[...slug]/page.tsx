@@ -1,7 +1,6 @@
 "use client";
-
+import { useTranslations } from "@/src/context/TranslationContext";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 
 interface PageData {
