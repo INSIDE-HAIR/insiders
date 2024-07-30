@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 const prisma = new PrismaClient();
 
 interface Params {
-  slug: string | string[];
+  slug: string[];
   lang: string;
 }
 
@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Params }) {
-  const { slug } = params;
+  const { slug, lang } = params;
   const fullPath = Array.isArray(slug) ? slug.join("/") : slug;
 
   const page = await prisma.dynamicPage.findUnique({
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 
   if (!page) {
     return {
-      title: "Page not found",
+      title: "Page Not Found",
     };
   }
 
