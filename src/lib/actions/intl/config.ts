@@ -10,7 +10,7 @@ export async function getLocaleMessages(locale: string) {
     notFound();
   }
   return {
-    messages: (await import(`../../../public/locales/${locale}/common.json`))
+    messages: (await import(`../../../../public/locales/${locale}/common.json`)).default,
       .default,
   };
 }
