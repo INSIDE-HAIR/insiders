@@ -16,7 +16,8 @@ export async function getLocaleMessages(locale: string) {
 }
 
 export default async function handler(req: any) {
-  const locale = req.headers["accept-language"]?.split(",")[0] || "en";
+  const acceptLanguage = req.headers["accept-language"];
+  const locale = acceptLanguage ? acceptLanguage.split(",")[0] : "es";
   unstable_setRequestLocale(locale);
   const localeMessages = await getLocaleMessages(locale);
   return localeMessages;
