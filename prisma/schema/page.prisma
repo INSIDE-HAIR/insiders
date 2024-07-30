@@ -3,16 +3,29 @@ model DynamicPage {
   title       String
   content     Json
   slug        String
-  lang        String       
+  lang        String
   parentId    String?       @db.ObjectId
   parent      DynamicPage?  @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   children    DynamicPage[] @relation("PageHierarchy")
   level       Int           @default(1)
   fullPath    String        @unique
   isPublished Boolean       @default(false)
+  isEditable  Boolean       @default(true)
+  author      String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  template    Template      @default(sideMenuAndTabs)
 
   @@index([slug])
   @@index([parentId])
+}
+
+enum Template {
+  landingPage
+  iframe
+  sidemenuAndTabsAndCards
+  Training
+  Calendars
+  sideMenuAndTabs
+  custom
 }

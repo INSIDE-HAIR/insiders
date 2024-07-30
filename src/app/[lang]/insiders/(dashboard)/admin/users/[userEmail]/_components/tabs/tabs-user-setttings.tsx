@@ -11,7 +11,7 @@ import {
   CardFooter,
   CardTitle,
   CardContent,
-} from "@/src/components/ui/cards/card";
+} from "@/src/components/ui/card";
 import { User } from "@prisma/client";
 import UpdateUserForm from "../forms/update-user-form";
 

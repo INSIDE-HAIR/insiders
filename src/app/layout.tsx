@@ -7,7 +7,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { Toaster } from "@/src/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "Plataforma INSIDERS | INSIDE HAIR",
@@ -40,7 +39,6 @@ export default async function RootLayout({
             <Analytics />
             <SpeedInsights />
           </main>
-          <Toaster />
         </Providers>
       </body>
     </html>

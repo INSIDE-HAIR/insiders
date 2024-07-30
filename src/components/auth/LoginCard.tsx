@@ -1,5 +1,5 @@
 import Separator from "../share/Separator";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/cards/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 import BackButton from "./BackButton";
 import CredentialsLoginForm from "./CredentialsLoginForm";

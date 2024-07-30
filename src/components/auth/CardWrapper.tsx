@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/cards/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import Header from "./Header";
 import Social from "./Social";
 import BackButton from "./BackButton";

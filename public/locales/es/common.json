@@ -18,29 +18,74 @@
     "contactDescription": "Descripción de la página de contacto..."
   },
   "PageCreator": {
-    "title": "Crear Página",
+    "title": "Gestión de Páginas",
+    "published": "Publicado",
+    "draft": "Borrador",
+    "pageNotEditableMessage": "Esta página no se puede editar. Por favor, contacta al desarrollador web.",
+    "actions": {
+      "createNewPage": "Crear Nueva Página",
+      "createSubpage": "Crear Subpágina",
+      "editPage": "Editar Página",
+      "createPage": "Crear Página",
+      "updatePage": "Actualizar Página",
+      "deletePage": "Eliminar Página",
+      "cancel": "Cancelar",
+      "confirmDelete": "Confirmar Eliminación",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "view": "Ver Página",
+      "editContent": "Editar Contenido"
+    },
+    "search": {
+      "searchPages": "Buscar páginas",
+      "filterByStatus": "Filtrar por estado",
+      "allPages": "Todas las páginas",
+      "publishedOnly": "Solo publicadas"
+    },
+    "table": {
+      "title": "Título",
+      "author": "Autor",
+      "status": "Estado",
+      "lastModified": "Última Modificación",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "saving": "Guardando...",
+      "pagesLoadedSuccess": "Páginas cargadas con éxito",
+      "errorLoadingPages": "Error al cargar las páginas",
+      "deleteSuccess": "Página {title} eliminada con éxito",
+      "deleteError": "Error al eliminar la página {title}: {error}"
+    },
+    "deleteDialog": {
+      "deletePageWithChildren": "Eliminar Página con Subpáginas",
+      "deletePageConfirmation": "¿Estás seguro de que quieres eliminar esta página?",
+      "deletePageWithChildrenDescription": "Esta página tiene {count} subpáginas. ¿Qué deseas hacer?",
+      "deleteCascade": "Eliminar Todo",
+      "deleteMoveUp": "Mover Subpáginas Arriba"
+    },
     "form": {
       "titleLabel": "Título",
-      "titleDescription": "Este será el título principal de la página.",
       "titlePlaceholder": "Ingrese el título de la página",
-      "slugLabel": "Slug",
-      "slugDescription": "El slug se usará en la URL de la página. Use solo letras minúsculas, números y guiones.",
-      "slugPlaceholder": "Ingrese el slug de la página",
       "contentLabel": "Contenido",
-      "contentDescription": "El contenido principal de la página.",
-      "contentPlaceholder": "Ingrese el contenido de la página (en formato JSON)",
+      "contentPlaceholder": "Ingrese el contenido de la página",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Ingrese el slug de la página",
+      "langLabel": "Idioma",
+      "langPlaceholder": "Ingrese el idioma de la página",
       "parentPageLabel": "Página Padre",
-      "parentPageDescription": "Seleccione una página padre si esta es una subpágina.",
       "selectParentPage": "Seleccione una página padre",
       "noParent": "Sin padre (página de nivel superior)",
       "publishLabel": "Publicar",
-      "publishDescription": "¿Desea publicar esta página inmediatamente?",
-      "createButton": "Crear Página",
-      "creatingButton": "Creando...",
-      "createSuccessTitle": "Página creada con éxito",
-      "createSuccessDescription": "La página \"{title}\" ha sido creada.",
-      "errorMessage": "Ocurrió un error al crear la página",
-      "errorTitle": "Error al crear la página"
+      "publishDescription": "¿Desea publicar esta página?",
+      "authorLabel": "Autor",
+      "authorPlaceholder": "Ingrese el nombre del autor",
+      "updateSuccessDescription": "Página {title} actualizada con éxito",
+      "createSuccessDescription": "Página {title} creada con éxito",
+      "errorMessage": "Ocurrió un error al guardar la página",
+      "templateLabel": "Plantilla",
+      "selectTemplate": "Selecciona una plantilla",
+      "templateDescription": "Elige una plantilla para la página. Una vez creada, la plantilla no se puede cambiar. Tendrás que borrar la página y crear una nueva para usar una plantilla diferente."
     }
   }
 }

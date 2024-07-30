@@ -1,5 +1,4 @@
-// prisma/seed.ts
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Template } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -11,9 +10,12 @@ async function main() {
       content: JSON.stringify({ body: "Welcome to our website" }),
       slug: "home",
       fullPath: "home",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 1,
       isPublished: true,
+      isEditable: false,
+      author: "System",
+      template: Template.custom,
     },
   });
 
@@ -23,9 +25,11 @@ async function main() {
       content: JSON.stringify({ body: "Learn more about our company" }),
       slug: "about",
       fullPath: "about",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 1,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -35,9 +39,11 @@ async function main() {
       content: JSON.stringify({ body: "Our services" }),
       slug: "services",
       fullPath: "services",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 1,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -48,10 +54,12 @@ async function main() {
       content: JSON.stringify({ body: "Meet our team" }),
       slug: "team",
       fullPath: "about/team",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 2,
       parentId: about.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -61,10 +69,12 @@ async function main() {
       content: JSON.stringify({ body: "Our company's history" }),
       slug: "history",
       fullPath: "about/history",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 2,
       parentId: about.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -74,10 +84,12 @@ async function main() {
       content: JSON.stringify({ body: "Web development services" }),
       slug: "web-development",
       fullPath: "services/web-development",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 2,
       parentId: services.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -87,10 +99,12 @@ async function main() {
       content: JSON.stringify({ body: "SEO services" }),
       slug: "seo",
       fullPath: "services/seo",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 2,
       parentId: services.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -101,10 +115,12 @@ async function main() {
       content: JSON.stringify({ body: "Our frontend development process" }),
       slug: "frontend",
       fullPath: "services/web-development/frontend",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 3,
       parentId: webDev.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -114,10 +130,12 @@ async function main() {
       content: JSON.stringify({ body: "Our backend development process" }),
       slug: "backend",
       fullPath: "services/web-development/backend",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 3,
       parentId: webDev.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
@@ -127,10 +145,12 @@ async function main() {
       content: JSON.stringify({ body: "Our content creation services" }),
       slug: "content-creation",
       fullPath: "services/seo/content-creation",
-      lang: "en", // Idioma de la página
+      lang: "en",
       level: 3,
       parentId: seo.id,
       isPublished: true,
+      author: "Admin",
+      template: Template.sideMenuAndTabs,
     },
   });
 
