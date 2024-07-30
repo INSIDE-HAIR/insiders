@@ -1,15 +1,23 @@
 import { notFound } from "next/navigation";
-import { getRequestConfig } from "next-intl/server";
+import { unstable_setRequestLocale } from "next-intl/server";
 
 // Can be imported from a shared config
 const locales = ["en", "es"];
 
-export default getRequestConfig(async ({ locale }) => {
+export async function getLocaleMessages(locale: string) {
   // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as any)) notFound();
-
+  if (!locales.includes(locale)) {
+    notFound();
+  }
   return {
-    messages: (await import(`../../../../public/locales/${locale}/common.json`))
+    messages: (await import(`../../../public/locales/${locale}/common.json`))
       .default,
   };
-});
+}
+
+export default async function handler(req: any) {
+  const locale = req.headers["accept-language"]?.split(",")[0] || "en";
+  unstable_setRequestLocale(locale);
+  const localeMessages = await getLocaleMessages(locale);
+  return localeMessages;
+}
