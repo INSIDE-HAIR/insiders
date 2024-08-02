@@ -66,37 +66,30 @@ function convertGoogleDriveLink(link: string): GoogleDriveLinks {
 }
 
 function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
-  const sortedObjects = objects.sort((a, b) => b.title.localeCompare(a.title));
   const grouped: { [key: string]: TransformedObject } = {};
 
-  sortedObjects.forEach((obj) => {
-    const baseIdMatch =
-      obj.title.match(/^(.+?)-P\d+/) || obj.title.match(/^(.+?)(\.\w+)$/);
-    const baseId = baseIdMatch ? baseIdMatch[1] : obj.title;
-    const transformedUrl = convertGoogleDriveLink(obj.url);
+  // Primera pasada: procesar objetos sin "-P"
+  objects.forEach((obj) => {
+    if (!obj.title.includes("-P")) {
+      const [
+        clientsCode,
+        campaignCode,
+        yearAndMonth,
+        fileCode,
+        langCode,
+        family,
+        version,
+      ] = obj.title.split(/[-_]/);
 
-    const [
-      clientsCode,
-      campaignCode,
-      yearAndMonth,
-      fileCode,
-      langCode,
-      family,
-      version,
-    ] = obj.title.split(/[-_]/);
-    const client =
-      clientsCodes[clientsCode.substring(0, 4) as keyof typeof clientsCodes] ||
-      "Desconocido";
-    const campaign =
-      campaignCodes[campaignCode as keyof typeof campaignCodes] ||
-      "Desconocido";
-    const category =
-      filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
-      "Desconocido";
-    const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
-    const downloadName = `${category}-${lang}-${version}`;
+      const baseId = obj.title.split('.')[0]; // Asumiendo que el formato es consistente
+      const transformedUrl = convertGoogleDriveLink(obj.url);
+      
+      const client = clientsCodes[clientsCode.substring(0, 4) as keyof typeof clientsCodes] || "Desconocido";
+      const campaign = campaignCodes[campaignCode as keyof typeof campaignCodes] || "Desconocido";
+      const category = filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] || "Desconocido";
+      const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
+      const downloadName = `${category}-${lang}-${version}`;
 
-    if (!grouped[baseId]) {
       grouped[baseId] = {
         id: baseId,
         order: Number(version?.substring(0, 2)) || Number(version),
@@ -118,43 +111,32 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         buttons: obj.buttons || [],
       };
     }
+  });
 
+  // Segunda pasada: procesar objetos con "-P"
+  objects.forEach((obj) => {
     if (obj.title.includes("-P")) {
+      const baseId = obj.title.split('-P')[0];
       const orderMatch = obj.title.split("-P")[1].match(/\d+/);
       const order = orderMatch ? Number(orderMatch[0]) : 0;
 
-      let previewItem: PreviewItem = {
-        id: obj.title.substring(0, 25),
-        order: order,
-        title: `${category}-${version?.substring(0, 2)}: P-${order}`,
-        url: obj.url,
-        transformedUrl: transformedUrl,
-      };
-
       if (grouped[baseId]) {
-        grouped[baseId].preview.push(previewItem);
-      } else {
-        grouped[baseId] = {
-          id: baseId,
-          order: Number(version?.substring(0, 2)) || Number(version),
-          title: `${category}: ${lang}-${version?.substring(0, 2)}`,
+        const previewItem: PreviewItem = {
+          id: obj.title.substring(0, 25),
+          order: order,
+          title: `${grouped[baseId].category}-${grouped[baseId].order}: P-${order}`,
           url: obj.url,
-          copy: obj.copy || "",
-          transformedUrl: transformedUrl,
-          category: category,
-          lang: lang,
-          downloadName: downloadName,
-          client: client,
-          campaign: campaign,
-          year: Number(yearAndMonth?.substring(0, 2)),
-          month: Number(yearAndMonth?.substring(2, 4)),
-          groupOrder: Number(family),
-          groupTitle: obj.groupTitle || "",
-          preview: [previewItem],
-          buttons: obj.buttons || [],
+          transformedUrl: convertGoogleDriveLink(obj.url),
         };
+
+        grouped[baseId].preview.push(previewItem);
       }
     }
+  });
+
+  // Ordenar las previews de cada objeto
+  Object.values(grouped).forEach(item => {
+    item.preview.sort((a, b) => a.order - b.order);
   });
 
   return Object.values(grouped);
