@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import LogoutButton from "@/src/components/share/LogoutButton";
 import { auth } from "@/src/lib/actions/auth/config/auth";
 
