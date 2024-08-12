@@ -5467,9 +5467,49 @@
       "auth": []
     },
     {
+      "id": "implementation3",
+      "title": "Inspiración Técnica",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "order": 1,
+          "type": "video",
+          "id": "jesusInspiration1",
+          "title": "vídeo inspiracional",
+          "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "order": 2,
+          "type": "video",
+          "id": "jesusExplaning1",
+          "title": "Vídeo Explicativo",
+          "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
       "id": "guide3",
       "title": "Guía",
-      "order": 3,
+      "order": 4,
       "classType": "default",
       "content": [
         {
@@ -5497,7 +5537,7 @@
     {
       "id": "controlList4",
       "title": "Listas de control",
-      "order": 4,
+      "order": 5,
       "classType": "default",
       "content": [
         {
@@ -5538,7 +5578,7 @@
     {
       "id": "contenidoFisico5",
       "title": "Contenido físico",
-      "order": 5,
+      "order": 6,
       "classType": "default",
       "content": [
         {
@@ -5924,7 +5964,7 @@
     {
       "id": "contenidoDigital4",
       "title": "Contenido digital",
-      "order": 6,
+      "order": 7,
       "classType": "default",
       "content": [
         {
@@ -6067,7 +6107,7 @@
     {
       "id": "weeklyContent7",
       "title": "Comunicación semanal",
-      "order": 7,
+      "order": 8,
       "classType": "default",
       "content": [
         {
