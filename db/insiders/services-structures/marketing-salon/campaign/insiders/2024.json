@@ -5467,36 +5467,54 @@
       "auth": []
     },
     {
-      "id": "implementation3",
+      "id": "impiration3",
       "title": "Inspiración Técnica",
       "order": 3,
       "classType": "default",
       "content": [
         {
+          "id": "tab1",
           "order": 1,
-          "type": "video",
-          "id": "jesusInspiration1",
-          "title": "vídeo inspiracional",
-          "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
+          "type": "tab",
+          "title": "Inspiración",
+          "classType": "default",
+          "content": [
+            {
+              "order": 1,
+              "type": "video",
+              "id": "jesusInspiration1",
+              "title": "vídeo inspiracional",
+              "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ]
         },
         {
+          "id": "tab2",
           "order": 2,
-          "type": "video",
-          "id": "jesusExplaning1",
-          "title": "Vídeo Explicativo",
-          "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
-          "active": true,
-          "available": {
-            "startDateTime": null,
-            "endDateTime": null
-          },
-          "auth": []
+          "type": "tab",
+          "title": "Explicación",
+          "classType": "default",
+          "content": [
+            {
+              "order": 2,
+              "type": "video",
+              "id": "jesusExplaning1",
+              "title": "Vídeo Explicativo",
+              "url": "https://player.vimeo.com/video/996541677?h=b542ca6298&badge=0&autopause=0&player_id=0&app_id=58479",
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ]
         }
       ],
       "active": true,
@@ -5507,7 +5525,7 @@
       "auth": []
     },
     {
-      "id": "guide3",
+      "id": "guide4",
       "title": "Guía",
       "order": 4,
       "classType": "default",
@@ -5535,7 +5553,7 @@
       "auth": []
     },
     {
-      "id": "controlList4",
+      "id": "controlList5",
       "title": "Listas de control",
       "order": 5,
       "classType": "default",
@@ -5576,7 +5594,7 @@
       "auth": []
     },
     {
-      "id": "contenidoFisico5",
+      "id": "contenidoFisico6",
       "title": "Contenido físico",
       "order": 6,
       "classType": "default",
@@ -5962,7 +5980,7 @@
       "auth": []
     },
     {
-      "id": "contenidoDigital4",
+      "id": "contenidoDigital7",
       "title": "Contenido digital",
       "order": 7,
       "classType": "default",
@@ -6105,7 +6123,7 @@
       "auth": []
     },
     {
-      "id": "weeklyContent7",
+      "id": "weeklyContent8",
       "title": "Comunicación semanal",
       "order": 8,
       "classType": "default",
