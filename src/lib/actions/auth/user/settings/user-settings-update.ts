@@ -2,11 +2,14 @@
 "use server";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
-import { auth, unstable_update as update } from "../../config/auth";
+import {
+  auth,
+  unstable_update as update,
+} from "@/src/lib/actions/auth/config/auth";
 import prisma from "@/prisma/database";
-import { sendVerificationEmailResend } from "../../../../mail/mail";
 import { generateVerificationToken } from "@/src/lib/actions/auth/user/register/tokens";
-import { UserSchema } from "../../../../types/inside-schemas";
+import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
+import { UserSchema } from "@/src/lib/types/inside-schemas";
 
 export const updateUser = async (values: z.infer<typeof UserSchema>) => {
   // Ensure the user is authenticated
