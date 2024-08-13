@@ -2,9 +2,13 @@
 import axios from "axios";
 import { ServiceUser } from "../types/user";
 
+const apiClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000",
+});
+
 export async function getUsers(): Promise<ServiceUser[]> {
   try {
-    const response = await axios.get("/api/users");
+    const response = await apiClient.get("/api/users");
     return response.data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -14,7 +18,7 @@ export async function getUsers(): Promise<ServiceUser[]> {
 
 export async function syncUsersWithHolded(): Promise<void> {
   try {
-    await axios.post("/api/users/sync");
+    await apiClient.post("/api/users/sync");
   } catch (error) {
     console.error("Error syncing users with Holded:", error);
     throw error;

@@ -1,5 +1,8 @@
-// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
+
+function setLocaleCookie(response: NextResponse, locale: string) {
+  response.cookies.set("NEXT_LOCALE", locale);
+}
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -10,7 +13,7 @@ export function middleware(req: NextRequest) {
     const response = NextResponse.redirect(
       new URL(`/${currentLocale}`, req.url)
     );
-    response.cookies.set("NEXT_LOCALE", currentLocale);
+    setLocaleCookie(response, currentLocale);
     return response;
   }
 
@@ -27,7 +30,7 @@ export function middleware(req: NextRequest) {
   if (pathname.startsWith("/es") || pathname.startsWith("/en")) {
     const lang = pathname.startsWith("/es") ? "es" : "en";
     const response = NextResponse.next();
-    response.cookies.set("NEXT_LOCALE", lang);
+    setLocaleCookie(response, lang);
     return response;
   }
 
@@ -35,7 +38,7 @@ export function middleware(req: NextRequest) {
   if (!pathname.startsWith("/es") && !pathname.startsWith("/en")) {
     const newPathname = `/${currentLocale}${pathname}`;
     const response = NextResponse.redirect(new URL(newPathname, req.url));
-    response.cookies.set("NEXT_LOCALE", currentLocale);
+    setLocaleCookie(response, currentLocale);
     return response;
   }
 
