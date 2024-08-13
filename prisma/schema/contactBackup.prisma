@@ -1,0 +1,10 @@
+model ContactBackup {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  data       Json
+  isFavorite Boolean   @default(false)
+  expiresAt  DateTime?
+  isDaily    Boolean   @default(false)
+  isCurrent  Boolean   @unique @default(false)
+}
