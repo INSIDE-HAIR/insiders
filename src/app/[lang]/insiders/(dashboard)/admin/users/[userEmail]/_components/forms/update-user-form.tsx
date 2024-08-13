@@ -66,23 +66,22 @@ export default function UpdateUserForm({ user }: Props) {
     form.setValue("holdedId", holdedId || "");
   }, [holdedId, form]);
 
-  const onSubmit = (values: z.infer<typeof UserSchema>) => {
+  const onSubmit = async (values: z.infer<typeof UserSchema>) => {
     setError("");
     setSuccess("");
 
-    startTransition(() => {
-      updateUser(values)
-        .then((data) => {
-          if (data?.error) {
-            setError(data.error);
-          }
-          if (data?.success) {
-            setSuccess(data.success);
-            setHoldedId(values.holdedId); // Update context when form is submitted
-          }
-        })
-        .catch((err) => setError(`Something went wrong: ${err.message}`));
-    });
+    try {
+      const data = await updateUser(values);
+
+      if (data?.error) {
+        setError(data.error);
+      } else if (data?.success) {
+        setSuccess(data.success);
+        setHoldedId(values.holdedId); // Actualizar el contexto cuando el formulario se envía correctamente
+      }
+    } catch (err) {
+      setError(`Something went wrong: ${err.message}`);
+    }
   };
 
   return (
