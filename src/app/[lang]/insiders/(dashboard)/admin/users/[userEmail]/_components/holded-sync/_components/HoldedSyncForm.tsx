@@ -64,6 +64,8 @@ const HoldedSyncForm = ({
     }
   }, [debouncedHoldedId, insidersId, form, holdedId]);
 
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
   const onSubmitHoldedId = async (holdedId: string) => {
     setErrorMessage("");
     setSuccessMessage("");
@@ -76,19 +78,19 @@ const HoldedSyncForm = ({
     }
 
     try {
-      const data = await getHoldedContactById(holdedId || "");
-      if (data?.error) {
-        setErrorMessage(data.error);
-        setSuccessMessage(""); // Asegúrate de limpiar el mensaje de éxito si hay un error
-      } else {
+      const response = await fetch(`${apiUrl}/api/holded/contact/${holdedId}`);
+      const data = await response.json();
+
+      if (response.ok && data) {
         setSuccessMessage("Holded ID encontrado con éxito");
-        setErrorMessage(""); // Limpia el mensaje de error al encontrar un contacto válido
+        setErrorMessage("");
         setHoldedContact(data);
         setHoldedId(holdedId);
+      } else {
+        setErrorMessage(data.error || "Error al conectar con Holded.");
       }
     } catch (error) {
       setErrorMessage("Error al conectar con Holded.");
-      setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
     } finally {
       setLoading(false);
     }
