@@ -80,7 +80,13 @@ export default function UpdateUserForm({ user }: Props) {
         setHoldedId(values.holdedId); // Actualizar el contexto cuando el formulario se envía correctamente
       }
     } catch (err) {
-      setError(`Something went wrong: ${err.message}`);
+      if (err instanceof Error) {
+        // Si err es una instancia de Error, puedes acceder a sus propiedades
+        setError(`Something went wrong: ${err.message}`);
+      } else {
+        // Si no es una instancia de Error, maneja el caso genérico
+        setError("Something went wrong.");
+      }
     }
   };
 
