@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Form,
   FormControl,
@@ -10,22 +9,22 @@ import {
 } from "@/src/components/ui/form";
 import { HoldedSyncSchema } from "@/src/lib/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/src/components/ui/input";
 import FormError from "@/src/components/share/MessageErrorBox";
 import FormSuccess from "@/src/components/share/MessageSuccessBox";
 import { getHoldedContactById } from "@/src/lib/actions/vendors/holded/contacts";
 import moment from "moment-timezone";
-import "moment/locale/es"; // Importar el idioma español
+import "moment/locale/es";
 import ErrorMessageBox from "@/src/components/share/MessageErrorBox";
 import SuccessMessageBox from "@/src/components/share/MessageSuccessBox";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { useDebounce } from "@uidotdev/usehooks";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
-import { z } from "zod";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
 import { Button } from "@/src/components/ui/buttons/chadcn-button";
+import { z } from "zod";
+import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 
 type Props = {
   holdedId?: string | null;
@@ -40,7 +39,6 @@ const HoldedSyncForm = ({
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
   const [successMessage, setSuccessMessage] = useState<string | undefined>("");
   const [holdedContact, setHoldedContact] = useState<any>({});
-  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [isValidId, setIsValidId] = useState<boolean>(false);
 
@@ -60,6 +58,9 @@ const HoldedSyncForm = ({
 
     if (debouncedHoldedId?.length === 24) {
       checkConnection(debouncedHoldedId);
+    } else {
+      setIsValidId(false);
+      setHoldedContact({});
     }
   }, [debouncedHoldedId, insidersId, form, holdedId]);
 
@@ -69,7 +70,7 @@ const HoldedSyncForm = ({
     setLoading(true);
 
     if (holdedId.length !== 24) {
-      setErrorMessage("El Holded ID debe tener al menos 24 caracteres.");
+      setErrorMessage("El Holded ID debe tener 24 caracteres.");
       setLoading(false);
       return;
     }
@@ -78,13 +79,16 @@ const HoldedSyncForm = ({
       const data = await getHoldedContactById(holdedId || "");
       if (data?.error) {
         setErrorMessage(data.error);
+        setSuccessMessage(""); // Asegúrate de limpiar el mensaje de éxito si hay un error
       } else {
         setSuccessMessage("Holded ID encontrado con éxito");
+        setErrorMessage(""); // Limpia el mensaje de error al encontrar un contacto válido
         setHoldedContact(data);
         setHoldedId(holdedId);
       }
     } catch (error) {
       setErrorMessage("Error al conectar con Holded.");
+      setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
     } finally {
       setLoading(false);
     }
@@ -102,11 +106,14 @@ const HoldedSyncForm = ({
       );
       if (result.error) {
         setErrorMessage(result.error);
+        setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
       } else {
         setSuccessMessage("Holded ID actualizado exitosamente");
+        setErrorMessage(""); // Limpia el mensaje de error si la actualización es exitosa
       }
     } catch (error) {
       setErrorMessage("Error al actualizar el Holded ID.");
+      setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
     } finally {
       setLoading(false);
     }
@@ -119,13 +126,19 @@ const HoldedSyncForm = ({
       if (data && !data.error) {
         setIsValidId(true);
         setHoldedContact(data);
+        setErrorMessage(""); // Limpia el mensaje de error si se encuentra un contacto válido
+        setSuccessMessage(""); // Limpia cualquier mensaje de éxito anterior
       } else {
         setIsValidId(false);
         setHoldedContact({});
+        setErrorMessage("No se encontró un contacto válido en Holded.");
+        setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
       }
     } catch (error) {
       setIsValidId(false);
       setHoldedContact({});
+      setErrorMessage("Error al conectar con Holded.");
+      setSuccessMessage(""); // Limpia el mensaje de éxito si ocurre un error
     } finally {
       setLoading(false);
     }
@@ -147,13 +160,13 @@ const HoldedSyncForm = ({
           <HoldedIdField
             form={form}
             setHoldedId={setHoldedId}
-            isPending={isPending}
+            loading={loading}
           />
           <InsidersIdField form={form} insidersId={insidersId} />
         </div>
 
-        <FormError message={errorMessage} />
-        <FormSuccess message={successMessage} />
+        {errorMessage && <FormError message={errorMessage} />}
+        {successMessage && <FormSuccess message={successMessage} />}
 
         {debouncedHoldedId?.length === 24 && (
           <ContactInfo
@@ -174,11 +187,11 @@ const HoldedSyncForm = ({
 const HoldedIdField = ({
   form,
   setHoldedId,
-  isPending,
+  loading,
 }: {
   form: any;
   setHoldedId: (holdedId: string) => void;
-  isPending: boolean;
+  loading: boolean;
 }) => (
   <FormField
     control={form.control}
@@ -192,7 +205,7 @@ const HoldedIdField = ({
           <Input
             {...field}
             value={field.value || ""}
-            disabled={isPending}
+            disabled={loading}
             onChange={(e) => {
               field.onChange(e);
               setHoldedId(e.target.value);
@@ -243,7 +256,7 @@ const ContactInfo = ({
   onUpdateHoldedId,
 }: {
   loading: boolean;
-  holdedContact: any; // Replace 'any' with the appropriate type for holdedContact
+  holdedContact: any;
   insidersId: any;
   insidersIdValue: any;
   isValidId: boolean;
