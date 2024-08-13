@@ -1,12 +1,11 @@
-//Esto esta funcionando mal en produccion, no se puede actualizar el usuario
 "use server";
-import bcrypt from "bcryptjs";
+import prisma from "@/prisma/database";
 import * as z from "zod";
+import bcrypt from "bcryptjs";
 import {
   auth,
   unstable_update as update,
 } from "@/src/lib/actions/auth/config/auth";
-import prisma from "@/prisma/database";
 import { generateVerificationToken } from "@/src/lib/actions/auth/user/register/tokens";
 import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 import { UserSchema } from "@/src/lib/types/inside-schemas";
