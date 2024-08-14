@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ContactBackup } from "@prisma/client";
 import { Button } from "@/src/components/ui/button";
-import { Star, Eye, Trash2 } from "lucide-react";
+import { Star, Eye, Trash2, Loader2 } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -85,8 +85,11 @@ export const columns: ColumnDef<ContactBackup>[] = [
             deleteBackup: (backup: ContactBackup) => void;
             viewDetails: (backup: ContactBackup) => void;
             openDeleteModal: (backup: ContactBackup) => void;
+            loadingBackupId: string | null; // Asegúrate de que loadingBackupId esté aquí
           }
         | undefined;
+
+      const isLoading = meta?.loadingBackupId === backup.id;
 
       return (
         <div className="flex items-center space-x-2">
@@ -97,12 +100,17 @@ export const columns: ColumnDef<ContactBackup>[] = [
                   variant="ghost"
                   size="icon"
                   onClick={() => meta?.toggleFavorite(backup)}
+                  disabled={isLoading} // Desactiva el botón si está cargando
                 >
-                  <Star
-                    className={
-                      backup.isFavorite ? "text-yellow-500" : "text-gray-300"
-                    }
-                  />
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" /> // Muestra un loader
+                  ) : (
+                    <Star
+                      className={
+                        backup.isFavorite ? "text-yellow-500" : "text-gray-300"
+                      }
+                    />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

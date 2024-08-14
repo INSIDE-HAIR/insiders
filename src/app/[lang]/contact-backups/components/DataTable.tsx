@@ -18,8 +18,9 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 import { ContactBackup } from "@prisma/client";
+import { Loader2 } from "lucide-react";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends ContactBackup, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onToggleFavorite: (backup: ContactBackup) => void;
@@ -27,16 +28,18 @@ interface DataTableProps<TData, TValue> {
   onViewDetails: (backup: ContactBackup) => void;
   openDeleteModal: (backup: ContactBackup) => void;
   pageSize: number;
+  loadingBackupId: string | null;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends ContactBackup, TValue>({
   columns,
-  data = [], // Provide a default value for data
+  data = [],
   onToggleFavorite,
   onDelete,
   onViewDetails,
   openDeleteModal,
   pageSize,
+  loadingBackupId,
 }: DataTableProps<TData, TValue>) {
   const [currentPage, setCurrentPage] = useState(0);
   const table = useReactTable({
@@ -66,6 +69,7 @@ export function DataTable<TData, TValue>({
       deleteBackup: onDelete,
       viewDetails: onViewDetails,
       openDeleteModal: openDeleteModal,
+      loadingBackupId,
     },
   });
 
@@ -103,9 +107,21 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                      {cell.column.id === "favorite" ? ( // Suponiendo que la columna de favorito tiene un id de 'favorite'
+                        row.original.id === loadingBackupId ? ( // Mostrar loader si está cargando
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          <button
+                            onClick={() => onToggleFavorite(row.original)}
+                          >
+                            ★
+                          </button>
+                        )
+                      ) : (
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )
                       )}
                     </TableCell>
                   ))}
