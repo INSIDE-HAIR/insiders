@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect, useCallback, useTransition } from "react";
 import { ContactBackup } from "@prisma/client";
 import { DataTable } from "./components/DataTable";
@@ -42,11 +42,6 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 
-type OptimisticAction =
-  | { type: "add"; backup: ContactBackup }
-  | { type: "remove"; id: string }
-  | { type: "update"; backup: ContactBackup };
-
 const ContactBackupsPage: React.FC = () => {
   const [favoriteBackups, setFavoriteBackups] = useState<ContactBackup[]>([]);
   const [dailyBackups, setDailyBackups] = useState<ContactBackup[]>([]);
@@ -67,43 +62,34 @@ const ContactBackupsPage: React.FC = () => {
   const [currentCountdown, setCurrentCountdown] = useState("");
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
+  const [isCreatingManualBackup, setIsCreatingManualBackup] = useState(false);
 
-  const [optimisticFavorites, setOptimisticFavorites] = React.useOptimistic(
-    favoriteBackups,
-    (state: ContactBackup[], action: OptimisticAction): ContactBackup[] => {
-      switch (action.type) {
-        case "add":
-          return [...state, action.backup];
-        case "remove":
-          return state.filter((b) => b.id !== action.id);
-        case "update":
-          return state.map((b) =>
-            b.id === action.backup.id ? action.backup : b
-          );
-        default:
-          return state;
-      }
+  const createManualBackup = async () => {
+    setIsCreatingManualBackup(true);
+    try {
+      const response = await fetch("/api/contact-backups", {
+        method: "POST",
+      });
+      if (!response.ok) throw new Error("Failed to create manual backup");
+      await fetchBackups(); // Refetch all backups to get the updated list
+      toast({
+        title: "Success",
+        description: "Manual backup created successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to create manual backup",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingManualBackup(false);
     }
-  );
-
-  const [optimisticDailyBackups, setOptimisticDailyBackups] =
-    React.useOptimistic(
-      dailyBackups,
-      (state: ContactBackup[], action: OptimisticAction): ContactBackup[] => {
-        switch (action.type) {
-          case "add":
-            return [...state, action.backup];
-          case "remove":
-            return state.filter((b) => b.id !== action.id);
-          case "update":
-            return state.map((b) =>
-              b.id === action.backup.id ? action.backup : b
-            );
-          default:
-            return state;
-        }
-      }
-    );
+  };
 
   const fetchBackups = useCallback(async () => {
     setIsLoading(true);
@@ -139,7 +125,7 @@ const ContactBackupsPage: React.FC = () => {
 
   const toggleFavorite = useCallback(
     async (backup: ContactBackup) => {
-      if (!backup.isFavorite && optimisticFavorites.length >= 5) {
+      if (!backup.isFavorite && favoriteBackups.length >= 5) {
         toast({
           title: "Error",
           description: "Maximum number of favorites reached (5)",
@@ -148,17 +134,7 @@ const ContactBackupsPage: React.FC = () => {
         return;
       }
 
-      const optimisticBackup = { ...backup, isFavorite: !backup.isFavorite };
-
-      startTransition(() => {
-        if (optimisticBackup.isFavorite) {
-          setOptimisticFavorites({ type: "add", backup: optimisticBackup });
-          setOptimisticDailyBackups({ type: "remove", id: backup.id });
-        } else {
-          setOptimisticFavorites({ type: "remove", id: backup.id });
-          setOptimisticDailyBackups({ type: "add", backup: optimisticBackup });
-        }
-      });
+      setLoadingBackupId(backup.id);
 
       try {
         const response = await fetch(`/api/contact-backups/${backup.id}`, {
@@ -170,7 +146,6 @@ const ContactBackupsPage: React.FC = () => {
         if (!response.ok) throw new Error("Failed to update backup");
 
         const updatedBackup = await response.json();
-        // Update the actual state
         if (updatedBackup.isFavorite) {
           setFavoriteBackups((prev) => [...prev, updatedBackup]);
           setDailyBackups((prev) =>
@@ -183,30 +158,16 @@ const ContactBackupsPage: React.FC = () => {
           setDailyBackups((prev) => [...prev, updatedBackup]);
         }
       } catch (error) {
-        // Revert optimistic update
-        startTransition(() => {
-          if (backup.isFavorite) {
-            setOptimisticFavorites({ type: "add", backup });
-            setOptimisticDailyBackups({ type: "remove", id: backup.id });
-          } else {
-            setOptimisticFavorites({ type: "remove", id: backup.id });
-            setOptimisticDailyBackups({ type: "add", backup });
-          }
-        });
-
         toast({
           title: "Error",
           description: "Failed to update backup",
           variant: "destructive",
         });
+      } finally {
+        setLoadingBackupId(null);
       }
     },
-    [
-      optimisticFavorites,
-      toast,
-      setOptimisticFavorites,
-      setOptimisticDailyBackups,
-    ]
+    [favoriteBackups, toast]
   );
 
   const deleteBackup = async (backup: ContactBackup) => {
@@ -218,13 +179,11 @@ const ContactBackupsPage: React.FC = () => {
       });
       if (!response.ok) throw new Error("Failed to delete backup");
 
-      startTransition(() => {
-        if (backup.isFavorite) {
-          setOptimisticFavorites({ type: "remove", id: backup.id });
-        } else {
-          setOptimisticDailyBackups({ type: "remove", id: backup.id });
-        }
-      });
+      if (backup.isFavorite) {
+        setFavoriteBackups((prev) => prev.filter((b) => b.id !== backup.id));
+      } else {
+        setDailyBackups((prev) => prev.filter((b) => b.id !== backup.id));
+      }
 
       toast({
         title: "Success",
@@ -298,6 +257,7 @@ const ContactBackupsPage: React.FC = () => {
                   columns={columns}
                   data={[currentBackup]}
                   onToggleFavorite={toggleFavorite}
+                  loadingBackupId={loadingBackupId}
                   onDelete={() => {}} // Disable delete for current backup
                   onViewDetails={setSelectedBackup}
                   openDeleteModal={() => {}} // Disable delete modal for current backup
@@ -311,17 +271,43 @@ const ContactBackupsPage: React.FC = () => {
         <TabsContent value="daily">
           <Card>
             <CardHeader>
-              <CardTitle>Daily Backups</CardTitle>
-              <CardDescription>
-                Automatic daily backups of your contacts
-              </CardDescription>
+              <div className="flex justify-between items-center ">
+                <div>
+                  <CardTitle>Daily Backups</CardTitle>
+                  <CardDescription>
+                    Automatic daily backups of your contacts
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={createManualBackup}
+                  disabled={isCreatingManualBackup}
+                >
+                  {isCreatingManualBackup ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating Manual Backup...
+                    </>
+                  ) : (
+                    "Create Manual Backup"
+                  )}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <p>Next daily backup in: {dailyCountdown}</p>
+              <DataTable
+                columns={columns}
+                data={dailyBackups}
+                onToggleFavorite={toggleFavorite}
+                loadingBackupId={loadingBackupId}
+                onDelete={deleteBackup}
+                onViewDetails={setSelectedBackup}
+                openDeleteModal={openDeleteModal}
+                pageSize={dailyPageSize}
+              />
               <Select
                 onValueChange={(value) => setDailyPageSize(Number(value))}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-[180px] mt-2">
                   <SelectValue placeholder="Items per page" />
                 </SelectTrigger>
                 <SelectContent>
@@ -329,15 +315,13 @@ const ContactBackupsPage: React.FC = () => {
                   <SelectItem value="10">10 per page</SelectItem>
                 </SelectContent>
               </Select>
-              <DataTable
-                columns={columns}
-                data={optimisticDailyBackups}
-                onToggleFavorite={toggleFavorite}
-                onDelete={deleteBackup}
-                onViewDetails={setSelectedBackup}
-                openDeleteModal={openDeleteModal}
-                pageSize={dailyPageSize}
-              />
+              <div className="mt-5 flex justify-between items-center">
+                <p>Next daily backup in: {dailyCountdown}</p>
+                <p className="text-sm text-gray-500">
+                  Total backups: {dailyBackups.length + favoriteBackups.length}
+                  /40
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -349,7 +333,7 @@ const ContactBackupsPage: React.FC = () => {
               <CardDescription>Your most important backups</CardDescription>
             </CardHeader>
             <CardContent>
-              <p>Favorite Backups ({optimisticFavorites.length}/5)</p>
+              <p>Favorite Backups ({favoriteBackups.length}/5)</p>
               <Select
                 onValueChange={(value) => setFavoritePageSize(Number(value))}
               >
@@ -363,8 +347,9 @@ const ContactBackupsPage: React.FC = () => {
               </Select>
               <DataTable
                 columns={columns}
-                data={optimisticFavorites}
+                data={favoriteBackups}
                 onToggleFavorite={toggleFavorite}
+                loadingBackupId={loadingBackupId}
                 onDelete={deleteBackup}
                 onViewDetails={setSelectedBackup}
                 openDeleteModal={openDeleteModal}
