@@ -1,4 +1,4 @@
-// app/contact-backups/components/columns.tsx
+// app/[lang]/contact-backups/components/columns.tsx
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ContactBackup } from "@prisma/client";
@@ -20,8 +20,10 @@ export const columns: ColumnDef<ContactBackup>[] = [
       return (
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="font-mono text-sm">
-              {id.slice(0, 8)}...
+            <TooltipTrigger asChild>
+              <span className="font-mono text-sm cursor-help">
+                {id.slice(0, 8)}...
+              </span>
             </TooltipTrigger>
             <TooltipContent>{id}</TooltipContent>
           </Tooltip>
@@ -33,7 +35,7 @@ export const columns: ColumnDef<ContactBackup>[] = [
     accessorKey: "createdAt",
     header: "Created At",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt"));
+      const date: Date = row.getValue("createdAt");
       return <div>{date.toLocaleString()}</div>;
     },
   },
@@ -41,11 +43,28 @@ export const columns: ColumnDef<ContactBackup>[] = [
     accessorKey: "expiresAt",
     header: "Expires At",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("expiresAt"));
+      const dateValue: Date | string | null = row.getValue("expiresAt");
+
+      if (!dateValue) {
+        return <div>No expiration date</div>;
+      }
+
+      let date: Date;
+      try {
+        date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+        if (isNaN(date.getTime())) {
+          throw new Error("Invalid date");
+        }
+      } catch (error) {
+        console.error("Error parsing date:", error);
+        return <div>Invalid date</div>;
+      }
+
       const now = new Date();
       const daysLeft = Math.ceil(
         (date.getTime() - now.getTime()) / (1000 * 3600 * 24)
       );
+
       return (
         <div>
           {date.toLocaleString()}
@@ -71,31 +90,58 @@ export const columns: ColumnDef<ContactBackup>[] = [
 
       return (
         <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => meta?.toggleFavorite(backup)}
-          >
-            <Star
-              className={
-                backup.isFavorite ? "text-yellow-500" : "text-gray-300"
-              }
-            />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => meta?.viewDetails(backup)}
-          >
-            <Eye className="text-blue-500" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => meta?.openDeleteModal(backup)}
-          >
-            <Trash2 className="text-red-500" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => meta?.toggleFavorite(backup)}
+                >
+                  <Star
+                    className={
+                      backup.isFavorite ? "text-yellow-500" : "text-gray-300"
+                    }
+                  />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {backup.isFavorite
+                  ? "Remove from favorites"
+                  : "Add to favorites"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => meta?.viewDetails(backup)}
+                >
+                  <Eye className="text-blue-500" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>View details</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => meta?.openDeleteModal(backup)}
+                >
+                  <Trash2 className="text-red-500" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete backup</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       );
     },

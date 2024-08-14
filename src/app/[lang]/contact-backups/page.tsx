@@ -1,8 +1,5 @@
-// app/contact-backups/page.tsx
-
-"use client";
-
-import { useState, useEffect, useCallback } from "react";
+'use client'
+import React, { useState, useEffect, useCallback, useTransition } from "react";
 import { ContactBackup } from "@prisma/client";
 import { DataTable } from "./components/DataTable";
 import { columns } from "./components/columns";
@@ -31,8 +28,26 @@ import {
   getNextDailyBackupTime,
   getNextHourlyUpdateTime,
 } from "@/src/lib/utils/countdownTimer";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/src/components/ui/tabs/tabs";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/src/components/ui/card";
 
-export default function ContactBackupsPage() {
+type OptimisticAction =
+  | { type: "add"; backup: ContactBackup }
+  | { type: "remove"; id: string }
+  | { type: "update"; backup: ContactBackup };
+
+const ContactBackupsPage: React.FC = () => {
   const [favoriteBackups, setFavoriteBackups] = useState<ContactBackup[]>([]);
   const [dailyBackups, setDailyBackups] = useState<ContactBackup[]>([]);
   const [currentBackup, setCurrentBackup] = useState<ContactBackup | null>(
@@ -50,38 +65,65 @@ export default function ContactBackupsPage() {
   const [dailyPageSize, setDailyPageSize] = useState(5);
   const [dailyCountdown, setDailyCountdown] = useState("");
   const [currentCountdown, setCurrentCountdown] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
-  const fetchBackups = useCallback(
-    async (page = 1, pageSize = 5) => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          `/api/contact-backups?page=${page}&pageSize=${pageSize}`
-        );
-        const data = await response.json();
-        setFavoriteBackups(data.favoriteBackups);
-        setDailyBackups(data.dailyBackups);
-        setCurrentBackup(data.currentBackup);
-        setTotalPages(Math.ceil(data.totalCount / pageSize));
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch backups",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
+  const [optimisticFavorites, setOptimisticFavorites] = React.useOptimistic(
+    favoriteBackups,
+    (state: ContactBackup[], action: OptimisticAction): ContactBackup[] => {
+      switch (action.type) {
+        case "add":
+          return [...state, action.backup];
+        case "remove":
+          return state.filter((b) => b.id !== action.id);
+        case "update":
+          return state.map((b) =>
+            b.id === action.backup.id ? action.backup : b
+          );
+        default:
+          return state;
       }
-    },
-    [toast]
+    }
   );
 
-  useEffect(() => {
-    fetchBackups(currentPage, favoritePageSize);
-  }, [currentPage, favoritePageSize, fetchBackups]);
+  const [optimisticDailyBackups, setOptimisticDailyBackups] =
+    React.useOptimistic(
+      dailyBackups,
+      (state: ContactBackup[], action: OptimisticAction): ContactBackup[] => {
+        switch (action.type) {
+          case "add":
+            return [...state, action.backup];
+          case "remove":
+            return state.filter((b) => b.id !== action.id);
+          case "update":
+            return state.map((b) =>
+              b.id === action.backup.id ? action.backup : b
+            );
+          default:
+            return state;
+        }
+      }
+    );
+
+  const fetchBackups = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/contact-backups");
+      if (!response.ok) throw new Error("Failed to fetch backups");
+      const data = await response.json();
+      setFavoriteBackups(data.favoriteBackups);
+      setDailyBackups(data.dailyBackups);
+      setCurrentBackup(data.currentBackup);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch backups",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
 
   useEffect(() => {
     fetchBackups();
@@ -95,64 +137,99 @@ export default function ContactBackupsPage() {
     return () => clearInterval(intervalId);
   }, [fetchBackups]);
 
-  const toggleFavorite = async (backup: ContactBackup) => {
-    if (!backup.isFavorite && favoriteBackups.length >= 5) {
-      toast({
-        title: "Error",
-        description: "Maximum number of favorites reached (5)",
-        variant: "destructive",
+  const toggleFavorite = useCallback(
+    async (backup: ContactBackup) => {
+      if (!backup.isFavorite && optimisticFavorites.length >= 5) {
+        toast({
+          title: "Error",
+          description: "Maximum number of favorites reached (5)",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const optimisticBackup = { ...backup, isFavorite: !backup.isFavorite };
+
+      startTransition(() => {
+        if (optimisticBackup.isFavorite) {
+          setOptimisticFavorites({ type: "add", backup: optimisticBackup });
+          setOptimisticDailyBackups({ type: "remove", id: backup.id });
+        } else {
+          setOptimisticFavorites({ type: "remove", id: backup.id });
+          setOptimisticDailyBackups({ type: "add", backup: optimisticBackup });
+        }
       });
-      return;
-    }
+
+      try {
+        const response = await fetch(`/api/contact-backups/${backup.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ isFavorite: !backup.isFavorite }),
+        });
+
+        if (!response.ok) throw new Error("Failed to update backup");
+
+        const updatedBackup = await response.json();
+        // Update the actual state
+        if (updatedBackup.isFavorite) {
+          setFavoriteBackups((prev) => [...prev, updatedBackup]);
+          setDailyBackups((prev) =>
+            prev.filter((b) => b.id !== updatedBackup.id)
+          );
+        } else {
+          setFavoriteBackups((prev) =>
+            prev.filter((b) => b.id !== updatedBackup.id)
+          );
+          setDailyBackups((prev) => [...prev, updatedBackup]);
+        }
+      } catch (error) {
+        // Revert optimistic update
+        startTransition(() => {
+          if (backup.isFavorite) {
+            setOptimisticFavorites({ type: "add", backup });
+            setOptimisticDailyBackups({ type: "remove", id: backup.id });
+          } else {
+            setOptimisticFavorites({ type: "remove", id: backup.id });
+            setOptimisticDailyBackups({ type: "add", backup });
+          }
+        });
+
+        toast({
+          title: "Error",
+          description: "Failed to update backup",
+          variant: "destructive",
+        });
+      }
+    },
+    [
+      optimisticFavorites,
+      toast,
+      setOptimisticFavorites,
+      setOptimisticDailyBackups,
+    ]
+  );
+
+  const deleteBackup = async (backup: ContactBackup) => {
+    if (!backup) return;
 
     try {
       const response = await fetch(`/api/contact-backups/${backup.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isFavorite: !backup.isFavorite }),
+        method: "DELETE",
       });
-      if (response.ok) {
-        await fetchBackups(); // Refresh all backups
-        toast({
-          title: "Success",
-          description: `Backup ${
-            backup.isFavorite ? "removed from" : "added to"
-          } favorites`,
-        });
-      } else {
-        throw new Error("Failed to update backup");
-      }
-    } catch (error) {
+      if (!response.ok) throw new Error("Failed to delete backup");
+
+      startTransition(() => {
+        if (backup.isFavorite) {
+          setOptimisticFavorites({ type: "remove", id: backup.id });
+        } else {
+          setOptimisticDailyBackups({ type: "remove", id: backup.id });
+        }
+      });
+
       toast({
-        title: "Error",
-        description: "Failed to update backup",
-        variant: "destructive",
+        title: "Success",
+        description: "Backup deleted successfully",
       });
-    }
-  };
-
-  const openDeleteModal = (backup: ContactBackup) => {
-    setBackupToDelete(backup);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const deleteBackup = async () => {
-    if (!backupToDelete) return;
-
-    try {
-      const response = await fetch(
-        `/api/contact-backups/${backupToDelete.id}`,
-        { method: "DELETE" }
-      );
-      if (response.ok) {
-        await fetchBackups(); // Refresh all backups
-        toast({
-          title: "Success",
-          description: "Backup deleted successfully",
-        });
-      } else {
-        throw new Error("Failed to delete backup");
-      }
     } catch (error) {
       toast({
         title: "Error",
@@ -170,16 +247,14 @@ export default function ContactBackupsPage() {
       const response = await fetch("/api/contact-backups/current", {
         method: "POST",
       });
-      if (response.ok) {
-        const updatedBackup = await response.json();
-        setCurrentBackup(updatedBackup);
-        toast({
-          title: "Success",
-          description: "Current backup updated successfully",
-        });
-      } else {
-        throw new Error("Failed to update current backup");
-      }
+      if (!response.ok) throw new Error("Failed to update current backup");
+
+      const updatedBackup = await response.json();
+      setCurrentBackup(updatedBackup);
+      toast({
+        title: "Success",
+        description: "Current backup updated successfully",
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -189,85 +264,116 @@ export default function ContactBackupsPage() {
     }
   };
 
+  const openDeleteModal = (backup: ContactBackup) => {
+    setBackupToDelete(backup);
+    setIsDeleteDialogOpen(true);
+  };
+
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-5">Contact Backups</h1>
 
-      <h2 className="text-xl font-semibold mb-3">Current Backup</h2>
-      <div className="mb-5">
-        <p>Next automatic update in: {currentCountdown}</p>
-        <Button onClick={updateCurrentBackup} className="mt-2">
-          Update Now
-        </Button>
+      <Tabs defaultValue="current" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="current">Current Backup</TabsTrigger>
+          <TabsTrigger value="daily">Daily Backups</TabsTrigger>
+          <TabsTrigger value="favorites">Favorite Backups</TabsTrigger>
+        </TabsList>
 
-        {/* Current Backup Table */}
-        {currentBackup && (
-          <DataTable
-            columns={columns}
-            data={[currentBackup]}
-            onToggleFavorite={toggleFavorite}
-            onDelete={() => {}} // Disable delete for current backup
-            onViewDetails={setSelectedBackup}
-            openDeleteModal={() => {}} // Disable delete modal for current backup
-            pageSize={1}
-          />
-        )}
-      </div>
+        <TabsContent value="current">
+          <Card>
+            <CardHeader>
+              <CardTitle>Current Backup</CardTitle>
+              <CardDescription>
+                The most up-to-date backup of your contacts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Next automatic update in: {currentCountdown}</p>
+              <Button onClick={updateCurrentBackup} className="mt-2">
+                Update Now
+              </Button>
+              {currentBackup && (
+                <DataTable
+                  columns={columns}
+                  data={[currentBackup]}
+                  onToggleFavorite={toggleFavorite}
+                  onDelete={() => {}} // Disable delete for current backup
+                  onViewDetails={setSelectedBackup}
+                  openDeleteModal={() => {}} // Disable delete modal for current backup
+                  pageSize={1}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Favorite Backups Table */}
-      {favoriteBackups && (
-        <>
-          <h2 className="text-xl font-semibold mb-3">
-            Favorite Backups ({favoriteBackups.length}/5)
-          </h2>
-          <div className="mb-5">
-            <Select
-              onValueChange={(value) => setFavoritePageSize(Number(value))}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Items per page" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1 per page</SelectItem>
-                <SelectItem value="5">5 per page</SelectItem>
-              </SelectContent>
-            </Select>
-            <DataTable
-              columns={columns}
-              data={favoriteBackups}
-              onToggleFavorite={toggleFavorite}
-              onDelete={deleteBackup}
-              onViewDetails={setSelectedBackup}
-              openDeleteModal={openDeleteModal}
-              pageSize={favoritePageSize}
-            />
-          </div>
-        </>
-      )}
+        <TabsContent value="daily">
+          <Card>
+            <CardHeader>
+              <CardTitle>Daily Backups</CardTitle>
+              <CardDescription>
+                Automatic daily backups of your contacts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Next daily backup in: {dailyCountdown}</p>
+              <Select
+                onValueChange={(value) => setDailyPageSize(Number(value))}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Items per page" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 per page</SelectItem>
+                  <SelectItem value="10">10 per page</SelectItem>
+                </SelectContent>
+              </Select>
+              <DataTable
+                columns={columns}
+                data={optimisticDailyBackups}
+                onToggleFavorite={toggleFavorite}
+                onDelete={deleteBackup}
+                onViewDetails={setSelectedBackup}
+                openDeleteModal={openDeleteModal}
+                pageSize={dailyPageSize}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Daily Backups Table */}
-      <h2 className="text-xl font-semibold mb-3">Daily Backups</h2>
-      <div className="mb-5">
-        <p>Next daily backup in: {dailyCountdown}</p>
-        <Select onValueChange={(value) => setDailyPageSize(Number(value))}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Items per page" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="5">5 per page</SelectItem>
-            <SelectItem value="10">10 per page</SelectItem>
-          </SelectContent>
-        </Select>
-        <DataTable
-          columns={columns}
-          data={dailyBackups}
-          onToggleFavorite={toggleFavorite}
-          onDelete={deleteBackup}
-          onViewDetails={setSelectedBackup}
-          openDeleteModal={openDeleteModal}
-          pageSize={dailyPageSize}
-        />
-      </div>
+        <TabsContent value="favorites">
+          <Card>
+            <CardHeader>
+              <CardTitle>Favorite Backups</CardTitle>
+              <CardDescription>Your most important backups</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p>Favorite Backups ({optimisticFavorites.length}/5)</p>
+              <Select
+                onValueChange={(value) => setFavoritePageSize(Number(value))}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Items per page" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 per page</SelectItem>
+                  <SelectItem value="5">5 per page</SelectItem>
+                </SelectContent>
+              </Select>
+              <DataTable
+                columns={columns}
+                data={optimisticFavorites}
+                onToggleFavorite={toggleFavorite}
+                onDelete={deleteBackup}
+                onViewDetails={setSelectedBackup}
+                openDeleteModal={openDeleteModal}
+                pageSize={favoritePageSize}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {selectedBackup && (
         <div className="mt-8 border rounded-md p-4">
@@ -294,10 +400,16 @@ export default function ContactBackupsPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteBackup}>Delete</AlertDialogAction>
+            <AlertDialogAction
+              onClick={() => backupToDelete && deleteBackup(backupToDelete)}
+            >
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
   );
-}
+};
+
+export default ContactBackupsPage;

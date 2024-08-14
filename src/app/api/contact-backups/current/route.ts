@@ -3,12 +3,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
+import moment from "moment-timezone";
 
 const prisma = new PrismaClient();
+const MADRID_TIMEZONE = "Europe/Madrid";
 
 export async function POST(request: NextRequest) {
   try {
     const contactsData = await getListHoldedContacts();
+    const now = moment().tz(MADRID_TIMEZONE);
 
     // First, find the current backup
     let currentBackup = await prisma.contactBackup.findUnique({
@@ -21,8 +24,8 @@ export async function POST(request: NextRequest) {
         where: { id: currentBackup.id },
         data: {
           data: contactsData,
-          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 365 days from now
-          updatedAt: new Date(),
+          expiresAt: now.clone().add(1, "hour").toDate(), // 1 hour from now
+          updatedAt: now.toDate(),
         },
       });
     } else {
@@ -33,7 +36,9 @@ export async function POST(request: NextRequest) {
           isFavorite: false,
           isCurrent: true,
           isDaily: false,
-          expiresAt: new Date(Date.now() + 1 * 1 * 60 * 60 * 1000), // 1 hour from now
+          expiresAt: now.clone().add(1, "hour").toDate(), // 1 hour from now
+          createdAt: now.toDate(),
+          updatedAt: now.toDate(),
         },
       });
     }

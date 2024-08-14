@@ -1,13 +1,16 @@
 // app/api/contact-backups/route.ts
+
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
+import moment from "moment-timezone";
 
 const prisma = new PrismaClient();
+const MADRID_TIMEZONE = "Europe/Madrid";
 
 export async function GET(request: NextRequest) {
   try {
-    const [favoriteBackups, dailyBackups, currentBackup] = await Promise.all([
+    const [favoriteBackups, dailyBackups] = await Promise.all([
       prisma.contactBackup.findMany({
         where: { isFavorite: true },
         orderBy: { updatedAt: "desc" },
@@ -16,10 +19,9 @@ export async function GET(request: NextRequest) {
         where: { isDaily: true },
         orderBy: { createdAt: "desc" },
       }),
-      prisma.contactBackup.findUnique({
-        where: { isCurrent: true },
-      }),
     ]);
+
+    const currentBackup = dailyBackups[0] || null; // The most recent backup is the current one
 
     return NextResponse.json({ favoriteBackups, dailyBackups, currentBackup });
   } catch (error) {
@@ -34,14 +36,25 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const contactsData = await getListHoldedContacts();
+    const now = moment().tz(MADRID_TIMEZONE);
 
-    // Delete oldest daily backup if we have more than 31
+    const newBackup = await prisma.contactBackup.create({
+      data: {
+        data: contactsData,
+        isDaily: true,
+        expiresAt: now.clone().add(31, "days").toDate(),
+        createdAt: now.toDate(),
+        updatedAt: now.toDate(),
+      },
+    });
+
+    // Check and remove oldest daily backup if we have more than 31
     const dailyBackupsCount = await prisma.contactBackup.count({
       where: { isDaily: true },
     });
-    if (dailyBackupsCount >= 31) {
+    if (dailyBackupsCount > 31) {
       const oldestDailyBackup = await prisma.contactBackup.findFirst({
-        where: { isDaily: true },
+        where: { isDaily: true, isFavorite: false },
         orderBy: { createdAt: "asc" },
       });
       if (oldestDailyBackup) {
@@ -50,14 +63,6 @@ export async function POST(request: NextRequest) {
         });
       }
     }
-
-    const newBackup = await prisma.contactBackup.create({
-      data: {
-        data: contactsData,
-        isDaily: true,
-        expiresAt: new Date(Date.now() + 31 * 24 * 60 * 60 * 1000), // 31 days from now
-      },
-    });
 
     return NextResponse.json(newBackup);
   } catch (error) {
