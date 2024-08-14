@@ -1,14 +1,11 @@
-// app/contact-backups/components/DataTable.tsx
-
-import { useState, useEffect } from "react";
+import React from "react";
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   useReactTable,
+  getPaginationRowModel,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -17,66 +14,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import { ContactBackup } from "@prisma/client";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 
-interface DataTableProps<TData extends ContactBackup, TValue> {
+interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  onToggleFavorite: (backup: ContactBackup) => void;
-  onDelete: (backup: ContactBackup) => void;
-  onViewDetails: (backup: ContactBackup) => void;
-  openDeleteModal: (backup: ContactBackup) => void;
-  pageSize: number;
-  loadingBackupId: string | null;
+  onToggleFavorite: (row: TData) => void;
+  onDelete: (row: TData) => void;
 }
 
-export function DataTable<TData extends ContactBackup, TValue>({
+export function DataTable<TData, TValue>({
   columns,
-  data = [],
+  data,
   onToggleFavorite,
   onDelete,
-  onViewDetails,
-  openDeleteModal,
-  pageSize,
-  loadingBackupId,
 }: DataTableProps<TData, TValue>) {
-  const [currentPage, setCurrentPage] = useState(0);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    pageCount: Math.ceil(data.length / pageSize),
-    state: {
-      pagination: {
-        pageIndex: currentPage,
-        pageSize: pageSize,
-      },
-    },
-    onPaginationChange: (updater) => {
-      if (typeof updater === "function") {
-        const newState = updater({
-          pageIndex: currentPage,
-          pageSize: pageSize,
-        });
-        setCurrentPage(newState.pageIndex);
-      }
-    },
-    manualPagination: true,
-    meta: {
-      toggleFavorite: onToggleFavorite,
-      deleteBackup: onDelete,
-      viewDetails: onViewDetails,
-      openDeleteModal: openDeleteModal,
-      loadingBackupId,
-    },
   });
-
-  useEffect(() => {
-    setCurrentPage(0);
-    table.setPageIndex(0);
-  }, [pageSize, table]);
 
   return (
     <div>
@@ -107,24 +65,26 @@ export function DataTable<TData extends ContactBackup, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {cell.column.id === "favorite" ? ( // Suponiendo que la columna de favorito tiene un id de 'favorite'
-                        row.original.id === loadingBackupId ? ( // Mostrar loader si está cargando
-                          <Loader2 className="animate-spin" />
-                        ) : (
-                          <button
-                            onClick={() => onToggleFavorite(row.original)}
-                          >
-                            ★
-                          </button>
-                        )
-                      ) : (
-                        flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      onClick={() => onToggleFavorite(row.original)}
+                    >
+                      {(row.original as any).isFavorite ? "⭐" : "☆"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={() => onDelete(row.original)}
+                    >
+                      🗑️
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
@@ -139,6 +99,24 @@ export function DataTable<TData extends ContactBackup, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
       </div>
     </div>
   );

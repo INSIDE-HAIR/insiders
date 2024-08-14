@@ -1,10 +1,46 @@
-model ContactBackup {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+model HoldedContactsCurrentBackup {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  data      Json
+}
+
+model HoldedContactsDailyBackup {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   data       Json
-  isFavorite Boolean   @default(false)
-  expiresAt  DateTime?
-  isDaily    Boolean   @default(false)
-  isCurrent  Boolean   @unique @default(false)
+  dayOfMonth Int
+
+  @@unique([dayOfMonth])
+}
+
+model HoldedContactsMonthlyBackup {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  data      Json
+  month     Int
+  year      Int
+
+  @@unique([month, year])
+}
+
+model HoldedContactsFavoriteBackup {
+  id           String                   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime                 @default(now())
+  updatedAt    DateTime                 @updatedAt
+  data         Json
+  originalType HoldedContactsBackupType
+  dayOfMonth   Int?
+  month        Int?
+  year         Int?
+  name         String?
+}
+
+enum HoldedContactsBackupType {
+  CURRENT
+  DAILY
+  MONTHLY
+  FAVORITE
 }

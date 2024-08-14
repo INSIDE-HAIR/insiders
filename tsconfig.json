@@ -36,7 +36,7 @@
     ".next/types/**/*.ts",
     "src/lib/server-actions",
     "src/app/(protected)/update/page.tsx"
-  ],
+, "migrate-backups.js"  ],
   "exclude": [
     "node_modules"
   ]
