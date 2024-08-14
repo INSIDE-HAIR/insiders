@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
+import moment from "moment-timezone";
 
 export const columns: ColumnDef<ContactBackup>[] = [
   {
@@ -36,7 +37,18 @@ export const columns: ColumnDef<ContactBackup>[] = [
     header: "Created At",
     cell: ({ row }) => {
       const date: Date = row.getValue("createdAt");
-      return <div>{date.toLocaleString()}</div>;
+      const formattedDate = moment(date)
+        .tz("Europe/Madrid")
+        .format("DD/MM/YYYY, hh:mm A");
+      return <div>{formattedDate}</div>;
+    },
+  },
+  {
+    accessorKey: "data",
+    header: "Contacts",
+    cell: ({ row }) => {
+      const data: any[] = row.getValue("data");
+      return <div>{data.length}</div>;
     },
   },
   {
@@ -90,6 +102,8 @@ export const columns: ColumnDef<ContactBackup>[] = [
         | undefined;
 
       const isLoading = meta?.loadingBackupId === backup.id;
+      const isCurrentBackup = backup.isCurrent; // Verifica si es el current backup
+      const isFavoriteBackup = backup.isFavorite; // Verifica si es el current backup
 
       return (
         <div className="flex items-center space-x-2">
@@ -100,10 +114,10 @@ export const columns: ColumnDef<ContactBackup>[] = [
                   variant="ghost"
                   size="icon"
                   onClick={() => meta?.toggleFavorite(backup)}
-                  disabled={isLoading} // Desactiva el botón si está cargando
+                  disabled={isLoading}
                 >
                   {isLoading ? (
-                    <Loader2 className="animate-spin" /> // Muestra un loader
+                    <Loader2 className="animate-spin" />
                   ) : (
                     <Star
                       className={
@@ -128,8 +142,13 @@ export const columns: ColumnDef<ContactBackup>[] = [
                   variant="ghost"
                   size="icon"
                   onClick={() => meta?.viewDetails(backup)}
+                  disabled={isLoading}
                 >
-                  <Eye className="text-blue-500" />
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Eye className="text-blue-500" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>View details</TooltipContent>
@@ -143,11 +162,23 @@ export const columns: ColumnDef<ContactBackup>[] = [
                   variant="ghost"
                   size="icon"
                   onClick={() => meta?.openDeleteModal(backup)}
+                  disabled={isCurrentBackup || isFavoriteBackup || isLoading} // Disable delete for currentBackup
+                  className={
+                    isCurrentBackup || isFavoriteBackup
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
+                  }
                 >
-                  <Trash2 className="text-red-500" />
+                  {isLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Trash2 className="text-red-500" />
+                  )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Delete backup</TooltipContent>
+              <TooltipContent>
+                Delete backup {isCurrentBackup} {isFavoriteBackup}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>

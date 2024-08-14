@@ -41,6 +41,15 @@ import {
   CardDescription,
   CardTitle,
 } from "@/src/components/ui/card";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/src/components/ui/pagination";
 
 const ContactBackupsPage: React.FC = () => {
   const [favoriteBackups, setFavoriteBackups] = useState<ContactBackup[]>([]);
@@ -64,6 +73,26 @@ const ContactBackupsPage: React.FC = () => {
   const [isPending, startTransition] = useTransition();
   const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
   const [isCreatingManualBackup, setIsCreatingManualBackup] = useState(false);
+  const [loadingDetailsId, setLoadingDetailsId] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const itemsPerPage = 100;
+
+  const dataArray = Array.isArray(selectedBackup?.data)
+    ? selectedBackup.data
+    : [];
+
+  const paginatedData = dataArray.slice(
+    page * itemsPerPage,
+    (page + 1) * itemsPerPage
+  );
+
+  const totalPages = dataArray.length
+    ? Math.ceil(dataArray.length / itemsPerPage)
+    : 1;
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
 
   const createManualBackup = async () => {
     setIsCreatingManualBackup(true);
@@ -316,7 +345,7 @@ const ContactBackupsPage: React.FC = () => {
                 </SelectContent>
               </Select>
               <div className="mt-5 flex justify-between items-center">
-                <p>Next daily backup in: {dailyCountdown}</p>
+                <p>Next daily backup in about one hour : {dailyCountdown}</p>
                 <p className="text-sm text-gray-500">
                   Total backups: {dailyBackups.length + favoriteBackups.length}
                   /40
@@ -361,13 +390,54 @@ const ContactBackupsPage: React.FC = () => {
       </Tabs>
 
       {selectedBackup && (
-        <div className="mt-8 border rounded-md p-4">
+        <div
+          className="mt-8 border rounded-md p-4 bg-gray-200"
+          id="selectBackup"
+        >
           <h3 className="text-lg font-semibold mb-2">
             Backup Details (ID: {selectedBackup.id})
           </h3>
           <pre className="whitespace-pre-wrap overflow-auto max-h-96">
-            {JSON.stringify(selectedBackup, null, 2)}
+            {JSON.stringify(paginatedData, null, 2)}
           </pre>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#selectBackup"
+                  className={page === 0 ? "cursor-not-allowed opacity-50" : ""}
+                  onClick={() => handlePageChange(Math.max(0, page - 1))}
+                />
+              </PaginationItem>
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    href="#selectBackup"
+                    isActive={index === page}
+                    className={
+                      index === page ? "cursor-not-allowed opacity-50" : ""
+                    }
+                    onClick={() => handlePageChange(index)}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  href="#selectBackup"
+                  className={
+                    page >= totalPages - 1
+                      ? "cursor-not-allowed opacity-50"
+                      : ""
+                  }
+                  onClick={() =>
+                    handlePageChange(Math.min(totalPages - 1, page + 1))
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
 

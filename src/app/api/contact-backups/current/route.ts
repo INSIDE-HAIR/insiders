@@ -1,4 +1,4 @@
-// app/api/contact-backups/current/route.ts
+// /src/app/api/contact-backups/current/route.ts
 
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         where: { id: currentBackup.id },
         data: {
           data: contactsData,
-          expiresAt: now.clone().add(1, "hour").toDate(), // 1 hour from now
+          expiresAt: null, // No expiration for current backup
           updatedAt: now.toDate(),
         },
       });
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
           isFavorite: false,
           isCurrent: true,
           isDaily: false,
-          expiresAt: now.clone().add(1, "hour").toDate(), // 1 hour from now
+          expiresAt: null, // No expiration for current backup
           createdAt: now.toDate(),
           updatedAt: now.toDate(),
         },
