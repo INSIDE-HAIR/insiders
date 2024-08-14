@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic"; // static by default, unless reading the request
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
