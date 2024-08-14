@@ -6,7 +6,7 @@ import moment from "moment-timezone";
 const prisma = new PrismaClient();
 const MADRID_TIMEZONE = "Europe/Madrid";
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const contactsData = await getListHoldedContacts();
     const now = moment().tz(MADRID_TIMEZONE);

@@ -5,7 +5,7 @@
       "schedule": "0 23 * * *"
     },
     {
-      "path": "/api/cron/create-backup/current",
+      "path": "/api/cron/create-backup/hourly",
       "schedule": "0 * * * *"
     }
   ]
