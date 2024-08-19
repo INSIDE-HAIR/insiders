@@ -3216,20 +3216,6 @@
       "classType": "default",
       "content": [
         {
-          "id": "button1",
-          "order": 1,
-          "type": "button",
-          "classType": "default",
-          "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
-          "available": {
-            "startDateTime": "",
-            "endDateTime": ""
-          },
-          "auth": []
-        },
-        {
           "id": "tabs1",
           "order": 2,
           "type": "tabs",

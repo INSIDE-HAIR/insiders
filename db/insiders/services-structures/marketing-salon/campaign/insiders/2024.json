@@ -5243,8 +5243,8 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
+          "url": "https://docs.google.com/forms/d/e/1FAIpQLSeQyQOUjynbpeQZaNfMI4M9uh9gri_p-rLyTH5-PpZme0AzMw/viewform?usp=sf_link",
+          "active": true,
           "available": {
             "startDateTime": "",
             "endDateTime": ""
