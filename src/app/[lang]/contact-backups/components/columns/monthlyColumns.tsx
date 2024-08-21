@@ -3,8 +3,16 @@ import { HoldedContactsMonthlyBackup } from "@prisma/client";
 import { createBaseColumns } from "./columns";
 import { BackupActions } from "../BackupActions";
 
+interface ColumnMeta {
+  openDeleteModal: (backupId: string) => void;
+  onViewDetails?: (backup: HoldedContactsMonthlyBackup) => void;
+  onDelete?: (backup: HoldedContactsMonthlyBackup) => void;
+  onToggleFavorite?: (backup: HoldedContactsMonthlyBackup) => void;
+  loadingBackupId?: string | null;
+}
+
 // Define columns specifically for monthly backups
-export const columns: ColumnDef<HoldedContactsMonthlyBackup>[] = [
+export const columns: (meta: ColumnMeta) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => [
   ...createBaseColumns<HoldedContactsMonthlyBackup>(), // Extend the base columns
 
   {
@@ -28,7 +36,16 @@ export const columns: ColumnDef<HoldedContactsMonthlyBackup>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const backup = row.original;
-      return <BackupActions backup={backup} />;
+      return (
+        <BackupActions
+          backup={backup}
+          openDeleteModal={meta.openDeleteModal}
+          onViewDetails={meta.onViewDetails}
+          onDelete={meta.onDelete}
+          onToggleFavorite={meta.onToggleFavorite}
+          loadingBackupId={meta.loadingBackupId}
+        />
+      );
     },
   },
 ];

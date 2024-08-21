@@ -3,8 +3,18 @@ import { HoldedContactsFavoriteBackup } from "@prisma/client";
 import { BackupActions } from "../BackupActions";
 import { createBaseColumns } from "./columns";
 
+interface ColumnMeta {
+  openDeleteModal: (backupId: string) => void;
+  onViewDetails?: (backup: HoldedContactsFavoriteBackup) => void;
+  onDelete?: (backup: HoldedContactsFavoriteBackup) => void;
+  onToggleFavorite?: (backup: HoldedContactsFavoriteBackup) => void;
+  loadingBackupId?: string | null;
+}
+
 // Define columns specifically for favorite backups
-export const columns: ColumnDef<HoldedContactsFavoriteBackup>[] = [
+export const columns: (
+  meta: ColumnMeta
+) => ColumnDef<HoldedContactsFavoriteBackup>[] = (meta) => [
   ...createBaseColumns<HoldedContactsFavoriteBackup>(), // Extend the base columns
 
   {
@@ -52,7 +62,16 @@ export const columns: ColumnDef<HoldedContactsFavoriteBackup>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const backup = row.original;
-      return <BackupActions backup={backup} />;
+      return (
+        <BackupActions
+          backup={backup}
+          openDeleteModal={meta.openDeleteModal}
+          onViewDetails={meta.onViewDetails}
+          onDelete={meta.onDelete}
+          onToggleFavorite={meta.onToggleFavorite}
+          loadingBackupId={meta.loadingBackupId}
+        />
+      );
     },
   },
 ];

@@ -14,29 +14,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import { Pagination } from "@/src/components/ui/pagination";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  pageSize: number;
+interface DataTableProps<T> {
+  columns: ColumnDef<T>[];
+  data: T[];
   loadingBackupId?: string | null;
-  onToggleFavorite?: (backup: TData) => void;
-  onDelete?: (backup: TData) => void;
-  onViewDetails?: (backup: TData) => void;
-  openDeleteModal?: (backup: TData) => void;
+  onDelete?: (backup: T) => void;
+  onViewDetails?: (backup: T) => void;
+  openDeleteModal?: (backupId: string) => void;
+  onToggleFavorite?: (backup: T) => void;
+  pageSize?: number;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<T extends { id: string }>({
   columns,
-  data = [],
-  pageSize,
+  data,
   loadingBackupId,
-  onToggleFavorite,
   onDelete,
   onViewDetails,
   openDeleteModal,
-}: DataTableProps<TData, TValue>) {
+  onToggleFavorite,
+  pageSize = 10,
+}: DataTableProps<T>) {
   const table = useReactTable({
     data,
     columns,
@@ -85,15 +84,13 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                No favorite backups found. Add a backup to your favorites to see
+                it here.
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-between p-2">
-        {/* <Pagination table={table} /> */}
-      </div>
     </div>
   );
 }

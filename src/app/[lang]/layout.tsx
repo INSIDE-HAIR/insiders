@@ -5,6 +5,8 @@ import { cn, inter } from "@/src/lib/utils/utils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { TranslationProvider } from "@/src/context/TranslationContext";
+import ReactQueryProvider from "@/src/context/ReactQueryProvider";
+import { Toaster } from "@/src/components/ui/toaster";
 
 const locales = ["en", "es"] as const;
 type Locale = (typeof locales)[number];
@@ -58,7 +60,10 @@ export default async function RootLayout({
               initialLocale={locale as Locale}
               initialMessages={messages}
             >
-              {children}
+              <ReactQueryProvider>
+                {children}
+                <Toaster />
+              </ReactQueryProvider>
             </TranslationProvider>
             <Analytics />
             <SpeedInsights />

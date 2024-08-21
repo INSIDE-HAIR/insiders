@@ -6,10 +6,10 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@/src/components/ui/tabs/tabs";
-import CurrentBackupTab from "./components/CurrentBackupTab";
-import DailyBackupsTab from "./components/DailyBackupsTab";
-import MonthlyBackupsTab from "./components/MonthlyBackupsTab";
-import FavoriteBackupsTab from "./components/FavoriteBackupsTab";
+import CurrentBackupTab from "./components/tabs/CurrentBackupTab";
+import DailyBackupsTab from "./components/tabs/DailyBackupsTab";
+import MonthlyBackupsTab from "./components/tabs/MonthlyBackupsTab";
+import FavoriteBackupsTab from "./components/tabs/FavoriteBackupsTab";
 
 const ContactBackupsPage = () => {
   return (

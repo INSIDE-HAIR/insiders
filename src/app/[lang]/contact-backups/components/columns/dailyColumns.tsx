@@ -3,10 +3,18 @@ import { HoldedContactsDailyBackup } from "@prisma/client";
 import { createBaseColumns } from "./columns";
 import { BackupActions } from "../BackupActions";
 
-// Define columns specifically for daily backups
-export const columns: ColumnDef<HoldedContactsDailyBackup>[] = [
-  ...createBaseColumns<HoldedContactsDailyBackup>(), // Extend the base columns
+interface ColumnMeta {
+  openDeleteModal: (backupId: string) => void;
+  onViewDetails?: (backup: HoldedContactsDailyBackup) => void;
+  onDelete?: (backup: HoldedContactsDailyBackup) => void;
+  onToggleFavorite?: (backup: HoldedContactsDailyBackup) => void;
+  loadingBackupId?: string | null;
+}
 
+export const columns = (
+  meta: ColumnMeta
+): ColumnDef<HoldedContactsDailyBackup>[] => [
+  ...createBaseColumns<HoldedContactsDailyBackup>(),
   {
     accessorKey: "dayOfMonth",
     header: "Day of Month",
@@ -20,9 +28,16 @@ export const columns: ColumnDef<HoldedContactsDailyBackup>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const backup = row.original;
-      return <BackupActions backup={backup} />;
+      return (
+        <BackupActions
+          backup={backup}
+          openDeleteModal={meta.openDeleteModal}
+          onViewDetails={meta.onViewDetails}
+          onDelete={meta.onDelete}
+          onToggleFavorite={meta.onToggleFavorite}
+          loadingBackupId={meta.loadingBackupId}
+        />
+      );
     },
   },
 ];
-
-export default columns;

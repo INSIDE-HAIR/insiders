@@ -54,6 +54,29 @@ export async function addToFavorites(
   });
 }
 
+export async function deleteBackupById(type: string, id: string) {
+  switch (type) {
+    case "CURRENT":
+      return prisma.holdedContactsCurrentBackup.delete({
+        where: { id },
+      });
+    case "DAILY":
+      return prisma.holdedContactsDailyBackup.delete({
+        where: { id },
+      });
+    case "MONTHLY":
+      return prisma.holdedContactsMonthlyBackup.delete({
+        where: { id },
+      });
+    case "FAVORITE":
+      return prisma.holdedContactsFavoriteBackup.delete({
+        where: { id },
+      });
+    default:
+      throw new Error("Invalid backup type");
+  }
+}
+
 export async function removeFavorite(favoriteId: string) {
   return prisma.holdedContactsFavoriteBackup.delete({
     where: { id: favoriteId },
@@ -61,13 +84,21 @@ export async function removeFavorite(favoriteId: string) {
 }
 
 export async function getFavorites() {
-  return prisma.holdedContactsFavoriteBackup.findMany();
+  try { 
+    const favorites = await prisma.holdedContactsFavoriteBackup.findMany();
+    console.log("Favorites retrieved:", favorites);
+    return favorites; // This will be an empty array if no favorites are found
+  } catch (error) {
+    console.error("Error in getFavorites:", error);
+    throw error; // Re-throw the error to be handled by the API route
+  }
 }
-
+//no se esta usando
 export function setMaxFavorites(newMax: number) {
   MAX_FAVORITES = newMax;
 }
 
+//no se esta usando
 export function getMaxFavorites() {
   return MAX_FAVORITES;
 }

@@ -8,68 +8,66 @@ import {
 } from "@/src/components/ui/tooltip";
 import { Star, Trash2, Eye } from "lucide-react";
 
-interface BackupActionsProps {
-  backup: any;
+interface BackupActionsProps<T extends { id: string }> {
+  backup: T;
   loadingBackupId?: string | null;
-  onToggleFavorite?: (backupId: string) => void;
-  onDelete?: (backupId: string) => void;
-  onViewDetails?: (backupId: string) => void;
-  openDeleteModal?: (backupId: string) => void;
+  onToggleFavorite?: (backup: T) => void;
+  onDelete?: (backup: T) => void;
+  onViewDetails?: (backup: T) => void;
+  openDeleteModal: (backupId: string) => void;
 }
 
-export function BackupActions({
+export function BackupActions<T extends { id: string }>({
   backup,
   loadingBackupId,
   onToggleFavorite,
   onDelete,
   onViewDetails,
   openDeleteModal,
-}: BackupActionsProps) {
+}: BackupActionsProps<T>) {
   const isLoading = loadingBackupId === backup.id;
 
   return (
     <TooltipProvider>
       <div className="flex items-center space-x-2">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onToggleFavorite?.(backup.id)}
-              disabled={isLoading}
-            >
-              <Star
-                className={
-                  backup.isFavorite ? "text-yellow-500" : "text-gray-300"
-                }
-              />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {backup.isFavorite ? "Remove from favorites" : "Add to favorites"}
-          </TooltipContent>
-        </Tooltip>
+        {onToggleFavorite && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onToggleFavorite(backup)}
+                disabled={isLoading}
+              >
+                <Star className="text-gray-300" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Add to favorites</TooltipContent>
+          </Tooltip>
+        )}
+
+        {onViewDetails && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onViewDetails(backup)}
+                disabled={isLoading}
+              >
+                <Eye className="text-blue-500" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>View details</TooltipContent>
+          </Tooltip>
+        )}
 
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => onViewDetails?.(backup.id)}
-              disabled={isLoading}
-            >
-              <Eye className="text-blue-500" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>View details</TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => openDeleteModal?.(backup.id)}
+              onClick={() => openDeleteModal(backup.id)}
               disabled={isLoading}
             >
               <Trash2 className="text-red-500" />

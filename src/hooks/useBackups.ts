@@ -4,9 +4,32 @@ import {
   HoldedContactsDailyBackup,
   HoldedContactsMonthlyBackup,
   HoldedContactsFavoriteBackup,
+  HoldedContactsBackupType,
 } from "@prisma/client";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useBackupStore } from "../stores/backupStore";
+import { set } from "date-fns";
 
-export function useBackups() {
+const fetchBackups = async (type: HoldedContactsBackupType) => {
+  const response = await fetch(
+    `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`
+  );
+  if (!response.ok) throw new Error("Network response was not ok");
+  return response.json();
+};
+
+const createOrUpdateBackup = async (type: HoldedContactsBackupType) => {
+  const response = await fetch(
+    `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
+    {
+      method: "POST",
+    }
+  );
+  if (!response.ok) throw new Error("Network response was not ok");
+  return response.json();
+};
+
+export function useBackups(type: HoldedContactsBackupType) {
   const [currentBackup, setCurrentBackup] =
     useState<HoldedContactsCurrentBackup | null>(null);
   const [dailyBackups, setDailyBackups] = useState<HoldedContactsDailyBackup[]>(
@@ -19,6 +42,40 @@ export function useBackups() {
     HoldedContactsFavoriteBackup[]
   >([]);
   const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const { isCreatingBackup, setIsCreatingBackup } = useBackupStore();
+  const [deletingBackupId, setDeletingBackupId] = useState<string | null>(null);
+
+  const deleteBackupMutation = useMutation(
+    (backupId: string) => deleteBackup(backupId, type), // type se pasa aquí
+    {
+      onMutate: (backupId) => setDeletingBackupId(backupId),
+      onSettled: () => setDeletingBackupId(null),
+      onSuccess: () => {
+        queryClient.invalidateQueries(["backups", type]);
+        // Maneja cualquier lógica adicional si es necesario
+      },
+    }
+  );
+
+  const {
+    data: backups,
+    isLoading,
+    error,
+  } = useQuery(["backups", type], () => fetchBackups(type), {
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    useErrorBoundary: false, // Esto evita que React Query lance el error automáticamente
+  });
+
+  const mutation = useMutation(() => createOrUpdateBackup(type), {
+    onMutate: () => setIsCreatingBackup(type),
+    onSettled: () => setIsCreatingBackup(null),
+    onSuccess: (newBackup) => {
+      queryClient.setQueryData(["backups", type], (old: any) =>
+        type === "CURRENT" ? newBackup : [newBackup, ...(old || [])]
+      );
+    },
+  });
 
   // Fetch current backup
   const fetchCurrentBackup = useCallback(async () => {
@@ -76,6 +133,7 @@ export function useBackups() {
         "/api/vendor/holded/contacts/backups/favorites"
       );
       if (response.ok) {
+        console.log("Fetching favorite backups");
         const data = await response.json();
         setFavoriteBackups(data);
       } else {
@@ -175,6 +233,25 @@ export function useBackups() {
   );
 
   useEffect(() => {
+    if (backups) {
+      switch (type) {
+        case "CURRENT":
+          setCurrentBackup(backups as HoldedContactsCurrentBackup);
+          break;
+        case "DAILY":
+          setDailyBackups(backups as HoldedContactsDailyBackup[]);
+          break;
+        case "MONTHLY":
+          setMonthlyBackups(backups as HoldedContactsMonthlyBackup[]);
+          break;
+        case "FAVORITE":
+          setFavoriteBackups(backups as HoldedContactsFavoriteBackup[]);
+          break;
+      }
+    }
+  }, [backups, type]);
+
+  useEffect(() => {
     fetchCurrentBackup();
     fetchDailyBackups();
     fetchMonthlyBackups();
@@ -192,7 +269,12 @@ export function useBackups() {
     monthlyBackups,
     favoriteBackups,
     loadingBackupId,
+    isLoading,
+    error: error as Error | null, // Aseguramos que error sea de tipo Error o null
     toggleFavorite,
-    deleteBackup,
+    isCreatingBackup: isCreatingBackup === type,
+    createOrUpdateBackup: () => mutation.mutate(),
+    deleteBackup: deleteBackupMutation.mutate, // Modificado para que reciba solo backupId
+    isDeletingBackup: (backupId: string) => deletingBackupId === backupId,
   };
 }

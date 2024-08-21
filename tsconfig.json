@@ -37,7 +37,7 @@
     "src/lib/server-actions",
     "src/app/(protected)/update/page.tsx",
     "migrate-backups.js"
-  ],
+, "src/context/ToastContext.tsx"  ],
   "exclude": [
     "node_modules"
   ]
