@@ -10,6 +10,7 @@ import BackupDetails from "../BackupDetails";
 import { HoldedContactsMonthlyBackup } from "@prisma/client";
 import { ToggleFavoriteModal } from "../modals/ToggleFavoriteModal";
 import { DeletingModal } from "../modals/DeletingModal";
+import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
 
 const MonthlyBackupsTab: React.FC = () => {
   const {
@@ -27,6 +28,8 @@ const MonthlyBackupsTab: React.FC = () => {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingModalOpen, setDeletingModalOpen] = useState(false);
+  const [creatingUpdatingModalOpen, setCreatingUpdatingModalOpen] =
+    useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
   const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
@@ -78,12 +81,26 @@ const MonthlyBackupsTab: React.FC = () => {
     []
   );
 
-  const handleCreateOrUpdateBackup = useCallback(() => {
-    createOrUpdateBackup();
-    toast({
-      title: "Creando/Actualizando backup",
-      description: "Se está creando o actualizando un nuevo backup mensual.",
-    });
+  const handleCreateOrUpdateBackup = useCallback(async () => {
+    setCreatingUpdatingModalOpen(true);
+    try {
+      await createOrUpdateBackup();
+      toast({
+        title: "Backup creado/actualizado",
+        description:
+          "El backup mensual ha sido creado o actualizado exitosamente.",
+      });
+    } catch (error) {
+      console.error("Error creating/updating backup:", error);
+      toast({
+        title: "Error",
+        description:
+          "Ocurrió un error al crear/actualizar el backup. Por favor, intente nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setCreatingUpdatingModalOpen(false);
+    }
   }, [createOrUpdateBackup, toast]);
 
   const handleToggleFavorite = useCallback(
@@ -163,14 +180,7 @@ const MonthlyBackupsTab: React.FC = () => {
           onClick={handleCreateOrUpdateBackup}
           disabled={isCreatingBackup}
         >
-          {isCreatingBackup ? (
-            <>
-              <LoadingSpinner className="mr-2 h-4 w-4" />
-              Creating Backup...
-            </>
-          ) : (
-            "Create/Update the most recent Monthly Backup"
-          )}
+          Create/Update the most recent Monthly Backup
         </Button>
       </div>
       <DataTable columns={columns(columnMeta)} data={monthlyBackups || []} />
@@ -184,6 +194,7 @@ const MonthlyBackupsTab: React.FC = () => {
         backupId={backupToDelete || ""}
       />
       <DeletingModal isOpen={deletingModalOpen} />
+      <CreatingUpdatingModal isOpen={creatingUpdatingModalOpen} />
       {selectedBackupId && (
         <BackupDetails
           backupId={selectedBackupId}

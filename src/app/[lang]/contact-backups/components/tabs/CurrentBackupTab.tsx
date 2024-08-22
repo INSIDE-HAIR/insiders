@@ -11,11 +11,12 @@ import {
   HoldedContactsCurrentBackup,
   HoldedContactsFavoriteBackup,
 } from "@prisma/client";
+import { DeletingModal } from "../modals/DeletingModal";
+import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
 
 const CurrentBackupTab: React.FC = () => {
   const {
     backups,
-    favoriteBackups,
     loadingBackupId,
     deleteBackup,
     createOrUpdateBackup,
@@ -26,22 +27,16 @@ const CurrentBackupTab: React.FC = () => {
   } = useBackups("CURRENT");
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingModalOpen, setDeletingModalOpen] = useState(false);
+  const [creatingUpdatingModalOpen, setCreatingUpdatingModalOpen] =
+    useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
   const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
-  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const { toast } = useToast();
 
   const currentBackup = useMemo(() => {
     return backups as HoldedContactsCurrentBackup | undefined;
   }, [backups]);
-
-  const isFavorite = useMemo(() => {
-    if (!currentBackup) return false;
-    return favoriteBackups.some(
-      (favorite: HoldedContactsFavoriteBackup) =>
-        favorite.id === currentBackup.id
-    );
-  }, [currentBackup, favoriteBackups]);
 
   const openDeleteModal = useCallback((backupId: string) => {
     setBackupToDelete(backupId);
@@ -54,13 +49,26 @@ const CurrentBackupTab: React.FC = () => {
   }, []);
 
   const handleDelete = useCallback(
-    (backup: HoldedContactsCurrentBackup) => {
-      deleteBackup(backup.id);
+    async (backup: HoldedContactsCurrentBackup) => {
       closeDeleteModal();
-      toast({
-        title: "Deleting backup",
-        description: "The current backup is being deleted.",
-      });
+      setDeletingModalOpen(true);
+      try {
+        await deleteBackup(backup.id);
+        toast({
+          title: "Backup eliminado",
+          description: "El backup actual ha sido eliminado exitosamente.",
+        });
+      } catch (error) {
+        console.error("Error deleting backup:", error);
+        toast({
+          title: "Error",
+          description:
+            "Ocurrió un error al eliminar el backup. Por favor, intente nuevamente.",
+          variant: "destructive",
+        });
+      } finally {
+        setDeletingModalOpen(false);
+      }
     },
     [deleteBackup, closeDeleteModal, toast]
   );
@@ -72,12 +80,26 @@ const CurrentBackupTab: React.FC = () => {
     []
   );
 
-  const handleCreateOrUpdateBackup = useCallback(() => {
-    createOrUpdateBackup();
-    toast({
-      title: "Creating/Updating backup",
-      description: "The current backup is being created or updated.",
-    });
+  const handleCreateOrUpdateBackup = useCallback(async () => {
+    setCreatingUpdatingModalOpen(true);
+    try {
+      await createOrUpdateBackup();
+      toast({
+        title: "Backup creado/actualizado",
+        description:
+          "El backup actual ha sido creado o actualizado exitosamente.",
+      });
+    } catch (error) {
+      console.error("Error creating/updating backup:", error);
+      toast({
+        title: "Error",
+        description:
+          "Ocurrió un error al crear/actualizar el backup. Por favor, intente nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setCreatingUpdatingModalOpen(false);
+    }
   }, [createOrUpdateBackup, toast]);
 
   if (isLoading) {
@@ -121,14 +143,7 @@ const CurrentBackupTab: React.FC = () => {
             onClick={handleCreateOrUpdateBackup}
             disabled={isCreatingBackup}
           >
-            {isCreatingBackup ? (
-              <>
-                <LoadingSpinner className="mr-2 h-4 w-4" />
-                Creating Backup...
-              </>
-            ) : (
-              "Update Current Backup"
-            )}
+            Update Current Backup
           </Button>
         </div>
       </div>
@@ -142,6 +157,8 @@ const CurrentBackupTab: React.FC = () => {
         onConfirm={() => currentBackup && handleDelete(currentBackup)}
         backupId={backupToDelete || ""}
       />
+      <DeletingModal isOpen={deletingModalOpen} />
+      <CreatingUpdatingModal isOpen={creatingUpdatingModalOpen} />
       {selectedBackupId && (
         <BackupDetails
           backupId={selectedBackupId}

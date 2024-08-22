@@ -15,7 +15,6 @@ type BackupData =
   | HoldedContactsMonthlyBackup[]
   | HoldedContactsFavoriteBackup[];
 
-// Define the shape of the toggle favorite response
 interface ToggleFavoriteResponse {
   message: string;
   newFavoriteId?: string;
@@ -107,7 +106,6 @@ export function useBackups(type: HoldedContactsBackupType) {
         queryClient.invalidateQueries(["backups", "FAVORITE"]);
         queryClient.invalidateQueries(["backups", type]);
 
-        // Optimistically update the UI
         queryClient.setQueryData(["backups", type], (oldData: any) => {
           return oldData.map((backup: any) =>
             backup.id === backupId
@@ -156,7 +154,7 @@ export function useBackups(type: HoldedContactsBackupType) {
     error,
     loadingBackupId,
     isCreatingBackup: isCreatingBackup === type,
-    createOrUpdateBackup: () => createOrUpdateMutation.mutate(),
+    createOrUpdateBackup: () => createOrUpdateMutation.mutateAsync(),
     toggleFavorite: (backupId: string) =>
       toggleFavoriteMutation.mutateAsync(backupId),
     deleteBackup: (backupId: string) =>
