@@ -1,100 +1,136 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { DataTable } from "../DataTable";
 import { columns } from "../columns/currentColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
-import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
+import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
 import BackupDetails from "../BackupDetails";
+import {
+  HoldedContactsCurrentBackup,
+  HoldedContactsFavoriteBackup,
+} from "@prisma/client";
 
 const CurrentBackupTab: React.FC = () => {
   const {
-    currentBackup,
+    backups,
+    favoriteBackups,
     loadingBackupId,
     deleteBackup,
     createOrUpdateBackup,
     isCreatingBackup,
     isLoading,
     error,
-    fetchBackupDataById,
+    isDeletingBackup,
   } = useBackups("CURRENT");
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
-  const [selectedBackupId, setSelectedBackupId] = useState<any | null>(null);
-  const [backupDetailsData, setBackupDetailsData] = useState<any | null>(null);
+  const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
+  const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const { toast } = useToast();
 
-  const openDeleteModal = (backupId: string) => {
+  const currentBackup = useMemo(() => {
+    return backups as HoldedContactsCurrentBackup | undefined;
+  }, [backups]);
+
+  const isFavorite = useMemo(() => {
+    if (!currentBackup) return false;
+    return favoriteBackups.some(
+      (favorite: HoldedContactsFavoriteBackup) =>
+        favorite.id === currentBackup.id
+    );
+  }, [currentBackup, favoriteBackups]);
+
+  const openDeleteModal = useCallback((backupId: string) => {
     setBackupToDelete(backupId);
     setDeleteModalOpen(true);
-  };
+  }, []);
 
-  const closeDeleteModal = () => {
+  const closeDeleteModal = useCallback(() => {
     setDeleteModalOpen(false);
     setBackupToDelete(null);
-  };
+  }, []);
 
-  const handleDelete = () => {
-    if (backupToDelete) {
-      deleteBackup(backupToDelete, {
-        onSuccess: () => {
-          toast({
-            title: "Backup deleted",
-            description: "The current backup has been successfully deleted.",
-          });
-          closeDeleteModal();
-        },
-        onError: () => {
-          toast({
-            title: "Failed to delete backup",
-            description:
-              "There was an issue deleting the backup. Please try again.",
-            variant: "destructive",
-          });
-        },
+  const handleDelete = useCallback(
+    (backup: HoldedContactsCurrentBackup) => {
+      deleteBackup(backup.id);
+      closeDeleteModal();
+      toast({
+        title: "Deleting backup",
+        description: "The current backup is being deleted.",
       });
-    }
-  };
+    },
+    [deleteBackup, closeDeleteModal, toast]
+  );
 
-  const handleViewDetails = (backup: any) => {
-    setSelectedBackupId(backup.id);
-  };
+  const handleViewDetails = useCallback(
+    (backup: HoldedContactsCurrentBackup) => {
+      setSelectedBackupId(backup.id);
+    },
+    []
+  );
 
-  if (isLoading)
+  const handleCreateOrUpdateBackup = useCallback(() => {
+    createOrUpdateBackup();
+    toast({
+      title: "Creating/Updating backup",
+      description: "The current backup is being created or updated.",
+    });
+  }, [createOrUpdateBackup, toast]);
+
+  if (isLoading) {
     return (
       <div className="my-4 flex items-center justify-center">
         <LoadingSpinner className="w-10 h-10" />
       </div>
     );
+  }
 
   if (error) return <div>Error loading backup: {error.message}</div>;
 
   const columnMeta = {
     openDeleteModal,
     onViewDetails: handleViewDetails,
-    onDelete: () => {},
-    onToggleFavorite: () => {},
+    onDelete: handleDelete,
     loadingBackupId,
+    isDeletingBackup,
   };
 
   return (
     <div>
       <div className="mb-4">
-        <Button
-          onClick={() => createOrUpdateBackup()}
-          disabled={isCreatingBackup}
-        >
-          {isCreatingBackup ? (
-            <>
-              <LoadingSpinner className="mr-2 h-4 w-4" />
-              Creating Backup...
-            </>
-          ) : (
-            "Create/Update Current Backup"
-          )}
-        </Button>
+        <div className="my-8 flex flex-col items-center justif">
+          <h1 className="text-3xl font-bold text-center">Current Backups</h1>
+          <p className="text-center max-w-3xl">
+            Solo se puede tener un backup actual a la vez, pero puedes
+            actualizarlo en cualquier momento.
+          </p>
+        </div>
+
+        <div className="mb-4 flex justify-between items-center">
+          <p>
+            Current Backups{" "}
+            <span className="text-sm font-normal text-gray-500">
+              ({[currentBackup]?.length || 0}/1)
+            </span>
+          </p>
+
+          <Button
+            onClick={handleCreateOrUpdateBackup}
+            disabled={isCreatingBackup}
+          >
+            {isCreatingBackup ? (
+              <>
+                <LoadingSpinner className="mr-2 h-4 w-4" />
+                Creating Backup...
+              </>
+            ) : (
+              "Update Current Backup"
+            )}
+          </Button>
+        </div>
       </div>
       <DataTable
         columns={columns(columnMeta)}
@@ -103,10 +139,9 @@ const CurrentBackupTab: React.FC = () => {
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}
-        onConfirm={handleDelete}
+        onConfirm={() => currentBackup && handleDelete(currentBackup)}
         backupId={backupToDelete || ""}
       />
-      {/* Renderiza BackupDetails si hay un backup seleccionado */}
       {selectedBackupId && (
         <BackupDetails
           backupId={selectedBackupId}

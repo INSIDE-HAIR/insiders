@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   HoldedContactsCurrentBackup,
   HoldedContactsDailyBackup,
@@ -9,20 +9,26 @@ import {
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useBackupStore } from "../stores/backupStore";
 
-const fetchBackups = async (type: HoldedContactsBackupType) => {
+type BackupData =
+  | HoldedContactsCurrentBackup
+  | HoldedContactsDailyBackup[]
+  | HoldedContactsMonthlyBackup[]
+  | HoldedContactsFavoriteBackup[];
+
+// Define the shape of the toggle favorite response
+interface ToggleFavoriteResponse {
+  message: string;
+  newFavoriteId?: string;
+  originalId?: string;
+}
+
+const fetchBackups = async (
+  type: HoldedContactsBackupType
+): Promise<BackupData> => {
   const response = await fetch(
     `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`
   );
-  if (!response.ok) throw new Error("Network response was not ok");
-  return response.json();
-};
-
-const fetchBackupData = async (type: HoldedContactsBackupType, id: string) => {
-  const response = await fetch(
-    `/api/vendor/holded/contacts/backups/${type.toLowerCase()}/${id}`
-  );
-  if (!response.ok)
-    throw new Error(`Failed to fetch ${type.toLowerCase()} backup data`);
+  if (!response.ok) throw new Error("Failed to fetch backups");
   return response.json();
 };
 
@@ -33,271 +39,129 @@ const createOrUpdateBackup = async (type: HoldedContactsBackupType) => {
       method: "POST",
     }
   );
-  if (!response.ok) throw new Error("Network response was not ok");
+  if (!response.ok) throw new Error("Failed to create or update backup");
   return response.json();
 };
 
 export function useBackups(type: HoldedContactsBackupType) {
-  const [currentBackup, setCurrentBackup] =
-    useState<HoldedContactsCurrentBackup | null>(null);
-  const [dailyBackups, setDailyBackups] = useState<HoldedContactsDailyBackup[]>(
-    []
-  );
-  const [monthlyBackups, setMonthlyBackups] = useState<
-    HoldedContactsMonthlyBackup[]
-  >([]);
-  const [favoriteBackups, setFavoriteBackups] = useState<
-    HoldedContactsFavoriteBackup[]
-  >([]);
   const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const { isCreatingBackup, setIsCreatingBackup } = useBackupStore();
-  const [deletingBackupId, setDeletingBackupId] = useState<string | null>(null);
-
-  const deleteBackupMutation = useMutation(
-    (backupId: string) => deleteBackup(backupId, type), // type se pasa aquí
-    {
-      onMutate: (backupId) => setDeletingBackupId(backupId),
-      onSettled: () => setDeletingBackupId(null),
-      onSuccess: () => {
-        queryClient.invalidateQueries(["backups", type]);
-        // Maneja cualquier lógica adicional si es necesario
-      },
-    }
-  );
 
   const {
     data: backups,
     isLoading,
     error,
-  } = useQuery(["backups", type], () => fetchBackups(type), {
-    staleTime: 5 * 60 * 1000, // 5 minutos
-    useErrorBoundary: false, // Esto evita que React Query lance el error automáticamente
+  } = useQuery<BackupData, Error>(["backups", type], () => fetchBackups(type), {
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const mutation = useMutation(() => createOrUpdateBackup(type), {
+  const { data: favoriteBackups = [] } = useQuery<
+    HoldedContactsFavoriteBackup[],
+    Error
+  >(
+    ["backups", "FAVORITE"],
+    () => fetchBackups("FAVORITE") as Promise<HoldedContactsFavoriteBackup[]>,
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    }
+  );
+
+  const createOrUpdateMutation = useMutation(() => createOrUpdateBackup(type), {
     onMutate: () => setIsCreatingBackup(type),
     onSettled: () => setIsCreatingBackup(null),
     onSuccess: (newBackup) => {
-      queryClient.setQueryData(["backups", type], (old: any) =>
-        type === "CURRENT" ? newBackup : [newBackup, ...(old || [])]
+      queryClient.setQueryData<BackupData>(["backups", type], (old) =>
+        type === "CURRENT" ? newBackup : [newBackup, ...((old as any[]) || [])]
       );
     },
   });
 
-  // Fetch current backup
-  const fetchCurrentBackup = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "/api/vendor/holded/contacts/backups/current"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentBackup(data);
-      } else {
-        console.error("Failed to fetch current backup");
-      }
-    } catch (error) {
-      console.error("Error fetching current backup:", error);
-    }
-  }, []);
-
-  // Fetch daily backups
-  const fetchDailyBackups = useCallback(async () => {
-    try {
-      const response = await fetch("/api/vendor/holded/contacts/backups/daily");
-      if (response.ok) {
-        const data = await response.json();
-        setDailyBackups(data);
-      } else {
-        console.error("Failed to fetch daily backups");
-      }
-    } catch (error) {
-      console.error("Error fetching daily backups:", error);
-    }
-  }, []);
-
-  // Fetch monthly backups
-  const fetchMonthlyBackups = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "/api/vendor/holded/contacts/backups/monthly"
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setMonthlyBackups(data);
-      } else {
-        console.error("Failed to fetch monthly backups");
-      }
-    } catch (error) {
-      console.error("Error fetching monthly backups:", error);
-    }
-  }, []);
-
-  // Fetch favorite backups
-  const fetchFavoriteBackups = useCallback(async () => {
-    try {
-      const response = await fetch(
-        "/api/vendor/holded/contacts/backups/favorites"
-      );
-      if (response.ok) {
-        console.log("Fetching favorite backups");
-        const data = await response.json();
-        setFavoriteBackups(data);
-      } else {
-        console.error("Failed to fetch favorite backups");
-      }
-    } catch (error) {
-      console.error("Error fetching favorite backups:", error);
-    }
-  }, []);
-
-  // Toggle favorite status
-  const toggleFavorite = useCallback(
-    async (backupId: string, isFavorite: boolean) => {
-      setLoadingBackupId(backupId);
-      try {
-        const response = await fetch(
-          `/api/vendor/holded/contacts/backups/favorites`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ backupId, isFavorite }),
-          }
-        );
-
-        if (response.ok) {
-          // Update the backup lists after toggling favorite status
-          fetchFavoriteBackups();
-        } else {
-          console.error("Failed to update favorite backup");
-        }
-      } catch (error) {
-        console.error("Error updating favorite backup:", error);
-      } finally {
-        setLoadingBackupId(null);
-      }
-    },
-    [fetchFavoriteBackups]
-  );
-
-  // Delete backup
-  const deleteBackup = useCallback(
-    async (
-      backupId: string,
-      type: "CURRENT" | "DAILY" | "MONTHLY" | "FAVORITE"
-    ) => {
-      setLoadingBackupId(backupId);
-      try {
-        let endpoint = "";
-        switch (type) {
-          case "CURRENT":
-            endpoint = `/api/vendor/holded/contacts/backups/current/${backupId}`;
-            break;
-          case "DAILY":
-            endpoint = `/api/vendor/holded/contacts/backups/daily/${backupId}`;
-            break;
-          case "MONTHLY":
-            endpoint = `/api/vendor/holded/contacts/backups/monthly/${backupId}`;
-            break;
-          case "FAVORITE":
-            endpoint = `/api/vendor/holded/contacts/backups/favorites/${backupId}`;
-            break;
-        }
-
-        const response = await fetch(endpoint, { method: "DELETE" });
-
-        if (response.ok) {
-          // Refresh data after deletion
-          switch (type) {
-            case "CURRENT":
-              fetchCurrentBackup();
-              break;
-            case "DAILY":
-              fetchDailyBackups();
-              break;
-            case "MONTHLY":
-              fetchMonthlyBackups();
-              break;
-            case "FAVORITE":
-              fetchFavoriteBackups();
-              break;
-          }
-        } else {
-          console.error("Failed to delete backup");
-        }
-      } catch (error) {
-        console.error("Error deleting backup:", error);
-      } finally {
-        setLoadingBackupId(null);
-      }
-    },
-    [
-      fetchCurrentBackup,
-      fetchDailyBackups,
-      fetchMonthlyBackups,
-      fetchFavoriteBackups,
-    ]
-  );
-
-  // Fetch backup data by ID
-  const fetchBackupDataById = useCallback(
+  const toggleFavoriteMutation = useMutation<
+    ToggleFavoriteResponse,
+    Error,
+    string
+  >(
     async (backupId: string) => {
-      try {
-        const backupData = await fetchBackupData(type, backupId);
-        return backupData;
-      } catch (error) {
-        console.error("Error fetching backup data:", error);
-        throw error;
+      const response = await fetch(
+        "/api/vendor/holded/contacts/backups/favorite",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ backupId, originalType: type }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle favorite");
       }
+
+      return response.json();
     },
-    [type]
+    {
+      onMutate: (backupId) => setLoadingBackupId(backupId),
+      onSettled: () => setLoadingBackupId(null),
+      onSuccess: (data, backupId) => {
+        queryClient.invalidateQueries(["backups", "FAVORITE"]);
+        queryClient.invalidateQueries(["backups", type]);
+
+        // Optimistically update the UI
+        queryClient.setQueryData(["backups", type], (oldData: any) => {
+          return oldData.map((backup: any) =>
+            backup.id === backupId
+              ? { ...backup, isFavorite: !backup.isFavorite }
+              : backup
+          );
+        });
+      },
+    }
   );
 
-  useEffect(() => {
-    if (backups) {
-      switch (type) {
-        case "CURRENT":
-          setCurrentBackup(backups as HoldedContactsCurrentBackup);
-          break;
-        case "DAILY":
-          setDailyBackups(backups as HoldedContactsDailyBackup[]);
-          break;
-        case "MONTHLY":
-          setMonthlyBackups(backups as HoldedContactsMonthlyBackup[]);
-          break;
-        case "FAVORITE":
-          setFavoriteBackups(backups as HoldedContactsFavoriteBackup[]);
-          break;
-      }
+  const deleteBackupMutation = useMutation(
+    (backupId: string) =>
+      fetch(
+        `/api/vendor/holded/contacts/backups/${type.toLowerCase()}/${backupId}`,
+        {
+          method: "DELETE",
+        }
+      ).then((res) => {
+        if (!res.ok) throw new Error("Failed to delete backup");
+        return res.json();
+      }),
+    {
+      onMutate: (backupId) => setLoadingBackupId(backupId),
+      onSettled: () => setLoadingBackupId(null),
+      onSuccess: () => {
+        queryClient.invalidateQueries(["backups", type]);
+      },
     }
-  }, [backups, type]);
+  );
 
-  useEffect(() => {
-    fetchCurrentBackup();
-    fetchDailyBackups();
-    fetchMonthlyBackups();
-    fetchFavoriteBackups();
-  }, [
-    fetchCurrentBackup,
-    fetchDailyBackups,
-    fetchMonthlyBackups,
-    fetchFavoriteBackups,
-  ]);
+  const isFavorite = useCallback(
+    (backupId: string) => {
+      const favorites = queryClient.getQueryData(["backups", "FAVORITE"]) as
+        | any[]
+        | undefined;
+      return favorites?.some((fav) => fav.originalId === backupId) ?? false;
+    },
+    [queryClient]
+  );
 
   return {
-    fetchBackupDataById,
-    currentBackup,
-    dailyBackups,
-    monthlyBackups,
+    backups,
     favoriteBackups,
-    loadingBackupId,
     isLoading,
-    error: error as Error | null, // Aseguramos que error sea de tipo Error o null
-    toggleFavorite,
+    error,
+    loadingBackupId,
     isCreatingBackup: isCreatingBackup === type,
-    createOrUpdateBackup: () => mutation.mutate(),
-    deleteBackup: deleteBackupMutation.mutate, // Modificado para que reciba solo backupId
-    isDeletingBackup: (backupId: string) => deletingBackupId === backupId,
+    createOrUpdateBackup: () => createOrUpdateMutation.mutate(),
+    toggleFavorite: (backupId: string) =>
+      toggleFavoriteMutation.mutateAsync(backupId),
+    deleteBackup: (backupId: string) =>
+      deleteBackupMutation.mutateAsync(backupId),
+    isDeletingBackup: deleteBackupMutation.isLoading,
+    isFavorite,
   };
 }

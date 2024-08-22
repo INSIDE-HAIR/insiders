@@ -9,10 +9,13 @@ interface ColumnMeta {
   onDelete?: (backup: HoldedContactsMonthlyBackup) => void;
   onToggleFavorite?: (backup: HoldedContactsMonthlyBackup) => void;
   loadingBackupId?: string | null;
+  isFavorite: (backupId: string) => boolean;
 }
 
 // Define columns specifically for monthly backups
-export const columns: (meta: ColumnMeta) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => [
+export const columns: (
+  meta: ColumnMeta
+) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => [
   ...createBaseColumns<HoldedContactsMonthlyBackup>(), // Extend the base columns
 
   {
@@ -41,9 +44,10 @@ export const columns: (meta: ColumnMeta) => ColumnDef<HoldedContactsMonthlyBacku
           backup={backup}
           openDeleteModal={meta.openDeleteModal}
           onViewDetails={meta.onViewDetails}
-          onDelete={meta.onDelete}
           onToggleFavorite={meta.onToggleFavorite}
           loadingBackupId={meta.loadingBackupId}
+          isFavorite={meta.isFavorite(backup.id)}
+          isTogglingFavorite={meta.loadingBackupId === backup.id}
         />
       );
     },

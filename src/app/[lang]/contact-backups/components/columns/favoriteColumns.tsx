@@ -18,14 +18,6 @@ export const columns: (
   ...createBaseColumns<HoldedContactsFavoriteBackup>(), // Extend the base columns
 
   {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      const name: string | null = row.getValue("name");
-      return <span>{name || "Unnamed"}</span>;
-    },
-  },
-  {
     accessorKey: "originalType",
     header: "Original Type",
     cell: ({ row }) => {
@@ -67,9 +59,9 @@ export const columns: (
           backup={backup}
           openDeleteModal={meta.openDeleteModal}
           onViewDetails={meta.onViewDetails}
-          onDelete={meta.onDelete}
-          onToggleFavorite={meta.onToggleFavorite}
           loadingBackupId={meta.loadingBackupId}
+          isFavorite={true}
+          isTogglingFavorite={false}
         />
       );
     },

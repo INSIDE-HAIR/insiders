@@ -31,10 +31,11 @@ model HoldedContactsMonthlyBackup {
 
 model HoldedContactsFavoriteBackup {
   id           String                   @id @default(auto()) @map("_id") @db.ObjectId
+  originalId   String                   @db.ObjectId
+  originalType HoldedContactsBackupType
   createdAt    DateTime                 @default(now())
   updatedAt    DateTime                 @updatedAt
   data         Json
-  originalType HoldedContactsBackupType
   dayOfMonth   Int?
   month        Int?
   year         Int?

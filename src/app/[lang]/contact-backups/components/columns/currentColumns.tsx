@@ -12,19 +12,10 @@ interface ColumnMeta {
 }
 
 // Define columns specifically for current backups
-export const columns: (meta: ColumnMeta) => ColumnDef<HoldedContactsCurrentBackup>[] = (meta) => [
+export const columns: (
+  meta: ColumnMeta
+) => ColumnDef<HoldedContactsCurrentBackup>[] = (meta) => [
   ...createBaseColumns<HoldedContactsCurrentBackup>(), // Extend the base columns
-
-  // Add any current-specific columns here if needed
-  // For example:
-  // {
-  //   accessorKey: "lastUpdated",
-  //   header: "Last Updated",
-  //   cell: ({ row }) => {
-  //     const lastUpdated: Date = row.getValue("lastUpdated");
-  //     return <span>{lastUpdated.toLocaleString()}</span>;
-  //   },
-  // },
 
   {
     id: "actions",
@@ -34,10 +25,7 @@ export const columns: (meta: ColumnMeta) => ColumnDef<HoldedContactsCurrentBacku
       return (
         <BackupActions
           backup={backup}
-          openDeleteModal={meta.openDeleteModal}
           onViewDetails={meta.onViewDetails}
-          onDelete={meta.onDelete}
-          onToggleFavorite={meta.onToggleFavorite}
           loadingBackupId={meta.loadingBackupId}
         />
       );

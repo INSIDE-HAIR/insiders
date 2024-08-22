@@ -8,6 +8,7 @@ interface ColumnMeta {
   onViewDetails?: (backup: HoldedContactsDailyBackup) => void;
   onDelete?: (backup: HoldedContactsDailyBackup) => void;
   onToggleFavorite?: (backup: HoldedContactsDailyBackup) => void;
+  isFavorite: (backupId: string) => boolean;
   loadingBackupId?: string | null;
 }
 
@@ -33,9 +34,10 @@ export const columns = (
           backup={backup}
           openDeleteModal={meta.openDeleteModal}
           onViewDetails={meta.onViewDetails}
-          onDelete={meta.onDelete}
           onToggleFavorite={meta.onToggleFavorite}
           loadingBackupId={meta.loadingBackupId}
+          isFavorite={meta.isFavorite(backup.id)}
+          isTogglingFavorite={false}
         />
       );
     },

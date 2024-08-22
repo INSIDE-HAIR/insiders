@@ -1,11 +1,11 @@
 "use servver";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, HoldedContactsBackupType } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
 import { ObjectId } from "mongodb"; // Import ObjectId if estás usando MongoDB
 
 const prisma = new PrismaClient();
 
-const LIMITS = {
+export const BACKUPS_LIMITS = {
   daily: 31,
   monthly: 12,
 };
@@ -135,7 +135,7 @@ export async function createOrUpdateDailyBackup() {
   } else {
     // Si hemos alcanzado el límite, elimina el backup más antiguo
     const count = await prisma.holdedContactsDailyBackup.count();
-    if (count >= LIMITS.daily) {
+    if (count >= BACKUPS_LIMITS.daily) {
       const oldestBackup = await prisma.holdedContactsDailyBackup.findFirst({
         orderBy: { createdAt: "asc" },
       });
@@ -170,6 +170,20 @@ export async function createOrUpdateMonthlyBackup() {
   const month = today.getMonth() + 1;
   const year = today.getFullYear();
 
+  // Verificar si hemos alcanzado el límite de backups mensuales
+  const count = await prisma.holdedContactsMonthlyBackup.count();
+  if (count >= BACKUPS_LIMITS.monthly) {
+    // Eliminar el backup mensual más antiguo
+    const oldestBackup = await prisma.holdedContactsMonthlyBackup.findFirst({
+      orderBy: [{ year: "asc" }, { month: "asc" }],
+    });
+    if (oldestBackup) {
+      await prisma.holdedContactsMonthlyBackup.delete({
+        where: { id: oldestBackup.id },
+      });
+    }
+  }
+
   return prisma.holdedContactsMonthlyBackup.upsert({
     where: {
       month_year: { month, year },
@@ -196,7 +210,6 @@ export async function createOrUpdateMonthlyBackup() {
   });
 }
 
-
 export async function getCurrentBackupData(id: string) {
   return prisma.holdedContactsCurrentBackup.findUnique({
     where: { id },
@@ -222,4 +235,30 @@ export async function getMonthlyBackupData(id: string) {
       data: true, // Extrae solo el campo `data`
     },
   });
+}
+
+export async function deleteBackupById(
+  type: HoldedContactsBackupType,
+  id: string
+) {
+  switch (type) {
+    case HoldedContactsBackupType.CURRENT:
+      return prisma.holdedContactsCurrentBackup.delete({
+        where: { id },
+      });
+    case HoldedContactsBackupType.DAILY:
+      return prisma.holdedContactsDailyBackup.delete({
+        where: { id },
+      });
+    case HoldedContactsBackupType.MONTHLY:
+      return prisma.holdedContactsMonthlyBackup.delete({
+        where: { id },
+      });
+    case HoldedContactsBackupType.FAVORITE:
+      return prisma.holdedContactsFavoriteBackup.delete({
+        where: { id },
+      });
+    default:
+      throw new Error("Invalid backup type");
+  }
 }

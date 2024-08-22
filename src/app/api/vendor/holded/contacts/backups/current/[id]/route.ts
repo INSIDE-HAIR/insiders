@@ -1,6 +1,6 @@
 // app/api/vendor/holded/contacts/backups/monthly/[id]/route.ts
 import { getCurrentBackupData } from "@/src/lib/utils/holdedContactsBackupUtils";
-import { deleteBackupById } from "@/src/lib/utils/holdedContactsFavoriteUtils";
+import { deleteBackupById } from "@/src/lib/utils/holdedContactsBackupUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(

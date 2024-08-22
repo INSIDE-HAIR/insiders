@@ -1,31 +1,27 @@
-// app/api/vendor/holded/contacts/backups/monthly/[id]/route.ts
-import { getDailyBackupData } from "@/src/lib/utils/holdedContactsBackupUtils";
-import { deleteBackupById } from "@/src/lib/utils/holdedContactsBackupUtils";
+import {
+  deleteFavoriteBackup,
+  getFavoriteBackupsData,
+} from "@/src/lib/utils/holdedContactsFavoriteUtils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
-    const type = "DAILY";
-
-    await deleteBackupById(type, id);
-
+    const id = params.id;
+    await deleteFavoriteBackup(id);
+    return NextResponse.json({
+      message: "Favorite backup deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting favorite backup:", error);
     return NextResponse.json(
-      { message: "Backup deleted successfully" },
-      { status: 200 }
-    );
-  } catch (error: unknown) {
-    console.error("Error deleting backup:", error);
-    return NextResponse.json(
-      { message: "Failed to delete backup" },
+      { error: "Error deleting favorite backup" },
       { status: 500 }
     );
   }
 }
-
 
 export async function GET(
   request: NextRequest,
@@ -35,7 +31,7 @@ export async function GET(
     const { id } = params;
 
     // Obtiene los datos del backup utilizando la función correspondiente
-    const backupData = await getDailyBackupData(id);
+    const backupData = await getFavoriteBackupsData(id);
 
     if (!backupData) {
       // Si no se encuentra el backup, devuelve una respuesta 404
