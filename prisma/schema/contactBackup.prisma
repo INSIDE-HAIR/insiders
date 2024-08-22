@@ -3,6 +3,7 @@ model HoldedContactsCurrentBackup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   data      Json
+  length    Int
 }
 
 model HoldedContactsDailyBackup {
@@ -11,6 +12,7 @@ model HoldedContactsDailyBackup {
   updatedAt  DateTime @updatedAt
   data       Json
   dayOfMonth Int
+  length     Int
 
   @@unique([dayOfMonth])
 }
@@ -22,6 +24,7 @@ model HoldedContactsMonthlyBackup {
   data      Json
   month     Int
   year      Int
+  length    Int
 
   @@unique([month, year])
 }
@@ -36,6 +39,7 @@ model HoldedContactsFavoriteBackup {
   month        Int?
   year         Int?
   name         String?
+  length       Int
 }
 
 enum HoldedContactsBackupType {

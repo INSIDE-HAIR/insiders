@@ -50,6 +50,7 @@ export async function addToFavorites(
       month: "month" in originalBackup ? originalBackup.month : null,
       year: "year" in originalBackup ? originalBackup.year : null,
       name,
+      length: originalBackup.length,
     },
   });
 }
@@ -84,12 +85,10 @@ export async function removeFavorite(favoriteId: string) {
 }
 
 export async function getFavorites() {
-  try { 
+  try {
     const favorites = await prisma.holdedContactsFavoriteBackup.findMany();
-    console.log("Favorites retrieved:", favorites);
     return favorites; // This will be an empty array if no favorites are found
   } catch (error) {
-    console.error("Error in getFavorites:", error);
     throw error; // Re-throw the error to be handled by the API route
   }
 }

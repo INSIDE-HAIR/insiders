@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { DataTable } from "../DataTable";
 import { columns } from "../columns/monthlyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
@@ -6,6 +6,7 @@ import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
+import BackupDetails from "../BackupDetails";
 
 const MonthlyBackupsTab: React.FC = () => {
   const {
@@ -20,7 +21,8 @@ const MonthlyBackupsTab: React.FC = () => {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
-  const { toast } = useToast(); // Utiliza el hook de ShadCN para manejar los toasts
+  const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const openDeleteModal = (backupId: string) => {
     setBackupToDelete(backupId);
@@ -54,6 +56,23 @@ const MonthlyBackupsTab: React.FC = () => {
     }
   };
 
+  const handleViewDetails = (backup: any) => {
+    setSelectedBackupId(backup.id);
+  };
+
+  const columnMeta = useMemo(
+    () => ({
+      openDeleteModal,
+      onViewDetails: handleViewDetails,
+      onDelete: () => {}, // Esta función no se usa directamente aquí, pero se mantiene por consistencia
+      onToggleFavorite: () => {}, // Esta función no se usa en monthly backups, pero se mantiene por consistencia
+      loadingBackupId,
+    }),
+    [loadingBackupId]
+  );
+
+  const tableColumns = useMemo(() => columns(columnMeta), [columnMeta]);
+
   if (isLoading)
     return (
       <div className="my-4 flex items-center justify-center">
@@ -62,14 +81,6 @@ const MonthlyBackupsTab: React.FC = () => {
     );
 
   if (error) return <div>Error loading backups: {error.message}</div>;
-
-  const columnMeta = {
-    openDeleteModal,
-    onViewDetails: () => {}, // Define your view details function
-    onDelete: () => {}, // Define your delete function
-    onToggleFavorite: () => {}, // Define your toggle favorite function
-    loadingBackupId,
-  };
 
   return (
     <div>
@@ -88,19 +99,20 @@ const MonthlyBackupsTab: React.FC = () => {
           )}
         </Button>
       </div>
-      <DataTable
-        columns={columns(columnMeta)}
-        data={monthlyBackups}
-        loadingBackupId={loadingBackupId}
-        onDelete={handleDelete}
-        openDeleteModal={openDeleteModal}
-      />
+      <DataTable columns={tableColumns} data={monthlyBackups} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDelete}
         backupId={backupToDelete || ""}
       />
+      {selectedBackupId && (
+        <BackupDetails
+          backupId={selectedBackupId}
+          itemsPerPage={10}
+          type="MONTHLY"
+        />
+      )}
     </div>
   );
 };

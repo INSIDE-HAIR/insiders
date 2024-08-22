@@ -1,8 +1,7 @@
-// src/lib/utils/holdedContactsBackupUtils.ts
 "use servver";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
-import { ObjectId } from "mongodb"; // Import ObjectId if you're using MongoDB
+import { ObjectId } from "mongodb"; // Import ObjectId if estás usando MongoDB
 
 const prisma = new PrismaClient();
 
@@ -12,10 +11,18 @@ const LIMITS = {
 };
 
 export async function getCurrentBackup() {
-  const backup = await prisma.holdedContactsCurrentBackup.findFirst();
+  const backup = await prisma.holdedContactsCurrentBackup.findFirst({
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      length: true,
+      // Excluye el campo `data`
+    },
+  });
 
   if (!backup) {
-    // If no backup is found, create a new one
+    // Si no se encuentra un backup, crea uno nuevo
     return createOrUpdateCurrentBackup();
   }
 
@@ -34,13 +41,31 @@ export async function createOrUpdateCurrentBackup() {
         data: contactsData as Prisma.InputJsonValue,
         updatedAt: new Date(),
       },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        length: true,
+        // Excluye el campo `data`
+      },
     });
   } else {
-    // Generate a valid ObjectID for the new backup
+    // Genera un ObjectID válido para el nuevo backup
     const newId = new ObjectId().toString();
 
     return prisma.holdedContactsCurrentBackup.create({
-      data: { id: newId, data: contactsData as Prisma.InputJsonValue },
+      data: {
+        id: newId,
+        data: contactsData as Prisma.InputJsonValue,
+        length: contactsData.length,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        length: true,
+        // Excluye el campo `data`
+      },
     });
   }
 }
@@ -48,12 +73,29 @@ export async function createOrUpdateCurrentBackup() {
 export async function getDailyBackups() {
   return prisma.holdedContactsDailyBackup.findMany({
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      dayOfMonth: true,
+      length: true,
+      // Excluye el campo `data`
+    },
   });
 }
 
 export async function getMonthlyBackups() {
   return prisma.holdedContactsMonthlyBackup.findMany({
     orderBy: [{ year: "desc" }, { month: "desc" }],
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      month: true,
+      year: true,
+      length: true,
+      // Excluye el campo `data`
+    },
   });
 }
 
@@ -64,6 +106,14 @@ export async function createOrUpdateDailyBackup() {
 
   const existingBackup = await prisma.holdedContactsDailyBackup.findUnique({
     where: { dayOfMonth },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      dayOfMonth: true,
+      length: true,
+      // Excluye el campo `data`
+    },
   });
 
   if (existingBackup) {
@@ -73,9 +123,17 @@ export async function createOrUpdateDailyBackup() {
         data: contactsData as Prisma.InputJsonValue,
         updatedAt: new Date(),
       },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        dayOfMonth: true,
+        length: true,
+        // Excluye el campo `data`
+      },
     });
   } else {
-    // If we've reached the limit, delete the oldest backup
+    // Si hemos alcanzado el límite, elimina el backup más antiguo
     const count = await prisma.holdedContactsDailyBackup.count();
     if (count >= LIMITS.daily) {
       const oldestBackup = await prisma.holdedContactsDailyBackup.findFirst({
@@ -89,7 +147,19 @@ export async function createOrUpdateDailyBackup() {
     }
 
     return prisma.holdedContactsDailyBackup.create({
-      data: { dayOfMonth, data: contactsData as Prisma.InputJsonValue },
+      data: {
+        dayOfMonth,
+        data: contactsData as Prisma.InputJsonValue,
+        length: contactsData.length,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        dayOfMonth: true,
+        length: true,
+        // Excluye el campo `data`
+      },
     });
   }
 }
@@ -108,6 +178,48 @@ export async function createOrUpdateMonthlyBackup() {
       data: contactsData as Prisma.InputJsonValue,
       updatedAt: new Date(),
     },
-    create: { month, year, data: contactsData as Prisma.InputJsonValue },
+    create: {
+      month,
+      year,
+      data: contactsData as Prisma.InputJsonValue,
+      length: contactsData.length,
+    },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      month: true,
+      year: true,
+      length: true,
+      // Excluye el campo `data`
+    },
+  });
+}
+
+
+export async function getCurrentBackupData(id: string) {
+  return prisma.holdedContactsCurrentBackup.findUnique({
+    where: { id },
+    select: {
+      data: true, // Extrae solo el campo `data`
+    },
+  });
+}
+
+export async function getDailyBackupData(id: string) {
+  return prisma.holdedContactsDailyBackup.findUnique({
+    where: { id },
+    select: {
+      data: true, // Extrae solo el campo `data`
+    },
+  });
+}
+
+export async function getMonthlyBackupData(id: string) {
+  return prisma.holdedContactsMonthlyBackup.findUnique({
+    where: { id },
+    select: {
+      data: true, // Extrae solo el campo `data`
+    },
   });
 }

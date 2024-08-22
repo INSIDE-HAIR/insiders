@@ -8,13 +8,21 @@ import {
 } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useBackupStore } from "../stores/backupStore";
-import { set } from "date-fns";
 
 const fetchBackups = async (type: HoldedContactsBackupType) => {
   const response = await fetch(
     `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`
   );
   if (!response.ok) throw new Error("Network response was not ok");
+  return response.json();
+};
+
+const fetchBackupData = async (type: HoldedContactsBackupType, id: string) => {
+  const response = await fetch(
+    `/api/vendor/holded/contacts/backups/${type.toLowerCase()}/${id}`
+  );
+  if (!response.ok)
+    throw new Error(`Failed to fetch ${type.toLowerCase()} backup data`);
   return response.json();
 };
 
@@ -232,6 +240,20 @@ export function useBackups(type: HoldedContactsBackupType) {
     ]
   );
 
+  // Fetch backup data by ID
+  const fetchBackupDataById = useCallback(
+    async (backupId: string) => {
+      try {
+        const backupData = await fetchBackupData(type, backupId);
+        return backupData;
+      } catch (error) {
+        console.error("Error fetching backup data:", error);
+        throw error;
+      }
+    },
+    [type]
+  );
+
   useEffect(() => {
     if (backups) {
       switch (type) {
@@ -264,6 +286,7 @@ export function useBackups(type: HoldedContactsBackupType) {
   ]);
 
   return {
+    fetchBackupDataById,
     currentBackup,
     dailyBackups,
     monthlyBackups,

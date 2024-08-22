@@ -18,22 +18,12 @@ import {
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   data: T[];
-  loadingBackupId?: string | null;
-  onDelete?: (backup: T) => void;
-  onViewDetails?: (backup: T) => void;
-  openDeleteModal?: (backupId: string) => void;
-  onToggleFavorite?: (backup: T) => void;
   pageSize?: number;
 }
 
 export function DataTable<T extends { id: string }>({
   columns,
   data,
-  loadingBackupId,
-  onDelete,
-  onViewDetails,
-  openDeleteModal,
-  onToggleFavorite,
   pageSize = 10,
 }: DataTableProps<T>) {
   const table = useReactTable({

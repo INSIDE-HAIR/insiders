@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataTable } from "../DataTable";
 import { columns } from "../columns/currentColumns";
 import { useBackups } from "@/src/hooks/useBackups";
@@ -6,6 +6,7 @@ import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
+import BackupDetails from "../BackupDetails";
 
 const CurrentBackupTab: React.FC = () => {
   const {
@@ -16,10 +17,13 @@ const CurrentBackupTab: React.FC = () => {
     isCreatingBackup,
     isLoading,
     error,
+    fetchBackupDataById,
   } = useBackups("CURRENT");
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
+  const [selectedBackupId, setSelectedBackupId] = useState<any | null>(null);
+  const [backupDetailsData, setBackupDetailsData] = useState<any | null>(null);
   const { toast } = useToast();
 
   const openDeleteModal = (backupId: string) => {
@@ -54,6 +58,10 @@ const CurrentBackupTab: React.FC = () => {
     }
   };
 
+  const handleViewDetails = (backup: any) => {
+    setSelectedBackupId(backup.id);
+  };
+
   if (isLoading)
     return (
       <div className="my-4 flex items-center justify-center">
@@ -65,9 +73,9 @@ const CurrentBackupTab: React.FC = () => {
 
   const columnMeta = {
     openDeleteModal,
-    onViewDetails: () => {}, // Define your view details function
-    onDelete: () => {}, // Define your delete function
-    onToggleFavorite: () => {}, // Define your toggle favorite function
+    onViewDetails: handleViewDetails,
+    onDelete: () => {},
+    onToggleFavorite: () => {},
     loadingBackupId,
   };
 
@@ -91,9 +99,6 @@ const CurrentBackupTab: React.FC = () => {
       <DataTable
         columns={columns(columnMeta)}
         data={currentBackup ? [currentBackup] : []}
-        loadingBackupId={loadingBackupId}
-        onDelete={handleDelete}
-        openDeleteModal={openDeleteModal}
       />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
@@ -101,6 +106,14 @@ const CurrentBackupTab: React.FC = () => {
         onConfirm={handleDelete}
         backupId={backupToDelete || ""}
       />
+      {/* Renderiza BackupDetails si hay un backup seleccionado */}
+      {selectedBackupId && (
+        <BackupDetails
+          backupId={selectedBackupId}
+          itemsPerPage={10}
+          type="CURRENT"
+        />
+      )}
     </div>
   );
 };

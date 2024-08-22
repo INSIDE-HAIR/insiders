@@ -6,6 +6,7 @@ import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
+import BackupDetails from "../BackupDetails";
 
 const DailyBackupsTab: React.FC = () => {
   const {
@@ -20,6 +21,7 @@ const DailyBackupsTab: React.FC = () => {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
+  const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const openDeleteModal = (backupId: string) => {
@@ -54,12 +56,16 @@ const DailyBackupsTab: React.FC = () => {
     }
   };
 
+  const handleViewDetails = (backup: any) => {
+    setSelectedBackupId(backup.id);
+  };
+
   const columnMeta = useMemo(
     () => ({
       openDeleteModal,
-      onViewDetails: () => {}, // Define your view details function
-      onDelete: () => {}, // Define your delete function
-      onToggleFavorite: () => {}, // Define your toggle favorite function
+      onViewDetails: handleViewDetails,
+      onDelete: () => {}, // Esta función no se usa directamente aquí, pero se mantiene por consistencia
+      onToggleFavorite: () => {}, // Esta función no se usa en daily backups, pero se mantiene por consistencia
       loadingBackupId,
     }),
     [loadingBackupId]
@@ -93,19 +99,20 @@ const DailyBackupsTab: React.FC = () => {
           )}
         </Button>
       </div>
-      <DataTable
-        columns={tableColumns}
-        data={dailyBackups}
-        loadingBackupId={loadingBackupId}
-        onDelete={handleDelete}
-        openDeleteModal={openDeleteModal}
-      />
+      <DataTable columns={tableColumns} data={dailyBackups} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleDelete}
         backupId={backupToDelete || ""}
       />
+      {selectedBackupId && (
+        <BackupDetails
+          backupId={selectedBackupId}
+          itemsPerPage={10}
+          type="DAILY"
+        />
+      )}
     </div>
   );
 };

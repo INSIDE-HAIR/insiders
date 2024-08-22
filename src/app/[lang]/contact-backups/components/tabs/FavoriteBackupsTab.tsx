@@ -75,9 +75,6 @@ const FavoriteBackupsTab: React.FC = () => {
       <DataTable
         columns={columns(columnMeta)}
         data={favoriteBackups}
-        loadingBackupId={loadingBackupId}
-        onDelete={handleDelete}
-        openDeleteModal={openDeleteModal}
         pageSize={10}
       />
       <DeleteConfirmationModal

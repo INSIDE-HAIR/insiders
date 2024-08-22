@@ -46,11 +46,11 @@ export const createBaseColumns = <
     },
   },
   {
-    accessorKey: "data",
+    accessorKey: "length",
     header: "Contacts",
     cell: ({ row }) => {
-      const data: any = row.getValue("data");
-      return <span>{Array.isArray(data) ? data.length : 0}</span>;
+      const length: number = row.getValue("length");
+      return <span>{length}</span>;
     },
   },
 ];
