@@ -61,6 +61,9 @@ export function useBackups(type: HoldedContactsBackupType) {
         `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (!response.ok) throw new Error("Failed to create or update backup");
@@ -74,7 +77,6 @@ export function useBackups(type: HoldedContactsBackupType) {
       },
       onError: (error) => {
         console.error("Error creating or updating backup:", error);
-        // Aquí podrías agregar lógica adicional para manejar el error, como mostrar una notificación al usuario
       },
     }
   );
