@@ -1,57 +1,61 @@
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsMonthlyBackup } from "@prisma/client";
-import { createBaseColumns } from "./columns";
+import { CreateBaseColumns } from "./columns";
 import { BackupActions } from "../BackupActions";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
-  onViewDetails?: (backup: HoldedContactsMonthlyBackup) => void;
-  onDelete?: (backup: HoldedContactsMonthlyBackup) => void;
-  onToggleFavorite?: (backup: HoldedContactsMonthlyBackup) => void;
-  loadingBackupId?: string | null;
+  onViewDetails: (backup: HoldedContactsMonthlyBackup) => void;
+  onToggleFavorite: (backup: HoldedContactsMonthlyBackup) => void;
+  loadingBackupId: string | null;
+  isDeletingBackup: boolean;
   isFavorite: (backupId: string) => boolean;
 }
 
-// Define columns specifically for monthly backups
-export const columns: (
+export const Columns: (
   meta: ColumnMeta
-) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => [
-  ...createBaseColumns<HoldedContactsMonthlyBackup>(), // Extend the base columns
+) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => {
+  const t = useTranslations("Common.columns");
 
-  {
-    accessorKey: "month",
-    header: "Month",
-    cell: ({ row }) => {
-      const month: number = row.getValue("month");
-      return <span>{month}</span>;
+  return [
+    ...CreateBaseColumns<HoldedContactsMonthlyBackup>(),
+    {
+      accessorKey: "month",
+      header: t("month"),
+      cell: ({ row }) => {
+        const month: number = row.getValue("month");
+        return <span>{month}</span>;
+      },
     },
-  },
-  {
-    accessorKey: "year",
-    header: "Year",
-    cell: ({ row }) => {
-      const year: number = row.getValue("year");
-      return <span>{year}</span>;
+    {
+      accessorKey: "year",
+      header: t("year"),
+      cell: ({ row }) => {
+        const year: number = row.getValue("year");
+        return <span>{year}</span>;
+      },
     },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const backup = row.original;
-      return (
-        <BackupActions
-          backup={backup}
-          openDeleteModal={meta.openDeleteModal}
-          onViewDetails={meta.onViewDetails}
-          onToggleFavorite={meta.onToggleFavorite}
-          loadingBackupId={meta.loadingBackupId}
-          isFavorite={meta.isFavorite(backup.id)}
-          isTogglingFavorite={meta.loadingBackupId === backup.id}
-        />
-      );
+    {
+      id: "actions",
+      header: t("actions"),
+      cell: ({ row }) => {
+        const backup = row.original;
+        return (
+          <BackupActions
+            backup={backup}
+            openDeleteModal={meta.openDeleteModal}
+            onViewDetails={meta.onViewDetails}
+            onToggleFavorite={meta.onToggleFavorite}
+            loadingBackupId={meta.loadingBackupId}
+            isFavorite={meta.isFavorite(backup.id)}
+            isTogglingFavorite={meta.loadingBackupId === backup.id}
+          />
+        );
+      },
     },
-  },
-];
+  ];
+};
 
-export default columns;
+export default Columns;

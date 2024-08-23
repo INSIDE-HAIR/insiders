@@ -1,18 +1,16 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { DataTable } from "../DataTable";
-import { columns } from "../columns/currentColumns";
+import { Columns } from "../columns/currentColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
 import BackupDetails from "../BackupDetails";
-import {
-  HoldedContactsCurrentBackup,
-  HoldedContactsFavoriteBackup,
-} from "@prisma/client";
+import { HoldedContactsCurrentBackup } from "@prisma/client";
 import { DeletingModal } from "../modals/DeletingModal";
 import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const CurrentBackupTab: React.FC = () => {
   const {
@@ -33,6 +31,10 @@ const CurrentBackupTab: React.FC = () => {
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
   const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const t = useTranslations("Common.general");
+  const b = useTranslations("Common.backups");
+  const to = useTranslations("Common.toasts");
 
   const currentBackup = useMemo(() => {
     return backups as HoldedContactsCurrentBackup | undefined;
@@ -55,22 +57,21 @@ const CurrentBackupTab: React.FC = () => {
       try {
         await deleteBackup(backup.id);
         toast({
-          title: "Backup eliminado",
-          description: "El backup actual ha sido eliminado exitosamente.",
+          title: to("success.title"),
+          description: to("success.description"),
         });
       } catch (error) {
         console.error("Error deleting backup:", error);
         toast({
-          title: "Error",
-          description:
-            "Ocurrió un error al eliminar el backup. Por favor, intente nuevamente.",
+          title: to("error.title"),
+          description: to("error.description"),
           variant: "destructive",
         });
       } finally {
         setDeletingModalOpen(false);
       }
     },
-    [deleteBackup, closeDeleteModal, toast]
+    [deleteBackup, closeDeleteModal, toast, to]
   );
 
   const handleViewDetails = useCallback(
@@ -85,22 +86,20 @@ const CurrentBackupTab: React.FC = () => {
     try {
       await createOrUpdateBackup();
       toast({
-        title: "Backup creado/actualizado",
-        description:
-          "El backup actual ha sido creado o actualizado exitosamente.",
+        title: to("success.title"),
+        description: b("current.actions.createUpdateCurrent"),
       });
     } catch (error) {
       console.error("Error creating/updating backup:", error);
       toast({
-        title: "Error",
-        description:
-          "Ocurrió un error al crear/actualizar el backup. Por favor, intente nuevamente.",
+        title: to("error.title"),
+        description: to("error.description"),
         variant: "destructive",
       });
     } finally {
       setCreatingUpdatingModalOpen(false);
     }
-  }, [createOrUpdateBackup, toast]);
+  }, [createOrUpdateBackup, toast, b, to]);
 
   if (isLoading) {
     return (
@@ -110,7 +109,7 @@ const CurrentBackupTab: React.FC = () => {
     );
   }
 
-  if (error) return <div>Error loading backup: {error.message}</div>;
+  if (error) return <div>{t("loadingError", { error: error.message })}</div>;
 
   const columnMeta = {
     openDeleteModal,
@@ -123,19 +122,18 @@ const CurrentBackupTab: React.FC = () => {
   return (
     <div>
       <div className="mb-4">
-        <div className="my-8 flex flex-col items-center justif">
-          <h1 className="text-3xl font-bold text-center">Current Backups</h1>
-          <p className="text-center max-w-3xl">
-            Solo se puede tener un backup actual a la vez, pero puedes
-            actualizarlo en cualquier momento.
-          </p>
+        <div className="my-8 flex flex-col items-center">
+          <h1 className="text-3xl font-bold text-center">
+            {b("current.title")}
+          </h1>
+          <p className="text-center max-w-3xl">{b("current.description")}</p>
         </div>
 
-        <div className="mb-4 flex justify-between items-center">
+        <div className="mb-4 flex justify-between items-center text-sm">
           <p>
-            Current Backups{" "}
+            {b("current.title")}{" "}
             <span className="text-sm font-normal text-gray-500">
-              ({[currentBackup]?.length || 0}/1)
+              ({currentBackup ? 1 : 0}/1)
             </span>
           </p>
 
@@ -143,12 +141,12 @@ const CurrentBackupTab: React.FC = () => {
             onClick={handleCreateOrUpdateBackup}
             disabled={isCreatingBackup}
           >
-            Update Current Backup
+            {b("actions.createUpdateCurrent")}
           </Button>
         </div>
       </div>
       <DataTable
-        columns={columns(columnMeta)}
+        columns={Columns(columnMeta)}
         data={currentBackup ? [currentBackup] : []}
       />
       <DeleteConfirmationModal

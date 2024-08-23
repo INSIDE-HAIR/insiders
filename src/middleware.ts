@@ -1,84 +1,60 @@
 import { NextRequest, NextResponse } from "next/server";
 
-function setLocaleCookie(response: NextResponse, locale: string) {
-  response.cookies.set("NEXT_LOCALE", locale);
-}
+const DEFAULT_LOCALE = "es";
+const SUPPORTED_LOCALES = ["es", "en"];
+const COOKIE_NAME = "NEXT_LOCALE";
 
-function setCorsHeaders(response: NextResponse) {
-  response.headers.set(
-    "Access-Control-Allow-Origin",
-    "https://www.insidehair.es"
-  );
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-  response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-  response.headers.set("Access-Control-Max-Age", "86400");
-}
-
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const currentLocale = req.cookies.get("NEXT_LOCALE")?.value || "es"; // Default to 'es' if no cookie
+  let currentLocale = req.cookies.get(COOKIE_NAME)?.value || DEFAULT_LOCALE;
 
-  // Handle CORS for API routes
-  if (pathname.startsWith("/api")) {
-    // For OPTIONS requests (preflight)
-    if (req.method === "OPTIONS") {
-      const response = new NextResponse(null, { status: 204 });
-      setCorsHeaders(response);
-      return response;
-    }
+  console.log("Current cookie value:", currentLocale);
 
-    // For other API requests
-    const response = NextResponse.next();
-    setCorsHeaders(response);
-    return response;
-  }
-
-  // Existing logic for handling locales and redirections
-  if (pathname === "/") {
-    const response = NextResponse.redirect(
-      new URL(`/${currentLocale}`, req.url)
-    );
-    setLocaleCookie(response, currentLocale);
-    return response;
-  }
-
-  // Exclude static files and not-found page
-  if (pathname.startsWith("/_next") || pathname === "/not-found") {
+  // Exclude API routes, static files, and not-found page
+  if (pathname.match(/^\/(?:api|_next|.*\..*)/) || pathname === "/not-found") {
     return NextResponse.next();
   }
 
-  // Handle language-specific routes and update cookie
-  if (pathname.startsWith("/es") || pathname.startsWith("/en")) {
-    const lang = pathname.startsWith("/es") ? "es" : "en";
-    const response = NextResponse.next();
-    setLocaleCookie(response, lang);
-    return response;
-  }
+  const pathLocale = getLocaleFromPath(pathname);
 
-  // Handle redirections for routes without language prefix
-  if (!pathname.startsWith("/es") && !pathname.startsWith("/en")) {
+  let response: NextResponse;
+
+  // Handle root path
+  if (pathname === "/") {
+    response = NextResponse.redirect(new URL(`/${currentLocale}`, req.url));
+  }
+  // Handle paths with supported locale prefix
+  else if (pathLocale) {
+    response = NextResponse.next();
+    currentLocale = pathLocale;
+  }
+  // Handle paths without locale prefix
+  else if (!pathLocale && pathname !== "/") {
     const newPathname = `/${currentLocale}${pathname}`;
-    const response = NextResponse.redirect(new URL(newPathname, req.url));
-    setLocaleCookie(response, currentLocale);
-    return response;
+    response = NextResponse.redirect(new URL(newPathname, req.url));
+  }
+  // For all other cases, proceed with the request
+  else {
+    response = NextResponse.next();
   }
 
-  return NextResponse.next();
+  // Always set the cookie
+  response.cookies.set(COOKIE_NAME, currentLocale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: "strict",
+  });
+
+  console.log("Setting cookie:", COOKIE_NAME, "to value:", currentLocale);
+
+  return response;
 }
 
-// Adjust the matcher to include API routes
+function getLocaleFromPath(pathname: string): string | null {
+  const firstSegment = pathname.split("/")[1];
+  return SUPPORTED_LOCALES.includes(firstSegment) ? firstSegment : null;
+}
+
 export const config = {
-  matcher: [
-    // Routes that need to be handled by the middleware
-    "/",
-    "/((?!_next|.*\\..*).*)",
-    // Explicitly include API routes
-    "/api/:path*",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

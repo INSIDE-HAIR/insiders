@@ -1,0 +1,232 @@
+{
+  "NotFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for does not exist."
+  },
+  "index": {
+    "title": "Hello World"
+  },
+  "navbar": {
+    "title": "This is my website"
+  },
+  "TrainingIBMPage": {
+    "title": "IBM Training",
+    "subtitle": "IBM Training",
+    "description": "IBM Training",
+    "button": "IBM Training"
+  },
+  "Metadata": {
+    "title": "INSIDERS | INSIDE HAIR",
+    "description": "At INSIDE HAIR, we help salon managers achieve their goals in consulting, training, and marketing for hair salons.",
+    "trainingIBMTitle": "IBM Training | INSIDERS",
+    "trainingIBMDescription": "IBM description...",
+    "contactTitle": "Contact | INSIDERS",
+    "contactDescription": "Contact page description..."
+  },
+  "PageCreator": {
+    "title": "Page Management",
+    "published": "Published",
+    "draft": "Draft",
+    "pageNotEditableMessage": "This page cannot be edited. Please contact the web developer.",
+    "actions": {
+      "createNewPage": "Create New Page",
+      "createSubpage": "Create Subpage",
+      "editPage": "Edit Page",
+      "createPage": "Create Page",
+      "updatePage": "Update Page",
+      "deletePage": "Delete Page",
+      "cancel": "Cancel",
+      "confirmDelete": "Confirm Deletion",
+      "edit": "Edit",
+      "delete": "Delete",
+      "view": "View Page",
+      "editContent": "Edit Content"
+    },
+    "search": {
+      "searchPages": "Search Pages",
+      "filterByStatus": "Filter by Status",
+      "allPages": "All Pages",
+      "publishedOnly": "Published Only"
+    },
+    "table": {
+      "title": "Title",
+      "author": "Author",
+      "status": "Status",
+      "lastModified": "Last Modified",
+      "actions": "Actions"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "pagesLoadedSuccess": "Pages successfully loaded",
+      "errorLoadingPages": "Error loading pages",
+      "deleteSuccess": "Page {title} successfully deleted",
+      "deleteError": "Error deleting page {title}: {error}"
+    },
+    "deleteDialog": {
+      "deletePageWithChildren": "Delete Page with Subpages",
+      "deletePageConfirmation": "Are you sure you want to delete this page?",
+      "deletePageWithChildrenDescription": "This page has {count} subpages. What would you like to do?",
+      "deleteCascade": "Delete All",
+      "deleteMoveUp": "Move Subpages Up"
+    },
+    "form": {
+      "titleLabel": "Title",
+      "titlePlaceholder": "Enter page title",
+      "contentLabel": "Content",
+      "contentPlaceholder": "Enter page content",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Enter page slug",
+      "langLabel": "Language",
+      "langPlaceholder": "Enter page language",
+      "parentPageLabel": "Parent Page",
+      "selectParentPage": "Select a parent page",
+      "noParent": "No parent page (top-level page)",
+      "publishLabel": "Publish",
+      "publishDescription": "Do you want to publish this page?",
+      "authorLabel": "Author",
+      "authorPlaceholder": "Enter the author's name",
+      "updateSuccessDescription": "Page {title} successfully updated",
+      "createSuccessDescription": "Page {title} successfully created",
+      "errorMessage": "An error occurred while saving the page",
+      "templateLabel": "Template",
+      "selectTemplate": "Select a template",
+      "templateDescription": "Choose a template for the page. Once created, the template cannot be changed. You will need to delete the page and create a new one to use a different template.",
+      "fullPathLabel": "Full Path",
+      "fullPathPlaceholder": "Enter full path",
+      "fullPathDuplicateError": "A page with this full path already exists",
+      "fullPathUpdateError": "Another page with this full path already exists"
+    },
+    "errors": {
+      "createPageError": "Error creating page",
+      "updatePageError": "Error updating page",
+      "duplicateFullPath": "A page with this full path already exists"
+    }
+  },
+  "Common": {
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "morePages": "More pages"
+    },
+    "general": {
+      "loading": "Loading...",
+      "pageNotFound": "Page not found",
+      "currentLanguage": "Current language",
+      "home": "Home",
+      "contact": "Contact",
+      "about": "About",
+      "services": "Services",
+      "welcome": "Welcome",
+      "logout": "Log out",
+      "loadingError": "Error loading: {error}"
+    },
+    "errorMessages": {
+      "loadingError": "Error loading: {error}"
+    },
+    "columns": {
+      "id": "ID",
+      "data": "Data",
+      "select": "Select",
+      "all": "All",
+      "createdAt": "Created at",
+      "updatedAt": "Updated at",
+      "contacts": "Contacts",
+      "month": "Month",
+      "year": "Year",
+      "actions": "Actions",
+      "originalType": "Original Type",
+      "dayOfMonth": "Day of the Month"
+    },
+    "backups": {
+      "current": {
+        "title": "Current Backups",
+        "description": "You can only have one current backup at a time, but you can update it at any time."
+      },
+      "daily": {
+        "title": "Daily Backups",
+        "description": "Backups will only be created for the last 31 days of Holded contacts."
+      },
+      "monthly": {
+        "title": "Monthly Backups",
+        "description": "Backups will only be created for the last 12 months of Holded contacts."
+      },
+      "favorite": {
+        "title": "Favorite Backups",
+        "description": "You can have as many favorites as you want, but this will affect the app's performance. Please choose wisely."
+      },
+      "actions": {
+        "createUpdateCurrent": "Update Current Backup",
+        "createUpdateDaily": "Create/Update the most recent Daily Backup",
+        "createUpdateMonthly": "Create/Update the most recent Monthly Backup"
+      },
+      "noBackupsFound": "No backups found."
+    },
+    "actions": {
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "viewDetails": "View Details",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copySuccessTitle": "Copy Successful!",
+      "copySuccessDescription": "The data has been copied to your clipboard."
+    },
+    "modals": {
+      "confirmation": {
+        "title": "Confirm Action",
+        "deleteDescription": "Are you sure you want to delete this backup? This action cannot be undone.",
+        "processingDescription": "Processing your request..."
+      },
+      "deletion": {
+        "title": "Processing Request",
+        "description": "Deleting backup..."
+      },
+      "creatingUpdating": {
+        "title": "Processing Request",
+        "description": "Creating/Updating backup..."
+      },
+      "toggleFavorite": {
+        "title": "Processing Request",
+        "adding": "Adding to favorites...",
+        "removing": "Removing from favorites..."
+      }
+    },
+    "toasts": {
+      "success": {
+        "title": "Action Completed",
+        "description": "The operation was successful."
+      },
+      "error": {
+        "title": "Error",
+        "description": "An error occurred. Please try again."
+      }
+    },
+    "currentBackupTab": {
+      "title": "Current Backups",
+      "description": "You can only have one current backup at a time, but you can update it at any time.",
+      "contacts": "Contacts",
+      "createUpdateButton": "Update Current Backup"
+    },
+    "backupDetails": {
+      "title": "Backup Details",
+      "itemsPerPage": "Items per page",
+      "page": "Page",
+      "of": "of",
+      "data": "Data",
+      "select": "Select",
+      "all": "All",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "backupActions": {
+      "alreadyInFavorites": "Already in favorites",
+      "addToFavorites": "Add to favorites",
+      "viewDetails": "View details",
+      "deleteBackup": "Delete backup"
+    },
+    "dataTable": {
+      "noFavoriteBackups": "No favorite backups found. Add a backup to your favorites to see it here."
+    }
+  }
+}

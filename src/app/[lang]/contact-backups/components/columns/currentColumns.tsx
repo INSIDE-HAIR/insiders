@@ -1,7 +1,9 @@
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsCurrentBackup } from "@prisma/client";
-import { createBaseColumns } from "./columns";
+import { CreateBaseColumns } from "./columns";
 import { BackupActions } from "../BackupActions";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
@@ -11,26 +13,28 @@ interface ColumnMeta {
   loadingBackupId?: string | null;
 }
 
-// Define columns specifically for current backups
-export const columns: (
+export const Columns: (
   meta: ColumnMeta
-) => ColumnDef<HoldedContactsCurrentBackup>[] = (meta) => [
-  ...createBaseColumns<HoldedContactsCurrentBackup>(), // Extend the base columns
+) => ColumnDef<HoldedContactsCurrentBackup>[] = (meta) => {
+  const t = useTranslations("Common.columns");
 
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const backup = row.original;
-      return (
-        <BackupActions
-          backup={backup}
-          onViewDetails={meta.onViewDetails}
-          loadingBackupId={meta.loadingBackupId}
-        />
-      );
+  return [
+    ...CreateBaseColumns<HoldedContactsCurrentBackup>(),
+    {
+      id: "actions",
+      header: t("actions"),
+      cell: ({ row }) => {
+        const backup = row.original;
+        return (
+          <BackupActions
+            backup={backup}
+            onViewDetails={meta.onViewDetails}
+            loadingBackupId={meta.loadingBackupId}
+          />
+        );
+      },
     },
-  },
-];
+  ];
+};
 
-export default columns;
+export default Columns;

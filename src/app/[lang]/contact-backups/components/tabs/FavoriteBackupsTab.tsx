@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
-import { columns } from "../columns/favoriteColumns";
+import { Columns } from "../columns/favoriteColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
@@ -8,6 +8,7 @@ import { useToast } from "@/src/components/ui/use-toast";
 import BackupDetails from "../BackupDetails";
 import { HoldedContactsFavoriteBackup } from "@prisma/client";
 import { DeletingModal } from "../modals/DeletingModal";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const FavoriteBackupsTab: React.FC = () => {
   const {
@@ -25,6 +26,11 @@ const FavoriteBackupsTab: React.FC = () => {
   const [backupToDelete, setBackupToDelete] = useState<string | null>(null);
   const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  const t = useTranslations("Common.general");
+  const b = useTranslations("Common.backups");
+  const a = useTranslations("Common.actions");
+  const to = useTranslations("Common.toasts");
 
   const favoriteBackups = backups as HoldedContactsFavoriteBackup[] | undefined;
 
@@ -45,22 +51,21 @@ const FavoriteBackupsTab: React.FC = () => {
       try {
         await deleteBackup(backup.id);
         toast({
-          title: "Backup eliminado de favoritos",
-          description: "El backup ha sido eliminado exitosamente de favoritos.",
+          title: to("success.title"),
+          description: b("favorite.deleteSuccess"),
         });
       } catch (error) {
         console.error("Error deleting favorite backup:", error);
         toast({
-          title: "Error",
-          description:
-            "Ocurrió un error al eliminar el backup de favoritos. Por favor, intente nuevamente.",
+          title: to("error.title"),
+          description: b("favorite.deleteError"),
           variant: "destructive",
         });
       } finally {
         setDeletingModalOpen(false);
       }
     },
-    [deleteBackup, closeDeleteModal, toast]
+    [deleteBackup, closeDeleteModal, toast, b, to]
   );
 
   const handleViewDetails = useCallback(
@@ -75,20 +80,19 @@ const FavoriteBackupsTab: React.FC = () => {
       try {
         await toggleFavorite(backup.id);
         toast({
-          title: "Estado de favorito actualizado",
-          description: "El backup ha sido eliminado de favoritos.",
+          title: to("success.title"),
+          description: b("favorite.toggleSuccess"),
         });
       } catch (error) {
         console.error("Error toggling favorite:", error);
         toast({
-          title: "Error",
-          description:
-            "Ocurrió un error al actualizar el estado de favorito. Por favor, intente nuevamente.",
+          title: to("error.title"),
+          description: b("favorite.toggleError"),
           variant: "destructive",
         });
       }
     },
-    [toggleFavorite, toast]
+    [toggleFavorite, toast, b, to]
   );
 
   if (isLoading) {
@@ -99,7 +103,7 @@ const FavoriteBackupsTab: React.FC = () => {
     );
   }
 
-  if (error) return <div>Error loading favorite backups: {error.message}</div>;
+  if (error) return <div>{t("loadingError", { error: error.message })}</div>;
 
   const columnMeta = {
     openDeleteModal,
@@ -114,15 +118,13 @@ const FavoriteBackupsTab: React.FC = () => {
   return (
     <div>
       <div className="my-8 flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center">Favorites Backups</h1>
-        <p className="text-center max-w-3xl">
-          Puedes tener todos los favoritos que desees pero esto afectará en el
-          rendimiento de la aplicación, por favor, elige sabiamente. Y recuerda,
-          si borras uno, no podrás recuperarlo.
-        </p>
+        <h1 className="text-3xl font-bold text-center">
+          {b("favorite.title")}
+        </h1>
+        <p className="text-center max-w-3xl">{b("favorite.description")}</p>
       </div>
 
-      <DataTable columns={columns(columnMeta)} data={favoriteBackups || []} />
+      <DataTable columns={Columns(columnMeta)} data={favoriteBackups || []} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}

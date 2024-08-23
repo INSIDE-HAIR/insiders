@@ -8,6 +8,7 @@ import {
 } from "@/src/components/ui/tooltip";
 import { Star, Trash2, Eye } from "lucide-react";
 import { cn } from "@/src/lib/utils/utils";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface BackupActionsProps<T extends { id: string }> {
   backup: T;
@@ -31,6 +32,8 @@ export function BackupActions<T extends { id: string }>({
   const isLoading = loadingBackupId === backup.id;
   const isAddingToFavorites = isTogglingFavorite && !isFavorite;
 
+  const t = useTranslations("Common.backupActions");
+
   return (
     <TooltipProvider>
       <div className="flex items-center space-x-2">
@@ -42,6 +45,9 @@ export function BackupActions<T extends { id: string }>({
                 size="icon"
                 onClick={() => onToggleFavorite(backup)}
                 disabled={isLoading || isFavorite || isTogglingFavorite}
+                aria-label={
+                  isFavorite ? t("alreadyInFavorites") : t("addToFavorites")
+                }
               >
                 <Star
                   className={cn(
@@ -54,7 +60,7 @@ export function BackupActions<T extends { id: string }>({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {isFavorite ? "Already in favorites" : "Add to favorites"}
+              {isFavorite ? t("alreadyInFavorites") : t("addToFavorites")}
             </TooltipContent>
           </Tooltip>
         )}
@@ -67,11 +73,12 @@ export function BackupActions<T extends { id: string }>({
                 size="icon"
                 onClick={() => onViewDetails(backup)}
                 disabled={isLoading}
+                aria-label={t("viewDetails")}
               >
                 <Eye className="text-blue-500" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>View details</TooltipContent>
+            <TooltipContent>{t("viewDetails")}</TooltipContent>
           </Tooltip>
         )}
 
@@ -83,11 +90,12 @@ export function BackupActions<T extends { id: string }>({
                 size="icon"
                 onClick={() => openDeleteModal(backup.id)}
                 disabled={isLoading || isAddingToFavorites}
+                aria-label={t("deleteBackup")}
               >
                 <Trash2 className="text-red-500" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Delete backup</TooltipContent>
+            <TooltipContent>{t("deleteBackup")}</TooltipContent>
           </Tooltip>
         )}
       </div>

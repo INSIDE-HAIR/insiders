@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
-import { columns } from "../columns/monthlyColumns";
+import { Columns } from "../columns/monthlyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
@@ -11,6 +11,7 @@ import { HoldedContactsMonthlyBackup } from "@prisma/client";
 import { ToggleFavoriteModal } from "../modals/ToggleFavoriteModal";
 import { DeletingModal } from "../modals/DeletingModal";
 import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const MonthlyBackupsTab: React.FC = () => {
   const {
@@ -37,6 +38,12 @@ const MonthlyBackupsTab: React.FC = () => {
     useState<HoldedContactsMonthlyBackup | null>(null);
   const { toast } = useToast();
 
+  const t = useTranslations("Common.general");
+  const b = useTranslations("Common.backups");
+  const a = useTranslations("Common.actions");
+  const m = useTranslations("Common.modals.confirmation");
+  const to = useTranslations("Common.toasts");
+
   const monthlyBackups = backups as HoldedContactsMonthlyBackup[] | undefined;
 
   const openDeleteModal = useCallback((backupId: string) => {
@@ -56,22 +63,21 @@ const MonthlyBackupsTab: React.FC = () => {
       try {
         await deleteBackup(backup.id);
         toast({
-          title: "Backup eliminado",
-          description: "El backup mensual ha sido eliminado exitosamente.",
+          title: to("success.title"),
+          description: to("success.description"),
         });
       } catch (error) {
         console.error("Error deleting backup:", error);
         toast({
-          title: "Error",
-          description:
-            "Ocurrió un error al eliminar el backup. Por favor, intente nuevamente.",
+          title: to("error.title"),
+          description: to("error.description"),
           variant: "destructive",
         });
       } finally {
         setDeletingModalOpen(false);
       }
     },
-    [deleteBackup, closeDeleteModal, toast]
+    [deleteBackup, closeDeleteModal, toast, to]
   );
 
   const handleViewDetails = useCallback(
@@ -86,22 +92,20 @@ const MonthlyBackupsTab: React.FC = () => {
     try {
       await createOrUpdateBackup();
       toast({
-        title: "Backup creado/actualizado",
-        description:
-          "El backup mensual ha sido creado o actualizado exitosamente.",
+        title: to("success.title"),
+        description: to("success.description"),
       });
     } catch (error) {
       console.error("Error creating/updating backup:", error);
       toast({
-        title: "Error",
-        description:
-          "Ocurrió un error al crear/actualizar el backup. Por favor, intente nuevamente.",
+        title: to("error.title"),
+        description: to("error.description"),
         variant: "destructive",
       });
     } finally {
       setCreatingUpdatingModalOpen(false);
     }
-  }, [createOrUpdateBackup, toast]);
+  }, [createOrUpdateBackup, toast, to]);
 
   const handleToggleFavorite = useCallback(
     async (backup: HoldedContactsMonthlyBackup) => {
@@ -109,27 +113,26 @@ const MonthlyBackupsTab: React.FC = () => {
       setBackupBeingToggled(backup);
       try {
         const result = await toggleFavorite(backup.id);
-        console.log("Toggle favorite result:", result);
         if (result.newFavoriteId) {
-          console.log("New favorite created with ID:", result.newFavoriteId);
           toast({
-            title: "¡Copia exitosa!",
-            description: `Se ha creado una nueva copia de seguridad en favoritos con el ID: ${result.newFavoriteId}`,
+            title: a("copySuccessTitle"),
+            description: `${a("copySuccessDescription")} ID: ${
+              result.newFavoriteId
+            }`,
           });
         } else {
-          console.log("Favorite was removed");
           toast({
-            title: "Acción completada",
+            title: to("success.title"),
             description: isFavorite(backup.id)
-              ? "Se ha quitado la copia de seguridad de favoritos."
-              : "Se ha agregado la copia de seguridad a favoritos.",
+              ? b("favorite.actions.removeSuccess")
+              : b("favorite.actions.addSuccess"),
           });
         }
       } catch (error) {
         console.error("Error toggling favorite:", error);
         toast({
-          title: "Error",
-          description: "Ocurrió un error al procesar la solicitud.",
+          title: to("error.title"),
+          description: to("error.description"),
           variant: "destructive",
         });
       } finally {
@@ -137,7 +140,7 @@ const MonthlyBackupsTab: React.FC = () => {
         setBackupBeingToggled(null);
       }
     },
-    [toggleFavorite, isFavorite, toast]
+    [toggleFavorite, isFavorite, toast, to, a, b]
   );
 
   if (isLoading) {
@@ -148,7 +151,7 @@ const MonthlyBackupsTab: React.FC = () => {
     );
   }
 
-  if (error) return <div>Error loading backups: {error.message}</div>;
+  if (error) return <div>{t("loadingError", { error: error.message })}</div>;
 
   const columnMeta = {
     openDeleteModal,
@@ -163,15 +166,12 @@ const MonthlyBackupsTab: React.FC = () => {
   return (
     <div>
       <div className="my-8 flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center">Monthly Backups</h1>
-        <p className="text-center max-w-3xl">
-          Solo se crearán copias de seguridad de los contactos de Holded de los
-          últimos 12 meses.
-        </p>
+        <h1 className="text-3xl font-bold text-center">{b("monthly.title")}</h1>
+        <p className="text-center max-w-3xl">{b("monthly.description")}</p>
       </div>
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex justify-between items-center text-sm">
         <p>
-          Monthly Backups{" "}
+          {b("monthly.title")}{" "}
           <span className="text-sm font-normal text-gray-500">
             ({monthlyBackups?.length || 0}/12)
           </span>
@@ -180,10 +180,10 @@ const MonthlyBackupsTab: React.FC = () => {
           onClick={handleCreateOrUpdateBackup}
           disabled={isCreatingBackup}
         >
-          Create/Update the most recent Monthly Backup
+          {b("actions.createUpdateMonthly")}
         </Button>
       </div>
-      <DataTable columns={columns(columnMeta)} data={monthlyBackups || []} />
+      <DataTable columns={Columns(columnMeta)} data={monthlyBackups || []} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}

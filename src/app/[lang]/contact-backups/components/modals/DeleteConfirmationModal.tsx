@@ -1,4 +1,3 @@
-// src/components/DeleteConfirmationModal.tsx
 import React from "react";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -9,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/src/components/ui/dialog";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean;
@@ -20,8 +20,10 @@ interface DeleteConfirmationModalProps {
 export const DeleteConfirmationModal: React.FC<
   DeleteConfirmationModalProps
 > = ({ isOpen, onClose, onConfirm, backupId }) => {
+  const t = useTranslations("Common.modals.confirmation");
+  const a = useTranslations("Common.actions");
+
   const handleConfirm = () => {
-    console.log("backupId", backupId);
     onConfirm(backupId);
   };
 
@@ -29,18 +31,15 @@ export const DeleteConfirmationModal: React.FC<
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Confirm Deletion</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete this backup? This action cannot be
-            undone.
-          </DialogDescription>
+          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogDescription>{t("deleteDescription")}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {a("cancel")}
           </Button>
           <Button variant="destructive" onClick={handleConfirm}>
-            Delete
+            {a("delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

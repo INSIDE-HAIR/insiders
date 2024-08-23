@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
-import { columns } from "../columns/dailyColumns";
+import { Columns } from "../columns/dailyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
@@ -11,6 +11,7 @@ import { HoldedContactsDailyBackup } from "@prisma/client";
 import { ToggleFavoriteModal } from "../modals/ToggleFavoriteModal";
 import { DeletingModal } from "../modals/DeletingModal";
 import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const DailyBackupsTab: React.FC = () => {
   const {
@@ -37,6 +38,11 @@ const DailyBackupsTab: React.FC = () => {
     useState<HoldedContactsDailyBackup | null>(null);
   const { toast } = useToast();
 
+  const t = useTranslations("Common.general");
+  const b = useTranslations("Common.backups");
+  const a = useTranslations("Common.actions");
+  const to = useTranslations("Common.toasts");
+
   const dailyBackups = backups as HoldedContactsDailyBackup[] | undefined;
 
   const openDeleteModal = useCallback((backupId: string) => {
@@ -56,22 +62,21 @@ const DailyBackupsTab: React.FC = () => {
       try {
         await deleteBackup(backup.id);
         toast({
-          title: "Backup eliminado",
-          description: "El backup diario ha sido eliminado exitosamente.",
+          title: to("success.title"),
+          description: b("daily.deleteSuccess"),
         });
       } catch (error) {
         console.error("Error deleting backup:", error);
         toast({
-          title: "Error",
-          description:
-            "Ocurrió un error al eliminar el backup. Por favor, intente nuevamente.",
+          title: to("error.title"),
+          description: b("daily.deleteError"),
           variant: "destructive",
         });
       } finally {
         setDeletingModalOpen(false);
       }
     },
-    [deleteBackup, closeDeleteModal, toast]
+    [deleteBackup, closeDeleteModal, toast, b, to]
   );
 
   const handleViewDetails = useCallback((backup: HoldedContactsDailyBackup) => {
@@ -83,22 +88,20 @@ const DailyBackupsTab: React.FC = () => {
     try {
       await createOrUpdateBackup();
       toast({
-        title: "Backup creado/actualizado",
-        description:
-          "El backup diario ha sido creado o actualizado exitosamente.",
+        title: to("success.title"),
+        description: b("daily.createUpdateSuccess"),
       });
     } catch (error) {
       console.error("Error creating/updating backup:", error);
       toast({
-        title: "Error",
-        description:
-          "Ocurrió un error al crear/actualizar el backup. Por favor, intente nuevamente.",
+        title: to("error.title"),
+        description: b("daily.createUpdateError"),
         variant: "destructive",
       });
     } finally {
       setCreatingUpdatingModalOpen(false);
     }
-  }, [createOrUpdateBackup, toast]);
+  }, [createOrUpdateBackup, toast, b, to]);
 
   const handleToggleFavorite = useCallback(
     async (backup: HoldedContactsDailyBackup) => {
@@ -110,23 +113,25 @@ const DailyBackupsTab: React.FC = () => {
         if (result.newFavoriteId) {
           console.log("New favorite created with ID:", result.newFavoriteId);
           toast({
-            title: "¡Copia exitosa!",
-            description: `Se ha creado una nueva copia de seguridad en favoritos con el ID: ${result.newFavoriteId}`,
+            title: to("success.title"),
+            description: b("daily.newFavoriteCreated", {
+              id: result.newFavoriteId,
+            }),
           });
         } else {
           console.log("Favorite was removed");
           toast({
-            title: "Acción completada",
+            title: to("success.title"),
             description: isFavorite(backup.id)
-              ? "Se ha quitado la copia de seguridad de favoritos."
-              : "Se ha agregado la copia de seguridad a favoritos.",
+              ? b("daily.favoriteRemoved")
+              : b("daily.favoriteAdded"),
           });
         }
       } catch (error) {
         console.error("Error toggling favorite:", error);
         toast({
-          title: "Error",
-          description: "Ocurrió un error al procesar la solicitud.",
+          title: to("error.title"),
+          description: b("daily.toggleFavoriteError"),
           variant: "destructive",
         });
       } finally {
@@ -134,7 +139,7 @@ const DailyBackupsTab: React.FC = () => {
         setBackupBeingToggled(null);
       }
     },
-    [toggleFavorite, isFavorite, toast]
+    [toggleFavorite, isFavorite, toast, b, to]
   );
 
   if (isLoading) {
@@ -145,7 +150,7 @@ const DailyBackupsTab: React.FC = () => {
     );
   }
 
-  if (error) return <div>Error loading backups: {error.message}</div>;
+  if (error) return <div>{t("loadingError", { error: error.message })}</div>;
 
   const columnMeta = {
     openDeleteModal,
@@ -160,15 +165,12 @@ const DailyBackupsTab: React.FC = () => {
   return (
     <div>
       <div className="my-8 flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center">Daily Backups</h1>
-        <p className="text-center max-w-3xl">
-          Solo se crearán copias de seguridad de los contactos de Holded de los
-          últimos 31 días.
-        </p>
+        <h1 className="text-3xl font-bold text-center">{b("daily.title")}</h1>
+        <p className="text-center max-w-3xl">{b("daily.description")}</p>
       </div>
-      <div className="mb-4 flex justify-between items-center">
+      <div className="mb-4 flex justify-between items-center text-sm">
         <p>
-          Daily Backups{" "}
+          {b("daily.title")}{" "}
           <span className="text-sm font-normal text-gray-500">
             ({dailyBackups?.length || 0}/31)
           </span>
@@ -177,10 +179,10 @@ const DailyBackupsTab: React.FC = () => {
           onClick={handleCreateOrUpdateBackup}
           disabled={isCreatingBackup}
         >
-          Create/Update the most recent Daily Backup
+          {b("actions.createUpdateDaily")}
         </Button>
       </div>
-      <DataTable columns={columns(columnMeta)} data={dailyBackups || []} />
+      <DataTable columns={Columns(columnMeta)} data={dailyBackups || []} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}

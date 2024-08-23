@@ -10,7 +10,7 @@ interface PageData {
 
 export default function DynamicPage() {
   const params = useParams();
-  const t = useTranslations("Common");
+  const t = useTranslations("Common.general");
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 

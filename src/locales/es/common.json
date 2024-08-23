@@ -1,0 +1,232 @@
+{
+  "NotFound": {
+    "title": "Página no encontrada",
+    "description": "La página que buscas no existe."
+  },
+  "index": {
+    "title": "Hola mundo"
+  },
+  "navbar": {
+    "title": "Este es mi sitio web"
+  },
+  "TrainingIBMPage": {
+    "title": "Capacitación de IBM",
+    "subtitle": "Capacitación de IBM",
+    "description": "Capacitación de IBM",
+    "button": "Capacitación de IBM"
+  },
+  "Metadata": {
+    "title": "INSIDERS | INSIDE HAIR",
+    "description": "En INSIDE HAIR ayudamos a los gerentes de salones de peluquería a alcanzar sus objetivos en consultoría, capacitación y marketing para salones de peluquería.",
+    "trainingIBMTitle": "Capacitación de IBM | INSIDERS",
+    "trainingIBMDescription": "Descripción de IBM...",
+    "contactTitle": "Contacto | INSIDERS",
+    "contactDescription": "Descripción de la página de contacto..."
+  },
+  "PageCreator": {
+    "title": "Gestión de Páginas",
+    "published": "Publicado",
+    "draft": "Borrador",
+    "pageNotEditableMessage": "Esta página no se puede editar. Por favor, contacta con el desarrollador web.",
+    "actions": {
+      "createNewPage": "Crear Nueva Página",
+      "createSubpage": "Crear Subpágina",
+      "editPage": "Editar Página",
+      "createPage": "Crear Página",
+      "updatePage": "Actualizar Página",
+      "deletePage": "Eliminar Página",
+      "cancel": "Cancelar",
+      "confirmDelete": "Confirmar Eliminación",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "view": "Ver Página",
+      "editContent": "Editar Contenido"
+    },
+    "search": {
+      "searchPages": "Buscar páginas",
+      "filterByStatus": "Filtrar por estado",
+      "allPages": "Todas las páginas",
+      "publishedOnly": "Solo publicadas"
+    },
+    "table": {
+      "title": "Título",
+      "author": "Autor",
+      "status": "Estado",
+      "lastModified": "Última Modificación",
+      "actions": "Acciones"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "saving": "Guardando...",
+      "pagesLoadedSuccess": "Páginas cargadas con éxito",
+      "errorLoadingPages": "Error al cargar las páginas",
+      "deleteSuccess": "Página {title} eliminada con éxito",
+      "deleteError": "Error al eliminar la página {title}: {error}"
+    },
+    "deleteDialog": {
+      "deletePageWithChildren": "Eliminar Página con Subpáginas",
+      "deletePageConfirmation": "¿Estás seguro de que deseas eliminar esta página?",
+      "deletePageWithChildrenDescription": "Esta página tiene {count} subpáginas. ¿Qué te gustaría hacer?",
+      "deleteCascade": "Eliminar Todo",
+      "deleteMoveUp": "Mover Subpáginas hacia Arriba"
+    },
+    "form": {
+      "titleLabel": "Título",
+      "titlePlaceholder": "Introduce el título de la página",
+      "contentLabel": "Contenido",
+      "contentPlaceholder": "Introduce el contenido de la página",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Introduce el slug de la página",
+      "langLabel": "Idioma",
+      "langPlaceholder": "Introduce el idioma de la página",
+      "parentPageLabel": "Página Principal",
+      "selectParentPage": "Selecciona una página principal",
+      "noParent": "Sin página principal (página de nivel superior)",
+      "publishLabel": "Publicar",
+      "publishDescription": "¿Deseas publicar esta página?",
+      "authorLabel": "Autor",
+      "authorPlaceholder": "Introduce el nombre del autor",
+      "updateSuccessDescription": "Página {title} actualizada con éxito",
+      "createSuccessDescription": "Página {title} creada con éxito",
+      "errorMessage": "Ocurrió un error al guardar la página",
+      "templateLabel": "Plantilla",
+      "selectTemplate": "Selecciona una plantilla",
+      "templateDescription": "Elige una plantilla para la página. Una vez creada, la plantilla no se puede cambiar. Tendrás que eliminar la página y crear una nueva para usar una plantilla diferente.",
+      "fullPathLabel": "Ruta Completa",
+      "fullPathPlaceholder": "Introduce la ruta completa",
+      "fullPathDuplicateError": "Ya existe una página con esta ruta completa",
+      "fullPathUpdateError": "Otra página con esta ruta completa ya existe"
+    },
+    "errors": {
+      "createPageError": "Error al crear la página",
+      "updatePageError": "Error al actualizar la página",
+      "duplicateFullPath": "Ya existe una página con esta ruta completa"
+    }
+  },
+  "Common": {
+    "pagination": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "morePages": "Más páginas"
+    },
+    "general": {
+      "loading": "Cargando...",
+      "pageNotFound": "Página no encontrada",
+      "currentLanguage": "Idioma actual",
+      "home": "Inicio",
+      "contact": "Contacto",
+      "about": "Acerca de",
+      "services": "Servicios",
+      "welcome": "Bienvenido",
+      "logout": "Cerrar sesión",
+      "loadingError": "Error al cargar: {error}"
+    },
+    "errorMessages": {
+      "loadingError": "Error al cargar: {error}"
+    },
+    "columns": {
+      "id": "ID",
+      "data": "Datos",
+      "select": "Seleccionar",
+      "all": "Todos",
+      "createdAt": "Creado el",
+      "updatedAt": "Actualizado el",
+      "contacts": "Contactos",
+      "month": "Mes",
+      "year": "Año",
+      "actions": "Acciones",
+      "originalType": "Tipo Original",
+      "dayOfMonth": "Día del Mes"
+    },
+    "backups": {
+      "current": {
+        "title": "Copias de seguridad actuales",
+        "description": "Solo puedes tener una copia de seguridad actual a la vez, pero puedes actualizarla en cualquier momento."
+      },
+      "daily": {
+        "title": "Copias de seguridad diarias",
+        "description": "Solo se crearán copias de seguridad de los contactos de Holded de los últimos 31 días."
+      },
+      "monthly": {
+        "title": "Copias de seguridad mensuales",
+        "description": "Solo se crearán copias de seguridad de los contactos de Holded de los últimos 12 meses."
+      },
+      "favorite": {
+        "title": "Copias de seguridad favoritas",
+        "description": "Puedes tener tantas copias favoritas como desees, pero esto afectará el rendimiento de la aplicación. Por favor, elige sabiamente."
+      },
+      "actions": {
+        "createUpdateCurrent": "Actualizar copia de seguridad actual",
+        "createUpdateDaily": "Crear/Actualizar la copia de seguridad diaria más reciente",
+        "createUpdateMonthly": "Crear/Actualizar la copia de seguridad mensual más reciente"
+      },
+      "noBackupsFound": "No se encontraron copias de seguridad."
+    },
+    "actions": {
+      "delete": "Eliminar",
+      "confirm": "Confirmar",
+      "cancel": "Cancelar",
+      "viewDetails": "Ver detalles",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "copySuccessTitle": "¡Copia exitosa!",
+      "copySuccessDescription": "Los datos han sido copiados a tu portapapeles."
+    },
+    "modals": {
+      "confirmation": {
+        "title": "Confirmar acción",
+        "deleteDescription": "¿Estás seguro de que quieres eliminar esta copia de seguridad? Esta acción no se puede deshacer.",
+        "processingDescription": "Procesando tu solicitud..."
+      },
+      "deletion": {
+        "title": "Procesando solicitud",
+        "description": "Eliminando backup..."
+      },
+      "creatingUpdating": {
+        "title": "Procesando solicitud",
+        "description": "Creando/Actualizando backup..."
+      },
+      "toggleFavorite": {
+        "title": "Procesando solicitud",
+        "adding": "Agregando a favoritos...",
+        "removing": "Quitando de favoritos..."
+      }
+    },
+    "toasts": {
+      "success": {
+        "title": "Acción completada",
+        "description": "La operación se realizó con éxito."
+      },
+      "error": {
+        "title": "Error",
+        "description": "Ocurrió un error. Por favor, inténtalo de nuevo."
+      }
+    },
+    "currentBackupTab": {
+      "title": "Copias de seguridad actuales",
+      "description": "Solo puedes tener una copia de seguridad actual a la vez, pero puedes actualizarla en cualquier momento.",
+      "contacts": "Contactos",
+      "createUpdateButton": "Actualizar copia de seguridad actual"
+    },
+    "backupDetails": {
+      "title": "Detalles de la copia de seguridad",
+      "itemsPerPage": "Elementos por página",
+      "page": "Página",
+      "of": "de",
+      "data": "Datos",
+      "select": "Seleccionar",
+      "all": "Todos",
+      "previous": "Anterior",
+      "next": "Siguiente"
+    },
+    "backupActions": {
+      "alreadyInFavorites": "Ya está en favoritos",
+      "addToFavorites": "Añadir a favoritos",
+      "viewDetails": "Ver detalles",
+      "deleteBackup": "Eliminar copia de seguridad"
+    },
+    "dataTable": {
+      "noFavoriteBackups": "No se encontraron copias de seguridad favoritas. Añade una copia de seguridad a tus favoritos para verla aquí."
+    }
+  }
+}

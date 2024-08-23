@@ -1,7 +1,9 @@
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsDailyBackup } from "@prisma/client";
-import { createBaseColumns } from "./columns";
+import { CreateBaseColumns } from "./columns";
 import { BackupActions } from "../BackupActions";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
@@ -12,34 +14,40 @@ interface ColumnMeta {
   loadingBackupId?: string | null;
 }
 
-export const columns = (
+export const Columns = (
   meta: ColumnMeta
-): ColumnDef<HoldedContactsDailyBackup>[] => [
-  ...createBaseColumns<HoldedContactsDailyBackup>(),
-  {
-    accessorKey: "dayOfMonth",
-    header: "Day of Month",
-    cell: ({ row }) => {
-      const dayOfMonth: number = row.getValue("dayOfMonth");
-      return <span>{dayOfMonth}</span>;
+): ColumnDef<HoldedContactsDailyBackup>[] => {
+  const t = useTranslations("Common.columns");
+
+  return [
+    ...CreateBaseColumns<HoldedContactsDailyBackup>(),
+    {
+      accessorKey: "dayOfMonth",
+      header: t("dayOfMonth"),
+      cell: ({ row }) => {
+        const dayOfMonth: number = row.getValue("dayOfMonth");
+        return <span>{dayOfMonth}</span>;
+      },
     },
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    cell: ({ row }) => {
-      const backup = row.original;
-      return (
-        <BackupActions
-          backup={backup}
-          openDeleteModal={meta.openDeleteModal}
-          onViewDetails={meta.onViewDetails}
-          onToggleFavorite={meta.onToggleFavorite}
-          loadingBackupId={meta.loadingBackupId}
-          isFavorite={meta.isFavorite(backup.id)}
-          isTogglingFavorite={false}
-        />
-      );
+    {
+      id: "actions",
+      header: t("actions"),
+      cell: ({ row }) => {
+        const backup = row.original;
+        return (
+          <BackupActions
+            backup={backup}
+            openDeleteModal={meta.openDeleteModal}
+            onViewDetails={meta.onViewDetails}
+            onToggleFavorite={meta.onToggleFavorite}
+            loadingBackupId={meta.loadingBackupId}
+            isFavorite={meta.isFavorite(backup.id)}
+            isTogglingFavorite={false}
+          />
+        );
+      },
     },
-  },
-];
+  ];
+};
+
+export default Columns;

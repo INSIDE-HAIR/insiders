@@ -19,6 +19,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/src/components/ui/pagination";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface BackupDetailsProps {
   backupId: string;
@@ -40,6 +41,9 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
   const [copied, setCopied] = useState(false);
   const [pageInputValue, setPageInputValue] = useState("1");
   const { toast } = useToast();
+  const tColumns = useTranslations("Common.columns");
+  const bd = useTranslations("Common.backupDetails");
+  const a = useTranslations("Common.actions");
 
   const updatePagedData = useCallback(() => {
     const start = currentPage * itemsPerPageState;
@@ -91,8 +95,8 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
     setCopied(true);
     toast({
-      title: "¡Copia exitosa!",
-      description: "Los datos han sido copiados a tu portapapeles.",
+      title: a("copySuccessTitle"),
+      description: a("copySuccessDescription"),
     });
 
     setTimeout(() => {
@@ -167,15 +171,15 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
 
   return (
     <div className="border rounded-md p-4 bg-gray-100 flex flex-col mt-4">
-      <h3 className="text-lg font-semibold mb-2">Backup Details</h3>
+      <h3 className="text-lg font-semibold mb-2">{bd("title")}</h3>
       <div>
-        <strong>ID:</strong> {backupId}
+        <strong>{tColumns("id")}:</strong> {backupId}
       </div>
       <div>
         <div className="flex justify-between items-end mb-5">
-          <strong>Data:</strong>
+          <strong>{tColumns("data")}:</strong>
           <div className="mt-2 flex items-center">
-            <label className="mr-2">Items per page:</label>
+            <label className="mr-2">{bd("itemsPerPage")}:</label>
             <Select
               onValueChange={(value) =>
                 handleItemsPerPageChange(parseInt(value))
@@ -183,7 +187,7 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
               value={String(itemsPerPageState)}
             >
               <SelectTrigger className="w-40">
-                <SelectValue placeholder="Select number" />
+                <SelectValue placeholder={tColumns("select")} />
               </SelectTrigger>
               <SelectContent>
                 {[10, 20, 50, 100].map((option) => (
@@ -192,7 +196,7 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
                   </SelectItem>
                 ))}
                 <SelectItem value={String(data.length)}>
-                  All ({data.length})
+                  {tColumns("all")} ({data.length})
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -241,7 +245,7 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
         )}
 
         <div className="flex items-center space-x-2 flex-nowrap">
-          <span>Page</span>
+          <span>{bd("page")}</span>
           <Input
             className="w-16 text-center"
             value={pageInputValue}
@@ -249,7 +253,9 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
             onBlur={handlePageInputBlur}
             onKeyPress={handlePageInputKeyPress}
           />
-          <span className="whitespace-nowrap">of {totalPages}</span>
+          <span className="whitespace-nowrap">
+            {bd("of")} {totalPages}
+          </span>
         </div>
       </div>
       <div className="mt-4">
@@ -259,7 +265,7 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
           ) : (
             <Clipboard className="w-4 h-4 mr-2" />
           )}
-          {copied ? "Copiado" : "Copiar"}
+          {copied ? a("copied") : a("copy")}
         </Button>
       </div>
     </div>

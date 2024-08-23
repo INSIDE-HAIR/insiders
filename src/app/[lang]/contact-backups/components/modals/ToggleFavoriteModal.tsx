@@ -7,6 +7,7 @@ import {
   AlertDialogTitle,
 } from "@/src/components/ui/alert-dialog";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ToggleFavoriteModalProps {
   isOpen: boolean;
@@ -17,15 +18,15 @@ export const ToggleFavoriteModal: React.FC<ToggleFavoriteModalProps> = ({
   isOpen,
   isFavorite,
 }) => {
+  const t = useTranslations("Common.modals.toggleFavorite");
+
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Procesando solicitud</AlertDialogTitle>
+          <AlertDialogTitle>{t("title")}</AlertDialogTitle>
           <AlertDialogDescription className="text-center">
-            {isFavorite
-              ? "Quitando de favoritos..."
-              : "Agregando a favoritos..."}
+            {isFavorite ? t("removing") : t("adding")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex justify-center items-center p-4">

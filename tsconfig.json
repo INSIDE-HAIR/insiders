@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2017",
+    "module": "esnext",
+    "moduleResolution": "node",
     "downlevelIteration": true,
     "lib": [
       "dom",
@@ -12,8 +14,6 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -36,8 +36,10 @@
     ".next/types/**/*.ts",
     "src/lib/server-actions",
     "src/app/(protected)/update/page.tsx",
-    "migrate-backups.js"
-, "src/context/ToastContext.tsx"  ],
+    "migrate-backups.js",
+    "src/context/ToastContext.tsx",
+    "src/app/[lang]/contact-backups/components/modals/CreatingUpdatingModal.tsx"
+  ],
   "exclude": [
     "node_modules"
   ]

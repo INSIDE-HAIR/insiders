@@ -104,16 +104,139 @@ export interface Translations {
     };
   };
   Common: {
-    loading: string;
-    pageNotFound: string;
-    currentLanguage: string;
-    home: string;
-    contact: string;
-    about: string;
-    services: string;
-    welcome: string;
-    logout: string;
+    pagination: {
+      previous: string;
+      next: string;
+      morePages: string;
+    };
+    general: {
+      loading: string;
+      pageNotFound: string;
+      currentLanguage: string;
+      home: string;
+      contact: string;
+      about: string;
+      services: string;
+      welcome: string;
+      logout: string;
+      loadingError: string;
+    };
+    errorMessages: {
+      loadingError: string;
+    };
+    columns: {
+      id: string;
+      data: string;
+      select: string;
+      all: string;
+      createdAt: string;
+      updatedAt: string;
+      contacts: string;
+      month: string;
+      year: string;
+      actions: string;
+      originalType: string;
+      dayOfMonth: string;
+    };
+    backups: {
+      current: {
+        title: string;
+        description: string;
+      };
+      daily: {
+        title: string;
+        description: string;
+      };
+      monthly: {
+        title: string;
+        description: string;
+      };
+      favorite: {
+        title: string;
+        description: string;
+      };
+      actions: {
+        createUpdateCurrent: string;
+        createUpdateDaily: string;
+        createUpdateMonthly: string;
+      };
+      noBackupsFound: string;
+    };
+    actions: {
+      delete: string;
+      confirm: string;
+      cancel: string;
+      viewDetails: string;
+      copy: string;
+      copied: string;
+      copySuccessTitle: string;
+      copySuccessDescription: string;
+    };
+    modals: {
+      confirmation: {
+        title: string;
+        deleteDescription: string;
+        processingDescription: string;
+      };
+      deletion: {
+        title: string;
+        description: string;
+      };
+      creatingUpdating: {
+        title: string;
+        description: string;
+      };
+      toggleFavorite: {
+        title: string;
+        adding: string;
+        removing: string;
+      };
+    };
+    toasts: {
+      success: {
+        title: string;
+        description: string;
+      };
+      error: {
+        title: string;
+        description: string;
+      };
+    };
+    currentBackupTab: {
+      title: string;
+      description: string;
+      contacts: string;
+      createUpdateButton: string;
+    };
+    backupDetails: {
+      title: string;
+      itemsPerPage: string;
+      page: string;
+      of: string;
+      data: string;
+      select: string;
+      all: string;
+      previous: string;
+      next: string;
+    };
+    backupActions: {
+      alreadyInFavorites: string;
+      addToFavorites: string;
+      viewDetails: string;
+      deleteBackup: string;
+    };
+    dataTable: {
+      noFavoriteBackups: string;
+    };
   };
 }
 
-export type TranslationKeys<T> = keyof T;
+export type TranslationKeys<T> = {
+  [K in keyof T]: T[K] extends string
+    ? K
+    : T[K] extends Record<string, any>
+    ? `${K & string}` | `${K & string}.${TranslationKeys<T[K]>}`
+    : never;
+}[keyof T];
+
+export type TypedTranslationKeys = TranslationKeys<Translations>;
