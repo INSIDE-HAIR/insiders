@@ -9,7 +9,6 @@ import {
   HoldedContactsBackupType,
 } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useBackupStore } from "../stores/backupStore";
 
 type BackupData =
   | HoldedContactsCurrentBackup
@@ -35,8 +34,8 @@ const fetchBackups = async (
 
 export function useBackups(type: HoldedContactsBackupType) {
   const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
+  const [isCreatingBackup, setIsCreatingBackup] = useState(false);
   const queryClient = useQueryClient();
-  const { isCreatingBackup, setIsCreatingBackup } = useBackupStore();
 
   const {
     data: backups,
@@ -63,7 +62,6 @@ export function useBackups(type: HoldedContactsBackupType) {
         `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
         {
           method: "POST",
-          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -78,8 +76,8 @@ export function useBackups(type: HoldedContactsBackupType) {
       return response.json();
     },
     {
-      onMutate: () => setIsCreatingBackup(type),
-      onSettled: () => setIsCreatingBackup(null),
+      onMutate: () => setIsCreatingBackup(true),
+      onSettled: () => setIsCreatingBackup(false),
       onSuccess: () => {
         queryClient.invalidateQueries(["backups", type]);
       },
@@ -163,7 +161,7 @@ export function useBackups(type: HoldedContactsBackupType) {
     isLoading,
     error,
     loadingBackupId,
-    isCreatingBackup: isCreatingBackup === type,
+    isCreatingBackup,
     createOrUpdateBackup: () => createOrUpdateMutation.mutateAsync(),
     toggleFavorite: (backupId: string) =>
       toggleFavoriteMutation.mutateAsync(backupId),
