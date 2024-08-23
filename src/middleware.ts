@@ -4,11 +4,42 @@ function setLocaleCookie(response: NextResponse, locale: string) {
   response.cookies.set("NEXT_LOCALE", locale);
 }
 
+function setCorsHeaders(response: NextResponse) {
+  response.headers.set(
+    "Access-Control-Allow-Origin",
+    "https://www.insidehair.es"
+  );
+  response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  response.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
+  response.headers.set("Access-Control-Max-Age", "86400");
+}
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const currentLocale = req.cookies.get("NEXT_LOCALE")?.value || "es"; // Default to 'es' if no cookie
 
-  // Redirect root to current locale
+  // Handle CORS for API routes
+  if (pathname.startsWith("/api")) {
+    // For OPTIONS requests (preflight)
+    if (req.method === "OPTIONS") {
+      const response = new NextResponse(null, { status: 204 });
+      setCorsHeaders(response);
+      return response;
+    }
+
+    // For other API requests
+    const response = NextResponse.next();
+    setCorsHeaders(response);
+    return response;
+  }
+
+  // Existing logic for handling locales and redirections
   if (pathname === "/") {
     const response = NextResponse.redirect(
       new URL(`/${currentLocale}`, req.url)
@@ -17,12 +48,8 @@ export function middleware(req: NextRequest) {
     return response;
   }
 
-  // Exclude API routes, static files, and not-found page
-  if (
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname === "/not-found"
-  ) {
+  // Exclude static files and not-found page
+  if (pathname.startsWith("/_next") || pathname === "/not-found") {
     return NextResponse.next();
   }
 
@@ -42,18 +69,16 @@ export function middleware(req: NextRequest) {
     return response;
   }
 
-  // Add any other custom redirection logic here if needed
-
   return NextResponse.next();
 }
 
-// Adjust the matcher to explicitly exclude API routes
+// Adjust the matcher to include API routes
 export const config = {
   matcher: [
     // Routes that need to be handled by the middleware
     "/",
-    "/((?!api|_next|.*\\..*).*)",
-    // Explicitly include authentication routes if necessary
-    "/auth/:path*",
+    "/((?!_next|.*\\..*).*)",
+    // Explicitly include API routes
+    "/api/:path*",
   ],
 };
