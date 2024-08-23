@@ -12,14 +12,16 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Aplica estos encabezados a todas las rutas en tu api
         source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "https://www.insidehair.es" },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://www.insidehair.es",
+          },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,DELETE,PATCH,POST,PUT",
+            value: "GET,DELETE,PATCH,POST,PUT,OPTIONS",
           },
           {
             key: "Access-Control-Allow-Headers",
