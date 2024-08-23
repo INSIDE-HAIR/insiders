@@ -12,7 +12,7 @@
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://www.insidehair.es, https://insidehair.es, http://www.insidehair.es, http://insidehair.es"
+          "value": "https://www.insidehair.es, https://insidehair.es, http://www.insidehair.es, http://insidehair.es, insiders.vercel.app, https://insiders.vercel.app, http://insiders.vercel.app, https://www.insiders.vercel.app, http://www.insiders.vercel.app, https://insiders.vercel.app, http://insiders.vercel.app, https://www.insiders.vercel.app, http://www.insiders.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
