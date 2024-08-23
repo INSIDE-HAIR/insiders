@@ -1,25 +1,68 @@
 // src/lib/actions/vendors/holded/contacts.ts
 "use server";
 
+import { headers } from "next/headers";
+
 const getBaseUrl = () => {
-  return process.env.BASE_URL || "http://localhost:3000/api"; // Define la base URL, ajusta según sea necesario
+  const headersList = headers();
+  const host = headersList.get("host") || "localhost:3000";
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+  return `${protocol}://${host}`;
 };
 
 export const getListHoldedContacts = async () => {
-  const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}/vendor/holded/contacts`);
-  const data = await response.json();
-  console.log("Fetched contacts data:", data); // Log the data
+  try {
+    const baseUrl = getBaseUrl();
+    console.log(
+      `Fetching contacts from: ${baseUrl}/api/vendor/holded/contacts`
+    );
 
-  return data;
+    const response = await fetch(`${baseUrl}/api/vendor/holded/contacts`, {
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log(`Fetched ${data.length || 0} contacts`);
+    return data;
+  } catch (error) {
+    console.error("Error fetching Holded contacts:", error);
+    throw new Error("Failed to fetch Holded contacts");
+  }
 };
 
 export const getHoldedContactById = async (contactId: string) => {
-  const baseUrl = getBaseUrl();
-  const response = await fetch(
-    `${baseUrl}/vendor/holded/contacts/${contactId}`
-  );
-  const data = await response.json();
+  try {
+    const baseUrl = getBaseUrl();
+    console.log(
+      `Fetching contact with ID ${contactId} from: ${baseUrl}/api/vendor/holded/contacts/${contactId}`
+    );
 
-  return data;
+    const response = await fetch(
+      `${baseUrl}/api/vendor/holded/contacts/${contactId}`,
+      {
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("Fetched contact data:", data);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching Holded contact with ID ${contactId}:`, error);
+    throw new Error(`Failed to fetch Holded contact with ID ${contactId}`);
+  }
 };
