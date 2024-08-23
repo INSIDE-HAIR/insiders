@@ -31,17 +31,6 @@ const fetchBackups = async (
   return response.json();
 };
 
-const createOrUpdateBackup = async (type: HoldedContactsBackupType) => {
-  const response = await fetch(
-    `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
-    {
-      method: "POST",
-    }
-  );
-  if (!response.ok) throw new Error("Failed to create or update backup");
-  return response.json();
-};
-
 export function useBackups(type: HoldedContactsBackupType) {
   const [loadingBackupId, setLoadingBackupId] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -66,15 +55,29 @@ export function useBackups(type: HoldedContactsBackupType) {
     }
   );
 
-  const createOrUpdateMutation = useMutation(() => createOrUpdateBackup(type), {
-    onMutate: () => setIsCreatingBackup(type),
-    onSettled: () => setIsCreatingBackup(null),
-    onSuccess: (newBackup) => {
-      queryClient.setQueryData<BackupData>(["backups", type], (old) =>
-        type === "CURRENT" ? newBackup : [newBackup, ...((old as any[]) || [])]
+  const createOrUpdateMutation = useMutation(
+    async () => {
+      const response = await fetch(
+        `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
+        {
+          method: "POST",
+        }
       );
+      if (!response.ok) throw new Error("Failed to create or update backup");
+      return response.json();
     },
-  });
+    {
+      onMutate: () => setIsCreatingBackup(type),
+      onSettled: () => setIsCreatingBackup(null),
+      onSuccess: () => {
+        queryClient.invalidateQueries(["backups", type]);
+      },
+      onError: (error) => {
+        console.error("Error creating or updating backup:", error);
+        // Aquí podrías agregar lógica adicional para manejar el error, como mostrar una notificación al usuario
+      },
+    }
+  );
 
   const toggleFavoriteMutation = useMutation<
     ToggleFavoriteResponse,
