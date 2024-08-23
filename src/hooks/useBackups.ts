@@ -58,15 +58,13 @@ export function useBackups(type: HoldedContactsBackupType) {
 
   const createOrUpdateMutation = useMutation(
     async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
       const url = `${apiUrl}/vendor/holded/contacts/backups/${type.toLowerCase()}`;
       console.log("Attempting to fetch from:", url); // Para debugging
 
       const response = await fetch(url, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
       if (!response.ok) {
@@ -101,9 +99,6 @@ export function useBackups(type: HoldedContactsBackupType) {
         "/api/vendor/holded/contacts/backups/favorite",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: JSON.stringify({ backupId, originalType: type }),
         }
       );
