@@ -1,3 +1,4 @@
+"use client";
 import { useState, useCallback } from "react";
 import {
   HoldedContactsCurrentBackup,
@@ -57,23 +58,25 @@ export function useBackups(type: HoldedContactsBackupType) {
 
   const createOrUpdateMutation = useMutation(
     async () => {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''; // Asegúrate de tener esta variable de entorno configurada
-      const url = `${apiUrl}/api/vendor/holded/contacts/backups/${type.toLowerCase()}`;
-      console.log('Attempting to fetch from:', url); // Para debugging
-      
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+      const url = `${apiUrl}/vendor/holded/contacts/backups/${type.toLowerCase()}`;
+      console.log("Attempting to fetch from:", url); // Para debugging
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
       });
-      
+
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('Error response:', errorText); // Para debugging
-        throw new Error(`Failed to create or update backup: ${response.status} ${response.statusText}`);
+        console.error("Error response:", errorText); // Para debugging
+        throw new Error(
+          `Failed to create or update backup: ${response.status} ${response.statusText}`
+        );
       }
-      
+
       return response.json();
     },
     {
