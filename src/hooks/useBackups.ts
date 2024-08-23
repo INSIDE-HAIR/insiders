@@ -61,15 +61,22 @@ export function useBackups(type: HoldedContactsBackupType) {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
       const url = `${apiUrl}/vendor/holded/contacts/backups/${type.toLowerCase()}`;
-      console.log("Attempting to fetch from:", url); // Para debugging
+      console.log("Attempting to fetch from:", url);
 
       const response = await fetch(url, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add any necessary authentication headers here
+          // "Authorization": `Bearer ${token}`,
+        },
+        // Add credentials if needed
+        // credentials: "include",
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Error response:", errorText); // Para debugging
+        console.error("Error response:", errorText);
         throw new Error(
           `Failed to create or update backup: ${response.status} ${response.statusText}`
         );
