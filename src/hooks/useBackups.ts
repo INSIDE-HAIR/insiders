@@ -59,25 +59,19 @@ export function useBackups(type: HoldedContactsBackupType) {
 
   const createOrUpdateMutation = useMutation(
     async () => {
-      const apiUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
-      const url = `${apiUrl}/vendor/holded/contacts/backups/${type.toLowerCase()}`;
-      console.log("Attempting to fetch from:", url);
-
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", 
-      });
+      const response = await fetch(
+        `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}), // Send an empty object if no data is needed
+        }
+      );
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response:", errorText);
-        throw new Error(
-          `Failed to create or update backup: ${response.status} ${response.statusText}`
-        );
+        throw new Error("Failed to create or update backup");
       }
 
       return response.json();
@@ -93,7 +87,7 @@ export function useBackups(type: HoldedContactsBackupType) {
       },
     }
   );
-
+  
   const toggleFavoriteMutation = useMutation<
     ToggleFavoriteResponse,
     Error,
