@@ -71,7 +71,7 @@ export function useBackups(type: HoldedContactsBackupType) {
           // "Authorization": `Bearer ${token}`,
         },
         // Add credentials if needed
-        // credentials: "include",
+        credentials: "include", 
       });
 
       if (!response.ok) {
