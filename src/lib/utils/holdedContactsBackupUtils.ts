@@ -1,4 +1,3 @@
-"use servver";
 import { PrismaClient, Prisma, HoldedContactsBackupType } from "@prisma/client";
 import { getListHoldedContacts } from "@/src/lib/actions/vendors/holded/contacts";
 import { ObjectId } from "mongodb"; // Import ObjectId if estás usando MongoDB
@@ -30,43 +29,45 @@ export async function getCurrentBackup() {
 }
 
 export async function createOrUpdateCurrentBackup() {
-  const contactsData = await getListHoldedContacts();
+  try {
+    const contactsData = await getListHoldedContacts();
 
-  const existingBackup = await prisma.holdedContactsCurrentBackup.findFirst();
+    const existingBackup = await prisma.holdedContactsCurrentBackup.findFirst();
 
-  if (existingBackup) {
-    return prisma.holdedContactsCurrentBackup.update({
-      where: { id: existingBackup.id },
-      data: {
-        data: contactsData as Prisma.InputJsonValue,
-        updatedAt: new Date(),
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        length: true,
-        // Excluye el campo `data`
-      },
-    });
-  } else {
-    // Genera un ObjectID válido para el nuevo backup
-    const newId = new ObjectId().toString();
-
-    return prisma.holdedContactsCurrentBackup.create({
-      data: {
-        id: newId,
-        data: contactsData as Prisma.InputJsonValue,
-        length: contactsData.length,
-      },
-      select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        length: true,
-        // Excluye el campo `data`
-      },
-    });
+    if (existingBackup) {
+      return prisma.holdedContactsCurrentBackup.update({
+        where: { id: existingBackup.id },
+        data: {
+          data: contactsData as Prisma.InputJsonValue,
+          updatedAt: new Date(),
+          length: contactsData.length, // Asegúrate de actualizar la longitud
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          length: true,
+        },
+      });
+    } else {
+      const newId = new ObjectId().toString();
+      return prisma.holdedContactsCurrentBackup.create({
+        data: {
+          id: newId,
+          data: contactsData as Prisma.InputJsonValue,
+          length: contactsData.length,
+        },
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          length: true,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Error in createOrUpdateCurrentBackup:", error);
+    throw new Error("Failed to create or update current backup");
   }
 }
 

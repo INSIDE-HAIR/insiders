@@ -1,4 +1,3 @@
-"use servver";
 import { PrismaClient, HoldedContactsBackupType } from "@prisma/client";
 
 const prisma = new PrismaClient();
