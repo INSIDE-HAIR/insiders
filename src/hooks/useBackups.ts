@@ -57,16 +57,23 @@ export function useBackups(type: HoldedContactsBackupType) {
 
   const createOrUpdateMutation = useMutation(
     async () => {
-      const response = await fetch(
-        `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) throw new Error("Failed to create or update backup");
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''; // Asegúrate de tener esta variable de entorno configurada
+      const url = `${apiUrl}/api/vendor/holded/contacts/backups/${type.toLowerCase()}`;
+      console.log('Attempting to fetch from:', url); // Para debugging
+      
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText); // Para debugging
+        throw new Error(`Failed to create or update backup: ${response.status} ${response.statusText}`);
+      }
+      
       return response.json();
     },
     {
