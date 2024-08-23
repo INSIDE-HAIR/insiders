@@ -1,26 +1,17 @@
 // src/lib/actions/vendors/holded/contacts.ts
 "use server";
-
-import { headers } from "next/headers";
-
-const getBaseUrl = () => {
-  const headersList = headers();
-  const host = headersList.get("host") || "localhost:3000";
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-  return `${protocol}://${host}`;
-};
+const HOLDED_API_KEY = process.env.HOLDED_API_KEY;
+const HOLDED_API_URL = "https://api.holded.com/api/invoicing/v1/contacts";
 
 export const getListHoldedContacts = async () => {
   try {
-    const baseUrl = getBaseUrl();
-    console.log(
-      `Fetching contacts from: ${baseUrl}/api/vendor/holded/contacts`
-    );
+    console.log(`Fetching contacts from: ${HOLDED_API_URL}`);
 
-    const response = await fetch(`${baseUrl}/api/vendor/holded/contacts`, {
-      cache: "no-store",
+    const response = await fetch(HOLDED_API_URL, {
+      method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        Accept: "application/json",
+        key: HOLDED_API_KEY as string,
       },
     });
 
@@ -39,20 +30,16 @@ export const getListHoldedContacts = async () => {
 
 export const getHoldedContactById = async (contactId: string) => {
   try {
-    const baseUrl = getBaseUrl();
-    console.log(
-      `Fetching contact with ID ${contactId} from: ${baseUrl}/api/vendor/holded/contacts/${contactId}`
-    );
+    const url = `${HOLDED_API_URL}/${contactId}`;
+    console.log(`Fetching contact with ID ${contactId} from: ${url}`);
 
-    const response = await fetch(
-      `${baseUrl}/api/vendor/holded/contacts/${contactId}`,
-      {
-        cache: "no-store",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        key: HOLDED_API_KEY as string,
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
