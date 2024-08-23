@@ -63,6 +63,7 @@ export function useBackups(type: HoldedContactsBackupType) {
         `/api/vendor/holded/contacts/backups/${type.toLowerCase()}`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -87,7 +88,7 @@ export function useBackups(type: HoldedContactsBackupType) {
       },
     }
   );
-  
+
   const toggleFavoriteMutation = useMutation<
     ToggleFavoriteResponse,
     Error,
