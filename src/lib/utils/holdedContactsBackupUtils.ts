@@ -211,9 +211,9 @@ export async function createOrUpdateMonthlyBackup() {
   });
 }
 
-export async function getCurrentBackupData(id: string) {
-  return prisma.holdedContactsCurrentBackup.findUnique({
-    where: { id },
+export async function getCurrentBackupData() {
+  // Devuelve el único documento de la colección
+  return prisma.holdedContactsCurrentBackup.findFirst({
     select: {
       data: true, // Extrae solo el campo `data`
     },

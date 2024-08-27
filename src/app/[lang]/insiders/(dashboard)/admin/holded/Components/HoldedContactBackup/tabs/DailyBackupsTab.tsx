@@ -1,19 +1,19 @@
 import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
-import { Columns } from "../columns/monthlyColumns";
+import { Columns } from "../columns/dailyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
-import BackupDetails from "../BackupDetails";
-import { HoldedContactsMonthlyBackup } from "@prisma/client";
+import BackupDetails from "../actions/BackupDetails";
+import { HoldedContactsDailyBackup } from "@prisma/client";
 import { ToggleFavoriteModal } from "../modals/ToggleFavoriteModal";
 import { DeletingModal } from "../modals/DeletingModal";
 import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
 import { useTranslations } from "@/src/context/TranslationContext";
 
-const MonthlyBackupsTab: React.FC = () => {
+const DailyBackupsTab: React.FC = () => {
   const {
     backups,
     loadingBackupId,
@@ -25,7 +25,7 @@ const MonthlyBackupsTab: React.FC = () => {
     isDeletingBackup,
     toggleFavorite,
     isFavorite,
-  } = useBackups("MONTHLY");
+  } = useBackups("DAILY");
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingModalOpen, setDeletingModalOpen] = useState(false);
@@ -35,16 +35,15 @@ const MonthlyBackupsTab: React.FC = () => {
   const [selectedBackupId, setSelectedBackupId] = useState<string | null>(null);
   const [isTogglingFavorite, setIsTogglingFavorite] = useState(false);
   const [backupBeingToggled, setBackupBeingToggled] =
-    useState<HoldedContactsMonthlyBackup | null>(null);
+    useState<HoldedContactsDailyBackup | null>(null);
   const { toast } = useToast();
 
   const t = useTranslations("Common.general");
   const b = useTranslations("Common.backups");
   const a = useTranslations("Common.actions");
-  const m = useTranslations("Common.modals.confirmation");
   const to = useTranslations("Common.toasts");
 
-  const monthlyBackups = backups as HoldedContactsMonthlyBackup[] | undefined;
+  const dailyBackups = backups as HoldedContactsDailyBackup[] | undefined;
 
   const openDeleteModal = useCallback((backupId: string) => {
     setBackupToDelete(backupId);
@@ -57,35 +56,32 @@ const MonthlyBackupsTab: React.FC = () => {
   }, []);
 
   const handleDelete = useCallback(
-    async (backup: HoldedContactsMonthlyBackup) => {
+    async (backup: HoldedContactsDailyBackup) => {
       closeDeleteModal();
       setDeletingModalOpen(true);
       try {
         await deleteBackup(backup.id);
         toast({
           title: to("success.title"),
-          description: to("success.description"),
+          description: b("daily.deleteSuccess"),
         });
       } catch (error) {
         console.error("Error deleting backup:", error);
         toast({
           title: to("error.title"),
-          description: to("error.description"),
+          description: b("daily.deleteError"),
           variant: "destructive",
         });
       } finally {
         setDeletingModalOpen(false);
       }
     },
-    [deleteBackup, closeDeleteModal, toast, to]
+    [deleteBackup, closeDeleteModal, toast, b, to]
   );
 
-  const handleViewDetails = useCallback(
-    (backup: HoldedContactsMonthlyBackup) => {
-      setSelectedBackupId(backup.id);
-    },
-    []
-  );
+  const handleViewDetails = useCallback((backup: HoldedContactsDailyBackup) => {
+    setSelectedBackupId(backup.id);
+  }, []);
 
   const handleCreateOrUpdateBackup = useCallback(async () => {
     setCreatingUpdatingModalOpen(true);
@@ -93,46 +89,49 @@ const MonthlyBackupsTab: React.FC = () => {
       await createOrUpdateBackup();
       toast({
         title: to("success.title"),
-        description: to("success.description"),
+        description: b("daily.createUpdateSuccess"),
       });
     } catch (error) {
       console.error("Error creating/updating backup:", error);
       toast({
         title: to("error.title"),
-        description: to("error.description"),
+        description: b("daily.createUpdateError"),
         variant: "destructive",
       });
     } finally {
       setCreatingUpdatingModalOpen(false);
     }
-  }, [createOrUpdateBackup, toast, to]);
+  }, [createOrUpdateBackup, toast, b, to]);
 
   const handleToggleFavorite = useCallback(
-    async (backup: HoldedContactsMonthlyBackup) => {
+    async (backup: HoldedContactsDailyBackup) => {
       setIsTogglingFavorite(true);
       setBackupBeingToggled(backup);
       try {
         const result = await toggleFavorite(backup.id);
+        console.log("Toggle favorite result:", result);
         if (result.newFavoriteId) {
+          console.log("New favorite created with ID:", result.newFavoriteId);
           toast({
-            title: a("copySuccessTitle"),
-            description: `${a("copySuccessDescription")} ID: ${
-              result.newFavoriteId
-            }`,
+            title: to("success.title"),
+            description: b("daily.newFavoriteCreated", {
+              id: result.newFavoriteId,
+            }),
           });
         } else {
+          console.log("Favorite was removed");
           toast({
             title: to("success.title"),
             description: isFavorite(backup.id)
-              ? b("favorite.actions.removeSuccess")
-              : b("favorite.actions.addSuccess"),
+              ? b("daily.favoriteRemoved")
+              : b("daily.favoriteAdded"),
           });
         }
       } catch (error) {
         console.error("Error toggling favorite:", error);
         toast({
           title: to("error.title"),
-          description: to("error.description"),
+          description: b("daily.toggleFavoriteError"),
           variant: "destructive",
         });
       } finally {
@@ -140,7 +139,7 @@ const MonthlyBackupsTab: React.FC = () => {
         setBackupBeingToggled(null);
       }
     },
-    [toggleFavorite, isFavorite, toast, to, a, b]
+    [toggleFavorite, isFavorite, toast, b, to]
   );
 
   if (isLoading) {
@@ -166,30 +165,30 @@ const MonthlyBackupsTab: React.FC = () => {
   return (
     <div>
       <div className="my-8 flex flex-col items-center">
-        <h1 className="text-3xl font-bold text-center">{b("monthly.title")}</h1>
-        <p className="text-center max-w-3xl">{b("monthly.description")}</p>
+        <h1 className="text-3xl font-bold text-center">{b("daily.title")}</h1>
+        <p className="text-center max-w-3xl">{b("daily.description")}</p>
       </div>
       <div className="mb-4 flex justify-between items-center text-sm">
         <p>
-          {b("monthly.title")}{" "}
+          {b("daily.title")}{" "}
           <span className="text-sm font-normal text-gray-500">
-            ({monthlyBackups?.length || 0}/12)
+            ({dailyBackups?.length || 0}/31)
           </span>
         </p>
         <Button
           onClick={handleCreateOrUpdateBackup}
           disabled={isCreatingBackup}
         >
-          {b("actions.createUpdateMonthly")}
+          {b("actions.createUpdateDaily")}
         </Button>
       </div>
-      <DataTable columns={Columns(columnMeta)} data={monthlyBackups || []} />
+      <DataTable columns={Columns(columnMeta)} data={dailyBackups || []} />
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={() =>
           backupToDelete &&
-          handleDelete({ id: backupToDelete } as HoldedContactsMonthlyBackup)
+          handleDelete({ id: backupToDelete } as HoldedContactsDailyBackup)
         }
         backupId={backupToDelete || ""}
       />
@@ -199,7 +198,7 @@ const MonthlyBackupsTab: React.FC = () => {
         <BackupDetails
           backupId={selectedBackupId}
           itemsPerPage={10}
-          type="MONTHLY"
+          type="DAILY"
         />
       )}
       {backupBeingToggled && (
@@ -212,4 +211,4 @@ const MonthlyBackupsTab: React.FC = () => {
   );
 };
 
-export default MonthlyBackupsTab;
+export default DailyBackupsTab;

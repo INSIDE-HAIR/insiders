@@ -1,7 +1,7 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsFavoriteBackup } from "@prisma/client";
-import { BackupActions } from "../BackupActions";
+import { BackupActions } from "../actions/BackupActions";
 import { CreateBaseColumns } from "./columns";
 import { useTranslations } from "@/src/context/TranslationContext";
 

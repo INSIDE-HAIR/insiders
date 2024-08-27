@@ -136,7 +136,19 @@
       "year": "Año",
       "actions": "Acciones",
       "originalType": "Tipo Original",
-      "dayOfMonth": "Día del Mes"
+      "dayOfMonth": "Día del Mes",
+      "name": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Estado",
+      "zip": "Código Postal",
+      "country": "País",
+      "company": "Empresa",
+      "type": "Tipo",
+      "notes": "Notas"
     },
     "backups": {
       "current": {

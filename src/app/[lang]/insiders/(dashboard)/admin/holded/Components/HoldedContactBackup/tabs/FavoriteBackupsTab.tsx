@@ -5,7 +5,7 @@ import { useBackups } from "@/src/hooks/useBackups";
 import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
-import BackupDetails from "../BackupDetails";
+import BackupDetails from "../actions/BackupDetails";
 import { HoldedContactsFavoriteBackup } from "@prisma/client";
 import { DeletingModal } from "../modals/DeletingModal";
 import { useTranslations } from "@/src/context/TranslationContext";

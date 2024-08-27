@@ -1,32 +1,40 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { HoldedContactsDailyBackup } from "@prisma/client";
+import { HoldedContactsMonthlyBackup } from "@prisma/client";
 import { CreateBaseColumns } from "./columns";
-import { BackupActions } from "../BackupActions";
+import { BackupActions } from "../actions/BackupActions";
 import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
-  onViewDetails?: (backup: HoldedContactsDailyBackup) => void;
-  onDelete?: (backup: HoldedContactsDailyBackup) => void;
-  onToggleFavorite?: (backup: HoldedContactsDailyBackup) => void;
+  onViewDetails: (backup: HoldedContactsMonthlyBackup) => void;
+  onToggleFavorite: (backup: HoldedContactsMonthlyBackup) => void;
+  loadingBackupId: string | null;
+  isDeletingBackup: boolean;
   isFavorite: (backupId: string) => boolean;
-  loadingBackupId?: string | null;
 }
 
-export const Columns = (
+export const Columns: (
   meta: ColumnMeta
-): ColumnDef<HoldedContactsDailyBackup>[] => {
+) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => {
   const t = useTranslations("Common.columns");
 
   return [
-    ...CreateBaseColumns<HoldedContactsDailyBackup>(),
+    ...CreateBaseColumns<HoldedContactsMonthlyBackup>(),
     {
-      accessorKey: "dayOfMonth",
-      header: t("dayOfMonth"),
+      accessorKey: "month",
+      header: t("month"),
       cell: ({ row }) => {
-        const dayOfMonth: number = row.getValue("dayOfMonth");
-        return <span>{dayOfMonth}</span>;
+        const month: number = row.getValue("month");
+        return <span>{month}</span>;
+      },
+    },
+    {
+      accessorKey: "year",
+      header: t("year"),
+      cell: ({ row }) => {
+        const year: number = row.getValue("year");
+        return <span>{year}</span>;
       },
     },
     {
@@ -42,7 +50,7 @@ export const Columns = (
             onToggleFavorite={meta.onToggleFavorite}
             loadingBackupId={meta.loadingBackupId}
             isFavorite={meta.isFavorite(backup.id)}
-            isTogglingFavorite={false}
+            isTogglingFavorite={meta.loadingBackupId === backup.id}
           />
         );
       },

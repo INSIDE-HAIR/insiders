@@ -26,15 +26,10 @@ export async function DELETE(
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
-    const { id } = params;
-
     // Obtiene los datos del backup utilizando la función correspondiente
-    const backupData = await getCurrentBackupData(id);
+    const backupData = await getCurrentBackupData();
     console.log("Backup data retrieved:", backupData);
     if (!backupData) {
       // Si no se encuentra el backup, devuelve una respuesta 404

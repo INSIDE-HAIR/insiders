@@ -2,7 +2,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsCurrentBackup } from "@prisma/client";
 import { CreateBaseColumns } from "./columns";
-import { BackupActions } from "../BackupActions";
+import { BackupActions } from "../actions/BackupActions";
 import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ColumnMeta {

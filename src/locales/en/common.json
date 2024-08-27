@@ -136,7 +136,19 @@
       "year": "Year",
       "actions": "Actions",
       "originalType": "Original Type",
-      "dayOfMonth": "Day of the Month"
+      "dayOfMonth": "Day of the Month",
+      "name": "Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "zip": "Zip",
+      "country": "Country",
+      "company": "Company",
+      "type": "Type",
+      "notes": "Notes"
     },
     "backups": {
       "current": {

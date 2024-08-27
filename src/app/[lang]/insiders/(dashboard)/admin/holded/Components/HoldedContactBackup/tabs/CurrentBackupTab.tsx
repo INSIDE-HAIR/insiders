@@ -6,7 +6,7 @@ import LoadingSpinner from "@/src/components/share/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
-import BackupDetails from "../BackupDetails";
+import BackupDetails from "../actions/BackupDetails";
 import { HoldedContactsCurrentBackup } from "@prisma/client";
 import { DeletingModal } from "../modals/DeletingModal";
 import { CreatingUpdatingModal } from "../modals/CreatingUpdatingModal";
