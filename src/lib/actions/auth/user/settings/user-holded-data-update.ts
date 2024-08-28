@@ -1,31 +1,36 @@
-"use server";
-import prisma from "@/prisma/database";
-import * as z from "zod";
-import { getHoldedContactById } from "@/src/lib/actions/vendors/holded/contacts";
-import { transformHoldedData } from "@/src/lib/utils/clean-fields";
-import { dataBaseTranslation } from "@/db/constants";
-import { ObjectId } from "mongodb";
+"use server"; // Indica que este código se ejecutará en el servidor, no en el cliente.
+
+import prisma from "@/prisma/database"; // Importa el cliente de Prisma para interactuar con la base de datos.
+import * as z from "zod"; // Importa Zod, una librería de validación y parsing de esquemas.
+import { getHoldedContactById } from "@/src/lib/actions/vendors/holded/contacts"; // Importa una función para obtener un contacto de Holded por su ID.
+import { transformHoldedData } from "@/src/lib/utils/clean-fields"; // Importa una función para transformar los datos de Holded en un formato utilizable.
+import { dataBaseTranslation } from "@/db/constants"; // Importa constantes relacionadas con las traducciones de la base de datos.
+import { ObjectId } from "mongodb"; // Importa ObjectId de MongoDB para la generación de IDs únicos.
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const UpdateHoldedIdSchema = z.object({
-  userId: z.string().min(24, "El ID del usuario es requerido"),
+  // Define un esquema de validación para el Holded ID y el User ID usando Zod.
+  userId: z.string().min(24, "El ID del usuario es requerido"), // Valida que el User ID sea un string de al menos 24 caracteres.
   holdedId: z
     .string()
     .min(1, "El Holded ID es requerido")
-    .length(24, "El Holded ID debe tener 24 caracteres"),
+    .length(24, "El Holded ID debe tener 24 caracteres"), // Valida que el Holded ID sea un string de exactamente 24 caracteres.
 });
 
 const validateInput = (userId: string, holdedId: string) => {
+  // Función para validar el User ID y Holded ID usando el esquema definido anteriormente.
   const validatedFields = UpdateHoldedIdSchema.safeParse({ userId, holdedId });
   if (!validatedFields.success) {
     return {
       error: "Parámetros inválidos",
       issues: validatedFields.error.issues,
-    };
+    }; // Si la validación falla, se devuelve un objeto de error con detalles.
   }
-  return null;
+  return null; // Si la validación es exitosa, se devuelve `null`.
 };
 
 const findUser = async (userId: string) => {
+  // Función para encontrar un usuario en la base de datos por su ID.
   return prisma.user.findUnique({
     where: { id: userId },
     include: {
@@ -36,7 +41,7 @@ const findUser = async (userId: string) => {
           socialNetworks: true,
           contactPersons: true,
           customFields: true,
-        },
+        }, // Incluye varias relaciones asociadas al usuario para obtener todos sus datos relevantes.
       },
     },
   });
@@ -46,9 +51,10 @@ const updateCustomFields = async (
   customFields: any[],
   holdedDataId: string
 ) => {
+  // Función para actualizar o crear campos personalizados relacionados con los datos de Holded.
   const today = new Date();
 
-  // Eliminar registros antiguos para este holdedDataId
+  // Elimina registros de campos personalizados antiguos para el `holdedDataId` dado.
   await prisma.customField.deleteMany({
     where: {
       holdedDataId: holdedDataId,
@@ -58,10 +64,9 @@ const updateCustomFields = async (
     },
   });
 
-  // Crear o actualizar los nuevos registros
+  // Itera sobre los campos personalizados para crearlos o actualizarlos en la base de datos.
   for (const field of customFields || []) {
     try {
-      // Buscar si existe un registro con el mismo field y holdedDataId
       const existingField = await prisma.customField.findFirst({
         where: {
           field: field.field,
@@ -70,19 +75,19 @@ const updateCustomFields = async (
       });
 
       if (existingField) {
-        // Si existe, actualizar
+        // Si el campo personalizado ya existe, lo actualiza.
         await prisma.customField.update({
           where: { id: existingField.id },
           data: {
             value: field.value || "",
-            createdAt: new Date(), // Actualizar el timestamp
+            createdAt: new Date(),
           },
         });
       } else {
-        // Si no existe, crear nuevo
+        // Si no existe, crea un nuevo campo personalizado.
         await prisma.customField.create({
           data: {
-            id: new ObjectId().toString(), // Generar un nuevo ObjectId
+            id: new ObjectId().toString(), // Genera un nuevo ID único.
             field: field.field,
             value: field.value || "",
             holdedDataId: holdedDataId,
@@ -91,7 +96,7 @@ const updateCustomFields = async (
         });
       }
     } catch (error) {
-      console.error(`Error updating/creating custom field: ${error}`);
+      console.error(`Error updating/creating custom field: ${error}`); // Manejo de errores con un log en consola.
     }
   }
 };
@@ -100,9 +105,9 @@ const updateContactPersons = async (
   contactPersons: any[],
   holdedDataId: string
 ) => {
+  // Función similar a `updateCustomFields`, pero para actualizar o crear personas de contacto relacionadas con los datos de Holded.
   const today = new Date();
 
-  // Eliminar registros antiguos para este holdedDataId
   await prisma.contactPerson.deleteMany({
     where: {
       holdedDataId: holdedDataId,
@@ -112,10 +117,8 @@ const updateContactPersons = async (
     },
   });
 
-  // Crear o actualizar los nuevos registros
   for (const person of contactPersons || []) {
     try {
-      // Buscar si existe un registro con el mismo personId y holdedDataId
       const existingPerson = await prisma.contactPerson.findFirst({
         where: {
           personId: person.personId,
@@ -124,7 +127,6 @@ const updateContactPersons = async (
       });
 
       if (existingPerson) {
-        // Si existe, actualizar
         await prisma.contactPerson.update({
           where: { id: existingPerson.id },
           data: {
@@ -133,14 +135,13 @@ const updateContactPersons = async (
             phone: person.phone?.toString() || "",
             email: person.email || "",
             sendDocuments: person.sendDocuments ? 1 : 0,
-            createdAt: new Date(), // Actualizar el timestamp
+            createdAt: new Date(),
           },
         });
       } else {
-        // Si no existe, crear nuevo
         await prisma.contactPerson.create({
           data: {
-            id: new ObjectId().toString(), // Generar un nuevo ObjectId
+            id: new ObjectId().toString(), // Genera un nuevo ID único.
             personId: person.personId,
             name: person.name || "",
             job: person.job || "",
@@ -153,89 +154,85 @@ const updateContactPersons = async (
         });
       }
     } catch (error) {
-      console.error(`Error updating/creating contact person: ${error}`);
+      console.error(`Error updating/creating contact person: ${error}`); // Manejo de errores con un log en consola.
     }
   }
 };
+const UpdateClientFields = async (userId: string, customFields: any[]) => {
+  const t = useTranslations("fields");
 
-const updateClientFields = async (userId: string, customFields: any[]) => {
   const fieldModels = [
-    { name: "Ventas", id: "salesFields", model: prisma.salesField },
-    { name: "Cliente", id: "clientsFields", model: prisma.clientField },
-    {
-      name: "Consultoría y Mentoring",
-      id: "consultingAndMentoringFields",
-      model: prisma.consultingAndMentoringField,
-    },
-    { name: "Formación", id: "trainingsFields", model: prisma.trainingField },
-    { name: "Marketing", id: "marketingFields", model: prisma.marketingField },
-    {
-      name: "Creatividad",
-      id: "creativitiesFields",
-      model: prisma.creativityField,
-    },
+    { name: t("salesFields.title"), id: "salesFields", model: prisma.salesField },
+    { name: t("clientsFields.title"), id: "clientsFields", model: prisma.clientField },
+    { name: t("consultingAndMentoringFields.title"), id: "consultingAndMentoringFields", model: prisma.consultingAndMentoringField },
+    { name: t("trainingsFields.title"), id: "trainingsFields", model: prisma.trainingField },
+    { name: t("marketingFields.title"), id: "marketingFields", model: prisma.marketingField },
+    { name: t("creativitiesFields.title"), id: "creativitiesFields", model: prisma.creativityField },
   ];
 
   for (const { id, model, name } of fieldModels) {
-    const fields =
-      dataBaseTranslation
-        .find((group) => group.id === id)
-        ?.groups.flatMap((g) => g.fields) || [];
+    const groups = t(`${id}.groups`, {});
 
-    for (const field of fields) {
-      const customField = customFields.find(
-        (cf: any) => cf.field === field.holdedFieldName
-      );
+    if (groups && typeof groups === 'object') {
+      Object.entries(groups).forEach(([groupId, group]) => {
+        if (group && typeof group === 'object' && 'fields' in group) {
+          Object.entries(group.fields as Record<string, any>).forEach(([fieldId, field]) => {
+            const customField = customFields.find(
+              (cf: any) => cf.field === fieldId
+            );
 
-      if (customField) {
-        console.log(customField);
-        console.log(id);
-        console.log(name);
+            if (customField) {
+              const options = t(`${id}.groups.${groupId}.fields.${fieldId}.options`);
+              const optionsArray = Array.isArray(options) ? options : [];
 
-        await (model as any).upsert({
-          where: {
-            userId_holdedFieldName: {
-              userId,
-              holdedFieldName: field.holdedFieldName,
-            },
-          },
-          update: {
-            holdedFieldName: field.holdedFieldName,
-            es: field.es,
-            en: field.en,
-            value: customField.value,
-            options: field.options || [],
-            type: field.type,
-            categoryId: id,
-            categoryName: name,
-            subCategoryId: field.subCategoryId,
-            subCategoryName: field.subCategoryName,
-            updatedAt: new Date(),
-          },
-          create: {
-            userId,
-            holdedFieldName: field.holdedFieldName,
-            es: field.es,
-            en: field.en,
-            value: customField.value,
-            options: field.options || [],
-            type: field.type,
-            categoryId: id,
-            categoryName: name,
-            subCategoryId: field.subCategoryId,
-            subCategoryName: field.subCategoryName,
-            createdAt: new Date(),
-          },
-        });
-      }
+              (model as any).upsert({
+                where: {
+                  userId_holdedFieldName: {
+                    userId,
+                    holdedFieldName: fieldId,
+                  },
+                },
+                update: {
+                  holdedFieldName: fieldId,
+                  es: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
+                  en: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
+                  value: customField.value,
+                  options: optionsArray,
+                  type: (field as any).type || "text",
+                  categoryId: id,
+                  categoryName: name,
+                  subCategoryId: groupId,
+                  subCategoryName: t(`${id}.groups.${groupId}.title`),
+                  updatedAt: new Date(),
+                },
+                create: {
+                  userId,
+                  holdedFieldName: fieldId,
+                  es: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
+                  en: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
+                  value: customField.value,
+                  options: optionsArray,
+                  type: (field as any).type || "text",
+                  categoryId: id,
+                  categoryName: name,
+                  subCategoryId: groupId,
+                  subCategoryName: t(`${id}.groups.${groupId}.title`),
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                },
+              });
+            }
+          });
+        }
+      });
     }
   }
 };
-
 const updateUserHoldedDataInDatabase = async (
   userId: string,
   transformedHoldedData: any
 ) => {
+  // Función para actualizar los datos de Holded en la base de datos.
   return prisma.holdedData.update({
     where: { userId },
     data: {
@@ -248,6 +245,7 @@ const createUserHoldedDataInDatabase = async (
   userId: string,
   transformedHoldedData: any
 ) => {
+  // Función para crear los datos de Holded en la base de datos si no existen.
   return prisma.holdedData.create({
     data: {
       ...transformedHoldedData,
@@ -257,6 +255,7 @@ const createUserHoldedDataInDatabase = async (
 };
 
 const updateUserLastSync = async (userId: string, holdedId: string) => {
+  // Función para actualizar la fecha de la última sincronización y el Holded ID del usuario.
   return prisma.user.update({
     where: { id: userId },
     data: {
@@ -271,6 +270,9 @@ export const updateUserHoldedData = async (
   userId: string,
   holdedId: string
 ) => {
+  // Función principal para manejar la actualización de datos de Holded y su sincronización con la base de datos.
+
+  // Valida los inputs proporcionados.
   const validationError = validateInput(userId, holdedId);
   if (validationError) {
     return validationError;
@@ -297,6 +299,7 @@ export const updateUserHoldedData = async (
     );
 
     if (user.holdedData) {
+      // Actualiza los datos si ya existen en la base de datos.
       await updateUserHoldedDataInDatabase(userId, transformedHoldedData);
       await updateCustomFields(
         transformedHoldedData.customFields?.create || [],
@@ -307,10 +310,11 @@ export const updateUserHoldedData = async (
         user.holdedData.id
       );
     } else {
+      // Crea nuevos datos si no existen en la base de datos.
       await createUserHoldedDataInDatabase(userId, transformedHoldedData);
     }
 
-    await updateClientFields(
+    await UpdateClientFields(
       userId,
       transformedHoldedData.customFields?.create || []
     );

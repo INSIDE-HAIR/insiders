@@ -1,11 +1,8 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
-
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-
 import { useColumns } from "./columns"; // Asegúrate de que la ruta de importación sea correcta
 import { DataTable } from "./components/DataTable";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";

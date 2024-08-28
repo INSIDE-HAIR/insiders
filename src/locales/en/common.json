@@ -240,5 +240,656 @@
     "dataTable": {
       "noFavoriteBackups": "No favorite backups found. Add a backup to your favorites to see it here."
     }
+  },
+  "fields": {
+    "salesFields": {
+      "title": "Sales Fields",
+      "groups": {
+        "sales": {
+          "title": "Sales",
+          "fields": {
+            "VENTAS - Mes de Creación del Contacto": {
+              "title": "Month of Contact Creation",
+              "options": [
+                "JANUARY",
+                "FEBRUARY",
+                "MARCH",
+                "APRIL",
+                "MAY",
+                "JUNE",
+                "JULY",
+                "AUGUST",
+                "SEPTEMBER",
+                "OCTOBER",
+                "NOVEMBER",
+                "DECEMBER"
+              ]
+            },
+            "VENTAS - Año de Creación del Contacto": {
+              "title": "Year of Contact Creation",
+              "options": ["2021", "2022", "2023", "2024"]
+            },
+            "VENTAS - Origen del Lead": {
+              "title": "Lead Source",
+              "options": [
+                "Instagram",
+                "Facebook",
+                "Youtube",
+                "TikTok",
+                "Webinar",
+                "Client Reference",
+                "Supplier Reference",
+                "Reference from other industry contacts",
+                "Automatic Webinar",
+                "Raffle",
+                "Ads",
+                "Google",
+                "Web",
+                "Schwarzkopf"
+              ]
+            },
+            "VENTAS - Responsable Primer Contacto": {
+              "title": "First Contact Responsible",
+              "options": ["JORGE", "GUILLERMO", "PABLO", "PATRICIA"]
+            },
+            "VENTAS - Responsable de Sesión Estratégica Inicial": {
+              "title": "Initial Strategic Session Responsible",
+              "options": ["JORGE", "GUILLERMO", "PABLO", "PATRICIA"]
+            },
+            "VENTAS - Plan de Crecimiento 360": {
+              "title": "360 Growth Plan",
+              "options": [
+                "START",
+                "STEP",
+                "GROW",
+                "SUCCESS",
+                "SCALE",
+                "EXPANDING"
+              ]
+            },
+            "VENTAS - Responsable de Sesión de Bienvenida": {
+              "title": "Welcome Session Responsible",
+              "options": ["PATRICIA", "GUILLERMO", "JORGE", "PAULA"]
+            }
+          }
+        }
+      }
+    },
+    "clientsFields": {
+      "title": "Client Fields",
+      "groups": {
+        "client": {
+          "title": "Client",
+          "fields": {
+            "CLIENTES - Etapa del Manager": {
+              "title": "Manager Stage",
+              "options": [
+                "Beginner",
+                "Advanced",
+                "Specialist",
+                "Expert",
+                "Master",
+                "Ambassador"
+              ]
+            },
+            "CLIENTES - Etapa del Salón": {
+              "title": "Salon Stage",
+              "options": [
+                "START UP",
+                "STEP UP",
+                "GROW UP",
+                "SCALE UP",
+                "EXPANDING",
+                "NEW SALON",
+                "DEATH VALLEY"
+              ]
+            },
+            "CLIENTES - Número de Colaboradores": {
+              "title": "Number of Collaborators",
+              "options": [
+                "1",
+                "1.5",
+                "2",
+                "2.5",
+                "3",
+                "3.5",
+                "4",
+                "4.5",
+                "5",
+                "5.5",
+                "6",
+                "6.5",
+                "7",
+                "7.5",
+                "8",
+                "8.5",
+                "9",
+                "9.5",
+                "10",
+                "10-50",
+                "50-250",
+                ">250"
+              ]
+            },
+            "CLIENTES - Número de Salones": {
+              "title": "Number of Salons",
+              "options": [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "10",
+                "10-20",
+                ">20"
+              ]
+            },
+            "CLIENTES - Facturación Promedio Mensual": {
+              "title": "Average Monthly Billing",
+              "options": [
+                "0-4K",
+                "4K-8K",
+                "8K-12K",
+                "12K-16K",
+                "16K-20K",
+                "20K-30K",
+                "30K-40K",
+                "40K-50K",
+                "50K-60K",
+                "60K-100K",
+                "100K-150K",
+                "150K-200K",
+                ">200K"
+              ]
+            }
+          }
+        },
+        "insiders": {
+          "title": "Insiders",
+          "fields": {
+            "CLIENTES - Estado del Cliente": {
+              "title": "Client Status",
+              "options": ["ACTIVE", "INACTIVE", "STANDBY", "ACTIVE PRODUCT"]
+            },
+            "CLIENTES - Fecha de Alta": {
+              "title": "Start Date"
+            },
+            "CLIENTES - Fecha de Baja": {
+              "title": "End Date"
+            },
+            "CLIENTES - Insiders ID": {
+              "title": "Insiders ID"
+            },
+            "CLIENTES - Fecha de Standby": {
+              "title": "Standby Date"
+            },
+            "CLIENTES - Fecha de Fin de Servicios Activos": {
+              "title": "End Date of Active Services"
+            }
+          }
+        }
+      }
+    },
+    "consultingAndMentoringFields": {
+      "title": "Consulting and Mentoring Fields",
+      "groups": {
+        "mentoring": {
+          "title": "Mentoring",
+          "fields": {
+            "MENTORING - Responsable": {
+              "title": "Responsible",
+              "options": [
+                "LORENA",
+                "PEDRO",
+                "AINHOA",
+                "OIHANE",
+                "JESÚS",
+                "PABLO"
+              ]
+            },
+            "MENTORING - Fecha de Alta": {
+              "title": "Start Date"
+            },
+            "MENTORING - Fecha de Baja": {
+              "title": "End Date"
+            }
+          }
+        },
+        "extraMentoring": {
+          "title": "Extra Mentoring",
+          "fields": {
+            "MENTORING EXTRA - Nº Contratado": {
+              "title": "Contracted Nº"
+            },
+            "MENTORING EXTRA - Nº Realizado": {
+              "title": "Realized Nº"
+            },
+            "MENTORING EXTRA - Responsable": {
+              "title": "Responsible",
+              "options": [
+                "LORENA",
+                "PEDRO",
+                "AINHOA",
+                "OIHANE",
+                "JESÚS",
+                "PABLO"
+              ]
+            }
+          }
+        },
+        "cm": {
+          "title": "Consulting and Mentoring",
+          "fields": {
+            "CM - Responsable": {
+              "title": "Responsible",
+              "options": [
+                "LORENA",
+                "PEDRO",
+                "AINHOA",
+                "OIHANE",
+                "JESÚS",
+                "PABLO"
+              ]
+            },
+            "CM - Fecha de Alta": {
+              "title": "Start Date"
+            },
+            "CM - Fecha de Baja": {
+              "title": "End Date"
+            }
+          }
+        }
+      }
+    },
+    "trainingsFields": {
+      "title": "Training Fields",
+      "groups": {
+        "consulting360": {
+          "title": "360º Consulting",
+          "fields": {
+            "CONSULTORÍA 360º - Edición": {
+              "title": "Edition",
+              "options": ["ED1 MAR-MAY24", "ED2 APR-MAY24", "ED3 MAY-JUN24"]
+            }
+          }
+        },
+        "inpTraining": {
+          "title": "INP Training",
+          "fields": {
+            "FORMACIÓN INP - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 JUL24",
+                "ED02 SEP24",
+                "ED03 OCT24",
+                "ED04 NOV24",
+                "ED00 FORMER"
+              ]
+            }
+          }
+        },
+        "insideClub": {
+          "title": "Inside Club",
+          "fields": {
+            "INSIDE CLUB - Fecha de Inicio": {
+              "title": "Start Date"
+            },
+            "INSIDE CLUB - Fecha de Fin": {
+              "title": "End Date"
+            },
+            "INSIDE CLUB - Nivel": {
+              "title": "Level",
+              "options": ["ADVANCED", "EXPERT", "AMBASSADOR"]
+            }
+          }
+        },
+        "directiveManagement": {
+          "title": "Directive Management",
+          "fields": {
+            "GESTIÓN DIRECTIVA - Fecha de Inicio": {
+              "title": "Start Date"
+            },
+            "GESTIÓN DIRECTIVA - Fecha de Fin": {
+              "title": "End Date"
+            },
+            "GESTIÓN DIRECTIVA - Nivel": {
+              "title": "Level",
+              "options": ["Level 1", "Level 2", "Level 3"]
+            }
+          }
+        },
+        "hypersalesSalon": {
+          "title": "Hypersales Salon",
+          "fields": {
+            "SALÓN HIPERVENTAS - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 FEB24",
+                "ED02 MAR24",
+                "ED03 APR24",
+                "ED04 MAY-SEP24",
+                "ED05 JUN-OCT24",
+                "ED06 JUL-NOV24",
+                "ED07 SEP24-JAN25",
+                "ED08 OCT24-FEB25",
+                "ED09 NOV24-MAR25"
+              ]
+            }
+          }
+        },
+        "ibm": {
+          "title": "IBM",
+          "fields": {
+            "IBM - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 JAN-APR21",
+                "ED02 JAN-APR22",
+                "ED03 APR-JUL22",
+                "ED04 SEP-DEC22",
+                "ED05 JAN-MAR23",
+                "ED06 APR-JUL23",
+                "ED07 SEP-DEC23",
+                "ED08 JAN-MAR24",
+                "ED09 SEP-DEC24"
+              ]
+            }
+          }
+        },
+        "starClub": {
+          "title": "Star Club",
+          "fields": {
+            "STAR CLUB - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 SEP-DEC21",
+                "ED02 JAN-APR22",
+                "ED03 SEP-DEC23",
+                "ED04 SEP-DEC24"
+              ]
+            }
+          }
+        },
+        "salonExperience": {
+          "title": "Salon Experience",
+          "fields": {
+            "SALÓN EXPERIENCE - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 SEP-DEC21",
+                "ED02 JAN-MAY23",
+                "ED03 JAN-MAY24",
+                "ED04 JAN-MAY25"
+              ]
+            }
+          }
+        },
+        "scalingS": {
+          "title": "Scaling-S",
+          "fields": {
+            "SCALING-S - Edición": {
+              "title": "Edition",
+              "options": [
+                "ED01 JAN-MAR24",
+                "ED02 APR-MAY24",
+                "ED03 MAY-JUN24",
+                "ED04 JUN-JUL24",
+                "ED05 SEP-OCT24"
+              ]
+            }
+          }
+        },
+        "servicesMenu": {
+          "title": "Services Menu",
+          "fields": {
+            "MENÚ DE SERVICIOS - Edición": {
+              "title": "Edition",
+              "options": ["ED01 2023", "ED02 JAN24", "ED03 MAR24", "ED04 JUN24"]
+            }
+          }
+        }
+      }
+    },
+    "marketingFields": {
+      "title": "Marketing Fields",
+      "groups": {
+        "salonMarketing": {
+          "title": "Salon Marketing",
+          "fields": {
+            "MARKETING SALÓN- Fecha de Inicio": {
+              "title": "Start Date"
+            },
+            "MARKETING SALÓN - Fecha de Fin": {
+              "title": "End Date"
+            },
+            "MARKETING SALÓN - Nivel": {
+              "title": "Level",
+              "options": ["Level 1", "Level 2", "Level 3"]
+            },
+            "MARKETING SALÓN - Meses NUEVOS": {
+              "title": "NEW Months",
+              "options": [
+                "JAN23",
+                "FEB23",
+                "MAR23",
+                "APR23",
+                "MAY23",
+                "JUN23",
+                "JUL23",
+                "AUG23",
+                "SEP23",
+                "OCT23",
+                "NOV23",
+                "DEC23",
+                "JAN24",
+                "FEB24",
+                "MAR24",
+                "APR24",
+                "MAY24",
+                "JUN24",
+                "JUL24",
+                "AUG24",
+                "SEP24",
+                "OCT24",
+                "NOV24",
+                "DEC24",
+                "JAN25",
+                "FEB25",
+                "MAR25",
+                "APR25",
+                "MAY25",
+                "JUN25",
+                "JUL25",
+                "AUG25",
+                "SEP25",
+                "OCT25"
+              ]
+            },
+            "MARKETING SALÓN - Meses JUNIOR": {
+              "title": "JUNIOR Months",
+              "options": [
+                "JAN23",
+                "FEB23",
+                "MAR23",
+                "APR23",
+                "MAY23",
+                "JUN23",
+                "JUL23",
+                "AUG23",
+                "SEP23",
+                "OCT23",
+                "NOV23",
+                "DEC23",
+                "JAN24",
+                "FEB24",
+                "MAR24",
+                "APR24",
+                "MAY24",
+                "JUN24",
+                "JUL24",
+                "AUG24",
+                "SEP24",
+                "OCT24",
+                "NOV24",
+                "DEC24",
+                "JAN25",
+                "FEB25",
+                "MAR25",
+                "APR25",
+                "MAY25",
+                "JUN25",
+                "JUL25",
+                "AUG25",
+                "SEP25",
+                "OCT25"
+              ]
+            },
+            "MARKETING SALÓN - Meses AVANZADO": {
+              "title": "ADVANCED Months",
+              "options": [
+                "JAN23",
+                "FEB23",
+                "MAR23",
+                "APR23",
+                "MAY23",
+                "JUN23",
+                "JUL23",
+                "AUG23",
+                "SEP23",
+                "OCT23",
+                "NOV23",
+                "DEC23",
+                "JAN24",
+                "FEB24",
+                "MAR24",
+                "APR24",
+                "MAY24",
+                "JUN24",
+                "JUL24",
+                "AUG24",
+                "SEP24",
+                "OCT24",
+                "NOV24",
+                "DEC24",
+                "JAN25",
+                "FEB25",
+                "MAR25",
+                "APR25",
+                "MAY25",
+                "JUN25",
+                "JUL25",
+                "AUG25",
+                "SEP25",
+                "OCT25"
+              ]
+            },
+            "MARKETING SALÓN - Meses MÁSTER": {
+              "title": "MASTER Months",
+              "options": [
+                "JAN23",
+                "FEB23",
+                "MAR23",
+                "APR23",
+                "MAY23",
+                "JUN23",
+                "JUL23",
+                "AUG23",
+                "SEP23",
+                "OCT23",
+                "NOV23",
+                "DEC23",
+                "JAN24",
+                "FEB24",
+                "MAR24",
+                "APR24",
+                "MAY24",
+                "JUN24",
+                "JUL24",
+                "AUG24",
+                "SEP24",
+                "OCT24",
+                "NOV24",
+                "DEC24",
+                "JAN25",
+                "FEB25",
+                "MAR25",
+                "APR25",
+                "MAY25",
+                "JUN25",
+                "JUL25",
+                "AUG25",
+                "SEP25",
+                "OCT25"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "creativitiesFields": {
+      "title": "Creativity Fields",
+      "groups": {
+        "brandCreation": {
+          "title": "Brand Creation",
+          "fields": {
+            "CREACIÓN DE MARCA - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "brandDesign": {
+          "title": "Brand Design",
+          "fields": {
+            "DISEÑO DE MARCA - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "brandDevelopment": {
+          "title": "Brand Development",
+          "fields": {
+            "DESARROLLO DE MARCA - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "logoCreation": {
+          "title": "Logo Creation",
+          "fields": {
+            "CREACIÓN DE LOGOTIPO - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "facadeDesign": {
+          "title": "Facade Design",
+          "fields": {
+            "DISEÑO DE FACHADA - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "interiorDesign": {
+          "title": "Interior Design",
+          "fields": {
+            "DISEÑO DE INTERIORISMO - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        },
+        "webDesign": {
+          "title": "Web Design",
+          "fields": {
+            "DISEÑO WEB - Fecha de Inicio": {
+              "title": "Start Date"
+            }
+          }
+        }
+      }
+    }
   }
 }

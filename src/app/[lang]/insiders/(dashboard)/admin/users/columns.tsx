@@ -11,19 +11,19 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { ServiceUser, FieldType } from "./lib/types/user";
 import moment from "moment-timezone";
-import "moment/locale/es"; // Importar el idioma español
+import "moment/locale/es";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 
-export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
-  const categoryNames: Record<FieldType, string> = {
-    clientsFields: "Clientes",
-    salesFields: "Ventas",
-    consultingAndMentoringFields: "Consultoría y Mentoring",
-    marketingFields: "Marketing",
-    trainingsFields: "Formación",
-    creativitiesFields: "Creatividad",
-  };
+const categoryNames: Record<FieldType, string> = {
+  clientsFields: "Clientes",
+  salesFields: "Ventas",
+  consultingAndMentoringFields: "Consultoría y Mentoring",
+  marketingFields: "Marketing",
+  trainingsFields: "Formación",
+  creativitiesFields: "Creatividad",
+};
 
+export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
   return useMemo(() => {
     if (!data || data.length === 0) return [];
 
@@ -54,40 +54,55 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
       {
         accessorKey: "lastName",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Apellido" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
       {
         accessorKey: "email",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Email" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
       {
         accessorKey: "role",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Rol" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
       {
         accessorKey: "contactNumber",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Número de Contacto" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
       {
         accessorKey: "lastLogin",
@@ -101,8 +116,11 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
           const value = getValue() as Date;
           return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
         },
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "date",
+        },
       },
       {
         accessorKey: "lastHoldedSyncAt",
@@ -113,16 +131,22 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
           const value = getValue() as Date;
           return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
         },
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "date",
+        },
       },
       {
         accessorKey: "holdedId",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Holded ID" />
         ),
-        enableSorting: false,
-        enableHiding: false,
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
       },
     ];
 
@@ -158,11 +182,16 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
               }
               return "";
             },
-            header: field.es,
+            header: ({ column }) => (
+              <DataTableColumnHeader column={column} title={field.es} />
+            ),
             cell: ({ getValue }) => getValue() || "",
+            enableSorting: true,
+            enableHiding: true,
             meta: {
               category: categoryNames[fieldType],
               subCategory: field.subCategoryName,
+              filterType: "text", // Assuming all dynamic fields are text-based. Adjust if necessary.
             },
           });
         }
@@ -197,6 +226,5 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     };
 
     return [...baseColumns, ...dynamicColumns, actionsColumn];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 };
