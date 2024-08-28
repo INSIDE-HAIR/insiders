@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Button } from "@/src/components/ui/button";
@@ -13,233 +14,217 @@ import moment from "moment-timezone";
 import "moment/locale/es";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 
-const categoryNames: Record<FieldType, string> = {
-  clientsFields: "Clientes",
-  salesFields: "Ventas",
-  consultingAndMentoringFields: "Consultoría y Mentoring",
-  marketingFields: "Marketing",
-  trainingsFields: "Formación",
-  creativitiesFields: "Creatividad",
-};
-
-export const generateColumns = (
-  data: ServiceUser[] | null | undefined
-): ColumnDef<ServiceUser>[] => {
-  const baseColumns: ColumnDef<ServiceUser>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected()}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: "name",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Nombre" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-    {
-      accessorKey: "lastName",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Apellido" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-    {
-      accessorKey: "email",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-    {
-      accessorKey: "role",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Rol" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-    {
-      accessorKey: "contactNumber",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Número de Contacto" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-    {
-      accessorKey: "lastLogin",
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="Último Inicio de Sesión"
-        />
-      ),
-      cell: ({ getValue }) => {
-        const value = getValue() as Date | string | null;
-        return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
-      },
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "date",
-      },
-    },
-    {
-      accessorKey: "lastHoldedSyncAt",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Última Sync Holded" />
-      ),
-      cell: ({ getValue }) => {
-        const value = getValue() as Date | string | null;
-        return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
-      },
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "date",
-      },
-    },
-    {
-      accessorKey: "holdedId",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Holded ID" />
-      ),
-      enableSorting: true,
-      enableHiding: true,
-      meta: {
-        filterType: "text",
-      },
-    },
-  ];
-
-  if (!Array.isArray(data) || data.length === 0) {
-    return baseColumns;
-  }
-
-  const fieldTypes: FieldType[] = [
-    "clientsFields",
-    "salesFields",
-    "consultingAndMentoringFields",
-    "marketingFields",
-    "trainingsFields",
-    "creativitiesFields",
-  ];
-
-  const dynamicColumns: ColumnDef<ServiceUser>[] = [];
-
-  fieldTypes.forEach((fieldType) => {
-    const allFields: any[] = [];
-    for (let i = 0; i < data.length; i++) {
-      const user = data[i];
-      if (user && typeof user === "object" && Array.isArray(user[fieldType])) {
-        allFields.push(...user[fieldType]);
-      }
-    }
-
-    const uniqueFieldNames = new Set<string>();
-    allFields.forEach((field) => {
-      if (
-        field &&
-        typeof field === "object" &&
-        typeof field.holdedFieldName === "string"
-      ) {
-        uniqueFieldNames.add(field.holdedFieldName);
-      }
-    });
-
-    uniqueFieldNames.forEach((fieldName) => {
-      const field = allFields.find((f) => f && f.holdedFieldName === fieldName);
-      if (field) {
-        dynamicColumns.push({
-          id: `${fieldType}_${fieldName}`,
-          accessorFn: (row: ServiceUser) => {
-            const fields = row[fieldType];
-            if (Array.isArray(fields)) {
-              const field = fields.find(
-                (f) => f && f.holdedFieldName === fieldName
-              );
-              return field && field.value ? field.value : "";
-            }
-            return "";
-          },
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title={field.es || fieldName}
-            />
-          ),
-          cell: ({ getValue }) => getValue() || "",
-          enableSorting: true,
-          enableHiding: true,
-          meta: {
-            category: categoryNames[fieldType] || fieldType,
-            subCategory: field.subCategoryName || "Otros",
-            filterType: "text",
-          },
-        });
-      }
-    });
-  });
-
-  const actionsColumn: ColumnDef<ServiceUser> = {
-    id: "actions",
-    cell: ({ row }) => {
-      const user = row.original;
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menú</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copiar ID de usuario
-            </DropdownMenuItem>
-            <DropdownMenuItem>Ver detalles del usuario</DropdownMenuItem>
-            <DropdownMenuItem>Ver campos del usuario</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
+  const categoryNames: Record<FieldType, string> = {
+    clientsFields: "Clientes",
+    salesFields: "Ventas",
+    consultingAndMentoringFields: "Consultoría y Mentoring",
+    marketingFields: "Marketing",
+    trainingsFields: "Formación",
+    creativitiesFields: "Creatividad",
   };
 
-  return [...baseColumns, ...dynamicColumns, actionsColumn];
+  return useMemo(() => {
+    if (!data || data.length === 0) return [];
+
+    const baseColumns: ColumnDef<ServiceUser>[] = [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllPageRowsSelected()}
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Nombre" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+      {
+        accessorKey: "lastName",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Apellido" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+      {
+        accessorKey: "email",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Email" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Rol" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+      {
+        accessorKey: "contactNumber",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Número de Contacto" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+      {
+        accessorKey: "lastLogin",
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title="Último Inicio de Sesión"
+          />
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() as Date;
+          return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
+        },
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "date",
+        },
+      },
+      {
+        accessorKey: "lastHoldedSyncAt",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Última Sync Holded" />
+        ),
+        cell: ({ getValue }) => {
+          const value = getValue() as Date;
+          return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
+        },
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "date",
+        },
+      },
+      {
+        accessorKey: "holdedId",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Holded ID" />
+        ),
+        enableSorting: true,
+        enableHiding: true,
+        meta: {
+          filterType: "text",
+        },
+      },
+    ];
+
+    const fieldTypes: FieldType[] = [
+      "clientsFields",
+      "salesFields",
+      "consultingAndMentoringFields",
+      "marketingFields",
+      "trainingsFields",
+      "creativitiesFields",
+    ];
+
+    const dynamicColumns: ColumnDef<ServiceUser>[] = [];
+
+    fieldTypes.forEach((fieldType) => {
+      const allFields = data.flatMap((user) => user[fieldType] || []);
+      const uniqueFields = Array.from(
+        new Set(allFields.map((field) => field.holdedFieldName))
+      );
+
+      uniqueFields.forEach((fieldName) => {
+        const field = allFields.find((f) => f.holdedFieldName === fieldName);
+        if (field) {
+          dynamicColumns.push({
+            id: `${fieldType}_${fieldName}`,
+            accessorFn: (row: ServiceUser) => {
+              const fields = row[fieldType];
+              if (Array.isArray(fields)) {
+                const field = fields.find(
+                  (f) => f.holdedFieldName === fieldName
+                );
+                return field ? field.value : "";
+              }
+              return "";
+            },
+            header: ({ column }) => (
+              <DataTableColumnHeader column={column} title={field.es} />
+            ),
+            cell: ({ getValue }) => getValue() || "",
+            enableSorting: true,
+            enableHiding: true,
+            meta: {
+              category: categoryNames[fieldType],
+              subCategory: field.subCategoryName,
+              filterType: "text", // Assuming all dynamic fields are text-based. Adjust if necessary.
+            },
+          });
+        }
+      });
+    });
+
+    const actionsColumn: ColumnDef<ServiceUser> = {
+      id: "actions",
+      cell: ({ row }) => {
+        const user = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menú</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(user.id)}
+              >
+                Copiar ID de usuario
+              </DropdownMenuItem>
+              <DropdownMenuItem>Ver detalles del usuario</DropdownMenuItem>
+              <DropdownMenuItem>Ver campos del usuario</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    };
+
+    return [...baseColumns, ...dynamicColumns, actionsColumn];
+  }, [data]);
 };

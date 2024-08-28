@@ -3,27 +3,27 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster, toast } from "sonner";
+import { useColumns } from "./columns"; // Asegúrate de que la ruta de importación sea correcta
 import { DataTable } from "./components/DataTable";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { ServiceUser } from "./lib/types/user";
 import { getUsers, syncUsersWithHolded } from "./lib/api/api";
-import { generateColumns } from "./columns";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<ServiceUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const columns = generateColumns(users);
+  const columns = useColumns(users); // Usa el hook personalizado aquí
 
   const fetchUsers = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await getUsers();
-      console.log("Fetched users:", data);
+      console.log("Fetched users:", data); // Añade este log
       setUsers(data);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error fetching users:", err); // Añade este log
       toast.error("Failed to fetch users. Please try again.");
     } finally {
       setIsLoading(false);
