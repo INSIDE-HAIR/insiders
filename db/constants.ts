@@ -90,7 +90,7 @@ export const serviceOptions = [
     name: "Marketing",
     order: 1,
     services: [
-      { id: "marketingSalon", name: "Marketing Salón", order: 1 },
+      { id: "salonMarketing", name: "Marketing Salón", order: 1 },
       { id: "guiaMarketingDigital", name: "Guía Marketing Digital", order: 2 },
       { id: "startMarketing", name: "Start Marketing", order: 3 },
       { id: "teams", name: "Teams", order: 4 },
@@ -132,45 +132,31 @@ export type FieldType = "selection" | "date" | "text" | "number";
 
 export type Field = {
   holdedFieldName: string;
-  es: string;
-  en: string;
   subCategoryId: string;
-  subCategoryName: string;
   type: FieldType;
   options?: string[];
 };
 
 export type FieldGroup = {
   id: string;
-  es: string;
-  en: string;
   fields: Field[];
 };
 
 export type CoreGroup = {
   id: string;
-  es: string;
-  en: string;
   groups: FieldGroup[];
 };
 
 export const dataBaseTranslation: CoreGroup[] = [
   {
     id: "salesFields",
-    es: "Campos de Ventas",
-    en: "Sales Fields",
     groups: [
       {
         id: "sales",
-        es: "Ventas",
-        en: "Sales",
         fields: [
           {
             holdedFieldName: "VENTAS - Mes de Creación del Contacto",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Mes de Creación del Contacto",
-            en: "Month of Contact Creation",
             type: "selection",
             options: [
               "ENERO",
@@ -190,18 +176,12 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "VENTAS - Año de Creación del Contacto",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Año de Creación del Contacto",
-            en: "Year of Contact Creation",
             type: "selection",
             options: ["2021", "2022", "2023", "2024"],
           },
           {
             holdedFieldName: "VENTAS - Origen del Lead",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Origen del Lead",
-            en: "Lead Source",
             type: "selection",
             options: [
               "Instagram",
@@ -223,9 +203,6 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "VENTAS - Responsable Primer Contacto",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Responsable Primer Contacto",
-            en: "First Contact Responsible",
             type: "selection",
             options: ["JORGE", "GUILLERMO", "PABLO", "PATRICIA"],
           },
@@ -233,27 +210,18 @@ export const dataBaseTranslation: CoreGroup[] = [
             holdedFieldName:
               "VENTAS - Responsable de Sesión Estratégica Inicial",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Responsable de Sesión Estratégica Inicial",
-            en: "Initial Strategic Session Responsible",
             type: "selection",
             options: ["JORGE", "GUILLERMO", "PABLO", "PATRICIA"],
           },
           {
             holdedFieldName: "VENTAS - Plan de Crecimiento 360",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Plan de Crecimiento 360",
-            en: "360 Growth Plan",
             type: "selection",
             options: ["START", "STEP", "GROW", "SUCCESS", "SCALE", "EXPANDING"],
           },
           {
             holdedFieldName: "VENTAS - Responsable de Sesión de Bienvenida",
             subCategoryId: "sales",
-            subCategoryName: "Ventas",
-            es: "Responsable de Sesión de Bienvenida",
-            en: "Welcome Session Responsible",
             type: "selection",
             options: ["PATRICIA", "GUILLERMO", "JORGE", "PAULA"],
           },
@@ -263,20 +231,13 @@ export const dataBaseTranslation: CoreGroup[] = [
   },
   {
     id: "clientsFields",
-    es: "Campos de Clientes",
-    en: "Client Fields",
     groups: [
       {
         id: "client",
-        es: "Cliente",
-        en: "Client",
         fields: [
           {
             holdedFieldName: "CLIENTES - Etapa del Manager",
             subCategoryId: "client",
-            subCategoryName: "Clientes",
-            es: "Etapa del Manager",
-            en: "Manager Stage",
             type: "selection",
             options: [
               "Principiante",
@@ -290,9 +251,6 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "CLIENTES - Etapa del Salón",
             subCategoryId: "client",
-            subCategoryName: "Clientes",
-            es: "Etapa del Salón",
-            en: "Salon Stage",
             type: "selection",
             options: [
               "START UP",
@@ -307,9 +265,6 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "CLIENTES - Número de Colaboradores",
             subCategoryId: "client",
-            subCategoryName: "Clientes",
-            es: "Número de Colaboradores",
-            en: "Number of Collaborators",
             type: "selection",
             options: [
               "1",
@@ -339,9 +294,6 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "CLIENTES - Número de Salones",
             subCategoryId: "client",
-            subCategoryName: "Clientes",
-            es: "Número de Salones",
-            en: "Number of Salons",
             type: "selection",
             options: [
               "1",
@@ -361,9 +313,6 @@ export const dataBaseTranslation: CoreGroup[] = [
           {
             holdedFieldName: "CLIENTES - Facturación Promedio Mensual",
             subCategoryId: "client",
-            subCategoryName: "Clientes",
-            es: "Facturación Promedio Mensual",
-            en: "Average Monthly Billing",
             type: "selection",
             options: [
               "0-4K",
@@ -385,56 +334,36 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "insiders",
-        es: "Insiders",
-        en: "Insiders",
         fields: [
           {
             holdedFieldName: "CLIENTES - Estado del Cliente",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Estado del Cliente",
-            en: "Client Status",
             type: "selection",
             options: ["ACTIVO", "BAJA", "STANDBY", "PRODUCTO ACTIVO"],
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Alta",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Fecha de Alta",
-            en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Baja",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Fecha de Baja",
-            en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Insiders ID",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Insiders ID",
-            en: "Insiders ID",
             type: "text",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Standby",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Fecha de Standby",
-            en: "Standby Date",
             type: "date",
           },
           {
             holdedFieldName: "CLIENTES - Fecha de Fin de Servicios Activos",
             subCategoryId: "insiders",
-            subCategoryName: "Insiders",
-            es: "Fecha de Fin de Servicios Activos",
-            en: "End Date of Active Services",
             type: "date",
           },
         ],
@@ -443,68 +372,44 @@ export const dataBaseTranslation: CoreGroup[] = [
   },
   {
     id: "consultingAndMentoringFields",
-    es: "Campos de Consultoría y Mentoría",
-    en: "Consulting and Mentoring Fields",
     groups: [
       {
         id: "mentoring",
-        es: "Mentoría",
-        en: "Mentoring",
         fields: [
           {
             holdedFieldName: "MENTORING - Responsable",
-            subCategoryId: "Mentoring",
-            subCategoryName: "Mentoring",
-            es: "Responsable",
-            en: "Responsible",
+            subCategoryId: "mentoring",
             type: "selection",
             options: ["LORENA", "PEDRO", "AINHOA", "OIHANE", "JESÚS", "PABLO"],
           },
           {
             holdedFieldName: "MENTORING - Fecha de Alta",
-            subCategoryId: "Mentoring",
-            subCategoryName: "Mentoring",
-            es: "Fecha de Alta",
-            en: "Start Date",
+            subCategoryId: "mentoring",
             type: "date",
           },
           {
             holdedFieldName: "MENTORING - Fecha de Baja",
-            subCategoryId: "Mentoring",
-            subCategoryName: "Mentoring",
-            es: "Fecha de Baja",
-            en: "End Date",
+            subCategoryId: "mentoring",
             type: "date",
           },
         ],
       },
       {
         id: "extraMentoring",
-        es: "Mentoría Extra",
-        en: "Mentoring Extra",
         fields: [
           {
             holdedFieldName: "MENTORING EXTRA - Nº Contratado",
             subCategoryId: "extraMentoring",
-            subCategoryName: "Mentoría Extra",
-            es: "Nº Contratado",
-            en: "Contracted Nº",
             type: "number",
           },
           {
             holdedFieldName: "MENTORING EXTRA - Nº Realizado",
             subCategoryId: "extraMentoring",
-            subCategoryName: "Mentoría Extra",
-            es: "Nº Realizado",
-            en: "Realized Nº",
             type: "number",
           },
           {
             holdedFieldName: "MENTORING EXTRA - Responsable",
             subCategoryId: "extraMentoring",
-            subCategoryName: "Mentoría Extra",
-            es: "Responsable",
-            en: "Responsible",
             type: "selection",
             options: ["LORENA", "PEDRO", "AINHOA", "OIHANE", "JESÚS", "PABLO"],
           },
@@ -512,32 +417,21 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "cm",
-        es: "Consultoría y Mentoría",
-        en: "Consulting and Mentoring",
         fields: [
           {
             holdedFieldName: "CM - Responsable",
             subCategoryId: "cm",
-            subCategoryName: "CM",
-            es: "Responsable",
-            en: "Responsible",
             type: "selection",
             options: ["LORENA", "PEDRO", "AINHOA", "OIHANE", "JESÚS", "PABLO"],
           },
           {
             holdedFieldName: "CM - Fecha de Alta",
             subCategoryId: "cm",
-            subCategoryName: "CM",
-            es: "Fecha de Alta",
-            en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "CM - Fecha de Baja",
             subCategoryId: "cm",
-            subCategoryName: "CM",
-            es: "Fecha de Baja",
-            en: "End Date",
             type: "date",
           },
         ],
@@ -546,20 +440,13 @@ export const dataBaseTranslation: CoreGroup[] = [
   },
   {
     id: "trainingsFields",
-    es: "Campos de Capacitación",
-    en: "Training Fields",
     groups: [
       {
         id: "consulting360",
-        es: "Consultoría 360º",
-        en: "Consulting 360º",
         fields: [
           {
             holdedFieldName: "CONSULTORÍA 360º - Edición",
             subCategoryId: "consulting360",
-            subCategoryName: "Consultoría 360º",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: ["ED1 MAR-MAY24", "ED2 ABR-MAY24", "ED3 MAY-JUN24"],
           },
@@ -567,15 +454,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "inpTraining",
-        es: "Formación INP",
-        en: "INP Training",
         fields: [
           {
             holdedFieldName: "FORMACIÓN INP - Edición",
             subCategoryId: "inpTraining",
-            subCategoryName: "Formación INP",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 JUL24",
@@ -589,31 +471,20 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "insideClub",
-        es: "Inside Club",
-        en: "Inside Club",
         fields: [
           {
             holdedFieldName: "INSIDE CLUB - Fecha de Inicio",
             subCategoryId: "insideClub",
-            subCategoryName: "Inside Club",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "INSIDE CLUB - Fecha de Fin",
             subCategoryId: "insideClub",
-            subCategoryName: "Inside Club",
-            es: "Fecha de Fin",
-            en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "INSIDE CLUB - Nivel",
             subCategoryId: "insideClub",
-            subCategoryName: "Inside Club",
-            es: "Nivel",
-            en: "Level",
             type: "selection",
             options: ["AVANZADO", "EXPERTO", "EMBAJADOR"],
           },
@@ -621,31 +492,20 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "directiveManagement",
-        es: "Gestión Directiva",
-        en: "Directive Management",
         fields: [
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Fecha de Inicio",
             subCategoryId: "directiveManagement",
-            subCategoryName: "Gestión Directiva",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Fecha de Fin",
             subCategoryId: "directiveManagement",
-            subCategoryName: "Gestión Directiva",
-            es: "Fecha de Fin",
-            en: "End Date",
             type: "date",
           },
           {
             holdedFieldName: "GESTIÓN DIRECTIVA - Nivel",
             subCategoryId: "directiveManagement",
-            subCategoryName: "Gestión Directiva",
-            es: "Nivel",
-            en: "Level",
             type: "selection",
             options: ["Nivel 1", "Nivel 2", "Nivel 3"],
           },
@@ -653,15 +513,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "hypersalesSalon",
-        es: "Salón Hiperventas",
-        en: "Hypersales Salón",
         fields: [
           {
             holdedFieldName: "SALÓN HIPERVENTAS - Edición",
             subCategoryId: "hypersalesSalon",
-            subCategoryName: "Salón Hiperventas",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 FEB24",
@@ -679,15 +534,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "ibm",
-        es: "IBM",
-        en: "IBM",
         fields: [
           {
             holdedFieldName: "IBM - Edición",
             subCategoryId: "ibm",
-            subCategoryName: "IBM",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 ENE-ABR21",
@@ -705,15 +555,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "starClub",
-        es: "Star Club",
-        en: "Star Club",
         fields: [
           {
             holdedFieldName: "STAR CLUB - Edición",
             subCategoryId: "starClub",
-            subCategoryName: "Star Club",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 SEP-DIC21",
@@ -726,15 +571,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "salonExperience",
-        es: "Salón Experience",
-        en: "Salon Experience",
         fields: [
           {
             holdedFieldName: "SALÓN EXPERIENCE - Edición",
             subCategoryId: "salonExperience",
-            subCategoryName: "Salón Experience",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 SEP-DIC21",
@@ -747,15 +587,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "scalingS",
-        es: "Scaling-S",
-        en: "Scaling-S",
         fields: [
           {
             holdedFieldName: "SCALING-S - Edición",
             subCategoryId: "scalingS",
-            subCategoryName: "Scaling-S",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: [
               "ED01 ENE-MAR24",
@@ -769,15 +604,10 @@ export const dataBaseTranslation: CoreGroup[] = [
       },
       {
         id: "servicesMenu",
-        es: "Menú de Servicios",
-        en: "Services Menu",
         fields: [
           {
             holdedFieldName: "MENÚ DE SERVICIOS - Edición",
             subCategoryId: "servicesMenu",
-            subCategoryName: "Menú de Servicios",
-            es: "Edición",
-            en: "Edition",
             type: "selection",
             options: ["ED01 2023", "ED02 ENE24", "ED03 MAR24", "ED04 JUN24"],
           },
@@ -787,45 +617,29 @@ export const dataBaseTranslation: CoreGroup[] = [
   },
   {
     id: "marketingFields",
-    es: "Campos de Marketing",
-    en: "Marketing Fields",
     groups: [
       {
         id: "salonMarketing",
-        es: "Marketing Salón",
-        en: "Salon Marketing",
         fields: [
           {
             holdedFieldName: "MARKETING SALÓN - Fecha de Inicio",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Fecha de Inicio",
-            en: "Start Date",
+            subCategoryId: "salonMarketing",
             type: "date",
           },
           {
             holdedFieldName: "MARKETING SALÓN - Fecha de Fin",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Fecha de Fin",
-            en: "End Date",
+            subCategoryId: "salonMarketing",
             type: "date",
           },
           {
             holdedFieldName: "MARKETING SALÓN - Nivel",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Nivel",
-            en: "Level",
+            subCategoryId: "salonMarketing",
             type: "selection",
             options: ["Nivel 1", "Nivel 2", "Nivel 3"],
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses NUEVOS",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Meses NUEVOS",
-            en: "NEW Months",
+            subCategoryId: "salonMarketing",
             type: "selection",
             options: [
               "ENE23",
@@ -866,10 +680,7 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses JUNIOR",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Meses JUNIOR",
-            en: "JUNIOR Months",
+            subCategoryId: "salonMarketing",
             type: "selection",
             options: [
               "ENE23",
@@ -910,10 +721,7 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses AVANZADO",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Meses AVANZADO",
-            en: "ADVANCED Months",
+            subCategoryId: "salonMarketing",
             type: "selection",
             options: [
               "ENE23",
@@ -954,10 +762,7 @@ export const dataBaseTranslation: CoreGroup[] = [
           },
           {
             holdedFieldName: "MARKETING SALÓN - Meses MÁSTER",
-            subCategoryId: "marketingSalon",
-            subCategoryName: "Marketing Salón",
-            es: "Meses MÁSTER",
-            en: "MASTER Months",
+            subCategoryId: "salonMarketing",
             type: "selection",
             options: [
               "ENE23",
@@ -1002,110 +807,73 @@ export const dataBaseTranslation: CoreGroup[] = [
   },
   {
     id: "creativitiesFields",
-    es: "Campos de Creatividades",
-    en: "Creativity Fields",
     groups: [
       {
         id: "brandCreation",
-        es: "Creación de Marca",
-        en: "Brand Creation",
         fields: [
           {
             holdedFieldName: "CREACIÓN DE MARCA - Fecha de Inicio",
             subCategoryId: "brandCreation",
-            subCategoryName: "Creación de Marca",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "brandDesign",
-        es: "Diseño de Marca",
-        en: "Brand Design",
         fields: [
           {
             holdedFieldName: "DISEÑO DE MARCA - Fecha de Inicio",
             subCategoryId: "brandDesign",
-            subCategoryName: "Diseño de Marca",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "brandDevelopment",
-        es: "Desarrollo de Marca",
-        en: "Brand Development",
         fields: [
           {
             holdedFieldName: "DESARROLLO DE MARCA - Fecha de Inicio",
             subCategoryId: "brandDevelopment",
-            subCategoryName: "Desarrollo de Marca",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "logoCreation",
-        es: "Creación de Logotipo",
-        en: "Logo Creation",
         fields: [
           {
             holdedFieldName: "CREACIÓN DE LOGOTIPO - Fecha de Inicio",
             subCategoryId: "logoCreation",
-            subCategoryName: "Creación de Logotipo",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "facadeDesign",
-        es: "Diseño de Fachada",
-        en: "Facade Design",
         fields: [
           {
             holdedFieldName: "DISEÑO DE FACHADA - Fecha de Inicio",
             subCategoryId: "facadeDesign",
-            subCategoryName: "Diseño de Fachada",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "interiorDesign",
-        es: "Diseño de Interiorismo",
-        en: "Interior Design",
         fields: [
           {
             holdedFieldName: "DISEÑO DE INTERIORISMO - Fecha de Inicio",
             subCategoryId: "interiorDesign",
-            subCategoryName: "Diseño de Interiorismo",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],
       },
       {
         id: "webDesign",
-        es: "Diseño Web",
-        en: "Web Design",
         fields: [
           {
             holdedFieldName: "DISEÑO WEB - Fecha de Inicio",
             subCategoryId: "webDesign",
-            subCategoryName: "Diseño Web",
-            es: "Fecha de Inicio",
-            en: "Start Date",
             type: "date",
           },
         ],

@@ -82,7 +82,7 @@ export function AdvancedColumnFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="sm" className="h-8 w-6 mr-2 -ml-2 p-0">
           <FilterIcon className="h-4 w-4" />
         </Button>
       </PopoverTrigger>

@@ -103,11 +103,36 @@
       "duplicateFullPath": "Ya existe una página con esta ruta completa"
     }
   },
+  "UsersPage": {
+    "fetchingUsers": "Obteniendo usuarios...",
+    "fetchUsersError": "No se pudo obtener la lista de usuarios. Estado: {status}",
+    "fetchUsersClientError": "Error al obtener usuarios en el cliente:",
+    "fetchUsersToastError": "No se pudo obtener la lista de usuarios. Por favor, inténtalo de nuevo.",
+    "usersFetchedSuccess": "Usuarios obtenidos con éxito:",
+    "syncingUsers": "Sincronizando usuarios con Holded...",
+    "syncUsersError": "No se pudo sincronizar usuarios con Holded. Estado: {status}",
+    "syncUsersClientError": "Error al sincronizar usuarios en el cliente:",
+    "syncUsersToastError": "No se pudo sincronizar usuarios con Holded. Por favor, inténtalo de nuevo.",
+    "usersSyncedSuccess": "Usuarios sincronizados con éxito.",
+    "syncUsersToastSuccess": "Usuarios sincronizados con éxito con Holded.",
+    "headerTitle": "Lista de Usuarios",
+    "mainTitle": "Usuarios",
+    "syncing": "Sincronizando...",
+    "syncButton": "Sincronizar con Holded"
+  },
   "Common": {
     "pagination": {
       "previous": "Anterior",
       "next": "Siguiente",
-      "morePages": "Más páginas"
+      "morePages": "Más páginas",
+      "rowsPerPage": "Filas por página",
+      "of": "de",
+      "page": "Página",
+      "goToFirstPage": "Ir a la primera página",
+      "goToPreviousPage": "Ir a la página anterior",
+      "goToNextPage": "Ir a la siguiente página",
+      "goToLastPage": "Ir a la última página",
+      "rowsSelected": "fila(s) seleccionada(s)"
     },
     "general": {
       "loading": "Cargando...",
@@ -148,7 +173,12 @@
       "country": "País",
       "company": "Empresa",
       "type": "Tipo",
-      "notes": "Notas"
+      "notes": "Notas",
+      "role": "Rol",
+      "contactNumber": "Número de Contacto",
+      "lastLogin": "Último Inicio de Sesión",
+      "lastHoldedSyncAt": "Última Sincronización de Holded",
+      "holdedId": "ID de Holded"
     },
     "backups": {
       "current": {
@@ -238,7 +268,10 @@
       "deleteBackup": "Eliminar copia de seguridad"
     },
     "dataTable": {
-      "noFavoriteBackups": "No se encontraron copias de seguridad favoritas. Añade una copia de seguridad a tus favoritos para verla aquí."
+      "noFavoriteBackups": "No se encontraron copias de seguridad favoritas. Añade una copia de seguridad a tus favoritos para verla aquí.",
+      "searchPlaceholder": "Buscar en todas las columnas...",
+      "exportCsv": "Exportar CSV",
+      "noResults": "No hay resultados."
     }
   },
   "fields": {
@@ -246,7 +279,8 @@
       "columns": "Columnas"
     },
     "salesFields": {
-      "title": "Campos de Ventas",
+      "id": "salesFields",
+      "title": "Ventas",
       "groups": {
         "sales": {
           "title": "Ventas",
@@ -319,7 +353,8 @@
       }
     },
     "clientsFields": {
-      "title": "Campos de Clientes",
+      "id": "clientsFields",
+      "title": "Clientes",
       "groups": {
         "client": {
           "title": "Cliente",
@@ -438,7 +473,8 @@
       }
     },
     "consultingAndMentoringFields": {
-      "title": "Campos de Consultoría y Mentoría",
+      "id": "consultingAndMentoringFields",
+      "title": "Consultoría y Mentoría",
       "groups": {
         "mentoring": {
           "title": "Mentoría",
@@ -509,7 +545,8 @@
       }
     },
     "trainingsFields": {
-      "title": "Campos de Capacitación",
+      "id": "trainingsFields",
+      "title": "Capacitación",
       "groups": {
         "consulting360": {
           "title": "Consultoría 360º",
@@ -658,7 +695,8 @@
       }
     },
     "marketingFields": {
-      "title": "Campos de Marketing",
+      "id": "marketingFields",
+      "title": "Marketing",
       "groups": {
         "salonMarketing": {
           "title": "Marketing Salón",
@@ -834,7 +872,8 @@
       }
     },
     "creativitiesFields": {
-      "title": "Campos de Creatividades",
+      "id": "creativitiesFields",
+      "title": "Creatividades",
       "groups": {
         "brandCreation": {
           "title": "Creación de Marca",

@@ -103,11 +103,36 @@
       "duplicateFullPath": "A page with this full path already exists"
     }
   },
+  "UsersPage": {
+    "fetchingUsers": "Fetching users...",
+    "fetchUsersError": "Failed to fetch users. Status: {status}",
+    "fetchUsersClientError": "Error fetching users on client:",
+    "fetchUsersToastError": "Failed to fetch users. Please try again.",
+    "usersFetchedSuccess": "Users fetched successfully:",
+    "syncingUsers": "Syncing users with Holded...",
+    "syncUsersError": "Failed to sync users with Holded. Status: {status}",
+    "syncUsersClientError": "Error syncing users on client:",
+    "syncUsersToastError": "Failed to sync users with Holded. Please try again.",
+    "usersSyncedSuccess": "Users synced successfully.",
+    "syncUsersToastSuccess": "Users synced successfully with Holded.",
+    "headerTitle": "User List",
+    "mainTitle": "Users",
+    "syncing": "Syncing...",
+    "syncButton": "Sync with Holded"
+  },
   "Common": {
     "pagination": {
       "previous": "Previous",
       "next": "Next",
-      "morePages": "More pages"
+      "morePages": "More pages",
+      "rowsPerPage": "Rows per page",
+      "of": "of",
+      "page": "Page",
+      "goToFirstPage": "Go to first page",
+      "goToPreviousPage": "Go to previous page",
+      "goToNextPage": "Go to next page",
+      "goToLastPage": "Go to last page",
+      "rowsSelected": "row(s) selected"
     },
     "general": {
       "loading": "Loading...",
@@ -148,7 +173,12 @@
       "country": "Country",
       "company": "Company",
       "type": "Type",
-      "notes": "Notes"
+      "notes": "Notes",
+      "role": "Role",
+      "contactNumber": "Contact Number",
+      "lastLogin": "Last Login",
+      "lastHoldedSyncAt": "Last Holded Sync At",
+      "holdedId": "Holded ID"
     },
     "backups": {
       "current": {
@@ -238,7 +268,10 @@
       "deleteBackup": "Delete backup"
     },
     "dataTable": {
-      "noFavoriteBackups": "No favorite backups found. Add a backup to your favorites to see it here."
+      "noFavoriteBackups": "No favorite backups found. Add a backup to your favorites to see it here.",
+      "searchPlaceholder": "Search in all columns...",
+      "exportCsv": "Export CSV",
+      "noResults": "No results found."
     }
   },
   "fields": {
@@ -246,6 +279,7 @@
       "columns": "Columns"
     },
     "salesFields": {
+      "id": "salesFields",
       "title": "Sales Fields",
       "groups": {
         "sales": {
@@ -319,10 +353,11 @@
       }
     },
     "clientsFields": {
+      "id": "clients",
       "title": "Client Fields",
       "groups": {
         "client": {
-          "title": "Client",
+          "title": "client",
           "fields": {
             "CLIENTES - Etapa del Manager": {
               "title": "Manager Stage",
@@ -438,10 +473,11 @@
       }
     },
     "consultingAndMentoringFields": {
+      "id": "consultingAndMentoringFields",
       "title": "Consulting and Mentoring Fields",
       "groups": {
         "mentoring": {
-          "title": "Mentoring",
+          "title": "mentoring",
           "fields": {
             "MENTORING - Responsable": {
               "title": "Responsible",
@@ -509,6 +545,7 @@
       }
     },
     "trainingsFields": {
+      "id": "trainingsFields",
       "title": "Training Fields",
       "groups": {
         "consulting360": {
@@ -658,12 +695,13 @@
       }
     },
     "marketingFields": {
+      "id": "marketingFields",
       "title": "Marketing Fields",
       "groups": {
         "salonMarketing": {
           "title": "Salon Marketing",
           "fields": {
-            "MARKETING SALÓN- Fecha de Inicio": {
+            "MARKETING SALÓN - Fecha de Inicio": {
               "title": "Start Date"
             },
             "MARKETING SALÓN - Fecha de Fin": {
@@ -834,6 +872,7 @@
       }
     },
     "creativitiesFields": {
+      "id": "creativitiesFields",
       "title": "Creativity Fields",
       "groups": {
         "brandCreation": {

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useMemo, useCallback } from "react";
 import {
   ColumnDef,
@@ -30,6 +30,7 @@ import { AdvancedColumnFilter } from "./AdvancedColumnFilter";
 import { DataTablePagination } from "./DataTablePagination";
 import { GroupColumnSelector } from "./GroupColumnSelector";
 import moment from "moment-timezone";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -48,6 +49,7 @@ export function DataTable<TData>({
   const [appliedFilters, setAppliedFilters] = useState<{
     [key: string]: any[];
   }>({});
+  const t = useTranslations("Common.dataTable"); // Usar el contexto de traducciones específico
 
   const columns = useMemo(() => {
     return userColumns.map((col) => ({
@@ -195,7 +197,7 @@ export function DataTable<TData>({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Input
-          placeholder="Buscar en todas las columnas..."
+          placeholder={t("searchPlaceholder")}
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(String(event.target.value))}
           className="max-w-sm"
@@ -204,7 +206,7 @@ export function DataTable<TData>({
           <GroupColumnSelector table={table} />
           <Button onClick={handleExportCSV}>
             <DownloadIcon className="mr-2 h-4 w-4" />
-            Export CSV
+            {t("exportCsv")}
           </Button>
         </div>
       </div>
@@ -223,7 +225,7 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id}>
                     {header.isPlaceholder ? null : (
-                      <div>
+                      <div className="flex">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
@@ -268,7 +270,7 @@ export function DataTable<TData>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No hay resultados.
+                  {t("noResults")}
                 </TableCell>
               </TableRow>
             )}

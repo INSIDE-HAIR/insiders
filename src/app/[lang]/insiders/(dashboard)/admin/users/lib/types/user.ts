@@ -4,15 +4,11 @@ import { UserRole } from "@prisma/client";
 export interface Field {
   id: string;
   holdedFieldName: string;
-  es: string;
-  en: string;
   value: string;
   options: string[];
   type: string;
   categoryId?: string;
-  categoryName?: string;
   subCategoryId?: string;
-  subCategoryName?: string;
   updatedAt: Date;
   createdAt: Date | null;
 }

@@ -24,14 +24,14 @@ export function GroupColumnSelector<TData>({
 }: GroupColumnSelectorProps<TData>) {
   const t = useTranslations();
 
-  // Function to toggle visibility of all columns in a category
+  // Function to toggle visibility of all columns in a categoryId
   const handleToggleCategoryVisibility = (
-    category: string,
+    categoryId: string,
     isVisible: boolean
   ) => {
     table.getAllColumns().forEach((column) => {
-      const meta = column.columnDef.meta as { category?: string } | undefined;
-      if (meta?.category === category) {
+      const meta = column.columnDef.meta as { categoryId?: string } | undefined;
+      if (meta?.categoryId === categoryId) {
         column.toggleVisibility(isVisible);
       }
     });
@@ -42,13 +42,13 @@ export function GroupColumnSelector<TData>({
     const cats: Record<string, Record<string, any[]>> = {};
     table.getAllColumns().forEach((column) => {
       const meta = column.columnDef.meta as
-        | { category?: string; subCategory?: string }
+        | { categoryId?: string; subCategoryId?: string }
         | undefined;
-      if (meta?.category && meta?.subCategory) {
-        if (!cats[meta.category]) cats[meta.category] = {};
-        if (!cats[meta.category][meta.subCategory])
-          cats[meta.category][meta.subCategory] = [];
-        cats[meta.category][meta.subCategory].push(column);
+      if (meta?.categoryId && meta?.subCategoryId) {
+        if (!cats[meta.categoryId]) cats[meta.categoryId] = {};
+        if (!cats[meta.categoryId][meta.subCategoryId])
+          cats[meta.categoryId][meta.subCategoryId] = [];
+        cats[meta.categoryId][meta.subCategoryId].push(column);
       }
     });
 
@@ -64,8 +64,8 @@ export function GroupColumnSelector<TData>({
 
   // Function to get translation for a field
   const getFieldTranslation = (
-    category: string,
-    subCategory: string,
+    categoryId: string,
+    subCategoryId: string,
     fieldId: string
   ) => {
     // Remove prefix (e.g., 'clientsFields_' or 'salesFields_')
@@ -73,10 +73,10 @@ export function GroupColumnSelector<TData>({
 
     // Construct possible translation keys
     const possibleKeys = [
-      `fields.${category}Fields.groups.${subCategory}.fields.${cleanFieldId}.title`,
-      `fields.${category}Fields.groups.${subCategory}.fields.${fieldId}.title`,
-      `fields.${category}Fields.groups.${subCategory}.fields.${cleanFieldId}`,
-      `fields.${category}Fields.groups.${subCategory}.fields.${fieldId}`,
+      `fields.${categoryId}.groups.${subCategoryId}.fields.${cleanFieldId}.title`,
+      `fields.${categoryId}.groups.${subCategoryId}.fields.${fieldId}.title`,
+      `fields.${categoryId}.groups.${subCategoryId}.fields.${cleanFieldId}`,
+      `fields.${categoryId}.groups.${subCategoryId}.fields.${fieldId}`,
     ];
 
     // Try each translation key
@@ -112,31 +112,31 @@ export function GroupColumnSelector<TData>({
           {getTranslation("Common.columns.all", "Mostrar todo")}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        {Object.entries(categories).map(([category, subCategories]) => (
-          <DropdownMenuSub key={category}>
+        {Object.entries(categories).map(([categoryId, subCategories]) => (
+          <DropdownMenuSub key={categoryId}>
             <DropdownMenuSubTrigger>
               <DropdownMenuCheckboxItem
                 checked={table
                   .getAllColumns()
                   .filter(
                     (column) =>
-                      (column.columnDef.meta as any)?.category === category
+                      (column.columnDef.meta as any)?.categoryId === categoryId
                   )
                   .every((column) => column.getIsVisible())}
                 onCheckedChange={(value) =>
-                  handleToggleCategoryVisibility(category, !!value)
+                  handleToggleCategoryVisibility(categoryId, !!value)
                 }
               >
-                {getTranslation(`fields.${category}Fields.title`, category)}
+                {getTranslation(`fields.${categoryId}.title`, categoryId)}
               </DropdownMenuCheckboxItem>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent className="max-h-[400px] overflow-y-auto">
-              {Object.entries(subCategories).map(([subCategory, columns]) => (
-                <React.Fragment key={subCategory}>
+              {Object.entries(subCategories).map(([subCategoryId, columns]) => (
+                <React.Fragment key={subCategoryId}>
                   <DropdownMenuLabel>
                     {getTranslation(
-                      `fields.${category}Fields.groups.${subCategory}.title`,
-                      subCategory
+                      `fields.${categoryId}.groups.${subCategoryId}.title`,
+                      subCategoryId
                     )}
                   </DropdownMenuLabel>
                   {columns.map((column) => (
@@ -147,7 +147,11 @@ export function GroupColumnSelector<TData>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {getFieldTranslation(category, subCategory, column.id)}
+                      {getFieldTranslation(
+                        categoryId,
+                        subCategoryId,
+                        column.id
+                      )}
                     </DropdownMenuCheckboxItem>
                   ))}
                   <DropdownMenuSeparator />

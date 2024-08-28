@@ -13,17 +13,21 @@ import { ServiceUser, FieldType } from "./lib/types/user";
 import moment from "moment-timezone";
 import "moment/locale/es";
 import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
-
-const categoryNames: Record<FieldType, string> = {
-  clientsFields: "Clientes",
-  salesFields: "Ventas",
-  consultingAndMentoringFields: "Consultoría y Mentoring",
-  marketingFields: "Marketing",
-  trainingsFields: "Formación",
-  creativitiesFields: "Creatividad",
-};
+import { useTranslations } from "@/src/context/TranslationContext";
 
 export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
+  const t = useTranslations("fields");
+  const c = useTranslations("Common.columns");
+
+  const categoryNames: Record<FieldType, string> = {
+    clientsFields: t("clientsFields.title"),
+    salesFields: t("salesFields.title"),
+    consultingAndMentoringFields: t("consultingAndMentoringFields.title"),
+    marketingFields: t("marketingFields.title"),
+    trainingsFields: t("trainingsFields.title"),
+    creativitiesFields: t("creativitiesFields.title"),
+  };
+
   return useMemo(() => {
     if (!data || data.length === 0) return [];
 
@@ -52,7 +56,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "name",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre" />
+          <DataTableColumnHeader column={column} title={c("name")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -63,7 +67,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "lastName",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Apellido" />
+          <DataTableColumnHeader column={column} title={c("lastName")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -74,7 +78,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "email",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Email" />
+          <DataTableColumnHeader column={column} title={c("email")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -85,7 +89,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "role",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Rol" />
+          <DataTableColumnHeader column={column} title={c("role")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -96,7 +100,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "contactNumber",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Número de Contacto" />
+          <DataTableColumnHeader column={column} title={c("contactNumber")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -107,10 +111,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "lastLogin",
         header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            title="Último Inicio de Sesión"
-          />
+          <DataTableColumnHeader column={column} title={c("lastLogin")} />
         ),
         cell: ({ getValue }) => {
           const value = getValue() as Date;
@@ -125,7 +126,10 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "lastHoldedSyncAt",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Última Sync Holded" />
+          <DataTableColumnHeader
+            column={column}
+            title={c("lastHoldedSyncAt")}
+          />
         ),
         cell: ({ getValue }) => {
           const value = getValue() as Date;
@@ -140,7 +144,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       {
         accessorKey: "holdedId",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Holded ID" />
+          <DataTableColumnHeader column={column} title={c("holdedId")} />
         ),
         enableSorting: true,
         enableHiding: true,
@@ -205,15 +209,15 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
             header: ({ column }) => (
               <DataTableColumnHeader
                 column={column}
-                title={field.es || fieldName}
+                title={t(`${fieldType}.groups.${field.subCategoryId}.fields.${fieldName}.title`) || (`${fieldName} 2`)}
               />
             ),
             cell: ({ getValue }) => getValue() || "",
             enableSorting: true,
             enableHiding: true,
             meta: {
-              category: categoryNames[fieldType] || fieldType,
-              subCategory: field.subCategoryName || "Otros",
+              categoryId: field.categoryId || fieldType,
+              subCategoryId: field.subCategoryId || "Otros",
               filterType: "text",
             },
           });

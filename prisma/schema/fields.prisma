@@ -1,15 +1,11 @@
 model SalesField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -21,15 +17,11 @@ model SalesField {
 model ClientField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -41,15 +33,11 @@ model ClientField {
 model ConsultingAndMentoringField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -61,15 +49,11 @@ model ConsultingAndMentoringField {
 model TrainingField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -81,15 +65,11 @@ model TrainingField {
 model MarketingField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -101,15 +81,11 @@ model MarketingField {
 model CreativityField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
-  es              String
-  en              String
   value           String
   options         String[]
   type            String
   categoryId      String?
-  categoryName    String?
   subCategoryId   String?
-  subCategoryName String?
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -117,4 +93,3 @@ model CreativityField {
 
   @@unique([userId, holdedFieldName])
 }
-

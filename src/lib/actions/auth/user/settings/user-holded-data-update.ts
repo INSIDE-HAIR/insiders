@@ -158,76 +158,70 @@ const updateContactPersons = async (
     }
   }
 };
-const UpdateClientFields = async (userId: string, customFields: any[]) => {
-  const t = useTranslations("fields");
+const updateClientFields = async (userId: string, customFields: any[]) => {
 
   const fieldModels = [
-    { name: t("salesFields.title"), id: "salesFields", model: prisma.salesField },
-    { name: t("clientsFields.title"), id: "clientsFields", model: prisma.clientField },
-    { name: t("consultingAndMentoringFields.title"), id: "consultingAndMentoringFields", model: prisma.consultingAndMentoringField },
-    { name: t("trainingsFields.title"), id: "trainingsFields", model: prisma.trainingField },
-    { name: t("marketingFields.title"), id: "marketingFields", model: prisma.marketingField },
-    { name: t("creativitiesFields.title"), id: "creativitiesFields", model: prisma.creativityField },
+    { id: "salesFields", model: prisma.salesField },
+    { id: "clientsFields", model: prisma.clientField },
+    {
+      id: "consultingAndMentoringFields",
+      model: prisma.consultingAndMentoringField,
+    },
+    { id: "trainingsFields", model: prisma.trainingField },
+    { id: "marketingFields", model: prisma.marketingField },
+    {
+      id: "creativitiesFields",
+      model: prisma.creativityField,
+    },
   ];
 
-  for (const { id, model, name } of fieldModels) {
-    const groups = t(`${id}.groups`, {});
+  for (const { id, model } of fieldModels) {
+    const fields =
+      dataBaseTranslation
+        .find((group) => group.id === id)
+        ?.groups.flatMap((g) => g.fields) || [];
 
-    if (groups && typeof groups === 'object') {
-      Object.entries(groups).forEach(([groupId, group]) => {
-        if (group && typeof group === 'object' && 'fields' in group) {
-          Object.entries(group.fields as Record<string, any>).forEach(([fieldId, field]) => {
-            const customField = customFields.find(
-              (cf: any) => cf.field === fieldId
-            );
+    for (const field of fields) {
+      const customField = customFields.find(
+        (cf: any) => cf.field === field.holdedFieldName
+      );
 
-            if (customField) {
-              const options = t(`${id}.groups.${groupId}.fields.${fieldId}.options`);
-              const optionsArray = Array.isArray(options) ? options : [];
+      if (customField) {
+        console.log(customField);
+        console.log(id);
 
-              (model as any).upsert({
-                where: {
-                  userId_holdedFieldName: {
-                    userId,
-                    holdedFieldName: fieldId,
-                  },
-                },
-                update: {
-                  holdedFieldName: fieldId,
-                  es: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
-                  en: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
-                  value: customField.value,
-                  options: optionsArray,
-                  type: (field as any).type || "text",
-                  categoryId: id,
-                  categoryName: name,
-                  subCategoryId: groupId,
-                  subCategoryName: t(`${id}.groups.${groupId}.title`),
-                  updatedAt: new Date(),
-                },
-                create: {
-                  userId,
-                  holdedFieldName: fieldId,
-                  es: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
-                  en: t(`${id}.groups.${groupId}.fields.${fieldId}.title`),
-                  value: customField.value,
-                  options: optionsArray,
-                  type: (field as any).type || "text",
-                  categoryId: id,
-                  categoryName: name,
-                  subCategoryId: groupId,
-                  subCategoryName: t(`${id}.groups.${groupId}.title`),
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                },
-              });
-            }
-          });
-        }
-      });
+        await (model as any).upsert({
+          where: {
+            userId_holdedFieldName: {
+              userId,
+              holdedFieldName: field.holdedFieldName,
+            },
+          },
+          update: {
+            holdedFieldName: field.holdedFieldName,
+            value: customField.value,
+            options: field.options || [],
+            type: field.type,
+            categoryId: id,
+            subCategoryId: field.subCategoryId,
+            updatedAt: new Date(),
+          },
+          create: {
+            userId,
+            holdedFieldName: field.holdedFieldName,
+            value: customField.value,
+            options: field.options || [],
+            type: field.type,
+            categoryId: id,
+            subCategoryId: field.subCategoryId,
+            createdAt: new Date(),
+          },
+        });
+      }
     }
   }
 };
+
 const updateUserHoldedDataInDatabase = async (
   userId: string,
   transformedHoldedData: any
@@ -314,7 +308,7 @@ export const updateUserHoldedData = async (
       await createUserHoldedDataInDatabase(userId, transformedHoldedData);
     }
 
-    await UpdateClientFields(
+    await updateClientFields(
       userId,
       transformedHoldedData.customFields?.create || []
     );
