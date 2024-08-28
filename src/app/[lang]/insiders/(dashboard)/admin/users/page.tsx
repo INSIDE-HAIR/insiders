@@ -22,7 +22,7 @@ export default function UsersPage() {
       setIsLoading(true);
       const response = await fetch(
         `${
-          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api"
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
         }/users`,
         { method: "GET" }
       );
