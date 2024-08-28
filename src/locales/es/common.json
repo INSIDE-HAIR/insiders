@@ -242,6 +242,9 @@
     }
   },
   "fields": {
+    "common": {
+      "columns": "Columnas"
+    },
     "salesFields": {
       "title": "Campos de Ventas",
       "groups": {

@@ -242,6 +242,9 @@
     }
   },
   "fields": {
+    "common": {
+      "columns": "Columns"
+    },
     "salesFields": {
       "title": "Sales Fields",
       "groups": {
