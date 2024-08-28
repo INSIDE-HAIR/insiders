@@ -24,6 +24,7 @@ export function GroupColumnSelector<TData>({
 }: GroupColumnSelectorProps<TData>) {
   const t = useTranslations();
 
+  // Function to toggle visibility of all columns in a category
   const handleToggleCategoryVisibility = (
     category: string,
     isVisible: boolean
@@ -36,6 +37,7 @@ export function GroupColumnSelector<TData>({
     });
   };
 
+  // Memoized computation of categories and subcategories
   const categories = React.useMemo(() => {
     const cats: Record<string, Record<string, any[]>> = {};
     table.getAllColumns().forEach((column) => {
@@ -49,23 +51,27 @@ export function GroupColumnSelector<TData>({
         cats[meta.category][meta.subCategory].push(column);
       }
     });
+
+    console.log("Generated categories:", cats); // Debugging log
     return cats;
   }, [table]);
 
+  // Function to get translation or fallback
   const getTranslation = (key: string, fallback: string) => {
     const translation = t(key);
     return translation === key ? fallback : translation;
   };
 
+  // Function to get translation for a field
   const getFieldTranslation = (
     category: string,
     subCategory: string,
     fieldId: string
   ) => {
-    // Eliminar el prefijo (por ejemplo, 'clientsFields_' o 'salesFields_')
+    // Remove prefix (e.g., 'clientsFields_' or 'salesFields_')
     const cleanFieldId = fieldId.replace(/^.*?_/, "");
 
-    // Construir las posibles claves de traducción
+    // Construct possible translation keys
     const possibleKeys = [
       `fields.${category}Fields.groups.${subCategory}.fields.${cleanFieldId}.title`,
       `fields.${category}Fields.groups.${subCategory}.fields.${fieldId}.title`,
@@ -73,7 +79,7 @@ export function GroupColumnSelector<TData>({
       `fields.${category}Fields.groups.${subCategory}.fields.${fieldId}`,
     ];
 
-    // Intentar cada clave de traducción
+    // Try each translation key
     for (const key of possibleKeys) {
       const translation = t(key);
       if (translation !== key) {
@@ -81,7 +87,7 @@ export function GroupColumnSelector<TData>({
       }
     }
 
-    // Si no se encuentra traducción, devolver el ID del campo limpio
+    // Return the clean field ID if no translation is found
     return cleanFieldId.replace(/^CLIENTES - /, "");
   };
 

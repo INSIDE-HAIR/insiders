@@ -1,4 +1,3 @@
-"use client";
 import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/src/components/ui/checkbox";
@@ -24,8 +23,10 @@ const categoryNames: Record<FieldType, string> = {
   creativitiesFields: "Creatividad",
 };
 
-export const useColumns = (data: ServiceUser[] | null | undefined) => {
+export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
   return useMemo(() => {
+    if (!data || data.length === 0) return [];
+
     const baseColumns: ColumnDef<ServiceUser>[] = [
       {
         id: "select",
@@ -112,7 +113,7 @@ export const useColumns = (data: ServiceUser[] | null | undefined) => {
           />
         ),
         cell: ({ getValue }) => {
-          const value = getValue() as Date | string | null;
+          const value = getValue() as Date;
           return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
         },
         enableSorting: true,
@@ -127,7 +128,7 @@ export const useColumns = (data: ServiceUser[] | null | undefined) => {
           <DataTableColumnHeader column={column} title="Última Sync Holded" />
         ),
         cell: ({ getValue }) => {
-          const value = getValue() as Date | string | null;
+          const value = getValue() as Date;
           return value ? moment(value).format("DD/MM/YYYY - HH:mm") : "";
         },
         enableSorting: true,
@@ -149,10 +150,6 @@ export const useColumns = (data: ServiceUser[] | null | undefined) => {
       },
     ];
 
-    if (!Array.isArray(data) || data.length === 0) {
-      return baseColumns;
-    }
-
     const fieldTypes: FieldType[] = [
       "clientsFields",
       "salesFields",
@@ -165,39 +162,62 @@ export const useColumns = (data: ServiceUser[] | null | undefined) => {
     const dynamicColumns: ColumnDef<ServiceUser>[] = [];
 
     fieldTypes.forEach((fieldType) => {
-      const uniqueFieldNames = new Set<string>();
+      const allFields: any[] = [];
+      for (let i = 0; i < data.length; i++) {
+        const user = data[i];
+        if (
+          user &&
+          typeof user === "object" &&
+          Array.isArray(user[fieldType])
+        ) {
+          allFields.push(...user[fieldType]);
+        }
+      }
 
-      data.forEach((user) => {
-        const fields = user[fieldType];
-        if (Array.isArray(fields)) {
-          fields.forEach((field) => {
-            if (field?.holdedFieldName) {
-              uniqueFieldNames.add(field.holdedFieldName);
-            }
-          });
+      const uniqueFieldNames = new Set<string>();
+      allFields.forEach((field) => {
+        if (
+          field &&
+          typeof field === "object" &&
+          typeof field.holdedFieldName === "string"
+        ) {
+          uniqueFieldNames.add(field.holdedFieldName);
         }
       });
 
       uniqueFieldNames.forEach((fieldName) => {
-        dynamicColumns.push({
-          id: `${fieldType}_${fieldName}`,
-          accessorFn: (row: ServiceUser) => {
-            const fields = row[fieldType];
-            return (
-              fields?.find((f) => f?.holdedFieldName === fieldName)?.value || ""
-            );
-          },
-          header: ({ column }) => (
-            <DataTableColumnHeader column={column} title={fieldName} />
-          ),
-          cell: ({ getValue }) => getValue() || "",
-          enableSorting: true,
-          enableHiding: true,
-          meta: {
-            category: categoryNames[fieldType] || fieldType,
-            filterType: "text",
-          },
-        });
+        const field = allFields.find(
+          (f) => f && f.holdedFieldName === fieldName
+        );
+        if (field) {
+          dynamicColumns.push({
+            id: `${fieldType}_${fieldName}`,
+            accessorFn: (row: ServiceUser) => {
+              const fields = row[fieldType];
+              if (Array.isArray(fields)) {
+                const field = fields.find(
+                  (f) => f && f.holdedFieldName === fieldName
+                );
+                return field && field.value ? field.value : "";
+              }
+              return "";
+            },
+            header: ({ column }) => (
+              <DataTableColumnHeader
+                column={column}
+                title={field.es || fieldName}
+              />
+            ),
+            cell: ({ getValue }) => getValue() || "",
+            enableSorting: true,
+            enableHiding: true,
+            meta: {
+              category: categoryNames[fieldType] || fieldType,
+              subCategory: field.subCategoryName || "Otros",
+              filterType: "text",
+            },
+          });
+        }
       });
     });
 
@@ -205,6 +225,7 @@ export const useColumns = (data: ServiceUser[] | null | undefined) => {
       id: "actions",
       cell: ({ row }) => {
         const user = row.original;
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
