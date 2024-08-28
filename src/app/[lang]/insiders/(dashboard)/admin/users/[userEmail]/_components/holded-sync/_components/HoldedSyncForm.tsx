@@ -64,7 +64,7 @@ const HoldedSyncForm = ({
     }
   }, [debouncedHoldedId, insidersId, form, holdedId]);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
 
   const onSubmitHoldedId = async (holdedId: string) => {
     setErrorMessage("");
@@ -78,7 +78,7 @@ const HoldedSyncForm = ({
     }
 
     try {
-      const response = await fetch(`${apiUrl}/api/holded/contact/${holdedId}`);
+      const response = await fetch(`${apiUrl}/holded/contact/${holdedId}`);
       const data = await response.json();
 
       if (response.ok && data) {
