@@ -1,29 +1,41 @@
 "use client";
+
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import { DataTable } from "./components/DataTable";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
 import { ServiceUser } from "./lib/types/user";
-import { getUsers, syncUsersWithHolded } from "./lib/api/api";
-import { generateColumns } from "./columns";
+import { DataTable } from "./components/DataTable"; // Importación directa
+import { useColumns } from "./columns";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<ServiceUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  const columns = generateColumns(users);
+  const columns = useColumns(users);
 
   const fetchUsers = useCallback(async () => {
     try {
+      console.log("Fetching users...");
       setIsLoading(true);
-      const data = await getUsers();
-      console.log("Fetched users:", data);
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api"
+        }/users`,
+        { method: "GET" }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users. Status: ${response.status}`);
+      }
+
+      const data: ServiceUser[] = await response.json();
+      console.log("Users fetched successfully:", data);
       setUsers(data);
     } catch (err) {
-      console.error("Error fetching users:", err);
+      console.error("Error fetching users on client:", err);
       toast.error("Failed to fetch users. Please try again.");
     } finally {
       setIsLoading(false);
@@ -36,11 +48,26 @@ export default function UsersPage() {
 
   const handleSync = async () => {
     try {
+      console.log("Syncing users with Holded...");
       setIsSyncing(true);
-      await syncUsersWithHolded();
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000/api"
+        }/users/sync`,
+        { method: "POST" }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to sync users with Holded. Status: ${response.status}`
+        );
+      }
+
       await fetchUsers();
+      console.log("Users synced successfully.");
       toast.success("Users synced successfully with Holded.");
     } catch (err) {
+      console.error("Error syncing users on client:", err);
       toast.error("Failed to sync users with Holded. Please try again.");
     } finally {
       setIsSyncing(false);
