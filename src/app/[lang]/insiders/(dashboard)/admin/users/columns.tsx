@@ -162,21 +162,33 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     const dynamicColumns: ColumnDef<ServiceUser>[] = [];
 
     fieldTypes.forEach((fieldType) => {
-      const allFields = data.reduce((acc, user) => {
-        if (Array.isArray(user[fieldType])) {
-          return acc.concat(user[fieldType] || []);
+      const allFields: any[] = [];
+      for (let i = 0; i < data.length; i++) {
+        const user = data[i];
+        if (
+          user &&
+          typeof user === "object" &&
+          Array.isArray(user[fieldType])
+        ) {
+          allFields.push(...user[fieldType]);
         }
-        return acc;
-      }, [] as any[]);
+      }
 
-      const uniqueFields = Array.from(
-        new Set(
-          allFields.map((field) => field?.holdedFieldName).filter(Boolean)
-        )
-      );
+      const uniqueFieldNames = new Set<string>();
+      allFields.forEach((field) => {
+        if (
+          field &&
+          typeof field === "object" &&
+          typeof field.holdedFieldName === "string"
+        ) {
+          uniqueFieldNames.add(field.holdedFieldName);
+        }
+      });
 
-      uniqueFields.forEach((fieldName) => {
-        const field = allFields.find((f) => f?.holdedFieldName === fieldName);
+      uniqueFieldNames.forEach((fieldName) => {
+        const field = allFields.find(
+          (f) => f && f.holdedFieldName === fieldName
+        );
         if (field) {
           dynamicColumns.push({
             id: `${fieldType}_${fieldName}`,
@@ -184,21 +196,24 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
               const fields = row[fieldType];
               if (Array.isArray(fields)) {
                 const field = fields.find(
-                  (f) => f.holdedFieldName === fieldName
+                  (f) => f && f.holdedFieldName === fieldName
                 );
-                return field ? field.value : "";
+                return field && field.value ? field.value : "";
               }
               return "";
             },
             header: ({ column }) => (
-              <DataTableColumnHeader column={column} title={field.es} />
+              <DataTableColumnHeader
+                column={column}
+                title={field.es || fieldName}
+              />
             ),
             cell: ({ getValue }) => getValue() || "",
             enableSorting: true,
             enableHiding: true,
             meta: {
-              category: categoryNames[fieldType],
-              subCategory: field.subCategoryName,
+              category: categoryNames[fieldType] || fieldType,
+              subCategory: field.subCategoryName || "Otros",
               filterType: "text",
             },
           });
