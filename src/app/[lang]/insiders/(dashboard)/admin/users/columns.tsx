@@ -162,13 +162,21 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     const dynamicColumns: ColumnDef<ServiceUser>[] = [];
 
     fieldTypes.forEach((fieldType) => {
-      const allFields = data.flatMap((user) => user[fieldType] || []);
+      const allFields = data.reduce((acc, user) => {
+        if (Array.isArray(user[fieldType])) {
+          return acc.concat(user[fieldType] || []);
+        }
+        return acc;
+      }, [] as any[]);
+
       const uniqueFields = Array.from(
-        new Set(allFields.map((field) => field.holdedFieldName))
+        new Set(
+          allFields.map((field) => field?.holdedFieldName).filter(Boolean)
+        )
       );
 
       uniqueFields.forEach((fieldName) => {
-        const field = allFields.find((f) => f.holdedFieldName === fieldName);
+        const field = allFields.find((f) => f?.holdedFieldName === fieldName);
         if (field) {
           dynamicColumns.push({
             id: `${fieldType}_${fieldName}`,
@@ -191,7 +199,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
             meta: {
               category: categoryNames[fieldType],
               subCategory: field.subCategoryName,
-              filterType: "text", // Assuming all dynamic fields are text-based. Adjust if necessary.
+              filterType: "text",
             },
           });
         }
