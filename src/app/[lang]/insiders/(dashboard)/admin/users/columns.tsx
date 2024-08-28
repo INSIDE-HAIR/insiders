@@ -1,3 +1,4 @@
+'use client'
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { Button } from "@/src/components/ui/button";
