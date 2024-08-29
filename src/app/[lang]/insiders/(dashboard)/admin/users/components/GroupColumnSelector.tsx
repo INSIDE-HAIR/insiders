@@ -96,7 +96,7 @@ export function GroupColumnSelector<TData>({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto">
           {getTranslation("fields.common.columns", "Columnas")}{" "}
-          <ChevronDownIcon className="ml-2 h-4 w-4" />
+          <ChevronDownIcon className="ml-2 h-4 w-4 pointer-events-none" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

@@ -13,6 +13,7 @@ import {
   VisibilityState,
   RowSelectionState,
   Row,
+  Table as TableType,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -31,6 +32,8 @@ import { DataTablePagination } from "./DataTablePagination";
 import { GroupColumnSelector } from "./GroupColumnSelector";
 import moment from "moment-timezone";
 import { useTranslations } from "@/src/context/TranslationContext";
+import { Value } from "@radix-ui/react-select";
+import { string } from "zod";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -193,22 +196,42 @@ export function DataTable<TData>({
     }));
   }, [columns]);
 
+  function getUniqueColumnValues<T>(
+    table: TableType<T>,
+    columnId: string
+  ): any[] {
+    const column = table.getColumn(columnId);
+    if (!column) return [];
+
+    const uniqueValues = new Set<any>();
+
+    table.getFilteredRowModel().rows.forEach((row: any) => {
+      const value = row.getValue(columnId);
+      if (value !== undefined && value !== null) {
+        uniqueValues.add(value);
+      }
+    });
+
+    return Array.from(uniqueValues);
+  }
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <Input
-          placeholder={t("searchPlaceholder")}
-          value={globalFilter ?? ""}
-          onChange={(event) => setGlobalFilter(String(event.target.value))}
-          className="max-w-sm"
-        />
-        <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-between space-x-2">
+        <div className="flex space-x-2 items-center">
           <GroupColumnSelector table={table} />
-          <Button onClick={handleExportCSV}>
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            {t("exportCsv")}
-          </Button>
+          <Input
+            placeholder={t("searchPlaceholder")}
+            value={globalFilter ?? ""}
+            onChange={(event) => setGlobalFilter(String(event.target.value))}
+            className="max-w-sm"
+          />
         </div>
+
+        <Button onClick={handleExportCSV}>
+          <DownloadIcon className="mr-2 h-4 w-4" />
+          {t("exportCsv")}
+        </Button>
       </div>
 
       <FilterCollector
@@ -238,6 +261,10 @@ export function DataTable<TData>({
                             appliedFilters={
                               appliedFilters[header.column.id] || []
                             }
+                            options={getUniqueColumnValues(
+                              table,
+                              header.column.id
+                            )}
                           />
                         )}
                       </div>

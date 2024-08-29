@@ -3682,7 +3682,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0010", "0011"],
+                  "childrensCode": ["0010", "0011", "0012"],
                   "title": null,
                   "content": [],
                   "active": true,

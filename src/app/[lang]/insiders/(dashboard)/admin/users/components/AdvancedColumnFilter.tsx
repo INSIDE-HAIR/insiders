@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Column } from "@tanstack/react-table";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
@@ -11,12 +11,14 @@ import { FilterIcon, Plus, X } from "lucide-react";
 import { DatePicker } from "./DatePicker";
 import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
+import { SelectionFilter } from "./SelectionFilter";
 
 interface AdvancedColumnFilterProps<TData> {
   column: Column<TData, unknown>;
   onApplyFilter: (columnId: string, filterValues: any[]) => void;
   onRemoveFilter: (columnId: string, filterValue: any) => void;
   appliedFilters: any[];
+  options?: string[];
 }
 
 export function AdvancedColumnFilter<TData>({
@@ -24,26 +26,31 @@ export function AdvancedColumnFilter<TData>({
   onApplyFilter,
   onRemoveFilter,
   appliedFilters,
+  options,
 }: AdvancedColumnFilterProps<TData>) {
   const [filterValues, setFilterValues] = useState<string[]>([""]);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [selectValues, setSelectValues] = useState<string[]>([]);
 
   const filterType = (column.columnDef.meta as any)?.filterType || "text";
+
+  const dynamicOptions = useMemo(
+    () => (options ? Array.from(options) : []),
+    [options]
+  );
 
   useEffect(() => {
     if (filterType === "text") {
       setFilterValues(appliedFilters.length > 0 ? appliedFilters : [""]);
     } else if (filterType === "date" && appliedFilters.length > 0) {
       setDateRange(appliedFilters[0]);
+    } else if (filterType === "selection") {
+      setSelectValues(appliedFilters);
     }
   }, [appliedFilters, filterType]);
 
   const handleApplyFilter = () => {
-    if (filterType === "date") {
-      if (dateRange?.from || dateRange?.to) {
-        onApplyFilter(column.id, [dateRange]);
-      }
-    } else {
+    if (filterType === "text") {
       const nonEmptyFilters = filterValues.filter(
         (value) => value.trim() !== ""
       );
@@ -63,6 +70,11 @@ export function AdvancedColumnFilter<TData>({
     if (newDateRange?.from || newDateRange?.to) {
       onApplyFilter(column.id, [newDateRange]);
     }
+  };
+
+  const handleSelectionChange = (selectedValues: string[]) => {
+    setSelectValues(selectedValues);
+    onApplyFilter(column.id, selectedValues);
   };
 
   const formatDateFilter = (filter: DateRange) => {
@@ -139,11 +151,19 @@ export function AdvancedColumnFilter<TData>({
                 dateRange={dateRange}
               />
             )}
+            {filterType === "selection" && (
+              <SelectionFilter
+                options={dynamicOptions}
+                selectedOptions={selectValues}
+                onChange={setSelectValues}
+                onApplyFilter={handleSelectionChange}
+              />
+            )}
           </div>
           {filterType === "text" && (
             <Button onClick={handleApplyFilter}>Apply Filters</Button>
           )}
-          {appliedFilters.length > 0 && (
+          {appliedFilters.length > 0 && filterType !== "selection" && (
             <div>
               <h5 className="font-medium mb-2">Applied Filters:</h5>
               {appliedFilters.map((filter, index) => (

@@ -6,7 +6,6 @@ import { getHoldedContactById } from "@/src/lib/actions/vendors/holded/contacts"
 import { transformHoldedData } from "@/src/lib/utils/clean-fields"; // Importa una función para transformar los datos de Holded en un formato utilizable.
 import { dataBaseTranslation } from "@/db/constants"; // Importa constantes relacionadas con las traducciones de la base de datos.
 import { ObjectId } from "mongodb"; // Importa ObjectId de MongoDB para la generación de IDs únicos.
-import { useTranslations } from "@/src/context/TranslationContext";
 
 const UpdateHoldedIdSchema = z.object({
   // Define un esquema de validación para el Holded ID y el User ID usando Zod.

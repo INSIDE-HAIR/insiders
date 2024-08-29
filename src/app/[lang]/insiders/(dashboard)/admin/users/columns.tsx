@@ -94,7 +94,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         enableSorting: true,
         enableHiding: true,
         meta: {
-          filterType: "text",
+          filterType: "selection",
         },
       },
       {
@@ -209,7 +209,11 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
             header: ({ column }) => (
               <DataTableColumnHeader
                 column={column}
-                title={t(`${fieldType}.groups.${field.subCategoryId}.fields.${fieldName}.title`) || (`${fieldName} 2`)}
+                title={
+                  t(
+                    `${fieldType}.groups.${field.subCategoryId}.fields.${fieldName}.title`
+                  ) || `${fieldName} 2`
+                }
               />
             ),
             cell: ({ getValue }) => getValue() || "",

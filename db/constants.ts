@@ -14,6 +14,7 @@ export const filesCodes = {
   "0048": "Díptico/Tríptico",
   "0010": "Test Peluquero",
   "0011": "Test Cliente",
+  "0012": "Test Salón",
   "0100": "Revista",
   "0360": "Escaparatismo",
   "0300": "Pop Up",
