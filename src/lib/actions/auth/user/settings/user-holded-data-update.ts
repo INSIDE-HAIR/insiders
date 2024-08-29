@@ -158,7 +158,6 @@ const updateContactPersons = async (
   }
 };
 const updateClientFields = async (userId: string, customFields: any[]) => {
-
   const fieldModels = [
     { id: "salesFields", model: prisma.salesField },
     { id: "clientsFields", model: prisma.clientField },
@@ -199,7 +198,6 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
           update: {
             holdedFieldName: field.holdedFieldName,
             value: customField.value,
-            options: field.options || [],
             type: field.type,
             categoryId: id,
             subCategoryId: field.subCategoryId,
@@ -209,7 +207,6 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
             userId,
             holdedFieldName: field.holdedFieldName,
             value: customField.value,
-            options: field.options || [],
             type: field.type,
             categoryId: id,
             subCategoryId: field.subCategoryId,

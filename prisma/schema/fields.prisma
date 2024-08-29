@@ -2,10 +2,9 @@ model SalesField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -18,10 +17,9 @@ model ClientField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -34,10 +32,9 @@ model ConsultingAndMentoringField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -50,10 +47,9 @@ model TrainingField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -66,10 +62,9 @@ model MarketingField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
@@ -82,10 +77,9 @@ model CreativityField {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   holdedFieldName String
   value           String
-  options         String[]
   type            String
-  categoryId      String?
-  subCategoryId   String?
+  categoryId      String
+  subCategoryId   String
   userId          String    @db.ObjectId
   user            User      @relation(fields: [userId], references: [id])
   updatedAt       DateTime  @updatedAt
