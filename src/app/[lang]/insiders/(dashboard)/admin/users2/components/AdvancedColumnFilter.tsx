@@ -34,10 +34,11 @@ export function AdvancedColumnFilter<TData>({
 
   const filterType = (column.columnDef.meta as any)?.filterType || "text";
 
-  const dynamicOptions = useMemo(
-    () => (options ? Array.from(options) : []),
-    [options]
-  );
+  const dynamicOptions = useMemo(() => {
+    const result = options ? Array.from(options) : [];
+    console.log("Dynamic Options:", result);
+    return result;
+  }, [options]);
 
   useEffect(() => {
     if (filterType === "text") {

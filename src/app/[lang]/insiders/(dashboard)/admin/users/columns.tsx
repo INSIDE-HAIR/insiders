@@ -31,6 +31,11 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
   return useMemo(() => {
     if (!data || data.length === 0) return [];
 
+    const isEmptyValue = (value: any) =>
+      value === "" || value === null || value === undefined;
+
+    const formatCellValue = (value: any) => (isEmptyValue(value) ? "" : value);
+
     const baseColumns: ColumnDef<ServiceUser>[] = [
       {
         id: "select",
@@ -58,6 +63,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("name")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -69,6 +75,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("lastName")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -80,6 +87,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("email")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -91,6 +99,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("role")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -102,6 +111,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("contactNumber")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -146,6 +156,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={c("holdedId")} />
         ),
+        cell: ({ getValue }) => formatCellValue(getValue()),
         enableSorting: true,
         enableHiding: true,
         meta: {
@@ -202,7 +213,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
                 const field = fields.find(
                   (f) => f && f.holdedFieldName === fieldName
                 );
-                return field && field.value ? field.value : "";
+                return field && !isEmptyValue(field.value) ? field.value : "";
               }
               return "";
             },
@@ -216,7 +227,7 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
                 }
               />
             ),
-            cell: ({ getValue }) => getValue() || "",
+            cell: ({ getValue }) => formatCellValue(getValue()),
             enableSorting: true,
             enableHiding: true,
             meta: {
@@ -257,6 +268,6 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     };
 
     return [...baseColumns, ...dynamicColumns, actionsColumn];
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 };

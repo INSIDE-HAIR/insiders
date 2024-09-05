@@ -3,10 +3,15 @@ import { Button } from "@/src/components/ui/button";
 import { X } from "lucide-react";
 import { format } from "date-fns";
 
+interface Column {
+  id: string;
+  header: string;
+}
+
 interface FilterCollectorProps {
   appliedFilters: { [key: string]: any[] };
   onRemoveFilter: (columnId: string, filterValue: any) => void;
-  columns: { id: string; header: string }[];
+  columns: Column[];
 }
 
 export const FilterCollector: React.FC<FilterCollectorProps> = ({
@@ -14,7 +19,7 @@ export const FilterCollector: React.FC<FilterCollectorProps> = ({
   onRemoveFilter,
   columns,
 }) => {
-  const formatFilterValue = (value: any) => {
+  const formatFilterValue = (value: any): string => {
     if (value instanceof Object && ("from" in value || "to" in value)) {
       const { from, to } = value;
       if (from && to) {
@@ -23,15 +28,15 @@ export const FilterCollector: React.FC<FilterCollectorProps> = ({
           "dd/MM/yyyy"
         )}`;
       } else if (from) {
-        return `From ${format(new Date(from), "dd/MM/yyyy")}`;
+        return `Desde ${format(new Date(from), "dd/MM/yyyy")}`;
       } else if (to) {
-        return `To ${format(new Date(to), "dd/MM/yyyy")}`;
+        return `Hasta ${format(new Date(to), "dd/MM/yyyy")}`;
       }
     }
-    return value.toString();
+    return value === "" ? "(Vacío)" : value.toString();
   };
 
-  const getColumnHeader = (columnId: string) => {
+  const getColumnHeader = (columnId: string): string => {
     const column = columns.find((col) => col.id === columnId);
     return column ? column.header : columnId;
   };

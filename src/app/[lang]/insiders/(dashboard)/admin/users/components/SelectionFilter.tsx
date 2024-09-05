@@ -20,10 +20,11 @@ export function SelectionFilter({
   const [internalOptions, setInternalOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    if (internalOptions.length === 0) {
-      setInternalOptions(options);
-    }
-  }, [options, internalOptions]);
+    const uniqueOptions = Array.from(new Set(options)).filter(
+      (option) => option !== ""
+    );
+    setInternalOptions(["", ...uniqueOptions]);
+  }, [options]);
 
   const handleOptionChange = (option: string) => {
     const updatedOptions = selectedOptions.includes(option)
@@ -39,25 +40,28 @@ export function SelectionFilter({
         <div className="space-y-2">
           <label className="flex items-center space-x-2">
             <Checkbox
-              checked={selectedOptions.includes("(Empty)")}
-              onCheckedChange={() => handleOptionChange("(Empty)")}
+              checked={selectedOptions.includes("")}
+              onCheckedChange={() => handleOptionChange("")}
             />
-            <span>(Empty)</span>
+            <span>(Vacío)</span>
           </label>
-          {internalOptions.map((option) => (
-            <label key={option} className="flex items-center space-x-2">
-              <Checkbox
-                checked={selectedOptions.includes(option)}
-                onCheckedChange={() => handleOptionChange(option)}
-              />
-              <span>{option}</span>
-            </label>
-          ))}
+          {internalOptions.map(
+            (option) =>
+              option !== "" && (
+                <label key={option} className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={selectedOptions.includes(option)}
+                    onCheckedChange={() => handleOptionChange(option)}
+                  />
+                  <span>{option}</span>
+                </label>
+              )
+          )}
         </div>
       </ScrollArea>
       {selectedOptions.length > 0 && (
         <div className="space-y-2">
-          <h5 className="font-medium">Applied Filters:</h5>
+          <h5 className="font-medium">Filtros aplicados:</h5>
           <div className="flex flex-wrap gap-2">
             {selectedOptions.map((option) => (
               <Button
@@ -66,7 +70,7 @@ export function SelectionFilter({
                 size="sm"
                 onClick={() => handleOptionChange(option)}
               >
-                {option}
+                {option === "" ? "(Vacío)" : option}
                 <X className="ml-2 h-4 w-4" />
               </Button>
             ))}
