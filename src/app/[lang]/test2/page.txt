@@ -1,0 +1,794 @@
+// "use client";
+// import React, { useState, useCallback } from "react";
+// import { Button } from "@/src/components/ui/button";
+// import { Input } from "@/src/components/ui/input";
+// import { Label } from "@/src/components/ui/label";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/src/components/ui/card";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+// } from "@/src/components/ui/dialog";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/src/components/ui/select";
+// import { ScrollArea } from "@/src/components/ui/scroll-area";
+// import {
+//   ChevronLeft,
+//   ChevronRight,
+//   Plus,
+//   Trash,
+//   Edit,
+//   ChevronDown,
+//   ChevronUp,
+// } from "lucide-react";
+
+// const initialAvailability = {
+//   all: { startDateTime: "", endDateTime: "" },
+//   users: [],
+//   roles: [],
+// };
+
+// const buttonStyles = [
+//   { value: "default", label: "Default" },
+//   { value: "outline", label: "Outline" },
+//   { value: "secondary", label: "Secondary" },
+//   { value: "ghost", label: "Ghost" },
+//   { value: "link", label: "Link" },
+// ];
+
+// const headingTypes = [
+//   { value: "h1", label: "Heading 1" },
+//   { value: "h2", label: "Heading 2" },
+//   { value: "h3", label: "Heading 3" },
+//   { value: "h4", label: "Heading 4" },
+//   { value: "h5", label: "Heading 5" },
+//   { value: "h6", label: "Heading 6" },
+//   { value: "p", label: "Paragraph" },
+// ];
+
+// export default function CourseBuilder() {
+//   const [components, setComponents] = useState([
+//     {
+//       id: 1,
+//       type: "section",
+//       title: "Section 1",
+//       content: [
+//         {
+//           id: "text1",
+//           type: "text",
+//           content: "Welcome to Section 1!",
+//           headingType: "h2",
+//         },
+//         {
+//           id: "button1",
+//           type: "button",
+//           content: "Click me!",
+//           style: "default",
+//           link: "#",
+//         },
+//       ],
+//       order: 1,
+//       available: { ...initialAvailability },
+//       isExpanded: true,
+//     },
+//   ]);
+//   const [newComponentType, setNewComponentType] = useState("text");
+//   const [newComponentContent, setNewComponentContent] = useState("");
+//   const [editingComponent, setEditingComponent] = useState(null);
+//   const [showSideMenu, setShowSideMenu] = useState(true);
+
+//   const addComponent = useCallback(
+//     (parentId = null) => {
+//       const newComponent = {
+//         id: Date.now(),
+//         type: newComponentType,
+//         content: newComponentContent,
+//         order: components.length + 1,
+//         available: { ...initialAvailability },
+//       };
+
+//       if (newComponentType === "text") {
+//         newComponent.headingType = "p";
+//       } else if (newComponentType === "button") {
+//         newComponent.style = "default";
+//         newComponent.link = "#";
+//       } else if (newComponentType === "video") {
+//         newComponent.title = "New Video";
+//       } else if (newComponentType === "section") {
+//         newComponent.title = newComponentContent;
+//         newComponent.content = [];
+//         newComponent.isExpanded = true;
+//       }
+
+//       setComponents((prevComponents) => {
+//         if (parentId) {
+//           return prevComponents.map((comp) => {
+//             if (comp.id === parentId) {
+//               return {
+//                 ...comp,
+//                 content: [...comp.content, newComponent],
+//               };
+//             }
+//             return comp;
+//           });
+//         } else {
+//           return [...prevComponents, newComponent];
+//         }
+//       });
+
+//       setNewComponentContent("");
+//       setNewComponentType("text");
+//     },
+//     [newComponentType, newComponentContent, components.length]
+//   );
+
+//   const updateComponent = useCallback((updatedComponent) => {
+//     setComponents((prevComponents) => {
+//       const updateNestedComponent = (components) => {
+//         return components.map((comp) => {
+//           if (comp.id === updatedComponent.id) {
+//             return updatedComponent;
+//           } else if (comp.content && Array.isArray(comp.content)) {
+//             return {
+//               ...comp,
+//               content: updateNestedComponent(comp.content),
+//             };
+//           }
+//           return comp;
+//         });
+//       };
+//       return updateNestedComponent(prevComponents);
+//     });
+//     setEditingComponent(null);
+//   }, []);
+
+//   const deleteComponent = useCallback((id, parentId = null) => {
+//     setComponents((prevComponents) => {
+//       const deleteNestedComponent = (components) => {
+//         return components.filter((comp) => {
+//           if (comp.id === id) {
+//             return false;
+//           } else if (comp.content && Array.isArray(comp.content)) {
+//             comp.content = deleteNestedComponent(comp.content);
+//           }
+//           return true;
+//         });
+//       };
+//       if (parentId) {
+//         return prevComponents.map((comp) => {
+//           if (comp.id === parentId) {
+//             return {
+//               ...comp,
+//               content: deleteNestedComponent(comp.content),
+//             };
+//           }
+//           return comp;
+//         });
+//       }
+//       return deleteNestedComponent(prevComponents);
+//     });
+//   }, []);
+
+//   const moveComponent = useCallback((id, direction) => {
+//     setComponents((prevComponents) => {
+//       const moveNestedComponent = (components) => {
+//         const index = components.findIndex((comp) => comp.id === id);
+//         if (
+//           index !== -1 &&
+//           ((direction === "up" && index > 0) ||
+//             (direction === "down" && index < components.length - 1))
+//         ) {
+//           const newComponents = [...components];
+//           const temp = newComponents[index];
+//           newComponents[index] =
+//             newComponents[index + (direction === "up" ? -1 : 1)];
+//           newComponents[index + (direction === "up" ? -1 : 1)] = temp;
+//           return newComponents.map((comp, i) => ({ ...comp, order: i + 1 }));
+//         }
+//         return components.map((comp) => {
+//           if (comp.content && Array.isArray(comp.content)) {
+//             return {
+//               ...comp,
+//               content: moveNestedComponent(comp.content),
+//             };
+//           }
+//           return comp;
+//         });
+//       };
+//       return moveNestedComponent(prevComponents);
+//     });
+//   }, []);
+
+//   const toggleSectionExpansion = useCallback((id) => {
+//     setComponents((prevComponents) => {
+//       const toggleNestedSection = (components) => {
+//         return components.map((comp) => {
+//           if (comp.id === id) {
+//             return { ...comp, isExpanded: !comp.isExpanded };
+//           } else if (comp.content && Array.isArray(comp.content)) {
+//             return {
+//               ...comp,
+//               content: toggleNestedSection(comp.content),
+//             };
+//           }
+//           return comp;
+//         });
+//       };
+//       return toggleNestedSection(prevComponents);
+//     });
+//   }, []);
+
+//   const renderComponent = useCallback(
+//     (component, isNested = false, parentId = null) => {
+//       const commonProps = {
+//         key: component.id,
+//         className: "mb-4 p-4 border rounded relative",
+//       };
+
+//       let renderedComponent;
+//       switch (component.type) {
+//         case "text":
+//           const HeadingTag = component.headingType;
+//           renderedComponent = (
+//             <HeadingTag {...commonProps}>{component.content}</HeadingTag>
+//           );
+//           break;
+//         case "button":
+//           renderedComponent = (
+//             <Button {...commonProps} variant={component.style} asChild>
+//               <a href={component.link}>{component.content}</a>
+//             </Button>
+//           );
+//           break;
+//         case "video":
+//           renderedComponent = (
+//             <div
+//               {...commonProps}
+//               className={`${commonProps.className} aspect-video`}
+//             >
+//               <h3 className="mb-2 font-bold">{component.title}</h3>
+//               <iframe
+//                 src={component.content}
+//                 className="w-full h-full"
+//                 frameBorder="0"
+//                 allow="autoplay; fullscreen; picture-in-picture"
+//                 allowFullScreen
+//               ></iframe>
+//             </div>
+//           );
+//           break;
+//         case "section":
+//           renderedComponent = (
+//             <Card {...commonProps}>
+//               <CardHeader>
+//                 <CardTitle className="flex justify-between items-center">
+//                   {component.title}
+//                   <Button
+//                     variant="ghost"
+//                     size="sm"
+//                     onClick={() => toggleSectionExpansion(component.id)}
+//                   >
+//                     {component.isExpanded ? (
+//                       <ChevronUp size={16} />
+//                     ) : (
+//                       <ChevronDown size={16} />
+//                     )}
+//                   </Button>
+//                 </CardTitle>
+//               </CardHeader>
+//               {component.isExpanded && (
+//                 <CardContent>
+//                   {component.content.map((subItem) =>
+//                     renderComponent(subItem, true, component.id)
+//                   )}
+//                   <Button
+//                     onClick={() =>
+//                       setEditingComponent({
+//                         type: "new",
+//                         parentId: component.id,
+//                       })
+//                     }
+//                     size="sm"
+//                     className="mt-2"
+//                   >
+//                     Add Component
+//                   </Button>
+//                 </CardContent>
+//               )}
+//             </Card>
+//           );
+//           break;
+//         default:
+//           return null;
+//       }
+
+//       return (
+//         <div key={component.id} className="relative mb-4">
+//           {renderedComponent}
+//           <div className="absolute top-0 right-0 space-x-2">
+//             {!isNested && (
+//               <>
+//                 <Button
+//                   size="sm"
+//                   onClick={() => moveComponent(component.id, "up")}
+//                 >
+//                   ↑
+//                 </Button>
+//                 <Button
+//                   size="sm"
+//                   onClick={() => moveComponent(component.id, "down")}
+//                 >
+//                   ↓
+//                 </Button>
+//               </>
+//             )}
+//             <Button
+//               size="sm"
+//               onClick={() => setEditingComponent({ ...component, parentId })}
+//             >
+//               Edit
+//             </Button>
+//             <Button
+//               size="sm"
+//               variant="destructive"
+//               onClick={() => deleteComponent(component.id, parentId)}
+//             >
+//               <Trash size={16} />
+//             </Button>
+//           </div>
+//         </div>
+//       );
+//     },
+//     [moveComponent, deleteComponent, toggleSectionExpansion]
+//   );
+
+//   const EditComponentDialog = ({ component, onSave, onClose }) => {
+//     const [editedComponent, setEditedComponent] = useState(() => ({
+//       ...component,
+//       available: {
+//         all: { startDateTime: "", endDateTime: "" },
+//         users: [],
+//         roles: [],
+//         ...(component.available || {}),
+//       },
+//     }));
+
+//     const handleInputChange = useCallback((e) => {
+//       const { name, value } = e.target;
+//       setEditedComponent((prev) => ({
+//         ...prev,
+//         [name]: value,
+//       }));
+//     }, []);
+
+//     const handleSelectChange = useCallback((name, value) => {
+//       setEditedComponent((prev) => ({
+//         ...prev,
+//         [name]: value,
+//       }));
+//     }, []);
+
+//     const addAvailabilityItem = useCallback((type) => {
+//       setEditedComponent((prev) => ({
+//         ...prev,
+//         available: {
+//           ...prev.available,
+//           [type]: [
+//             ...(prev.available[type] || []),
+//             {
+//               [type === "users" ? "names" : "roles"]: [],
+//               startDateTime: "",
+//               endDateTime: "",
+//             },
+//           ],
+//         },
+//       }));
+//     }, []);
+
+//     const updateAvailabilityItem = useCallback((type, index, field, value) => {
+//       setEditedComponent((prev) => {
+//         const updatedItems = [...(prev.available[type] || [])];
+//         if (type === "all") {
+//           return {
+//             ...prev,
+//             available: {
+//               ...prev.available,
+//               all: {
+//                 ...prev.available.all,
+//                 [field]: value,
+//               },
+//             },
+//           };
+//         }
+//         if (field === "names" || field === "roles") {
+//           updatedItems[index][field] = value
+//             .split(",")
+//             .map((item) => item.trim());
+//         } else {
+//           updatedItems[index][field] = value;
+//         }
+//         return {
+//           ...prev,
+//           available: {
+//             ...prev.available,
+//             [type]: updatedItems,
+//           },
+//         };
+//       });
+//     }, []);
+
+//     const removeAvailabilityItem = useCallback((type, index) => {
+//       setEditedComponent((prev) => ({
+//         ...prev,
+//         available: {
+//           ...prev.available,
+//           [type]: (prev.available[type] || []).filter((_, i) => i !== index),
+//         },
+//       }));
+//     }, []);
+
+//     return (
+//       <DialogContent className="sm:max-w-[425px]">
+//         <DialogHeader>
+//           <DialogTitle>
+//             {editedComponent.type === "new"
+//               ? "Add New Component"
+//               : "Edit Component"}
+//           </DialogTitle>
+//           <DialogDescription>
+//             Make changes to your component here. Click save when you're done.
+//           </DialogDescription>
+//         </DialogHeader>
+//         <div className="grid gap-4 py-4">
+//           {editedComponent.type === "new" ? (
+//             <>
+//               <div className="grid grid-cols-4 items-center gap-4">
+//                 <Label htmlFor="type" className="text-right">
+//                   Component Type
+//                 </Label>
+//                 <Select
+//                   value={editedComponent.type}
+//                   onValueChange={(value) => handleSelectChange("type", value)}
+//                 >
+//                   <SelectTrigger className="col-span-3">
+//                     <SelectValue placeholder="Select component type" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     <SelectItem value="text">Text</SelectItem>
+//                     <SelectItem value="button">Button</SelectItem>
+//                     <SelectItem value="video">Video</SelectItem>
+//                     <SelectItem value="section">Section</SelectItem>
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+//             </>
+//           ) : null}
+
+//           {editedComponent.type === "text" && (
+//             <>
+//               <div className="grid grid-cols-4 items-center gap-4">
+//                 <Label htmlFor="headingType" className="text-right">
+//                   Heading Type
+//                 </Label>
+//                 <Select
+//                   value={editedComponent.headingType}
+//                   onValueChange={(value) =>
+//                     handleSelectChange("headingType", value)
+//                   }
+//                 >
+//                   <SelectTrigger className="col-span-3">
+//                     <SelectValue placeholder="Select heading type" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {headingTypes.map((type) => (
+//                       <SelectItem key={type.value} value={type.value}>
+//                         {type.label}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+//             </>
+//           )}
+
+//           {editedComponent.type === "button" && (
+//             <>
+//               <div className="grid grid-cols-4 items-center gap-4">
+//                 <Label htmlFor="style" className="text-right">
+//                   Button Style
+//                 </Label>
+//                 <Select
+//                   value={editedComponent.style}
+//                   onValueChange={(value) => handleSelectChange("style", value)}
+//                 >
+//                   <SelectTrigger className="col-span-3">
+//                     <SelectValue placeholder="Select button style" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {buttonStyles.map((style) => (
+//                       <SelectItem key={style.value} value={style.value}>
+//                         {style.label}
+//                       </SelectItem>
+//                     ))}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+//               <div className="grid grid-cols-4 items-center gap-4">
+//                 <Label htmlFor="link" className="text-right">
+//                   Button Link
+//                 </Label>
+//                 <Input
+//                   id="link"
+//                   name="link"
+//                   value={editedComponent.link}
+//                   onChange={handleInputChange}
+//                   className="col-span-3"
+//                 />
+//               </div>
+//             </>
+//           )}
+
+//           {editedComponent.type === "video" && (
+//             <div className="grid grid-cols-4 items-center gap-4">
+//               <Label htmlFor="title" className="text-right">
+//                 Video Title
+//               </Label>
+//               <Input
+//                 id="title"
+//                 name="title"
+//                 value={editedComponent.title}
+//                 onChange={handleInputChange}
+//                 className="col-span-3"
+//               />
+//             </div>
+//           )}
+
+//           {editedComponent.type === "section" && (
+//             <div className="grid grid-cols-4 items-center gap-4">
+//               <Label htmlFor="title" className="text-right">
+//                 Section Title
+//               </Label>
+//               <Input
+//                 id="title"
+//                 name="title"
+//                 value={editedComponent.title}
+//                 onChange={handleInputChange}
+//                 className="col-span-3"
+//               />
+//             </div>
+//           )}
+
+//           <div className="grid grid-cols-4 items-center gap-4">
+//             <Label htmlFor="content" className="text-right">
+//               Content
+//             </Label>
+//             <Input
+//               id="content"
+//               name="content"
+//               value={editedComponent.content}
+//               onChange={handleInputChange}
+//               className="col-span-3"
+//             />
+//           </div>
+
+//           {/* Availability fields */}
+//           <div className="grid gap-2">
+//             <Label>Availability</Label>
+//             <div className="grid gap-2">
+//               <Label htmlFor="allStart">All Users Start</Label>
+//               <Input
+//                 id="allStart"
+//                 type="datetime-local"
+//                 value={editedComponent.available.all.startDateTime}
+//                 onChange={(e) =>
+//                   updateAvailabilityItem(
+//                     "all",
+//                     0,
+//                     "startDateTime",
+//                     e.target.value
+//                   )
+//                 }
+//               />
+//               <Label htmlFor="allEnd">All Users End</Label>
+//               <Input
+//                 id="allEnd"
+//                 type="datetime-local"
+//                 value={editedComponent.available.all.endDateTime}
+//                 onChange={(e) =>
+//                   updateAvailabilityItem(
+//                     "all",
+//                     0,
+//                     "endDateTime",
+//                     e.target.value
+//                   )
+//                 }
+//               />
+//             </div>
+//             {["users", "roles"].map((type) => (
+//               <div key={type} className="grid gap-2">
+//                 <div className="flex justify-between items-center">
+//                   <Label>{type.charAt(0).toUpperCase() + type.slice(1)}</Label>
+//                   <Button onClick={() => addAvailabilityItem(type)} size="sm">
+//                     Add
+//                   </Button>
+//                 </div>
+//                 {(editedComponent.available[type] || []).map((item, index) => (
+//                   <div key={index} className="grid gap-2 border p-2 rounded">
+//                     <Input
+//                       value={(
+//                         item[type === "users" ? "names" : "roles"] || []
+//                       ).join(", ")}
+//                       onChange={(e) =>
+//                         updateAvailabilityItem(
+//                           type,
+//                           index,
+//                           type === "users" ? "names" : "roles",
+//                           e.target.value
+//                         )
+//                       }
+//                       placeholder={`Enter ${
+//                         type === "users" ? "names" : "roles"
+//                       } (comma-separated)`}
+//                     />
+//                     <Input
+//                       type="datetime-local"
+//                       value={item.startDateTime}
+//                       onChange={(e) =>
+//                         updateAvailabilityItem(
+//                           type,
+//                           index,
+//                           "startDateTime",
+//                           e.target.value
+//                         )
+//                       }
+//                     />
+//                     <Input
+//                       type="datetime-local"
+//                       value={item.endDateTime}
+//                       onChange={(e) =>
+//                         updateAvailabilityItem(
+//                           type,
+//                           index,
+//                           "endDateTime",
+//                           e.target.value
+//                         )
+//                       }
+//                     />
+//                     <Button
+//                       onClick={() => removeAvailabilityItem(type, index)}
+//                       variant="destructive"
+//                       size="sm"
+//                     >
+//                       Remove
+//                     </Button>
+//                   </div>
+//                 ))}
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//         <DialogFooter>
+//           <Button
+//             onClick={() => {
+//               if (editedComponent.type === "new") {
+//                 onSave({ ...editedComponent, type: newComponentType });
+//               } else {
+//                 onSave(editedComponent);
+//               }
+//               onClose();
+//             }}
+//           >
+//             Save changes
+//           </Button>
+//         </DialogFooter>
+//       </DialogContent>
+//     );
+//   };
+
+//   return (
+//     <div className="flex h-screen w-screen">
+//       {showSideMenu && (
+//         <div className="w-1/4 bg-gray-100 p-4 overflow-auto">
+//           <h2 className="text-xl font-bold mb-4">Course Builder</h2>
+//           <div className="space-y-4">
+//             {components
+//               .sort((a, b) => a.order - b.order)
+//               .map((component) => renderComponent(component))}
+//           </div>
+//           <Card className="mt-8">
+//             <CardHeader>
+//               <CardTitle>Add New Component</CardTitle>
+//               <CardDescription>
+//                 Choose a component type and enter its content
+//               </CardDescription>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="space-y-4">
+//                 <div>
+//                   <Label htmlFor="componentType">Component Type</Label>
+//                   <Select
+//                     onValueChange={setNewComponentType}
+//                     defaultValue={newComponentType}
+//                   >
+//                     <SelectTrigger>
+//                       <SelectValue placeholder="Select component type" />
+//                     </SelectTrigger>
+//                     <SelectContent>
+//                       <SelectItem value="text">Text</SelectItem>
+//                       <SelectItem value="button">Button</SelectItem>
+//                       <SelectItem value="video">Video</SelectItem>
+//                       <SelectItem value="section">Section</SelectItem>
+//                     </SelectContent>
+//                   </Select>
+//                 </div>
+//                 <div>
+//                   <Label htmlFor="componentContent">Content</Label>
+//                   <Input
+//                     id="componentContent"
+//                     value={newComponentContent}
+//                     onChange={(e) => setNewComponentContent(e.target.value)}
+//                     placeholder={
+//                       newComponentType === "video"
+//                         ? "Enter video URL"
+//                         : "Enter content"
+//                     }
+//                   />
+//                 </div>
+//               </div>
+//             </CardContent>
+//             <CardFooter>
+//               <Button onClick={() => addComponent()}>Add Component</Button>
+//             </CardFooter>
+//           </Card>
+//         </div>
+//       )}
+//       <div
+//         className={`${
+//           showSideMenu ? "w-3/4" : "w-full"
+//         } bg-white p-4 overflow-auto relative`}
+//       >
+//         <Button
+//           className="absolute top-4 left-0 z-10"
+//           variant="ghost"
+//           onClick={() => setShowSideMenu(!showSideMenu)}
+//         >
+//           {showSideMenu ? <ChevronLeft /> : <ChevronRight />}
+//         </Button>
+//         <h2 className="text-2xl font-bold mb-4 ml-8">Course Preview</h2>
+//         <ScrollArea className="h-[calc(100vh-8rem)]">
+//           {components
+//             .sort((a, b) => a.order - b.order)
+//             .map((component) => renderComponent(component))}
+//         </ScrollArea>
+//       </div>
+
+//       <Dialog
+//         open={!!editingComponent}
+//         onOpenChange={(open) => !open && setEditingComponent(null)}
+//       >
+//         {editingComponent && (
+//           <EditComponentDialog
+//             component={editingComponent}
+//             onSave={updateComponent}
+//             onClose={() => setEditingComponent(null)}
+//           />
+//         )}
+//       </Dialog>
+//     </div>
+//   );
+// }

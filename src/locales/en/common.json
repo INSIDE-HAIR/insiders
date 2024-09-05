@@ -178,7 +178,10 @@
       "contactNumber": "Contact Number",
       "lastLogin": "Last Login",
       "lastHoldedSyncAt": "Last Holded Sync At",
-      "holdedId": "Holded ID"
+      "holdedId": "Holded ID",
+      "tradeName": "Trade Name",
+      "code": "Enterprise ID",
+      "mobile": "Mobile"
     },
     "backups": {
       "current": {

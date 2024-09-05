@@ -39,7 +39,7 @@
     "migrate-backups.js",
     "src/context/ToastContext.tsx",
     "src/app/[lang]/insiders/(dashboard)/admin/holded/Components/HoldedContactBackup/modals/CreatingUpdatingModal.tsx"
-, "src/app/[lang]/insiders/(dashboard)/admin/holded/Components/AdvancedTable/types", "src/app/[lang]/insiders/(dashboard)/admin/users/lib/queries/userQueries"  ],
+, "src/app/[lang]/insiders/(dashboard)/admin/holded/Components/AdvancedTable/types", "src/app/[lang]/insiders/(dashboard)/admin/users/lib/queries/userQueries", "src/app/[lang]/test2/page.text"  ],
   "exclude": [
     "node_modules"
   ]

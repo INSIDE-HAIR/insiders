@@ -178,7 +178,10 @@
       "contactNumber": "Número de Contacto",
       "lastLogin": "Último Inicio de Sesión",
       "lastHoldedSyncAt": "Última Sincronización de Holded",
-      "holdedId": "ID de Holded"
+      "holdedId": "ID de Holded",
+      "tradeName": "Nombre Comercial",
+      "code": "ID Fiscal",
+      "mobile": "Móvil"
     },
     "backups": {
       "current": {
