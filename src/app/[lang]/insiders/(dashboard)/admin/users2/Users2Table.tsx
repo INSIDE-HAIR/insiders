@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { DataTable } from "./components/DataTable";
 import { useUsers2Columns } from "./users2Columns";
+import { DataTable } from "../users/components/DataTable";
 
 interface Users2TableProps {
   data: any[];

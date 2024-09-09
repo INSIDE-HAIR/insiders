@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import { DataTableColumnHeader } from "./components/DataTableColumnHeader";
 import { useTranslations } from "@/src/context/TranslationContext";
 import { dataBaseTranslation } from "@/db/constants";
 import { format, isValid } from "date-fns";
@@ -19,6 +18,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/src/components/ui/tooltip";
+import { DataTableColumnHeader } from "../users/components/DataTableColumnHeader";
 
 interface Users2Data {
   id: string;
