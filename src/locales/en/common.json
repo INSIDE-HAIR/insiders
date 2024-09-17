@@ -40,7 +40,11 @@
       "edit": "Edit",
       "delete": "Delete",
       "view": "View Page",
-      "editContent": "Edit Content"
+      "editContent": "Edit Content",
+      "duplicate": "Duplicate",
+      "accessControl": "Security",
+      "duplicateSuccess": "Page '{title}' has been duplicated successfully",
+      "duplicateError": "Error duplicating page '{title}': {error}"
     },
     "search": {
       "searchPages": "Search Pages",

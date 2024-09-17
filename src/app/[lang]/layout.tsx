@@ -16,7 +16,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning={true}>
         <TranslationsProvider
           initialLocale="es"
           initialTranslations={defaultTranslations}

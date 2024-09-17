@@ -1,5 +1,5 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -51,8 +51,18 @@ import {
 } from "@/src/components/ui/alert-dialog";
 import { useTranslations } from "@/src/context/TranslationContext";
 import { DynamicPage, Template } from "@prisma/client";
+import { Copy, Eye, Lock, Pencil, Trash, X } from "lucide-react";
+import { AccessControlModule } from "./components/AccessControlModule";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
 
 type Page = DynamicPage & { children?: Page[] };
+
+const GroupSchema = z.object({
+  name: z.enum(["INSIDERS", "TONY&GUY", "Josep Pons", "Salón TORO"]),
+  tags: z.array(z.string()),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
 
 const FormSchema = z.object({
   id: z.string().optional(),
@@ -68,6 +78,60 @@ const FormSchema = z.object({
 });
 
 type FormData = z.infer<typeof FormSchema>;
+type Group = z.infer<typeof GroupSchema>;
+
+interface ChipInputProps {
+  value: string[] | null | undefined;
+  onChange: (value: string[]) => void;
+}
+
+const ChipInput: React.FC<ChipInputProps> = ({ value, onChange }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && inputValue) {
+      e.preventDefault();
+      onChange([...(value || []), inputValue]);
+      setInputValue("");
+    }
+  };
+
+  const removeChip = (chipToRemove: string) => {
+    onChange((value || []).filter((chip) => chip !== chipToRemove));
+  };
+
+  return (
+    <div className="flex flex-wrap gap-2 p-2 border rounded">
+      {(value || []).map((chip) => (
+        <div
+          key={chip}
+          className="flex items-center bg-gray-200 rounded px-2 py-1"
+        >
+          {chip}
+          <button
+            type="button"
+            onClick={() => removeChip(chip)}
+            className="ml-2"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleInputKeyDown}
+        className="flex-grow outline-none"
+        placeholder="Type and press Enter"
+      />
+    </div>
+  );
+};
 
 export default function PageCreator() {
   const t = useTranslations("PageCreator");
@@ -95,6 +159,7 @@ export default function PageCreator() {
   });
   const [search, setSearch] = useState("");
   const [isPublishedFilter, setIsPublishedFilter] = useState(false);
+  const [isAccessControlOpen, setIsAccessControlOpen] = useState(false);
 
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -168,8 +233,42 @@ export default function PageCreator() {
     router.push(`/${page.fullPath}`);
   };
 
-  const handleEditContent = (page: Page) => {
-    router.push(`/${page.fullPath}/edit`);
+  const handleDuplicatePage = async (page: Page) => {
+    setIsLoading(true);
+    try {
+      const { id, children, ...restPage } = page;
+      const duplicateData: Partial<Page> = {
+        ...restPage,
+        title: `${page.title} (Copy)`,
+        slug: `${page.slug}-copy`,
+        isPublished: false,
+      };
+
+      const response = await fetch("/api/pages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(duplicateData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to duplicate page.");
+      }
+
+      toast.success(m("duplicateSuccess", { title: page.title }));
+      await fetchPages();
+    } catch (error) {
+      console.error("Duplicate error:", error);
+      let errorMessage = "An unknown error occurred";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      toast.error(
+        m("duplicateError", { title: page.title, error: errorMessage })
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderPageHierarchy = (
@@ -186,21 +285,31 @@ export default function PageCreator() {
         <TableCell>{new Date(page.updatedAt).toLocaleDateString()}</TableCell>
         <TableCell>
           <div className="flex space-x-2">
-            <Button onClick={() => handleViewPage(page)}>{a("view")}</Button>
-            <Button onClick={() => handleEditContent(page)}>
-              {a("editContent")}
+            <Button onClick={() => handleViewPage(page)}>
+              <Eye className="h-4 w-4 mr-2" />
+              {a("view")}
             </Button>
             <Button
               onClick={() => handleEditPage(page)}
               disabled={!page.isEditable}
             >
+              <Pencil className="h-4 w-4 mr-2" />
               {a("edit")}
+            </Button>
+            <Button onClick={() => handleDuplicatePage(page)}>
+              <Copy className="h-4 w-4 mr-2" />
+              {a("duplicate")}
+            </Button>
+            <Button onClick={() => handleAccessControl(page)}>
+              <Lock className="h-4 w-4 mr-2" />
+              {a("accessControl")}
             </Button>
             <Button
               variant="destructive"
               onClick={() => handleDeletePage(page)}
               disabled={!page.isEditable}
             >
+              <Trash className="h-4 w-4 mr-2" />
               {a("delete")}
             </Button>
           </div>
@@ -231,7 +340,6 @@ export default function PageCreator() {
       )),
     ].flat();
 
-    // Filter out null values
     return options.filter((option): option is JSX.Element => option !== null);
   };
 
@@ -320,6 +428,7 @@ export default function PageCreator() {
     }
 
     setSelectedPage(page);
+
     form.reset({
       id: page.id,
       title: page.title,
@@ -330,7 +439,9 @@ export default function PageCreator() {
       level: page.level,
       isPublished: page.isPublished,
       author: page.author,
+      template: page.template,
     });
+
     setIsFormOpen(true);
     setIsCreatingSubpage(false);
   };
@@ -403,6 +514,12 @@ export default function PageCreator() {
       }
     }
   };
+
+  const handleAccessControl = (page: Page) => {
+    setSelectedPage(page);
+    setIsAccessControlOpen(true);
+  };
+
   return (
     <>
       <Toaster position="top-right" />
@@ -483,182 +600,186 @@ export default function PageCreator() {
                 {selectedPage ? a("editPage") : a("createPage")}
               </DialogTitle>
             </DialogHeader>
-            <FormProvider {...form}>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8"
-                >
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("titleLabel")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={f("titlePlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="content"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("contentLabel")}</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder={f("contentPlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="slug"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("slugLabel")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={f("slugPlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="lang"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("langLabel")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={f("langPlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="parentId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("parentPageLabel")}</FormLabel>
-                        <Select
-                          onValueChange={handleParentChange}
-                          value={field.value || "root"}
-                        >
+            <ScrollArea className="h-[80vh] pr-4">
+              <FormProvider {...form}>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-8"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("titleLabel")}</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={f("selectParentPage")}
-                              />
-                            </SelectTrigger>
+                            <Input
+                              placeholder={f("titlePlaceholder")}
+                              {...field}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            {renderSelectOptions(organizePages(pages))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="isPublished"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                          />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                          <FormLabel>{f("publishLabel")}</FormLabel>
+                    <FormField
+                      control={form.control}
+                      name="content"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("contentLabel")}</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder={f("contentPlaceholder")}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="slug"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("slugLabel")}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={f("slugPlaceholder")}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="lang"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("langLabel")}</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder={f("langPlaceholder")}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="parentId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("parentPageLabel")}</FormLabel>
+                          <Select
+                            onValueChange={handleParentChange}
+                            value={field.value || "root"}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={f("selectParentPage")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {renderSelectOptions(organizePages(pages))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="isPublished"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>{f("publishLabel")}</FormLabel>
+                            <FormDescription>
+                              {f("publishDescription")}
+                            </FormDescription>
+                          </div>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="template"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("templateLabel")}</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={selectedPage !== null}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue
+                                  placeholder={f("selectTemplate")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {renderTemplateOptions()}
+                            </SelectContent>
+                          </Select>
                           <FormDescription>
-                            {f("publishDescription")}
+                            {f("templateDescription")}
                           </FormDescription>
-                        </div>
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="template"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("templateLabel")}</FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={selectedPage !== null}
-                        >
+                    <FormField
+                      control={form.control}
+                      name="author"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{f("authorLabel")}</FormLabel>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder={f("selectTemplate")} />
-                            </SelectTrigger>
+                            <Input
+                              placeholder={f("authorPlaceholder")}
+                              {...field}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            {renderTemplateOptions()}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          {f("templateDescription")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    control={form.control}
-                    name="author"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{f("authorLabel")}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={f("authorPlaceholder")}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading
-                      ? m("saving")
-                      : selectedPage
-                      ? a("updatePage")
-                      : a("createPage")}
-                  </Button>
-                </form>
-              </Form>
-            </FormProvider>
+                    <Button type="submit" disabled={isLoading}>
+                      {isLoading
+                        ? m("saving")
+                        : selectedPage
+                        ? a("updatePage")
+                        : a("createPage")}
+                    </Button>
+                  </form>
+                </Form>
+              </FormProvider>
+            </ScrollArea>
           </DialogContent>
         </Dialog>
 
@@ -706,6 +827,11 @@ export default function PageCreator() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+        <AccessControlModule
+          isOpen={isAccessControlOpen}
+          onClose={() => setIsAccessControlOpen(false)}
+          pageId={selectedPage?.id || ""}
+        />
       </div>
     </>
   );
