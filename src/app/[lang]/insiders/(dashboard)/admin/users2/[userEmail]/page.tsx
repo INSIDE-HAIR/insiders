@@ -25,6 +25,9 @@ export default async function Page({
 
   interface UserWithOauth extends User {
     isOAuth: boolean;
+    groupIds: string[];
+    tagIds: string[];
+    resourceIds: string[];
   }
 
   const clientUser: UserWithOauth = {
@@ -46,8 +49,11 @@ export default async function Page({
     createdAt: (user?.createdAt as Date) ?? null,
     updatedAt: (user?.updatedAt as Date) ?? null,
     isOAuth: session?.user.isOAuth || false,
+    groupIds: user?.groupIds ?? [],
+    tagIds: user?.tagIds ?? [],
+    resourceIds: user?.resourceIds ?? [],
   };
-
+  
   if (!user) {
     return (
       <div>
