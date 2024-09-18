@@ -1,5 +1,5 @@
 "use server";
-import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes/routes";
+import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { EmailSchema } from "@/src/lib/types/zod-schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";

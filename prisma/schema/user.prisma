@@ -1,4 +1,3 @@
-
 model User {
   id                           String                        @id @default(auto()) @map("_id") @db.ObjectId
   name                         String?                       @default("")
@@ -29,11 +28,45 @@ model User {
   marketingFields              MarketingField[]
   creativitiesFields           CreativityField[]
   CustomField                  CustomField[]
+  groups                       Group[]                       @relation(fields: [groupIds], references: [id])
+  groupIds                     String[]                      @db.ObjectId
+  tags                         Tag[]                         @relation(fields: [tagIds], references: [id])
+  tagIds                       String[]                      @db.ObjectId
+  resources                    Resource[]                    @relation(fields: [resourceIds], references: [id])
+  resourceIds                  String[]                      @db.ObjectId
 }
-
 
 enum UserRole {
   ADMIN
   CLIENT
   EMPLOYEE
+}
+
+model Group {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  users       User[]   @relation(fields: [userIds], references: [id])
+  userIds     String[] @db.ObjectId
+}
+
+model Tag {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  users       User[]   @relation(fields: [userIds], references: [id])
+  userIds     String[] @db.ObjectId
+}
+
+model Resource {
+  id      String       @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  type    ResourceType
+  users   User[]       @relation(fields: [userIds], references: [id])
+  userIds String[]     @db.ObjectId
+}
+
+enum ResourceType {
+  SERVICE // Servicios, revisar el archivo de services.prisma
+  PRODUCT // Productos, revisar el archivo de products.prisma
 }

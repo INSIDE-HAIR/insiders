@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
@@ -11,6 +11,8 @@ import prisma from "../../../../../prisma/database";
 
 import { CredentialSigninSchema } from "../../../types/zod-schemas";
 import { html, text } from "../../../utils/utils";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const {
   handlers: { GET, POST },
@@ -55,31 +57,26 @@ export const {
     EmailProvider({
       id: "email",
       name: "Email",
-      server: {
-        service: "Gmail",
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.GOOGLE_USER_EMAIL,
-          pass: process.env.GOOGLE_USER_APP_PASSWORD,
-        },
-      },
       from: process.env.EMAIL_FROM,
       async sendVerificationRequest({
         identifier: email,
         url,
-        provider: { server, from },
+        provider: { from },
       }) {
         const { host } = new URL(url);
-        const transport = nodemailer.createTransport(server);
-        await transport.sendMail({
-          to: email,
-          from,
-          subject: `Login to ${host}`,
-          text: text({ url, host }),
-          html: html({ url, host, email, label: "Sign in" }),
-        });
+
+        try {
+          await resend.emails.send({
+            from,
+            to: email,
+            subject: `Inicia sesión en ${host}`,
+            html: html({ url, host, email, label: "Iniciar sesión" }),
+            text: text({ url, host }),
+          });
+        } catch (error) {
+          console.error("Error al enviar el correo de verificación:", error);
+          throw error;
+        }
       },
     }),
     GithubProvider({
@@ -222,9 +219,10 @@ export const {
     async jwt({ token, user }) {
       if (!token.sub) return token;
 
-      const existingUser = await prisma.user.findFirst({
+      const existingUser = await prisma.user.findUnique({
         where: { id: token.sub },
       });
+
       if (!existingUser) return token;
 
       const existingAccount = await prisma.account.findFirst({
@@ -237,6 +235,17 @@ export const {
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
+      // Fetch user with relations
+      const userWithRelations = await prisma.user.findUnique({
+        where: { id: existingUser.id },
+        include: { groups: true, tags: true, resources: true },
+      });
+
+      // Add group, tag, and service resource information to the token
+      token.groups = userWithRelations?.groups.map((g) => g.name) || [];
+      token.tags = userWithRelations?.tags.map((t) => t.name) || [];
+      token.resources = userWithRelations?.resources.map((sr) => sr.name) || [];
+
       return token;
     },
     //@ts-expect-error
@@ -245,19 +254,15 @@ export const {
         session.user.id = token.sub;
       }
 
-      if (token.role && session.user) {
-        session.user.role = token.role;
-      }
-
-      if (token.image && session.user) {
-        session.user.image = token.image;
-      }
-
       if (session.user) {
+        session.user.role = token.role;
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.isOAuth = token.isOAuth;
+        session.user.groups = token.groups;
+        session.user.tags = token.tags;
+        session.user.resources = token.resources;
       }
 
       // Check if the user still exists in the database

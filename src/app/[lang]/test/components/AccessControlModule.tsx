@@ -114,7 +114,7 @@ const AccessControlSchema = z.object({
       timeRange: TimeRangeSchema.optional(),
     })
   ),
-  entitlements: z.array(
+  resources: z.array(
     z.object({
       id: z.string(),
       name: z.string(),
@@ -324,7 +324,7 @@ export function AccessControlModule({
       users: [],
       groups: [],
       tags: [],
-      entitlements: [],
+      resources: [],
       ipRestrictions: [],
       geoRestrictions: [],
       deviceRestrictions: [],
@@ -369,12 +369,12 @@ export function AccessControlModule({
   });
 
   const {
-    fields: entitlementFields,
+    fields: resourceFields,
     append: appendEntitlement,
     remove: removeEntitlement,
   } = useFieldArray({
     control: form.control,
-    name: "entitlements",
+    name: "resources",
   });
 
   const {
@@ -427,7 +427,7 @@ export function AccessControlModule({
                   <TabsTrigger value="users">Usuarios</TabsTrigger>
                   <TabsTrigger value="groups">Grupos</TabsTrigger>
                   <TabsTrigger value="tags">Etiquetas</TabsTrigger>
-                  <TabsTrigger value="entitlements">Derechos</TabsTrigger>
+                  <TabsTrigger value="resources">Recursos</TabsTrigger>
                   <TabsTrigger value="restrictions">Restricciones</TabsTrigger>
                 </TabsList>
 
@@ -780,21 +780,21 @@ export function AccessControlModule({
                   </Button>
                 </TabsContent>
 
-                <TabsContent value="entitlements">
-                  {entitlementFields.map((field, index) => (
+                <TabsContent value="resources">
+                  {resourceFields.map((field, index) => (
                     <Card key={field.id} className="mb-4">
                       <CardContent className="pt-4">
                         <div className="flex justify-between items-center mb-4">
                           <FormField
                             control={form.control}
-                            name={`entitlements.${index}.name`}
+                            name={`resources.${index}.name`}
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Nombre del Derecho</FormLabel>
+                                <FormLabel>Nombre del Recurso</FormLabel>
                                 <FormControl>
                                   <Input
                                     {...field}
-                                    placeholder="Nombre del derecho"
+                                    placeholder="Nombre del recurso"
                                   />
                                 </FormControl>
                               </FormItem>
@@ -802,7 +802,7 @@ export function AccessControlModule({
                           />
                           <FormField
                             control={form.control}
-                            name={`entitlements.${index}.type`}
+                            name={`resources.${index}.type`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Tipo</FormLabel>
@@ -829,7 +829,7 @@ export function AccessControlModule({
                           />
                           <AccessLevelField
                             control={form.control}
-                            name={`entitlements.${index}.accessLevel`}
+                            name={`resources.${index}.accessLevel`}
                           />
                           <Button
                             type="button"
@@ -846,7 +846,7 @@ export function AccessControlModule({
                             </AccordionTrigger>
                             <AccordionContent>
                               <TimeRangeFields
-                                prefix={`entitlements.${index}.timeRange`}
+                                prefix={`resources.${index}.timeRange`}
                                 control={form.control}
                               />
                             </AccordionContent>
@@ -866,7 +866,7 @@ export function AccessControlModule({
                       })
                     }
                   >
-                    <PlusCircle className="h-4 w-4 mr-2" /> Añadir Derecho
+                    <PlusCircle className="h-4 w-4 mr-2" /> Añadir Recurso
                   </Button>
                 </TabsContent>
 

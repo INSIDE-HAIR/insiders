@@ -1,21 +1,21 @@
 model DynamicPage {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   content       Json
   slug          String
   lang          String
-  parentId      String?       @db.ObjectId
-  parent        DynamicPage?  @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children      DynamicPage[] @relation("PageHierarchy")
-  level         Int           @default(1)
-  fullPath      String        @unique
-  isPublished   Boolean       @default(false)
-  isEditable    Boolean       @default(true)
+  parentId      String?        @db.ObjectId
+  parent        DynamicPage?   @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children      DynamicPage[]  @relation("PageHierarchy")
+  level         Int            @default(1)
+  fullPath      String         @unique
+  isPublished   Boolean        @default(false)
+  isEditable    Boolean        @default(true)
   author        String
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  template      Template      @default(sideMenuAndTabs)
-  accessControl Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  template      Template       @default(sideMenuAndTabs)
+  accessControl AccessControl?
   groups        Json?
 
   @@index([slug])
@@ -30,4 +30,14 @@ enum Template {
   Calendars
   sideMenuAndTabs
   custom
+}
+
+model AccessControl {
+  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
+  dynamicPageId      String      @unique @db.ObjectId
+  dynamicPage        DynamicPage @relation(fields: [dynamicPageId], references: [id])
+  isEnabled          Boolean     @default(true)
+  maxConcurrentUsers Int?
+  maxAccessCount     Int?
+  rules              Json?
 }

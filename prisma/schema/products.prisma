@@ -1,0 +1,51 @@
+enum ProductCategory {
+  DIGITAL_PRODUCT // Productos digitales.
+  PHYSICAL_PRODUCT // Productos físicos.
+  SERVICE_PRODUCT // Servicios empaquetados como productos.
+  SUBSCRIPTION_PRODUCT // Productos basados en suscripción.
+}
+
+enum DigitalProductCategory {
+  EBOOKS // Libros electrónicos.
+  SOFTWARE // Software y aplicaciones.
+  ONLINE_COURSES // Cursos en línea.
+  AUDIO // Música y audio.
+  VIDEOS // Videos y películas.
+  GRAPHIC_ASSETS // Recursos gráficos (imágenes, iconos).
+  TICKETS // Entradas electrónicas para eventos.
+  LICENSES // Licencias de software o contenido.
+  MEMBERSHIP_ACCESS // Acceso a membresías o contenido premium.
+  WEBINAR_RECORDINGS // Grabaciones de webinars.
+  DIGITAL_ART // Arte digital y NFTs.
+  DOCUMENT_TEMPLATES // Plantillas de documentos.
+}
+
+enum PhysicalProductCategory {
+  BOOKS // Libros físicos.
+  APPAREL // Ropa y accesorios.
+  ELECTRONICS // Dispositivos electrónicos.
+  HOME_GOODS // Artículos para el hogar.
+  ARTWORK // Obras de arte físicas.
+  EVENT_TICKETS // Entradas físicas para eventos.
+  HANDMADE_ITEMS // Productos artesanales.
+  MERCHANDISE // Artículos promocionales y merchandising.
+}
+
+enum ServiceProductCategory {
+  CONSULTING_SESSIONS // Sesiones de consultoría.
+  APPOINTMENTS // Citas o reservas de servicios.
+  SUBSCRIPTIONS // Suscripciones a servicios o contenido.
+  DIGITAL_DOWNLOADS // Descargas digitales únicas.
+  EVENT_ACCESS // Acceso a eventos o webinars.
+  GIFT_CARDS // Tarjetas de regalo para servicios o productos.
+}
+
+enum SubscriptionProductCategory {
+  MEMBERSHIP_ACCESS // Acceso a membresías o contenido premium.
+  SOFTWARE_SUBSCRIPTION // Suscripción a software o aplicaciones.
+  ONLINE_COURSE_SUBSCRIPTION // Acceso continuo a cursos en línea.
+  SERVICE_SUBSCRIPTION // Suscripción a servicios periódicos (e.g., soporte, consultoría).
+  CONTENT_SUBSCRIPTION // Suscripción a contenido (e.g., revistas digitales, podcasts).
+  STREAMING_SUBSCRIPTION // Suscripción a servicios de streaming (e.g., música, video).
+  DATA_SUBSCRIPTION // Acceso a datos o APIs.
+}

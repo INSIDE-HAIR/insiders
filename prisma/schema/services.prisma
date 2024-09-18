@@ -1,0 +1,74 @@
+enum ServiceCategory {
+  MEMBERSHIP // Servicios relacionados con membresías y gestión de accesos.
+  EVENT_MANAGEMENT // Servicios para crear y gestionar eventos y reuniones.
+  SCHEDULING // Servicios para programar y gestionar citas y reservas.
+  COMMUNICATION // Servicios de comunicación, incluyendo mensajería, chatbots y notificaciones.
+  CONTENT_MANAGEMENT // Servicios para crear y gestionar contenido, como blogs, páginas web y formularios.
+  ANALYTICS // Servicios de análisis y reportes, incluyendo dashboards y métricas.
+  PRODUCT_MANAGEMENT // Servicios para gestionar productos digitales y físicos, incluyendo inventario y pedidos.
+  MARKETING // Servicios relacionados con marketing y gestión de leads.
+}
+
+enum MarketingServiceType {
+  FUNNEL_MANAGEMENT_SERVICE // Gestiona funnels para seguimiento de leads.
+  LEAD_MANAGEMENT_SERVICE // Gestiona leads y su información.
+  CAMPAIGN_MANAGEMENT_SERVICE // Gestiona campañas de marketing.
+  EMAIL_MARKETING_SERVICE // Gestiona campañas de email marketing.
+  SEO_SERVICE // Servicios de optimización para motores de búsqueda.
+  SOCIAL_MEDIA_MANAGEMENT_SERVICE // Gestiona redes sociales y publicaciones.
+  ADVERTISING_SERVICE // Gestiona anuncios y publicidad en línea.
+}
+
+enum MembershipServiceType {
+  MEMBERSHIP_SERVICE // Gestiona accesos y membresías.
+  COMMUNITY_SERVICE // Gestiona foros.
+  SUBSCRIPTION_MANAGEMENT // Gestiona suscripciones periódicas.
+  ACCESS_CONTROL_SERVICE // Controla el acceso a contenido o funcionalidades.
+}
+
+enum EventManagementServiceType {
+  EVENT_CREATION_SERVICE // Crea y gestiona eventos.
+  MEETINGS_SERVICE // Organiza y gestiona reuniones.
+  WEBINAR_SERVICE // Crea y gestiona webinars.
+  TICKET_SALES_SERVICE // Gestiona la venta de entradas.
+}
+
+enum SchedulingServiceType {
+  APPOINTMENT_SERVICE // Programa y gestiona citas.
+  RESERVATION_SERVICE // Gestiona reservas en general.
+  REMINDER_SERVICE // Envía recordatorios automáticos.
+  AVAILABILITY_MANAGEMENT_SERVICE // Gestiona la disponibilidad.
+}
+
+enum CommunicationServiceType {
+  EMAIL_SERVICE // Gestiona mensajes de correo electrónico.
+  MESSAGING_SERVICE // Gestiona chats internos.
+  CHATBOT_SERVICE // Crea y gestiona chatbots.
+  SMS_SERVICE // Envía mensajes de texto SMS.
+  PUSH_NOTIFICATION_SERVICE // Envía notificaciones push.
+}
+
+enum ContentManagementServiceType {
+  WEB_CONTENT_SERVICE // Crea y gestiona contenido web con SEO.
+  BLOG_CONTENT_SERVICE // Crea y gestiona blogs.
+  LANDING_PAGES_SERVICE // Crea y gestiona páginas de aterrizaje.
+  FORM_CREATION_SERVICE // Crea y gestiona formularios.
+  MEDIA_LIBRARY_SERVICE // Gestiona biblioteca de medios.
+}
+
+enum AnalyticsServiceType {
+  DASHBOARDS_SERVICE // Crea y gestiona dashboards.
+  REPORTS_SERVICE // Genera informes detallados.
+  REAL_TIME_ANALYTICS_SERVICE // Análisis en tiempo real.
+  PREDICTIVE_ANALYTICS_SERVICE // Análisis predictivo avanzado.
+}
+
+enum ProductManagementServiceType {
+  DIGITAL_PRODUCT_MANAGEMENT_SERVICE // Gestiona productos digitales.
+  PHYSICAL_PRODUCT_MANAGEMENT_SERVICE // Gestiona productos físicos.
+  SERVICE_PRODUCT_MANAGEMENT_SERVICE // Gestiona servicios empaquetados como productos.
+  SUBSCRIPTION_PRODUCT_MANAGEMENT_SERVICE // Gestiona productos basados en suscripción.
+  INVENTORY_MANAGEMENT_SERVICE // Gestiona el inventario.
+  PRICING_SERVICE // Gestiona precios y promociones.
+  ORDER_MANAGEMENT_SERVICE // Gestiona pedidos y compras.
+}

@@ -1,0 +1,7 @@
+enum FormType {
+  CONTACT_FORM // Formularios de contacto.
+  SURVEY_FORM // Encuestas.
+  REGISTRATION_FORM // Formularios de registro.
+  FEEDBACK_FORM // Formularios de retroalimentación.
+  // Agrega más tipos si es necesario.
+}

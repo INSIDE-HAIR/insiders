@@ -27,6 +27,9 @@ export type ExtendedUser = DefaultSession["user"] & {
   updatedAt: Date;
   lastLogin: Date | null;
   isOAuth: boolean;
+  groups: string[];
+  tags: string[];
+  resources: string[];
 };
 
 declare module "next-auth" {
