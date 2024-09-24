@@ -47,6 +47,8 @@ export const filesCodes = {
   "2109": "Semana 2", // Stories Semanales 2
   "3109": "Semana 3", // Stories Semanales 3
   "4109": "Semana 4", // Stories Semanales 4
+  "1600": "Cartel 1200x600",
+  "1500": "Cartel 1500x1000",
 };
 
 export const clientsCodes = {
@@ -897,5 +899,3 @@ export const consultingAndMentoringFields = getFieldNames(
 export const trainingsFields = getFieldNames("trainingsFields");
 export const marketingFields = getFieldNames("marketingFields");
 export const creativitiesFields = getFieldNames("creativitiesFields");
-
-
