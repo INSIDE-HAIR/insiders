@@ -70,5 +70,3 @@ enum ResourceType {
   SERVICE // Servicios, revisar el archivo de services.prisma
   PRODUCT // Productos, revisar el archivo de products.prisma
 }
-
-//
