@@ -1,4 +1,4 @@
-# Documentación de Autenticación
+# Documentación de Autenticación 
 
 Este documento proporciona una descripción detallada de las estrategias de autenticación implementadas en nuestra aplicación, así como del manejo de sesiones y tokens JWT.
 
