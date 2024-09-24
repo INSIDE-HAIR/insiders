@@ -4969,7 +4969,7 @@
           "auth": []
         }
       ],
-      "active": true,
+      "active": false,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -5010,7 +5010,7 @@
           "auth": []
         }
       ],
-      "active": true,
+      "active": false,
       "available": {
         "startDateTime": null,
         "endDateTime": null
@@ -5039,7 +5039,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0080", "0050"],
+                  "childrensCode": ["0080", "0050", "1600", "1500"],
                   "title": "",
                   "content": [],
                   "active": true,
@@ -5050,7 +5050,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
