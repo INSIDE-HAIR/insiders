@@ -10,6 +10,7 @@ import {
   Button,
 } from "@nextui-org/react";
 import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { EyeIcon } from "lucide-react";
 
 export default function CustomImageModal({ item }: ComponentsProps) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -17,10 +18,11 @@ export default function CustomImageModal({ item }: ComponentsProps) {
   return (
     <>
       <Button
-        variant="ghost"
-        className="hover:opacity-100 rounded-full mb-3"
+        variant="solid"
+        className="hover:opacity-100 rounded-none mb-3 bg-zinc-900 text-zinc-50"
         onPress={onOpen}
       >
+        <EyeIcon className="w-3"></EyeIcon>
         Donde ponerlo
       </Button>
       <Modal

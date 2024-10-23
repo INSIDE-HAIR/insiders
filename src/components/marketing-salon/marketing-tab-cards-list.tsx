@@ -1,8 +1,14 @@
-import { Button, Tab, Tabs } from "@nextui-org/react";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs/tabs";
 import React, { useEffect, useRef, useState } from "react";
 import MarketingSalonCards from "./marketing-salon-cards";
 import { filesCodes } from "@/db/constants";
 import { Toaster, toast } from "sonner";
+import { Button } from "@nextui-org/react";
 
 const langCodes = {
   "01": "ES",
@@ -49,6 +55,7 @@ export default function MarketingTabCardsList({
   index,
 }: MarketingTabCardsListProps) {
   const [groupedByLanguage, setGroupedByLanguage] = useState<any>(null);
+  const [defaultValue, setDefaultValue] = useState<string | undefined>();
 
   useEffect(() => {
     const byLanguage: { [key: string]: any } = {};
@@ -72,138 +79,138 @@ export default function MarketingTabCardsList({
     console.log("byLanguage", byLanguage);
   }, [item.childrensCode, dataMarketingCards, item]);
 
-  // Verificar si solo hay un valor en groupedByLanguage
+  useEffect(() => {
+    if (groupedByLanguage && Object.keys(groupedByLanguage).length > 0) {
+      setDefaultValue(Object.keys(groupedByLanguage)[0]);
+    }
+  }, [groupedByLanguage]);
+
   const languageEntries = groupedByLanguage
     ? Object.entries(groupedByLanguage)
     : [];
 
   return (
-    <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
-      {languageEntries.length === 1 ? (
-        // Si solo hay un idioma, renderizar el Contenido directamente
-        languageEntries.map(([language, categories]) =>
-          Object.entries(categories as { [key: string]: any }).map(
-            ([categoryCode, items]: [string, any[]]) => {
-              const groupedByTitle = groupByGroupTitle(items);
-              return (
-                <div
-                  key={categoryCode}
-                  className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0 "
-                >
-                  {item.title !== null && (
-                    <h3 className="text-center w-full font-bold text-2xl -mb-3">
-                      {item.title ||
-                        filesCodes[categoryCode as keyof typeof filesCodes] ||
-                        categoryCode}
-                    </h3>
-                  )}
-                  {groupedByTitle.map(([groupTitle, groupItems]) => (
-                    <div
-                      key={groupTitle}
-                      style={{
-                        order:
-                          parseInt(groupTitle.split("-")[0]) === 0
-                            ? groupTitle.split(" ")[1]
-                            : groupTitle.split("-")[0],
-                      }}
-                    >
-                      {groupTitle !== "Sin Grupo de Familia" && (
-                        <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                          {groupTitle.split("-")[1].replace(/_/g, "")}
-                        </h4>
-                      )}
-                      <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
-                        {groupItems.map((groupItem) => (
-                          <MarketingSalonCards
-                            item={groupItem}
-                            key={groupItem.id}
-                            renderButtons={RenderButtons}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            }
-          )
-        )
-      ) : (
-        // Si hay múltiples idiomas, renderizar las pestañas
-        <Tabs
-          aria-label="Languages"
-          className={`max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse`}
-        >
-          {groupedByLanguage &&
-            languageEntries
-              .sort()
-              .reverse()
-              .map(([language, categories]) => {
-                const categoriesWithItems = Object.entries(
-                  categories as { [key: string]: any }
-                ).filter(([_, items]) => items.length > 0);
-
-                if (categoriesWithItems.length === 0) {
-                  return null;
-                }
-
+    <div className='flex w-full flex-col items-center justify-center content-center [&>*]:w-full '>
+      {languageEntries.length === 1
+        ? languageEntries.map(([language, categories]) =>
+            Object.entries(categories as { [key: string]: any }).map(
+              ([categoryCode, items]: [string, any[]]) => {
+                const groupedByTitle = groupByGroupTitle(items);
                 return (
-                  <Tab
-                    key={language}
-                    title={
-                      langCodes[language as keyof typeof langCodes] || language
-                    }
+                  <div
+                    key={categoryCode}
+                    className='gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0 '
                   >
-                    {Object.entries(categories as { [key: string]: any }).map(
-                      ([categoryCode, items]: [string, any[]]) => {
-                        const groupedByTitle = groupByGroupTitle(items);
-                        return (
-                          <div
-                            key={categoryCode}
-                            className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0  "
-                          >
-                            {item.title !== null && (
-                              <h3 className="text-center w-full font-bold text-2xl -mb-3">
-                                {filesCodes[
-                                  categoryCode as keyof typeof filesCodes
-                                ] || categoryCode}
-                              </h3>
-                            )}
-                            {groupedByTitle.map(([groupTitle, groupItems]) => (
-                              <div
-                                key={groupTitle}
-                                style={{
-                                  order:
-                                    parseInt(groupTitle.split("-")[0]) === 0
-                                      ? groupTitle.split(" ")[1]
-                                      : groupTitle.split("-")[0],
-                                }}
-                              >
-                                {groupTitle !== "Sin Grupo de Familia" && (
-                                  <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                                    {groupTitle.split("-")[1].replace(/_/g, "")}
-                                  </h4>
-                                )}
-                                <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
-                                  {groupItems.map((groupItem) => (
-                                    <MarketingSalonCards
-                                      item={groupItem}
-                                      key={groupItem.id}
-                                      renderButtons={RenderButtons}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      }
+                    {item.title !== null && (
+                      <h3 className='text-center w-full font-bold text-2xl -mb-3'>
+                        {item.title ||
+                          filesCodes[categoryCode as keyof typeof filesCodes] ||
+                          categoryCode}
+                      </h3>
                     )}
-                  </Tab>
+                    {groupedByTitle.map(([groupTitle, groupItems]) => (
+                      <div
+                        key={groupTitle}
+                        style={{
+                          order:
+                            parseInt(groupTitle.split("-")[0]) === 0
+                              ? groupTitle.split(" ")[1]
+                              : groupTitle.split("-")[0],
+                        }}
+                      >
+                        {groupTitle !== "Sin Grupo de Familia" && (
+                          <h4 className='text-center w-full font-bold text-xl  mt-6 first:mt-0 '>
+                            {groupTitle.split("-")[1].replace(/_/g, "")}
+                          </h4>
+                        )}
+                        <div className='gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full '>
+                          {groupItems.map((groupItem) => (
+                            <MarketingSalonCards
+                              item={groupItem}
+                              key={groupItem.id}
+                              renderButtons={RenderButtons}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 );
-              })}
-        </Tabs>
-      )}
+              }
+            )
+          )
+        : defaultValue && (
+            <Tabs
+              defaultValue={defaultValue}
+              className='max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse'
+            >
+              <TabsList className='rounded-none flex flex-wrap h-full  bg-transparent text-white border-none [&>[data-state=active]]:bg-primary [&>[data-state=active]]:font-semibold'>
+                {languageEntries
+                  .sort()
+                  .reverse()
+                  .map(([language]) => (
+                    <TabsTrigger
+                      key={language}
+                      value={language}
+                      className='rounded-none bg-zinc-700 text-white border-none'
+                    >
+                      {langCodes[language as keyof typeof langCodes] ||
+                        language}
+                    </TabsTrigger>
+                  ))}
+              </TabsList>
+              {languageEntries.map(([language, categories]) =>
+                Object.entries(categories as { [key: string]: any }).map(
+                  ([categoryCode, items]: [string, any[]]) => {
+                    const groupedByTitle = groupByGroupTitle(items);
+                    return (
+                      <TabsContent
+                        key={categoryCode}
+                        value={language}
+                        className='w-full'
+                      >
+                        <div className='gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0  '>
+                          {item.title !== null && (
+                            <h3 className='text-center w-full font-bold text-2xl -mb-3'>
+                              {filesCodes[
+                                categoryCode as keyof typeof filesCodes
+                              ] || categoryCode}
+                            </h3>
+                          )}
+                          {groupedByTitle.map(([groupTitle, groupItems]) => (
+                            <div
+                              key={groupTitle}
+                              style={{
+                                order:
+                                  parseInt(groupTitle.split("-")[0]) === 0
+                                    ? groupTitle.split(" ")[1]
+                                    : groupTitle.split("-")[0],
+                              }}
+                            >
+                              {groupTitle !== "Sin Grupo de Familia" && (
+                                <h4 className='text-center w-full font-bold text-xl  mt-6 first:mt-0 '>
+                                  {groupTitle.split("-")[1].replace(/_/g, "")}
+                                </h4>
+                              )}
+                              <div className='gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full '>
+                                {groupItems.map((groupItem) => (
+                                  <MarketingSalonCards
+                                    item={groupItem}
+                                    key={groupItem.id}
+                                    renderButtons={RenderButtons}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </TabsContent>
+                    );
+                  }
+                )
+              )}
+            </Tabs>
+          )}
       <Toaster richColors />
     </div>
   );
@@ -235,11 +242,11 @@ const RenderButtons = (item: any) => {
         <>
           {item.buttons.map((button: any, index: number) => (
             <Button
-              className={`text-tiny text-white bg-gray-700 m-1`}
-              variant="flat"
-              color="default"
-              radius="lg"
-              size="sm"
+              className={`text-tiny text-zinc-900 font-bold bg-primary m-1`}
+              variant='flat'
+              color='default'
+              radius='none'
+              size='sm'
               key={index}
               onClick={() => {
                 window.open(button.url, "_blank");
@@ -251,12 +258,12 @@ const RenderButtons = (item: any) => {
         </>
       ) : (
         <Button
-          className={`text-tiny text-white bg-gray-700 m-1`}
-          variant="flat"
+          className={`text-tiny text-zinc-900 font-bold bg-primary m-1`}
+          variant='flat'
           key={item.id}
-          color="default"
-          radius="lg"
-          size="sm"
+          color='default'
+          radius='none'
+          size='sm'
           onClick={() => {
             window.open(item.transformedUrl.download, "_blank");
           }}
@@ -264,15 +271,15 @@ const RenderButtons = (item: any) => {
           <a download={item.title}>Descargar {item.buttonTitle} </a>
         </Button>
       )}
-      
+
       {item.copy && (
         <>
           <Button
             className={`text-tiny text-white bg-gray-700 m-1`}
-            variant="flat"
-            color="default"
-            radius="lg"
-            size="sm"
+            variant='flat'
+            color='default'
+            radius='lg'
+            size='sm'
             id={"button" + item.name}
             onClick={handleCopyText}
           >
@@ -284,7 +291,7 @@ const RenderButtons = (item: any) => {
             disabled
             id={"copy" + item.name}
             rows={30}
-            className="max-w-full  flex border-2 rounded-sm mt-2"
+            className='max-w-full  flex border-2 rounded-sm mt-2'
           />
         </>
       )}

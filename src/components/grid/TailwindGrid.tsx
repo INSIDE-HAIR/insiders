@@ -3,106 +3,54 @@ type TailwindGridProps = {
   show?: boolean;
   fullSize?: boolean;
   className?: string;
+  gap?: number;
+  mdGap?: number;
+  lgGap?: number;
+  bgColor?: "red" | "blue" | "yellow" | "orange" | "purple" | "green";
 };
 
-function TailwindGrid({ children, show, className, fullSize }: TailwindGridProps) {
-  const color = className;
+function TailwindGrid({
+  children,
+  show,
+  className,
+  fullSize,
+  gap = 4,
+  mdGap = 6,
+  lgGap = 6,
+  bgColor = "blue",
+}: TailwindGridProps) {
+  const bgColorClass = `bg-${bgColor}-200/20`;
+  const gapClass = `gap-${gap}`;
+  const mdGapClass = `md:gap-${mdGap}`;
+  const lgGapClass = `lg:gap-${lgGap}`;
 
   return (
     <>
-      <section className={`px-4 min-w-[320px]  md:px-6 lg:px-8  w-full bg-red-500/10 -z-50`}>
-        <section className=" gap-4 grid-cols-4  md:gap-6 md:grid-cols-8 lg:gap-6 lg:grid-cols-12 grid relative  w-full -z-50  justify-center">
+      <section
+        className={`px-4 min-w-[320px] md:px-6 lg:px-8 w-full bg-red-500/10 z-50`}
+      >
+        <section className={`${gapClass} ${mdGapClass} ${lgGapClass} grid-cols-4 md:grid-cols-8 lg:grid-cols-12 grid relative w-full z-50 justify-center`}>
           {show && (
-            <div className="gap-4 grid-cols-4  md:gap-6 md:grid-cols-8 lg:gap-6  lg:grid-cols-12 grid absolute w-full -z-50  justify-center">
-              <div
-                className={`h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                1
-              </div>
-              <div
-                className={`h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                2
-              </div>
-              <div
-                className={`h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                3
-              </div>
-              <div
-                className={`h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                4
-              </div>
-              <div
-                className={`hidden md:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                5
-              </div>
-              <div
-                className={`hidden md:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                6
-              </div>
-              <div
-                className={`hidden md:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                7
-              </div>
-              <div
-                className={`hidden md:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                8
-              </div>
-              <div
-                className={`hidden lg:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                9
-              </div>
-              <div
-                className={`hidden lg:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                10
-              </div>
-              <div
-                className={`hidden lg:block h-screen text-center text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                11
-              </div>
-              <div
-                className={` hidden lg:block h-screen text-center  text-zinc-900 col-span-1 ${
-                  color || "bg-blue-200/20"
-                }`}
-              >
-                12
-              </div>
+            <div className={`${gapClass} ${mdGapClass} ${lgGapClass} grid-cols-4 md:grid-cols-8 lg:grid-cols-12 grid absolute w-full z-50 justify-center`}>
+              {Array.from({ length: 12 }).map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-screen text-center text-zinc-900 col-span-1 ${bgColorClass} ${
+                    index >= 4 && index < 8 ? "hidden md:block" : ""
+                  } ${index >= 8 ? "hidden lg:block" : ""}`}
+                >
+                  {index + 1}
+                </div>
+              ))}
             </div>
           )}
         </section>
       </section>
-      <section className={` ${!fullSize && "px-4 md:px-6 lg:px-8"} min-w-[320px] w-full   gap-4 grid-cols-4  md:gap-6 md:grid-cols-8 lg:gap-6  lg:grid-cols-12 grid relative  items-center justify-center`}>
+      <section
+        className={`${
+          !fullSize && "px-4 md:px-6 lg:px-8"
+        } min-w-[320px] w-full ${gapClass} ${mdGapClass} ${lgGapClass} grid-cols-4 md:grid-cols-8 lg:grid-cols-12 grid relative items-center justify-center`}
+      >
         {children}
       </section>
     </>

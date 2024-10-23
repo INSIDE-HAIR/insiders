@@ -3,7 +3,7 @@ import { ComponentsProps } from "@/src/lib/types/components-schemas";
 function VideosPlayers({ item, index }: ComponentsProps) {
   return (
     <>
-      <div className='first:mt-0 mb-4 aspect-video rounded-3xl overflow-hidden flex w-screen max-w-3xl relative '>
+      <div className='first:mt-0 mb-4 aspect-video  border-2 border-zinc-200 overflow-hidden flex w-screen max-w-3xl relative '>
         <iframe
           width='100%'
           height='100%'
