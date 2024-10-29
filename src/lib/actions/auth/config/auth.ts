@@ -67,7 +67,7 @@ export const {
 
         try {
           await resend.emails.send({
-            from,
+            from: from ?? process.env.EMAIL_FROM ?? "default@example.com" ,
             to: email,
             subject: `Inicia sesión en ${host}`,
             html: html({ url, host, email, label: "Iniciar sesión" }),
