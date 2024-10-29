@@ -1,19 +1,76 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { Resend } from "resend";
+import Resend from "next-auth/providers/resend";
 import bcrypt from "bcryptjs";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
 import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../../prisma/database";
 
 import { CredentialSigninSchema } from "../../../types/zod-schemas";
-import { html, text } from "../../../utils/utils";
 import { UserRole } from "@prisma/client";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Email template functions
+function html({
+  url,
+  host,
+  theme = { brandColor: "#346df1", buttonText: "#fff" },
+}: {
+  url: string;
+  host: string;
+  theme?: { brandColor: string; buttonText: string };
+}) {
+  const escapedHost = host.replace(/\./g, "&#8203;.");
+  const brandColor = theme.brandColor;
+  const color = {
+    background: "#f9f9f9",
+    text: "#444",
+    mainBackground: "#fff",
+    buttonBackground: brandColor,
+    buttonBorder: brandColor,
+    buttonText: theme.buttonText,
+  };
+
+  return `
+    <body style="background: ${color.background};">
+      <table width="100%" border="0" cellspacing="20" cellpadding="0"
+        style="background: ${color.mainBackground}; max-width: 600px; margin: auto; border-radius: 10px;">
+        <tr>
+          <td align="center"
+            style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+            Iniciar sesión en <strong>${escapedHost}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding: 20px 0;">
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="center" style="border-radius: 5px;" bgcolor="${color.buttonBackground}">
+                  <a href="${url}"
+                    target="_blank"
+                    style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${color.buttonText}; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid ${color.buttonBorder}; display: inline-block; font-weight: bold;">
+                    Iniciar sesión
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center"
+            style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
+            Si no has solicitado este correo, puedes ignorarlo.
+          </td>
+        </tr>
+      </table>
+    </body>
+  `;
+}
+
+function text({ url, host }: { url: string; host: string }) {
+  return `Iniciar sesión en ${host}\n${url}\n\n`;
+}
 
 export const {
   handlers: { GET, POST },
@@ -39,12 +96,11 @@ export const {
           const user = await prisma.user.findUnique({ where: { email } });
 
           if (!user || !user.password) {
-            return null; // Authentication failed
+            return null;
           }
 
           const passwordMatch = await bcrypt.compare(password, user.password);
           if (passwordMatch) {
-            // Update lastLogin on successful login
             await prisma.user.update({
               where: { id: user.id },
               data: { lastLogin: new Date() },
@@ -55,10 +111,9 @@ export const {
         return null;
       },
     }),
-    EmailProvider({
-      id: "email",
-      name: "Email",
-      from: process.env.EMAIL_FROM,
+    Resend({
+      apiKey: process.env.AUTH_RESEND_KEY,
+      from: process.env.EMAIL_FROM ?? "noreply@insidehair.es",
       async sendVerificationRequest({
         identifier: email,
         url,
@@ -66,18 +121,32 @@ export const {
       }) {
         const { host } = new URL(url);
 
-        try {
-          await resend.emails.send({
-            from: from ?? process.env.EMAIL_FROM ?? "noreplay@insidehair.es",
+        const response = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.AUTH_RESEND_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from,
             to: email,
-            subject: `Inicia sesión en ${host}`,
-            html: html({ url, host, email, label: "Iniciar sesión" }),
+            subject: `Iniciar sesión en ${host}`,
+            html: html({ url, host }),
             text: text({ url, host }),
-          });
-        } catch (error) {
-          console.error("Error al enviar el correo de verificación:", error);
-          throw error;
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            "Error al enviar el correo de verificación: " +
+              JSON.stringify(await response.json())
+          );
         }
+      },
+      normalizeIdentifier(identifier: string): string {
+        let [local, domain] = identifier.toLowerCase().trim().split("@");
+        domain = domain.split(",")[0];
+        return `${local}@${domain}`;
       },
     }),
     GithubProvider({
@@ -92,7 +161,7 @@ export const {
   adapter: PrismaAdapter(prisma),
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60, // Expiration Session date 24 hours in seconds
+    maxAge: 24 * 60 * 60,
   },
   events: {
     async linkAccount({ user }) {
@@ -116,7 +185,6 @@ export const {
         });
 
         if (existingUser) {
-          // If the user already exists but is not linked to the provider
           const existingAccount = await prisma.account.findFirst({
             where: {
               provider: account?.provider,
@@ -125,11 +193,10 @@ export const {
           });
 
           if (!existingAccount) {
-            // Link the OAuth account to the existing user
             await prisma.account.create({
               data: {
                 userId: existingUser.id,
-                type: account?.type || "", // Add default value of an empty string
+                type: account?.type || "",
                 provider: account?.provider || "",
                 providerAccountId: account?.providerAccountId || "",
                 refresh_token: account?.refresh_token,
@@ -138,7 +205,7 @@ export const {
                 token_type: account?.token_type,
                 scope: account?.scope,
                 id_token: account?.id_token,
-                session_state: account?.session_state?.toString() ?? "", // Convert session_state to string or use an empty string as default
+                session_state: account?.session_state?.toString() ?? "",
               },
             });
           }
@@ -147,32 +214,31 @@ export const {
             where: { id: existingUser.id },
             data: {
               lastLogin: new Date(),
-              image: user.image || existingUser.image, // Update the image if it exists
+              image: user.image || existingUser.image,
             },
           });
         } else {
-          // Create a new user if no account exists
           existingUser = await prisma.user.create({
             data: {
               name: user.name,
               email: user?.email ?? "",
-              image: user.image, // Save the profile image
-              emailVerified: user.emailVerified ?? new Date(), // Only set if not already set
+              image: user.image,
+              emailVerified: user.emailVerified ?? new Date(),
               lastLogin: new Date(),
               accounts: {
                 createMany: {
                   data: [
                     {
-                      type: account?.type || "", // Add default value of an empty string
-                      provider: account?.provider || "", // Add default value of an empty string
-                      providerAccountId: account?.providerAccountId || "", // Add default value of an empty string
+                      type: account?.type || "",
+                      provider: account?.provider || "",
+                      providerAccountId: account?.providerAccountId || "",
                       refresh_token: account?.refresh_token,
                       access_token: account?.access_token,
                       expires_at: account?.expires_at,
                       token_type: account?.token_type,
                       scope: account?.scope,
                       id_token: account?.id_token,
-                      session_state: account?.session_state?.toString() ?? "", // Convert session_state to string or use an empty string as default
+                      session_state: account?.session_state?.toString() ?? "",
                     },
                   ],
                 },
@@ -184,7 +250,7 @@ export const {
         return true;
       }
 
-      const userId = user.id; // This will be a valid ObjectId for non-OAuth logins
+      const userId = user.id;
 
       const existingUser = await prisma.user.findUnique({
         where: { id: userId },
@@ -198,8 +264,6 @@ export const {
           await prisma.twoFactorConfirmation.findUnique({
             where: { userId: existingUser.id },
           });
-
-        console.log("twoFactorConfirmation", twoFactorConfirmation);
 
         if (!twoFactorConfirmation) {
           return false;
@@ -236,13 +300,11 @@ export const {
       token.role = existingUser.role;
       token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
-      // Fetch user with relations
       const userWithRelations = await prisma.user.findUnique({
         where: { id: existingUser.id },
         include: { groups: true, tags: true, resources: true },
       });
 
-      // Add group, tag, and service resource information to the token
       token.groups = userWithRelations?.groups.map((g) => g.name) || [];
       token.tags = userWithRelations?.tags.map((t) => t.name) || [];
       token.resources = userWithRelations?.resources.map((sr) => sr.name) || [];
@@ -266,13 +328,11 @@ export const {
         session.user.resources = token.resources as string[];
       }
 
-      // Check if the user still exists in the database
       const userExists = await prisma.user.findUnique({
         where: { id: token.sub },
       });
 
       if (!userExists) {
-        // Invalidate session if user no longer exists
         return null;
       }
 
