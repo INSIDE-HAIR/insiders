@@ -8,6 +8,7 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../../prisma/database";
+import { UserRole } from "@prisma/client"; 
 
 import { CredentialSigninSchema } from "../../../types/zod-schemas";
 import { html, text } from "../../../utils/utils";
@@ -255,14 +256,14 @@ export const {
       }
 
       if (session.user) {
-        session.user.role = token.role;
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.isOAuth = token.isOAuth;
-        session.user.groups = token.groups;
-        session.user.tags = token.tags;
-        session.user.resources = token.resources;
+        session.user.role = token.role as UserRole;
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.isOAuth = token.isOAuth as boolean;
+        session.user.groups = token.groups as string[];
+        session.user.tags = token.tags as string[];
+        session.user.resources = token.resources as string[];
       }
 
       // Check if the user still exists in the database
