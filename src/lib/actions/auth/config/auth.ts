@@ -68,7 +68,7 @@ export const {
 
         try {
           await resend.emails.send({
-            from: from ?? process.env.EMAIL_FROM,
+            from: from ?? process.env.EMAIL_FROM ?? "noreplay@insidehair.es",
             to: email,
             subject: `Inicia sesión en ${host}`,
             html: html({ url, host, email, label: "Iniciar sesión" }),
