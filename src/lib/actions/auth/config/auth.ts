@@ -8,10 +8,10 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import authConfig from "./auth.config";
 import prisma from "../../../../../prisma/database";
-import { UserRole } from "@prisma/client"; 
 
 import { CredentialSigninSchema } from "../../../types/zod-schemas";
 import { html, text } from "../../../utils/utils";
+import { UserRole } from "@prisma/client";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -68,7 +68,7 @@ export const {
 
         try {
           await resend.emails.send({
-            from: from ?? process.env.EMAIL_FROM ?? "default@example.com" ,
+            from: from ?? process.env.EMAIL_FROM,
             to: email,
             subject: `Inicia sesión en ${host}`,
             html: html({ url, host, email, label: "Iniciar sesión" }),
