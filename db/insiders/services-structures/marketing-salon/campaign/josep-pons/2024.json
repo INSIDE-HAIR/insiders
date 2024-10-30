@@ -5325,6 +5325,34 @@
       "auth": []
     },
     {
+      "id": "guide3",
+      "title": "Guía",
+      "order": 3,
+      "classType": "default",
+      "content": [
+        {
+          "id": "cardList1",
+          "order": 1,
+          "type": "tabsCardsList",
+          "childrensCode": ["0002"],
+          "title": null,
+          "content": [],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
       "id": "controlList5",
       "title": "Listas de control",
       "order": 5,
@@ -5629,7 +5657,7 @@
                   "auth": []
                 }
               ],
-              "active": false,
+              "active": true,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
