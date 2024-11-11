@@ -8186,7 +8186,7 @@
                   "type": "video",
                   "id": "Contexto1",
                   "title": "Contexto",
-                  "url": "",
+                  "url": "https://vimeo.com/1027575262/f855c976ec",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -8206,15 +8206,71 @@
               "id": "tab2",
               "order": 2,
               "type": "tab",
-              "title": "Cartelería y acciones",
+              "title": "Acción principal",
               "classType": "default",
               "content": [
                 {
                   "order": 1,
                   "type": "video",
                   "id": "postersAndActions",
-                  "title": "Cartelería y acciones",
-                  "url": "",
+                  "title": "Acción principal",
+                  "url": "https://vimeo.com/1027575482/3d786141a8",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "El reto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "challenge",
+                  "title": "El reto",
+                  "url": "https://vimeo.com/1027575482/3d786141a8",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": false,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "Aplicaciones",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "aplicaciones1",
+                  "title": "Aplicaciones",
+                  "url": "https://vimeo.com/1027575482/3d786141a8",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -8231,7 +8287,7 @@
               "auth": []
             }
           ],
-          "active": false,
+          "active": true,
           "available": {
             "startDateTime": null,
             "endDateTime": null
