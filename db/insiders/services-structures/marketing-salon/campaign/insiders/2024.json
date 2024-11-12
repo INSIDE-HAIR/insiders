@@ -8316,6 +8316,47 @@
       "auth": []
     },
     {
+      "id": "controlList5",
+      "title": "Listas de control",
+      "order": 5,
+      "classType": "default",
+      "content": [
+        {
+          "id": "text1",
+          "order": 1,
+          "type": "text",
+          "classType": "h1",
+          "title": "Listas de control",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "cardList1",
+          "order": 1,
+          "type": "tabsCardsList",
+          "childrensCode": ["1111", "1112"],
+          "title": null,
+          "content": [],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    },
+    {
       "id": "contenidoFisico6",
       "title": "Contenido físico",
       "order": 6,
