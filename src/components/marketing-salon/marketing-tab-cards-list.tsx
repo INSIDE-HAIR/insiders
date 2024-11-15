@@ -291,7 +291,7 @@ const RenderButtons = (item: any) => {
             disabled
             id={"copy" + item.name}
             rows={30}
-            className='max-w-full  flex border-2 rounded-sm mt-2'
+            className='max-w-full flex border-2 rounded-sm mt-2 bg-zinc-700 text-white p-2'
           />
         </>
       )}
