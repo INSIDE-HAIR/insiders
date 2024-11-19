@@ -6,7 +6,6 @@ import {
   ConsultingAndMentoringField as PrismaConsultingAndMentoringField,
   TrainingField as PrismaTrainingField,
   MarketingField as PrismaMarketingField,
-  CreativityField as PrismaCreativityField,
 } from "@prisma/client";
 
 export interface User extends PrismaUser {
