@@ -18,7 +18,6 @@ export type FieldType =
   | "consultingAndMentoringFields"
   | "marketingFields"
   | "trainingsFields"
-  | "creativitiesFields";
 
 // Interfaz para el usuario del servicio
 export interface ServiceUser {
@@ -43,7 +42,6 @@ export interface ServiceUser {
   consultingAndMentoringFields: Field[];
   trainingsFields: Field[];
   marketingFields: Field[];
-  creativitiesFields: Field[];
   customFields: Field[];
   // Añade cualquier otro campo que necesites de tu modelo User
 }

@@ -292,7 +292,7 @@
         "sales": {
           "title": "Sales",
           "fields": {
-            "VENTAS - Mes de Creación del Contacto": {
+            "VENTAS - Fecha de Creación del Contacto": {
               "title": "Month of Contact Creation",
               "options": [
                 "JANUARY",
@@ -505,28 +505,6 @@
             }
           }
         },
-        "extraMentoring": {
-          "title": "Extra Mentoring",
-          "fields": {
-            "MENTORING EXTRA - Nº Contratado": {
-              "title": "Contracted Nº"
-            },
-            "MENTORING EXTRA - Nº Realizado": {
-              "title": "Realized Nº"
-            },
-            "MENTORING EXTRA - Responsable": {
-              "title": "Responsible",
-              "options": [
-                "LORENA",
-                "PEDRO",
-                "AINHOA",
-                "OIHANE",
-                "JESÚS",
-                "PABLO"
-              ]
-            }
-          }
-        },
         "cm": {
           "title": "Consulting and Mentoring",
           "fields": {
@@ -555,15 +533,6 @@
       "id": "trainingsFields",
       "title": "Training Fields",
       "groups": {
-        "consulting360": {
-          "title": "360º Consulting",
-          "fields": {
-            "CONSULTORÍA 360º - Edición": {
-              "title": "Edition",
-              "options": ["ED1 MAR-MAY24", "ED2 APR-MAY24", "ED3 MAY-JUN24"]
-            }
-          }
-        },
         "inpTraining": {
           "title": "INP Training",
           "fields": {
@@ -587,10 +556,6 @@
             },
             "INSIDE CLUB - Fecha de Fin": {
               "title": "End Date"
-            },
-            "INSIDE CLUB - Nivel": {
-              "title": "Level",
-              "options": ["ADVANCED", "EXPERT", "AMBASSADOR"]
             }
           }
         },
@@ -602,10 +567,6 @@
             },
             "GESTIÓN DIRECTIVA - Fecha de Fin": {
               "title": "End Date"
-            },
-            "GESTIÓN DIRECTIVA - Nivel": {
-              "title": "Level",
-              "options": ["Level 1", "Level 2", "Level 3"]
             }
           }
         },
@@ -714,227 +675,16 @@
             "MARKETING SALÓN - Fecha de Fin": {
               "title": "End Date"
             },
-            "MARKETING SALÓN - Nivel": {
-              "title": "Level",
-              "options": ["Level 1", "Level 2", "Level 3"]
-            },
-            "MARKETING SALÓN - Meses NUEVOS": {
-              "title": "NEW Months",
+            "MARKETING SALÓN - Responsable": {
+              "title": "Responsable",
               "options": [
-                "JAN23",
-                "FEB23",
-                "MAR23",
-                "APR23",
-                "MAY23",
-                "JUN23",
-                "JUL23",
-                "AUG23",
-                "SEP23",
-                "OCT23",
-                "NOV23",
-                "DEC23",
-                "JAN24",
-                "FEB24",
-                "MAR24",
-                "APR24",
-                "MAY24",
-                "JUN24",
-                "JUL24",
-                "AUG24",
-                "SEP24",
-                "OCT24",
-                "NOV24",
-                "DEC24",
-                "JAN25",
-                "FEB25",
-                "MAR25",
-                "APR25",
-                "MAY25",
-                "JUN25",
-                "JUL25",
-                "AUG25",
-                "SEP25",
-                "OCT25"
+                "LORENA",
+                "PEDRO",
+                "AINHOA",
+                "OIHANE",
+                "JESÚS",
+                "PABLO"
               ]
-            },
-            "MARKETING SALÓN - Meses JUNIOR": {
-              "title": "JUNIOR Months",
-              "options": [
-                "JAN23",
-                "FEB23",
-                "MAR23",
-                "APR23",
-                "MAY23",
-                "JUN23",
-                "JUL23",
-                "AUG23",
-                "SEP23",
-                "OCT23",
-                "NOV23",
-                "DEC23",
-                "JAN24",
-                "FEB24",
-                "MAR24",
-                "APR24",
-                "MAY24",
-                "JUN24",
-                "JUL24",
-                "AUG24",
-                "SEP24",
-                "OCT24",
-                "NOV24",
-                "DEC24",
-                "JAN25",
-                "FEB25",
-                "MAR25",
-                "APR25",
-                "MAY25",
-                "JUN25",
-                "JUL25",
-                "AUG25",
-                "SEP25",
-                "OCT25"
-              ]
-            },
-            "MARKETING SALÓN - Meses AVANZADO": {
-              "title": "ADVANCED Months",
-              "options": [
-                "JAN23",
-                "FEB23",
-                "MAR23",
-                "APR23",
-                "MAY23",
-                "JUN23",
-                "JUL23",
-                "AUG23",
-                "SEP23",
-                "OCT23",
-                "NOV23",
-                "DEC23",
-                "JAN24",
-                "FEB24",
-                "MAR24",
-                "APR24",
-                "MAY24",
-                "JUN24",
-                "JUL24",
-                "AUG24",
-                "SEP24",
-                "OCT24",
-                "NOV24",
-                "DEC24",
-                "JAN25",
-                "FEB25",
-                "MAR25",
-                "APR25",
-                "MAY25",
-                "JUN25",
-                "JUL25",
-                "AUG25",
-                "SEP25",
-                "OCT25"
-              ]
-            },
-            "MARKETING SALÓN - Meses MÁSTER": {
-              "title": "MASTER Months",
-              "options": [
-                "JAN23",
-                "FEB23",
-                "MAR23",
-                "APR23",
-                "MAY23",
-                "JUN23",
-                "JUL23",
-                "AUG23",
-                "SEP23",
-                "OCT23",
-                "NOV23",
-                "DEC23",
-                "JAN24",
-                "FEB24",
-                "MAR24",
-                "APR24",
-                "MAY24",
-                "JUN24",
-                "JUL24",
-                "AUG24",
-                "SEP24",
-                "OCT24",
-                "NOV24",
-                "DEC24",
-                "JAN25",
-                "FEB25",
-                "MAR25",
-                "APR25",
-                "MAY25",
-                "JUN25",
-                "JUL25",
-                "AUG25",
-                "SEP25",
-                "OCT25"
-              ]
-            }
-          }
-        }
-      }
-    },
-    "creativitiesFields": {
-      "id": "creativitiesFields",
-      "title": "Creativity Fields",
-      "groups": {
-        "brandCreation": {
-          "title": "Brand Creation",
-          "fields": {
-            "CREACIÓN DE MARCA - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "brandDesign": {
-          "title": "Brand Design",
-          "fields": {
-            "DISEÑO DE MARCA - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "brandDevelopment": {
-          "title": "Brand Development",
-          "fields": {
-            "DESARROLLO DE MARCA - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "logoCreation": {
-          "title": "Logo Creation",
-          "fields": {
-            "CREACIÓN DE LOGOTIPO - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "facadeDesign": {
-          "title": "Facade Design",
-          "fields": {
-            "DISEÑO DE FACHADA - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "interiorDesign": {
-          "title": "Interior Design",
-          "fields": {
-            "DISEÑO DE INTERIORISMO - Fecha de Inicio": {
-              "title": "Start Date"
-            }
-          }
-        },
-        "webDesign": {
-          "title": "Web Design",
-          "fields": {
-            "DISEÑO WEB - Fecha de Inicio": {
-              "title": "Start Date"
             }
           }
         }

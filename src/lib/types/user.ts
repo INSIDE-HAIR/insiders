@@ -15,6 +15,5 @@ export interface User extends PrismaUser {
   consultingAndMentoringFields: PrismaConsultingAndMentoringField[];
   trainingsFields: PrismaTrainingField[];
   marketingFields: PrismaMarketingField[];
-  creativitiesFields: PrismaCreativityField[];
   isSelected?: boolean;
 }

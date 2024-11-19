@@ -14,7 +14,6 @@ export const getPaginatedUsers = async (page: number, pageSize: number) => {
       consultingAndMentoringFields: true,
       trainingsFields: true,
       marketingFields: true,
-      creativitiesFields: true,
     },
   });
 

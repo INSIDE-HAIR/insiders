@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
         consultingAndMentoringFields: true,
         marketingFields: true,
         trainingsFields: true,
-        creativitiesFields: true,
         holdedData: {
           include: {
             customFields: true,

@@ -167,10 +167,7 @@ const updateClientFields = async (userId: string, customFields: any[]) => {
     },
     { id: "trainingsFields", model: prisma.trainingField },
     { id: "marketingFields", model: prisma.marketingField },
-    {
-      id: "creativitiesFields",
-      model: prisma.creativityField,
-    },
+
   ];
 
   for (const { id, model } of fieldModels) {

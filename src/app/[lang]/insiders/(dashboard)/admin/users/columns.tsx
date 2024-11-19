@@ -25,7 +25,6 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
     consultingAndMentoringFields: t("consultingAndMentoringFields.title"),
     marketingFields: t("marketingFields.title"),
     trainingsFields: t("trainingsFields.title"),
-    creativitiesFields: t("creativitiesFields.title"),
   };
 
   return useMemo(() => {
@@ -171,7 +170,6 @@ export const useColumns = (data: ServiceUser[]): ColumnDef<ServiceUser>[] => {
       "consultingAndMentoringFields",
       "marketingFields",
       "trainingsFields",
-      "creativitiesFields",
     ];
 
     const dynamicColumns: ColumnDef<ServiceUser>[] = [];

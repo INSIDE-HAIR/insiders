@@ -26,7 +26,6 @@ model User {
   consultingAndMentoringFields ConsultingAndMentoringField[]
   trainingsFields              TrainingField[]
   marketingFields              MarketingField[]
-  creativitiesFields           CreativityField[]
   CustomField                  CustomField[]
   groups                       Group[]                       @relation(fields: [groupIds], references: [id])
   groupIds                     String[]                      @db.ObjectId

@@ -8161,8 +8161,8 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
+          "url": "https://docs.google.com/forms/d/1O8XweAzD1UaCI7JLpGu7CxN_1ZvdGQAeJGdIuWhjfJ0/viewform?pli=1&pli=1&edit_requested=true",
+          "active": true,
           "available": {
             "startDateTime": "",
             "endDateTime": ""
