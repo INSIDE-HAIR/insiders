@@ -58,6 +58,7 @@ export const clientsCodes = {
   D: "ah-peluqueros",
   E: "josep-pons",
   F: "latam",
+  G: "ritape",
   // más códigos según sea necesario
 };
 
