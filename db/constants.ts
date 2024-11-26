@@ -69,26 +69,6 @@ export const campaignCodes = {
   // más códigos según sea necesario
 };
 
-export const contentTypes = {
-  physicalContent: {
-    posters: ["0080", "0050", "0004", "0005"],
-    stoppers: ["0000"],
-    tests: ["0010", "0011", "0025"],
-    cards: ["0085"],
-    extras: ["0360", "0100", "0048", "0300", "0009"],
-  },
-  digitalContent: {
-    actionPosts: ["1080"],
-    actionStories: ["1920"],
-    monthlyPost: ["0192"],
-    monthlyStories: ["0129"],
-    smsAndWhatsApp: ["6969"],
-    videos: ["0216", "0217"],
-    extras: ["0500", "1602"],
-  },
-  // más códigos según sea necesario
-};
-
 export const serviceOptions = [
   {
     id: "marketingServices",
