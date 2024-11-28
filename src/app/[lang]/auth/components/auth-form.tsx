@@ -5,8 +5,6 @@ import * as React from "react";
 import { cn } from "@/src/lib/utils/utils";
 
 import EmailProvider from "@/src/components/auth/providers/email-provider";
-import GithubProvider from "@/src/components/auth/providers/github-provider";
-import GoogleProvider from "@/src/components/auth/providers/google-provider";
 import { signIn } from "next-auth/react";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { Icons } from "@/src/components/icons";

@@ -1,17 +1,17 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import Resend from "next-auth/providers/resend";
-import bcrypt from "bcryptjs";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GithubProvider from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
-import authConfig from "./auth.config";
-import prisma from "../../../../../prisma/database";
+import NextAuth from "next-auth"; // Importa la librería NextAuth para la autenticación
+import { PrismaAdapter } from "@auth/prisma-adapter"; // Importa el adaptador de Prisma para NextAuth
+import Resend from "next-auth/providers/resend"; // Importa el proveedor de Resend para el envío de correos
+import bcrypt from "bcryptjs"; // Importa bcryptjs para el hashing de contraseñas
+import CredentialsProvider from "next-auth/providers/credentials"; // Importa el proveedor de autenticación por credenciales
+import GithubProvider from "next-auth/providers/github"; // Importa el proveedor de autenticación de Github
+import GoogleProvider from "next-auth/providers/google"; // Importa el proveedor de autenticación de Google
+import authConfig from "./auth.config"; // Importa la configuración de autenticación
+import prisma from "../../../../../prisma/database"; // Importa la instancia de Prisma para la base de datos
 
-import { CredentialSigninSchema } from "../../../types/zod-schemas";
-import { UserRole } from "@prisma/client";
+import { CredentialSigninSchema } from "../../../types/zod-schemas"; // Importa el esquema de validación para el inicio de sesión
+import { UserRole } from "@prisma/client"; // Importa el tipo UserRole de Prisma
 
-// Email template functions
+// Funciones para plantillas de correo electrónico
 function html({
   url,
   host,
@@ -21,6 +21,7 @@ function html({
   host: string;
   theme?: { brandColor: string; buttonText: string };
 }) {
+  // Genera el HTML para el correo de verificación
   const escapedHost = host.replace(/\./g, "&#8203;.");
   const brandColor = theme.brandColor;
   const color = {
@@ -69,56 +70,60 @@ function html({
 }
 
 function text({ url, host }: { url: string; host: string }) {
+  // Genera el texto para el correo de verificación
   return `Iniciar sesión en ${host}\n${url}\n\n`;
 }
 
+// Configuración de NextAuth
 export const {
-  handlers: { GET, POST },
+  handlers: { GET, POST }, // Exporta los manejadores GET y POST
   auth,
   signIn,
   signOut,
   unstable_update,
 } = NextAuth({
-  ...authConfig,
+  ...authConfig, // Configuración de autenticación importada
   providers: [
     CredentialsProvider({
-      id: "credentials",
-      name: "Credentials",
+      id: "credentials", // ID del proveedor de credenciales
+      name: "Credentials", // Nombre del proveedor
       credentials: {
-        email: { label: "UserEmail", type: "email", placeholder: "your email" },
-        password: { label: "Password", type: "password" },
+        email: { label: "UserEmail", type: "email", placeholder: "your email" }, // Campo de email
+        password: { label: "Password", type: "password" }, // Campo de contraseña
       },
       async authorize(credentials) {
-        const validatedFields = CredentialSigninSchema.safeParse(credentials);
+        // Lógica para autorizar al usuario con credenciales
+        const validatedFields = CredentialSigninSchema.safeParse(credentials); // Valida las credenciales
 
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data;
-          const user = await prisma.user.findUnique({ where: { email } });
+          const { email, password } = validatedFields.data; // Extrae email y contraseña
+          const user = await prisma.user.findUnique({ where: { email } }); // Busca el usuario en la base de datos
 
           if (!user || !user.password) {
-            return null;
+            return null; // Retorna null si no existe el usuario o no tiene contraseña
           }
 
-          const passwordMatch = await bcrypt.compare(password, user.password);
+          const passwordMatch = await bcrypt.compare(password, user.password); // Compara la contraseña ingresada con la almacenada
           if (passwordMatch) {
             await prisma.user.update({
               where: { id: user.id },
-              data: { lastLogin: new Date() },
+              data: { lastLogin: new Date() }, // Actualiza la fecha del último inicio de sesión
             });
-            return user;
+            return user; // Retorna el usuario si las contraseñas coinciden
           }
         }
-        return null;
+        return null; // Retorna null si la validación falla
       },
     }),
     Resend({
-      apiKey: process.env.AUTH_RESEND_KEY,
-      from: process.env.EMAIL_FROM ?? "noreply@insidehair.es",
+      apiKey: process.env.AUTH_RESEND_KEY, // Clave API para Resend
+      from: process.env.EMAIL_FROM ?? "noreply@insidehair.es", // Dirección de envío del correo
       async sendVerificationRequest({
         identifier: email,
         url,
         provider: { from },
       }) {
+        // Lógica para enviar el correo de verificación
         const { host } = new URL(url);
 
         const response = await fetch("https://api.resend.com/emails", {
@@ -131,8 +136,8 @@ export const {
             from,
             to: email,
             subject: `Iniciar sesión en ${host}`,
-            html: html({ url, host }),
-            text: text({ url, host }),
+            html: html({ url, host }), // Genera el HTML del correo
+            text: text({ url, host }), // Genera el texto del correo
           }),
         });
 
@@ -140,48 +145,51 @@ export const {
           throw new Error(
             "Error al enviar el correo de verificación: " +
               JSON.stringify(await response.json())
-          );
+          ); // Maneja errores al enviar el correo
         }
       },
       normalizeIdentifier(identifier: string): string {
+        // Normaliza el identificador del usuario
         let [local, domain] = identifier.toLowerCase().trim().split("@");
         domain = domain.split(",")[0];
-        return `${local}@${domain}`;
+        return `${local}@${domain}`; // Retorna el identificador normalizado
       },
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.GITHUB_CLIENT_ID, // ID del cliente de Github
+      clientSecret: process.env.GITHUB_CLIENT_SECRET, // Secreto del cliente de Github
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID, // ID del cliente de Google
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Secreto del cliente de Google
     }),
   ],
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma), // Configura el adaptador de Prisma
   session: {
-    strategy: "jwt",
-    maxAge: 24 * 60 * 60,
+    strategy: "jwt", // Estrategia de sesión basada en JWT
+    maxAge: 24 * 60 * 60, // Duración máxima de la sesión en segundos
   },
   events: {
     async linkAccount({ user }) {
+      // Evento al vincular una cuenta
       console.log("linkAccount event called");
       await prisma.user.update({
         where: { id: user.id },
         data: {
-          emailVerified: user.emailVerified ?? new Date(),
-          lastLogin: new Date(),
+          emailVerified: user.emailVerified ?? new Date(), // Actualiza la fecha de verificación del email
+          lastLogin: new Date(), // Actualiza la fecha del último inicio de sesión
         },
       });
     },
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      // Callback al iniciar sesión
       console.log("callback signIn", { user, account, profile });
 
       if (account?.provider !== "credentials") {
         let existingUser = await prisma.user.findUnique({
-          where: { email: user.email ?? "" },
+          where: { email: user.email ?? "" }, // Busca el usuario por email
         });
 
         if (existingUser) {
@@ -207,14 +215,14 @@ export const {
                 id_token: account?.id_token,
                 session_state: account?.session_state?.toString() ?? "",
               },
-            });
+            }); // Crea una nueva cuenta si no existe
           }
 
           await prisma.user.update({
             where: { id: existingUser.id },
             data: {
-              lastLogin: new Date(),
-              image: user.image || existingUser.image,
+              lastLogin: new Date(), // Actualiza la fecha del último inicio de sesión
+              image: user.image || existingUser.image, // Actualiza la imagen del usuario
             },
           });
         } else {
@@ -223,8 +231,8 @@ export const {
               name: user.name,
               email: user?.email ?? "",
               image: user.image,
-              emailVerified: user.emailVerified ?? new Date(),
-              lastLogin: new Date(),
+              emailVerified: user.emailVerified ?? new Date(), // Verifica el email
+              lastLogin: new Date(), // Establece la fecha del último inicio de sesión
               accounts: {
                 createMany: {
                   data: [
@@ -244,19 +252,19 @@ export const {
                 },
               },
             },
-          });
+          }); // Crea un nuevo usuario si no existe
         }
 
-        return true;
+        return true; // Retorna true si el inicio de sesión es exitoso
       }
 
       const userId = user.id;
 
       const existingUser = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: userId }, // Busca el usuario por ID
       });
       if (!existingUser || !existingUser.emailVerified) {
-        return false;
+        return false; // Retorna false si el usuario no existe o no está verificado
       }
 
       if (existingUser.isTwoFactorEnabled) {
@@ -266,77 +274,79 @@ export const {
           });
 
         if (!twoFactorConfirmation) {
-          return false;
+          return false; // Retorna false si la confirmación de dos factores no existe
         }
 
         await prisma.twoFactorConfirmation.delete({
           where: { id: twoFactorConfirmation.id },
-        });
+        }); // Elimina la confirmación de dos factores
       }
 
       await prisma.user.update({
         where: { id: userId },
-        data: { lastLogin: new Date() },
+        data: { lastLogin: new Date() }, // Actualiza la fecha del último inicio de sesión
       });
 
-      return true;
+      return true; // Retorna true si el inicio de sesión es exitoso
     },
     async jwt({ token, user }) {
-      if (!token.sub) return token;
+      // Callback para manejar el JWT
+      if (!token.sub) return token; // Retorna el token si no tiene sub
 
       const existingUser = await prisma.user.findUnique({
-        where: { id: token.sub },
+        where: { id: token.sub }, // Busca el usuario por ID
       });
 
-      if (!existingUser) return token;
+      if (!existingUser) return token; // Retorna el token si el usuario no existe
 
       const existingAccount = await prisma.account.findFirst({
-        where: { userId: existingUser.id },
+        where: { userId: existingUser.id }, // Busca la cuenta del usuario
       });
 
-      token.isOAuth = !!existingAccount;
-      token.name = existingUser.name;
-      token.email = existingUser.email;
-      token.role = existingUser.role;
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+      token.isOAuth = !!existingAccount; // Establece si el usuario tiene una cuenta OAuth
+      token.name = existingUser.name; // Establece el nombre del usuario
+      token.email = existingUser.email; // Establece el email del usuario
+      token.role = existingUser.role; // Establece el rol del usuario
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled; // Establece si el usuario tiene habilitado el 2FA
 
       const userWithRelations = await prisma.user.findUnique({
         where: { id: existingUser.id },
-        include: { groups: true, tags: true, resources: true },
+        include: { groups: true, tags: true, resources: true }, // Incluye relaciones del usuario
       });
 
-      token.groups = userWithRelations?.groups.map((g) => g.name) || [];
-      token.tags = userWithRelations?.tags.map((t) => t.name) || [];
-      token.resources = userWithRelations?.resources.map((sr) => sr.name) || [];
+      token.groups = userWithRelations?.groups.map((g) => g.name) || []; // Establece los grupos del usuario
+      token.tags = userWithRelations?.tags.map((t) => t.name) || []; // Establece las etiquetas del usuario
+      token.resources = userWithRelations?.resources.map((sr) => sr.name) || []; // Establece los recursos del usuario
 
-      return token;
+      return token; // Retorna el token actualizado
     },
     //@ts-expect-error
     async session({ session, token }) {
+      // Callback para manejar la sesión
       if (token.sub && session.user) {
-        session.user.id = token.sub;
+        session.user.id = token.sub; // Establece el ID del usuario en la sesión
       }
 
       if (session.user) {
-        session.user.role = token.role as UserRole;
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.isOAuth = token.isOAuth as boolean;
-        session.user.groups = token.groups as string[];
-        session.user.tags = token.tags as string[];
-        session.user.resources = token.resources as string[];
+        session.user.role = token.role as UserRole; // Establece el rol del usuario en la sesión
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean; // Establece si el usuario tiene habilitado el 2FA
+        session.user.name = token.name as string; // Establece el nombre del usuario en la sesión
+        session.user.email = token.email as string; // Establece el email del usuario en la sesión
+        session.user.isOAuth = token.isOAuth as boolean; // Establece si el usuario tiene una cuenta OAuth
+        session.user.groups = token.groups as string[]; // Establece los grupos del usuario en la sesión
+        session.user.tags = token.tags as string[]; // Establece las etiquetas del usuario en la sesión
+        session.user.resources = token.resources as string[]; // Establece los recursos del usuario en la sesión
       }
 
       const userExists = await prisma.user.findUnique({
-        where: { id: token.sub },
+        where: { id: token.sub }, // Verifica si el usuario existe
       });
 
       if (!userExists) {
-        return null;
+        return null; // Retorna null si el usuario no existe
       }
 
-      return session;
+      return session; // Retorna la sesión actualizada
     },
   },
 });

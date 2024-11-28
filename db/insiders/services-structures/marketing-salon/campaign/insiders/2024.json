@@ -9082,6 +9082,33 @@
         "endDateTime": null
       },
       "auth": []
+    },
+    {
+      "id": "sessionImplementation9",
+      "title": "Sesión de Implementación",
+      "order": 9,
+      "classType": "default",
+      "content": [
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vTD8GTOaORrz95HQ7uxU03uC5tQJ9z3MflAjAax6TWcplYo0oYXPx2u5sjQL6La9jcMd1VJLTya6KdQ/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
     }
   ]
 }

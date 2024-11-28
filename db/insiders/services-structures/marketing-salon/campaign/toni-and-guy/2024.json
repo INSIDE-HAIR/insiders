@@ -6172,6 +6172,33 @@
         "endDateTime": null
       },
       "auth": []
+    },
+    {
+      "id": "servicesmenu9",
+      "title": "Menú de Servicios",
+      "order": 9,
+      "classType": "default",
+      "content": [
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vTdHxnkJYF17EA5Fa_hP2XETvt3Ev6x75-oe67RFtq_ZnmLjEed0bGaqNEKK5oCvIPst91BVCEzp5tR/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
     }
   ]
 }
