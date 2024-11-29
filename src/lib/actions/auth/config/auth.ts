@@ -345,7 +345,6 @@ export const {
       if (!userExists) {
         return null; // Retorna null si el usuario no existe
       }
-
       return session; // Retorna la sesión actualizada
     },
   },
