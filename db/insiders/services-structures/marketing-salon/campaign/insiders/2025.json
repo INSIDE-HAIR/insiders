@@ -1,0 +1,209 @@
+{
+  "january": [
+    {
+      "id": "planDeMarketing1",
+      "title": "Plan de marketing",
+      "order": 1,
+      "classType": "default",
+      "content": [
+        {
+          "id": "button1",
+          "order": 1,
+          "type": "button",
+          "classType": "default",
+          "title": "Enlace de formulario",
+          "url": "",
+          "active": false,
+          "available": {
+            "startDateTime": "",
+            "endDateTime": ""
+          },
+          "auth": []
+        },
+        {
+          "id": "tabs1",
+          "order": 2,
+          "type": "tabs",
+          "content": [
+            {
+              "id": "tab1",
+              "order": 1,
+              "type": "tab",
+              "title": "Contexto",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Contexto1",
+                  "title": "Contexto",
+                  "url": "https://player.vimeo.com/video/1034476140?h=8863accff3&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab2",
+              "order": 2,
+              "type": "tab",
+              "title": "Acción Principal",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "AccionPrincipal1",
+                  "title": "Acción Principal",
+                  "url": "https://player.vimeo.com/video/1034478458?h=9142e23f42&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab3",
+              "order": 3,
+              "type": "tab",
+              "title": "Estrategia Complementaria",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "EstrategiaComplementaria1",
+                  "title": "Estrategia Complementaria",
+                  "url": "https://player.vimeo.com/video/1034481783?h=5412764413&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab4",
+              "order": 4,
+              "type": "tab",
+              "title": "El Desafío",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "Desafio1",
+                  "title": "El Desafío",
+                  "url": "https://player.vimeo.com/video/1034476204?h=91addf58ef&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 5,
+              "type": "tab",
+              "title": "Preguntas y Respuestas",
+              "classType": "default",
+              "content": [
+                {
+                  "order": 1,
+                  "type": "video",
+                  "id": "PreguntasRespuestas1",
+                  "title": "Preguntas y Respuestas",
+                  "url": "https://player.vimeo.com/video/1034484347?h=5f54e41998&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            }
+          ],
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vT5Ppn0EDNDZEQbi--DpoyaKRPjVkZA1kRsVhuoOv-nhLY9Jvgj1SHI7pPNT2on5yQ0R9NFtNTN-TIe/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
+        }
+      ],
+      "active": true,
+      "available": {
+        "startDateTime": null,
+        "endDateTime": null
+      },
+      "auth": []
+    }
+  ],
+  "february": [],
+  "march": [],
+  "april": [],
+  "may": [],
+  "june": [],
+  "july": [],
+  "august": [],
+  "september": [],
+  "october": [],
+  "november": [],
+  "december": []
+}
