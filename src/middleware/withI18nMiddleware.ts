@@ -6,7 +6,7 @@ const COOKIE_NAME = "NEXT_LOCALE";
 
 export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
   return async function middleware(request, event) {
-    const { pathname } = request.nextUrl;
+    const { pathname, search } = request.nextUrl;
     let currentLocale = request.cookies.get(COOKIE_NAME)?.value || DEFAULT_LOCALE;
 
     // Si es una ruta de API o archivos estáticos, continuar
@@ -19,7 +19,7 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
 
     // Manejar ruta raíz
     if (pathname === "/") {
-      response = NextResponse.redirect(new URL(`/${currentLocale}`, request.url));
+      response = NextResponse.redirect(new URL(`/${currentLocale}${search}`, request.url));
     }
     // Manejar rutas con prefijo de idioma soportado
     else if (pathLocale) {
@@ -32,7 +32,7 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
     }
     // Manejar rutas sin prefijo de idioma
     else if (!pathLocale && pathname !== "/") {
-      const newPathname = `/${currentLocale}${pathname}`;
+      const newPathname = `/${currentLocale}${pathname}${search}`;
       response = NextResponse.redirect(new URL(newPathname, request.url));
     }
     // Para todos los demás casos

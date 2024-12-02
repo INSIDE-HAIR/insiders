@@ -14,6 +14,9 @@ interface AuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   action?: "login" | "register";
 }
 
+// Definir la ruta completa usando la variable de entorno
+const resetPasswordUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset`;
+
 export function AuthForm({ className, ...props }: AuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { action } = props;
@@ -65,7 +68,7 @@ export function AuthForm({ className, ...props }: AuthFormProps) {
       </div>
       <div className="text-center mt-2">
         <a
-          href="http://localhost:3000/auth/reset"
+          href={resetPasswordUrl}
           className="text-tiny text-primary hover:underline"
         >
           ¿Olvidaste tu contraseña?
