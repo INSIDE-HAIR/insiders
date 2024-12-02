@@ -1,4 +1,4 @@
-import CardWrapper from "@/src/components/auth/CardWrapper";
+import CardWrapper from "@/src/components/custom/auth/card/auth-card-wrapper";
 import React from "react";
 
 type Props = {
@@ -12,7 +12,7 @@ const AuthErrorPage = ({ searchParams: { error } }: Props) => {
         <CardWrapper
           headerLabel="No se puede iniciar sesión"
           backButtonHref="/auth/login"
-          backButtonLabel={"<- Regresar a página de iniciar sesión"}
+          backButtonLabel={"Regresar a página de iniciar sesión"}
         >
           <p className="text-center text-lg mb-4">
             El enlace de registro ya no es válido.
@@ -29,7 +29,7 @@ const AuthErrorPage = ({ searchParams: { error } }: Props) => {
         <CardWrapper
           headerLabel="No se puede iniciar sesión"
           backButtonHref="/auth/login"
-          backButtonLabel="<- Regresar a página de iniciar sesión"
+          backButtonLabel="Regresar a página de iniciar sesión"
         >
           <p className="text-center text-lg mb-4">{error}</p>
         </CardWrapper>

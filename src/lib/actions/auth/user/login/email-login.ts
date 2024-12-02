@@ -3,7 +3,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { EmailSchema } from "@/src/types/zod-schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
-import { signIn } from "@/src/config/auth";
+import { signIn } from "@/src/config/auth/auth";
 
 export const emailLogin = async (
   values: z.infer<typeof EmailSchema>,
@@ -19,7 +19,7 @@ export const emailLogin = async (
 
   try {
     // Intentar iniciar sesión con email
-    await signIn("email", {
+    await signIn("resend", {
       email,
       redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });

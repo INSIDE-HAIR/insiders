@@ -2,10 +2,10 @@
 import prisma from "@/prisma/database";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import { auth, unstable_update as update } from "@/src/config/auth";
+import { auth, unstable_update as update } from "@/src/config/auth/auth";
 import { generateVerificationToken } from "@/src/lib/actions/auth/user/register/tokens";
-import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 import { UserSchema } from "@/src/types/inside-schemas";
+import { sendVerificationEmail } from "@/src/config/email/templates/verification-email";
 
 export const updateUser = async (values: z.infer<typeof UserSchema>) => {
   // Ensure the user is authenticated
@@ -81,7 +81,7 @@ export const updateUser = async (values: z.infer<typeof UserSchema>) => {
     const verificationToken = await generateVerificationToken(values.email);
 
     // Send the verification email
-    await sendVerificationEmailResend(
+    await sendVerificationEmail(
       verificationToken.identifier,
       verificationToken.token
     );

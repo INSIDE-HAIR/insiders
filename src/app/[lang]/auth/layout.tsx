@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Dashboard from "@/src/components/dashboard/dashboard";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import AuthHeader from "@/src/components/auth-header/AuthHeader";
+import Header from "@/src/components/layout/header";
 
 export const metadata: Metadata = {
   title: "AUTH | INSIDERS",
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <TailwindGrid fullSize>
       <div className=" flex-col flex col-span-full items-start">
-        <AuthHeader />
+        <Header type="auth" homeLabel="INSIDE HAIR" dropdownSliceEnd={-2} />
         {children}
       </div>
     </TailwindGrid>

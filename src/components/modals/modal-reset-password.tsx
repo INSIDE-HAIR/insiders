@@ -1,4 +1,4 @@
-import ResetPasswordForm from "@/src/components/auth/ResetPasswordForm";
+import ResetPasswordForm from "@/src/components/custom/auth/forms/reset-password-form";
 import {
   Modal,
   ModalBody,

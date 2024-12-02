@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { AuthForm } from "../components/auth-form";
+import { AuthForm } from "../../../../components/custom/auth/forms/auth-form";
 import { buttonVariants } from "@/src/components/ui/buttons/chadcn-button";
 import { cn } from "@/src/lib/utils/utils";
 

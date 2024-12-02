@@ -1,4 +1,4 @@
-import NewVerificationForm from "@/src/components/auth/NewVerificationForm";
+import NewVerificationForm from "@/src/components/custom/auth/forms/new-verification-form";
 import prisma from "@/prisma/database";
 import React from "react";
 
@@ -19,7 +19,8 @@ const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
   let success: boolean = false;
 
   if (!existingToken) {
-    message = "Fallo inesperado en la verificación. Vuelva a intentar, si el problema persiste contacte al soporte.";
+    message =
+      "Fallo inesperado en la verificación. Vuelva a intentar, si el problema persiste contacte al soporte.";
   } else {
     const hasExpired = new Date(existingToken.expires) < new Date();
     if (hasExpired) {
@@ -28,7 +29,8 @@ const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
         where: { id: existingToken.id },
       });
 
-      message = "!Tiempo expirado, vuelva a solicitar otro correo de verificación. Intenta ingresar de nuevo a tu cuenta.";
+      message =
+        "!Tiempo expirado, vuelva a solicitar otro correo de verificación. Intenta ingresar de nuevo a tu cuenta.";
     } else {
       const existingUser = await prisma.user.findUnique({
         where: { email: existingToken.identifier },

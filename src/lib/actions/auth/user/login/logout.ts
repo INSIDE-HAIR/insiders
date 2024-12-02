@@ -1,5 +1,5 @@
 "use server";
-import { signOut } from "@/src/config/auth";
+import { signOut } from "@/src/config/auth/auth";
 import { useRouter } from "next/navigation";
 
 export const logout = async () => {

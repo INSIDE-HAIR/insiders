@@ -1,4 +1,4 @@
-import CardWrapper from "@/src/components/auth/CardWrapper";
+import CardWrapper from "@/src/components/custom/auth/card/auth-card-wrapper";
 import { headers } from "next/headers";
 import React from "react";
 
@@ -13,7 +13,7 @@ const VerifyRequestPage = (props: Props) => {
       <CardWrapper
         headerLabel="Check your email"
         backButtonHref="/"
-        backButtonLabel={domain}
+        backButtonLabel={"Ir a " + domain}
       >
         <p className="text-center">A sign in link has been sent to</p>
         <p className="text-center">your email address</p>

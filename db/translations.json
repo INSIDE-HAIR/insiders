@@ -131,6 +131,12 @@
   ],
   "authRoutes": [
     {
+      "id": "auth",
+      "icon": "",
+      "path": "/auth",
+      "translations": { "en": "Auth", "es": "Autenticación" }
+    },
+    {
       "id": "authError",
       "icon": "",
       "path": "/auth-error",
@@ -173,7 +179,7 @@
     {
       "id": "reset",
       "icon": "",
-      "path": "/reset",
+      "path": "/reset-password",
       "translations": {
         "en": "Reset Password",
         "es": "Restablecer Contraseña"

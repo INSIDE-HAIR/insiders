@@ -2,17 +2,16 @@
 import prisma from "@/prisma/database";
 import { CredentialSigninSchema } from "@/src/types/general-schemas";
 import { z } from "zod";
-import {
-  sendTwoFactorTokenEmailResend,
-  sendVerificationEmailResend,
-} from "@/src/lib/mail/mail";
-import { signIn } from "@/src/config/auth";
+
+import { signIn } from "@/src/config/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { AuthError } from "next-auth";
 import {
   generateTwoFactorToken,
   generateVerificationToken,
 } from "../register/tokens";
+import { sendTwoFactorEmail } from "@/src/config/email/templates/two-factor-email";
+import { sendVerificationEmail } from "@/src/config/email/templates/verification-email";
 
 // Definición de tipo para el esquema de inicio de sesión
 type CredentialSigninType = z.infer<typeof CredentialSigninSchema>;
@@ -40,7 +39,7 @@ export const credentialsLogin = async (
     const verificationToken = await generateVerificationToken(
       existingUser.email
     );
-    await sendVerificationEmailResend(email, verificationToken.token);
+    await sendVerificationEmail(email, verificationToken.token);
     return { success: "Correo de confirmación enviado!" };
   }
 
@@ -100,7 +99,7 @@ const handleTwoFactorAuthentication = async (user: any, code?: string) => {
     await prisma.twoFactorConfirmation.create({ data: { userId: user.id } });
   } else {
     const twoFactorToken = await generateTwoFactorToken(user.email);
-    await sendTwoFactorTokenEmailResend(user.email, twoFactorToken.token);
+    await sendTwoFactorEmail(user.email, twoFactorToken.token);
     return { twoFactor: true };
   }
 };

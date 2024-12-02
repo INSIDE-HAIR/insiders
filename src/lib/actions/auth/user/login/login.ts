@@ -2,11 +2,11 @@
 import * as z from "zod";
 import { LoginSchema } from "@/src/types/general-schemas";
 import { AuthError } from "next-auth";
-import { signIn } from "@/src/config/auth";
+import { signIn } from "@/src/config/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { getUserByEmail } from "@/prisma/query/user";
-import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 import { generateVerificationToken } from "../register/tokens";
+import { sendVerificationEmail } from "@/src/config/email/templates/verification-email";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   // Validar los campos de entrada
@@ -30,7 +30,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
       existingUser.email
     );
 
-    await sendVerificationEmailResend(
+    await sendVerificationEmail(
       verificationToken.identifier,
       verificationToken.token
     );

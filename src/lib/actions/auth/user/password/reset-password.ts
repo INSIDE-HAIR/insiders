@@ -3,7 +3,7 @@ import prisma from "@/prisma/database";
 import { ResetSchema } from "@/src/types/zod-schemas";
 import { z } from "zod";
 import { generatePasswordResetToken } from "../register/tokens";
-import { sendPasswordResetEmailResend } from "@/src/lib/mail/mail";
+import { sendPasswordResetEmail } from "@/src/config/email/templates/password-reset-email";
 
 export const reset = async (values: z.infer<typeof ResetSchema>) => {
   const validatedFields = ResetSchema.safeParse(values);
@@ -21,7 +21,7 @@ export const reset = async (values: z.infer<typeof ResetSchema>) => {
 
   // generate token & send email
   const passwordResetToken = await generatePasswordResetToken(email);
-  await sendPasswordResetEmailResend(
+  await sendPasswordResetEmail(
     passwordResetToken.email,
     passwordResetToken.token
   );

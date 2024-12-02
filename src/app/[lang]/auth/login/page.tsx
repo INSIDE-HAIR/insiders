@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/src/lib/utils/utils";
-import { AuthForm } from "../components/auth-form";
+import { AuthForm } from "../../../../components/custom/auth/forms/auth-form";
 import { buttonVariants } from "@/src/components/ui/buttons/chadcn-button";
 
 export const metadata: Metadata = {
@@ -77,7 +77,7 @@ export default function LoginPage() {
                 Ingresa los datos de tu cuenta para continuar
               </p>
             </div>
-            <AuthForm />
+            <AuthForm action="login" />
           </div>
         </div>
       </div>
