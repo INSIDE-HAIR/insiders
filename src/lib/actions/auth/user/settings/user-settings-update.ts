@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { auth, unstable_update as update } from "@/src/config/auth";
 import { generateVerificationToken } from "@/src/lib/actions/auth/user/register/tokens";
 import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
-import { UserSchema } from "@/src/lib/types/inside-schemas";
+import { UserSchema } from "@/src/types/inside-schemas";
 
 export const updateUser = async (values: z.infer<typeof UserSchema>) => {
   // Ensure the user is authenticated

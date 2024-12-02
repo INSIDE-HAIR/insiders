@@ -1,7 +1,6 @@
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 import { Carousel, CarouselItem } from "@/src/components/ui/carousel";
 import CustomImageModal from "@/src/components/customizable/images/custom-modal-image";
-
 
 export default function CustomCarouselModal({ item }: ComponentsProps) {
   return (

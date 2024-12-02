@@ -18,7 +18,7 @@ import FormError from "../share/MessageErrorBox";
 import FormSuccess from "../share/MessageSuccessBox";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CredentialSigninSchema } from "@/src/lib/types/zod-schemas";
+import { CredentialSigninSchema } from "@/src/types/zod-schemas";
 import LoadingButton from "../share/LoadingButton";
 import { credentialsLogin } from "@/src/lib/actions/auth/user/login/credentials-login";
 

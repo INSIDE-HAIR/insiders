@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/prisma/database";
-import { ResetSchema } from "@/src/lib/types/zod-schemas";
+import { ResetSchema } from "@/src/types/zod-schemas";
 import { z } from "zod";
 import { generatePasswordResetToken } from "../register/tokens";
 import { sendPasswordResetEmailResend } from "@/src/lib/mail/mail";

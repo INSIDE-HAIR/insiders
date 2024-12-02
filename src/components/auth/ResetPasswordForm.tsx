@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { ResetSchema } from "@/src/lib/types/zod-schemas";
+import { ResetSchema } from "@/src/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";

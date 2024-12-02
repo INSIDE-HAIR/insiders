@@ -1,6 +1,6 @@
 "use client";
 
-import { NewPasswordSchema } from "@/src/lib/types/zod-schemas";
+import { NewPasswordSchema } from "@/src/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";

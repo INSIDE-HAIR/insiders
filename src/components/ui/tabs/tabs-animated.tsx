@@ -6,7 +6,7 @@ import {
 } from "@/src/components/ui/tabs/tabs";
 import ComponentSelector from "../../components-selector/components-selector";
 import { useEffect, useState } from "react";
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 
 export default function TabsAnimatedChadCN({
   item,
@@ -29,20 +29,20 @@ export default function TabsAnimatedChadCN({
 
   console.log(defaultValue);
   return (
-    <div className='flex flex-row items-center justify-center w-full content-center align-middle '>
+    <div className="flex flex-row items-center justify-center w-full content-center align-middle ">
       {defaultValue && (
         <Tabs
           defaultValue={defaultValue}
-          className='self-center w-full flex flex-col  '
+          className="self-center w-full flex flex-col  "
         >
-          <div className=' flex flex-wrap w-full justify-center'>
-            <TabsList className='rounded-none flex flex-wrap h-full  bg-transparent text-white border-none [&>[data-state=active]]:bg-primary [&>[data-state=active]]:font-semibold'>
+          <div className=" flex flex-wrap w-full justify-center">
+            <TabsList className="rounded-none flex flex-wrap h-full  bg-transparent text-white border-none [&>[data-state=active]]:bg-primary [&>[data-state=active]]:font-semibold">
               {activeAndOrderedTabs &&
                 activeAndOrderedTabs.map((tab) => (
                   <TabsTrigger
                     key={tab.id}
                     value={tab.id}
-                    className='rounded-none bg-zinc-700 text-white border-none'
+                    className="rounded-none bg-zinc-700 text-white border-none"
                   >
                     {tab.title}
                   </TabsTrigger>
@@ -51,8 +51,8 @@ export default function TabsAnimatedChadCN({
           </div>
           {activeAndOrderedTabs &&
             activeAndOrderedTabs.map((tab) => (
-              <TabsContent key={tab.id} value={tab.id} className='w-full'>
-                <div className='flex flex-col items-center justify-center w-full mb-4 '>
+              <TabsContent key={tab.id} value={tab.id} className="w-full">
+                <div className="flex flex-col items-center justify-center w-full mb-4 ">
                   {tab.content &&
                     tab.content.map(
                       (

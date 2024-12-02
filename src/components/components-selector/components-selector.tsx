@@ -8,7 +8,7 @@ import MarketingTabCardsList from "../marketing-salon/marketing-tab-cards-list";
 import CustomModal from "../customizable/modal/TabsAnimatedChadCN";
 import CustomCarouselModal from "../customizable/images/custom-mondal-carousel";
 import CustomImageModal from "../customizable/images/custom-modal-image";
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 
 export default function ComponentsSelector({
   index,

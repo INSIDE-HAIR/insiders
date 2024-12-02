@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { HoldedSyncSchema } from "@/src/lib/types/zod-schemas";
+import { HoldedSyncSchema } from "@/src/types/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";

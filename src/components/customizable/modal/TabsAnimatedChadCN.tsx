@@ -7,7 +7,7 @@ import {
   useDisclosure,
   Button,
 } from "@nextui-org/react";
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 import ComponentsSelector from "../../components-selector/components-selector";
 
 export default function TabsAnimatedChadCN({

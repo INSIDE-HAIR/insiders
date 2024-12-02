@@ -8,7 +8,7 @@ import React, {
   useMemo,
 } from "react";
 import { getCookie, setCookie } from "cookies-next";
-import { Translations } from "../lib/types/translations";
+import { Translations } from "../types/translations";
 import defaultTranslations from "@/src/locales/es/common.json";
 
 type Locale = "en" | "es";

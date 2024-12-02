@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/react";
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 
 function button({ index, item }: ComponentsProps) {
   return (

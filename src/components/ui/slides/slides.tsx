@@ -1,4 +1,4 @@
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 
 export default function Slides({ index, item }: ComponentsProps) {
   return (

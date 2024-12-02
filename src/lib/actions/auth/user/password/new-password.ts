@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/prisma/database";
-import { NewPasswordSchema } from "@/src/lib/types/zod-schemas";
+import { NewPasswordSchema } from "@/src/types/zod-schemas";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 

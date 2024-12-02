@@ -9,7 +9,7 @@ import {
   useDisclosure,
   Button,
 } from "@nextui-org/react";
-import { ComponentsProps } from "@/src/lib/types/components-schemas";
+import { ComponentsProps } from "@/src/types/components-schemas";
 import { EyeIcon } from "lucide-react";
 
 export default function CustomImageModal({ item }: ComponentsProps) {
@@ -81,4 +81,3 @@ export default function CustomImageModal({ item }: ComponentsProps) {
     </>
   );
 }
-

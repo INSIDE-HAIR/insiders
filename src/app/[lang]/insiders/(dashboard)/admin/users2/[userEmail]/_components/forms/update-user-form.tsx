@@ -17,7 +17,7 @@ import FormSuccess from "@/src/components/share/MessageSuccessBox";
 import { Switch } from "@/src/components/ui/switch";
 import { updateUser } from "@/src/lib/actions/auth/user/settings/user-settings-update";
 import LoadingButton from "@/src/components/share/LoadingButton";
-import { UserSchema } from "@/src/lib/types/inside-schemas";
+import { UserSchema } from "@/src/types/inside-schemas";
 import Image from "next/image";
 import { CheckCircleIcon, XCircleIcon } from "lucide-react";
 import ModalResetPassword from "@/src/components/modals/modal-reset-password";

@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { HoldedDataDeleteSchema } from "@/src/lib/types/zod-schemas";
+import { HoldedDataDeleteSchema } from "@/src/types/zod-schemas";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 
 type DeleteFormValues = z.infer<typeof HoldedDataDeleteSchema>;

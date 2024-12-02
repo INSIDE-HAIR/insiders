@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/prisma/database";
-import { CredentialSigninSchema } from "@/src/lib/types/general-schemas";
+import { CredentialSigninSchema } from "@/src/types/general-schemas";
 import { z } from "zod";
 import {
   sendTwoFactorTokenEmailResend,

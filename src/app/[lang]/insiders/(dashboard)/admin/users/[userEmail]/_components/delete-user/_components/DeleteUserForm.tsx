@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/src/components/ui/form";
-import { HoldedDataDeleteSchema } from "@/src/lib/types/zod-schemas";
+import { HoldedDataDeleteSchema } from "@/src/types/zod-schemas";
 import { deleteUser } from "@/src/lib/actions/auth/user/settings/user-delete";
 import { useRouter } from "next/navigation";
 

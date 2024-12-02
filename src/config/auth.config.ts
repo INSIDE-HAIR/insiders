@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials"; // Importa el proveed
 import Github from "next-auth/providers/github"; // Importa el proveedor de autenticación de Github
 import Google from "next-auth/providers/google"; // Importa el proveedor de autenticación de Google
 
-import { LoginSchema } from "@/src/lib/types/inside-schemas"; // Importa el esquema de validación para el login
+import { LoginSchema } from "@/src/types/inside-schemas"; // Importa el esquema de validación para el login
 import { getUserByEmail } from "@/prisma/query/user"; // Importa la función para obtener un usuario por email
 
 // Exporta la configuración de NextAuth
