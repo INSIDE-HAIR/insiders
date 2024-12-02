@@ -8,9 +8,9 @@ export default async function Home() {
   if (!session) {
     redirect("/auth/login");
   }
-  if (session.user.role === "ADMIN") {
+  if (session.user.role === "ADMIN" || session.user.role === "EMPLOYEE") {
     redirect("/admin");
+  } else {
+    redirect("/");
   }
-
-  return <></>;
 }
