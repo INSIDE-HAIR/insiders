@@ -12,8 +12,8 @@ export default {
   providers: [
     // Configuración del proveedor de Google
     Google({
-      clientId: "1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com",
-      clientSecret: "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",
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     // Configuración del proveedor de Github
     Github({
@@ -28,22 +28,19 @@ export default {
 
         if (validatedFields.success) {
           const { email, password } = validatedFields.data; // Extrae email y contraseña de las credenciales
-          
+
           const user = await getUserByEmail(email); // Obtiene el usuario por email
           if (!user || !user.password) return null; // Si no existe el usuario o no tiene contraseña, retorna null
 
           // Compara la contraseña ingresada con la almacenada
-          const passwordsMatch = await bcrypt.compare(
-            password,
-            user.password,
-          );
+          const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (passwordsMatch) return user; // Si las contraseñas coinciden, retorna el usuario
         }
 
         return null; // Si la validación falla, retorna null
-      }
-    })
+      },
+    }),
   ],
   pages: {
     signIn: "/auth/login", // Página de inicio de sesión

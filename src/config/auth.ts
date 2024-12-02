@@ -6,9 +6,9 @@ import CredentialsProvider from "next-auth/providers/credentials"; // Importa el
 import GithubProvider from "next-auth/providers/github"; // Importa el proveedor de autenticación de Github
 import GoogleProvider from "next-auth/providers/google"; // Importa el proveedor de autenticación de Google
 import authConfig from "./auth.config"; // Importa la configuración de autenticación
-import prisma from "../../../../../prisma/database"; // Importa la instancia de Prisma para la base de datos
+import prisma from "../../prisma/database"; // Importa la instancia de Prisma para la base de datos
 
-import { CredentialSigninSchema } from "../../../types/zod-schemas"; // Importa el esquema de validación para el inicio de sesión
+import { CredentialSigninSchema } from "../lib/types/zod-schemas"; // Importa el esquema de validación para el inicio de sesión
 import { UserRole } from "@prisma/client"; // Importa el tipo UserRole de Prisma
 
 // Funciones para plantillas de correo electrónico

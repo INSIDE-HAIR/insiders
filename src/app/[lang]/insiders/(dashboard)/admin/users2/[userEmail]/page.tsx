@@ -1,7 +1,7 @@
 import { getUserByEmail } from "@/prisma/query/user"; // app/users/[userEmail]/page.tsx
 import React from "react";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { auth, signOut } from "@/src/lib/actions/auth/config/auth";
+import { auth, signOut } from "@/src/config/auth";
 import { redirect } from "next/navigation";
 import { HoldedProvider } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
@@ -53,7 +53,7 @@ export default async function Page({
     tagIds: user?.tagIds ?? [],
     resourceIds: user?.resourceIds ?? [],
   };
-  
+
   if (!user) {
     return (
       <div>

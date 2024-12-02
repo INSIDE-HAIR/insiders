@@ -6,7 +6,7 @@ import {
   sendTwoFactorTokenEmailResend,
   sendVerificationEmailResend,
 } from "@/src/lib/mail/mail";
-import { signIn } from "@/src/lib/actions/auth/config/auth";
+import { signIn } from "@/src/config/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { AuthError } from "next-auth";
 import {

@@ -2,10 +2,7 @@
 import prisma from "@/prisma/database";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import {
-  auth,
-  unstable_update as update,
-} from "@/src/lib/actions/auth/config/auth";
+import { auth, unstable_update as update } from "@/src/config/auth";
 import { generateVerificationToken } from "@/src/lib/actions/auth/user/register/tokens";
 import { sendVerificationEmailResend } from "@/src/lib/mail/mail";
 import { UserSchema } from "@/src/lib/types/inside-schemas";

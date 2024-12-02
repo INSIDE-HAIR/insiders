@@ -3,7 +3,7 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { EmailSchema } from "@/src/lib/types/zod-schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
-import { signIn } from "@/src/lib/actions/auth/config/auth";
+import { signIn } from "@/src/config/auth";
 
 export const emailLogin = async (
   values: z.infer<typeof EmailSchema>,
