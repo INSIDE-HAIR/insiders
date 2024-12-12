@@ -15,12 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <TailwindGrid fullSize>
-      <Dashboard />
-      <div className=" flex-col flex col-span-full items-start">
-        <Header type="admin" homeLabel="INSIDERS" dropdownSliceEnd={-1} />
-        {children}
-      </div>
-    </TailwindGrid>
+    <div className="w-screen h-screen">
+      <Dashboard>{children}</Dashboard>
+    </div>
   );
 }

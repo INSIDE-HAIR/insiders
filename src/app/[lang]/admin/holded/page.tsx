@@ -12,8 +12,8 @@ import HoldedContactTable from "./Components/HoldedContactTable/HoldedContactTab
 function page() {
   return (
     <>
-      <TailwindGrid>
-        <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-3 lg:col-end-13  order-2 md:order-1 z-30  col-span-full">
+      <TailwindGrid fullSize>
+        <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full">
           <div className="container mx-auto py-10">
             <h1 className="text-2xl font-bold mb-5">Holded Sync</h1>
             <Tabs defaultValue="tableOfContacts">

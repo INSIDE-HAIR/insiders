@@ -4,7 +4,7 @@ import { Button } from "@/src/components/ui/buttons/chadcn-button";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { signIn } from "next-auth/react";
 
-function ProvidersButtons() {
+export default function ProvidersButtons() {
   const onClick = (provider: "google" | "github") => {
     signIn(provider, {
       callbackUrl: DEFAULT_LOGIN_REDIRECT,
@@ -19,7 +19,7 @@ function ProvidersButtons() {
         className="w-full"
         onClick={() => onClick("github")}
       >
-        <Icons.gitHub className="mr-2 h-4 w-4" />
+        <Icons.GitHubIcon className="mr-2 h-4 w-4" />
         GitHub
       </Button>{" "}
       <Button
@@ -28,11 +28,9 @@ function ProvidersButtons() {
         className="w-full"
         onClick={() => onClick("google")}
       >
-        <Icons.google className="mr-2 h-4 w-4" />
+        <Icons.GoogleIcon className="mr-2 h-4 w-4" />
         Google
       </Button>{" "}
     </div>
   );
 }
-
-export default ProvidersButtons;

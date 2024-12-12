@@ -3,11 +3,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Toaster, toast } from "sonner";
-import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { ServiceUser } from "./lib/types/user";
 import { DataTable } from "./components/DataTable"; // Importación directa
 import { useColumns } from "./columns";
 import { useTranslations } from "@/src/context/TranslationContext";
+import { ServiceUser } from "./lib/types/user";
+import TailwindGrid from "@/src/components/grid/TailwindGrid";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<ServiceUser[]>([]);
@@ -76,11 +76,11 @@ export default function UsersPage() {
   };
 
   return (
-    <>
-      <TailwindGrid fullSize>
-        <header className="max-w-full col-start-1 col-end-full lg:col-start-3 lg:col-end-13 flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40 col-span-full">
-          <div className="flex-1 justify-between items-center flex ">
-            <h1 className="text-2xl font-bold ">{t("mainTitle")}</h1>
+    <TailwindGrid fullSize padding="" >
+      <div className="col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full">
+        <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
+          <div className="flex flex-1 items-center justify-between">
+            <h1 className="text-2xl font-bold">{t("mainTitle")}</h1>
             <Button onClick={handleSync} disabled={isSyncing || isLoading}>
               {isSyncing ? (
                 <>
@@ -93,9 +93,8 @@ export default function UsersPage() {
             </Button>
           </div>
         </header>
-      </TailwindGrid>
-      <TailwindGrid fullSize>
-        <main className="col-start-1 max-w-full w-full col-end-full md:col-start-1 lg:col-start-3 lg:col-end-13 order-2 md:order-1 z-30 col-span-full p-4">
+
+        <main className="flex-1 p-6">
           <Toaster position="top-right" />
 
           {isLoading ? (
@@ -103,10 +102,12 @@ export default function UsersPage() {
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <DataTable columns={columns} data={users} />
+            <div className="w-full">
+              <DataTable columns={columns} data={users} />
+            </div>
           )}
         </main>
-      </TailwindGrid>
-    </>
+      </div>
+    </TailwindGrid>
   );
 }

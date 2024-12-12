@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import translations from "@/db/translations.json";
 import { Home, Palette, LineChart, Rocket, LucideIcon } from "lucide-react";
 import { AppSidebar } from "../app-sidebar";
 import { Icons } from "@/src/components/icons";
 import { IconKeys } from "@/src/types";
-import Header from "../layout/header";
+import TailwindGrid from "../grid/TailwindGrid";
 
 // Mapeo de strings a componentes de iconos
 const iconMap = {
@@ -22,8 +22,6 @@ const iconMap = {
   FilesIcon: Icons.FilesIcon,
   WorkflowIcon: Icons.WorkflowIcon,
   DatabaseIcon: Icons.DatabaseIcon,
-  GitHubIcon: Icons.GitHubIcon,
-  GoogleIcon: Icons.GoogleIcon,
 } as const;
 
 // Definir las rutas por equipo
@@ -107,13 +105,8 @@ const updateRoutesByTeam = (teamName: string) => {
   };
 };
 
-interface DashboardProps {
-  children?: React.ReactNode;
-}
-
-function Dashboard({ children }: DashboardProps) {
+function Dashboard() {
   const [currentData, setCurrentData] = React.useState(transformedData);
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   const handleTeamChange = (teamName: string) => {
     const updatedData = updateRoutesByTeam(teamName);
@@ -125,20 +118,18 @@ function Dashboard({ children }: DashboardProps) {
   return (
     <SidebarProvider>
       <AppSidebar {...currentData} onTeamChange={handleTeamChange} />
-
       <SidebarInset>
-        <div className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 w-full">
-          <SidebarTrigger className="-ml-1" />
-          <div className="w-full col-start-1 col-end-full ">
-            <Header
-              type="admin"
-              homeLabel="INSIDERS"
-              dropdownSliceEnd={-1}
-              separator
-            />
+        <TailwindGrid fullSize>
+          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"></header>
+        </TailwindGrid>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
-        <div className="flex flex-1 flex-col gap-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

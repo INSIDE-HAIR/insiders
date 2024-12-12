@@ -74,7 +74,6 @@ export default function BreadcrumbNavigation({
   return (
     <>
       <GoBackButton href={goBackHref} label={getGoBackLabel()} />
-
       <Breadcrumb className="[&>*]:text-zinc-800 [&>*]:text-tiny">
         <BreadcrumbList>
           <BreadcrumbItem className="capitalize underline [&>*]:hover:text-zinc-400">
