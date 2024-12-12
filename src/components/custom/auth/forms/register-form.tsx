@@ -193,7 +193,7 @@ export function RegisterForm() {
 
           <Button disabled={isPending} className="w-full">
             {isPending && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
             )}
             Registrate con correo
           </Button>

@@ -1,8 +1,13 @@
 import { Button } from "@/src/components/ui/buttons/chadcn-button";
 import { Icons } from "@/src/components/icons";
 
-function GithubProvider({ isPending, onClick}: { isPending?: boolean, onClick: (provider: "google" | "github") => void}) {
-
+function GithubProvider({
+  isPending,
+  onClick,
+}: {
+  isPending?: boolean;
+  onClick: (provider: "google" | "github") => void;
+}) {
   return (
     <Button
       variant="outline"
@@ -12,9 +17,9 @@ function GithubProvider({ isPending, onClick}: { isPending?: boolean, onClick: (
       onClick={() => onClick}
     >
       {isPending ? (
-        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
       ) : (
-        <Icons.gitHub className="mr-2 h-4 w-4" />
+        <Icons.GitHubIcon className="mr-2 h-4 w-4" />
       )}{" "}
       GitHub
     </Button>

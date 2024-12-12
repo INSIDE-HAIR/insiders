@@ -17,9 +17,9 @@ function GoogleProvider({
       onClick={() => onClick}
     >
       {isPending ? (
-        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
       ) : (
-        <Icons.google className="mr-2 h-4 w-4" />
+        <Icons.GoogleIcon className="mr-2 h-4 w-4" />
       )}{" "}
       Google
     </Button>

@@ -12,6 +12,7 @@ import {
   Package,
   Files,
   LucideIcon,
+  Loader2,
 } from "lucide-react";
 
 export type Icon = LucideIcon | React.ComponentType<any>;
@@ -30,6 +31,7 @@ export const Icons = {
   SettingsIcon: Settings,
   GitHubIcon: FaGithub,
   GoogleIcon: FaGoogle,
+  SpinnerIcon: Loader2,
 } as const;
 
 export type IconKeys = keyof typeof Icons;
