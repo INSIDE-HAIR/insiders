@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "../../../ui/card";
 import Header from "./auth-card-header";
-import GoBackButton from "../../../share/go-back-button";
+import GoBackButton from "../../../shared/go-back-button";
 
 type Props = {
   children: ReactNode;

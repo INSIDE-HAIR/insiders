@@ -2,7 +2,7 @@ import { cn } from "@/src/lib/utils/utils";
 import { ExtendedUser } from "@/src/next-auth";
 import Link from "next/link";
 import React from "react";
-import { buttonVariants } from "../../ui/buttons/chadcn-button";
+import { buttonVariants } from "../../ui/button";
 
 type Props = {
   user: Partial<ExtendedUser>;

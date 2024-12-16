@@ -12,11 +12,11 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "@/src/components/ui/input";
-import FormError from "@/src/components/share/MessageErrorBox";
-import FormSuccess from "@/src/components/share/MessageSuccessBox";
+import FormError from "@/src/components/shared/messages/MessageErrorBox";
+import FormSuccess from "@/src/components/shared/messages/MessageSuccessBox";
 import { Switch } from "@/src/components/ui/switch";
 import { updateUser } from "@/src/lib/actions/auth/user/settings/user-settings-update";
-import LoadingButton from "@/src/components/share/LoadingButton";
+import LoadingButton from "@/src/components/shared/LoadingButton";
 import { UserSchema } from "@/src/types/inside-schemas";
 import Image from "next/image";
 import { CheckCircleIcon, XCircleIcon } from "lucide-react";

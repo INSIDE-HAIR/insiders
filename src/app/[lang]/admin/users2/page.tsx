@@ -9,7 +9,7 @@ import { useTranslations } from "@/src/context/TranslationContext";
 import { Users2Table } from "./Users2Table";
 import { useToast } from "@/src/components/ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 
 const fetchBackupData = async () => {
   const response = await fetch(

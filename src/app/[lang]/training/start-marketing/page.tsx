@@ -2,9 +2,9 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import Container from "@/src/components/ui/containers/container";
-import ComponentsSelector from "@/src/components/components-selector/components-selector";
+import Container from "@/src/components/layout/container";
 import { usePathname } from "next/navigation";
+import ComponentsSelector from "@/src/components/shared/components-selector/components-selector";
 
 interface MonthlyData {
   [x: string]: any;
@@ -20,9 +20,9 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [campaign, setcampaign] = useState<string>(
-    (searchParams?.get("campaign")?.toLocaleLowerCase() as string) ?? "campaign1"
+    (searchParams?.get("campaign")?.toLocaleLowerCase() as string) ??
+      "campaign1"
   );
-
 
   // Update the type of sideMenu state
   const [sideMenu, setSideMenu] = useState<{ list: any[] } | null>(null);

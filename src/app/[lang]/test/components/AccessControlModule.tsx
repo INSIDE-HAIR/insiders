@@ -39,7 +39,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/src/components/ui/tabs/tabs";
+} from "@/src/components/ui/tabs";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { UserRole } from "@prisma/client";
 import { toast } from "sonner";

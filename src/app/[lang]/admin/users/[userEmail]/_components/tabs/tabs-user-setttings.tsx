@@ -3,7 +3,7 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/src/components/ui/tabs/tabs";
+} from "@/src/components/ui/tabs";
 import {
   Card,
   CardHeader,

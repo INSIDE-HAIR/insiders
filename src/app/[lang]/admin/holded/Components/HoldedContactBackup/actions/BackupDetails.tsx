@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 import {
   Select,
   SelectTrigger,

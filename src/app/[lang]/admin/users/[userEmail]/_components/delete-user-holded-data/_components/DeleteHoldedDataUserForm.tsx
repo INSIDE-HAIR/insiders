@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/src/components/ui/input";
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
-import FormError from "@/src/components/share/MessageErrorBox";
-import FormSuccess from "@/src/components/share/MessageSuccessBox";
+import { Button } from "@/src/components/ui/button";
+import FormError from "@/src/components/shared/messages/MessageErrorBox";
+import FormSuccess from "@/src/components/shared/messages/MessageSuccessBox";
 import { deleteUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-delete";
 import {
   Form,

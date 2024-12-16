@@ -12,19 +12,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/src/components/ui/input";
-import FormError from "@/src/components/share/MessageErrorBox";
-import FormSuccess from "@/src/components/share/MessageSuccessBox";
+import FormError from "@/src/components/shared/messages/MessageErrorBox";
+import FormSuccess from "@/src/components/shared/messages/MessageSuccessBox";
 import { getHoldedContactById } from "@/src/lib/actions/vendors/holded/contacts";
 import moment from "moment-timezone";
 import "moment/locale/es";
-import ErrorMessageBox from "@/src/components/share/MessageErrorBox";
-import SuccessMessageBox from "@/src/components/share/MessageSuccessBox";
+import ErrorMessageBox from "@/src/components/shared/messages/MessageErrorBox";
+import SuccessMessageBox from "@/src/components/shared/messages/MessageSuccessBox";
 import { useHolded } from "@/src/components/providers/HoldedProvider";
 import { useDebounce } from "@uidotdev/usehooks";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
+import { Button } from "@/src/components/ui/button";
 import { z } from "zod";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 
 type Props = {
   holdedId?: string | null;

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
 import { Columns } from "../columns/monthlyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";

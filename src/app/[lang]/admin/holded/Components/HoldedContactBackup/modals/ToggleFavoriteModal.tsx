@@ -6,7 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/src/components/ui/alert-dialog";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 import { useTranslations } from "@/src/context/TranslationContext";
 
 interface ToggleFavoriteModalProps {

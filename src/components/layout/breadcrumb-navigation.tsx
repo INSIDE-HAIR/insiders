@@ -18,7 +18,7 @@ import {
 import translation from "@/db/translations.json";
 import React from "react";
 import Link from "next/link";
-import GoBackButton from "../share/go-back-button";
+import GoBackButton from "../shared/go-back-button";
 
 interface BreadcrumbNavigationProps {
   type: "auth" | "admin";

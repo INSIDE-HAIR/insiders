@@ -1,5 +1,5 @@
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
+import { Button } from "@/src/components/ui/button";
 import { Package2Icon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";

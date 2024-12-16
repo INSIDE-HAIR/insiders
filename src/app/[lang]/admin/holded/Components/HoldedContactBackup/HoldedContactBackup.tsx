@@ -8,7 +8,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/src/components/ui/tabs/tabs";
+} from "@/src/components/ui/tabs";
 
 function HoldedContactBackup() {
   return (

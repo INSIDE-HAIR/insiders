@@ -7,7 +7,7 @@ import { login } from "@/src/lib/actions/auth/user/login/login";
 import { useState, useTransition } from "react";
 import { Icons } from "../../../icons";
 import { Input } from "../../../ui/input";
-import { Button } from "../../../ui/buttons/chadcn-button";
+import { Button } from "../../../ui/button";
 import {
   Form,
   FormControl,
@@ -16,8 +16,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../../../ui/form";
-import { FormError } from "../../../messages/form-error";
-import { FormSuccess } from "../../../messages/form-success";
+import { FormError } from "../../../shared/messages/form-error";
+import { FormSuccess } from "../../../shared/messages/form-success";
 import { useRouter } from "next/navigation";
 import NonPasswordLogins from "../providers/email-provider";
 

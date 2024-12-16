@@ -1,4 +1,4 @@
-import { Button } from "@/src/components/ui/buttons/chadcn-button";
+import { Button } from "@/src/components/ui/button";
 import { Icons } from "@/src/components/icons";
 
 function GoogleProvider({

@@ -16,9 +16,9 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { Input } from "../../../ui/input";
-import FormError from "../../../share/MessageErrorBox";
-import FormSuccess from "../../../share/MessageSuccessBox";
-import LoadingButton from "../../../share/LoadingButton";
+import FormError from "../../../shared/messages/MessageErrorBox";
+import FormSuccess from "../../../shared/messages/MessageSuccessBox";
+import LoadingButton from "../../../shared/LoadingButton";
 import { newPassword } from "@/src/lib/actions/auth/user/password/new-password";
 
 type Props = {};

@@ -3,7 +3,7 @@ import React from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { DataTable } from "./DataTable";
 import { Columns } from "./columns/contactColumns";
-import LoadingSpinner from "@/src/components/share/LoadingSpinner";
+import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
 import { Button } from "@/src/components/ui/button";
 import { useToast } from "@/src/components/ui/use-toast";
 

@@ -14,9 +14,9 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Input } from "@/src/components/ui/input";
-import FormError from "@/src/components/share/MessageErrorBox";
-import FormSuccess from "@/src/components/share/MessageSuccessBox";
-import LoadingButton from "@/src/components/share/LoadingButton";
+import FormError from "@/src/components/shared/messages/MessageErrorBox";
+import FormSuccess from "@/src/components/shared/messages/MessageSuccessBox";
+import LoadingButton from "@/src/components/shared/LoadingButton";
 import { reset } from "@/src/lib/actions/auth/user/password/reset-password";
 
 type Props = {

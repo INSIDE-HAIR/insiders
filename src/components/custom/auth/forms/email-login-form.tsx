@@ -14,10 +14,10 @@ import {
 } from "@/src/components/ui/form";
 
 import { Input } from "../../../ui/input";
-import ErrorMessageBox from "../../../share/MessageErrorBox";
-import SuccessMessageBox from "../../../share/MessageSuccessBox";
+import ErrorMessageBox from "../../../shared/messages/MessageErrorBox";
+import SuccessMessageBox from "../../../shared/messages/MessageSuccessBox";
 
-import LoadingButton from "../../../share/LoadingButton";
+import LoadingButton from "../../../shared/LoadingButton";
 import { EmailSchema } from "@/src/types/zod-schemas";
 import { emailLogin } from "@/src/lib/actions/auth/user/login/email-login";
 

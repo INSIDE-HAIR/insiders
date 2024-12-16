@@ -1,6 +1,6 @@
 import CardWrapper from "../card/auth-card-wrapper";
-import FormSuccess from "../../../share/MessageSuccessBox";
-import FormError from "../../../share/MessageErrorBox";
+import FormSuccess from "../../../shared/messages/MessageSuccessBox";
+import FormError from "../../../shared/messages/MessageErrorBox";
 
 type Props = {
   message: string;

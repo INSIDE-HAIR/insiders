@@ -1,7 +1,7 @@
 import { BellIcon, Package2Icon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { Button } from "../ui/buttons/chadcn-button";
+import { Button } from "../ui/button";
 import LogoutButton from "../custom/auth/buttons/logout-button";
 import translations from "@/db/translations.json";
 import { Icons } from "../icons";

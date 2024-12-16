@@ -3,9 +3,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import dataMonths from "@/db/dates/months.json";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import Container from "@/src/components/ui/containers/container";
-import ComponentsSelector from "@/src/components/components-selector/components-selector";
+import Container from "@/src/components/layout/container";
 import { usePathname } from "next/navigation";
+import ComponentsSelector from "@/src/components/shared/components-selector/components-selector";
 
 interface MonthlyData {
   [x: string]: any;
@@ -93,7 +93,7 @@ export default function Page() {
         <strong className="font-bold py-2 bg-zinc-700  text-zinc-50  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13">
           Marketing Salon
         </strong>
-        <strong className="font-bold py-2 bg-primary  text-zinc-900  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13">
+        <strong className="font-bold py-2 bg-inside  text-zinc-900  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13">
           {monthTranslations?.title + " "}
           {year}
         </strong>
@@ -122,9 +122,9 @@ export default function Page() {
                     item.active && (
                       <li
                         key={index + item.id}
-                        className={`relative border-b-1 cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-primary hover:border-primary  w-full ${
+                        className={`relative border-b-1 cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-inside hover:border-inside  w-full ${
                           item.id === tab
-                            ? " text-primary border-primary"
+                            ? " text-inside border-inside"
                             : "text-zinc-50"
                         }`}
                         style={{ order: item.order }}
@@ -165,9 +165,9 @@ export default function Page() {
                       item.active && (
                         <li
                           key={index + item.id}
-                          className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:text-primary hover:border-primary  w-full ${
+                          className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:text-inside hover:border-inside  w-full ${
                             item.id === tab
-                              ? " text-primary border-primary"
+                              ? " text-inside border-inside"
                               : "text-zinc-50"
                           }`}
                           style={{ order: item.order }}
