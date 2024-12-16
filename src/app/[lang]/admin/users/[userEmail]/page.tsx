@@ -5,7 +5,7 @@ import { auth, signOut } from "@/src/config/auth/auth";
 import { redirect } from "next/navigation";
 import { HoldedProvider } from "@/src/components/providers/HoldedProvider";
 import { User } from "@prisma/client";
-import TabsUserSettings from "@/src/app/[lang]/admin/users/[userEmail]/_components/tabs-user-setttings";
+import TabsUserSettings from "../../users2/[userEmail]/_components/tabs/tabs-user-setttings";
 
 export default async function Page({
   params,
