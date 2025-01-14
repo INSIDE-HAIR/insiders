@@ -1052,6 +1052,19 @@
             "endDateTime": null
           },
           "auth": []
+        },
+        {
+          "id": "slider1",
+          "order": 3,
+          "type": "slider",
+          "classType": "default",
+          "url": "https://docs.google.com/presentation/d/e/2PACX-1vRCDT4CFa_gbAuk0YpKh47Q3HmLJPBiVn1V_0JQp-YcbwGHuLxZzdhjRdl_syS9p7iavqc0WAgiMs6H/embed?start=false&loop=false&delayms=3000",
+          "active": true,
+          "available": {
+            "startDateTime": null,
+            "endDateTime": null
+          },
+          "auth": []
         }
       ],
       "active": true,
