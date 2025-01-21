@@ -50,6 +50,7 @@ export const filesCodes = {
   "1600": "Cartel 1200x600",
   "1500": "Cartel 1500x1000",
   "0032": "Plan de Color",
+  "0880": "Porta Tarjetas",
 };
 
 export const clientsCodes = {
