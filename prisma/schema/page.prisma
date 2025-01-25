@@ -1,27 +1,3 @@
-model DynamicPage {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  content       Json
-  slug          String
-  lang          String
-  parentId      String?        @db.ObjectId
-  parent        DynamicPage?   @relation("PageHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  children      DynamicPage[]  @relation("PageHierarchy")
-  level         Int            @default(1)
-  fullPath      String         @unique
-  isPublished   Boolean        @default(false)
-  isEditable    Boolean        @default(true)
-  author        String
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  template      Template       @default(sideMenuAndTabs)
-  accessControl AccessControl?
-  groups        Json?
-
-  @@index([slug])
-  @@index([parentId])
-}
-
 enum Template {
   landingPage
   iframe
@@ -32,12 +8,102 @@ enum Template {
   custom
 }
 
-model AccessControl {
-  id                 String      @id @default(auto()) @map("_id") @db.ObjectId
-  dynamicPageId      String      @unique @db.ObjectId
-  dynamicPage        DynamicPage @relation(fields: [dynamicPageId], references: [id])
-  isEnabled          Boolean     @default(true)
-  maxConcurrentUsers Int?
-  maxAccessCount     Int?
-  rules              Json?
+enum PageStatus {
+  draft
+  published
+  deleted
+}
+
+enum OgType {
+  website
+  article
+  profile
+  book
+  music_song
+  music_album
+  music_playlist
+  music_radio_station
+  video_movie
+  video_episode
+  video_tv_show
+  video_other
+  blog
+  product
+  restaurant
+  service
+  place
+  event
+}
+
+enum TwitterCard {
+  summary
+  summary_large_image
+  app
+  player
+}
+
+
+model DynamicPage {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  content    String?
+  slug       String
+  fullPath   String     @unique
+  lang       String
+  parentId   String?    @db.ObjectId
+  level      Int
+  status     PageStatus @default(draft)
+  indexable  Boolean    @default(true)
+  showInMenu Boolean    @default(true)
+  tags       String[]   @default([])
+  author     String
+  template   Template   @default(sideMenuAndTabs)
+  isEditable Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  order      Int        @default(0)
+
+  // Meta tags básicos
+  metaTitle       String?
+  metaDescription String?
+  metaImage       String?
+
+  // Open Graph
+  ogType           OgType  @default(website)
+  ogTitle          String?
+  ogDescription    String?
+  ogImage          String?
+  ogImageSecureUrl String?
+  ogSiteName       String?
+  ogLocale         String? @default("es_ES")
+
+  // Campos específicos para artículos
+  articleSection String?
+  // articlePublishedTime -> usamos createdAt
+  // articleModifiedTime -> usamos updatedAt
+  // articleAuthor -> usamos author
+
+  // Twitter Cards
+  twitterCard        TwitterCard @default(summary_large_image)
+  twitterSite        String?
+  twitterCreator     String?
+  twitterTitle       String?
+  twitterDescription String?
+  twitterImage       String?
+  twitterImageAlt    String?
+
+  // Relaciones
+  parent   DynamicPage?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children DynamicPage[] @relation("ParentChild")
+
+  // Control de acceso
+  accessControlId String?        @db.ObjectId
+  accessControl   AccessControl? @relation(fields: [accessControlId], references: [id])
+
+  // Relación M:N con Media
+  medias MediaOnPages[]
+
+  @@index([parentId])
+  @@index([status])
+  @@index([tags])
 }

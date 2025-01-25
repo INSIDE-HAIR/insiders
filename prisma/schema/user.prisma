@@ -33,6 +33,7 @@ model User {
   tagIds                       String[]                      @db.ObjectId
   resources                    Resource[]                    @relation(fields: [resourceIds], references: [id])
   resourceIds                  String[]                      @db.ObjectId
+  folders                      Folder[]
 }
 
 enum UserRole {
@@ -63,9 +64,4 @@ model Resource {
   type    ResourceType
   users   User[]       @relation(fields: [userIds], references: [id])
   userIds String[]     @db.ObjectId
-}
-
-enum ResourceType {
-  SERVICE // Servicios, revisar el archivo de services.prisma
-  PRODUCT // Productos, revisar el archivo de products.prisma
 }

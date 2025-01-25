@@ -27,8 +27,11 @@
     "title": "Gestión de Páginas",
     "published": "Publicado",
     "draft": "Borrador",
+    "deleted": "Eliminado",
     "pageNotEditableMessage": "Esta página no se puede editar. Por favor, contacta con el desarrollador web.",
     "actions": {
+      "moveLeft": "Sacar",
+      "moveRight": "Meter",
       "createNewPage": "Crear Nueva Página",
       "createSubpage": "Crear Subpágina",
       "editPage": "Editar Página",
@@ -43,11 +46,40 @@
       "editContent": "Editar Contenido",
       "accessControl": "Seguridad",
       "duplicate": "Duplicar",
-      "duplicateSuccess": "La página '{title}' se ha duplicado correctamente",
-      "duplicateError": "Error al duplicar la página '{title}': {error}"
+      "moveUp": "Mover Arriba",
+      "moveDown": "Mover Abajo",
+      "makeRoot": "Hacer Página Principal",
+      "moveTo": "Mover a...",
+      "move": "Mover",
+      "duplicatePage": "Duplicar Página"
+    },
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicado",
+      "deleted": "Eliminado"
+    },
+    "messages": {
+      "loading": "Cargando...",
+      "saving": "Guardando...",
+      "noPages": "No se encontraron páginas",
+      "deleteConfirm": "¿Estás seguro de que deseas eliminar esta página?",
+      "deleteSuccess": "Página eliminada con éxito",
+      "deleteError": "Error al eliminar la página",
+      "createSuccess": "Página creada con éxito",
+      "createError": "Error al crear la página",
+      "updateSuccess": "Página actualizada con éxito",
+      "updateError": "Error al actualizar la página",
+      "duplicateSuccess": "La página se ha duplicado correctamente",
+      "duplicateError": "Error al duplicar la página",
+      "moveSuccess": "Página movida exitosamente",
+      "moveError": "Error al mover la página",
+      "pageNotEditableMessage": "Esta página no se puede editar. Por favor, contacta con el desarrollador web.",
+      "pagesLoadedSuccess": "Páginas cargadas con éxito",
+      "errorLoadingPages": "Error al cargar las páginas"
     },
     "search": {
-      "searchPages": "Buscar páginas",
+      "searchPages": "Buscar páginas...",
+      "searchTags": "Buscar etiquetas...",
       "filterByStatus": "Filtrar por estado",
       "allPages": "Todas las páginas",
       "publishedOnly": "Solo publicadas"
@@ -58,14 +90,6 @@
       "status": "Estado",
       "lastModified": "Última Modificación",
       "actions": "Acciones"
-    },
-    "messages": {
-      "loading": "Cargando...",
-      "saving": "Guardando...",
-      "pagesLoadedSuccess": "Páginas cargadas con éxito",
-      "errorLoadingPages": "Error al cargar las páginas",
-      "deleteSuccess": "Página {title} eliminada con éxito",
-      "deleteError": "Error al eliminar la página {title}: {error}"
     },
     "deleteDialog": {
       "deletePageWithChildren": "Eliminar Página con Subpáginas",
@@ -99,13 +123,25 @@
       "fullPathLabel": "Ruta Completa",
       "fullPathPlaceholder": "Introduce la ruta completa",
       "fullPathDuplicateError": "Ya existe una página con esta ruta completa",
-      "fullPathUpdateError": "Otra página con esta ruta completa ya existe"
+      "fullPathUpdateError": "Otra página con esta ruta completa ya existe",
+      "statusLabel": "Estado",
+      "selectStatus": "Seleccionar estado",
+      "statusDraft": "Borrador",
+      "statusPublished": "Publicado",
+      "statusDeleted": "Eliminado",
+      "indexableLabel": "Indexable",
+      "indexableDescription": "Si está habilitado, la página será indexada por los motores de búsqueda",
+      "showInMenuLabel": "Mostrar en Menú",
+      "showInMenuDescription": "Si está habilitado, la página será visible en el menú de navegación",
+      "tagsLabel": "Etiquetas",
+      "tagsDescription": "Añade etiquetas para ayudar a organizar y encontrar páginas relacionadas"
     },
     "errors": {
       "createPageError": "Error al crear la página",
       "updatePageError": "Error al actualizar la página",
       "duplicateFullPath": "Ya existe una página con esta ruta completa"
-    }
+    },
+    "moveToTitle": "Mover Página A"
   },
   "UsersPage": {
     "fetchingUsers": "Obteniendo usuarios...",

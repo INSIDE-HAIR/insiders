@@ -24,11 +24,14 @@
     "contactDescription": "Contact page description..."
   },
   "PageCreator": {
-    "title": "Page Management",
+    "title": "Page Manager",
     "published": "Published",
     "draft": "Draft",
-    "pageNotEditableMessage": "This page cannot be edited. Please contact the web developer.",
+    "deleted": "Deleted",
+    "pageNotEditableMessage": "This page cannot be edited. Please contact the Web Developer.",
     "actions": {
+      "moveLeft": "Move Out",
+      "moveRight": "Move In",
       "createNewPage": "Create New Page",
       "createSubpage": "Create Subpage",
       "editPage": "Edit Page",
@@ -41,16 +44,72 @@
       "delete": "Delete",
       "view": "View Page",
       "editContent": "Edit Content",
-      "duplicate": "Duplicate",
       "accessControl": "Security",
-      "duplicateSuccess": "Page '{title}' has been duplicated successfully",
-      "duplicateError": "Error duplicating page '{title}': {error}"
+      "duplicate": "Duplicate Page",
+      "moveUp": "Move Out",
+      "moveDown": "Move In",
+      "makeRoot": "Make Root Page",
+      "moveTo": "Move To...",
+      "move": "Move"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "deleted": "Deleted"
+    },
+    "tabs": {
+      "config": "Config",
+      "content": "Content",
+      "seo": "SEO"
+    },
+    "fields": {
+      "title": "Title",
+      "slug": "Slug",
+      "author": "Author",
+      "template": "Template",
+      "status": "Status",
+      "indexable": "Index",
+      "showInMenu": "Show in menu",
+      "tags": "Tags",
+      "lastModified": "Last modified",
+      "actions": "Actions"
+    },
+    "messages": {
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "noPages": "No pages found",
+      "deleteConfirm": "Are you sure you want to delete this page?",
+      "deleteSuccess": "Page deleted successfully",
+      "deleteError": "Error deleting page",
+      "createSuccess": "Page created successfully",
+      "createError": "Error creating page",
+      "updateSuccess": "Page updated successfully",
+      "updateError": "Error updating page",
+      "duplicateSuccess": "Page duplicated successfully",
+      "duplicateError": "Error duplicating page",
+      "moveSuccess": "Page moved successfully",
+      "moveError": "Error moving page",
+      "pageNotEditableMessage": "This page cannot be edited. Please contact the Web Developer.",
+      "pagesLoadedSuccess": "Pages successfully loaded",
+      "errorLoadingPages": "Error loading pages"
     },
     "search": {
-      "searchPages": "Search Pages",
-      "filterByStatus": "Filter by Status",
+      "searchPages": "Search pages...",
+      "searchTags": "Search tags...",
+      "filterByStatus": "Filter by status",
       "allPages": "All Pages",
       "publishedOnly": "Published Only"
+    },
+    "placeholders": {
+      "title": "Enter page title",
+      "slug": "enter-slug",
+      "tags": "Enter tags and press Enter"
+    },
+    "descriptions": {
+      "slug": "The slug is the URL-friendly version of the title. It is automatically generated from the title, but you can customize it.",
+      "indexable": "If enabled, the page will be indexed by search engines.",
+      "showInMenu": "If enabled, the page will be visible in the navigation menu.",
+      "tags": "Tags help organize and find related pages."
     },
     "table": {
       "title": "Title",
@@ -58,14 +117,6 @@
       "status": "Status",
       "lastModified": "Last Modified",
       "actions": "Actions"
-    },
-    "messages": {
-      "loading": "Loading...",
-      "saving": "Saving...",
-      "pagesLoadedSuccess": "Pages successfully loaded",
-      "errorLoadingPages": "Error loading pages",
-      "deleteSuccess": "Page {title} successfully deleted",
-      "deleteError": "Error deleting page {title}: {error}"
     },
     "deleteDialog": {
       "deletePageWithChildren": "Delete Page with Subpages",
@@ -99,13 +150,25 @@
       "fullPathLabel": "Full Path",
       "fullPathPlaceholder": "Enter full path",
       "fullPathDuplicateError": "A page with this full path already exists",
-      "fullPathUpdateError": "Another page with this full path already exists"
+      "fullPathUpdateError": "Another page with this full path already exists",
+      "statusLabel": "Status",
+      "selectStatus": "Select status",
+      "statusDraft": "Draft",
+      "statusPublished": "Published",
+      "statusDeleted": "Deleted",
+      "indexableLabel": "Indexable",
+      "indexableDescription": "If enabled, the page will be indexed by search engines",
+      "showInMenuLabel": "Show in Menu",
+      "showInMenuDescription": "If enabled, the page will be visible in the navigation menu",
+      "tagsLabel": "Tags",
+      "tagsDescription": "Add tags to help organize and find related pages"
     },
     "errors": {
       "createPageError": "Error creating page",
       "updatePageError": "Error updating page",
       "duplicateFullPath": "A page with this full path already exists"
-    }
+    },
+    "moveToTitle": "Move Page To"
   },
   "UsersPage": {
     "fetchingUsers": "Fetching users...",

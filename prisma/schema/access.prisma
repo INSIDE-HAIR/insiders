@@ -1,0 +1,125 @@
+// Enums para el control de acceso
+enum ResourceType {
+  PAGE
+  FOLDER
+  MEDIA
+  OTHER
+}
+
+enum AccessLevel {
+  READ
+  CREATE
+  UPDATE
+  DELETE
+  FULL
+}
+
+enum SubjectType {
+  USER
+  ROLE
+  GROUP
+  TAG
+}
+
+model AccessControl {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  resourceType ResourceType
+  resourceId   String       @db.ObjectId // ID del recurso (página, folder, etc.)
+  isEnabled    Boolean      @default(true)
+
+  // Límites de acceso
+  maxConcurrentUsers Int? @default(0) // 0 => ilimitado
+  maxAccessCount     Int? @default(0) // 0 => ilimitado
+
+  // Configuración de tiempo global
+  startDate  DateTime?
+  endDate    DateTime?
+  startTime  String? // ej. "09:00"
+  endTime    String? // ej. "17:00"
+  daysOfWeek String[] // ej. ["Monday", "Tuesday", ...]
+
+  // Métodos de autenticación requeridos
+  requiredAuthMethods String[] @default([]) // ej. ["PASSWORD", "2FA", "SSO"]
+
+  // Relaciones
+  rules              AccessRule[]
+  ipRestrictions     IPRestriction[]
+  geoRestrictions    GeoRestriction[]
+  deviceRestrictions DeviceRestriction[]
+
+  // Relaciones inversas
+  folders      Folder[]
+  dynamicPages DynamicPage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([resourceType, resourceId])
+}
+
+model AccessRule {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accessControlId String        @db.ObjectId
+  accessControl   AccessControl @relation(fields: [accessControlId], references: [id], onDelete: Cascade)
+
+  subjectType  SubjectType // USER, ROLE, GROUP, TAG
+  subjectValue String // email, role name, group name, tag name
+
+  accessLevel AccessLevel // READ, CREATE, UPDATE, DELETE, FULL
+
+  // Restricción de tiempo específica para esta regla
+  startDate  DateTime?
+  endDate    DateTime?
+  startTime  String?
+  endTime    String?
+  daysOfWeek String[]  @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accessControlId])
+  @@index([subjectType, subjectValue])
+}
+
+model IPRestriction {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accessControlId String        @db.ObjectId
+  accessControl   AccessControl @relation(fields: [accessControlId], references: [id], onDelete: Cascade)
+
+  startIP String // ej. "192.168.0.1"
+  endIP   String? // ej. "192.168.0.255"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accessControlId])
+}
+
+model GeoRestriction {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accessControlId String        @db.ObjectId
+  accessControl   AccessControl @relation(fields: [accessControlId], references: [id], onDelete: Cascade)
+
+  country String?
+  region  String?
+  city    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accessControlId])
+}
+
+model DeviceRestriction {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accessControlId String        @db.ObjectId
+  accessControl   AccessControl @relation(fields: [accessControlId], references: [id], onDelete: Cascade)
+
+  deviceType       String // "desktop", "mobile", "tablet"
+  operatingSystems String[] @default([]) // ej. ["iOS", "Android", "Windows"]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accessControlId])
+}

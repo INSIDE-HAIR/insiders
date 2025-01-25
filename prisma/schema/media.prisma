@@ -1,0 +1,102 @@
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  OTHER
+}
+
+enum MediaFormat {
+  // Imágenes
+  JPG
+  JPEG
+  PNG
+  GIF
+  WEBP
+  SVG
+  // Videos
+  MP4
+  WEBM
+  AVI
+  MOV
+  // Audio
+  MP3
+  WAV
+  OGG
+  // Documentos
+  PDF
+  DOC
+  DOCX
+  XLS
+  XLSX
+  // Otros
+  OTHER
+}
+
+model Folder {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  slug            String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  // Relación jerárquica (self-relation)
+  parentId        String?        @db.ObjectId
+  parent          Folder?        @relation("FolderParent", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children        Folder[]       @relation("FolderParent")
+  // Relaciones
+  medias          Media[]        @relation("FolderMedia")
+  ownerId         String         @db.ObjectId
+  owner           User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  accessControlId String?        @db.ObjectId
+  accessControl   AccessControl? @relation(fields: [accessControlId], references: [id], onDelete: SetNull)
+
+  @@index([parentId])
+  @@index([ownerId])
+  @@index([accessControlId])
+}
+
+model Media {
+  id          String         @id @default(auto()) @map("_id") @db.ObjectId
+  url         String
+  filename    String
+  mimeType    String
+  size        Int
+  type        MediaType
+  format      MediaFormat
+  title       String?
+  description String?
+  altText     String?
+  tags        String[]
+  metadata    Json
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  // Control de versiones
+  version     Int            @default(1)
+  isLatest    Boolean        @default(true)
+  // Relaciones
+  folderId    String?        @db.ObjectId
+  folder      Folder?        @relation("FolderMedia", fields: [folderId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  // Versiones del archivo
+  originalId  String?        @db.ObjectId // referencia a la versión original si es una versión
+  original    Media?         @relation("MediaVersions", fields: [originalId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  versions    Media[]        @relation("MediaVersions")
+  // Páginas que usan este medio
+  pages       MediaOnPages[]
+
+  @@index([folderId])
+  @@index([originalId])
+}
+
+model MediaOnPages {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime    @default(now())
+  // Relaciones
+  pageId    String      @db.ObjectId
+  page      DynamicPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  mediaId   String      @db.ObjectId
+  media     Media       @relation(fields: [mediaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([pageId, mediaId])
+  @@index([pageId])
+  @@index([mediaId])
+}
