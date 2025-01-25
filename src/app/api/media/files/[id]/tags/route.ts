@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/config/auth/auth";
+import { auth } from "@/src/config/auth/auth";
 import prisma from "@/prisma/database";
 import { z } from "zod";
 
