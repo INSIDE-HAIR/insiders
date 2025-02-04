@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    
     // Obtener y validar parámetros de búsqueda
     const { searchParams } = new URL(req.url);
     const params = searchSchema.parse({
