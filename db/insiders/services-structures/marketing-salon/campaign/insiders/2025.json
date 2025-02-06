@@ -1826,7 +1826,7 @@
                   "type": "video",
                   "id": "Contexto1",
                   "title": "Contexto",
-                  "url": "https://player.vimeo.com/video/1053382307?h=0a66bdb621&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "url": "https://player.vimeo.com/video/1053382307?h=0a66bdb621&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -1846,15 +1846,15 @@
               "id": "tab2",
               "order": 2,
               "type": "tab",
-              "title": "Plan de Marketing",
+              "title": "Acción Principal",
               "classType": "default",
               "content": [
                 {
                   "order": 1,
                   "type": "video",
                   "id": "AccionPrincipal1",
-                  "title": "Plan de Marketing",
-                  "url": "https://player.vimeo.com/video/1053382395?h=9cd7073d1b&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "title": "Acción Principal",
+                  "url": "https://player.vimeo.com/video/1053382395?h=9cd7073d1b&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -1882,7 +1882,7 @@
                   "type": "video",
                   "id": "Carteleria1",
                   "title": "Cartelería",
-                  "url": "https://player.vimeo.com/video/1053383708?h=bcb7e52c53&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "url": "https://player.vimeo.com/video/1053383708?h=bcb7e52c53&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
@@ -1910,7 +1910,7 @@
                   "type": "video",
                   "id": "Complementaria1",
                   "title": "Campaña Complementaria",
-                  "url": "https://player.vimeo.com/video/1053385300?h=495558f0d3&badge=0&autopause=0&player_id=0&app_id=58479",
+                  "url": "https://player.vimeo.com/video/1053385300?h=495558f0d3&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479",
                   "active": true,
                   "available": {
                     "startDateTime": null,
