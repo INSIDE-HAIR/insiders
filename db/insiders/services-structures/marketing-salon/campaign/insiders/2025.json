@@ -1801,7 +1801,7 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "https://docs.google.com/forms/d/e/1FAIpQLSeldOelNOPw46b2DhexuQ9IDMv6cKm8MNL93c7mml5kuBCO0g/viewform?usp=dialog",
+          "url": "",
           "active": false,
           "available": {
             "startDateTime": "",
