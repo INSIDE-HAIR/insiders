@@ -80,8 +80,12 @@ export default function CustomTabsCardsList({
   }, [item.childrensCode, dataMarketingCards, item]);
 
   useEffect(() => {
-    if (groupedByLanguage && Object.keys(groupedByLanguage).length > 0) {
-      setDefaultValue(Object.keys(groupedByLanguage)[0]);
+    if (groupedByLanguage) {
+      // Establecer ES como valor por defecto si existe, sino tomar el primer idioma
+      const defaultLang = groupedByLanguage["ES"]
+        ? "ES"
+        : Object.keys(groupedByLanguage)[0];
+      setDefaultValue(defaultLang);
     }
   }, [groupedByLanguage]);
 
@@ -146,13 +150,16 @@ export default function CustomTabsCardsList({
             >
               <TabsList className=" [&>[data-state=active]]:bg-inside [&>[data-state=active]]:font-semibold rounded-none flex flex-wrap h-full  bg-transparent  text-white border-none">
                 {languageEntries
-                  .sort()
-                  .reverse()
+                  .sort(([a], [b]) => {
+                    if (a === "ES") return -1;
+                    if (b === "ES") return 1;
+                    return a.localeCompare(b);
+                  })
                   .map(([language]) => (
                     <TabsTrigger
                       key={language}
                       value={language}
-                      className="rounded-none bg-zinc-700 text-white border-none "
+                      className="rounded-none bg-zinc-700 text-white border-none"
                     >
                       {langCodes[language as keyof typeof langCodes] ||
                         language}
