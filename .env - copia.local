@@ -1,0 +1,22 @@
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+NODE_ENV="development"
+
+NEXTAUTH_SECRET="18fc80756d624027acaabc85dc5d3d38"
+AUTH_SECRET="18fc80756d624027acaabc85dc5d3d38"
+DATABASE_URL="mongodb+srv://sistemas:MrHKMQ4MXjsPxJMm@inside.hnlaqho.mongodb.net/INSIDERS?retryWrites=true&w=majority"
+
+GITHUB_CLIENT_ID="e552cf7d067e7d8b3794"
+GITHUB_CLIENT_SECRET="9fe6d0bb9e6e75cbc68ac48515ba5ecf6fdef8bf"
+
+GOOGLE_CLIENT_ID="1014725709960-j00f1pdf5n4o503a95npudkk151upfq8.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="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"
+
+GOOGLE_USER_EMAIL="sistemas@insidesalons.com"
+GOOGLE_USER_PASSWORD="mxkb lqar jfgr ukoh"
+
+RESEND_API_KEY="re_DiPAeBTn_3RdavuJra3K56pTAq1pNqYkN"
+AUTH_RESEND_KEY="re_DiPAeBTn_3RdavuJra3K56pTAq1pNqYkN"
+
+EMAIL_FROM="noreplay@insidehair.es"
+HOLDED_API_KEY="43ee97d1d2c778bface0a5284065609c"
