@@ -2279,8 +2279,51 @@
               "auth": []
             },
             {
-              "id": "tab5",
+              "id": "tab4",
               "order": 5,
+              "type": "tab",
+              "title": "Revistas",
+              "classType": "default",
+              "content": [
+                {
+                  "id": "image1",
+                  "order": 1,
+                  "type": "image",
+                  "title": "Ubicación Cartelería",
+                  "url": "https://lh3.googleusercontent.com/d/1fwiJqQS8wMhti7YSjvLaptJ0nTVeXU4o",
+                  "darkModeUrl": "https://lh3.googleusercontent.com/d/14JUTK2KyY7lhsNUdy-J4QLv0eG0RApAa",
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                },
+                {
+                  "id": "cardList1",
+                  "order": 1,
+                  "type": "tabsCardsList",
+                  "childrensCode": ["0100"],
+                  "title": "Revistas",
+                  "content": [],
+                  "active": true,
+                  "available": {
+                    "startDateTime": null,
+                    "endDateTime": null
+                  },
+                  "auth": []
+                }
+              ],
+              "active": true,
+              "available": {
+                "startDateTime": null,
+                "endDateTime": null
+              },
+              "auth": []
+            },
+            {
+              "id": "tab5",
+              "order": 6,
               "type": "tab",
               "title": "Tarjetas",
               "classType": "default",
@@ -2300,7 +2343,7 @@
                   "auth": []
                 }
               ],
-              "active": true,
+              "active": false,
               "available": {
                 "startDateTime": null,
                 "endDateTime": null
@@ -2309,7 +2352,7 @@
             },
             {
               "id": "tab6",
-              "order": 6,
+              "order": 7,
               "type": "tab",
               "title": "Camisetas & Bolsas",
               "classType": "default",
@@ -2338,7 +2381,7 @@
             },
             {
               "id": "tab7",
-              "order": 7,
+              "order": 8,
               "type": "tab",
               "title": "Tests",
               "classType": "default",
@@ -2367,7 +2410,7 @@
             },
             {
               "id": "tab8",
-              "order": 8,
+              "order": 9,
               "type": "tab",
               "title": "Novedades",
               "classType": "default",
@@ -2669,6 +2712,7 @@
       "auth": []
     }
   ],
+
   "april": [],
   "may": [],
   "june": [],
