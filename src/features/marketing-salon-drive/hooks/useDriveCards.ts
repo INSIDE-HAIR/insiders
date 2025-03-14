@@ -12,13 +12,16 @@ interface DriveApiResponse {
   };
 }
 
-export function useDriveCards(client: string, year: string, month: string) {
+export function useDriveCards(year: string, campaign: string, client?: string) {
   return useQuery<DriveApiResponse>({
-    queryKey: ["drive-cards", client, year, month],
+    queryKey: ["drive-cards", year, campaign, client],
     queryFn: async () => {
-      const response = await fetch(
-        `/api/marketing-salon-drive/${client}/${year}/${month}/cards`
-      );
+      const basePath = `/api/marketing-salon-drive/${year}/${campaign}`;
+      const apiPath = client
+        ? `${basePath}/${client}/cards`
+        : `${basePath}/cards`;
+
+      const response = await fetch(apiPath);
 
       if (!response.ok) {
         const errorData = await response.json();

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Tabs,
   TabsContent,
@@ -7,17 +7,21 @@ import {
   TabsTrigger,
 } from "@/src/components/ui/tabs";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { FolderIcon, FolderOpenIcon, FileIcon } from "lucide-react";
+import { FolderOpenIcon } from "lucide-react";
 
 import { DriveFile } from "../../types/drive";
 import { DriveCardGrid } from "./DriveCardGrid";
 import { cn } from "@/src/lib/utils/utils";
 
-// Interfaz FolderContent actualizada para soportar subcarpetas de forma recursiva
+// Interfaz FolderContent actualizada para soportar subcarpetas y grupos de forma recursiva
 interface FolderContent {
   files: DriveFile[];
   subfolders: { [key: string]: FolderContent };
   isFolder: boolean;
+  isGroup?: boolean;
+  groupTitle?: string;
+  originalName?: string;
+  groupFolders?: FolderContent[]; // Nueva propiedad para almacenar carpetas de grupo
 }
 
 // Interfaz para la estructura general de carpetas
@@ -31,35 +35,474 @@ interface DriveTabsCardGridProps {
   onPreviewClick?: (file: DriveFile) => void;
 }
 
-// Componente para renderizar tabs de carpetas de forma recursiva
+// Interfaz para manejadores de carpetas
+interface FolderHandler {
+  canHandle(folderName: string): boolean;
+  process(
+    folderName: string,
+    content: FolderContent
+  ): {
+    displayName: string;
+    processedContent: FolderContent;
+  };
+}
+
+// Factory para crear el manejador apropiado de carpetas
+class FolderHandlerFactory {
+  private handlers: FolderHandler[] = [];
+
+  constructor() {
+    // Registro de handlers de carpetas
+    this.registerHandler(new DefaultFolderHandler());
+    this.registerHandler(new GroupFolderHandler());
+    // Se pueden registrar más handlers aquí
+  }
+
+  registerHandler(handler: FolderHandler) {
+    this.handlers.push(handler);
+  }
+
+  getHandler(folderName: string): FolderHandler {
+    for (const handler of this.handlers) {
+      if (handler.canHandle(folderName)) {
+        return handler;
+      }
+    }
+    // Si ningún handler específico puede manejar el nombre, usamos el predeterminado
+    return this.handlers[0]; // DefaultFolderHandler
+  }
+}
+
+// Handler predeterminado para carpetas sin prefijo especial
+class DefaultFolderHandler implements FolderHandler {
+  canHandle(folderName: string): boolean {
+    return true; // Maneja cualquier carpeta sin prefijo especial
+  }
+
+  process(folderName: string, content: FolderContent) {
+    return { displayName: folderName, processedContent: content };
+  }
+}
+
+// Handler para carpetas de grupo (group:, groupTitle:, grupo:)
+class GroupFolderHandler implements FolderHandler {
+  canHandle(folderName: string): boolean {
+    const prefixes = ["groupTitle:", "group:", "grupo:"];
+    const lowerName = folderName.toLowerCase();
+    return prefixes.some((prefix) =>
+      lowerName.startsWith(prefix.toLowerCase())
+    );
+  }
+
+  process(folderName: string, content: FolderContent) {
+    const prefixes = ["groupTitle:", "group:", "grupo:"];
+    const lowerName = folderName.toLowerCase();
+
+    let prefix = "";
+    for (const p of prefixes) {
+      if (lowerName.startsWith(p.toLowerCase())) {
+        prefix = p;
+        break;
+      }
+    }
+
+    const displayName = folderName.slice(prefix.length).trim();
+
+    // Marcar este contenido como un grupo para procesamiento especial
+    const processedContent = {
+      ...content,
+      isGroup: true,
+      groupTitle: displayName,
+      originalName: folderName,
+    };
+
+    return { displayName, processedContent };
+  }
+}
+
+// Eliminada la lógica de Excel para simplificar el código
+
+// Constructor de la estructura de carpetas
+class FolderStructureBuilder {
+  private folderHandlerFactory: FolderHandlerFactory;
+
+  constructor() {
+    this.folderHandlerFactory = new FolderHandlerFactory();
+  }
+
+  buildStructure(files: DriveFile[]): FolderStructure {
+    // Crear estructura base
+    const structure = this.analyzeBasicStructure(files);
+
+    // Procesar prefijos de carpetas (primera fase)
+    const processedStructure = this.processFolderPrefixes(structure);
+
+    // Segunda fase: extraer los groupTitle de tabs a secciones
+    return this.extractGroupTitlesFromTabs(processedStructure);
+  }
+
+  private extractGroupTitlesFromTabs(
+    structure: FolderStructure
+  ): FolderStructure {
+    const result: FolderStructure = {};
+
+    // Procesar cada carpeta de nivel superior
+    for (const [folderName, folderContent] of Object.entries(structure)) {
+      // Si la carpeta actual es un grupo, incluirla directamente
+      if (folderContent.isGroup) {
+        result[folderName] = folderContent;
+        continue;
+      }
+
+      // Copiar la carpeta actual
+      result[folderName] = {
+        files: [...folderContent.files],
+        subfolders: {},
+        isFolder: folderContent.isFolder,
+      };
+
+      // Examinar subfolders para detectar grupos
+      const groupFolders: FolderContent[] = [];
+
+      // Procesar cada subcarpeta
+      for (const [subFolderName, subFolderContent] of Object.entries(
+        folderContent.subfolders
+      )) {
+        // Si la subcarpeta es un grupo o comienza con "groupTitle:"
+        if (
+          subFolderContent.isGroup ||
+          subFolderName.toLowerCase().startsWith("grouptitle:") ||
+          subFolderName.toLowerCase().startsWith("group:")
+        ) {
+          // Preparar el contenido del grupo
+          const groupContent = {
+            ...subFolderContent,
+            isGroup: true,
+            groupTitle:
+              subFolderContent.groupTitle ||
+              subFolderName.split(":")[1]?.trim() ||
+              subFolderName,
+          };
+
+          // Aplicar recursivamente la extracción de grupos a las subcarpetas del grupo
+          if (Object.keys(groupContent.subfolders).length > 0) {
+            groupContent.subfolders = this.extractGroupTitlesFromSubfolders(
+              groupContent.subfolders
+            );
+          }
+
+          // Agregar a la lista de grupos
+          groupFolders.push(groupContent);
+        } else {
+          // Las subcarpetas normales se mantienen igual pero se procesan recursivamente
+          result[folderName].subfolders[subFolderName] = {
+            ...subFolderContent,
+            subfolders: this.extractGroupTitlesFromSubfolders(
+              subFolderContent.subfolders
+            ),
+          };
+        }
+      }
+
+      // Agregar todos los grupos como propiedades especiales
+      if (groupFolders.length > 0) {
+        result[folderName].groupFolders = groupFolders;
+      }
+    }
+
+    return result;
+  }
+
+  // Procesar recursivamente subcarpetas
+  private extractGroupTitlesFromSubfolders(subfolders: {
+    [key: string]: FolderContent;
+  }): { [key: string]: FolderContent } {
+    const result: { [key: string]: FolderContent } = {};
+
+    for (const [subFolderName, subFolderContent] of Object.entries(
+      subfolders
+    )) {
+      // Si esta subcarpeta es un grupo, no la incluimos en el resultado
+      if (
+        subFolderContent.isGroup ||
+        subFolderName.toLowerCase().startsWith("grouptitle:") ||
+        subFolderName.toLowerCase().startsWith("group:")
+      ) {
+        continue;
+      }
+
+      // Copiar la subcarpeta
+      result[subFolderName] = {
+        ...subFolderContent,
+        subfolders: this.extractGroupTitlesFromSubfolders(
+          subFolderContent.subfolders
+        ),
+      };
+
+      // Examinar sus subcarpetas para detectar grupos
+      const groupFolders: FolderContent[] = [];
+
+      // Procesar cada sub-subcarpeta
+      for (const [subSubFolderName, subSubFolderContent] of Object.entries(
+        subFolderContent.subfolders
+      )) {
+        if (
+          subSubFolderContent.isGroup ||
+          subSubFolderName.toLowerCase().startsWith("grouptitle:") ||
+          subSubFolderName.toLowerCase().startsWith("group:")
+        ) {
+          // Preparar el contenido del grupo
+          const groupContent = {
+            ...subSubFolderContent,
+            isGroup: true,
+            groupTitle:
+              subSubFolderContent.groupTitle ||
+              subSubFolderName.split(":")[1]?.trim() ||
+              subSubFolderName,
+          };
+
+          // Agregar a la lista de grupos
+          groupFolders.push(groupContent);
+        }
+      }
+
+      // Agregar todos los grupos como propiedades especiales
+      if (groupFolders.length > 0) {
+        result[subFolderName].groupFolders = groupFolders;
+      }
+    }
+
+    return result;
+  }
+
+  private analyzeBasicStructure(files: DriveFile[]): FolderStructure {
+    const structure: FolderStructure = {};
+
+    // Función auxiliar para garantizar una ruta de carpetas
+    const ensurePath = (
+      path: string[],
+      root: FolderStructure = structure
+    ): FolderContent => {
+      if (path.length === 0) {
+        // En lugar de null, devolvemos una carpeta vacía cuando no hay ruta
+        return {
+          files: [],
+          subfolders: {},
+          isFolder: false,
+        };
+      }
+
+      const folderName = path[0];
+      if (!root[folderName]) {
+        root[folderName] = {
+          files: [],
+          subfolders: {},
+          isFolder: true,
+        };
+      }
+
+      if (path.length === 1) {
+        return root[folderName];
+      }
+
+      return ensurePath(path.slice(1), root[folderName].subfolders);
+    };
+
+    // Primera pasada: agrupar archivos por carpetas
+    files.forEach((file) => {
+      if (file.mimeType === "application/vnd.google-apps.folder") {
+        return; // Ignorar carpetas como archivos
+      }
+
+      // Determinar la ruta de carpetas para este archivo
+      const folderPath: string[] = [];
+
+      if (file.folder) {
+        folderPath.push(file.folder);
+
+        if (file.subFolder) {
+          folderPath.push(file.subFolder);
+
+          if (file.subSubFolder) {
+            folderPath.push(file.subSubFolder);
+          } else if (file.nestedPath && file.nestedPath.length > 0) {
+            // Usar ruta anidada completa en lugar de subFolder/subSubFolder
+            folderPath.length = 0; // Reiniciar el array
+            file.nestedPath
+              .filter(Boolean)
+              .forEach((part) => folderPath.push(part));
+          }
+        }
+      }
+
+      // Si no tiene carpeta, usar "Principal"
+      if (folderPath.length === 0) {
+        if (!structure["Principal"]) {
+          structure["Principal"] = {
+            files: [],
+            subfolders: {},
+            isFolder: false,
+          };
+        }
+        structure["Principal"].files.push(file);
+      } else {
+        // Asegurar que la ruta de carpetas exista
+        const targetFolder = ensurePath(folderPath);
+        targetFolder.files.push(file);
+      }
+    });
+
+    // Organizar grupos basados en patrones
+    this.organizeGroupsByPatterns(structure);
+
+    return structure;
+  }
+
+  private organizeGroupsByPatterns(structure: FolderStructure): void {
+    // Analizar cada carpeta principal
+    Object.keys(structure).forEach((mainFolder) => {
+      const mainContent = structure[mainFolder];
+
+      // Buscar patrones en las subcarpetas
+      const subfolderNames = Object.keys(mainContent.subfolders);
+
+      // Agrupar subcarpetas por patrones similares
+      const patternGroups: { [pattern: string]: string[] } = {};
+
+      subfolderNames.forEach((name) => {
+        // Detectar patrones como "prefijo + número" (ej: "Story 1", "Story 2")
+        const match = name.match(/^(.*?)(\d+)(.*)$/);
+
+        if (match) {
+          const [_, prefix, num, suffix] = match;
+          const pattern = `${prefix}#${suffix}`;
+
+          if (!patternGroups[pattern]) {
+            patternGroups[pattern] = [];
+          }
+
+          patternGroups[pattern].push(name);
+        }
+      });
+
+      // Organizar subcarpetas basadas en patrones detectados
+      Object.entries(patternGroups).forEach(([pattern, folders]) => {
+        if (folders.length >= 2) {
+          // Ordenar por número
+          folders.sort((a, b) => {
+            const numA = parseInt(a.match(/\d+/)?.[0] || "0");
+            const numB = parseInt(b.match(/\d+/)?.[0] || "0");
+            return numA - numB;
+          });
+
+          // Si se detectó un patrón con múltiples carpetas, podríamos
+          // crear una nueva carpeta agrupadora si fuera necesario
+        }
+      });
+    });
+  }
+
+  private processFolderPrefixes(structure: FolderStructure): FolderStructure {
+    const processedStructure: FolderStructure = {};
+
+    // Procesar cada carpeta con el manejador adecuado
+    for (const [folderName, content] of Object.entries(structure)) {
+      const handler = this.folderHandlerFactory.getHandler(folderName);
+      const { displayName, processedContent } = handler.process(
+        folderName,
+        content
+      );
+
+      // Procesar subcarpetas recursivamente
+      if (Object.keys(processedContent.subfolders).length > 0) {
+        processedContent.subfolders = this.processFolderPrefixes(
+          processedContent.subfolders
+        );
+      }
+
+      processedStructure[displayName] = processedContent;
+    }
+
+    return processedStructure;
+  }
+}
+
+// Función auxiliar para verificar si una carpeta está vacía
+function isFolderEmpty(folderContent: FolderContent): boolean {
+  // Si tiene archivos, no está vacío
+  if (folderContent.files && folderContent.files.length > 0) {
+    return false;
+  }
+
+  // Si tiene grupos no vacíos, no está vacío
+  const groupFolders = folderContent.groupFolders || [];
+  if (groupFolders.some((group) => !isFolderEmpty(group))) {
+    return false;
+  }
+
+  // Si tiene subcarpetas no vacías, no está vacío
+  const hasNonEmptySubfolders = Object.values(
+    folderContent.subfolders || {}
+  ).some((subfolder) => !isFolderEmpty(subfolder));
+
+  return !hasNonEmptySubfolders;
+}
+
+// Componente para renderizar carpetas de forma recursiva
 interface FolderTabsProps {
-  folderContent: FolderContent;
+  folderContent: FolderContent & {
+    isGroup?: boolean;
+    groupTitle?: string;
+    originalName?: string;
+  };
   folderName: string;
   level: number;
   onPreviewClick?: (file: DriveFile) => void;
 }
 
-// Componente para renderizar carpetas recursivamente
 function FolderTabs({
   folderContent,
   folderName,
   level,
   onPreviewClick,
 }: FolderTabsProps) {
-  const [activeTab, setActiveTab] = useState<string>("");
-  const hasSubfolders = Object.keys(folderContent.subfolders).length > 0;
+  // Crear un ID base único para este componente de pestañas
+  const tabsId = `tabs-${level}-${folderName
+    .replace(/\s+/g, "-")
+    .toLowerCase()}`;
 
-  // Establecer el tab activo por defecto
+  const [activeTab, setActiveTab] = useState<string>("Principal");
+
+  // Filtrar subcarpetas vacías
+  const nonEmptySubfolders = Object.entries(folderContent.subfolders)
+    .filter(([_, content]) => !isFolderEmpty(content))
+    .map(([name]) => name);
+
+  // Usar los grupos ya procesados y extraídos en la fase de construcción
+  const groupFolders = useMemo(
+    () => folderContent.groupFolders || [],
+    [folderContent.groupFolders]
+  );
+
   useEffect(() => {
-    if (hasSubfolders) {
-      setActiveTab(Object.keys(folderContent.subfolders)[0]);
+    // Si no hay subcarpetas no vacías pero hay contenido en Principal, establecer Principal
+    if (nonEmptySubfolders.length === 0) {
+      setActiveTab("Principal");
+    }
+    // Si Principal está vacío pero hay subcarpetas no vacías, establecer la primera subcarpeta
+    else if (
+      folderContent.files.length === 0 &&
+      groupFolders.length === 0 &&
+      nonEmptySubfolders.length > 0
+    ) {
+      setActiveTab(nonEmptySubfolders[0]);
     } else {
       setActiveTab("Principal");
     }
-  }, [folderContent, hasSubfolders]);
+  }, [folderContent, nonEmptySubfolders, groupFolders]);
 
-  // Si no hay subcarpetas, mostrar solo los archivos de esta carpeta
-  if (!hasSubfolders) {
+  // Si no hay subcarpetas no vacías ni grupos, mostrar solo archivos
+  if (nonEmptySubfolders.length === 0 && !groupFolders.length) {
     return (
       <div className='mt-4'>
         {folderContent.files.length > 0 ? (
@@ -80,10 +523,10 @@ function FolderTabs({
     );
   }
 
-  // Si hay subcarpetas, renderizar como tabs
   return (
     <Tabs
-      defaultValue={activeTab}
+      id={tabsId}
+      defaultValue='Principal'
       value={activeTab}
       onValueChange={setActiveTab}
       className='w-full mt-4'
@@ -95,10 +538,10 @@ function FolderTabs({
             level > 0 && "border-t border-zinc-700 pt-2 mt-2"
           )}
         >
-          {/* Tab para archivos de la carpeta actual */}
-          {folderContent.files.length > 0 && (
+          {/* Tab para archivos de la carpeta actual y grupos, solo si tiene contenido */}
+          {(folderContent.files.length > 0 || groupFolders.length > 0) && (
             <TabsTrigger
-              key='tab-principal'
+              key={`${tabsId}-principal`}
               value='Principal'
               className='rounded-none bg-zinc-700 text-white border-none data-[state=active]:bg-[#B9F264] data-[state=active]:text-black'
             >
@@ -106,10 +549,10 @@ function FolderTabs({
             </TabsTrigger>
           )}
 
-          {/* Tabs para cada subcarpeta */}
-          {Object.keys(folderContent.subfolders).map((subfolder) => (
+          {/* Tabs para cada subcarpeta no vacía */}
+          {nonEmptySubfolders.map((subfolder) => (
             <TabsTrigger
-              key={`subfolder-${subfolder}`}
+              key={`${tabsId}-${subfolder}`}
               value={subfolder}
               className='rounded-none bg-zinc-700 text-white border-none data-[state=active]:bg-[#B9F264] data-[state=active]:text-black'
             >
@@ -119,551 +562,137 @@ function FolderTabs({
         </TabsList>
       </div>
 
-      {/* Contenido para archivos de la carpeta actual */}
-      {folderContent.files.length > 0 && (
-        <TabsContent value='Principal' className='w-full'>
-          <div className='flex items-center mb-4'>
-            <FolderOpenIcon className='h-5 w-5 mr-2 text-[#B9F264]' />
-            <h4 className='text-lg font-medium'>
-              Archivos en {level === 0 ? folderName : `${folderName}`}
-            </h4>
-          </div>
+      {/* Contenido para archivos de la carpeta actual y grupos */}
+      {(folderContent.files.length > 0 || groupFolders.length > 0) && (
+        <TabsContent
+          value='Principal'
+          key={`${tabsId}-content-principal`}
+          className='w-full'
+        >
+          {/* Archivos de la carpeta actual */}
+          {folderContent.files.length > 0 && (
+            <div className='mb-8'>
+              <div className='flex items-center mb-4'>
+                <h4 className='w-full text-center text-lg font-bold'>
+                  Archivos en {level === 0 ? folderName : `${folderName}`}
+                </h4>
+              </div>
 
-          <div className='gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center w-full'>
-            <DriveCardGrid
-              files={folderContent.files}
-              onPreviewClick={onPreviewClick}
-            />
-          </div>
+              <DriveCardGrid
+                files={folderContent.files}
+                onPreviewClick={onPreviewClick}
+              />
+            </div>
+          )}
+
+          {/* Grupos como secciones individuales */}
+          {groupFolders.map((group, index) => (
+            <div key={`${tabsId}-group-${index}`} className='mb-8'>
+              <div className='flex items-center mb-4'>
+                <FolderOpenIcon className='h-5 w-5 mr-2 text-[#B9F264]' />
+                <h4 className='text-lg font-medium'>{group.groupTitle}</h4>
+              </div>
+
+              {/* Contenido del grupo */}
+              {group.files.length > 0 && (
+                <DriveCardGrid
+                  files={group.files}
+                  onPreviewClick={onPreviewClick}
+                />
+              )}
+
+              {/* Si el grupo tiene subcarpetas o sus propios grupos, renderizarlos recursivamente */}
+              {(Object.keys(group.subfolders).length > 0 ||
+                (group.groupFolders && group.groupFolders.length > 0)) && (
+                <div className='ml-4 mt-4 border-l-2 border-[#B9F264] pl-4'>
+                  <FolderTabs
+                    folderContent={group}
+                    folderName={group.groupTitle || ""}
+                    level={level + 1}
+                    onPreviewClick={onPreviewClick}
+                  />
+                </div>
+              )}
+            </div>
+          ))}
         </TabsContent>
       )}
 
-      {/* Contenido para cada subcarpeta - Renderizado recursivo */}
-      {Object.entries(folderContent.subfolders).map(
-        ([subfolderName, subfolderContent]) => (
-          <TabsContent
-            key={`subcontent-${subfolderName}`}
-            value={subfolderName}
-            className='w-full'
-          >
-            <div className='flex items-center mb-4'>
-              <FolderOpenIcon className='h-5 w-5 mr-2 text-[#B9F264]' />
-              <h4 className='text-lg font-medium'>{subfolderName}</h4>
-            </div>
+      {/* Contenido para cada subcarpeta no vacía - Renderizado recursivo */}
+      {nonEmptySubfolders.map((subfolderName) => (
+        <TabsContent
+          key={`${tabsId}-content-${subfolderName}`}
+          value={subfolderName}
+          className='w-full'
+        >
+          <div className='flex items-center mb-4'>
+            <h4 className='w-full text-center text-lg font-bold'>
+              {subfolderName}
+            </h4>
+          </div>
 
-            {/* Llamada recursiva para renderizar subcarpetas dentro de subcarpetas */}
-            <FolderTabs
-              folderContent={subfolderContent}
-              folderName={subfolderName}
-              level={level + 1}
-              onPreviewClick={onPreviewClick}
-            />
-          </TabsContent>
-        )
-      )}
+          {/* Llamada recursiva para renderizar subcarpetas */}
+          <FolderTabs
+            folderContent={folderContent.subfolders[subfolderName]}
+            folderName={subfolderName}
+            level={level + 1}
+            onPreviewClick={onPreviewClick}
+          />
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }
 
+// Componente principal
 export function DriveTabsCardGrid({
   files = [],
   selectedTab,
   onPreviewClick,
 }: DriveTabsCardGridProps) {
-  const [activeTab, setActiveTab] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("Principal");
   const [folderStructure, setFolderStructure] = useState<FolderStructure>({});
   const [debug, setDebug] = useState(false);
 
   useEffect(() => {
     if (files.length > 0) {
-      const structure = buildFolderStructure(files);
-      console.log("Estructura de carpetas:", structure);
-      setFolderStructure(structure);
+      const structureBuilder = new FolderStructureBuilder();
+      const structure = structureBuilder.buildStructure(files);
+      console.log("Estructura de carpetas original:", structure);
 
-      // Si hay un tab seleccionado, usarlo
-      if (selectedTab && structure[selectedTab]) {
-        setActiveTab(selectedTab);
-      }
-      // De lo contrario, seleccionar el primer tab disponible
-      else if (Object.keys(structure).length > 0) {
-        setActiveTab(Object.keys(structure)[0]);
-      }
-    }
-  }, [files, selectedTab]);
-
-  // Función mejorada para construir la estructura de carpetas de forma recursiva
-  const buildFolderStructure = (files: DriveFile[]): FolderStructure => {
-    const structure: FolderStructure = {};
-
-    // Función para asegurar que exista una ruta completa de carpetas
-    const ensurePath = (path: string[], rootStruct: any = structure): any => {
-      if (path.length === 0) return rootStruct;
-
-      const currentFolder = path[0];
-      if (!rootStruct[currentFolder]) {
-        rootStruct[currentFolder] = {
-          files: [],
-          subfolders: {},
-          isFolder: true,
-        };
-      }
-
-      if (path.length === 1) {
-        return rootStruct[currentFolder];
-      }
-
-      return ensurePath(path.slice(1), rootStruct[currentFolder].subfolders);
-    };
-
-    // Analiza un objeto DriveFile y extrae su estructura de carpetas completa
-    const analyzeFolderStructure = (files: DriveFile[]): FolderStructure => {
-      const structureMap: FolderStructure = {};
-
-      // Función para extraer y normalizar nombres de carpetas
-      const normalizeFolder = (name: string): string => {
-        return name.trim();
-      };
-
-      // Primera pasada: encontrar todas las carpetas y subcarpetas
-      files.forEach((file) => {
-        // Ignorar si el archivo es una carpeta
-        if (file.mimeType === "application/vnd.google-apps.folder") {
-          return;
-        }
-
-        // Extraer todas las posibles indicaciones de carpetas
-        const folderHints: string[] = [];
-
-        // Carpeta principal
-        if (file.folder) {
-          folderHints.push(normalizeFolder(file.folder));
-        }
-
-        // Subcarpeta explícita
-        if (file.subFolder) {
-          folderHints.push(normalizeFolder(file.subFolder));
-        }
-
-        // Carpeta por agrupación o título
-        if (
-          file.groupTitle &&
-          (!file.subFolder || file.groupTitle !== file.subFolder)
-        ) {
-          folderHints.push(normalizeFolder(file.groupTitle));
-        }
-
-        // Buscar pistas adicionales en el nombre del archivo
-        // Por ejemplo, si el nombre tiene una estructura como "prefix-subfolder-name.ext"
-        const nameParts = file.name.split("-");
-        if (nameParts.length > 2) {
-          // Últimas partes podrían ser identificadores de categoría/carpeta
-          // Excluir la extensión si existe
-          const lastPart = nameParts[nameParts.length - 1].split(".")[0].trim();
-          if (lastPart.length > 1 && !folderHints.includes(lastPart)) {
-            // Verificar que no sea solo un número (podría ser un contador)
-            if (isNaN(Number(lastPart))) {
-              folderHints.push(lastPart);
-            }
-          }
-        }
-
-        // Si tenemos al menos una carpeta, registrarla
-        if (folderHints.length > 0) {
-          let currentStructure = structureMap;
-
-          folderHints.forEach((folderName) => {
-            if (!currentStructure[folderName]) {
-              currentStructure[folderName] = {
-                files: [],
-                subfolders: {},
-                isFolder: true,
-              };
-            }
-
-            // Para la siguiente iteración, movernos a la subcarpeta
-            if (folderHints.indexOf(folderName) < folderHints.length - 1) {
-              currentStructure = currentStructure[folderName].subfolders;
-            } else {
-              // Último nivel, agregar el archivo
-              currentStructure[folderName].files.push(file);
-            }
-          });
+      // Filtrar carpetas vacías, incluidas las carpetas "Principal" vacías
+      const filteredStructure: FolderStructure = {};
+      Object.entries(structure).forEach(([folderName, content]) => {
+        if (!isFolderEmpty(content)) {
+          filteredStructure[folderName] = content;
         } else {
-          // Si no tiene carpeta, agregarlo a "Principal"
-          if (!structureMap["Principal"]) {
-            structureMap["Principal"] = {
-              files: [],
-              subfolders: {},
-              isFolder: false,
-            };
-          }
-          structureMap["Principal"].files.push(file);
+          console.log(`Carpeta vacía eliminada: ${folderName}`);
         }
       });
 
-      return structureMap;
-    };
+      console.log("Estructura de carpetas filtrada:", filteredStructure);
+      setFolderStructure(filteredStructure);
 
-    // Construir estructura de carpetas analizando metadatos y patrones
-    const buildFolderStructure = (files: DriveFile[]): FolderStructure => {
-      // Primera aproximación: usar análisis básico
-      const basicStructure = analyzeFolderStructure(files);
+      // Determinar qué tab seleccionar
+      const folderKeys = Object.keys(filteredStructure);
 
-      // Crear una estructura mejorada
-      const enhancedStructure: FolderStructure = {};
-
-      // Colección para registrar todas las posibles carpetas y sus archivos
-      const folderRegistry: {
-        [key: string]: { files: DriveFile[]; path: string[] };
-      } = {};
-
-      // Función para descubrir la estructura completa
-      const discoverFullStructure = () => {
-        // 1. Registrar todas las rutas posibles desde los metadatos de los archivos
-        files.forEach((file) => {
-          if (file.mimeType === "application/vnd.google-apps.folder") return;
-
-          // Extraer pistas sobre la estructura de carpetas
-          const folderPath: string[] = [];
-
-          // Carpeta principal
-          if (file.folder) {
-            folderPath.push(file.folder);
-
-            // Registrar esta carpeta
-            const folderKey = file.folder;
-            if (!folderRegistry[folderKey]) {
-              folderRegistry[folderKey] = { files: [], path: [file.folder] };
-            }
-
-            // Subcarpeta específica
-            if (file.subFolder) {
-              folderPath.push(file.subFolder);
-
-              // Registrar esta subcarpeta
-              const subfolderKey = `${file.folder}/${file.subFolder}`;
-              if (!folderRegistry[subfolderKey]) {
-                folderRegistry[subfolderKey] = {
-                  files: [],
-                  path: [file.folder, file.subFolder],
-                };
-              }
-
-              // Si hay un nivel adicional (subSubFolder)
-              if (file.subSubFolder) {
-                folderPath.push(file.subSubFolder);
-
-                // Registrar esta sub-subcarpeta
-                const subSubfolderKey = `${subfolderKey}/${file.subSubFolder}`;
-                if (!folderRegistry[subSubfolderKey]) {
-                  folderRegistry[subSubfolderKey] = {
-                    files: [],
-                    path: [file.folder, file.subFolder, file.subSubFolder],
-                  };
-                }
-                folderRegistry[subSubfolderKey].files.push(file);
-              }
-              // Si hay una ruta anidada completa
-              else if (file.nestedPath && file.nestedPath.length > 0) {
-                // Usar la ruta anidada completa
-                const fullPath = file.nestedPath.filter(Boolean); // Eliminar valores vacíos
-
-                if (fullPath.length > 0) {
-                  // Construir la clave para esta ruta anidada
-                  const nestedKey = fullPath.join("/");
-
-                  if (!folderRegistry[nestedKey]) {
-                    folderRegistry[nestedKey] = {
-                      files: [],
-                      path: fullPath,
-                    };
-                  }
-
-                  folderRegistry[nestedKey].files.push(file);
-
-                  // Actualizar folderPath para incluir toda la ruta anidada
-                  folderPath.length = 0; // Limpiar el array
-                  folderPath.push(...fullPath);
-                }
-              }
-              // Si hay un groupTitle diferente a subFolder, podría indicar otro nivel
-              else if (file.groupTitle && file.groupTitle !== file.subFolder) {
-                // Si el groupTitle parece una "Story", verificar patrones específicos
-                if (file.groupTitle.includes("Story")) {
-                  // Analizar el contenido para encontrar más pistas sobre la estructura
-                  const extraFolders = findExtraFolders(file);
-                  if (extraFolders.length > 0) {
-                    // Agregar estas subcarpetas adicionales
-                    extraFolders.forEach((extraFolder) => {
-                      folderPath.push(extraFolder);
-
-                      // Registrar esta subcarpeta adicional
-                      const extraKey = `${subfolderKey}/${extraFolder}`;
-                      if (!folderRegistry[extraKey]) {
-                        folderRegistry[extraKey] = {
-                          files: [],
-                          path: [...folderPath],
-                        };
-                      }
-                      folderRegistry[extraKey].files.push(file);
-                    });
-                  } else {
-                    // Si no encontramos subcarpetas adicionales, usar el groupTitle como un nivel
-                    folderPath.push(file.groupTitle);
-
-                    const groupKey = `${subfolderKey}/${file.groupTitle}`;
-                    if (!folderRegistry[groupKey]) {
-                      folderRegistry[groupKey] = {
-                        files: [],
-                        path: [file.folder, file.subFolder, file.groupTitle],
-                      };
-                    }
-                    folderRegistry[groupKey].files.push(file);
-                  }
-                }
-              } else {
-                // Agregar el archivo a esta subcarpeta
-                folderRegistry[subfolderKey].files.push(file);
-              }
-            } else {
-              // No hay subcarpeta específica, agregar a la carpeta principal
-              folderRegistry[folderKey].files.push(file);
-            }
-          } else {
-            // Sin carpeta, agregar a Principal
-            if (!folderRegistry["Principal"]) {
-              folderRegistry["Principal"] = { files: [], path: ["Principal"] };
-            }
-            folderRegistry["Principal"].files.push(file);
-          }
-        });
-
-        // 2. Construir la estructura de carpetas a partir del registro
-        Object.entries(folderRegistry).forEach(([key, data]) => {
-          let currentLevel = enhancedStructure;
-
-          // Crear la ruta completa
-          for (let i = 0; i < data.path.length; i++) {
-            const folderName = data.path[i];
-
-            if (!currentLevel[folderName]) {
-              currentLevel[folderName] = {
-                files: [],
-                subfolders: {},
-                isFolder: folderName !== "Principal",
-              };
-            }
-
-            // Si estamos en el último nivel, agregar los archivos
-            if (i === data.path.length - 1) {
-              // Solo agregar archivos únicos (por ID)
-              const existingIds = new Set(
-                currentLevel[folderName].files.map((f) => f.id)
-              );
-              data.files.forEach((file) => {
-                if (!existingIds.has(file.id)) {
-                  currentLevel[folderName].files.push(file);
-                  existingIds.add(file.id);
-                }
-              });
-            } else {
-              // No es el último nivel, seguir navegando
-              currentLevel = currentLevel[folderName].subfolders;
-            }
-          }
-        });
-      };
-
-      // Función para encontrar subcarpetas adicionales basadas en patrones en los datos del archivo
-      const findExtraFolders = (file: DriveFile): string[] => {
-        const extraFolders: string[] = [];
-
-        // Estrategia completamente dinámica para detectar subcarpetas
-        const possibleFolderSources = [
-          // Verificar si hay información en campos de metadatos
-          file.category,
-
-          // Verificar información de subcarpetas anidadas
-          file.subSubFolder,
-
-          // Si hay una ruta anidada, usar todos sus componentes
-          ...(file.nestedPath || []),
-
-          // Verificar si hay información en el nombre que podría indicar una subcarpeta
-          // Dividir por delimitadores comunes
-          ...file.name.split(/[-_\.]/),
-
-          // Si hay algún tag o etiqueta en el nombre entre paréntesis
-          ...(file.name.match(/\(([^)]+)\)/g) || []).map((m) =>
-            m.replace(/[()]/g, "")
-          ),
-        ].filter(Boolean); // Eliminar valores undefined/null/empty
-
-        // Filtrar candidatos válidos para carpetas (evitar valores muy largos o muy cortos)
-        possibleFolderSources.forEach((folderCandidate) => {
-          if (typeof folderCandidate === "string") {
-            const normalized = folderCandidate.trim();
-            // Considerar como posible subcarpeta si tiene longitud razonable (no muy corta ni muy larga)
-            if (normalized.length >= 2 && normalized.length <= 20) {
-              // Evitar incluir extensiones de archivo comunes
-              if (!/\.(jpg|jpeg|png|gif|pdf|doc|mp4|mov)$/i.test(normalized)) {
-                // Evitar números solos
-                if (!/^\d+$/.test(normalized)) {
-                  extraFolders.push(normalized);
-                }
-              }
-            }
-          }
-        });
-
-        return extraFolders;
-      };
-
-      // Ejecutar el descubrimiento completo
-      discoverFullStructure();
-
-      // Si no hay una estructura mejorada, usar la básica
-      if (Object.keys(enhancedStructure).length === 0) {
-        return basicStructure;
+      // Si hay un tab seleccionado y existe, usarlo
+      if (selectedTab && filteredStructure[selectedTab]) {
+        setActiveTab(selectedTab);
       }
-
-      // Verificar estructuras faltantes e inferir de forma dinámica
-      const inferMissingStructures = () => {
-        // Recorrer todas las carpetas principales
-        Object.keys(enhancedStructure).forEach((mainFolder) => {
-          const mainFolderObj = enhancedStructure[mainFolder];
-          const subfolders = Object.keys(mainFolderObj.subfolders);
-
-          // Si hay subfolderes, buscar patrones similares
-          if (subfolders.length > 1) {
-            // Agrupar subfolderes por patrones similares
-            const folderGroups: { [pattern: string]: string[] } = {};
-
-            subfolders.forEach((subfolder) => {
-              // Detectar patrones como "prefijo + número" (ej: "Story 1", "Story 2")
-              const match = subfolder.match(/^(.*?)(\d+)(.*)$/);
-
-              if (match) {
-                // Extraer el patrón común
-                const [_, prefix, number, suffix] = match;
-                const pattern = `${prefix}#${suffix}`;
-
-                if (!folderGroups[pattern]) {
-                  folderGroups[pattern] = [];
-                }
-                folderGroups[pattern].push(subfolder);
-              }
-            });
-
-            // Para cada grupo de patrones similares, buscar subcarpetas y estructuras similares
-            Object.entries(folderGroups).forEach(
-              ([pattern, matchingFolders]) => {
-                if (matchingFolders.length >= 2) {
-                  // Ordenar las carpetas por número
-                  matchingFolders.sort((a, b) => {
-                    const numA = parseInt(a.match(/\d+/)?.[0] || "0");
-                    const numB = parseInt(b.match(/\d+/)?.[0] || "0");
-                    return numA - numB;
-                  });
-
-                  // Buscar cualquier número faltante en la secuencia
-                  for (let i = 0; i < matchingFolders.length - 1; i++) {
-                    const current = parseInt(
-                      matchingFolders[i].match(/\d+/)?.[0] || "0"
-                    );
-                    const next = parseInt(
-                      matchingFolders[i + 1].match(/\d+/)?.[0] || "0"
-                    );
-
-                    // Si hay un hueco en la secuencia, crear carpetas intermedias
-                    if (next - current > 1) {
-                      for (
-                        let missing = current + 1;
-                        missing < next;
-                        missing++
-                      ) {
-                        // Crear el nombre para la carpeta faltante
-                        const missingName = pattern.replace(
-                          "#",
-                          missing.toString()
-                        );
-
-                        // Si esta carpeta no existe, crearla con la misma estructura que sus similares
-                        if (!mainFolderObj.subfolders[missingName]) {
-                          // Usar la estructura de la carpeta existente con el número más bajo como plantilla
-                          const templateFolder =
-                            mainFolderObj.subfolders[matchingFolders[0]];
-
-                          // Crear carpeta con la misma estructura
-                          mainFolderObj.subfolders[missingName] = {
-                            files: [],
-                            subfolders: {},
-                            isFolder: true,
-                          };
-
-                          // Copiar estructura de subcarpetas de forma recursiva
-                          const copySubfolderStructure = (
-                            source: FolderContent,
-                            target: FolderContent
-                          ) => {
-                            Object.keys(source.subfolders).forEach(
-                              (subfolder) => {
-                                target.subfolders[subfolder] = {
-                                  files: [],
-                                  subfolders: {},
-                                  isFolder: true,
-                                };
-
-                                // Recursión para niveles más profundos
-                                copySubfolderStructure(
-                                  source.subfolders[subfolder],
-                                  target.subfolders[subfolder]
-                                );
-                              }
-                            );
-                          };
-
-                          // Copiar la estructura de subcarpetas
-                          copySubfolderStructure(
-                            templateFolder,
-                            mainFolderObj.subfolders[missingName]
-                          );
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            );
-          }
-        });
-      };
-
-      // Ejecutar la inferencia de estructuras faltantes
-      inferMissingStructures();
-
-      return enhancedStructure;
-    };
-
-    // Primera pasada: registrar las carpetas
-    files.forEach((file) => {
-      if (file.folder) {
-        const path = [file.folder];
-
-        if (file.subFolder) {
-          path.push(file.subFolder);
-        }
-
-        // Si existe alguna ruta, asegurar que exista la estructura
-        if (path.length > 0) {
-          ensurePath(path);
-        }
+      // Si hay una carpeta "Principal" no vacía, seleccionarla
+      else if (filteredStructure["Principal"]) {
+        setActiveTab("Principal");
       }
-    });
-
-    // Usar el sistema mejorado para construir la estructura final
-    return buildFolderStructure(files);
-  };
+      // De lo contrario, usar la primera carpeta disponible
+      else if (folderKeys.length > 0) {
+        setActiveTab(folderKeys[0]);
+      }
+    } else {
+      // Si no hay archivos, establecer una estructura vacía
+      setFolderStructure({});
+    }
+  }, [files, selectedTab]);
 
   // Función para mostrar/ocultar depuración
   const toggleDebug = () => {
@@ -683,7 +712,49 @@ export function DriveTabsCardGrid({
   if (Object.keys(folderStructure).length === 0) {
     return (
       <div className='my-8 text-center text-muted-foreground'>
-        Organizando archivos...
+        No se encontraron archivos para mostrar
+      </div>
+    );
+  }
+
+  // ID único para el componente de tabs principal
+  const mainTabsId = "main-tabs";
+
+  // Si solo hay una carpeta, mostrar su contenido directamente sin tabs
+  if (Object.keys(folderStructure).length === 1) {
+    const folderName = Object.keys(folderStructure)[0];
+    const folderContent = folderStructure[folderName];
+
+    return (
+      <div className='w-full'>
+        {/* Botón de depuración (solo en desarrollo) */}
+        {process.env.NODE_ENV !== "production" && (
+          <button
+            onClick={toggleDebug}
+            className='mb-4 px-3 py-1 bg-muted text-muted-foreground text-xs rounded'
+          >
+            {debug ? "Ocultar Debug" : "Mostrar Debug"}
+          </button>
+        )}
+
+        {/* Información de depuración */}
+        {debug && (
+          <div className='mb-6 p-4 bg-muted text-xs overflow-auto max-h-60 rounded'>
+            <pre>{JSON.stringify(folderStructure, null, 2)}</pre>
+          </div>
+        )}
+
+        <h2 className='text-center text-2xl font-semibold mb-6'>
+          {folderName}
+        </h2>
+
+        {/* Renderizar usando el componente recursivo */}
+        <FolderTabs
+          folderContent={folderContent}
+          folderName={folderName}
+          level={0}
+          onPreviewClick={onPreviewClick}
+        />
       </div>
     );
   }
@@ -709,6 +780,7 @@ export function DriveTabsCardGrid({
 
       {/* Pestañas principales para carpetas */}
       <Tabs
+        id={mainTabsId}
         defaultValue={activeTab}
         value={activeTab}
         onValueChange={setActiveTab}
@@ -718,16 +790,11 @@ export function DriveTabsCardGrid({
           <TabsList className='[&>[data-state=active]]:bg-[#B9F264] [&>[data-state=active]]:font-semibold rounded-none flex flex-wrap h-full bg-transparent'>
             {Object.keys(folderStructure).map((folderName) => (
               <TabsTrigger
-                key={`tab-${folderName}`}
+                key={`${mainTabsId}-tab-${folderName}`}
                 value={folderName}
                 className='rounded-none bg-zinc-700 text-white border-none data-[state=active]:bg-[#B9F264] data-[state=active]:text-black'
               >
                 <span className='flex items-center gap-2'>
-                  {folderStructure[folderName].isFolder ? (
-                    <FolderIcon className='h-4 w-4' />
-                  ) : (
-                    <FileIcon className='h-4 w-4' />
-                  )}
                   <span>{folderName}</span>
                 </span>
               </TabsTrigger>
@@ -738,7 +805,7 @@ export function DriveTabsCardGrid({
         {/* Contenido para cada carpeta principal */}
         {Object.entries(folderStructure).map(([folderName, folderContent]) => (
           <TabsContent
-            key={`tab-content-${folderName}`}
+            key={`${mainTabsId}-content-${folderName}`}
             value={folderName}
             className='mt-6'
           >

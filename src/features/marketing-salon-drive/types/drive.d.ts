@@ -6,6 +6,9 @@ export interface DriveFile {
   thumbnailLink?: string;
   parents?: string[];
   description?: string;
+  year?: string;
+  campaign?: string;
+  client?: string;
   folder?: string;
   subFolder?: string;
   subSubFolder?: string;
@@ -24,6 +27,9 @@ export interface DriveFolder {
   isFolder?: boolean;
   subfoldersIds?: string[];
   parentFolder?: string;
+  year?: string;
+  campaign?: string;
+  client?: string;
 }
 
 export interface GoogleDriveLinks {

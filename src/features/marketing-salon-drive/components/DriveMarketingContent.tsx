@@ -8,14 +8,14 @@ import { useState } from "react";
 
 export function DriveMarketingContent() {
   const searchParams = useSearchParams();
-  const client = searchParams?.get("client") ?? "insiders";
   const year = searchParams?.get("year") ?? new Date().getFullYear().toString();
-  const month = searchParams?.get("month") ?? "january";
+  const campaign = searchParams?.get("campaign") ?? "january";
+  const client = searchParams?.get("client") || undefined;
 
   // Estado para mostrar detalles técnicos de errores
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
-  const { data, isLoading, error } = useDriveCards(client, year, month);
+  const { data, isLoading, error } = useDriveCards(year, campaign, client);
 
   if (isLoading) {
     return (
@@ -26,7 +26,6 @@ export function DriveMarketingContent() {
   }
 
   if (error) {
-    // Determinar el tipo de error para mostrar mensajes amigables
     let errorMessage = "Error cargando el contenido";
     let errorDetails = error instanceof Error ? error.message : String(error);
     let suggestedAction = "";
@@ -36,10 +35,9 @@ export function DriveMarketingContent() {
       suggestedAction =
         "Por favor, contacta al administrador para verificar la configuración del servidor.";
     } else if (errorDetails.includes("Carpeta no encontrada:")) {
-      // Usar el mensaje mejorado que ya incluye la parte específica que falló
       errorMessage = errorDetails;
       suggestedAction =
-        "Verifica que la carpeta exista en Google Drive con la estructura: [cliente]/[año]/[mes]. La carpeta marketing-salon no debe estar incluida en la ruta.";
+        "Verifica que la carpeta exista en Google Drive con la estructura: [año]/[campaña]/[cliente]. El cliente es opcional.";
     } else if (errorDetails.includes("Authentication")) {
       errorMessage = "Error de autenticación con Google Drive";
       suggestedAction =
@@ -140,7 +138,8 @@ export function DriveMarketingContent() {
               </h3>
             </div>
             <p className='text-sm text-yellow-600'>
-              No se encontraron archivos en la carpeta: {client}/{year}/{month}
+              No se encontraron archivos en la carpeta: {year}/{campaign}
+              {client ? `/${client}` : ""}
             </p>
           </div>
         </div>

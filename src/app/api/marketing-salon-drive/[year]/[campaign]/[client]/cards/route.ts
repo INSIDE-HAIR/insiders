@@ -6,18 +6,18 @@ export async function GET(
   {
     params,
   }: {
-    params: { client: string; year: string; month: string };
+    params: { client?: string; year: string; campaign: string };
   }
 ) {
-  const { client, year, month } = params;
+  const { client, year, campaign } = params;
 
   try {
     // Validar parámetros de entrada
-    if (!client || !year || !month) {
+    if (!year || !campaign) {
       return NextResponse.json(
         {
           error: "Missing required parameters",
-          details: { client, year, month },
+          details: { year, campaign },
         },
         { status: 400 }
       );
@@ -26,7 +26,9 @@ export async function GET(
     const driveService = new GoogleDriveService();
 
     // Construir la ruta de la carpeta en Drive
-    const folderPath = `${client}/${year}/${month}`;
+    const folderPath = client
+      ? `${year}/${campaign}/${client}`
+      : `${year}/${campaign}`;
 
     // Obtener archivos con estructura de carpetas completa
     const files = await driveService.getFiles(folderPath);
@@ -111,7 +113,9 @@ export async function GET(
     // Determinar código de estado según el tipo de error
     let statusCode = 500;
     let errorMessage = "Failed to fetch files from Drive";
-    let detailedPath = `${client}/${year}/${month}`;
+    let detailedPath = client
+      ? `${year}/${campaign}/${client}`
+      : `${year}/${campaign}`;
 
     if (error instanceof Error) {
       // Errores específicos de navegación de carpetas

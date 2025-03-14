@@ -454,17 +454,8 @@ export class GoogleDriveService {
     rootFolderId: string
   ): Promise<DriveFile[]> {
     try {
-      // Obtener archivos que no son carpetas
-      const nonFolderFiles = files.filter(
-        (file) => file.mimeType !== "application/vnd.google-apps.folder"
-      );
-
-      console.log(
-        `Organizando ${nonFolderFiles.length} archivos (excluyendo carpetas)`
-      );
-
-      // Asignar información de categoría, grupo y carpeta
-      const processedFiles = nonFolderFiles.map((file) => {
+      // Procesar cada archivo para añadir metadatos
+      const processedFiles = files.map((file) => {
         // Extraer información del nombre del archivo
         const fileInfo = this.parseFileName(file.name);
 
@@ -486,6 +477,25 @@ export class GoogleDriveService {
               folder = parentFolder.parentFolder;
             }
           }
+        }
+
+        // Determinar year y campaign basados en la estructura de carpetas
+        let year = "";
+        let campaign = "";
+
+        // Si el archivo tiene una ruta anidada, usarla para determinar year y campaign
+        if ((file as any).nestedPath && (file as any).nestedPath.length > 0) {
+          const path = (file as any).nestedPath;
+          // El primer nivel es el año
+          year = path[0];
+          // El segundo nivel es la campaña
+          if (path.length > 1) {
+            campaign = path[1];
+          }
+        } else {
+          // Si no hay ruta anidada, usar folder y subFolder
+          year = folder;
+          campaign = subFolder;
         }
 
         // Tratar de asignar o inferir un groupTitle
@@ -526,6 +536,8 @@ export class GoogleDriveService {
           groupTitle: groupTitle,
           order: fileInfo.order || 0,
           folder: folder,
+          year: year,
+          campaign: campaign,
           transformedUrl,
         };
       });
