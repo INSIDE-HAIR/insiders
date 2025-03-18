@@ -1,0 +1,101 @@
+{
+  "success": true,
+  "data": {
+    "folders": [
+      {
+        "id": "1jeP4IVe5vkU-gyw3bAvhjW1s1yO5EIF3",
+        "name": "insiders",
+        "path": "/2025/january/insiders",
+        "parents": [
+          "1XyHL2Ch4URwxAyThrVcqz0HcTxShBztz"
+        ],
+        "type": "campaign",
+        "level": 2
+      }
+    ],
+    "hierarchyComplete": true,
+    "yearFolders": [
+      {
+        "id": "1vCVGrno2PNBZGO_3sPNf4AGpA0cbWcvL",
+        "name": "2025",
+        "path": "/2025",
+        "type": "year",
+        "level": 0
+      },
+      {
+        "id": "1_2Qbp4_xfjokenVP_BgA6E-rw1bTlz5v",
+        "name": "01_year_2025",
+        "path": "/01_year_2025",
+        "type": "year",
+        "level": 0
+      }
+    ],
+    "clientFolders": [
+      {
+        "id": "1XyHL2Ch4URwxAyThrVcqz0HcTxShBztz",
+        "name": "january",
+        "path": "/2025/january",
+        "parents": [
+          "1vCVGrno2PNBZGO_3sPNf4AGpA0cbWcvL"
+        ],
+        "type": "client",
+        "level": 1
+      },
+      {
+        "id": "1ArwU7f8YtXZsZBbYGGfgDdGep_VDx0Vp",
+        "name": "01_campaign_Prueba de Luis",
+        "path": "/01_year_2025/01_campaign_Prueba de Luis",
+        "parents": [
+          "1_2Qbp4_xfjokenVP_BgA6E-rw1bTlz5v"
+        ],
+        "type": "client",
+        "level": 1
+      },
+      {
+        "id": "1s-FQoLPWz6NjkmLZUO4rPvvcJhpaSaII",
+        "name": "03_campaign_Marzo",
+        "path": "/01_year_2025/03_campaign_Marzo",
+        "parents": [
+          "1_2Qbp4_xfjokenVP_BgA6E-rw1bTlz5v"
+        ],
+        "type": "client",
+        "level": 1
+      }
+    ],
+    "campaignFolders": [
+      {
+        "id": "1jeP4IVe5vkU-gyw3bAvhjW1s1yO5EIF3",
+        "name": "insiders",
+        "path": "/2025/january/insiders",
+        "parents": [
+          "1XyHL2Ch4URwxAyThrVcqz0HcTxShBztz"
+        ],
+        "type": "campaign",
+        "level": 2
+      },
+      {
+        "id": "1uksAN7jXW_xhNcLhKP2EIBZGDS8QJqmF",
+        "name": "01_client_INSIDERS",
+        "path": "/01_year_2025/03_campaign_Marzo/01_client_INSIDERS",
+        "parents": [
+          "1s-FQoLPWz6NjkmLZUO4rPvvcJhpaSaII"
+        ],
+        "type": "campaign",
+        "level": 2
+      }
+    ]
+  },
+  "metadata": {
+    "folderCount": 1,
+    "fileCount": 0,
+    "yearCount": 2,
+    "clientCount": 3,
+    "campaignCount": 2,
+    "timestamp": "2025-03-17T19:41:17.991Z",
+    "params": {
+      "folderPath": "1XyHL2Ch4URwxAyThrVcqz0HcTxShBztz",
+      "includeFiles": false,
+      "folderType": "campaign"
+    }
+  }
+}

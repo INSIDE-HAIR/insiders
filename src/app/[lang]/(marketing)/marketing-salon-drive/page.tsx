@@ -13,6 +13,15 @@ export default function MarketingSalonDrivePage() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Check if we have a direct folderId parameter first
+    const folderId = searchParams?.get("folderId");
+
+    // If we have a direct folderId, no need to enforce the year/campaign parameters
+    if (folderId) {
+      return; // Skip the redirect logic for direct folder ID access
+    }
+
+    // Backward compatibility: handle year/campaign/client parameters
     // Obtener los parámetros actuales o usar valores por defecto
     const year =
       searchParams?.get("year") ?? new Date().getFullYear().toString();
@@ -39,9 +48,16 @@ export default function MarketingSalonDrivePage() {
     }
   }, [searchParams, router, pathname]);
 
+  // Pass all parameters to the DriveMarketingContent component,
+  // including the possible folderId for direct access
   return (
     <QueryClientProvider client={queryClient}>
-      <DriveMarketingContent />
+      <DriveMarketingContent
+        folderId={searchParams?.get("folderId") || undefined}
+        year={searchParams?.get("year") || undefined}
+        campaign={searchParams?.get("campaign") || undefined}
+        client={searchParams?.get("client") || undefined}
+      />
     </QueryClientProvider>
   );
 }
