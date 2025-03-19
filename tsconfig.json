@@ -26,6 +26,18 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@drive/*": [
+        "./src/features/drive/*"
+      ],
+      "@drive-components/*": [
+        "./src/app/[lang]/(marketing)/drive/components/*"
+      ],
+      "@ui/*": [
+        "./src/components/ui/*"
       ]
     }
   },

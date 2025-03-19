@@ -5,7 +5,8 @@ import Github from "next-auth/providers/github"; // Importa el proveedor de aute
 import Google from "next-auth/providers/google"; // Importa el proveedor de autenticación de Google
 
 import { LoginSchema } from "@/src/types/inside-schemas"; // Importa el esquema de validación para el login
-import { getUserByEmail } from "@/prisma/query/user"; // Importa la función para obtener un usuario por email
+import prisma from "@/prisma/database";
+import { Group, Resource, Tag } from "@prisma/client";
 
 // Exporta la configuración de NextAuth
 export default {
@@ -22,23 +23,36 @@ export default {
     }),
     // Configuración del proveedor de credenciales
     Credentials({
-      async authorize(credentials) {
-        // Valida las credenciales usando el esquema de login
+      async authorize(credentials, request) {
         const validatedFields = LoginSchema.safeParse(credentials);
 
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data; // Extrae email y contraseña de las credenciales
+          const { email, password } = validatedFields.data;
 
-          const user = await getUserByEmail(email); // Obtiene el usuario por email
-          if (!user || !user.password) return null; // Si no existe el usuario o no tiene contraseña, retorna null
+          const user = await prisma.user.findUnique({
+            where: { email },
+            include: {
+              groups: true,
+              tags: true,
+              resources: true,
+            },
+          });
 
-          // Compara la contraseña ingresada con la almacenada
+          if (!user || !user.password) return null;
+
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
-          if (passwordsMatch) return user; // Si las contraseñas coinciden, retorna el usuario
+          if (passwordsMatch) {
+            return {
+              ...user,
+              isOAuth: false,
+              groups: user.groups.map((g: Group) => g.name),
+              tags: user.tags.map((t: Tag) => t.name),
+              resources: user.resources.map((r: Resource) => r.name),
+            };
+          }
         }
-
-        return null; // Si la validación falla, retorna null
+        return null;
       },
     }),
   ],

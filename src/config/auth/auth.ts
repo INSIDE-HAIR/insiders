@@ -91,28 +91,34 @@ export const {
         email: { label: "UserEmail", type: "email", placeholder: "your email" }, // Campo de email
         password: { label: "Password", type: "password" }, // Campo de contraseña
       },
-      async authorize(credentials) {
-        // Lógica para autorizar al usuario con credenciales
-        const validatedFields = CredentialSigninSchema.safeParse(credentials); // Valida las credenciales
+      async authorize(credentials, request) {
+        const validatedFields = CredentialSigninSchema.safeParse(credentials);
 
         if (validatedFields.success) {
-          const { email, password } = validatedFields.data; // Extrae email y contraseña
-          const user = await prisma.user.findUnique({ where: { email } }); // Busca el usuario en la base de datos
+          const { email, password } = validatedFields.data;
+          const user = await prisma.user.findUnique({ where: { email } });
 
           if (!user || !user.password) {
-            return null; // Retorna null si no existe el usuario o no tiene contraseña
+            return null;
           }
 
-          const passwordMatch = await bcrypt.compare(password, user.password); // Compara la contraseña ingresada con la almacenada
+          const passwordMatch = await bcrypt.compare(password, user.password);
           if (passwordMatch) {
             await prisma.user.update({
               where: { id: user.id },
-              data: { lastLogin: new Date() }, // Actualiza la fecha del último inicio de sesión
+              data: { lastLogin: new Date() },
             });
-            return user; // Retorna el usuario si las contraseñas coinciden
+
+            return {
+              ...user,
+              isOAuth: false,
+              groups: [],
+              tags: [],
+              resources: [],
+            };
           }
         }
-        return null; // Retorna null si la validación falla
+        return null;
       },
     }),
     Resend({
@@ -184,12 +190,11 @@ export const {
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Callback al iniciar sesión
       console.log("callback signIn", { user, account, profile });
 
       if (account?.provider !== "credentials") {
         let existingUser = await prisma.user.findUnique({
-          where: { email: user.email ?? "" }, // Busca el usuario por email
+          where: { email: user.email ?? "" },
         });
 
         if (existingUser) {
@@ -215,14 +220,24 @@ export const {
                 id_token: account?.id_token,
                 session_state: account?.session_state?.toString() ?? "",
               },
-            }); // Crea una nueva cuenta si no existe
+            });
+          } else {
+            // Update existing account with new tokens
+            await prisma.account.update({
+              where: { id: existingAccount.id },
+              data: {
+                access_token: account?.access_token,
+                refresh_token: account?.refresh_token,
+                expires_at: account?.expires_at,
+              },
+            });
           }
 
           await prisma.user.update({
             where: { id: existingUser.id },
             data: {
-              lastLogin: new Date(), // Actualiza la fecha del último inicio de sesión
-              image: user.image || existingUser.image, // Actualiza la imagen del usuario
+              lastLogin: new Date(),
+              image: user.image || existingUser.image,
             },
           });
         } else {
@@ -231,31 +246,27 @@ export const {
               name: user.name,
               email: user?.email ?? "",
               image: user.image,
-              emailVerified: user.emailVerified ?? new Date(), // Verifica el email
-              lastLogin: new Date(), // Establece la fecha del último inicio de sesión
+              emailVerified: user.emailVerified ?? new Date(),
+              lastLogin: new Date(),
               accounts: {
-                createMany: {
-                  data: [
-                    {
-                      type: account?.type || "",
-                      provider: account?.provider || "",
-                      providerAccountId: account?.providerAccountId || "",
-                      refresh_token: account?.refresh_token,
-                      access_token: account?.access_token,
-                      expires_at: account?.expires_at,
-                      token_type: account?.token_type,
-                      scope: account?.scope,
-                      id_token: account?.id_token,
-                      session_state: account?.session_state?.toString() ?? "",
-                    },
-                  ],
+                create: {
+                  type: account?.type || "",
+                  provider: account?.provider || "",
+                  providerAccountId: account?.providerAccountId || "",
+                  refresh_token: account?.refresh_token,
+                  access_token: account?.access_token,
+                  expires_at: account?.expires_at,
+                  token_type: account?.token_type,
+                  scope: account?.scope,
+                  id_token: account?.id_token,
+                  session_state: account?.session_state?.toString() ?? "",
                 },
               },
             },
-          }); // Crea un nuevo usuario si no existe
+          });
         }
 
-        return true; // Retorna true si el inicio de sesión es exitoso
+        return true;
       }
 
       const userId = user.id;
@@ -289,63 +300,82 @@ export const {
 
       return true; // Retorna true si el inicio de sesión es exitoso
     },
-    async jwt({ token, user }) {
-      // Callback para manejar el JWT
-      if (!token.sub) return token; // Retorna el token si no tiene sub
+    async jwt({ token, user, account }) {
+      if (account && account.access_token) {
+        token.accessToken = account.access_token;
+      }
+
+      if (!token.sub) return token;
 
       const existingUser = await prisma.user.findUnique({
-        where: { id: token.sub }, // Busca el usuario por ID
+        where: { id: token.sub },
       });
 
-      if (!existingUser) return token; // Retorna el token si el usuario no existe
+      if (!existingUser) return token;
+
+      // Get the most recent Google account
+      const googleAccount = await prisma.account.findFirst({
+        where: {
+          userId: existingUser.id,
+          provider: "google",
+        },
+        orderBy: {
+          expires_at: "desc",
+        },
+      });
+
+      if (googleAccount?.access_token) {
+        token.accessToken = googleAccount.access_token;
+      }
 
       const existingAccount = await prisma.account.findFirst({
-        where: { userId: existingUser.id }, // Busca la cuenta del usuario
+        where: { userId: existingUser.id },
       });
 
-      token.isOAuth = !!existingAccount; // Establece si el usuario tiene una cuenta OAuth
-      token.name = existingUser.name; // Establece el nombre del usuario
-      token.email = existingUser.email; // Establece el email del usuario
-      token.role = existingUser.role; // Establece el rol del usuario
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled; // Establece si el usuario tiene habilitado el 2FA
+      token.isOAuth = !!existingAccount;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
       const userWithRelations = await prisma.user.findUnique({
         where: { id: existingUser.id },
-        include: { groups: true, tags: true, resources: true }, // Incluye relaciones del usuario
+        include: { groups: true, tags: true, resources: true },
       });
 
-      token.groups = userWithRelations?.groups.map((g) => g.name) || []; // Establece los grupos del usuario
-      token.tags = userWithRelations?.tags.map((t) => t.name) || []; // Establece las etiquetas del usuario
-      token.resources = userWithRelations?.resources.map((sr) => sr.name) || []; // Establece los recursos del usuario
+      token.groups = userWithRelations?.groups.map((g) => g.name) || [];
+      token.tags = userWithRelations?.tags.map((t) => t.name) || [];
+      token.resources = userWithRelations?.resources.map((sr) => sr.name) || [];
 
-      return token; // Retorna el token actualizado
+      return token;
     },
     //@ts-expect-error
     async session({ session, token }) {
-      // Callback para manejar la sesión
       if (token.sub && session.user) {
-        session.user.id = token.sub; // Establece el ID del usuario en la sesión
+        session.user.id = token.sub;
       }
 
       if (session.user) {
-        session.user.role = token.role as UserRole; // Establece el rol del usuario en la sesión
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean; // Establece si el usuario tiene habilitado el 2FA
-        session.user.name = token.name as string; // Establece el nombre del usuario en la sesión
-        session.user.email = token.email as string; // Establece el email del usuario en la sesión
-        session.user.isOAuth = token.isOAuth as boolean; // Establece si el usuario tiene una cuenta OAuth
-        session.user.groups = token.groups as string[]; // Establece los grupos del usuario en la sesión
-        session.user.tags = token.tags as string[]; // Establece las etiquetas del usuario en la sesión
-        session.user.resources = token.resources as string[]; // Establece los recursos del usuario en la sesión
+        session.user.role = token.role as UserRole;
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.isOAuth = token.isOAuth as boolean;
+        session.user.groups = token.groups as string[];
+        session.user.tags = token.tags as string[];
+        session.user.resources = token.resources as string[];
+        session.user.accessToken = token.accessToken as string;
       }
 
       const userExists = await prisma.user.findUnique({
-        where: { id: token.sub }, // Verifica si el usuario existe
+        where: { id: token.sub },
       });
 
       if (!userExists) {
-        return null; // Retorna null si el usuario no existe
+        return null;
       }
-      return session; // Retorna la sesión actualizada
+
+      return session;
     },
   },
 });
