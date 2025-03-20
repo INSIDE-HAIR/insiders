@@ -2725,8 +2725,8 @@
           "type": "button",
           "classType": "default",
           "title": "Enlace de formulario",
-          "url": "",
-          "active": false,
+          "url": "https://docs.google.com/forms/d/e/1FAIpQLScZ2Eh4h0GXBDvHGmuYIQ7DXwdvW9999nJdksoXoTkvumyc_Q/viewform?usp=header",
+          "active": true,
           "available": {
             "startDateTime": "",
             "endDateTime": ""
