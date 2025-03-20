@@ -3343,7 +3343,7 @@
                   "id": "cardList1",
                   "order": 1,
                   "type": "tabsCardsList",
-                  "childrensCode": ["0032", "0880"],
+                  "childrensCode": ["0032", "0880", "0420"],
                   "title": "Novedades",
                   "content": [],
                   "active": true,
