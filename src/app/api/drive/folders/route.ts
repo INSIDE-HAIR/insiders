@@ -29,9 +29,15 @@ export async function GET(request: NextRequest) {
     // Obtener las carpetas
     const folders = await driveService.getFolders(rootFolderId);
 
+    // Asegurar que todas las carpetas tengan description como string
+    const processedFolders = folders.map((folder) => {
+      folder.description = folder.description || "";
+      return folder;
+    });
+
     logger.info(`Obtenidas ${folders.length} carpetas`);
 
-    return NextResponse.json(folders);
+    return NextResponse.json(processedFolders);
   } catch (error: any) {
     logger.error("Error al listar carpetas", error);
     return NextResponse.json(

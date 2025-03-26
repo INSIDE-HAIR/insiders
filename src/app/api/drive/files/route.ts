@@ -67,6 +67,9 @@ export async function GET(request: NextRequest) {
 
     // Analizar tipos de archivos
     const filesWithTypeInfo = files.map((file) => {
+      // Asegurar que description sea al menos un string vacío
+      file.description = file.description || "";
+
       const fileItem: FileItem = {
         ...file,
         size: file.size?.toString(),
