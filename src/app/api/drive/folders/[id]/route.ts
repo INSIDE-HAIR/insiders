@@ -38,6 +38,9 @@ export async function GET(
       );
     }
 
+    // Asegurar que description sea al menos un string vacío
+    folder.description = folder.description || "";
+
     // Obtener contenido de la carpeta
     const contents = await driveService.getFolderContents(folderId);
 
