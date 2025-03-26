@@ -48,6 +48,9 @@ export async function GET(
       );
     }
 
+    // Asegurar que description sea al menos un string vacío
+    file.description = file.description || "";
+
     // Analizar el tipo de archivo
     const fileItem: FileItem = {
       ...file,

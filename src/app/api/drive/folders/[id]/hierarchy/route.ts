@@ -27,7 +27,7 @@ async function buildHierarchyItem(
     name: item.name,
     originalName: item.name,
     displayName,
-    description: item.description,
+    description: item.description || "",
     driveType: driveService.isFolder(item) ? DriveType.FOLDER : DriveType.FILE,
     depth,
     prefixes,

@@ -47,6 +47,7 @@ export interface DriveFile {
   parents?: string[];
   webViewLink?: string;
   thumbnailLink?: string;
+  description?: string; // Descripción del archivo
 
   // Campos agregados
   driveType: DriveType.FILE;
@@ -79,6 +80,7 @@ export interface DriveFolder {
   displayName: string;
   mimeType: "application/vnd.google-apps.folder";
   parents?: string[];
+  description?: string; // Descripción de la carpeta
 
   // Campos agregados
   driveType: DriveType.FOLDER;
