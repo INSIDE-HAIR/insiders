@@ -39,8 +39,8 @@ async function buildHierarchyItem(
     children: [],
     transformedUrl: {
       download: `https://drive.google.com/uc?id=${item.id}&export=download`,
-      preview: `https://drive.google.com/file/d/${item.id}/view?usp=drivesdk`,
-      embed: `https://lh3.googleusercontent.com/d/${item.id}`,
+      embed: `https://drive.google.com/file/d/${item.id}/view?usp=drivesdk`,
+      preview: `https://lh3.googleusercontent.com/d/${item.id}`,
     },
   };
 
