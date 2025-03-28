@@ -12,6 +12,9 @@ Este proyecto implementa un sistema moderno y flexible para acceder, explorar y 
 - **Gestión automática** de metadatos asociados a archivos
 - **Visualización optimizada** según tipos de archivos (imágenes, documentos, vídeos)
 - **Interfaz moderna** con gestión de estados de carga y manejo de errores
+- **Gestión de previewItems** para archivos relacionados y portadas
+- **Soporte para archivos distribuidos** en diferentes carpetas
+- **Ordenamiento automático** de previewItems basado en patrones
 
 ## Fundamentos Técnicos
 
@@ -99,6 +102,7 @@ El sistema distingue claramente entre dos conceptos:
 - [✅] Implementar `HierarchyService.ts` para construir árboles jerárquicos
 - [✅] Desarrollar algoritmo de asignación padre-hijo
 - [✅] Implementar ordenamiento basado en prefijos numéricos
+- [✅] Implementar sistema de previewItems para archivos relacionados
 - [✅] **Tests**: Construcción y ordenamiento de jerarquías
 - [✅] **Frontend**: No hay entregables visuales en esta fase
 
@@ -107,6 +111,7 @@ El sistema distingue claramente entre dos conceptos:
 - [✅] Implementar procesamiento de archivos con sufijo `_copy`
 - [✅] Desarrollar extractor de información de archivos auxiliares
 - [✅] Integrar metadatos a elementos principales
+- [✅] Implementar procesamiento de previewItems y portadas
 - [✅] **Tests**: Procesamiento de metadatos y archivos asociados
 - [✅] **Frontend**: No hay entregables visuales en esta fase
 
@@ -306,6 +311,15 @@ El sistema distingue claramente entre dos conceptos:
 - [🔄] Crear ejemplos de uso para desarrolladores
 - [🔄] **Tests**: Validación de documentación en progreso
 - [🔄] **Frontend**: Documentación en desarrollo
+
+#### Ticket 7.4: Sistema de Previsualización (Nuevo)
+
+- [✅] Implementar sistema de previewItems para archivos relacionados
+- [✅] Desarrollar lógica de agrupación de archivos principales y portadas
+- [✅] Implementar ordenamiento de previewItems basado en patrones
+- [✅] Soportar archivos en carpetas separadas
+- [✅] **Tests**: Validación de agrupación y ordenamiento
+- [✅] **Frontend**: Visualización de previewItems en desarrollo
 
 ## Estructura de Tests
 

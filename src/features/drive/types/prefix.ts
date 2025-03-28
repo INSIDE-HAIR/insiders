@@ -22,6 +22,10 @@ export enum Prefix {
   GRID = "grid", // Grid (grid_)
   CARD = "card", // Tarjeta (card_)
   SIDEBAR = "sidebar", // Barra lateral (sidebar_)  
+  GOOGLE_SLIDE = "googleSlide", // Google Slide (googleSlide_)
+  GOOGLE_FORM = "googleForm", // Google Form (googleForm_)
+  VIMEO = "vimeo", // Vimeó (vimeo_)
+  
 
   // Prefijos para metadatos
   META = "meta", // Metadatos (meta_)

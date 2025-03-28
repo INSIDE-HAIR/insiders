@@ -3,8 +3,10 @@ import { auth } from "@/src/config/auth/auth";
 import { GoogleDriveService } from "@drive/services/drive/GoogleDriveService";
 import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
 import { Logger } from "@drive/utils/logger";
-import { FileItem } from "@drive/types/hierarchy";
+import { FileItem, isFileItem } from "@drive/types/hierarchy";
 import { DriveType } from "@drive/types/drive";
+import { extractPreviewPattern } from "@drive/types/suffix";
+import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
 const logger = new Logger("API:Files");
 
@@ -16,6 +18,7 @@ const logger = new Logger("API:Files");
  * - query: Texto de búsqueda (opcional)
  * - mimeType: Tipo MIME a filtrar (opcional)
  * - limit: Número máximo de resultados (opcional, por defecto 100)
+ * - groupPreviews: Si es "true", agrupa archivos con sus portadas relacionadas (-P1, -P2, etc.)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -34,11 +37,13 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get("limit")
       ? parseInt(searchParams.get("limit") as string)
       : 100;
+    const groupPreviews = searchParams.get("groupPreviews") === "true";
 
     // Inicializar servicios
     const driveService = new GoogleDriveService();
     await driveService.initialize();
     const fileAnalyzer = new FileAnalyzer();
+    const hierarchyService = new HierarchyService(driveService, fileAnalyzer);
 
     // Obtener archivos
     let files = [];
@@ -65,10 +70,15 @@ export async function GET(request: NextRequest) {
       files = files.slice(0, limit);
     }
 
-    // Analizar tipos de archivos
-    const filesWithTypeInfo = files.map((file) => {
+    // Convertir a FileItems
+    let fileItems: FileItem[] = files.map((file) => {
       // Asegurar que description sea al menos un string vacío
       file.description = file.description || "";
+
+      // Extraer información de patrón de portada
+      const { isPreview, previewPattern, baseName } = extractPreviewPattern(
+        file.name
+      );
 
       const fileItem: FileItem = {
         ...file,
@@ -82,12 +92,48 @@ export async function GET(request: NextRequest) {
         prefixes: [],
         suffixes: [],
         children: [],
+        previewPattern,
+        baseName,
+        previewItems: [],
+        isPreviewOf: isPreview ? undefined : undefined,
       };
-      return {
-        ...file,
-        typeInfo: fileAnalyzer.analyzeFile(fileItem),
-      };
+
+      return fileItem;
     });
+
+    // Procesar patrones de portada si se solicitó
+    if (groupPreviews) {
+      logger.info(
+        "Procesando patrones de portadas para agrupar archivos relacionados"
+      );
+
+      // Procesar los items y asegurar que el resultado sea FileItem[]
+      const processedItems = hierarchyService.processPreviewItems(fileItems);
+      fileItems = processedItems.filter((item) =>
+        isFileItem(item)
+      ) as FileItem[];
+
+      // Filtrar para eliminar portadas asignadas a archivos principales
+      // Solo mantener archivos principales y archivos sin relación
+      fileItems = fileItems.filter((item) => !item.isPreviewOf);
+
+      // Asegurar que todos los items tengan previewItems inicializado
+      fileItems = fileItems.map((item) => ({
+        ...item,
+        previewItems: item.previewItems || [],
+      }));
+
+      logger.info(
+        `Después de agrupar portadas: ${fileItems.length} archivos principales`
+      );
+    }
+
+    // Añadir información de tipo de archivo
+    const filesWithTypeInfo = fileItems.map((fileItem) => ({
+      ...fileItem,
+      typeInfo: fileAnalyzer.analyzeFile(fileItem),
+      previewItems: fileItem.previewItems || [],
+    }));
 
     logger.info(`Obtenidos ${filesWithTypeInfo.length} archivos`);
 

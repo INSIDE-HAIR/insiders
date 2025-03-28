@@ -59,6 +59,10 @@ export interface FileItem extends BaseItem {
   modifiedTime?: string;
   hasThumbnail?: boolean;
   md5Checksum?: string;
+  previewItems?: FileItem[];
+  isPreviewOf?: string;
+  previewPattern?: string;
+  baseName?: string;
 }
 
 /**

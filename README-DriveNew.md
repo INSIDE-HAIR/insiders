@@ -220,13 +220,16 @@ interface DriveFile {
   webViewLink?: string;
   thumbnailLink?: string;
   // Campos agregados
-  depth: number; // Profundidad en la jerarquía
-  folder?: string; // Carpeta nivel 1
-  subFolder?: string; // Carpeta nivel 2
-  prefixes: string[]; // Prefijos identificados en el nombre (ej: "01_", "tab_")
-  suffixes: string[]; // Sufijos identificados en el nombre (ej: "_hidden", "_copy")
+  depth: number;
+  folder?: string;
+  subFolder?: string;
+  prefixes: string[];
+  suffixes: string[];
+  previewItems: DriveFile[]; // Array de archivos relacionados (portadas, etc.)
+  previewPattern?: string; // Patrón de previsualización (P1, P2, etc.)
+  baseName: string; // Nombre base sin patrón de previsualización
+  order?: number; // Orden basado en el patrón de previsualización
   transformedUrl?: {
-    // URLs procesadas
     preview: string;
     download: string;
     embed?: string;
@@ -285,28 +288,34 @@ enum Suffix {
 
 // Base común para cualquier elemento de la jerarquía
 interface BaseItem {
-  id: string; // ID original (de Google Drive o generado)
-  name: string; // Nombre completo (incluye prefijos/sufijos)
-  originalName: string; // Nombre original sin procesar
-  displayName: string; // Nombre para mostrar (sin prefijos de orden/tipo)
+  id: string;
+  name: string;
+  originalName: string;
+  displayName: string;
 
   // Atributos clave
-  driveType: DriveType; // Tipo fundamental: file o folder
+  driveType: DriveType;
 
   // Metadatos de jerarquía
-  depth: number; // Profundidad en la estructura
-  order: number; // Orden extraído del prefijo numérico
+  depth: number;
+  order: number;
 
   // Prefijos y sufijos que determinan comportamiento
-  prefixes: string[]; // Lista de prefijos detectados
-  suffixes: string[]; // Lista de sufijos detectados
+  prefixes: string[];
+  suffixes: string[];
 
   // Estructura jerárquica
-  children: HierarchyItem[]; // Elementos hijos (recursivo)
-  parentId?: string; // ID del elemento padre
+  children: HierarchyItem[];
+  parentId?: string;
+
+  // Sistema de previsualización
+  previewItems: FileItem[];
+  previewPattern?: string;
+  baseName: string;
+  isPreviewOf?: string; // ID del archivo principal si es una portada
 
   // Metadatos adicionales
-  metadata?: Record<string, any>; // Metadatos adicionales
+  metadata?: Record<string, any>;
 }
 
 // Extensión para archivos
@@ -321,6 +330,7 @@ interface FileItem extends BaseItem {
   };
   size?: string;
   modifiedTime?: string;
+  order?: number; // Orden específico para previewItems
 }
 
 // Extensión para carpetas
@@ -376,37 +386,66 @@ function extractPrefixesAndSuffixes(name: string): {
 }
 ```
 
-### 5. Gestión de metadatos especiales
+### 5. Gestión de archivos relacionados
 
-La gestión de archivos con sufijo `_copy` permite asociar metadatos adicionales a archivos existentes:
+El sistema implementa un robusto manejo de archivos relacionados y portadas:
 
-- Si existe un archivo "imagen.jpg" y otro archivo "imagen_copy.txt", el contenido del archivo .txt se procesa como metadatos para la imagen.
-- Los metadatos pueden contener descripciones, atributos personalizados, configuraciones de visualización, etc.
-- El procesamiento ocurre después de la detección de archivos pero antes de la construcción de la jerarquía.
-- La implementación debe manejar correctamente las codificaciones de texto para soportar contenido multilingüe.
+1. **Detección de relaciones**:
 
-Ejemplo de procesamiento:
+   ```typescript
+   function processPreviewItems(items: HierarchyItem[]): HierarchyItem[] {
+     const baseNameMap = new Map<string, HierarchyItem[]>();
 
-```typescript
-function processMetadataFiles(files: DriveFile[]): DriveFile[] {
-  const processedFiles = [...files];
-  const copyFiles = files.filter((file) => file.suffixes.includes(Suffix.COPY));
+     // Recolectar todos los archivos sin importar su ubicación
+     const collectFiles = (items: HierarchyItem[]) => {
+       items.forEach((item) => {
+         if (isFileItem(item)) {
+           const baseName = item.name.replace(/\.[^.]+$/, "");
+           const group = baseNameMap.get(baseName) || [];
+           group.push(item);
+           baseNameMap.set(baseName, group);
+         }
+         if (item.children?.length) {
+           collectFiles(item.children);
+         }
+       });
+     };
 
-  for (const copyFile of copyFiles) {
-    // Encontrar el archivo principal al que pertenece este _copy
-    const baseName = copyFile.name.replace(`_${Suffix.COPY}`, "");
-    const mainFile = files.find((f) => f.name === baseName);
+     // Procesar relaciones
+     collectFiles(items);
 
-    if (mainFile) {
-      // Leer y procesar contenido del archivo _copy
-      const metadata = parseMetadataContent(copyFile.content);
-      mainFile.metadata = { ...mainFile.metadata, ...metadata };
-    }
-  }
+     // Asignar previewItems y establecer orden
+     baseNameMap.forEach((relatedFiles) => {
+       const mainFile = relatedFiles.find((file) => !file.previewPattern);
+       if (mainFile) {
+         const previewFiles = relatedFiles.filter(
+           (file) => file.previewPattern
+         );
+         previewFiles.sort((a, b) => a.order - b.order);
+         mainFile.previewItems = previewFiles;
+       }
+     });
 
-  return processedFiles;
-}
-```
+     return items;
+   }
+   ```
+
+2. **Ordenamiento de portadas**:
+
+   - Los archivos con patrones como `-P1`, `-P2` se ordenan numéricamente
+   - El orden se determina por el número en el patrón
+   - Las portadas se asignan al archivo principal correspondiente
+
+3. **Soporte multi-carpeta**:
+
+   - Los archivos relacionados pueden estar en diferentes carpetas
+   - La relación se establece por nombre base, ignorando la ubicación
+   - Se mantiene la estructura de carpetas original
+
+4. **Metadatos y visualización**:
+   - Las portadas heredan metadatos del archivo principal
+   - Se pueden definir propiedades específicas para cada portada
+   - El sistema de visualización muestra las portadas según su orden
 
 ## Proceso de transformación de datos (pipeline)
 
@@ -498,7 +537,15 @@ El sistema de componentes soporta una recursividad ilimitada con estas reglas:
    - Los prefijos de orden (01*, 02*) deben ser números válidos
    - No se permiten prefijos o sufijos duplicados en el mismo elemento
 
-7. **Sistema de navegación jerárquica**:
+7. **Sistema de previsualización**:
+
+   - Los archivos con patrón `-P1`, `-P2`, etc. se consideran portadas
+   - Las portadas deben tener un archivo principal correspondiente
+   - El orden de las portadas se determina por el número en el patrón
+   - Las portadas pueden estar en carpetas diferentes al archivo principal
+   - Los archivos principales deben tener `previewItems` inicializado como array vacío
+
+8. **Sistema de navegación jerárquica**:
    - Elementos con prefijo "tabs*" mostrarán sus hijos "tab*" como pestañas horizontales/verticales
    - Al seleccionar una pestaña, se mostrará su contenido
    - Elementos con prefijo "section\_" se mostrarán como secciones colapsables

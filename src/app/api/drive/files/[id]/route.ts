@@ -3,8 +3,10 @@ import { auth } from "@/src/config/auth/auth";
 import { GoogleDriveService } from "@drive/services/drive/GoogleDriveService";
 import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
 import { Logger } from "@drive/utils/logger";
-import { FileItem } from "@drive/types/hierarchy";
+import { FileItem, HierarchyItem } from "@drive/types/hierarchy";
 import { DriveType } from "@drive/types/drive";
+import { extractPreviewPattern } from "@drive/types/suffix";
+import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
 const logger = new Logger("API:Files:ID");
 
@@ -13,6 +15,7 @@ const logger = new Logger("API:Files:ID");
  * Obtiene información detallada de un archivo específico
  * Query params:
  * - content: Si es "true", devuelve el contenido del archivo (si es posible)
+ * - previews: Si es "true", busca y devuelve portadas relacionadas (-P1, -P2, etc.)
  */
 export async function GET(
   request: NextRequest,
@@ -29,14 +32,16 @@ export async function GET(
     // Obtener ID del archivo
     const fileId = params.id;
 
-    // Verificar si se debe incluir el contenido
+    // Verificar si se debe incluir el contenido y/o portadas
     const { searchParams } = new URL(request.url);
     const includeContent = searchParams.get("content") === "true";
+    const includePreviews = searchParams.get("previews") === "true";
 
     // Inicializar servicios
     const driveService = new GoogleDriveService();
     await driveService.initialize();
     const fileAnalyzer = new FileAnalyzer();
+    const hierarchyService = new HierarchyService(driveService, fileAnalyzer);
 
     // Obtener información del archivo
     const file = await driveService.getFile(fileId);
@@ -64,13 +69,94 @@ export async function GET(
       prefixes: [],
       suffixes: [],
       children: [],
+      previewItems: [],
+      previewPattern: "",
+      baseName: file.name,
     };
+
+    // Extraer información de patrón de portada
+    const { isPreview, previewPattern, baseName } = extractPreviewPattern(
+      file.name
+    );
+    fileItem.previewPattern = previewPattern;
+    fileItem.baseName = baseName;
+
     const typeInfo = fileAnalyzer.analyzeFile(fileItem);
 
+    // Si se solicitaron portadas relacionadas
+    if (includePreviews) {
+      try {
+        // Obtener archivos en la misma carpeta
+        const parentId = file.parents?.[0];
+        if (parentId) {
+          const folderContents = await driveService.getFolderContents(parentId);
+
+          // Filtrar archivos relacionados por nombre base
+          const relatedFiles = folderContents.filter((item) => {
+            if (item.id === fileId) return false; // Excluir el archivo actual
+
+            const { baseName: itemBaseName } = extractPreviewPattern(item.name);
+            return itemBaseName === baseName;
+          });
+
+          // Convertir a FileItems y procesar
+          if (relatedFiles.length > 0) {
+            const relatedFileItems = relatedFiles.map((item) => {
+              const { isPreview, previewPattern, baseName } =
+                extractPreviewPattern(item.name);
+              const fileItem: FileItem = {
+                ...item,
+                size: item.size?.toString(),
+                driveType: DriveType.FILE,
+                originalName: item.name,
+                displayName: item.name,
+                depth: 0,
+                parentId: item.parents?.[0] || "root",
+                order: 0,
+                prefixes: [],
+                suffixes: [],
+                children: [],
+                previewPattern,
+                baseName,
+                previewItems: [],
+                isPreviewOf: isPreview ? fileId : undefined,
+              };
+              return fileItem;
+            });
+
+            // Ordenar por número de portada
+            relatedFileItems.sort((a, b) => {
+              if (!a.previewPattern) return -1;
+              if (!b.previewPattern) return 1;
+
+              const numA = parseInt(a.previewPattern.replace("P", ""));
+              const numB = parseInt(b.previewPattern.replace("P", ""));
+              return numA - numB;
+            });
+
+            fileItem.previewItems = relatedFileItems;
+
+            logger.info(
+              `Encontradas ${relatedFileItems.length} portadas relacionadas para el archivo ${fileId}`
+            );
+          }
+        }
+      } catch (error) {
+        logger.error(`Error al buscar portadas relacionadas: ${error}`);
+      }
+    }
+
     // Crear respuesta
-    const response: any = {
-      file,
+    const response: {
+      file: FileItem;
+      typeInfo: any;
+      relatedPreviews: FileItem[];
+      content?: string;
+      contentError?: string;
+    } = {
+      file: fileItem,
       typeInfo,
+      relatedPreviews: fileItem.previewItems || [],
     };
 
     // Incluir contenido si se solicitó y es un tipo compatible

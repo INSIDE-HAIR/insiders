@@ -5,7 +5,9 @@ import { Logger } from "@drive/utils/logger";
 import { DriveType } from "@drive/types/drive";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import { extractPrefixes } from "@drive/types/prefix";
-import { extractSuffixes } from "@drive/types/suffix";
+import { extractSuffixes, extractPreviewPattern } from "@drive/types/suffix";
+import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
+import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
 const logger = new Logger("API:FolderHierarchy");
 
@@ -21,6 +23,11 @@ async function buildHierarchyItem(
     displayName: nameWithoutPrefixes,
   } = extractPrefixes(item.name);
   const { suffixes, displayName } = extractSuffixes(nameWithoutPrefixes);
+
+  // Extraer información de patrón de portada
+  const { isPreview, previewPattern, baseName } = extractPreviewPattern(
+    item.name
+  );
 
   const baseItem = {
     id: item.id,
@@ -38,6 +45,9 @@ async function buildHierarchyItem(
     modifiedTime: item.modifiedTime,
     thumbnailLink: item.thumbnailUrl || item.thumbnailLink,
     children: [],
+    previewItems: [], // Inicializar siempre como array vacío
+    previewPattern,
+    baseName,
     transformedUrl: {
       download: `https://drive.google.com/uc?id=${item.id}&export=download`,
       embed: `https://drive.google.com/file/d/${item.id}/view?usp=drivesdk`,
@@ -90,6 +100,10 @@ export async function GET(
     const driveService = new GoogleDriveService();
     await driveService.initialize();
 
+    // Inicializar servicios necesarios
+    const fileAnalyzer = new FileAnalyzer();
+    const hierarchyService = new HierarchyService(driveService, fileAnalyzer);
+
     // Obtener detalles de la carpeta
     const folder = await driveService.getFolder(folderId);
     if (!folder) {
@@ -102,11 +116,17 @@ export async function GET(
     // Construir jerarquía completa
     const hierarchy = await buildHierarchyItem(folder, 0, driveService);
 
+    // Procesar patrones de portadas
+    logger.info("Procesando patrones de portadas en la jerarquía");
+    const processedHierarchy = hierarchyService.processPreviewItems([
+      hierarchy,
+    ])[0];
+
     // Preparar respuesta
     const response = {
       id: folder.id,
       name: folder.name,
-      hierarchy: [hierarchy], // Envolver en array para mantener consistencia
+      hierarchy: [processedHierarchy], // Envolver en array para mantener consistencia
     };
 
     logger.info(`Jerarquía completa obtenida para carpeta: ${folderId}`);

@@ -18,6 +18,7 @@ import { GoogleDriveService } from "../drive/GoogleDriveService";
 import { FileAnalyzer } from "../analyzer/fileAnalyzer";
 import { MetadataProcessor } from "../analyzer/metadataProcessor";
 import { Logger } from "../../utils/logger";
+import { extractPreviewPattern } from "../../types/suffix";
 import {
   HierarchyValidator,
   ValidationIssue,
@@ -493,5 +494,138 @@ export class HierarchyService {
 
     flatten(hierarchy);
     return flatMap;
+  }
+
+  /**
+   * Procesa y agrupa archivos que son portadas relacionadas identificadas con patrones -P1, -P2, etc.
+   * @param items Lista de elementos jerárquicos a procesar
+   * @returns Lista procesada con las portadas agrupadas con sus archivos principales
+   */
+  processPreviewItems(items: HierarchyItem[]): HierarchyItem[] {
+    try {
+      this.logger.info("Procesando patrones de portadas");
+
+      // Mapa global para agrupar por nombre base
+      const baseNameMap: Map<string, FileItem[]> = new Map();
+
+      // Función recursiva para recolectar todos los archivos
+      const collectFiles = (items: HierarchyItem[]) => {
+        items.forEach((item) => {
+          if (isFileItem(item)) {
+            // Extraer información de patrón de portada
+            const { isPreview, previewPattern, baseName } =
+              extractPreviewPattern(item.name);
+
+            // Guardar información de patrón en el archivo
+            item.previewPattern = previewPattern;
+            item.baseName = baseName;
+            item.previewItems = item.previewItems || [];
+
+            // Si es una portada (P1, P2, etc), establecer el order basado en el número
+            if (previewPattern) {
+              const previewNumber = parseInt(
+                previewPattern.replace("P", ""),
+                10
+              );
+              item.order = previewNumber || 0;
+            }
+
+            // Normalizar el nombre base quitando la extensión y espacios
+            const baseNameWithoutExt = baseName.replace(/\.[^.]+$/, "").trim();
+
+            // Agregar al mapa global
+            if (!baseNameMap.has(baseNameWithoutExt)) {
+              baseNameMap.set(baseNameWithoutExt, []);
+            }
+            baseNameMap.get(baseNameWithoutExt)?.push(item);
+          }
+
+          // Procesar recursivamente los hijos si es una carpeta
+          if (isFolderItem(item)) {
+            collectFiles(item.children);
+          }
+        });
+      };
+
+      // Recolectar todos los archivos de la jerarquía
+      collectFiles(items);
+
+      // Procesar las relaciones encontradas
+      baseNameMap.forEach((relatedFiles, baseNameWithoutExt) => {
+        if (relatedFiles.length > 1) {
+          // Encontrar el archivo principal (el que no tiene patrón de preview)
+          const mainFile = relatedFiles.find((file) => !file.previewPattern);
+          const previewFiles = relatedFiles.filter(
+            (file) => file.previewPattern
+          );
+
+          if (mainFile) {
+            // Ordenar portadas por número
+            previewFiles.sort((a, b) => a.order - b.order);
+
+            // Asignar portadas al archivo principal
+            mainFile.previewItems = previewFiles;
+
+            // Marcar las portadas con referencia al archivo principal
+            previewFiles.forEach((preview) => {
+              preview.isPreviewOf = mainFile.id;
+            });
+
+            this.logger.info(
+              `Archivo ${mainFile.name} tiene ${previewFiles.length} portadas relacionadas en diferentes carpetas`
+            );
+          } else {
+            // Si no hay archivo principal, usar el primer archivo como principal
+            const firstFile = relatedFiles[0];
+            const otherFiles = relatedFiles.slice(1);
+
+            // Ordenar los otros archivos por número
+            otherFiles.sort((a, b) => a.order - b.order);
+
+            // Asignar como previewItems
+            firstFile.previewItems = otherFiles;
+
+            // Marcar los otros archivos como previews
+            otherFiles.forEach((preview) => {
+              preview.isPreviewOf = firstFile.id;
+            });
+
+            this.logger.info(
+              `No se encontró archivo principal para ${baseNameWithoutExt}, usando ${firstFile.name} como principal`
+            );
+          }
+        }
+      });
+
+      // Función recursiva para filtrar portadas
+      const filterPreviews = (items: HierarchyItem[]): HierarchyItem[] => {
+        return items
+          .map((item) => {
+            if (isFolderItem(item)) {
+              return {
+                ...item,
+                children: filterPreviews(item.children),
+              };
+            }
+            return item;
+          })
+          .filter((item) => {
+            if (isFileItem(item)) {
+              // Mantener el archivo si no es una portada o si es el archivo principal
+              return (
+                !item.isPreviewOf ||
+                (item.previewItems && item.previewItems.length > 0)
+              );
+            }
+            return true; // Mantener todas las carpetas
+          });
+      };
+
+      // Filtrar las portadas de la jerarquía
+      return filterPreviews(items);
+    } catch (error) {
+      this.logger.error("Error procesando patrones de portada", error);
+      return items;
+    }
   }
 }

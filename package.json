@@ -57,6 +57,7 @@
     "embla-carousel-react": "^8.1.5",
     "framer-motion": "^11.0.14",
     "googleapis": "^146.0.0",
+    "heroicons": "^2.2.0",
     "lucide-react": "^0.316.0",
     "moment-timezone": "^0.5.45",
     "mongodb": "^6.6.2",
