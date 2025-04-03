@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -50,15 +51,20 @@ import {
   Copy,
   ExternalLink,
   Maximize,
+  Edit,
+  FilePlus,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface DriveRouteMapping {
   id: string;
-  routeType: string;
-  routeSubtype: string;
-  displayName: string;
+  routeLevel1: string;
+  routeLevel2: string | null;
+  routeLevel3: string | null;
+  routeLevel4: string | null;
+  routeLevel5: string | null;
+  title: string;
+  subtitle: string | null;
   rootFolderId: string;
   defaultDepth: number;
   isActive: boolean;
@@ -80,6 +86,9 @@ export default function DriveRouteAdmin() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState<string | null>(null);
+  const [routeToEdit, setRouteToEdit] = useState<DriveRouteMapping | null>(
+    null
+  );
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showJsonDialog, setShowJsonDialog] = useState(false);
@@ -90,11 +99,16 @@ export default function DriveRouteAdmin() {
   const { toast } = useToast();
   const router = useRouter();
 
-  // Estado para el formulario de nueva ruta
-  const [newRoute, setNewRoute] = useState({
-    routeType: "",
-    routeSubtype: "",
-    displayName: "",
+  // Estado para el formulario
+  const [routeForm, setRouteForm] = useState({
+    id: "",
+    routeLevel1: "",
+    routeLevel2: "",
+    routeLevel3: "",
+    routeLevel4: "",
+    routeLevel5: "",
+    title: "",
+    subtitle: "",
     rootFolderId: "",
     defaultDepth: 3,
     isActive: true,
@@ -130,70 +144,160 @@ export default function DriveRouteAdmin() {
   }, [status]);
 
   // Manejar los cambios en el formulario
-  const handleNewRouteChange = (field: string, value: any) => {
-    setNewRoute((prev) => ({
+  const handleFormChange = (field: string, value: any) => {
+    setRouteForm((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  // Crear una nueva ruta
-  const handleCreateRoute = async () => {
+  // Abrir formulario para editar
+  const handleEditRoute = (route: DriveRouteMapping) => {
+    setRouteToEdit(route);
+    setRouteForm({
+      id: route.id,
+      routeLevel1: route.routeLevel1,
+      routeLevel2: route.routeLevel2 || "",
+      routeLevel3: route.routeLevel3 || "",
+      routeLevel4: route.routeLevel4 || "",
+      routeLevel5: route.routeLevel5 || "",
+      title: route.title,
+      subtitle: route.subtitle || "",
+      rootFolderId: route.rootFolderId,
+      defaultDepth: route.defaultDepth,
+      isActive: route.isActive,
+    });
+    setShowAddDialog(true);
+  };
+
+  // Abrir formulario para nueva ruta
+  const handleNewRoute = () => {
+    setRouteToEdit(null);
+    setRouteForm({
+      id: "",
+      routeLevel1: "",
+      routeLevel2: "",
+      routeLevel3: "",
+      routeLevel4: "",
+      routeLevel5: "",
+      title: "",
+      subtitle: "",
+      rootFolderId: "",
+      defaultDepth: 3,
+      isActive: true,
+    });
+    setShowAddDialog(true);
+  };
+
+  // Validar formulario antes de enviar
+  const validateRouteForm = () => {
+    // Validar campos obligatorios
+    if (!routeForm.routeLevel1 || !routeForm.title || !routeForm.rootFolderId) {
+      toast({
+        title: "Error",
+        description:
+          "El nivel 1 de ruta, título e ID de carpeta son obligatorios",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    // Validar niveles jerárquicos
+    if (routeForm.routeLevel3 && !routeForm.routeLevel2) {
+      toast({
+        title: "Error",
+        description:
+          "No puedes añadir el nivel 3 sin antes especificar el nivel 2",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (routeForm.routeLevel4 && !routeForm.routeLevel3) {
+      toast({
+        title: "Error",
+        description:
+          "No puedes añadir el nivel 4 sin antes especificar el nivel 3",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (routeForm.routeLevel5 && !routeForm.routeLevel4) {
+      toast({
+        title: "Error",
+        description:
+          "No puedes añadir el nivel 5 sin antes especificar el nivel 4",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  // Guardar ruta (crear o actualizar)
+  const handleSaveRoute = async () => {
     try {
       setIsSubmitting(true);
 
-      // Validaciones básicas
-      if (
-        !newRoute.routeType ||
-        !newRoute.routeSubtype ||
-        !newRoute.displayName ||
-        !newRoute.rootFolderId
-      ) {
-        toast({
-          title: "Error",
-          description: "Todos los campos son obligatorios",
-          variant: "destructive",
-        });
+      // Validaciones
+      if (!validateRouteForm()) {
+        setIsSubmitting(false);
         return;
       }
+
+      // Preparar datos para envío - convertir cadenas vacías a null para niveles opcionales
+      const formData = {
+        ...routeForm,
+        routeLevel2: routeForm.routeLevel2 || null,
+        routeLevel3: routeForm.routeLevel3 || null,
+        routeLevel4: routeForm.routeLevel4 || null,
+        routeLevel5: routeForm.routeLevel5 || null,
+      };
 
       const response = await fetch("/api/drive/config/routes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newRoute),
+        body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Error al crear la ruta");
+        throw new Error(errorData.error || "Error al guardar la ruta");
       }
 
       const data = await response.json();
-      setRoutes((prev) => [...prev, data.route]);
 
-      // Limpiar formulario y cerrar diálogo
-      setNewRoute({
-        routeType: "",
-        routeSubtype: "",
-        displayName: "",
-        rootFolderId: "",
-        defaultDepth: 3,
-        isActive: true,
-      });
+      if (routeToEdit) {
+        // Actualizar ruta existente en la lista
+        setRoutes((prev) =>
+          prev.map((route) =>
+            route.id === routeToEdit.id ? data.route : route
+          )
+        );
+      } else {
+        // Añadir nueva ruta a la lista
+        setRoutes((prev) => [...prev, data.route]);
+      }
+
+      // Cerrar diálogo
       setShowAddDialog(false);
 
       toast({
-        title: "Ruta creada",
-        description: `La ruta ${data.route.displayName} ha sido creada correctamente`,
+        title: routeToEdit ? "Ruta actualizada" : "Ruta creada",
+        description: `La ruta ${data.route.title} ha sido ${
+          routeToEdit ? "actualizada" : "creada"
+        } correctamente`,
       });
     } catch (error) {
       console.error("Error:", error);
       toast({
         title: "Error",
         description:
-          error instanceof Error ? error.message : "Error al crear la ruta",
+          error instanceof Error ? error.message : "Error al guardar la ruta",
         variant: "destructive",
       });
     } finally {
@@ -205,13 +309,11 @@ export default function DriveRouteAdmin() {
   const handleDeleteRoute = async () => {
     if (!routeToDelete) return;
 
-    const [routeType, routeSubtype] = routeToDelete.split(":");
-
     try {
       setIsSubmitting(true);
 
       const response = await fetch(
-        `/api/drive/config/routes?routeType=${routeType}&routeSubtype=${routeSubtype}`,
+        `/api/drive/config/routes?id=${routeToDelete}`,
         {
           method: "DELETE",
         }
@@ -223,12 +325,7 @@ export default function DriveRouteAdmin() {
       }
 
       // Actualizar la lista de rutas eliminando la ruta borrada
-      setRoutes((prev) =>
-        prev.filter(
-          (route) =>
-            route.routeType !== routeType || route.routeSubtype !== routeSubtype
-        )
-      );
+      setRoutes((prev) => prev.filter((route) => route.id !== routeToDelete));
 
       setShowDeleteDialog(false);
       setRouteToDelete(null);
@@ -252,29 +349,19 @@ export default function DriveRouteAdmin() {
 
   // Cambiar el estado activo/inactivo de una ruta
   const handleToggleActive = async (
-    routeType: string,
-    routeSubtype: string,
+    route: DriveRouteMapping,
     currentValue: boolean
   ) => {
     try {
-      const updatedRoute = routes.find(
-        (r) => r.routeType === routeType && r.routeSubtype === routeSubtype
-      );
-
-      if (!updatedRoute) return;
-
       const newValue = !currentValue;
 
       // Optimistic update
       setRoutes((prev) =>
-        prev.map((route) => {
-          if (
-            route.routeType === routeType &&
-            route.routeSubtype === routeSubtype
-          ) {
-            return { ...route, isActive: newValue };
+        prev.map((r) => {
+          if (r.id === route.id) {
+            return { ...r, isActive: newValue };
           }
-          return route;
+          return r;
         })
       );
 
@@ -284,27 +371,29 @@ export default function DriveRouteAdmin() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          routeType,
-          routeSubtype,
+          id: route.id,
+          routeLevel1: route.routeLevel1,
+          routeLevel2: route.routeLevel2,
+          routeLevel3: route.routeLevel3,
+          routeLevel4: route.routeLevel4,
+          routeLevel5: route.routeLevel5,
           isActive: newValue,
           // Mantener los valores existentes
-          displayName: updatedRoute.displayName,
-          rootFolderId: updatedRoute.rootFolderId,
-          defaultDepth: updatedRoute.defaultDepth,
+          title: route.title,
+          subtitle: route.subtitle,
+          rootFolderId: route.rootFolderId,
+          defaultDepth: route.defaultDepth,
         }),
       });
 
       if (!response.ok) {
         // Revertir cambio en caso de error
         setRoutes((prev) =>
-          prev.map((route) => {
-            if (
-              route.routeType === routeType &&
-              route.routeSubtype === routeSubtype
-            ) {
-              return { ...route, isActive: currentValue };
+          prev.map((r) => {
+            if (r.id === route.id) {
+              return { ...r, isActive: currentValue };
             }
-            return route;
+            return r;
           })
         );
 
@@ -332,10 +421,7 @@ export default function DriveRouteAdmin() {
   };
 
   // Invalidar caché para una ruta específica
-  const handleInvalidateCache = async (
-    routeType: string,
-    routeSubtype: string
-  ) => {
+  const handleInvalidateCache = async (route: DriveRouteMapping) => {
     try {
       const response = await fetch("/api/drive/cache/invalidate", {
         method: "POST",
@@ -343,8 +429,12 @@ export default function DriveRouteAdmin() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          routeType,
-          routeSubtype,
+          routeLevel1: route.routeLevel1,
+          routeLevel2: route.routeLevel2,
+          routeLevel3: route.routeLevel3,
+          routeLevel4: route.routeLevel4,
+          routeLevel5: route.routeLevel5,
+          invalidateHierarchies: true,
         }),
       });
 
@@ -356,7 +446,7 @@ export default function DriveRouteAdmin() {
       toast({
         title: "Caché invalidada",
         description:
-          "La caché para esta ruta ha sido invalidada. Los próximos accesos obtendrán datos frescos.",
+          "La caché para esta ruta y sus jerarquías asociadas han sido invalidadas. Los próximos accesos obtendrán datos frescos.",
       });
     } catch (error) {
       console.error("Error:", error);
@@ -372,17 +462,26 @@ export default function DriveRouteAdmin() {
   };
 
   // Ver el JSON de la jerarquía completa de una ruta
-  const handleViewJson = async (routeType: string, routeSubtype: string) => {
+  const handleViewJson = async (route: DriveRouteMapping) => {
     try {
       setLoadingJson(true);
       setShowJsonDialog(true);
       setCurrentJsonData(null);
       setCurrentJsonStats(null);
 
+      // Construir la URL de la ruta
+      const routePath = [
+        route.routeLevel1,
+        route.routeLevel2,
+        route.routeLevel3,
+        route.routeLevel4,
+        route.routeLevel5,
+      ]
+        .filter(Boolean)
+        .join("/");
+
       // Obtener el JSON completo con alta profundidad
-      const response = await fetch(
-        `/api/drive/${routeType}/${routeSubtype}?maxDepth=10`
-      );
+      const response = await fetch(`/api/drive/${routePath}?maxDepth=10`);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -432,8 +531,31 @@ export default function DriveRouteAdmin() {
   };
 
   // Navegar a la ruta creada
-  const navigateToRoute = (routeType: string, routeSubtype: string) => {
-    router.push(`/${routeType}/${routeSubtype}`);
+  const navigateToRoute = (route: DriveRouteMapping) => {
+    const routePath = [
+      route.routeLevel1,
+      route.routeLevel2,
+      route.routeLevel3,
+      route.routeLevel4,
+      route.routeLevel5,
+    ]
+      .filter(Boolean)
+      .join("/");
+
+    router.push(`/${routePath}`);
+  };
+
+  // Formatear la ruta para mostrarla
+  const formatRoutePath = (route: DriveRouteMapping) => {
+    return [
+      route.routeLevel1,
+      route.routeLevel2,
+      route.routeLevel3,
+      route.routeLevel4,
+      route.routeLevel5,
+    ]
+      .filter(Boolean)
+      .join(" / ");
   };
 
   // Si no está autenticado o no está cargado
@@ -480,10 +602,10 @@ export default function DriveRouteAdmin() {
             <Button
               variant='default'
               className='flex items-center gap-2'
-              onClick={() => setShowAddDialog(true)}
+              onClick={handleNewRoute}
             >
-              <Plus className='h-4 w-4' />
-              <span>Agregar Ruta</span>
+              <FilePlus className='h-4 w-4' />
+              <span>Crear Nueva Ruta</span>
             </Button>
           </div>
 
@@ -492,30 +614,25 @@ export default function DriveRouteAdmin() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Estado</TableHead>
-                  <TableHead>Tipo de Ruta</TableHead>
-                  <TableHead>Subtipo</TableHead>
-                  <TableHead>Nombre para Mostrar</TableHead>
-                  <TableHead>ID Carpeta Raíz</TableHead>
-                  <TableHead>Profundidad</TableHead>
+                  <TableHead>Título</TableHead>
+                  <TableHead>Ruta</TableHead>
+                  <TableHead>ID Carpeta</TableHead>
+                  <TableHead>Prof.</TableHead>
                   <TableHead>Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {routes.length > 0 ? (
                   routes.map((route) => (
-                    <TableRow key={`${route.routeType}:${route.routeSubtype}`}>
+                    <TableRow key={route.id}>
                       <TableCell>
                         <div className='flex items-center space-x-2'>
                           <Switch
                             checked={route.isActive}
                             onCheckedChange={() =>
-                              handleToggleActive(
-                                route.routeType,
-                                route.routeSubtype,
-                                route.isActive
-                              )
+                              handleToggleActive(route, route.isActive)
                             }
-                            id={`active-${route.routeType}-${route.routeSubtype}`}
+                            id={`active-${route.id}`}
                           />
                           <Badge
                             variant={route.isActive ? "default" : "destructive"}
@@ -525,13 +642,23 @@ export default function DriveRouteAdmin() {
                           </Badge>
                         </div>
                       </TableCell>
-                      <TableCell>{route.routeType}</TableCell>
-                      <TableCell>{route.routeSubtype}</TableCell>
                       <TableCell className='font-medium'>
-                        {route.displayName}
+                        <div>
+                          <div>{route.title}</div>
+                          {route.subtitle && (
+                            <div className='text-xs text-muted-foreground'>
+                              {route.subtitle}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <code className='px-1 py-0.5 rounded bg-muted'>
+                          {formatRoutePath(route)}
+                        </code>
                       </TableCell>
                       <TableCell className='font-mono text-xs'>
-                        {route.rootFolderId.substring(0, 16)}...
+                        {route.rootFolderId.substring(0, 10)}...
                       </TableCell>
                       <TableCell>{route.defaultDepth}</TableCell>
                       <TableCell>
@@ -539,12 +666,7 @@ export default function DriveRouteAdmin() {
                           <Button
                             variant='outline'
                             size='sm'
-                            onClick={() => {
-                              handleInvalidateCache(
-                                route.routeType,
-                                route.routeSubtype
-                              );
-                            }}
+                            onClick={() => handleInvalidateCache(route)}
                             title='Invalidar caché'
                           >
                             <RefreshCw className='h-4 w-4' />
@@ -552,12 +674,7 @@ export default function DriveRouteAdmin() {
                           <Button
                             variant='outline'
                             size='sm'
-                            onClick={() =>
-                              handleViewJson(
-                                route.routeType,
-                                route.routeSubtype
-                              )
-                            }
+                            onClick={() => handleViewJson(route)}
                             title='Ver datos JSON'
                           >
                             <Code className='h-4 w-4' />
@@ -565,23 +682,24 @@ export default function DriveRouteAdmin() {
                           <Button
                             variant='outline'
                             size='sm'
-                            onClick={() =>
-                              navigateToRoute(
-                                route.routeType,
-                                route.routeSubtype
-                              )
-                            }
+                            onClick={() => navigateToRoute(route)}
                             title='Abrir ruta'
                           >
                             <ExternalLink className='h-4 w-4' />
                           </Button>
                           <Button
+                            variant='outline'
+                            size='sm'
+                            onClick={() => handleEditRoute(route)}
+                            title='Editar ruta'
+                          >
+                            <Edit className='h-4 w-4' />
+                          </Button>
+                          <Button
                             variant='destructive'
                             size='sm'
                             onClick={() => {
-                              setRouteToDelete(
-                                `${route.routeType}:${route.routeSubtype}`
-                              );
+                              setRouteToDelete(route.id);
                               setShowDeleteDialog(true);
                             }}
                             title='Eliminar ruta'
@@ -594,7 +712,7 @@ export default function DriveRouteAdmin() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className='h-24 text-center'>
+                    <TableCell colSpan={6} className='h-24 text-center'>
                       {isLoading ? (
                         <div className='flex justify-center items-center'>
                           <Loader2 className='h-8 w-8 animate-spin text-gray-400' />
@@ -702,67 +820,116 @@ export default function DriveRouteAdmin() {
         </CardContent>
       </Card>
 
-      {/* Diálogo para agregar una nueva ruta */}
+      {/* Diálogo para crear/editar ruta */}
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className='sm:max-w-[500px]'>
           <DialogHeader>
-            <DialogTitle>Agregar Nueva Ruta</DialogTitle>
+            <DialogTitle>
+              {routeToEdit ? "Editar Ruta" : "Crear Nueva Ruta"}
+            </DialogTitle>
             <DialogDescription>
-              Completa la información para crear una nueva ruta de acceso a
-              Google Drive
+              {routeToEdit
+                ? "Actualiza la información de la ruta existente"
+                : "Completa la información para crear una nueva ruta de acceso a Google Drive"}
             </DialogDescription>
           </DialogHeader>
           <div className='grid gap-4 py-4'>
-            <div className='grid grid-cols-2 gap-4'>
-              <div className='space-y-2'>
-                <Label htmlFor='routeType'>Tipo de Ruta</Label>
-                <Input
-                  id='routeType'
-                  value={newRoute.routeType}
-                  onChange={(e) =>
-                    handleNewRouteChange("routeType", e.target.value)
-                  }
-                  placeholder='Ej: marketing'
-                />
-                <p className='text-xs text-gray-500'>
-                  Ejemplo: marketing, academy, eventos
-                </p>
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='routeSubtype'>Subtipo</Label>
-                <Input
-                  id='routeSubtype'
-                  value={newRoute.routeSubtype}
-                  onChange={(e) =>
-                    handleNewRouteChange("routeSubtype", e.target.value)
-                  }
-                  placeholder='Ej: marketing-salon'
-                />
-                <p className='text-xs text-gray-500'>
-                  Ejemplo: marketing-salon, ibm, lmadrid
-                </p>
-              </div>
-            </div>
             <div className='space-y-2'>
-              <Label htmlFor='displayName'>Nombre para Mostrar</Label>
+              <Label htmlFor='routeLevel1'>Nivel 1 (Obligatorio)</Label>
               <Input
-                id='displayName'
-                value={newRoute.displayName}
+                id='routeLevel1'
+                value={routeForm.routeLevel1}
                 onChange={(e) =>
-                  handleNewRouteChange("displayName", e.target.value)
+                  handleFormChange("routeLevel1", e.target.value)
                 }
-                placeholder='Ej: Marketing Salón'
+                placeholder='Ej: marketing'
+              />
+              <p className='text-xs text-gray-500'>
+                Primer nivel de la ruta: marketing, academy, eventos...
+              </p>
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='routeLevel2'>Nivel 2 (Opcional)</Label>
+              <Input
+                id='routeLevel2'
+                value={routeForm.routeLevel2}
+                onChange={(e) =>
+                  handleFormChange("routeLevel2", e.target.value)
+                }
+                placeholder='Ej: eventos'
+                disabled={!routeForm.routeLevel1}
               />
             </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='routeLevel3'>Nivel 3 (Opcional)</Label>
+              <Input
+                id='routeLevel3'
+                value={routeForm.routeLevel3}
+                onChange={(e) =>
+                  handleFormChange("routeLevel3", e.target.value)
+                }
+                placeholder='Ej: 2023'
+                disabled={!routeForm.routeLevel2}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='routeLevel4'>Nivel 4 (Opcional)</Label>
+              <Input
+                id='routeLevel4'
+                value={routeForm.routeLevel4}
+                onChange={(e) =>
+                  handleFormChange("routeLevel4", e.target.value)
+                }
+                placeholder='Ej: q1'
+                disabled={!routeForm.routeLevel3}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='routeLevel5'>Nivel 5 (Opcional)</Label>
+              <Input
+                id='routeLevel5'
+                value={routeForm.routeLevel5}
+                onChange={(e) =>
+                  handleFormChange("routeLevel5", e.target.value)
+                }
+                placeholder='Ej: enero'
+                disabled={!routeForm.routeLevel4}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='title'>Título</Label>
+              <Input
+                id='title'
+                value={routeForm.title}
+                onChange={(e) => handleFormChange("title", e.target.value)}
+                placeholder='Ej: Marketing Eventos 2023 Q1'
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='subtitle'>Subtítulo (Opcional)</Label>
+              <Input
+                id='subtitle'
+                value={routeForm.subtitle}
+                onChange={(e) => handleFormChange("subtitle", e.target.value)}
+                placeholder='Ej: Recursos y materiales'
+              />
+            </div>
+
             <div className='space-y-2'>
               <Label htmlFor='rootFolderId'>
                 ID de Carpeta Raíz en Google Drive
               </Label>
               <Input
                 id='rootFolderId'
-                value={newRoute.rootFolderId}
+                value={routeForm.rootFolderId}
                 onChange={(e) =>
-                  handleNewRouteChange("rootFolderId", e.target.value)
+                  handleFormChange("rootFolderId", e.target.value)
                 }
                 placeholder='ID de la carpeta de Google Drive'
               />
@@ -770,6 +937,7 @@ export default function DriveRouteAdmin() {
                 El ID de la carpeta se encuentra en la URL de Google Drive
               </p>
             </div>
+
             <div className='space-y-2'>
               <Label htmlFor='defaultDepth'>Profundidad por Defecto</Label>
               <Input
@@ -777,21 +945,22 @@ export default function DriveRouteAdmin() {
                 type='number'
                 min='1'
                 max='10'
-                value={newRoute.defaultDepth}
+                value={routeForm.defaultDepth}
                 onChange={(e) =>
-                  handleNewRouteChange("defaultDepth", parseInt(e.target.value))
+                  handleFormChange("defaultDepth", parseInt(e.target.value))
                 }
               />
               <p className='text-xs text-gray-500'>
                 Número de niveles que se cargarán por defecto (1-10)
               </p>
             </div>
+
             <div className='flex items-center space-x-2 pt-2'>
               <Switch
                 id='isActive'
-                checked={newRoute.isActive}
+                checked={routeForm.isActive}
                 onCheckedChange={(checked) =>
-                  handleNewRouteChange("isActive", checked)
+                  handleFormChange("isActive", checked)
                 }
               />
               <Label htmlFor='isActive'>Activo</Label>
@@ -807,7 +976,7 @@ export default function DriveRouteAdmin() {
             </Button>
             <Button
               type='submit'
-              onClick={handleCreateRoute}
+              onClick={handleSaveRoute}
               disabled={isSubmitting}
             >
               {isSubmitting ? (

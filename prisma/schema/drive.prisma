@@ -1,22 +1,29 @@
 // Models for Google Drive API caching and route mapping
 
-// DriveRootMapping maps route types and subtypes to their respective root folder IDs in Google Drive
+// DriveRootMapping maps route paths to their respective root folder IDs in Google Drive
 model DriveRootMapping {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  routeType    String // Main route type: marketing, academy, eventos, etc.
-  routeSubtype String // Subtype: marketing-salon, ibm, lmadrid, etc.
-  displayName  String // Display name for the UI: "Marketing Salón", "IBM Academy", etc.
-  rootFolderId String // ID of the root folder in Google Drive for this route
-  defaultDepth Int      @default(3) // Default depth for displaying the hierarchy
-  isActive     Boolean  @default(true) // Whether this route is active or not
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Niveles de ruta (solo el nivel1 es obligatorio)
+  routeLevel1 String // Nivel 1 (obligatorio): ej. "marketing"
+  routeLevel2 String? // Nivel 2 (opcional): ej. "eventos"
+  routeLevel3 String? // Nivel 3 (opcional): ej. "2023"
+  routeLevel4 String? // Nivel 4 (opcional): ej. "q1"
+  routeLevel5 String? // Nivel 5 (opcional): ej. "enero"
+
+  title        String // Título principal para mostrar en la UI
+  subtitle     String? // Subtítulo opcional para mostrar en la UI
+  rootFolderId String // ID de la carpeta raíz en Google Drive
+  defaultDepth Int      @default(3)
+  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   // Relationships
   cacheEntries DriveCacheEntry[] @relation("RouteMappingToCache")
 
-  // Indexes and constraints
-  @@unique([routeType, routeSubtype])
+  // Único identificador compuesto para evitar rutas duplicadas
+  @@unique([routeLevel1, routeLevel2, routeLevel3, routeLevel4, routeLevel5], name: "unique_route_path")
   @@map("drive_route_mappings")
 }
 
@@ -25,13 +32,18 @@ model DriveCacheEntry {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   cacheType String // Type of cache: "hierarchy", "folder", "file", etc.
 
+  // Referencias a niveles de ruta para identificar a qué ruta pertenece
+  routeLevel1 String?
+  routeLevel2 String?
+  routeLevel3 String?
+  routeLevel4 String?
+  routeLevel5 String?
+
   // Key components 
-  folderId     String? // ID of the specific folder (null for root hierarchy)
-  routeType    String? // Type of route (null for specific folder cache outside of routes)
-  routeSubtype String? // Subtype of route (null for specific folder cache outside of routes)
+  folderId String? // ID of the specific folder (null for root hierarchy)
 
   // Cache data
-  cacheKey      String // Unique cache key, usually constructed using type, routeType, routeSubtype, folderId, maxDepth
+  cacheKey      String @unique
   hierarchyData Json // The cached hierarchy data
   itemCount     Int    @default(0) // Number of items in this hierarchy
   maxDepth      Int    @default(3) // Maximum depth of this cache entry
@@ -45,13 +57,12 @@ model DriveCacheEntry {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  // Relationships
-  routeMapping DriveRootMapping? @relation("RouteMappingToCache", fields: [routeType, routeSubtype], references: [routeType, routeSubtype], onDelete: SetNull)
+  // Relationships - relación compuesta con todos los niveles de ruta
+  routeMapping DriveRootMapping? @relation("RouteMappingToCache", fields: [routeLevel1, routeLevel2, routeLevel3, routeLevel4, routeLevel5], references: [routeLevel1, routeLevel2, routeLevel3, routeLevel4, routeLevel5], onDelete: SetNull)
 
   // Indexes and constraints
-  @@unique([cacheKey])
   @@index([folderId])
-  @@index([routeType, routeSubtype])
+  @@index([routeLevel1, routeLevel2, routeLevel3, routeLevel4, routeLevel5], name: "route_path_index")
   @@index([lastAccessed])
   @@index([createdAt])
   @@map("drive_cache_entries")

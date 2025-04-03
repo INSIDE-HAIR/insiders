@@ -91,7 +91,7 @@ import { Switch } from "@/src/components/ui/switch";
 import { ChipInput as TagInput } from "@/src/components/ui/chip-input";
 import { SeoProgress } from "@/src/components/ui/seo-progress";
 import { Progress } from "@/src/components/ui/progress";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/src/lib/utils/utils";
 
 type Page = DynamicPage & {
   children?: Page[];

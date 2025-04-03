@@ -1,25 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
-import { GoogleDriveService } from "@drive/services/drive/GoogleDriveService";
-import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
+import { PrismaClient } from "@prisma/client";
+import { GoogleDriveService } from "@/src/features/drive/services/drive/GoogleDriveService";
+import { FileAnalyzer } from "@/src/features/drive/services/analyzer/fileAnalyzer";
 import {
   HierarchyService,
   HierarchyOptions,
-} from "@drive/services/hierarchy/hierarchyService";
-import { Logger } from "@drive/utils/logger";
+} from "@/src/features/drive/services/hierarchy/hierarchyService";
+import { Logger } from "@/src/features/drive/utils/logger";
 
-const logger = new Logger("API:Hierarchy");
+const logger = new Logger("API:Drive:Hierarchy");
+const prisma = new PrismaClient();
+
+// Get the root folder ID from environment variables
+const DEFAULT_ROOT_FOLDER_ID =
+  process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID || "root";
 
 /**
  * GET /api/drive/hierarchy
- * Construye y devuelve una jerarquía completa a partir de una carpeta
+ * Obtiene la jerarquía completa o parcial de Google Drive
+ *
  * Query params:
- * - rootId: ID de la carpeta raíz (opcional, por defecto 'root')
- * - includeHidden: Si es "true", incluye elementos ocultos (opcional, por defecto false)
- * - maxDepth: Profundidad máxima de la jerarquía (opcional, por defecto 10)
- * - processMetadata: Si es "true", procesa metadatos de archivos _copy (opcional, por defecto true)
- * - verboseMetadata: Si es "true", incluye logs detallados del procesamiento de metadatos (opcional, por defecto false)
- * - validate: Si es "true", valida la jerarquía después de construirla (opcional, por defecto true)
+ * - rootId: ID de la carpeta raíz (opcional, por defecto se usa la carpeta configurada en variables de entorno)
+ * - maxDepth: Profundidad máxima de la jerarquía (opcional, por defecto 2)
+ * - includeHidden: Si es "true", incluye archivos ocultos (opcional, por defecto false)
+ * - forceRefresh: Si es "true", fuerza la actualización de la caché (opcional, por defecto false)
  */
 export async function GET(request: NextRequest) {
   try {
@@ -32,26 +37,53 @@ export async function GET(request: NextRequest) {
 
     // Obtener parámetros de la solicitud
     const { searchParams } = new URL(request.url);
-    const rootFolderId =
-      searchParams.get("rootId") ||
-      process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID ||
-      "root";
+    const rootId = searchParams.get("rootId") || DEFAULT_ROOT_FOLDER_ID;
+    const maxDepthParam = searchParams.get("maxDepth");
+    const maxDepth = maxDepthParam ? parseInt(maxDepthParam) : 2; // Default to 2 levels
     const includeHidden = searchParams.get("includeHidden") === "true";
-    const maxDepthStr = searchParams.get("maxDepth");
-    const maxDepth = maxDepthStr ? parseInt(maxDepthStr) : 5;
-    const processMetadata = searchParams.get("processMetadata") !== "false";
-    const verboseMetadata = searchParams.get("verboseMetadata") === "true";
-    const autoValidate = searchParams.get("validate") !== "false";
+    const forceRefresh = searchParams.get("forceRefresh") === "true";
 
-    // Configurar opciones de jerarquía
-    const options: HierarchyOptions = {
-      rootFolderId,
-      includeHidden,
-      maxDepth,
-      processMetadata,
-      verboseMetadata,
-      autoValidate,
-    };
+    // Construir clave de caché
+    const cacheKey = `hierarchy_${rootId}_${maxDepth}`;
+
+    // Verificar caché si no se fuerza actualización
+    if (!forceRefresh) {
+      const cachedEntry = await prisma.driveCacheEntry.findUnique({
+        where: { cacheKey },
+      });
+
+      // Definir tiempo de expiración (2 horas)
+      const cacheExpiration = 2 * 60 * 60 * 1000;
+
+      if (
+        cachedEntry &&
+        new Date().getTime() - cachedEntry.updatedAt.getTime() < cacheExpiration
+      ) {
+        // Incrementar contador de accesos
+        await prisma.driveCacheEntry.update({
+          where: { id: cachedEntry.id },
+          data: { accessCount: { increment: 1 } },
+        });
+
+        const cacheAge = Math.floor(
+          (new Date().getTime() - cachedEntry.updatedAt.getTime()) / 1000 / 60
+        );
+
+        logger.info(
+          `Usando caché para jerarquía ${rootId} (${cacheAge} min de antigüedad)`
+        );
+
+        // Devolver datos en caché
+        return NextResponse.json({
+          root: cachedEntry.hierarchyData,
+          stats: {
+            totalItems: cachedEntry.itemCount,
+            fromCache: true,
+            cacheAge,
+          },
+        });
+      }
+    }
 
     // Inicializar servicios
     const driveService = new GoogleDriveService();
@@ -59,23 +91,62 @@ export async function GET(request: NextRequest) {
     const fileAnalyzer = new FileAnalyzer();
     const hierarchyService = new HierarchyService(driveService, fileAnalyzer);
 
-    // Construir la jerarquía
-    logger.info(`Iniciando construcción de jerarquía desde ${rootFolderId}`);
-    const hierarchyResponse = await hierarchyService.buildHierarchy(options);
+    // Construir opciones
+    const options: HierarchyOptions = {
+      rootFolderId: rootId,
+      maxDepth,
+      includeHidden,
+      processMetadata: true,
+    };
 
     logger.info(
-      `Jerarquía construida con ${hierarchyResponse.stats.totalItems} elementos (${hierarchyResponse.stats.totalFolders} carpetas, ${hierarchyResponse.stats.totalFiles} archivos)`
+      `Obteniendo jerarquía fresca para carpeta ${rootId} (maxDepth: ${maxDepth})`
     );
 
-    // Devolver la estructura correcta
+    // Obtener jerarquía
+    const startTime = Date.now();
+    const hierarchyResponse = await hierarchyService.buildHierarchy(options);
+    const buildTime = Date.now() - startTime;
+
+    // Guardar en caché
+    try {
+      await prisma.driveCacheEntry.upsert({
+        where: { cacheKey },
+        update: {
+          hierarchyData: JSON.parse(JSON.stringify(hierarchyResponse.root)),
+          itemCount: hierarchyResponse.stats.totalItems,
+          buildTimeMs: buildTime,
+          accessCount: 1, // Resetear contador de accesos
+        },
+        create: {
+          cacheType: "hierarchy",
+          folderId: rootId,
+          maxDepth,
+          cacheKey,
+          hierarchyData: JSON.parse(JSON.stringify(hierarchyResponse.root)),
+          itemCount: hierarchyResponse.stats.totalItems,
+          buildTimeMs: buildTime,
+        },
+      });
+
+      logger.info(`Caché actualizada para jerarquía ${rootId}`);
+    } catch (cacheError) {
+      logger.error("Error al guardar en caché", cacheError);
+    }
+
+    // Devolver respuesta
     return NextResponse.json({
       root: hierarchyResponse.root,
-      stats: hierarchyResponse.stats,
+      stats: {
+        ...hierarchyResponse.stats,
+        fromCache: false,
+        buildTimeMs: buildTime,
+      },
     });
   } catch (error: any) {
-    logger.error("Error al construir jerarquía", error);
+    logger.error("Error al obtener jerarquía", error);
     return NextResponse.json(
-      { error: error.message || "Error al construir jerarquía" },
+      { error: error.message || "Error al obtener jerarquía" },
       { status: 500 }
     );
   }

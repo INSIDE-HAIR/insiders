@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { PrismaClient } from "@prisma/client";
-import { Logger } from "@drive/utils/logger";
+import { Logger } from "@/src/features/drive/utils/logger";
 
 const logger = new Logger("API:DriveConfig:Routes");
 
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
     // Obtener todas las configuraciones de rutas
     const routeMappings = await prisma.driveRootMapping.findMany({
-      orderBy: { routeType: "asc" },
+      orderBy: { routeLevel1: "asc" },
     });
 
     return NextResponse.json({ routes: routeMappings });
@@ -38,9 +38,13 @@ export async function GET(request: NextRequest) {
  * POST /api/drive/config/routes
  * Crea o actualiza una configuración de ruta
  * Body:
- * - routeType: Tipo de ruta (marketing, academy, eventos)
- * - routeSubtype: Subtipo de ruta (marketing-salon, ibm, lmadrid)
- * - displayName: Nombre para mostrar
+ * - routeLevel1: Nivel 1 (obligatorio): ej. marketing
+ * - routeLevel2: Nivel 2 (opcional): ej. eventos
+ * - routeLevel3: Nivel 3 (opcional): ej. 2023
+ * - routeLevel4: Nivel 4 (opcional): ej. q1
+ * - routeLevel5: Nivel 5 (opcional): ej. enero
+ * - title: Título principal
+ * - subtitle: Subtítulo (opcional)
  * - rootFolderId: ID de carpeta raíz en Google Drive
  * - defaultDepth: Profundidad predeterminada (opcional)
  * - isActive: Si la ruta está activa (opcional)
@@ -57,63 +61,140 @@ export async function POST(request: NextRequest) {
     // Obtener datos del cuerpo de la solicitud
     const body = await request.json();
     const {
-      routeType,
-      routeSubtype,
-      displayName,
+      id, // Id para edición, opcional
+      routeLevel1,
+      routeLevel2 = null,
+      routeLevel3 = null,
+      routeLevel4 = null,
+      routeLevel5 = null,
+      title,
+      subtitle = null,
       rootFolderId,
       defaultDepth = 3,
       isActive = true,
     } = body;
 
     // Validar campos requeridos
-    if (!routeType || !routeSubtype || !displayName || !rootFolderId) {
+    if (!routeLevel1 || !title || !rootFolderId) {
       return NextResponse.json(
-        { error: "Faltan campos requeridos" },
+        {
+          error:
+            "Faltan campos requeridos: nivel de ruta 1, título e ID de carpeta",
+        },
         { status: 400 }
       );
     }
 
-    // Crear o actualizar configuración de ruta
-    const routeMapping = await prisma.driveRootMapping.upsert({
-      where: {
-        routeType_routeSubtype: {
-          routeType,
-          routeSubtype,
+    // Verificar que no exista una ruta con la misma combinación de niveles (excepto al editar)
+    if (!id) {
+      const existingRoute = await prisma.driveRootMapping.findFirst({
+        where: {
+          routeLevel1,
+          routeLevel2,
+          routeLevel3,
+          routeLevel4,
+          routeLevel5,
         },
-      },
-      update: {
-        displayName,
-        rootFolderId,
-        defaultDepth,
-        isActive,
-        updatedAt: new Date(),
-      },
-      create: {
-        routeType,
-        routeSubtype,
-        displayName,
-        rootFolderId,
-        defaultDepth,
-        isActive,
-      },
-    });
+      });
+
+      if (existingRoute) {
+        return NextResponse.json(
+          { error: "Ya existe una ruta con esta combinación de niveles" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Crear o actualizar configuración de ruta
+    let routeMapping;
+
+    if (id) {
+      // Edición de ruta existente
+      routeMapping = await prisma.driveRootMapping.update({
+        where: { id },
+        data: {
+          routeLevel1,
+          routeLevel2,
+          routeLevel3,
+          routeLevel4,
+          routeLevel5,
+          title,
+          subtitle,
+          rootFolderId,
+          defaultDepth,
+          isActive,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      // Creación de nueva ruta
+      routeMapping = await prisma.driveRootMapping.create({
+        data: {
+          routeLevel1,
+          routeLevel2,
+          routeLevel3,
+          routeLevel4,
+          routeLevel5,
+          title,
+          subtitle,
+          rootFolderId,
+          defaultDepth,
+          isActive,
+        },
+      });
+    }
 
     // Borrar caché existente para esta ruta
     try {
+      // Invalidar cachés de ruta específica
       await prisma.driveCacheEntry.deleteMany({
         where: {
-          routeType: routeMapping.routeType,
-          routeSubtype: routeMapping.routeSubtype,
+          routeLevel1: routeMapping.routeLevel1,
+          routeLevel2: routeMapping.routeLevel2,
+          routeLevel3: routeMapping.routeLevel3,
+          routeLevel4: routeMapping.routeLevel4,
+          routeLevel5: routeMapping.routeLevel5,
         },
       });
-      logger.info(`Caché invalidada para ruta ${routeType}/${routeSubtype}`);
+
+      // Invalidar también la caché de jerarquía relacionada con esta carpeta
+      await prisma.driveCacheEntry.deleteMany({
+        where: {
+          folderId: routeMapping.rootFolderId,
+          cacheType: "hierarchy",
+        },
+      });
+
+      // Borrar también la caché de jerarquía general
+      await prisma.driveCacheEntry.deleteMany({
+        where: {
+          cacheKey: {
+            startsWith: `hierarchy_${routeMapping.rootFolderId}`,
+          },
+        },
+      });
+
+      // Construir ruta para el log
+      const routePath = [
+        routeMapping.routeLevel1,
+        routeMapping.routeLevel2,
+        routeMapping.routeLevel3,
+        routeMapping.routeLevel4,
+        routeMapping.routeLevel5,
+      ]
+        .filter(Boolean)
+        .join("/");
+
+      logger.info(
+        `Cachés invalidadas para ruta ${routePath} y sus jerarquías asociadas`
+      );
     } catch (cacheError) {
       logger.warn("Error al invalidar caché", cacheError);
     }
 
     logger.info(
-      `Configuración de ruta ${routeType}/${routeSubtype} ${
-        body.id ? "actualizada" : "creada"
+      `Configuración de ruta ${id ? "actualizada" : "creada"}: ${
+        routeMapping.title
       }`
     );
 
@@ -131,8 +212,7 @@ export async function POST(request: NextRequest) {
  * DELETE /api/drive/config/routes
  * Elimina una configuración de ruta
  * Query params:
- * - routeType: Tipo de ruta
- * - routeSubtype: Subtipo de ruta
+ * - id: ID de la ruta a eliminar
  */
 export async function DELETE(request: NextRequest) {
   try {
@@ -145,24 +225,18 @@ export async function DELETE(request: NextRequest) {
 
     // Obtener parámetros de la solicitud
     const { searchParams } = new URL(request.url);
-    const routeType = searchParams.get("routeType");
-    const routeSubtype = searchParams.get("routeSubtype");
+    const id = searchParams.get("id");
 
-    if (!routeType || !routeSubtype) {
+    if (!id) {
       return NextResponse.json(
-        { error: "Se requiere especificar routeType y routeSubtype" },
+        { error: "Se requiere especificar el ID de la ruta" },
         { status: 400 }
       );
     }
 
     // Verificar si existe la configuración
     const existingMapping = await prisma.driveRootMapping.findUnique({
-      where: {
-        routeType_routeSubtype: {
-          routeType,
-          routeSubtype,
-        },
-      },
+      where: { id },
     });
 
     if (!existingMapping) {
@@ -172,22 +246,55 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Eliminar configuración
-    await prisma.driveRootMapping.delete({
-      where: {
-        id: existingMapping.id,
-      },
-    });
+    // Construir ruta para el log
+    const routePath = [
+      existingMapping.routeLevel1,
+      existingMapping.routeLevel2,
+      existingMapping.routeLevel3,
+      existingMapping.routeLevel4,
+      existingMapping.routeLevel5,
+    ]
+      .filter(Boolean)
+      .join("/");
 
-    // Eliminar cachés asociadas
+    // Eliminar cachés asociadas a la ruta
     await prisma.driveCacheEntry.deleteMany({
       where: {
-        routeType,
-        routeSubtype,
+        routeLevel1: existingMapping.routeLevel1,
+        routeLevel2: existingMapping.routeLevel2,
+        routeLevel3: existingMapping.routeLevel3,
+        routeLevel4: existingMapping.routeLevel4,
+        routeLevel5: existingMapping.routeLevel5,
       },
     });
 
-    logger.info(`Configuración de ruta ${routeType}/${routeSubtype} eliminada`);
+    // Invalidar también la caché de jerarquía relacionada con esta carpeta
+    await prisma.driveCacheEntry.deleteMany({
+      where: {
+        folderId: existingMapping.rootFolderId,
+        cacheType: "hierarchy",
+      },
+    });
+
+    // Borrar también la caché de jerarquía general
+    await prisma.driveCacheEntry.deleteMany({
+      where: {
+        cacheKey: {
+          startsWith: `hierarchy_${existingMapping.rootFolderId}`,
+        },
+      },
+    });
+
+    logger.info(
+      `Cachés invalidadas para ruta ${routePath} y sus jerarquías asociadas`
+    );
+
+    // Eliminar configuración
+    await prisma.driveRootMapping.delete({
+      where: { id },
+    });
+
+    logger.info(`Configuración de ruta eliminada: ${routePath}`);
 
     return NextResponse.json({
       success: true,

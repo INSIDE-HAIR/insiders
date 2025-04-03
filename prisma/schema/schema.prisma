@@ -22,3 +22,6 @@ generator client {
 //   createdAt   DateTime @default(now())
 //   updatedAt   DateTime @updatedAt
 // }
+
+// Incluir todos los modelos de otros archivos .prisma
+// Esto asegura que Prisma los reconozca correctamente

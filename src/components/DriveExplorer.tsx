@@ -213,15 +213,13 @@ function HierarchyAccordion({
 }
 
 interface DriveExplorerProps {
-  routeType: string;
-  routeSubtype: string;
-  folderId?: string; // Opcional, solo para vista de carpeta específica
+  path: string[];
+  folderId?: string | null;
   initialMaxDepth?: number;
 }
 
 export default function DriveExplorer({
-  routeType,
-  routeSubtype,
+  path,
   folderId,
   initialMaxDepth = 3,
 }: DriveExplorerProps) {
@@ -242,65 +240,67 @@ export default function DriveExplorer({
     cacheAge?: number;
   } | null>(null);
   const [routeContext, setRouteContext] = useState<{
-    type: string;
-    subtype: string;
-    displayName: string;
+    path: string[];
+    title: string;
+    subtitle?: string;
   } | null>(null);
 
   // Función para cargar datos desde el API - siempre con profundidad alta
-  const fetchData = async (forceRefresh: boolean = false) => {
+  const fetchData = async (forceRefresh = false) => {
     try {
       setIsLoading(true);
       setError(null);
 
-      // Solicitar mayor profundidad para evitar cargas adicionales
-      const requestMaxDepth = 10; // Profundidad alta para tener todos los datos
+      // Construir la URL con la ruta completa
+      let url = `/api/drive/${path.join("/")}`;
 
-      // Determinar la URL según si estamos viendo una carpeta específica o la raíz
-      const url = folderId
-        ? `/api/drive/${routeType}/${routeSubtype}/folders/${folderId}?maxDepth=${requestMaxDepth}${
-            forceRefresh ? "&forceRefresh=true" : ""
-          }`
-        : `/api/drive/${routeType}/${routeSubtype}?maxDepth=${requestMaxDepth}${
-            forceRefresh ? "&forceRefresh=true" : ""
-          }`;
+      // Si hay un ID de carpeta específico, añadirlo a la URL
+      if (folderId) {
+        url += `/folders/${folderId}`;
+      }
+
+      // Añadir parámetros de consulta
+      url += `?maxDepth=10&forceRefresh=${forceRefresh}`;
 
       const response = await fetch(url);
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error ${response.status}`);
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
 
-      // Guardar información de contexto
-      if (data.routeMapping || data.routeContext) {
-        setRouteContext(data.routeMapping || data.routeContext);
-      }
-
-      // Guardar la jerarquía según el tipo de respuesta
-      if (folderId && data.folder) {
-        setHierarchy([data.folder.hierarchy]);
-      } else if (data.root) {
-        setHierarchy([data.root]);
+      if (data.error) {
+        setError(data.error);
+        setHierarchy([]);
       } else {
-        throw new Error("Estructura de datos inválida en la respuesta");
-      }
+        // Para carpetas específicas o raíz, la estructura cambia ligeramente
+        if (folderId && data.folder) {
+          setHierarchy(data.folder.hierarchy.children || []);
+        } else {
+          setHierarchy(data.root?.children || []);
+        }
 
-      // Guardar información de caché
-      if (data.stats) {
         setCacheInfo({
-          fromCache: data.stats.fromCache || false,
-          cacheAge: data.stats.cacheAge || 0,
+          fromCache: data.stats?.fromCache || false,
+          cacheAge: data.stats?.cacheAge,
         });
+
+        setLastRefresh(new Date());
+
+        // Guardar información del contexto de la ruta
+        if (data.routeInfo) {
+          setRouteContext({
+            path: data.routeInfo.path,
+            title: data.routeInfo.title,
+            subtitle: data.routeInfo.subtitle,
+          });
+        }
       }
 
-      setLastRefresh(new Date());
       setDataLoaded(true);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-      setError(err instanceof Error ? err.message : "Error desconocido");
+    } catch (error) {
+      setError((error as Error).message);
       setHierarchy([]);
     } finally {
       setIsLoading(false);
@@ -312,7 +312,7 @@ export default function DriveExplorer({
     if (status !== "loading") {
       fetchData();
     }
-  }, [status, routeType, routeSubtype, folderId]);
+  }, [status, path, folderId]);
 
   // Función para forzar actualización
   const forceRefresh = () => {
@@ -366,10 +366,8 @@ export default function DriveExplorer({
       {/* Cabecera con información de ruta */}
       {routeContext && (
         <div className='mb-6'>
-          <h1 className='text-3xl font-bold'>{routeContext.displayName}</h1>
-          <p className='text-gray-500 mt-1'>
-            {folderId ? "Carpeta específica" : "Explorador de contenido"}
-          </p>
+          <h1 className='text-3xl font-bold'>{routeContext.title}</h1>
+          <p className='text-gray-500 mt-1'>{routeContext.subtitle}</p>
         </div>
       )}
 

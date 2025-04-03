@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { PrismaClient } from "@prisma/client";
-import { Logger } from "@drive/utils/logger";
+import { Logger } from "@/src/features/drive/utils/logger";
 
 const prisma = new PrismaClient();
 const logger = new Logger("API:Drive:Cache:Invalidate");
@@ -10,10 +10,10 @@ const logger = new Logger("API:Drive:Cache:Invalidate");
  * POST /api/drive/cache/invalidate
  * Invalida una caché específica o un grupo de cachés
  * Body (todas las propiedades son opcionales, pero se debe especificar al menos una):
- * - routeType: Tipo de ruta para invalidar todas sus cachés
- * - routeSubtype: Subtipo de ruta (requiere routeType)
+ * - invalidateAll: Si es true, invalida todas las cachés
+ * - routeLevel1-5: Niveles de ruta para invalidación específica
  * - folderId: ID de carpeta específica para invalidar
- * - cacheKey: Clave específica de caché para invalidar
+ * - invalidateHierarchies: Si es true, también invalida cachés de jerarquía relacionadas
  */
 export async function POST(request: NextRequest) {
   try {
@@ -26,80 +26,125 @@ export async function POST(request: NextRequest) {
 
     // Obtener datos del cuerpo de la solicitud
     const body = await request.json();
-    const { routeType, routeSubtype, folderId, cacheKey } = body;
+    const {
+      invalidateAll,
+      routeLevel1,
+      routeLevel2,
+      routeLevel3,
+      routeLevel4,
+      routeLevel5,
+      folderId,
+      invalidateHierarchies = false,
+    } = body;
 
-    // Preparar criterios de búsqueda
-    let where = {};
-    let invalidationDescription = "global";
+    // Si se solicita invalidar toda la caché
+    if (invalidateAll) {
+      // Eliminar todas las entradas de caché
+      await prisma.driveCacheEntry.deleteMany({});
 
-    if (cacheKey) {
-      // Invalidación por clave específica
-      where = { cacheKey };
-      invalidationDescription = `clave ${cacheKey}`;
-    } else if (folderId) {
-      // Invalidación por ID de carpeta
-      where = { folderId };
-      invalidationDescription = `carpeta ${folderId}`;
-    } else if (routeType && routeSubtype) {
-      // Invalidación por ruta específica - necesitamos primero encontrar el mappingId
-      const routeMapping = await prisma.driveRootMapping.findUnique({
+      return NextResponse.json({
+        message: "Toda la caché ha sido invalidada",
+        invalidatedEntries: "all",
+      });
+    }
+
+    // Si se proporciona un ID de carpeta específico
+    if (folderId) {
+      // Invalidar cachés relacionadas con esta carpeta
+      const result = await prisma.driveCacheEntry.deleteMany({
         where: {
-          routeType_routeSubtype: {
-            routeType,
-            routeSubtype,
+          folderId,
+        },
+      });
+
+      // Si también se solicita invalidar jerarquías
+      if (invalidateHierarchies) {
+        await prisma.driveCacheEntry.deleteMany({
+          where: {
+            cacheKey: {
+              startsWith: `hierarchy_${folderId}`,
+            },
           },
-        },
-      });
+        });
 
-      if (!routeMapping) {
-        return NextResponse.json(
-          { error: "Ruta no encontrada" },
-          { status: 404 }
-        );
+        return NextResponse.json({
+          message: `La caché para la carpeta ${folderId} y sus jerarquías han sido invalidadas`,
+          invalidatedEntries: result.count,
+        });
       }
 
-      where = { mappingId: routeMapping.id };
-      invalidationDescription = `ruta ${routeType}/${routeSubtype}`;
-    } else if (routeType) {
-      // Invalidación por tipo de ruta - necesitamos encontrar todos los mappingIds
-      const routeMappings = await prisma.driveRootMapping.findMany({
-        where: { routeType },
+      return NextResponse.json({
+        message: `La caché para la carpeta ${folderId} ha sido invalidada`,
+        invalidatedEntries: result.count,
       });
+    }
 
-      if (routeMappings.length === 0) {
-        return NextResponse.json(
-          { error: "No se encontraron rutas del tipo especificado" },
-          { status: 404 }
-        );
-      }
-
-      where = {
-        mappingId: {
-          in: routeMappings.map((m) => m.id),
-        },
-      };
-      invalidationDescription = `tipo de ruta ${routeType}`;
-    } else {
-      // Si no se especifica ningún criterio, devolver error
+    // Validar que se proporcione al menos el nivel 1 de ruta para invalidación específica
+    if (!routeLevel1) {
       return NextResponse.json(
-        { error: "Se debe especificar al menos un criterio de invalidación" },
+        {
+          error:
+            "Se requiere especificar al menos el nivel 1 de ruta o un ID de carpeta para invalidar la caché",
+        },
         { status: 400 }
       );
     }
 
-    // Realizar invalidación (borrado)
-    const deleteResult = await prisma.driveCacheEntry.deleteMany({
-      where,
+    // Construir el filtro para la invalidación específica
+    const filter: any = { routeLevel1 };
+
+    // Añadir filtros adicionales si se proporcionan
+    if (routeLevel2 !== undefined) filter.routeLevel2 = routeLevel2;
+    if (routeLevel3 !== undefined) filter.routeLevel3 = routeLevel3;
+    if (routeLevel4 !== undefined) filter.routeLevel4 = routeLevel4;
+    if (routeLevel5 !== undefined) filter.routeLevel5 = routeLevel5;
+
+    // Eliminar las entradas de caché que coincidan con el filtro
+    const result = await prisma.driveCacheEntry.deleteMany({
+      where: filter,
     });
 
-    logger.info(
-      `Invalidación de caché para ${invalidationDescription}: ${deleteResult.count} entradas eliminadas`
-    );
+    // Si también se solicita invalidar jerarquías, buscar la configuración de ruta
+    // para obtener el folderId y eliminar las cachés relacionadas
+    if (invalidateHierarchies) {
+      const routeConfig = await prisma.driveRootMapping.findFirst({
+        where: filter,
+      });
+
+      if (routeConfig?.rootFolderId) {
+        await prisma.driveCacheEntry.deleteMany({
+          where: {
+            folderId: routeConfig.rootFolderId,
+            cacheType: "hierarchy",
+          },
+        });
+
+        await prisma.driveCacheEntry.deleteMany({
+          where: {
+            cacheKey: {
+              startsWith: `hierarchy_${routeConfig.rootFolderId}`,
+            },
+          },
+        });
+      }
+    }
+
+    // Construir la ruta para el mensaje
+    const routePath = [
+      routeLevel1,
+      routeLevel2,
+      routeLevel3,
+      routeLevel4,
+      routeLevel5,
+    ]
+      .filter((level) => level !== undefined)
+      .join("/");
 
     return NextResponse.json({
-      success: true,
-      message: `Caché invalidada para ${invalidationDescription}`,
-      count: deleteResult.count,
+      message: `La caché para la ruta ${routePath} ha sido invalidada${
+        invalidateHierarchies ? " incluyendo jerarquías relacionadas" : ""
+      }`,
+      invalidatedEntries: result.count,
     });
   } catch (error: any) {
     logger.error("Error al invalidar caché", error);
