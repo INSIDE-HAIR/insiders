@@ -34,7 +34,7 @@
         "./src/features/drive/*"
       ],
       "@drive-components/*": [
-        "./src/app/[lang]/(marketing)/drive/components/*"
+        "src/app/[lang]/(drive)/drive/components/*"
       ],
       "@ui/*": [
         "./src/components/ui/*"

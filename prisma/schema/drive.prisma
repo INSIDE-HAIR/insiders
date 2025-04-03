@@ -1,0 +1,58 @@
+// Models for Google Drive API caching and route mapping
+
+// DriveRootMapping maps route types and subtypes to their respective root folder IDs in Google Drive
+model DriveRootMapping {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  routeType    String // Main route type: marketing, academy, eventos, etc.
+  routeSubtype String // Subtype: marketing-salon, ibm, lmadrid, etc.
+  displayName  String // Display name for the UI: "Marketing Salón", "IBM Academy", etc.
+  rootFolderId String // ID of the root folder in Google Drive for this route
+  defaultDepth Int      @default(3) // Default depth for displaying the hierarchy
+  isActive     Boolean  @default(true) // Whether this route is active or not
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  cacheEntries DriveCacheEntry[] @relation("RouteMappingToCache")
+
+  // Indexes and constraints
+  @@unique([routeType, routeSubtype])
+  @@map("drive_route_mappings")
+}
+
+// DriveCacheEntry stores cache entries for hierarchy data
+model DriveCacheEntry {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  cacheType String // Type of cache: "hierarchy", "folder", "file", etc.
+
+  // Key components 
+  folderId     String? // ID of the specific folder (null for root hierarchy)
+  routeType    String? // Type of route (null for specific folder cache outside of routes)
+  routeSubtype String? // Subtype of route (null for specific folder cache outside of routes)
+
+  // Cache data
+  cacheKey      String // Unique cache key, usually constructed using type, routeType, routeSubtype, folderId, maxDepth
+  hierarchyData Json // The cached hierarchy data
+  itemCount     Int    @default(0) // Number of items in this hierarchy
+  maxDepth      Int    @default(3) // Maximum depth of this cache entry
+
+  // Performance metrics
+  buildTimeMs Int @default(0) // Time it took to build this hierarchy in milliseconds
+
+  // Cache management
+  accessCount  Int      @default(0) // Number of times this cache has been accessed
+  lastAccessed DateTime @default(now()) // Last time this cache was accessed
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  routeMapping DriveRootMapping? @relation("RouteMappingToCache", fields: [routeType, routeSubtype], references: [routeType, routeSubtype], onDelete: SetNull)
+
+  // Indexes and constraints
+  @@unique([cacheKey])
+  @@index([folderId])
+  @@index([routeType, routeSubtype])
+  @@index([lastAccessed])
+  @@index([createdAt])
+  @@map("drive_cache_entries")
+}

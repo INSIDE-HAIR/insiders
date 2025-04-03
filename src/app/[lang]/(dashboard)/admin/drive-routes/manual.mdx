@@ -1,0 +1,154 @@
+# Manual de Uso - Sistema de Exploración y Caché de Google Drive
+
+Este manual explica cómo utilizar el sistema de exploración y caché de Google Drive implementado en la aplicación.
+
+## Índice
+
+1. [Introducción](#introducción)
+2. [Panel de Administración de Rutas](#panel-de-administración-de-rutas)
+3. [Explorador de Google Drive](#explorador-de-google-drive)
+4. [Gestión de Caché](#gestión-de-caché)
+5. [Solución de Problemas](#solución-de-problemas)
+
+## Introducción
+
+El sistema permite explorar y navegar por diferentes secciones de Google Drive, organizadas en rutas personalizadas. Cada ruta representa una estructura específica en Google Drive y puede ser configurada para mostrar diferentes niveles de profundidad y contenido.
+
+### Conceptos Clave
+
+- **Ruta**: Una configuración que asocia una URL como `marketing/marketing-salon` con una carpeta específica de Google Drive.
+- **Caché**: Sistema que almacena temporalmente las estructuras de carpetas para mejorar el rendimiento.
+
+## Panel de Administración de Rutas
+
+El panel de administración de rutas permite gestionar las diferentes configuraciones de acceso a Google Drive.
+
+### Acceso al Panel
+
+1. Navega a `/admin/drive-routes` en tu navegador.
+2. Debes tener permisos de administrador para acceder.
+
+### Gestión de Rutas
+
+#### Crear una Nueva Ruta
+
+1. Haz clic en el botón "Agregar Ruta".
+2. Completa el formulario con la siguiente información:
+   - **Tipo de Ruta**: Categoría principal (ej. marketing, academy).
+   - **Subtipo**: Subcategoría específica (ej. marketing-salon, ibm).
+   - **Nombre para Mostrar**: Nombre amigable que se mostrará a los usuarios.
+   - **ID de Carpeta Raíz**: ID de la carpeta de Google Drive (se encuentra en la URL de la carpeta).
+   - **Profundidad por Defecto**: Número de niveles que se cargarán automáticamente (1-10).
+   - **Activo**: Estado de la ruta (activada/desactivada).
+3. Haz clic en "Guardar".
+
+#### Editar una Ruta Existente
+
+1. Localiza la ruta en la tabla.
+2. Usa el interruptor para activar/desactivar la ruta.
+3. Para cambios más complejos, es necesario eliminar y crear una nueva ruta.
+
+#### Eliminar una Ruta
+
+1. Haz clic en el botón con el icono de papelera.
+2. Confirma la eliminación en el diálogo de confirmación.
+
+## Explorador de Google Drive
+
+El explorador permite navegar por las estructuras de carpetas definidas en las rutas.
+
+### Acceso al Explorador
+
+Para acceder a una ruta específica, navega a:
+
+- Vista general: `/{idioma}/{tipoRuta}/{subtipoRuta}`
+- Carpeta específica: `/{idioma}/{tipoRuta}/{subtipoRuta}/folders/{id}`
+
+Ejemplo: `/es/marketing/marketing-salon`
+
+### Uso del Explorador
+
+1. **Configuración Inicial**:
+
+   - Selecciona la profundidad máxima de carpetas a cargar.
+   - Activa/desactiva la carga bajo demanda.
+   - Haz clic en "Cargar Jerarquía".
+
+2. **Navegación**:
+
+   - Usa el acordeón para expandir/contraer carpetas.
+   - Haz clic en los botones "Expandir Todo" o "Contraer Todo" para gestionar la vista.
+   - Cambia entre "Vista Acordeón" y "Vista JSON" según tus necesidades.
+
+3. **Copiar IDs**:
+
+   - Cada elemento muestra su ID con un botón de copia para facilitar su uso en otras partes del sistema.
+
+4. **Información de Caché**:
+   - El explorador muestra si los datos provienen de la caché o son recién cargados.
+   - Puedes forzar una actualización haciendo clic en el botón "Actualizar".
+
+## Gestión de Caché
+
+El sistema de caché mejora el rendimiento almacenando temporalmente las estructuras de carpetas.
+
+### Desde el Panel de Administración
+
+1. **Invalidar Caché de una Ruta**:
+
+   - En la tabla de rutas, haz clic en el botón con el icono de actualización.
+   - Esto forzará a que la próxima solicitud obtenga datos frescos.
+
+2. **Invalidar Toda la Caché**:
+
+   - Haz clic en el botón "Invalidar Toda la Caché" en la sección de herramientas.
+   - Esto afectará a todas las rutas configuradas.
+
+3. **Eliminar Caché Antigua**:
+   - Haz clic en el botón "Eliminar Caché Antigua" para eliminar entradas que ya no se utilizan.
+   - Esta operación es segura y solo afecta a datos antiguos.
+
+### Ciclo de Vida de la Caché
+
+- La caché de la vista principal (/drive) expira después de 4 horas.
+- La caché de carpetas específicas expira después de 2 horas.
+- El sistema limpia automáticamente las entradas antiguas.
+
+## Solución de Problemas
+
+### Problemas Comunes
+
+1. **No se muestra contenido**:
+
+   - Verifica que la ruta esté activada en el panel de administración.
+   - Comprueba que el ID de carpeta de Google Drive sea correcto.
+   - Asegúrate de tener permisos para acceder a esa carpeta.
+
+2. **Contenido desactualizado**:
+
+   - Haz clic en el botón "Actualizar" si ves que los datos provienen de la caché.
+   - Invalida la caché desde el panel de administración.
+
+3. **Errores de carga**:
+   - Verifica la consola del navegador para ver mensajes de error detallados.
+   - Comprueba la conexión con la API de Google Drive.
+
+### Soporte Técnico
+
+Si encuentras problemas que no puedes resolver, contacta al equipo de soporte con:
+
+- La URL exacta que estabas visitando.
+- Los mensajes de error que aparecen.
+- Las acciones que realizaste antes del error.
+
+---
+
+## Notas Importantes
+
+- El sistema está diseñado para mejorar el rendimiento mediante la caché, pero esto puede resultar en datos no totalmente actualizados.
+- Los cambios en Google Drive pueden tardar hasta el tiempo de expiración de la caché en reflejarse en el sistema.
+- Para contenido crítico que requiere actualización inmediata, usa siempre la función de forzar actualización.
+
+---
+
+Última actualización: Junio 2024
