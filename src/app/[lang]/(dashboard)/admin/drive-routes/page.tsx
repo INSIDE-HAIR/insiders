@@ -89,6 +89,9 @@ export default function DriveRouteAdmin() {
   const [routeToEdit, setRouteToEdit] = useState<DriveRouteMapping | null>(
     null
   );
+  const [refreshingRoutes, setRefreshingRoutes] = useState<string[]>([]);
+  const [invalidatingAllCache, setInvalidatingAllCache] = useState(false);
+  const [cleaningCache, setCleaningCache] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showJsonDialog, setShowJsonDialog] = useState(false);
@@ -423,6 +426,9 @@ export default function DriveRouteAdmin() {
   // Invalidar caché para una ruta específica
   const handleInvalidateCache = async (route: DriveRouteMapping) => {
     try {
+      // Add this route to the refreshing list
+      setRefreshingRoutes((prev) => [...prev, route.id]);
+
       const response = await fetch("/api/drive/cache/invalidate", {
         method: "POST",
         headers: {
@@ -458,6 +464,9 @@ export default function DriveRouteAdmin() {
             : "Error al invalidar la caché",
         variant: "destructive",
       });
+    } finally {
+      // Remove this route from the refreshing list
+      setRefreshingRoutes((prev) => prev.filter((id) => id !== route.id));
     }
   };
 
@@ -668,8 +677,13 @@ export default function DriveRouteAdmin() {
                             size='sm'
                             onClick={() => handleInvalidateCache(route)}
                             title='Invalidar caché'
+                            disabled={refreshingRoutes.includes(route.id)}
                           >
-                            <RefreshCw className='h-4 w-4' />
+                            {refreshingRoutes.includes(route.id) ? (
+                              <Loader2 className='h-4 w-4 animate-spin' />
+                            ) : (
+                              <RefreshCw className='h-4 w-4' />
+                            )}
                           </Button>
                           <Button
                             variant='outline'
@@ -746,6 +760,7 @@ export default function DriveRouteAdmin() {
               className='flex items-center gap-2'
               onClick={async () => {
                 try {
+                  setInvalidatingAllCache(true);
                   const response = await fetch("/api/drive/cache/invalidate", {
                     method: "POST",
                     headers: {
@@ -772,10 +787,17 @@ export default function DriveRouteAdmin() {
                     description: "No se pudo invalidar la caché",
                     variant: "destructive",
                   });
+                } finally {
+                  setInvalidatingAllCache(false);
                 }
               }}
+              disabled={invalidatingAllCache}
             >
-              <RefreshCw className='h-4 w-4' />
+              {invalidatingAllCache ? (
+                <Loader2 className='h-4 w-4 animate-spin' />
+              ) : (
+                <RefreshCw className='h-4 w-4' />
+              )}
               <span>Invalidar Toda la Caché</span>
             </Button>
 
@@ -784,6 +806,7 @@ export default function DriveRouteAdmin() {
               className='flex items-center gap-2'
               onClick={async () => {
                 try {
+                  setCleaningCache(true);
                   const response = await fetch("/api/drive/cache/cleanup", {
                     method: "POST",
                     headers: {
@@ -810,10 +833,17 @@ export default function DriveRouteAdmin() {
                     description: "No se pudo limpiar la caché antigua",
                     variant: "destructive",
                   });
+                } finally {
+                  setCleaningCache(false);
                 }
               }}
+              disabled={cleaningCache}
             >
-              <ClipboardList className='h-4 w-4' />
+              {cleaningCache ? (
+                <Loader2 className='h-4 w-4 animate-spin' />
+              ) : (
+                <ClipboardList className='h-4 w-4' />
+              )}
               <span>Eliminar Caché Antigua</span>
             </Button>
           </div>

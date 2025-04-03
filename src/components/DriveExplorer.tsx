@@ -235,6 +235,7 @@ export default function DriveExplorer({
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [cacheInfo, setCacheInfo] = useState<{
     fromCache: boolean;
     cacheAge?: number;
@@ -316,7 +317,10 @@ export default function DriveExplorer({
 
   // Función para forzar actualización
   const forceRefresh = () => {
-    fetchData(true);
+    setIsRefreshing(true);
+    fetchData(true).finally(() => {
+      setIsRefreshing(false);
+    });
   };
 
   // Modificamos esta función para simplemente expandir/contraer sin carga adicional
@@ -355,10 +359,13 @@ export default function DriveExplorer({
   };
 
   const resetData = () => {
+    setIsRefreshing(true);
     setDataLoaded(false);
     setHierarchy([]);
     setExpandedItems([]);
-    fetchData();
+    fetchData().finally(() => {
+      setIsRefreshing(false);
+    });
   };
 
   return (
@@ -382,6 +389,7 @@ export default function DriveExplorer({
                 size='sm'
                 onClick={() => setCurrentView("accordion")}
                 className='flex items-center gap-2'
+                disabled={isRefreshing}
               >
                 <LayoutList className='w-4 h-4' />
                 <span>Vista Acordeón</span>
@@ -391,6 +399,7 @@ export default function DriveExplorer({
                 size='sm'
                 onClick={() => setCurrentView("json")}
                 className='flex items-center gap-2'
+                disabled={isRefreshing}
               >
                 <Code className='w-4 h-4' />
                 <span>Vista JSON</span>
@@ -415,6 +424,7 @@ export default function DriveExplorer({
                   size='sm'
                   onClick={expandAll}
                   className='flex items-center gap-1'
+                  disabled={isRefreshing}
                 >
                   <Maximize className='w-3 h-3' />
                   <span>Expandir Todo</span>
@@ -424,6 +434,7 @@ export default function DriveExplorer({
                   size='sm'
                   onClick={collapseAll}
                   className='flex items-center gap-1'
+                  disabled={isRefreshing}
                 >
                   <Minimize className='w-3 h-3' />
                   <span>Contraer Todo</span>
@@ -436,9 +447,19 @@ export default function DriveExplorer({
                   size='sm'
                   onClick={resetData}
                   className='flex items-center gap-1'
+                  disabled={isRefreshing}
                 >
-                  <RotateCcw className='w-3 h-3' />
-                  <span>Reiniciar</span>
+                  {isRefreshing ? (
+                    <>
+                      <div className='animate-spin rounded-full h-3 w-3 border-2 border-gray-300 border-t-blue-500 mr-1'></div>
+                      <span>Reiniciando...</span>
+                    </>
+                  ) : (
+                    <>
+                      <RotateCcw className='w-3 h-3' />
+                      <span>Reiniciar</span>
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -471,9 +492,19 @@ export default function DriveExplorer({
                     size='sm'
                     className='ml-2 h-6 px-2'
                     onClick={forceRefresh}
+                    disabled={isRefreshing}
                   >
-                    <RefreshCw className='w-3 h-3 mr-1' />
-                    Actualizar
+                    {isRefreshing ? (
+                      <>
+                        <div className='animate-spin rounded-full h-3 w-3 border-2 border-gray-300 border-t-blue-500 mr-1'></div>
+                        <span>Actualizando...</span>
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className='w-3 h-3 mr-1' />
+                        <span>Actualizar</span>
+                      </>
+                    )}
                   </Button>
                 )}
               </div>

@@ -37,27 +37,35 @@ export default function DriveRoutesManual() {
         <CardContent className='prose max-w-none'>
           <p>
             Este sistema permite configurar múltiples puntos de acceso al
-            contenido de Google Drive a través de rutas personalizadas. Por
-            ejemplo, puedes tener rutas como:
+            contenido de Google Drive a través de rutas personalizadas de hasta
+            5 niveles. Solo el primer nivel es obligatorio, los demás son
+            opcionales. Por ejemplo, puedes tener rutas como:
           </p>
           <ul>
             <li>
               <code>/marketing/marketing-salon/</code> - Accede al contenido de
-              marketing para salones
+              marketing para salones (2 niveles)
             </li>
             <li>
-              <code>/academy/ibm/</code> - Contenido formativo específico para
-              IBM
+              <code>/marketing/eventos/2023/</code> - Contenido de eventos de
+              marketing del año 2023 (3 niveles)
             </li>
             <li>
-              <code>/eventos/lmadrid/</code> - Archivos relacionados con eventos
-              en Madrid
+              <code>/comunicacion/interna/2025/marzo/insiders/</code> -
+              Comunicación interna para Insiders de marzo 2025 (5 niveles)
             </li>
           </ul>
           <p>
             Cada ruta se conecta a una carpeta específica de Google Drive,
             permitiendo un acceso organizado a diferentes secciones de
-            contenido.
+            contenido. La estructura de niveles permite una organización
+            jerárquica y flexible que se adapta a tus necesidades.
+          </p>
+          <p>
+            El nuevo sistema de carga optimizada permite una navegación
+            instantánea sin esperas al expandir carpetas, ya que todo el
+            contenido se carga de una sola vez, aprovechando el sistema de caché
+            para un rendimiento óptimo.
           </p>
         </CardContent>
       </Card>
@@ -90,21 +98,33 @@ export default function DriveRoutesManual() {
             <li>
               <strong>Agregar nueva ruta</strong>
               <p>
-                En el panel de administración, haz clic en el botón &quot;Agregar
-                Ruta&quot; y completa los siguientes campos:
+                En el panel de administración, haz clic en el botón &quot;Crear
+                Nueva Ruta&quot; y completa los siguientes campos:
               </p>
               <ul>
                 <li>
-                  <strong>Tipo de Ruta:</strong> Categoría principal (ej:
-                  marketing, academy, eventos)
+                  <strong>Nivel 1 de Ruta:</strong> Categoría principal
+                  (obligatorio, ej: marketing, academy, eventos)
                 </li>
                 <li>
-                  <strong>Subtipo:</strong> Subcategoría específica (ej:
-                  marketing-salon, ibm, lmadrid)
+                  <strong>Nivel 2 de Ruta:</strong> Primera subcategoría
+                  (opcional, ej: marketing-salon, ibm, lmadrid)
                 </li>
                 <li>
-                  <strong>Nombre para Mostrar:</strong> Nombre amigable que
-                  verán los usuarios
+                  <strong>Nivel 3 de Ruta:</strong> Segunda subcategoría
+                  (opcional, ej: 2025)
+                </li>
+                <li>
+                  <strong>Nivel 4 de Ruta:</strong> Tercera subcategoría
+                  (opcional, ej: marzo)
+                </li>
+                <li>
+                  <strong>Nivel 5 de Ruta:</strong> Cuarta subcategoría
+                  (opcional, ej: insiders)
+                </li>
+                <li>
+                  <strong>Título:</strong> Nombre amigable que verán los
+                  usuarios
                 </li>
                 <li>
                   <strong>ID de Carpeta Raíz:</strong> El ID de la carpeta de
@@ -120,7 +140,11 @@ export default function DriveRoutesManual() {
               <strong>Guardar la configuración</strong>
               <p>
                 Haz clic en &quot;Guardar&quot; para crear la ruta. Esto
-                generará la URL <code>/[lang]/[routeType]/[routeSubtype]/</code>{" "}
+                generará la URL basada en los niveles de ruta que has
+                configurado, como{" "}
+                <code>
+                  /[lang]/marketing/marketing-salon/2025/marzo/insiders
+                </code>{" "}
                 donde los usuarios podrán acceder al contenido.
               </p>
             </li>
@@ -142,12 +166,14 @@ export default function DriveRoutesManual() {
           </p>
           <ul>
             <li>
-              <code>/es/marketing/marketing-salon/</code> - Vista principal del
-              contenido
+              <code>/es/marketing/marketing-salon/2025/marzo/insiders</code> -
+              Vista principal del contenido
             </li>
             <li>
-              <code>/es/marketing/marketing-salon/folders/[id]</code> - Vista de
-              una carpeta específica
+              <code>
+                /es/marketing/marketing-salon/2025/marzo/insiders/folders/[id]
+              </code>{" "}
+              - Vista de una carpeta específica
             </li>
           </ul>
 
@@ -162,8 +188,8 @@ export default function DriveRoutesManual() {
               vista JSON para inspeccionar la estructura de datos
             </li>
             <li>
-              <strong>Carga bajo demanda:</strong> El contenido se carga
-              progresivamente al expandir carpetas
+              <strong>Carga optimizada:</strong> El contenido se carga
+              completamente en la primera solicitud para navegación instantánea
             </li>
             <li>
               <strong>Caché inteligente:</strong> El sistema almacena en caché
@@ -189,6 +215,18 @@ export default function DriveRoutesManual() {
           <h3>Información importante sobre la caché</h3>
           <ul>
             <li>
+              <strong>Tipos de caché:</strong>
+              <ul>
+                <li>
+                  Caché de rutas: Almacena el contenido de una ruta específica
+                </li>
+                <li>
+                  Caché de jerarquía: Almacena la estructura de carpetas y
+                  archivos
+                </li>
+              </ul>
+            </li>
+            <li>
               <strong>Duración de la caché:</strong>
               <ul>
                 <li>Las rutas principales tienen una caché que dura 4 horas</li>
@@ -198,14 +236,14 @@ export default function DriveRoutesManual() {
               </ul>
             </li>
             <li>
-              <strong>Invalidación de caché:</strong> Puedes invalidar
-              manualmente la caché de una ruta específica usando el botón de
-              actualización
+              <strong>Invalidación de caché:</strong> Al hacer clic en el botón
+              de actualización, se invalidan tanto la caché de la ruta como las
+              jerarquías asociadas
             </li>
             <li>
-              <strong>Limpieza de caché:</strong> El sistema limpia
-              automáticamente las entradas de caché antiguas para mantener un
-              rendimiento óptimo
+              <strong>Estado de carga:</strong> Los botones de actualización
+              mostrarán un estado de carga mientras se procesa la invalidación
+              de caché
             </li>
           </ul>
 
@@ -246,7 +284,8 @@ export default function DriveRoutesManual() {
               <p className='mt-1'>
                 <strong>Solución:</strong> Invalidar la caché de la ruta
                 específica usando el botón de actualización en el panel de
-                administración.
+                administración. El botón mostrará un estado de carga mientras se
+                procesa.
               </p>
             </div>
 
@@ -256,9 +295,10 @@ export default function DriveRoutesManual() {
                 Una ruta muestra un error 404
               </h4>
               <p className='mt-1'>
-                <strong>Solución:</strong> Verifica que la ruta esté
-                configurada correctamente y que el estado esté &quot;Activo&quot;
-                en el panel.
+                <strong>Solución:</strong> Verifica que la ruta esté configurada
+                correctamente y que el estado esté &quot;Activo&quot; en el
+                panel. Confirma que todos los niveles de ruta están
+                correctamente escritos.
               </p>
             </div>
 
@@ -269,9 +309,10 @@ export default function DriveRoutesManual() {
                 archivos
               </h4>
               <p className='mt-1'>
-                <strong>Solución:</strong> Reduce la &quot;Profundidad por
-                Defecto&quot; en la configuración de la ruta para limitar la
-                cantidad de datos cargados inicialmente.
+                <strong>Solución:</strong> La carga optimizada ya no debería
+                presentar este problema, pero si ocurre, reduce la
+                &quot;Profundidad por Defecto&quot; en la configuración de la
+                ruta.
               </p>
             </div>
 
@@ -284,6 +325,33 @@ export default function DriveRoutesManual() {
                 <strong>Solución:</strong> Asegúrate de que la cuenta de
                 servicio de Google Drive tiene acceso a esos archivos o
                 carpetas.
+              </p>
+            </div>
+
+            <div className='p-4 border rounded-lg bg-gray-50'>
+              <h4 className='font-semibold flex items-center'>
+                <span className='text-red-500 mr-2'>●</span>
+                Los botones de invalidación de caché parecen no responder
+              </h4>
+              <p className='mt-1'>
+                <strong>Solución:</strong> Los botones se desactivan durante el
+                proceso de invalidación para evitar múltiples solicitudes.
+                Espera a que termine el proceso actual, indicado por el icono de
+                carga.
+              </p>
+            </div>
+
+            <div className='p-4 border rounded-lg bg-gray-50'>
+              <h4 className='font-semibold flex items-center'>
+                <span className='text-red-500 mr-2'>●</span>
+                Cambios en la estructura de Google Drive no se reflejan
+                automáticamente
+              </h4>
+              <p className='mt-1'>
+                <strong>Solución:</strong> El sistema utiliza caché para mejorar
+                el rendimiento. Cuando hagas cambios en Google Drive, utiliza el
+                botón de invalidación de caché para que los cambios se reflejen
+                inmediatamente.
               </p>
             </div>
           </div>
@@ -308,7 +376,8 @@ export default function DriveRoutesManual() {
             <li className='flex items-start'>
               <CheckCircle2 className='h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5' />
               <span>
-                Configurar cada ruta con su tipo, subtipo y carpeta raíz
+                Configurar cada ruta con sus niveles de acceso (nivel 1
+                obligatorio, niveles 2-5 opcionales)
               </span>
             </li>
             <li className='flex items-start'>
@@ -322,13 +391,21 @@ export default function DriveRoutesManual() {
             <li className='flex items-start'>
               <CheckCircle2 className='h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5' />
               <span>
-                Monitorear el rendimiento y limpiar la caché periódicamente
+                Invalidar la caché cuando se hagan cambios importantes en Google
+                Drive
               </span>
             </li>
             <li className='flex items-start'>
               <CheckCircle2 className='h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5' />
               <span>
                 Ajustar la configuración de profundidad según las necesidades
+              </span>
+            </li>
+            <li className='flex items-start'>
+              <CheckCircle2 className='h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5' />
+              <span>
+                Utilizar el sistema de carga optimizada para mejor experiencia
+                de usuario
               </span>
             </li>
           </ul>
