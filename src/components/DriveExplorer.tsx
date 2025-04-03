@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { HierarchyItem } from "@/src/features/drive/types/hierarchy";
 import {
@@ -247,73 +247,76 @@ export default function DriveExplorer({
   } | null>(null);
 
   // Función para cargar datos desde el API - siempre con profundidad alta
-  const fetchData = async (forceRefresh = false) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const fetchData = useCallback(
+    async (forceRefresh = false) => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Construir la URL con la ruta completa
-      let url = `/api/drive/${path.join("/")}`;
+        // Construir la URL con la ruta completa
+        let url = `/api/drive/${path.join("/")}`;
 
-      // Si hay un ID de carpeta específico, añadirlo a la URL
-      if (folderId) {
-        url += `/folders/${folderId}`;
-      }
+        // Si hay un ID de carpeta específico, añadirlo a la URL
+        if (folderId) {
+          url += `/folders/${folderId}`;
+        }
 
-      // Añadir parámetros de consulta
-      url += `?maxDepth=10&forceRefresh=${forceRefresh}`;
+        // Añadir parámetros de consulta
+        url += `?maxDepth=10&forceRefresh=${forceRefresh}`;
 
-      const response = await fetch(url);
+        const response = await fetch(url);
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.error) {
-        setError(data.error);
-        setHierarchy([]);
-      } else {
-        // Para carpetas específicas o raíz, la estructura cambia ligeramente
-        if (folderId && data.folder) {
-          setHierarchy(data.folder.hierarchy.children || []);
+        if (data.error) {
+          setError(data.error);
+          setHierarchy([]);
         } else {
-          setHierarchy(data.root?.children || []);
-        }
+          // Para carpetas específicas o raíz, la estructura cambia ligeramente
+          if (folderId && data.folder) {
+            setHierarchy(data.folder.hierarchy.children || []);
+          } else {
+            setHierarchy(data.root?.children || []);
+          }
 
-        setCacheInfo({
-          fromCache: data.stats?.fromCache || false,
-          cacheAge: data.stats?.cacheAge,
-        });
-
-        setLastRefresh(new Date());
-
-        // Guardar información del contexto de la ruta
-        if (data.routeInfo) {
-          setRouteContext({
-            path: data.routeInfo.path,
-            title: data.routeInfo.title,
-            subtitle: data.routeInfo.subtitle,
+          setCacheInfo({
+            fromCache: data.stats?.fromCache || false,
+            cacheAge: data.stats?.cacheAge,
           });
-        }
-      }
 
-      setDataLoaded(true);
-    } catch (error) {
-      setError((error as Error).message);
-      setHierarchy([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+          setLastRefresh(new Date());
+
+          // Guardar información del contexto de la ruta
+          if (data.routeInfo) {
+            setRouteContext({
+              path: data.routeInfo.path,
+              title: data.routeInfo.title,
+              subtitle: data.routeInfo.subtitle,
+            });
+          }
+        }
+
+        setDataLoaded(true);
+      } catch (error) {
+        setError((error as Error).message);
+        setHierarchy([]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [path, folderId]
+  );
 
   // Cargar datos al montar el componente
   useEffect(() => {
     if (status !== "loading") {
       fetchData();
     }
-  }, [status, path, folderId]);
+  }, [status, fetchData]);
 
   // Función para forzar actualización
   const forceRefresh = () => {

@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -239,14 +239,15 @@ export default function PageCreator() {
     return pages.filter((page) => page.status === status).length;
   };
 
-  const fetchPages = async () => {
+  const fetchPages = useCallback(async () => {
     setIsLoading(true);
     try {
-      const searchParams = new URLSearchParams({
-        search,
-        status: selectedStatus,
-        tags: selectedTags.join(","),
-      });
+      let searchParams = new URLSearchParams();
+      if (search) searchParams.append("search", search);
+      if (selectedStatus) searchParams.append("status", selectedStatus);
+      if (selectedTags.length > 0) {
+        selectedTags.forEach((tag) => searchParams.append("tags", tag));
+      }
 
       const response = await fetch(`/api/pages?${searchParams}`);
       if (!response.ok) throw new Error("Failed to fetch pages.");
@@ -257,11 +258,11 @@ export default function PageCreator() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [search, selectedStatus, selectedTags, m, toast]);
 
   useEffect(() => {
     fetchPages();
-  }, [search, selectedStatus, selectedTags]);
+  }, [fetchPages]);
 
   const renderTemplateOptions = () => {
     return Object.values(Template)

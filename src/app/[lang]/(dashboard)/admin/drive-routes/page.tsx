@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
@@ -118,7 +118,7 @@ export default function DriveRouteAdmin() {
   });
 
   // Cargar datos de rutas
-  const fetchRoutes = async () => {
+  const fetchRoutes = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch("/api/drive/config/routes");
@@ -137,14 +137,14 @@ export default function DriveRouteAdmin() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
 
   // Cargar datos cuando el componente se monta
   useEffect(() => {
     if (status === "authenticated") {
       fetchRoutes();
     }
-  }, [status]);
+  }, [status, fetchRoutes]);
 
   // Manejar los cambios en el formulario
   const handleFormChange = (field: string, value: any) => {
