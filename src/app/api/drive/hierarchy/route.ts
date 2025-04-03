@@ -32,10 +32,13 @@ export async function GET(request: NextRequest) {
 
     // Obtener parámetros de la solicitud
     const { searchParams } = new URL(request.url);
-    const rootFolderId = searchParams.get("rootId") || "root";
+    const rootFolderId =
+      searchParams.get("rootId") ||
+      process.env.GOOGLE_DRIVE_ROOT_FOLDER_ID ||
+      "root";
     const includeHidden = searchParams.get("includeHidden") === "true";
     const maxDepthStr = searchParams.get("maxDepth");
-    const maxDepth = maxDepthStr ? parseInt(maxDepthStr) : 10;
+    const maxDepth = maxDepthStr ? parseInt(maxDepthStr) : 5;
     const processMetadata = searchParams.get("processMetadata") !== "false";
     const verboseMetadata = searchParams.get("verboseMetadata") === "true";
     const autoValidate = searchParams.get("validate") !== "false";
@@ -64,7 +67,11 @@ export async function GET(request: NextRequest) {
       `Jerarquía construida con ${hierarchyResponse.stats.totalItems} elementos (${hierarchyResponse.stats.totalFolders} carpetas, ${hierarchyResponse.stats.totalFiles} archivos)`
     );
 
-    return NextResponse.json(hierarchyResponse);
+    // Devolver la estructura correcta
+    return NextResponse.json({
+      root: hierarchyResponse.root,
+      stats: hierarchyResponse.stats,
+    });
   } catch (error: any) {
     logger.error("Error al construir jerarquía", error);
     return NextResponse.json(
