@@ -4,6 +4,8 @@ import prisma from "@/prisma/database";
 import { z } from "zod";
 import { deleteFromStorage } from "@/src/lib/storage"; // Este sería tu servicio de almacenamiento
 
+export const dynamic = "force-dynamic";
+
 const updateFileSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),

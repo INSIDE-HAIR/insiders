@@ -12,6 +12,8 @@ const querySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(20),
 });
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const session = await auth();

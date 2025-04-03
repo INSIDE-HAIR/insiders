@@ -9,6 +9,8 @@ import {
 } from "@/src/features/drive/services/hierarchy/hierarchyService";
 import { Logger } from "@/src/features/drive/utils/logger";
 
+export const dynamic = "force-dynamic";
+
 const logger = new Logger("API:Drive:Hierarchy");
 const prisma = new PrismaClient();
 

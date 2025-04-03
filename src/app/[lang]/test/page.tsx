@@ -258,7 +258,7 @@ export default function PageCreator() {
     } finally {
       setIsLoading(false);
     }
-  }, [search, selectedStatus, selectedTags, m, toast]);
+  }, [search, selectedStatus, selectedTags, m]);
 
   useEffect(() => {
     fetchPages();
