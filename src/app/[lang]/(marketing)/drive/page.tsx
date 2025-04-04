@@ -10,62 +10,78 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { FolderIcon } from "@heroicons/react/24/solid";
 import { useSession, signIn } from "next-auth/react";
 import { Logger } from "@/src/features/drive/utils/logger";
+import { TabsView } from "./components/TabsView";
+import { HierarchyItem } from "@drive/types/hierarchy";
+import { Notifications, useNotifications } from "./components/ui/Notifications";
 
 const logger = new Logger("DriveExplorer");
 
-interface Folder {
-  id: string;
-  name: string;
-  mimeType: string;
-  modifiedTime: string;
-}
+// ID de la carpeta raíz desde variables de entorno
+const ROOT_FOLDER_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_DRIVE_ROOT_FOLDER_ID ||
+  "19wn0b3uaOT81NVxQARXLht8Nbukn-0u_";
 
 const DriveExplorer: React.FC = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [folderDetails, setFolderDetails] = useState<{
+    id: string;
+    name: string;
+    hierarchy: HierarchyItem[];
+  } | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const notifications = useNotifications();
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetchFolders();
+      fetchHierarchy();
     } else if (status === "unauthenticated") {
       signIn("google", { callbackUrl: "/drive" });
     }
   }, [status]);
 
-  const fetchFolders = async () => {
+  const fetchHierarchy = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/drive/folders");
+      const notificationId = notifications.addNotification(
+        "loading",
+        "Loading drive hierarchy..."
+      );
+
+      // Usar el mismo endpoint que la página de detalle
+      const response = await fetch(
+        `/api/drive/folders/${ROOT_FOLDER_ID}/hierarchy`
+      );
       if (!response.ok) {
-        throw new Error("Failed to fetch folders");
+        throw new Error("Failed to fetch hierarchy");
       }
       const data = await response.json();
 
-      // Obtener la jerarquía completa para cada carpeta
-      const foldersWithHierarchy = await Promise.all(
-        data.map(async (folder: any) => {
-          const hierarchyResponse = await fetch(
-            `/api/drive/folders/${folder.id}/hierarchy`
-          );
-          if (hierarchyResponse.ok) {
-            const hierarchyData = await hierarchyResponse.json();
-            return hierarchyData.hierarchy[0]; // Tomamos el primer elemento ya que viene en array
-          }
-          return folder;
-        })
-      );
+      // Asegurarse de que la jerarquía es un array
+      const hierarchy = Array.isArray(data.hierarchy)
+        ? data.hierarchy
+        : [data.root];
 
-      setFolders(foldersWithHierarchy);
+      setFolderDetails({
+        id: data.id || ROOT_FOLDER_ID,
+        name: data.name || "Drive Explorer",
+        hierarchy: hierarchy,
+      });
+
+      setError(null);
+      notifications.updateNotification(
+        notificationId,
+        "success",
+        "Drive hierarchy loaded successfully"
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setFolders([]);
+      const message = err instanceof Error ? err.message : "An error occurred";
+      setError(message);
+      notifications.addNotification("error", message);
     } finally {
       setIsLoading(false);
     }
@@ -73,46 +89,61 @@ const DriveExplorer: React.FC = () => {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      fetchFolders();
+      fetchHierarchy();
       return;
     }
 
     try {
       setIsLoading(true);
+      const notificationId = notifications.addNotification(
+        "loading",
+        "Searching..."
+      );
+
+      // Para búsqueda usamos el endpoint específico
       const response = await fetch(
-        `/api/drive/folders/search?q=${encodeURIComponent(searchQuery)}`
+        `/api/drive/hierarchy/search?q=${encodeURIComponent(
+          searchQuery
+        )}&rootId=${ROOT_FOLDER_ID}`
       );
       if (!response.ok) {
-        throw new Error("Failed to search folders");
+        throw new Error("Failed to search");
       }
       const data = await response.json();
 
-      // Obtener la jerarquía completa para los resultados de búsqueda
-      const foldersWithHierarchy = await Promise.all(
-        data.map(async (folder: any) => {
-          const hierarchyResponse = await fetch(
-            `/api/drive/folders/${folder.id}/hierarchy`
-          );
-          if (hierarchyResponse.ok) {
-            const hierarchyData = await hierarchyResponse.json();
-            return hierarchyData.hierarchy[0];
-          }
-          return folder;
-        })
-      );
+      // Asegurarse de que los resultados son consistentes
+      const results = Array.isArray(data.hierarchy)
+        ? data.hierarchy
+        : Array.isArray(data.results)
+        ? data.results
+        : [data.root];
 
-      setFolders(foldersWithHierarchy);
+      setFolderDetails({
+        id: ROOT_FOLDER_ID,
+        name: `Search: ${searchQuery}`,
+        hierarchy: results,
+      });
+
+      setError(null);
+      notifications.updateNotification(
+        notificationId,
+        "success",
+        `Found ${results.length} results`
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      setFolders([]);
+      const message = err instanceof Error ? err.message : "An error occurred";
+      setError(message);
+      notifications.addNotification("error", message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const filteredFolders = folders.filter((folder) =>
-    folder.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleItemClick = (item: HierarchyItem) => {
+    if (item.driveType === "folder") {
+      router.push(`/drive/${item.id}`);
+    }
+  };
 
   if (status === "loading") {
     return (
@@ -138,66 +169,59 @@ const DriveExplorer: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Drive Explorer</h1>
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-8">Drive Explorer</h1>
 
-      {/* Search Bar */}
-      <div className="flex gap-2 mb-6">
-        <div className="relative flex-1">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Search folders..."
-            className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+        {/* Search Bar */}
+        <div className="flex gap-2 mb-6">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              placeholder="Search in drive..."
+              className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          </div>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Search
+          </button>
         </div>
-        <button
-          onClick={handleSearch}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Search
-        </button>
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+          </div>
+        ) : (
+          /* Tabs View */
+          folderDetails && (
+            <div className="bg-white rounded-lg shadow">
+              <TabsView
+                hierarchy={folderDetails.hierarchy}
+                onItemClick={handleItemClick}
+              />
+            </div>
+          )
+        )}
       </div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
-          {error}
-        </div>
-      )}
-
-      {/* Loading State */}
-      {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
-        </div>
-      ) : (
-        /* Folder List */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredFolders.map((folder) => (
-            <div
-              key={folder.id}
-              className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-              onClick={() => router.push(`/drive/${folder.id}`)}
-            >
-              <div className="flex items-center gap-3">
-                <FolderIcon className="h-8 w-8 text-blue-500" />
-                <div>
-                  <h3 className="font-medium">{folder.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    Last modified:{" "}
-                    {new Date(folder.modifiedTime).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+      {/* Notifications */}
+      <Notifications />
+    </>
   );
 };
 

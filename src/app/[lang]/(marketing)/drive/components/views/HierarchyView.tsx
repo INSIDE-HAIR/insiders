@@ -21,9 +21,6 @@ import {
   FileIcon,
   ExternalLink,
 } from "lucide-react";
-import { FilePreview } from "../preview/FilePreview";
-import { GoogleWorkspacePreview } from "../preview/GoogleWorkspacePreview";
-import { MediaPreview } from "../preview/MediaPreview";
 
 interface HierarchyViewProps {
   items: HierarchyItem[];
@@ -66,23 +63,7 @@ export function HierarchyView({
     ));
   };
 
-  const renderPreview = (item: HierarchyItem) => {
-    if (!isFileItem(item)) return null;
 
-    if (item.mimeType?.includes("google")) {
-      return <GoogleWorkspacePreview file={item} />;
-    }
-
-    if (
-      item.mimeType?.includes("image") ||
-      item.mimeType?.includes("video") ||
-      item.mimeType?.includes("audio")
-    ) {
-      return <MediaPreview file={item} />;
-    }
-
-    return <FilePreview file={item} />;
-  };
 
   const renderTabsContent = (item: HierarchyItem) => {
     if (!isFolderItem(item)) return null;
@@ -196,7 +177,6 @@ export function HierarchyView({
 
         {isExpanded && hasChildren && (
           <div className="mt-1">
-            {renderPreview(item)}
             <HierarchyView
               items={isFolderItem(item) ? item.children : []}
               onItemClick={onItemClick}
