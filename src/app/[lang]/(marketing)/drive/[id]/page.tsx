@@ -53,7 +53,7 @@ export default function FolderDetailsPage() {
     );
 
     try {
-      const response = await fetch(`/api/drive/folders/${folderId}/hierarchy`);
+      const response = await fetch(`/api/drive/hierarchy/folder/${folderId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch folder details");
       }

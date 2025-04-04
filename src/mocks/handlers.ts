@@ -43,7 +43,7 @@ export const handlers = [
     return HttpResponse.json(folder);
   }),
 
-  http.get("/api/drive/folders/:id/hierarchy", () => {
+  http.get("/api/drive/hierarchy/folder/:id", () => {
     return HttpResponse.json({
       id: "test-folder-id",
       name: "Test Folder",

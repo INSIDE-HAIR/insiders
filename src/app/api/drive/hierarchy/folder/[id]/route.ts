@@ -9,7 +9,7 @@ import { extractSuffixes, extractPreviewPattern } from "@drive/types/suffix";
 import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
 import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
-const logger = new Logger("API:FolderHierarchy");
+const logger = new Logger("API:HierarchyFolderDetail");
 
 async function buildHierarchyItem(
   item: any,
