@@ -12,9 +12,9 @@ import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useSession, signIn } from "next-auth/react";
 import { Logger } from "@/src/features/drive/utils/logger";
-import { TabsView } from "./components/TabsView";
+import { ViewSelector } from "./components/views";
 import { HierarchyItem } from "@drive/types/hierarchy";
-import { Notifications, useNotifications } from "./components/ui/Notifications";
+import { useNotifications, Toaster } from "./components/ui";
 
 const logger = new Logger("DriveExplorer");
 
@@ -31,6 +31,9 @@ const DriveExplorer: React.FC = () => {
     name: string;
     hierarchy: HierarchyItem[];
   } | null>(null);
+  const [originalHierarchy, setOriginalHierarchy] = useState<HierarchyItem[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,6 +69,9 @@ const DriveExplorer: React.FC = () => {
         ? data.hierarchy
         : [data.root];
 
+      // Guardar la jerarquía original para búsquedas locales
+      setOriginalHierarchy(hierarchy);
+
       setFolderDetails({
         id: data.id || ROOT_FOLDER_ID,
         name: data.name || "Drive Explorer",
@@ -87,36 +93,85 @@ const DriveExplorer: React.FC = () => {
     }
   };
 
-  const handleSearch = async () => {
+  // Función recursiva para filtrar elementos de la jerarquía
+  const filterHierarchyItems = (
+    items: HierarchyItem[],
+    query: string
+  ): HierarchyItem[] => {
+    if (!query.trim()) return items;
+
+    const normalizedQuery = query.toLowerCase();
+
+    return items.reduce<HierarchyItem[]>((filtered, item) => {
+      // Verificar si el nombre o la descripción coinciden con la búsqueda
+      const nameMatch =
+        item.name.toLowerCase().includes(normalizedQuery) ||
+        item.displayName.toLowerCase().includes(normalizedQuery);
+      const descMatch = item.description
+        ?.toLowerCase()
+        .includes(normalizedQuery);
+
+      if (nameMatch || descMatch) {
+        // Si hay coincidencia, incluir el elemento completo
+        filtered.push(item);
+        return filtered;
+      }
+
+      // Para carpetas, buscar en los hijos recursivamente
+      if (item.driveType === "folder" && item.children.length > 0) {
+        const matchingChildren = filterHierarchyItems(item.children, query);
+
+        if (matchingChildren.length > 0) {
+          // Crear una copia de la carpeta pero solo con los hijos que coinciden
+          filtered.push({
+            ...item,
+            children: matchingChildren,
+          });
+        }
+      }
+
+      return filtered;
+    }, []);
+  };
+
+  const handleSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    // Ejecutar la búsqueda automáticamente después de establecer el query
+    if (!query.trim()) {
+      // Si la búsqueda está vacía, mostrar la jerarquía original
+      if (folderDetails) {
+        setFolderDetails({
+          ...folderDetails,
+          hierarchy: originalHierarchy,
+          name: "Drive Explorer",
+        });
+      }
+    } else {
+      // Debouncing básico: solo buscar si hay algo escrito
+      handleSearch();
+    }
+  };
+
+  const handleSearch = () => {
     if (!searchQuery.trim()) {
-      fetchHierarchy();
+      // Si la búsqueda está vacía, mostrar la jerarquía original
+      if (folderDetails) {
+        setFolderDetails({
+          ...folderDetails,
+          hierarchy: originalHierarchy,
+          name: "Drive Explorer",
+        });
+      }
       return;
     }
 
     try {
       setIsLoading(true);
-      const notificationId = notifications.addNotification(
-        "loading",
-        "Searching..."
-      );
 
-      // Para búsqueda usamos el endpoint específico
-      const response = await fetch(
-        `/api/drive/hierarchy/search?q=${encodeURIComponent(
-          searchQuery
-        )}&rootId=${ROOT_FOLDER_ID}`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to search");
-      }
-      const data = await response.json();
-
-      // Asegurarse de que los resultados son consistentes
-      const results = Array.isArray(data.hierarchy)
-        ? data.hierarchy
-        : Array.isArray(data.results)
-        ? data.results
-        : [data.root];
+      // Filtrar la jerarquía localmente
+      const results = filterHierarchyItems(originalHierarchy, searchQuery);
 
       setFolderDetails({
         id: ROOT_FOLDER_ID,
@@ -124,12 +179,7 @@ const DriveExplorer: React.FC = () => {
         hierarchy: results,
       });
 
-      setError(null);
-      notifications.updateNotification(
-        notificationId,
-        "success",
-        `Found ${results.length} results`
-      );
+      setError(null); // Limpiar errores previos
     } catch (err) {
       const message = err instanceof Error ? err.message : "An error occurred";
       setError(message);
@@ -179,8 +229,7 @@ const DriveExplorer: React.FC = () => {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              onChange={handleSearchQueryChange}
               placeholder="Search in drive..."
               className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -207,10 +256,10 @@ const DriveExplorer: React.FC = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
           </div>
         ) : (
-          /* Tabs View */
+          /* Content View */
           folderDetails && (
             <div className="bg-white rounded-lg shadow">
-              <TabsView
+              <ViewSelector
                 hierarchy={folderDetails.hierarchy}
                 onItemClick={handleItemClick}
               />
@@ -219,8 +268,8 @@ const DriveExplorer: React.FC = () => {
         )}
       </div>
 
-      {/* Notifications */}
-      <Notifications />
+      {/* Toaster para notificaciones */}
+      <Toaster />
     </>
   );
 };

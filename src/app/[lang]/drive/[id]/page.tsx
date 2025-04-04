@@ -4,13 +4,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import {
-  Notifications,
-  useNotifications,
-} from "../components/ui/Notifications";
+import { useNotifications, Toaster } from "../components/ui";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import { DriveType } from "@drive/types/drive";
-import { ViewSelector } from "../components/views/ViewSelector";
+import { ViewSelector } from "../components/views";
 
 interface FolderDetails {
   id: string;
@@ -183,8 +180,8 @@ export default function FolderDetailsPage() {
         )}
       </div>
 
-      {/* Notifications */}
-      <Notifications />
+      {/* Toaster para notificaciones */}
+      <Toaster />
     </>
   );
 }

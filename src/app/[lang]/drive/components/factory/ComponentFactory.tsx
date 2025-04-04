@@ -25,9 +25,7 @@ import {
 } from "@ui/accordion";
 import { Button } from "@ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@ui/dialog";
-import { ExplorerElement } from "../elements/ExplorerElement";
-import { FileElement } from "../elements/FileElement";
-import { FolderElement } from "../elements/FolderElement";
+import { ExplorerElement, FileElement, FolderElement } from "../elements";
 
 // Propiedades para el ComponentFactory
 interface ComponentFactoryProps {

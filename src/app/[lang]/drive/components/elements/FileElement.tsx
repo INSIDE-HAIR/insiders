@@ -72,7 +72,7 @@ export function FileElement({
             className="text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
             onClick={copyIdToClipboard}
           >
-            Copiar
+            Copiar ID
           </Button>
           <Button
             size="sm"
@@ -80,15 +80,7 @@ export function FileElement({
             className="text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
             onClick={openInNewTab}
           >
-            Abrir
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
-            onClick={handleClick}
-          >
-            Ver
+            Ver archivo
           </Button>
         </div>
       </div>
