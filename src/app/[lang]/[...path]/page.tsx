@@ -11,7 +11,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/src/components/ui/card";
-import { ViewSelector } from "@/src/app/[lang]/drive/components/views";
+import { ViewSelector } from "@/src/app/[lang]/admin/drive/components/views";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import {
   Accordion,
@@ -52,7 +52,7 @@ const ClientView = dynamic(() => import("./components/ClientView"), {
 // Función para obtener datos del servidor con datos simulados para cliente
 async function getDriveRouteData(slug: string) {
   try {
-    const response = await fetch(`/api/drive-routes/${slug}`);
+    const response = await fetch(`/api/drive/routes/${slug}`);
     if (!response.ok) {
       throw new Error("No se pudo cargar la ruta");
     }

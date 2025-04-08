@@ -2,7 +2,16 @@
 import React from "react";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import translations from "@/db/translations.json";
-import { Home, Palette, LineChart, Rocket, LucideIcon } from "lucide-react";
+import {
+  Home,
+  Palette,
+  LineChart,
+  Rocket,
+  LucideIcon,
+  FolderIcon,
+  Route as RouteIcon,
+  FileText,
+} from "lucide-react";
 import { AppSidebar } from "../app-sidebar";
 import { Icons } from "@/src/components/icons";
 import Header from "../layout/header";
@@ -23,6 +32,9 @@ const iconMap = {
   DatabaseIcon: Icons.DatabaseIcon,
   GitHubIcon: Icons.GitHubIcon,
   GoogleIcon: Icons.GoogleIcon,
+  FolderIcon: FolderIcon,
+  RouteIcon: RouteIcon,
+  FileTextIcon: FileText,
 } as const;
 
 // Definimos un tipo para las rutas de traducción
@@ -58,13 +70,18 @@ const pagesWithSubpages: Record<
   menu: [{ title: "Configuración de Menú", url: "/admin/menu" }],
   messages: [{ title: "Todos los Mensajes", url: "/admin/messages" }],
   holded: [{ title: "Panel de Holded", url: "/admin/holded" }],
+  drive: [
+    { title: "Explorador de Drive", url: "/admin/drive" },
+    { title: "Rutas de Drive", url: "/admin/drive/routes" },
+    { title: "Documentación", url: "/admin/drive/routes/docs" },
+  ],
 };
 
 // Definir las rutas por equipo
 const teamRoutes = {
   gestion: translations.adminRoutes, // Acceso completo
   creativos: translations.adminRoutes.filter((route) =>
-    ["pages", "menu", "drive-routes"].includes(route.id)
+    ["pages", "menu", "drive"].includes(route.id)
   ),
   consultoria: translations.adminRoutes.filter((route) =>
     ["analytics", "users", "users2", "dashboard", "messages"].includes(route.id)
@@ -75,7 +92,7 @@ const teamRoutes = {
 };
 
 // Lista de páginas que NO deben ser acordiones (enlaces directos)
-const directLinkPages = ["admin", "dashboard", "analytics", "drive-routes"];
+const directLinkPages = ["admin", "dashboard", "analytics"];
 
 // Función para crear los elementos de navegación con subpáginas cuando existen
 const createNavItems = (routes: TranslationRoute[]) => {
@@ -86,7 +103,7 @@ const createNavItems = (routes: TranslationRoute[]) => {
     if (directLinkPages.includes(route.id)) {
       return {
         title: route.translations.es,
-        url: `/admin/${route.path}`,
+        url: `/admin${route.path}`,
         icon,
         items: [], // Sin subítems para enlaces directos
       };
@@ -98,7 +115,7 @@ const createNavItems = (routes: TranslationRoute[]) => {
     if (hasSubpages) {
       return {
         title: route.translations.es,
-        url: `/admin/${route.path}`,
+        url: `/admin${route.path}`,
         icon,
         items: hasSubpages,
         isActive: false, // Se puede cambiar basado en la ruta actual
@@ -108,12 +125,12 @@ const createNavItems = (routes: TranslationRoute[]) => {
     // Por defecto, si no está en ninguna de las categorías anteriores, hacerlo acordión con un solo elemento
     return {
       title: route.translations.es,
-      url: `/admin/${route.path}`,
+      url: `/admin${route.path}`,
       icon,
       items: [
         {
           title: `Lista de ${route.translations.es}`,
-          url: `/admin/${route.path}`,
+          url: `/admin${route.path}`,
         },
       ],
     };

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ViewSelector } from "@/src/app/[lang]/drive/components/views";
+import { ViewSelector } from "@/src/app/[lang]/admin/drive/components/views";
 import { HierarchyItem } from "@drive/types/hierarchy";
 
 interface ClientViewSelectorProps {

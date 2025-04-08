@@ -73,12 +73,12 @@
       }
     },
     {
-      "id": "drive-routes",
-      "icon": "FilesIcon",
-      "path": "/drive-routes",
+      "id": "drive",
+      "icon": "FolderIcon",
+      "path": "/drive",
       "translations": {
-        "en": "Drive Routes",
-        "es": "Rutas de Drive"
+        "en": "Drive",
+        "es": "Drive"
       }
     },
     {
