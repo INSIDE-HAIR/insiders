@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   Database,
   Code,
   GitBranch,
@@ -19,18 +16,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { Button } from "@/src/components/ui/button";
-import { cn } from "@/src/lib/utils";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/src/components/ui/accordion";
 
-// Componentes de documentación
+// Componentes de documentación importados pero ahora mostrados directamente
 const ModeloSection = () => (
-  <Card>
+  <Card className='mb-8'>
     <CardHeader>
       <CardTitle id='modelo'>Modelo de datos</CardTitle>
     </CardHeader>
@@ -113,7 +102,7 @@ const ModeloSection = () => (
 );
 
 const ApiSection = () => (
-  <Card>
+  <Card className='mb-8'>
     <CardHeader>
       <CardTitle id='api'>API</CardTitle>
     </CardHeader>
@@ -180,7 +169,7 @@ const ApiSection = () => (
 );
 
 const FlujoSection = () => (
-  <Card>
+  <Card className='mb-8'>
     <CardHeader>
       <CardTitle id='flujo'>Flujo de datos</CardTitle>
     </CardHeader>
@@ -249,7 +238,7 @@ const FlujoSection = () => (
 );
 
 const ExtensionSection = () => (
-  <Card>
+  <Card className='mb-8'>
     <CardHeader>
       <CardTitle id='extension'>Extensión</CardTitle>
     </CardHeader>
@@ -303,7 +292,7 @@ const hierarchy = await hierarchyService.buildHierarchy(folderId, { analyzer });
 );
 
 const SincronizacionSection = () => (
-  <Card>
+  <Card className='mb-8'>
     <CardHeader>
       <CardTitle id='sincronizacion'>Sincronización</CardTitle>
     </CardHeader>
@@ -384,153 +373,25 @@ export async function GET() {
   </Card>
 );
 
-// Categorías para el sidebar
-const devCategories = [
-  {
-    id: "datos",
-    title: "Datos y Modelos",
-    icon: <Database className='h-4 w-4' />,
-    items: [
-      {
-        id: "modelo",
-        title: "Modelo de datos",
-        icon: <Database className='h-4 w-4' />,
-      },
-    ],
-  },
-  {
-    id: "backend",
-    title: "Backend",
-    icon: <Server className='h-4 w-4' />,
-    items: [
-      {
-        id: "api",
-        title: "API",
-        icon: <Code className='h-4 w-4' />,
-      },
-      {
-        id: "flujo",
-        title: "Flujo de datos",
-        icon: <GitBranch className='h-4 w-4' />,
-      },
-    ],
-  },
-  {
-    id: "avanzado",
-    title: "Funciones Avanzadas",
-    icon: <FileText className='h-4 w-4' />,
-    items: [
-      {
-        id: "extension",
-        title: "Extensión",
-        icon: <FileText className='h-4 w-4' />,
-      },
-      {
-        id: "sincronizacion",
-        title: "Sincronización",
-        icon: <RefreshCw className='h-4 w-4' />,
-      },
-    ],
-  },
-];
-
 // Componente principal
 export default function DevDocsPage() {
-  const router = useRouter();
-  const [activeSection, setActiveSection] = useState("modelo");
-
-  // Determinar qué acordeón debe estar abierto basado en la sección activa
-  const getExpandedValue = () => {
-    for (const category of devCategories) {
-      if (category.items.some((item) => item.id === activeSection)) {
-        return [category.id];
-      }
-    }
-    return [];
-  };
-
-  // Función para renderizar la sección activa
-  const renderActiveSection = () => {
-    switch (activeSection) {
-      case "modelo":
-        return <ModeloSection />;
-      case "api":
-        return <ApiSection />;
-      case "flujo":
-        return <FlujoSection />;
-      case "extension":
-        return <ExtensionSection />;
-      case "sincronizacion":
-        return <SincronizacionSection />;
-      default:
-        return <ModeloSection />;
-    }
-  };
-
   return (
     <div className='container py-10'>
-      <div className='flex items-center space-x-4 mb-8'>
-        <Button
-          variant='ghost'
-          onClick={() => router.push("/admin/drive-routes/docs")}
-        >
-          <ArrowLeft className='mr-2 h-4 w-4' /> Volver
-        </Button>
+      <div className='mb-8'>
         <h1 className='text-3xl font-bold'>
-          Documentación para Desarrolladores
+          Documentación Técnica para Desarrolladores
         </h1>
+        <p className='text-muted-foreground mt-2'>
+          Referencia técnica completa sobre el sistema de rutas de Drive
+        </p>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-        {/* Sidebar */}
-        <div className='md:col-span-1 md:sticky md:top-4 md:self-start'>
-          <Card className='sticky top-4'>
-            <CardHeader>
-              <CardTitle>Navegación</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Accordion
-                type='multiple'
-                defaultValue={getExpandedValue()}
-                className='w-full'
-              >
-                {devCategories.map((category) => (
-                  <AccordionItem key={category.id} value={category.id}>
-                    <AccordionTrigger className='text-sm hover:no-underline'>
-                      <div className='flex items-center w-full'>
-                        {category.icon}
-                        <span className='ml-2'>{category.title}</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className='flex flex-col space-y-1 pl-1'>
-                        {category.items.map((item) => (
-                          <Button
-                            key={item.id}
-                            variant={
-                              activeSection === item.id ? "secondary" : "ghost"
-                            }
-                            className={cn(
-                              "w-full justify-start text-sm",
-                              activeSection === item.id && "bg-muted"
-                            )}
-                            onClick={() => setActiveSection(item.id)}
-                          >
-                            {item.icon}
-                            <span className='ml-2'>{item.title}</span>
-                          </Button>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Contenido principal */}
-        <div className='md:col-span-3'>{renderActiveSection()}</div>
+      <div>
+        <ModeloSection />
+        <ApiSection />
+        <FlujoSection />
+        <ExtensionSection />
+        <SincronizacionSection />
       </div>
     </div>
   );

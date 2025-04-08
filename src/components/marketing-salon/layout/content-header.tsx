@@ -6,9 +6,11 @@ import { Button } from "@/src/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useContent } from "@/src/context/marketing-salon/content-context";
+import { useSession } from "next-auth/react";
 
 interface ContentHeaderProps {
-  title: string;
+  title?: string;
+  subtitle?: string;
 }
 
 /**
@@ -18,14 +20,22 @@ interface ContentHeaderProps {
  * Incluye el botón para mostrar/ocultar la barra lateral, el título y
  * un enlace a la documentación.
  *
- * @param {string} title - Título a mostrar en el encabezado
+ * @param {string} title - Título a mostrar en el encabezado principal
+ * @param {string} subtitle - Subtítulo a mostrar en la barra secundaria
  * @returns Encabezado del contenido con navegación
  */
-export function ContentHeader({ title }: ContentHeaderProps) {
+export function ContentHeader({ title, subtitle }: ContentHeaderProps) {
   const { toggleSidebar } = useSidebar();
   const { navigationPath } = useContent();
   const searchParams = useSearchParams();
-  const isAdmin = searchParams.get("role") === "admin";
+
+  // Verificar si el usuario está logueado y es admin
+  const { data: session } = useSession();
+  const isAdmin = searchParams.get("role") === "admin" || !!session?.user;
+
+  // Valores por defecto para título y subtítulo
+  const displayTitle = title || "Sin título";
+  const displaySubtitle = subtitle || "Sin subtítulo";
 
   return (
     <div className='flex flex-col shrink-0 w-full'>
@@ -43,7 +53,7 @@ export function ContentHeader({ title }: ContentHeaderProps) {
           </Button>
         </div>
 
-        <h2 className='text-zinc-50 font-bold text-center'>Marketing Salón</h2>
+        <h2 className='text-zinc-50 font-bold text-center'>{displayTitle}</h2>
 
         {isAdmin && (
           <div className='absolute right-4 flex gap-2'>
@@ -53,7 +63,7 @@ export function ContentHeader({ title }: ContentHeaderProps) {
               className='text-zinc-300 hover:text-zinc-100 hover:bg-zinc-600'
               asChild
             >
-              <Link href='/docs/marketing-salon'>
+              <Link href='/admin/drive-routes/docs/frontend/users'>
                 <BookOpen className='h-5 w-5' />
                 <span className='sr-only'>Documentación</span>
               </Link>
@@ -64,9 +74,7 @@ export function ContentHeader({ title }: ContentHeaderProps) {
               className='text-zinc-300 hover:text-zinc-100 hover:bg-zinc-600'
               asChild
             >
-              <Link
-                href={`/marketing-salon/${navigationPath[0]?.id}/json?role=admin`}
-              >
+              <Link href={`./${navigationPath[0]?.id}/json?role=admin`}>
                 <Code className='h-5 w-5' />
                 <span className='sr-only'>Ver JSON</span>
               </Link>
@@ -77,7 +85,9 @@ export function ContentHeader({ title }: ContentHeaderProps) {
 
       {/* Green title bar */}
       <div className='bg-[#CEFF66] py-2 flex items-center justify-center'>
-        <h1 className='text-zinc-900 font-bold text-center'>Abril 2025</h1>
+        <h1 className='text-zinc-900 font-bold text-center'>
+          {displaySubtitle}
+        </h1>
       </div>
     </div>
   );

@@ -12,6 +12,9 @@ import {
   Shield,
   ChevronDown,
   ChevronRight,
+  InfoIcon,
+  AlertTriangle,
+  Bookmark,
 } from "lucide-react";
 import {
   Card,
@@ -29,6 +32,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
 
 // Componentes de documentación
 const IntroduccionSection = () => (
@@ -553,7 +563,7 @@ const userCategories = [
 ];
 
 // Componente principal
-export default function UserDocsPage() {
+export default function BackendUserGuide() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("introduccion");
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -587,68 +597,174 @@ export default function UserDocsPage() {
   };
 
   return (
-    <div className='container py-10'>
-      <div className='flex items-center space-x-4 mb-8'>
-        <Button
-          variant='ghost'
-          onClick={() => router.push("/admin/drive-routes/docs")}
-        >
-          <ArrowLeft className='mr-2 h-4 w-4' /> Volver
-        </Button>
-        <h1 className='text-3xl font-bold'>Guía del Usuario: Rutas de Drive</h1>
+    <div className='space-y-6'>
+      <div>
+        <h1 className='text-3xl font-bold mb-2'>Guía de Usuario - Backend</h1>
+        <p className='text-lg text-muted-foreground mb-6'>
+          Administración y configuración del backend de Rutas de Drive.
+        </p>
+
+        <Alert>
+          <InfoIcon className='h-4 w-4' />
+          <AlertTitle>Documentación en desarrollo</AlertTitle>
+          <AlertDescription>
+            Esta documentación está siendo actualizada constantemente. Última
+            actualización: Abril 2024.
+          </AlertDescription>
+        </Alert>
       </div>
 
-      <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-        {/* Sidebar */}
-        <div className='md:col-span-1 md:sticky md:top-4 md:self-start'>
+      <Tabs defaultValue='permissions' className='mt-6'>
+        <TabsList className='grid w-full md:w-auto grid-cols-1 md:grid-cols-4'>
+          <TabsTrigger value='permissions'>Permisos</TabsTrigger>
+          <TabsTrigger value='configuration'>Configuración</TabsTrigger>
+          <TabsTrigger value='monitoring'>Monitoreo</TabsTrigger>
+          <TabsTrigger value='troubleshooting'>
+            Solución de problemas
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value='permissions' className='mt-6'>
           <Card>
             <CardHeader>
-              <CardTitle>Navegación</CardTitle>
+              <CardTitle className='flex items-center'>
+                <Shield className='h-5 w-5 mr-2 text-blue-600' />
+                Permisos de Google Drive
+              </CardTitle>
+              <CardDescription>
+                Configuración de permisos para el acceso a carpetas
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Accordion
-                type='multiple'
-                defaultValue={getExpandedValue()}
-                className='w-full'
-              >
-                {userCategories.map((category) => (
-                  <AccordionItem key={category.id} value={category.id}>
-                    <AccordionTrigger className='text-sm hover:no-underline'>
-                      <div className='flex items-center w-full'>
-                        {category.icon}
-                        <span className='ml-2'>{category.title}</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <div className='flex flex-col space-y-1 pl-1'>
-                        {category.items.map((item) => (
-                          <Button
-                            key={item.id}
-                            variant={
-                              activeSection === item.id ? "secondary" : "ghost"
-                            }
-                            className={cn(
-                              "w-full justify-start text-sm",
-                              activeSection === item.id && "bg-muted"
-                            )}
-                            onClick={() => setActiveSection(item.id)}
-                          >
-                            {item.icon}
-                            <span className='ml-2'>{item.title}</span>
-                          </Button>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+            <CardContent className='space-y-4'>
+              <h3 className='text-lg font-medium'>Configuración de permisos</h3>
+              <p>
+                Para que el sistema pueda acceder y mostrar el contenido de tus
+                carpetas, asegúrate de configurar correctamente los permisos:
+              </p>
+
+              <div className='bg-green-50 p-4 rounded-md border border-green-200'>
+                <h4 className='font-medium text-green-800'>
+                  Opción recomendada: Compartir con la cuenta de servicio
+                </h4>
+                <p className='text-green-700 mb-2'>
+                  Compartir directamente con la cuenta de servicio del sistema:
+                </p>
+                <ol className='list-decimal ml-5 text-green-700 space-y-1'>
+                  <li>En Google Drive, haz clic derecho en la carpeta</li>
+                  <li>Selecciona "Compartir"</li>
+                  <li>
+                    Introduce la dirección de correo de la cuenta de servicio:{" "}
+                    <code className='bg-green-100 px-1 rounded'>
+                      g-drive@insiders-vercel.iam.gserviceaccount.com
+                    </code>
+                  </li>
+                  <li>Otorga permisos de "Lector"</li>
+                  <li>Haz clic en "Listo"</li>
+                </ol>
+              </div>
+
+              <div className='bg-yellow-50 p-4 rounded-md border border-yellow-200 mt-4'>
+                <h4 className='font-medium text-yellow-800'>
+                  Alternativa: Hacer la carpeta pública
+                </h4>
+                <p className='text-yellow-700 mb-2'>
+                  Si prefieres hacer la carpeta accesible para cualquiera con el
+                  enlace:
+                </p>
+                <ol className='list-decimal ml-5 text-yellow-700 space-y-1'>
+                  <li>En Google Drive, haz clic derecho en la carpeta</li>
+                  <li>Selecciona "Compartir"</li>
+                  <li>Haz clic en "Configuración general de uso compartido"</li>
+                  <li>Cambia a "Cualquiera con el enlace"</li>
+                  <li>Asegúrate de que el rol sea "Lector"</li>
+                  <li>Haz clic en "Listo"</li>
+                </ol>
+                <p className='text-yellow-600 mt-2 text-sm flex items-center'>
+                  <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que
+                  esto hará que el contenido sea accesible para cualquier
+                  persona que tenga el enlace directo.
+                </p>
+              </div>
+
+              <h3 className='text-lg font-medium mt-6'>Verificar permisos</h3>
+              <p>
+                Para comprobar que los permisos están configurados
+                correctamente:
+              </p>
+              <ol className='list-decimal pl-6 space-y-1'>
+                <li>Crea una ruta con el ID de carpeta</li>
+                <li>Intenta sincronizar manualmente</li>
+                <li>
+                  Si la sincronización tiene éxito, los permisos están correctos
+                </li>
+                <li>
+                  Si hay error, verifica que la cuenta de servicio tenga acceso
+                  a la carpeta
+                </li>
+              </ol>
             </CardContent>
           </Card>
-        </div>
+        </TabsContent>
 
-        {/* Contenido principal */}
-        <div className='md:col-span-3'>{renderActiveSection()}</div>
-      </div>
+        <TabsContent value='configuration' className='mt-6'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center'>
+                <Settings className='h-5 w-5 mr-2 text-slate-600' />
+                Configuración del sistema
+              </CardTitle>
+              <CardDescription>
+                Opciones de configuración avanzadas
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className='text-muted-foreground italic'>
+                Contenido en desarrollo. Esta sección explicará las diferentes
+                opciones de configuración del sistema backend.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value='monitoring' className='mt-6'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center'>
+                <Bookmark className='h-5 w-5 mr-2 text-indigo-600' />
+                Monitoreo y auditoría
+              </CardTitle>
+              <CardDescription>Seguimiento de actividad y uso</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className='text-muted-foreground italic'>
+                Contenido en desarrollo. Esta sección explicará cómo monitorear
+                el uso del sistema y revisar registros de actividad.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value='troubleshooting' className='mt-6'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center'>
+                <AlertTriangle className='h-5 w-5 mr-2 text-amber-600' />
+                Solución de problemas comunes
+              </CardTitle>
+              <CardDescription>
+                Respuestas a problemas frecuentes del backend
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className='text-muted-foreground italic'>
+                Contenido en desarrollo. Esta sección proporcionará respuestas a
+                preguntas frecuentes y soluciones a problemas comunes del
+                backend.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
