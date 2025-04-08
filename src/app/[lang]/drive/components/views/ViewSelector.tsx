@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, createContext } from "react";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import { cn } from "@/src/lib/utils";

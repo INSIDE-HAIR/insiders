@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useContext } from "react";
 import {
   FolderItem,
@@ -74,36 +75,36 @@ export function FolderElement({
         className
       )}
     >
-      <div className="group/folder py-1.5 px-3">
-        <div className="flex flex-col gap-0.5 group-hover/folder:bg-blue-50/80 rounded-md transition-all duration-200">
+      <div className='group/folder py-1.5 px-3'>
+        <div className='flex flex-col gap-0.5 group-hover/folder:bg-blue-50/80 rounded-md transition-all duration-200'>
           {/* Encabezado con nombre e iconos y botones de acción */}
-          <div className="flex items-center justify-between">
+          <div className='flex items-center justify-between'>
             <div
-              className="flex items-center gap-2 cursor-pointer"
+              className='flex items-center gap-2 cursor-pointer'
               onClick={handleToggle}
             >
-              <span className="text-xs font-bold w-4 text-gray-500 group-hover/folder:text-blue-600 transition-colors">
+              <span className='text-xs font-bold w-4 text-gray-500 group-hover/folder:text-blue-600 transition-colors'>
                 {isExpanded ? "▼" : "►"}
               </span>
-              <span className="font-medium text-sm text-gray-700 group-hover/folder:text-blue-700 transition-colors">
+              <span className='font-medium text-sm text-gray-700 group-hover/folder:text-blue-700 transition-colors'>
                 {folder.displayName}
               </span>
             </div>
 
             {/* Botones de acción - visibles solo en hover */}
-            <div className="flex gap-1.5 opacity-0 group-hover/folder:opacity-100 transition-all duration-200 -mr-1">
+            <div className='flex gap-1.5 opacity-0 group-hover/folder:opacity-100 transition-all duration-200 -mr-1'>
               <Button
-                size="sm"
-                variant="ghost"
-                className="text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+                size='sm'
+                variant='ghost'
+                className='text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200'
                 onClick={copyIdToClipboard}
               >
                 Copiar ID
               </Button>
               <Button
-                size="sm"
-                variant="ghost"
-                className="text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200"
+                size='sm'
+                variant='ghost'
+                className='text-xs h-6 px-2 font-medium hover:bg-blue-100 hover:text-blue-700 transition-all duration-200'
                 onClick={openInNewTab}
               >
                 Ver archivo
@@ -113,12 +114,12 @@ export function FolderElement({
 
           {/* Badges para prefijos y sufijos */}
           {(folder.prefixes.length > 0 || folder.suffixes.length > 0) && (
-            <div className="flex flex-wrap gap-1 ml-6">
+            <div className='flex flex-wrap gap-1 ml-6'>
               {folder.prefixes.map((prefix) => (
                 <Badge
                   key={`prefix-${prefix}`}
-                  variant="outline"
-                  className="bg-blue-50 text-blue-700 border-blue-200 text-[10px] py-0 px-1.5 h-4 rounded-md font-medium"
+                  variant='outline'
+                  className='bg-blue-50 text-blue-700 border-blue-200 text-[10px] py-0 px-1.5 h-4 rounded-md font-medium'
                 >
                   {prefix}
                 </Badge>
@@ -126,8 +127,8 @@ export function FolderElement({
               {folder.suffixes.map((suffix) => (
                 <Badge
                   key={`suffix-${suffix}`}
-                  variant="outline"
-                  className="bg-purple-50 text-purple-700 border-purple-200 text-[10px] py-0 px-1.5 h-4 rounded-md font-medium"
+                  variant='outline'
+                  className='bg-purple-50 text-purple-700 border-purple-200 text-[10px] py-0 px-1.5 h-4 rounded-md font-medium'
                 >
                   {suffix}
                 </Badge>
@@ -138,11 +139,11 @@ export function FolderElement({
       </div>
 
       {isExpanded && (
-        <div className="folder-content pt-0.5 pb-1 pl-8 border-l border-gray-200">
+        <div className='folder-content pt-0.5 pb-1 pl-8 border-l border-gray-200'>
           {folder.children.length > 0 ? (
-            <div className="space-y-0.5">
+            <div className='space-y-0.5'>
               {folder.children.map((child) => (
-                <div key={child.id} className="child-element">
+                <div key={child.id} className='child-element'>
                   {isFolderItem(child) ? (
                     <FolderElement
                       folder={child}
@@ -160,7 +161,7 @@ export function FolderElement({
               ))}
             </div>
           ) : (
-            <div className="text-[10px] text-gray-400 italic ml-1">
+            <div className='text-[10px] text-gray-400 italic ml-1'>
               Carpeta vacía
             </div>
           )}

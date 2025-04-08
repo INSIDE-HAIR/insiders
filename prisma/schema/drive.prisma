@@ -1,0 +1,33 @@
+// DriveRoute Model para almacenar rutas de Google Drive
+
+model DriveRoute {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  slug            String    @unique // URL amigable para acceder a la ruta
+  folderIds       String[] // IDs de carpetas de Google Drive asociadas
+  title           String? // Título opcional para mostrar
+  subtitle        String? // Subtítulo opcional
+  description     String? // Descripción opcional
+  hierarchyData   Json // Datos jerárquicos de Google Drive
+  lastUpdated     DateTime  @default(now()) // Última actualización
+  lastSyncAttempt DateTime? // Última vez que se intentó sincronizar
+  nextSyncDue     DateTime // Cuándo debería realizarse la siguiente sincronización
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  isActive        Boolean   @default(true)
+  createdById     String?
+  viewCount       Int       @default(0)
+  customSettings  Json? // Configuraciones personalizadas (opcional)
+}
+
+model DriveRouteLog {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  routeId        String   @db.ObjectId
+  operation      String // "create", "update", "refresh"
+  timestamp      DateTime @default(now())
+  success        Boolean
+  errorMessage   String?
+  hierarchySize  Int? // Tamaño del JSON en bytes
+  processingTime Int? // Tiempo de procesamiento en ms
+
+  @@index([routeId])
+}
