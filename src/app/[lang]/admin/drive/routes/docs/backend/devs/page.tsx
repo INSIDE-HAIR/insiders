@@ -117,22 +117,20 @@ const ApiSection = () => (
         <h4 className='text-lg font-semibold'>Operaciones CRUD</h4>
         <ul className='list-disc pl-6 space-y-1 mb-4'>
           <li>
-            <strong>GET /api/drive/drive-routes</strong> - Listar todas las
-            rutas
+            <strong>GET /api/drive/management</strong> - Listar todas las rutas
           </li>
           <li>
-            <strong>POST /api/drive/drive-routes</strong> - Crear una nueva ruta
+            <strong>POST /api/drive/management</strong> - Crear una nueva ruta
           </li>
           <li>
-            <strong>GET /api/drive/drive-routes/:id</strong> - Obtener una ruta
+            <strong>GET /api/drive/management/:id</strong> - Obtener una ruta
             específica
           </li>
           <li>
-            <strong>PUT /api/drive/drive-routes/:id</strong> - Actualizar una
-            ruta
+            <strong>PUT /api/drive/management/:id</strong> - Actualizar una ruta
           </li>
           <li>
-            <strong>DELETE /api/drive/drive-routes/:id</strong> - Eliminar una
+            <strong>DELETE /api/drive/management/:id</strong> - Eliminar una
             ruta
           </li>
         </ul>
@@ -140,8 +138,8 @@ const ApiSection = () => (
         <h4 className='text-lg font-semibold'>Sincronización</h4>
         <ul className='list-disc pl-6 space-y-1 mb-4'>
           <li>
-            <strong>POST /api/drive/drive-routes/:id/fetch</strong> -
-            Sincronizar una ruta con Drive
+            <strong>POST /api/drive/management/:id/fetch</strong> - Sincronizar
+            una ruta con Drive
           </li>
           <li>
             <strong>POST /api/cron/sync-drive</strong> - Endpoint para tarea
@@ -154,7 +152,7 @@ const ApiSection = () => (
         <h3 className='text-xl font-bold mb-2'>Ejemplos de uso</h3>
         <h4 className='text-lg font-semibold'>Creación de una ruta</h4>
         <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`// POST /api/drive/drive-routes
+          {`// POST /api/drive/management
 {
   "slug": "mi-ruta",
   "folderIds": ["1ABCd123XYZ_exampleFolderId"],

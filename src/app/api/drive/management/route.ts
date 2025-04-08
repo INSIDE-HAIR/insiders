@@ -24,7 +24,7 @@ const routeSchema = z.object({
   customSettings: z.record(z.any()).optional(),
 });
 
-// GET /api/drive/drive-routes - Listar todas las rutas
+// GET /api/drive/management - Listar todas las rutas
 export async function GET() {
   try {
     const session = await auth();
@@ -45,7 +45,7 @@ export async function GET() {
   }
 }
 
-// POST /api/drive/drive-routes - Crear una nueva ruta
+// POST /api/drive/management - Crear una nueva ruta
 export async function POST(request: Request) {
   try {
     const session = await auth();

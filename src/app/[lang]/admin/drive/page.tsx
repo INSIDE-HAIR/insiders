@@ -50,7 +50,7 @@ const DriveExplorer: React.FC = () => {
 
       // Usar el mismo endpoint que la página de detalle
       const response = await fetch(
-        `/api/drive/hierarchy/folder/${ROOT_FOLDER_ID}`
+        `/api/drive/explorer/folder/${ROOT_FOLDER_ID}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch hierarchy");

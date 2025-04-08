@@ -178,7 +178,7 @@ export default function DriveRoutesPage() {
   const fetchRoutes = useCallback(async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/drive/drive-routes");
+      const response = await fetch("/api/drive/management");
       if (!response.ok) {
         throw new Error("Error al cargar rutas de Drive");
       }
@@ -207,7 +207,7 @@ export default function DriveRoutesPage() {
           });
         }
 
-        const response = await fetch(`/api/drive/drive-routes/${id}/fetch`, {
+        const response = await fetch(`/api/drive/management/${id}/fetch`, {
           method: "POST",
         });
 
@@ -329,8 +329,8 @@ export default function DriveRoutesPage() {
 
       const isEditing = !!selectedRoute;
       const url = isEditing
-        ? `/api/drive/drive-routes/${selectedRoute.id}`
-        : "/api/drive/drive-routes";
+        ? `/api/drive/management/${selectedRoute.id}`
+        : "/api/drive/management";
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -378,7 +378,7 @@ export default function DriveRoutesPage() {
 
   async function toggleRouteStatus(id: string, status: boolean) {
     try {
-      const response = await fetch(`/api/drive/drive-routes/${id}/toggle`, {
+      const response = await fetch(`/api/drive/management/${id}/toggle`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -26,7 +26,7 @@ const updateRouteSchema = z.object({
   customSettings: z.record(z.any()).optional(),
 });
 
-// GET /api/drive/drive-routes/[id] - Obtener una ruta específica
+// GET /api/drive/management/[id] - Obtener una ruta específica
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -61,7 +61,7 @@ export async function GET(
   }
 }
 
-// PUT /api/drive/drive-routes/[id] - Actualizar una ruta
+// PUT /api/drive/management/[id] - Actualizar una ruta
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -140,7 +140,7 @@ export async function PUT(
   }
 }
 
-// DELETE /api/drive/drive-routes/[id] - Eliminar una ruta
+// DELETE /api/drive/management/[id] - Eliminar una ruta
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

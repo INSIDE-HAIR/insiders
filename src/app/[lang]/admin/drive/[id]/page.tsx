@@ -50,7 +50,7 @@ export default function FolderDetailsPage() {
     );
 
     try {
-      const response = await fetch(`/api/drive/hierarchy/folder/${folderId}`);
+      const response = await fetch(`/api/drive/explorer/folder/${folderId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch folder details");
       }
@@ -127,19 +127,19 @@ export default function FolderDetailsPage() {
   // Mostrar error si existe
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center gap-4 mb-8">
+      <div className='container mx-auto px-4 py-8'>
+        <div className='flex items-center gap-4 mb-8'>
           <Link
-            href="/drive"
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Back to drive"
+            href='/drive'
+            className='p-2 hover:bg-gray-100 rounded-full transition-colors'
+            aria-label='Back to drive'
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <ArrowLeftIcon className='h-6 w-6' />
           </Link>
-          <h1 className="text-3xl font-bold text-red-600">Error</h1>
+          <h1 className='text-3xl font-bold text-red-600'>Error</h1>
         </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-700">{error}</p>
+        <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
+          <p className='text-red-700'>{error}</p>
         </div>
       </div>
     );
@@ -147,30 +147,30 @@ export default function FolderDetailsPage() {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
+      <div className='container mx-auto px-4 py-8'>
         {/* Header with back button */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className='flex items-center gap-4 mb-8'>
           <Link
-            href="/drive"
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label="Back to drive"
+            href='/drive'
+            className='p-2 hover:bg-gray-100 rounded-full transition-colors'
+            aria-label='Back to drive'
           >
-            <ArrowLeftIcon className="h-6 w-6" />
+            <ArrowLeftIcon className='h-6 w-6' />
           </Link>
-          <h1 className="text-3xl font-bold">
+          <h1 className='text-3xl font-bold'>
             {folderDetails?.name || "Loading..."}
           </h1>
         </div>
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className='flex justify-center items-center h-64'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500'></div>
           </div>
         ) : (
           /* Hierarchy Viewer */
           folderDetails && (
-            <div className="bg-white rounded-lg shadow">
+            <div className='bg-white rounded-lg shadow'>
               <ViewSelector
                 hierarchy={folderDetails.hierarchy}
                 onItemClick={handleItemClick}

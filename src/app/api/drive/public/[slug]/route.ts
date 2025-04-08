@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/src/lib/prisma";
 
-// GET /api/drive/routes/[slug]
+// GET /api/drive/public/[slug]
 export async function GET(
   request: NextRequest,
   { params }: { params: { slug: string } }

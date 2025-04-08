@@ -52,7 +52,7 @@ const ClientView = dynamic(() => import("./components/ClientView"), {
 // Función para obtener datos del servidor con datos simulados para cliente
 async function getDriveRouteData(slug: string) {
   try {
-    const response = await fetch(`/api/drive/routes/${slug}`);
+    const response = await fetch(`/api/drive/public/${slug}`);
     if (!response.ok) {
       throw new Error("No se pudo cargar la ruta");
     }
