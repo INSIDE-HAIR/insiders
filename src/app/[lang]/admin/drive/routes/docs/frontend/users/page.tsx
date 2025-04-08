@@ -73,7 +73,8 @@ export default function FrontendUserGuide() {
               <ol className='list-decimal pl-6 space-y-2'>
                 <li>
                   <strong>Acceder al panel:</strong> Inicia sesión y navega a la
-                  sección "Rutas de Drive" en el panel de administración.
+                  sección &quot;Rutas de Drive&quot; en el panel de
+                  administración.
                 </li>
                 <li>
                   <strong>Autenticación:</strong> Conecta tu cuenta de Google si
@@ -85,9 +86,9 @@ export default function FrontendUserGuide() {
                   para crear nuevas.
                 </li>
                 <li>
-                  <strong>Crear tu primera ruta:</strong> Haz clic en "Nueva
-                  ruta" y sigue el asistente para conectar una carpeta de Google
-                  Drive con una URL en tu sitio.
+                  <strong>Crear tu primera ruta:</strong> Haz clic en
+                  &quot;Nueva ruta&quot; y sigue el asistente para conectar una
+                  carpeta de Google Drive con una URL en tu sitio.
                 </li>
               </ol>
             </CardContent>

@@ -429,12 +429,14 @@ const PermisosSection = () => (
             <p className='text-sm mb-2'>
               Compartir directamente con la cuenta de servicio del sistema:
             </p>
-            <ol className='list-decimal pl-4 text-sm'>
+            <ol className='list-decimal ml-5 text-green-700 space-y-1'>
               <li>En Google Drive, haz clic derecho en la carpeta</li>
               <li>Selecciona &quot;Compartir&quot;</li>
               <li>
                 Introduce la dirección de correo de la cuenta de servicio:{" "}
-                <code>g-drive@insiders-vercel.iam.gserviceaccount.com</code>
+                <code className='bg-green-100 px-1 rounded'>
+                  g-drive@insiders-vercel.iam.gserviceaccount.com
+                </code>
               </li>
               <li>Otorga permisos de &quot;Lector&quot;</li>
               <li>Haz clic en &quot;Listo&quot;</li>
@@ -449,7 +451,7 @@ const PermisosSection = () => (
               Si prefieres hacer la carpeta accesible para cualquiera con el
               enlace:
             </p>
-            <ol className='list-decimal pl-4 text-sm'>
+            <ol className='list-decimal ml-5 text-yellow-700 space-y-1'>
               <li>En Google Drive, haz clic derecho en la carpeta</li>
               <li>Selecciona &quot;Compartir&quot;</li>
               <li>
@@ -459,9 +461,10 @@ const PermisosSection = () => (
               <li>Asegúrate de que el rol sea &quot;Lector&quot;</li>
               <li>Haz clic en &quot;Listo&quot;</li>
             </ol>
-            <p className='text-xs text-yellow-700 mt-2'>
-              ⚠️ Ten en cuenta que esto hará que el contenido sea accesible para
-              cualquier persona que tenga el enlace directo.
+            <p className='text-yellow-600 mt-2 text-sm flex items-center'>
+              <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que esto
+              hará que el contenido sea accesible para cualquier persona que
+              tenga el enlace directo.
             </p>
           </div>
         </div>
@@ -651,15 +654,15 @@ export default function BackendUserGuide() {
                 </p>
                 <ol className='list-decimal ml-5 text-green-700 space-y-1'>
                   <li>En Google Drive, haz clic derecho en la carpeta</li>
-                  <li>Selecciona "Compartir"</li>
+                  <li>Selecciona &quot;Compartir&quot;</li>
                   <li>
                     Introduce la dirección de correo de la cuenta de servicio:{" "}
                     <code className='bg-green-100 px-1 rounded'>
                       g-drive@insiders-vercel.iam.gserviceaccount.com
                     </code>
                   </li>
-                  <li>Otorga permisos de "Lector"</li>
-                  <li>Haz clic en "Listo"</li>
+                  <li>Otorga permisos de &quot;Lector&quot;</li>
+                  <li>Haz clic en &quot;Listo&quot;</li>
                 </ol>
               </div>
 
@@ -673,11 +676,14 @@ export default function BackendUserGuide() {
                 </p>
                 <ol className='list-decimal ml-5 text-yellow-700 space-y-1'>
                   <li>En Google Drive, haz clic derecho en la carpeta</li>
-                  <li>Selecciona "Compartir"</li>
-                  <li>Haz clic en "Configuración general de uso compartido"</li>
-                  <li>Cambia a "Cualquiera con el enlace"</li>
-                  <li>Asegúrate de que el rol sea "Lector"</li>
-                  <li>Haz clic en "Listo"</li>
+                  <li>Selecciona &quot;Compartir&quot;</li>
+                  <li>
+                    Haz clic en &quot;Configuración general de uso
+                    compartido&quot;
+                  </li>
+                  <li>Cambia a &quot;Cualquiera con el enlace&quot;</li>
+                  <li>Asegúrate de que el rol sea &quot;Lector&quot;</li>
+                  <li>Haz clic en &quot;Listo&quot;</li>
                 </ol>
                 <p className='text-yellow-600 mt-2 text-sm flex items-center'>
                   <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que

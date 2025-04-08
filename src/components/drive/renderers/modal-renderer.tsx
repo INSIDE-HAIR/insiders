@@ -11,6 +11,7 @@ import {
   DialogFooter,
 } from "@/src/components/ui/dialog";
 import { Eye, Copy, Check } from "lucide-react";
+import Image from "next/image";
 
 // Importar la utilidad para extraer el texto a copiar
 import { extractCopyText } from "@/src/features/drive/utils/marketing-salon/description-parser";
@@ -106,7 +107,7 @@ export function ModalRenderer({ item }: { item: HierarchyItem }) {
                     className='w-full h-full flex items-center justify-center'
                   >
                     {getPreviewUrl(child) ? (
-                      <img
+                      <Image
                         src={getPreviewUrl(child) || "/placeholder.svg"}
                         alt={child.displayName}
                         className='max-w-full max-h-full object-contain'
@@ -115,6 +116,9 @@ export function ModalRenderer({ item }: { item: HierarchyItem }) {
                           width: "auto",
                           height: "auto",
                         }}
+                        width={800}
+                        height={600}
+                        unoptimized={true}
                       />
                     ) : (
                       <div className='h-40 bg-zinc-100 rounded-md flex items-center justify-center'>

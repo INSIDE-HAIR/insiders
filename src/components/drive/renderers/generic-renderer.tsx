@@ -38,6 +38,7 @@ import {
   getPreviewItems,
   hasMultiplePreviews,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
+import Image from "next/image";
 
 interface GenericRendererProps {
   item: HierarchyItem;
@@ -203,7 +204,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   useEffect(() => {
     if (isOpen && hasEmbed) {
       setIsModalImageLoading(true);
-      const img = new Image();
+      const img = new window.Image();
       img.onload = handleImageLoad;
       img.onerror = () => setIsModalImageLoading(false);
       img.crossOrigin = "anonymous"; // Evitar problemas CORS
@@ -278,12 +279,15 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                 </div>
               </div>
             )}
-            <img
+            <Image
               src={cardPreviewUrl || "/placeholder.svg"}
               alt={item.displayName}
               className='w-full object-cover rounded-sm'
-              onLoad={handleCardImageLoad}
+              onLoadingComplete={handleCardImageLoad}
               onError={() => setIsCardImageLoading(false)}
+              width={300}
+              height={200}
+              unoptimized={true}
             />
             <button className='absolute top-1 right-1 bg-white rounded-full p-1'>
               <Eye className='h-4 w-4 text-black' />

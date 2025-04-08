@@ -1,5 +1,10 @@
+"use client";
+
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
+import Image from "next/image";
 
 export default function ComponentTypesPage() {
   return (
@@ -128,10 +133,12 @@ export default function ComponentTypesPage() {
               Ejemplo de Tabs
             </div>
             <div className='p-4'>
-              <img
+              <Image
                 src='/placeholder.svg?height=200&width=400'
                 alt='Ejemplo de pestañas'
                 className='w-full rounded-md border border-zinc-200'
+                width={400}
+                height={200}
               />
               <p className='mt-2 text-sm text-zinc-600'>
                 Las pestañas permiten organizar contenido relacionado en una
@@ -145,10 +152,12 @@ export default function ComponentTypesPage() {
               Ejemplo de Secciones
             </div>
             <div className='p-4'>
-              <img
+              <Image
                 src='/placeholder.svg?height=200&width=400'
                 alt='Ejemplo de secciones'
                 className='w-full rounded-md border border-zinc-200'
+                width={400}
+                height={200}
               />
               <p className='mt-2 text-sm text-zinc-600'>
                 Las secciones agrupan contenido bajo un título descriptivo.

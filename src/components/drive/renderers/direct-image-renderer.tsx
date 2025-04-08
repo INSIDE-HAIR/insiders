@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Download, Copy, Check, Info, ChevronUp, Plus } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
@@ -13,6 +13,7 @@ import {
   getDownloadUrl,
   getTransformedUrl,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
+import Image from "next/image";
 
 /**
  * DirectImageRenderer
@@ -116,15 +117,19 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
         )}
 
         {/* Imagen principal */}
-        <img
+        <Image
           src={getPreviewUrl(item) || "/placeholder.svg"}
           alt={item.displayName}
           className={`max-w-full h-auto object-contain mx-auto ${
             isLoading ? "hidden" : "block"
           }`}
           style={{ maxHeight: "80vh" }}
-          onLoad={() => setIsLoading(false)}
+          onLoadingComplete={() => setIsLoading(false)}
           onError={() => setIsLoading(false)}
+          fill={false}
+          width={800}
+          height={600}
+          unoptimized={true}
         />
 
         {/* Botón de descarga flotante (solo si tiene el sufijo correspondiente) */}

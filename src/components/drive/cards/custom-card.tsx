@@ -18,6 +18,7 @@ import {
   getDownloadUrl,
   mimeTypeIncludes,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
+import Image from "next/image";
 
 interface CustomCardProps {
   item: HierarchyItem;
@@ -75,10 +76,13 @@ export function CustomCard({ item }: CustomCardProps) {
             className='relative cursor-pointer'
             onClick={() => setIsOpen(true)}
           >
-            <img
+            <Image
               src={getPreviewUrl(item) || "/placeholder.svg"}
               alt={item.displayName}
               className='w-full object-cover rounded-sm'
+              width={300}
+              height={200}
+              unoptimized={true}
             />
             <button className='absolute top-1 right-1 bg-white rounded-full p-1'>
               <Eye className='h-4 w-4 text-black' />
@@ -166,10 +170,13 @@ export function CustomCard({ item }: CustomCardProps) {
             </DialogHeader>
 
             <div className='flex-1 flex items-center justify-center overflow-hidden'>
-              <img
+              <Image
                 src={getPreviewUrl(item) || "/placeholder.svg"}
                 alt={item.displayName}
                 className='max-w-full max-h-full object-contain'
+                width={800}
+                height={600}
+                unoptimized={true}
               />
             </div>
 
