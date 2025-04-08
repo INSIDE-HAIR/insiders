@@ -28,6 +28,15 @@
       }
     },
     {
+      "id": "users2",
+      "icon": "UsersIcon",
+      "path": "/users2",
+      "translations": {
+        "en": "Users 2",
+        "es": "Usuarios 2"
+      }
+    },
+    {
       "id": "analytics",
       "icon": "LineChartIcon",
       "path": "/analytics",
@@ -61,6 +70,15 @@
       "translations": {
         "en": "Menu",
         "es": "Menú"
+      }
+    },
+    {
+      "id": "drive-routes",
+      "icon": "FilesIcon",
+      "path": "/drive-routes",
+      "translations": {
+        "en": "Drive Routes",
+        "es": "Rutas de Drive"
       }
     },
     {
