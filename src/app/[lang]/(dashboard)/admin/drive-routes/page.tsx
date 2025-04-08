@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   Table,
   TableBody,
@@ -17,24 +18,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
 import { Badge } from "@/src/components/ui/badge";
 import {
   PlusIcon,
-  MoreHorizontal,
   RefreshCw,
   ExternalLink,
-  Eye,
   FileJson,
   Loader2,
   Pencil,
@@ -42,7 +32,6 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
-  HelpCircle,
   InfoIcon,
 } from "lucide-react";
 import { format, differenceInHours } from "date-fns";
@@ -160,6 +149,7 @@ function getUpdateStatus(lastUpdated: string, isActive: boolean) {
 
 export default function DriveRoutesPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const { toast } = useToast();
   const [routes, setRoutes] = useState<DriveRoute[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -221,6 +211,25 @@ export default function DriveRoutesPage() {
       autoSyncRoutes();
     }
   }, [routes]);
+
+  // Redirigir si el usuario no está autenticado
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
+  // Si está cargando la sesión, mostrar loading
+  if (status === "loading") {
+    return (
+      <div className='container py-10 flex justify-center items-center min-h-[50vh]'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+          <p>Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
 
   async function fetchRoutes() {
     try {
@@ -560,14 +569,14 @@ export default function DriveRoutesPage() {
                                     variant='outline'
                                     size='icon'
                                     onClick={() =>
-                                      router.push(`/${route.slug}`)
+                                      window.open(`/${route.slug}`, "_blank")
                                     }
                                   >
                                     <ExternalLink className='h-4 w-4' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                  <p>Ver</p>
+                                  <p>Ver en nueva pestaña</p>
                                 </TooltipContent>
                               </Tooltip>
 
