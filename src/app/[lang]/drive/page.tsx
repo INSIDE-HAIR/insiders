@@ -31,21 +31,13 @@ const DriveExplorer: React.FC = () => {
     name: string;
     hierarchy: HierarchyItem[];
   } | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [originalHierarchy, setOriginalHierarchy] = useState<HierarchyItem[]>(
     []
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const notifications = useNotifications();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchHierarchy();
-    } else if (status === "unauthenticated") {
-      signIn("google", { callbackUrl: "/drive" });
-    }
-  }, [status]);
 
   const fetchHierarchy = async () => {
     try {
@@ -92,6 +84,14 @@ const DriveExplorer: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetchHierarchy();
+    } else if (status === "unauthenticated") {
+      signIn("google", { callbackUrl: "/drive" });
+    }
+  }, [status, fetchHierarchy]);
 
   // Función recursiva para filtrar elementos de la jerarquía
   const filterHierarchyItems = (
@@ -197,20 +197,20 @@ const DriveExplorer: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className='flex justify-center items-center h-screen'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500' />
       </div>
     );
   }
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <h1 className="text-2xl font-bold mb-4">Drive Explorer</h1>
-        <p className="mb-4">Please sign in to access Drive Explorer</p>
+      <div className='flex flex-col justify-center items-center h-screen'>
+        <h1 className='text-2xl font-bold mb-4'>Drive Explorer</h1>
+        <p className='mb-4'>Please sign in to access Drive Explorer</p>
         <button
           onClick={() => signIn("google", { callbackUrl: "/drive" })}
-          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+          className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600'
         >
           Sign in with Google
         </button>
@@ -220,24 +220,24 @@ const DriveExplorer: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">Drive Explorer</h1>
+      <div className='container mx-auto px-4 py-8'>
+        <h1 className='text-3xl font-bold mb-8'>Drive Explorer</h1>
 
         {/* Search Bar */}
-        <div className="flex gap-2 mb-6">
-          <div className="relative flex-1">
+        <div className='flex gap-2 mb-6'>
+          <div className='relative flex-1'>
             <input
-              type="text"
+              type='text'
               value={searchQuery}
               onChange={handleSearchQueryChange}
-              placeholder="Search in drive..."
-              className="w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder='Search in drive...'
+              className='w-full px-4 py-2 pl-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'
             />
-            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+            <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-5 w-5 text-gray-400' />
           </div>
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className='px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'
           >
             Search
           </button>
@@ -245,20 +245,20 @@ const DriveExplorer: React.FC = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
+          <div className='mb-6 p-4 bg-red-100 text-red-700 rounded-lg'>
             {error}
           </div>
         )}
 
         {/* Loading State */}
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+          <div className='flex justify-center items-center h-64'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500' />
           </div>
         ) : (
           /* Content View */
           folderDetails && (
-            <div className="bg-white rounded-lg shadow">
+            <div className='bg-white rounded-lg shadow'>
               <ViewSelector
                 hierarchy={folderDetails.hierarchy}
                 onItemClick={handleItemClick}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
@@ -174,64 +174,8 @@ export default function DriveRoutesPage() {
     },
   });
 
-  // Efecto para actualizar el formulario cuando se selecciona una ruta para editar
-  useEffect(() => {
-    if (selectedRoute) {
-      form.reset({
-        slug: selectedRoute.slug,
-        folderId: selectedRoute.folderIds[0], // Tomamos el primer ID por ahora
-        title: selectedRoute.title || "",
-        subtitle: selectedRoute.subtitle || "",
-        description: selectedRoute.description || "",
-        customSettings: selectedRoute.customSettings
-          ? JSON.stringify(selectedRoute.customSettings, null, 2)
-          : "",
-      });
-    }
-  }, [selectedRoute, form]);
-
-  useEffect(() => {
-    fetchRoutes();
-  }, []);
-
-  // Verificar si hay rutas que necesitan actualización automática
-  useEffect(() => {
-    const autoSyncRoutes = async () => {
-      for (const route of routes) {
-        if (route.isActive) {
-          const status = getUpdateStatus(route.lastUpdated, route.isActive);
-          if (status.status === "warning") {
-            await syncRoute(route.id, true);
-          }
-        }
-      }
-    };
-
-    if (routes.length > 0) {
-      autoSyncRoutes();
-    }
-  }, [routes]);
-
-  // Redirigir si el usuario no está autenticado
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/auth/login");
-    }
-  }, [status, router]);
-
-  // Si está cargando la sesión, mostrar loading
-  if (status === "loading") {
-    return (
-      <div className='container py-10 flex justify-center items-center min-h-[50vh]'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
-          <p>Verificando sesión...</p>
-        </div>
-      </div>
-    );
-  }
-
-  async function fetchRoutes() {
+  // Memoize the fetchRoutes function with useCallback
+  const fetchRoutes = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch("/api/admin/drive-routes");
@@ -250,45 +194,107 @@ export default function DriveRoutesPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [toast]);
 
-  async function syncRoute(id: string, silent = false) {
-    try {
-      if (!silent) {
-        toast({
-          title: "Sincronizando...",
-          description: "Obteniendo datos de Drive",
+  // Memoize the syncRoute function with useCallback
+  const syncRoute = useCallback(
+    async (id: string, silent = false) => {
+      try {
+        if (!silent) {
+          toast({
+            title: "Sincronizando...",
+            description: "Obteniendo datos de Drive",
+          });
+        }
+
+        const response = await fetch(`/api/admin/drive-routes/${id}/fetch`, {
+          method: "POST",
         });
-      }
 
-      const response = await fetch(`/api/admin/drive-routes/${id}/fetch`, {
-        method: "POST",
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Error al sincronizar");
+        }
+
+        if (!silent) {
+          toast({
+            title: "Sincronización completada",
+            description: "Datos actualizados correctamente",
+            variant: "success",
+          });
+        }
+
+        fetchRoutes(); // Actualizar la lista
+      } catch (error) {
+        if (!silent) {
+          toast({
+            title: "Error",
+            description:
+              error instanceof Error ? error.message : "Error desconocido",
+            variant: "destructive",
+          });
+        }
+      }
+    },
+    [toast, fetchRoutes]
+  );
+
+  // Efecto para actualizar el formulario cuando se selecciona una ruta para editar
+  useEffect(() => {
+    if (selectedRoute) {
+      form.reset({
+        slug: selectedRoute.slug,
+        folderId: selectedRoute.folderIds[0], // Tomamos el primer ID por ahora
+        title: selectedRoute.title || "",
+        subtitle: selectedRoute.subtitle || "",
+        description: selectedRoute.description || "",
+        customSettings: selectedRoute.customSettings
+          ? JSON.stringify(selectedRoute.customSettings, null, 2)
+          : "",
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al sincronizar");
-      }
-
-      if (!silent) {
-        toast({
-          title: "Sincronización completada",
-          description: "Datos actualizados correctamente",
-          variant: "success",
-        });
-      }
-
-      fetchRoutes(); // Actualizar la lista
-    } catch (error) {
-      if (!silent) {
-        toast({
-          title: "Error",
-          description:
-            error instanceof Error ? error.message : "Error desconocido",
-          variant: "destructive",
-        });
-      }
     }
+  }, [selectedRoute, form]);
+
+  // Initial data loading
+  useEffect(() => {
+    fetchRoutes();
+  }, []); // Remove fetchRoutes from the dependency array
+
+  // Verificar si hay rutas que necesitan actualización automática
+  useEffect(() => {
+    const autoSyncRoutes = async () => {
+      for (const route of routes) {
+        if (route.isActive) {
+          const status = getUpdateStatus(route.lastUpdated, route.isActive);
+          if (status.status === "warning") {
+            await syncRoute(route.id, true);
+          }
+        }
+      }
+    };
+
+    if (routes.length > 0) {
+      autoSyncRoutes();
+    }
+  }, [routes, syncRoute]);
+
+  // Redirigir si el usuario no está autenticado
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
+  // Si está cargando la sesión, mostrar loading
+  if (status === "loading") {
+    return (
+      <div className='container py-10 flex justify-center items-center min-h-[50vh]'>
+        <div className='text-center'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+          <p>Verificando sesión...</p>
+        </div>
+      </div>
+    );
   }
 
   function viewJson(route: DriveRoute) {

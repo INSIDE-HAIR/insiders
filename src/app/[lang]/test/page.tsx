@@ -261,7 +261,7 @@ export default function PageCreator() {
 
   useEffect(() => {
     fetchPages();
-  }, [search, selectedStatus, selectedTags]);
+  }, [search, selectedStatus, selectedTags, fetchPages]);
 
   const renderTemplateOptions = () => {
     return Object.values(Template)
