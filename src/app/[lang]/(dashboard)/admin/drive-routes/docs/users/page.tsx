@@ -424,7 +424,7 @@ const PermisosSection = () => (
               <li>Selecciona &quot;Compartir&quot;</li>
               <li>
                 Introduce la dirección de correo de la cuenta de servicio:{" "}
-                <code>drive-service@tu-proyecto.iam.gserviceaccount.com</code>
+                <code>g-drive@insiders-vercel.iam.gserviceaccount.com</code>
               </li>
               <li>Otorga permisos de &quot;Lector&quot;</li>
               <li>Haz clic en &quot;Listo&quot;</li>

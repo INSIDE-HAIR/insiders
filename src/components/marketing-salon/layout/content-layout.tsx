@@ -44,7 +44,7 @@ const ContentLayout = () => {
 
   return (
     <SidebarProvider defaultOpen={isLargeScreen}>
-      <div className='flex h-screen w-full overflow-hidden bg-zinc-900 text-zinc-100'>
+      <div className='flex h-screen w-full overflow-hidden bg-zinc-900 text-zinc-100 relative'>
         <AppSidebar />
         <div className='flex-1 h-full overflow-hidden'>
           <ContentRenderer />

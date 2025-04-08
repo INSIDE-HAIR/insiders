@@ -72,10 +72,10 @@ export const AppSidebar = memo(function AppSidebar() {
   return (
     <Sidebar
       variant='sidebar'
-      className='bg-zinc-900 text-white border-r border-zinc-800 shadow-md'
+      className='bg-zinc-900 text-white border-r border-zinc-800 shadow-md  absolute'
       collapsible='offcanvas'
     >
-      <SidebarContent className='bg-zinc-900 text-white overflow-y-auto pt-20'>
+      <SidebarContent className='bg-zinc-900 text-white overflow-y-auto pt-20 '>
         <SidebarMenu>
           {sidebarItems.map((item) => {
             const isActive =

@@ -14,7 +14,7 @@ export default function ViewModeSelector({
   onChange,
 }: ViewModeSelectorProps) {
   return (
-    <div className='w-full bg-zinc-900 py-2 px-4 mb-6 flex items-center justify-between border-b border-zinc-800'>
+    <div className='w-full bg-zinc-900 py-2 px-4 flex items-center justify-between border-b border-zinc-800'>
       <div className='flex items-center'>
         <span className='text-sm font-medium mr-3 text-white'>
           Modo de visualización:
