@@ -14,6 +14,7 @@ import {
   hasPrefix,
   getEmbedUrl,
   mimeTypeIncludes,
+  shouldHideFolder,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 
 interface RecursiveContentRendererProps {
@@ -56,7 +57,7 @@ export function RecursiveContentRenderer({
       const parent = getItemById(parentId);
       return (
         parent?.children
-          .filter((item) => hasContent(item))
+          .filter((item) => hasContent(item) && !shouldHideFolder(item))
           .sort((a, b) => a.order - b.order) || []
       );
     }

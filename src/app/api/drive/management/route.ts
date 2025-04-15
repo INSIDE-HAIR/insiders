@@ -12,8 +12,9 @@ const routeSchema = z.object({
     .string()
     .min(3)
     .max(50)
-    .regex(/^[a-z0-9-]+$/, {
-      message: "Slug can only contain lowercase letters, numbers, and hyphens",
+    .regex(/^[a-z0-9-\/]+$/, {
+      message:
+        "Slug can only contain lowercase letters, numbers, hyphens, and slashes",
     }),
   folderIds: z.array(z.string()).min(1, {
     message: "At least one folder ID is required",
@@ -21,7 +22,7 @@ const routeSchema = z.object({
   title: z.string().nullable().optional(),
   subtitle: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  customSettings: z.record(z.any()).optional(),
+  customSettings: z.record(z.any()).optional().default({}),
 });
 
 // GET /api/drive/management - Listar todas las rutas
@@ -58,7 +59,13 @@ export async function POST(request: Request) {
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: "Invalid request data", details: validationResult.error },
+        {
+          error: "Invalid request data",
+          details: {
+            issues: validationResult.error.errors,
+            formattedErrors: validationResult.error.format(),
+          },
+        },
         { status: 400 }
       );
     }

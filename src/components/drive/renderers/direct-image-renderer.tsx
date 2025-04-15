@@ -8,9 +8,11 @@ import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-
 import { extractCopyText } from "@/src/features/drive/utils/marketing-salon/description-parser";
 import { hasDownloadSuffix } from "@/src/features/drive/utils/marketing-salon/content-type-utils";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import {
   getPreviewUrl,
   getDownloadUrl,
+  getDownloadUrlWithDecodedName,
   getTransformedUrl,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
@@ -56,8 +58,8 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
-  const searchParams = useSearchParams();
-  const isAdmin = searchParams.get("role") === "admin";
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Verificar disponibilidad de recursos
   const hasPreview = !!getPreviewUrl(item);
@@ -135,7 +137,7 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
         {/* Botón de descarga flotante (solo si tiene el sufijo correspondiente) */}
         {!isLoading && canDownload && downloadUrl && (
           <a
-            href={downloadUrl}
+            href={getDownloadUrlWithDecodedName(item)}
             target='_blank'
             rel='noopener noreferrer'
             className='absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90'
@@ -155,7 +157,11 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
               className='bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center px-4 py-2'
               asChild
             >
-              <a href={downloadUrl} target='_blank' rel='noopener noreferrer'>
+              <a
+                href={getDownloadUrlWithDecodedName(item)}
+                target='_blank'
+                rel='noopener noreferrer'
+              >
                 <Download className='h-4 w-4 mr-2' />
                 Descargar
               </a>
@@ -164,14 +170,14 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
             {/* Botón de detalles (solo para administradores) */}
             {decodedInfo && isAdmin && (
               <Button
-                className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-10 flex items-center justify-center'
+                className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center'
                 onClick={() => setShowDetails(!showDetails)}
                 title='Ver detalles del archivo'
               >
                 {showDetails ? (
-                  <ChevronUp className='h-4 w-4' />
+                  <ChevronUp className='h-24 w-24' />
                 ) : (
-                  <Plus className='h-4 w-4' />
+                  <Plus className='h-24 w-24' />
                 )}
               </Button>
             )}
@@ -186,12 +192,12 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
           >
             {isCopied ? (
               <>
-                <Check className='h-4 w-4 mr-2' />
+                <Check className='h-24 w-24 mr-2' />
                 Copiado
               </>
             ) : (
               <>
-                <Copy className='h-4 w-4 mr-2' />
+                <Copy className='h-24 w-24 mr-2' />
                 Copiar Texto
               </>
             )}

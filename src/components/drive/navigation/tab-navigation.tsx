@@ -84,21 +84,52 @@ export const TabNavigation = memo(function TabNavigation({
  * @returns {boolean} True si el elemento tiene contenido, false en caso contrario
  */
 export function hasContent(item: HierarchyItem): boolean {
-  // Si es un archivo, tiene contenido
+  console.log(`Evaluando hasContent para: ${item.displayName}`, item);
+
+  // Si es un archivo, siempre tiene contenido
   if (item.driveType === "file") {
     return true;
   }
 
-  // Si es una carpeta, verificar si tiene hijos con contenido
+  // Si no tiene hijos, no tiene contenido
   if (item.children.length === 0) {
     return false;
   }
 
-  // Si tiene archivos directos, tiene contenido
-  if (item.children.some((child) => child.driveType === "file")) {
-    return true;
+  // Para "Donde ponerlo", solo mostrar si tiene archivos directos
+  if (item.displayName.includes("Donde ponerlo")) {
+    const hasFiles = item.children.some((child) => child.driveType === "file");
+    console.log(`"Donde ponerlo" (${item.id}): tiene archivos? ${hasFiles}`);
+    return hasFiles;
   }
 
-  // Si tiene carpetas hijas, verificar recursivamente si alguna tiene contenido
-  return item.children.some((child) => hasContent(child));
+  // Comprobar si tiene archivos directos (excluir carpetas)
+  const hasFiles = item.children.some((child) => child.driveType === "file");
+
+  // Si todos sus hijos son carpetas, verificar si alguna tiene contenido válido
+  // (excluyendo carpetas "Donde ponerlo" que no tengan archivos)
+  const hasValidFolders = item.children
+    .filter(
+      (child) =>
+        // Solo considerar carpetas
+        child.driveType === "folder" &&
+        // Excluir "Donde ponerlo" sin archivos
+        !(
+          child.displayName.includes("Donde ponerlo") &&
+          !child.children.some((grandchild) => grandchild.driveType === "file")
+        )
+    )
+    .some(
+      (validFolder) =>
+        // Debe tener contenido válido
+        !validFolder.displayName.includes("Donde ponerlo") &&
+        hasContent(validFolder)
+    );
+
+  const result = hasFiles || hasValidFolders;
+  console.log(
+    `Resultado para ${item.displayName}: ${result} (archivos: ${hasFiles}, carpetas válidas: ${hasValidFolders})`
+  );
+
+  return result;
 }

@@ -1,4 +1,5 @@
 import type { HierarchyItem } from "@/src/features/drive/types/index";
+import { decodeFileName } from "./file-decoder";
 
 /**
  * Verifica si un item tiene un prefijo específico
@@ -50,6 +51,28 @@ export const getDownloadUrl = (item: HierarchyItem): string | undefined => {
 };
 
 /**
+ * Obtiene una URL de descarga con nombre de archivo decodificado
+ */
+export const getDownloadUrlWithDecodedName = (
+  item: HierarchyItem
+): string | undefined => {
+  const downloadUrl = getDownloadUrl(item);
+  if (!downloadUrl) return undefined;
+
+  const decodedInfo = decodeFileName(item.name);
+  if (!decodedInfo) return downloadUrl;
+
+  // Agregar el nombre decodificado como parámetro de consulta
+  const url = new URL(downloadUrl);
+  url.searchParams.set(
+    "response-content-disposition",
+    `attachment; filename="${decodedInfo.fullName}"`
+  );
+
+  return url.toString();
+};
+
+/**
  * Accede de forma segura a la URL de embed
  */
 export const getEmbedUrl = (item: HierarchyItem): string | undefined => {
@@ -91,4 +114,35 @@ export const mimeTypeIncludes = (
   text: string
 ): boolean => {
   return !!item.mimeType && item.mimeType.includes(text);
+};
+
+/**
+ * Determina si una carpeta debe ocultarse basándose en contenido específico
+ * como "donde ponerlo"
+ */
+export const shouldHideFolder = (item: HierarchyItem): boolean => {
+  // Si no es una carpeta, no aplica
+  if (item.driveType !== "folder") return false;
+
+  // Verificar si la carpeta o sus hijos contienen "donde ponerlo"
+  const containsDondePoner =
+    item.name.toLowerCase().includes("donde ponerlo") ||
+    item.displayName.toLowerCase().includes("donde ponerlo");
+
+  // Si es una carpeta con "donde ponerlo" en el nombre, ocultar
+  if (containsDondePoner) return true;
+
+  // Verificar si TODOS sus hijos son carpetas con "donde ponerlo"
+  if (item.children.length > 0) {
+    const allChildrenAreDondePoner = item.children.every(
+      (child) =>
+        child.name.toLowerCase().includes("donde ponerlo") ||
+        child.displayName.toLowerCase().includes("donde ponerlo")
+    );
+
+    // Si todos los hijos son "donde ponerlo", ocultar la carpeta
+    if (allChildrenAreDondePoner && item.children.length > 0) return true;
+  }
+
+  return false;
 };

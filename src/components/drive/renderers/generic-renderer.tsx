@@ -27,6 +27,7 @@ import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-decoder";
 import { extractCopyText } from "@/src/features/drive/utils/marketing-salon/description-parser";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 // Actualizar la importación de ImageBlurUp
 import { ImageBlurUp } from "@/src/components/drive/ui/image-components/image-blur-up";
 import { GoogleSlidesRenderer } from "@/src/components/drive/renderers/google-slides-renderer";
@@ -37,6 +38,7 @@ import {
   getEmbedUrl,
   getPreviewItems,
   hasMultiplePreviews,
+  getDownloadUrlWithDecodedName,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
 
@@ -76,7 +78,8 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
   const searchParams = useSearchParams();
-  const isAdmin = searchParams.get("role") === "admin";
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
@@ -347,7 +350,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               asChild
             >
               <a
-                href={getDownloadUrl(item)}
+                href={getDownloadUrlWithDecodedName(item)}
                 target='_blank'
                 rel='noopener noreferrer'
               >
@@ -358,14 +361,14 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
 
             {decodedInfo && isAdmin && (
               <Button
-                className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-10 flex items-center justify-center'
+                className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center'
                 onClick={() => setShowDetails(!showDetails)}
                 title='Ver detalles del archivo'
               >
                 {showDetails ? (
-                  <ChevronUp className='h-4 w-4' />
+                  <ChevronUp className='h-24 w-24' />
                 ) : (
-                  <Plus className='h-4 w-4' />
+                  <Plus className='h-24 w-24' />
                 )}
               </Button>
             )}

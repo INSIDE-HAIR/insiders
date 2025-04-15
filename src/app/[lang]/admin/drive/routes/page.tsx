@@ -33,6 +33,7 @@ import {
   CheckCircle,
   Clock,
   InfoIcon,
+  Copy,
 } from "lucide-react";
 import { format, differenceInHours } from "date-fns";
 import { useToast } from "@/src/components/ui/use-toast";
@@ -73,9 +74,9 @@ const formSchema = z.object({
     .string()
     .min(3, { message: "El slug debe tener al menos 3 caracteres" })
     .max(50, { message: "El slug no puede tener más de 50 caracteres" })
-    .regex(/^[a-z0-9-]+$/, {
+    .regex(/^[a-z0-9-\/]+$/, {
       message:
-        "El slug solo puede contener letras minúsculas, números y guiones",
+        "El slug solo puede contener letras minúsculas, números, guiones y barras",
     }),
   folderId: z.string().min(5, {
     message: "El ID de carpeta de Drive es obligatorio",
@@ -130,7 +131,7 @@ function getUpdateStatus(lastUpdated: string, isActive: boolean) {
       color: "yellow",
       label: "Actualización próxima",
       icon: <Clock className='h-4 w-4' />,
-      variant: "warning" as const,
+      variant: "default" as const,
       tooltipText:
         "Entre 12-24 horas sin actualizar. Se actualizará automáticamente al acceder.",
     };
@@ -160,6 +161,10 @@ export default function DriveRoutesPage() {
   const [selectedRoute, setSelectedRoute] = useState<DriveRoute | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [legendModalOpen, setLegendModalOpen] = useState(false);
+  // Estados para el modal de confirmación de borrado
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Formulario para crear/editar rutas
   const form = useForm<z.infer<typeof formSchema>>({
@@ -303,7 +308,44 @@ export default function DriveRoutesPage() {
   }
 
   function handleDeleteRoute(id: string) {
-    // Implementar confirmación y eliminación
+    setRouteToDelete(id);
+    setDeleteModalOpen(true);
+  }
+
+  async function confirmDeleteRoute() {
+    if (!routeToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/drive/management/${routeToDelete}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al eliminar la ruta");
+      }
+
+      toast({
+        title: "Ruta eliminada",
+        description: "La ruta ha sido eliminada correctamente",
+        variant: "success",
+      });
+
+      // Cerrar modal y actualizar la lista
+      setDeleteModalOpen(false);
+      setRouteToDelete(null);
+      fetchRoutes();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
   }
 
   function handleEditRoute(route: DriveRoute) {
@@ -322,9 +364,10 @@ export default function DriveRoutesPage() {
         subtitle: values.subtitle?.trim() === "" ? null : values.subtitle,
         description:
           values.description?.trim() === "" ? null : values.description,
-        customSettings: values.customSettings
-          ? JSON.parse(values.customSettings)
-          : null,
+        customSettings:
+          values.customSettings && values.customSettings.trim() !== ""
+            ? JSON.parse(values.customSettings)
+            : {},
       };
 
       const isEditing = !!selectedRoute;
@@ -341,21 +384,45 @@ export default function DriveRoutesPage() {
         body: JSON.stringify(requestData),
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
+        // Handle Zod validation errors
+        if (responseData.details?.issues) {
+          const errorMessages = responseData.details.issues
+            .map((issue: any) => `${issue.path.join(".")}: ${issue.message}`)
+            .join(", ");
+          throw new Error(`Validation errors: ${errorMessages}`);
+        }
+
         throw new Error(
-          errorData.error ||
+          responseData.error ||
             `Error al ${isEditing ? "actualizar" : "crear"} la ruta`
         );
       }
 
+      // Comprobar si la respuesta incluye resultado de sincronización
+      const syncStatus = responseData.syncStatus;
+      const syncSuccess = syncStatus === "success";
+
       toast({
         title: isEditing ? "Ruta actualizada" : "Ruta creada",
         description: isEditing
-          ? "La ruta se ha actualizado correctamente. Ahora se sincronizará con Drive."
+          ? syncSuccess
+            ? "La ruta se ha actualizado y sincronizado correctamente con Drive."
+            : "La ruta se ha actualizado correctamente. Los cambios en el ID de carpeta provocarán una sincronización automática."
           : "La ruta se ha creado correctamente. Ahora se sincronizará con Drive.",
         variant: "success",
       });
+
+      // Si hubo un error en la sincronización pero la actualización fue correcta
+      if (syncStatus === "error" && responseData.syncError) {
+        toast({
+          title: "Advertencia en sincronización",
+          description: `La ruta se actualizó pero hubo un problema al sincronizar: ${responseData.syncError}`,
+          variant: "default",
+        });
+      }
 
       // Cerrar modal y actualizar la lista
       setCreateModalOpen(false);
@@ -408,6 +475,60 @@ export default function DriveRoutesPage() {
       });
     }
   }
+
+  // Función para duplicar una ruta existente
+  const duplicateRoute = async function (route: DriveRoute) {
+    try {
+      toast({
+        title: "Duplicando ruta...",
+        description: `Creando copia de ${route.slug}`,
+      });
+
+      // Generar un nuevo slug basado en el original
+      const newSlug = `${route.slug}-copy-${new Date()
+        .getTime()
+        .toString()
+        .slice(-4)}`;
+
+      // Crear objeto de datos para enviar
+      const requestData = {
+        slug: newSlug,
+        folderIds: route.folderIds,
+        title: route.title ? `${route.title} (Copia)` : null,
+        subtitle: route.subtitle,
+        description: route.description,
+        customSettings: route.customSettings || {},
+      };
+
+      const response = await fetch("/api/drive/management", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al duplicar la ruta");
+      }
+
+      toast({
+        title: "Ruta duplicada",
+        description: `Se ha creado una copia en ${newSlug}`,
+        variant: "success",
+      });
+
+      fetchRoutes(); // Actualizar la lista
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className='container py-10'>
@@ -589,6 +710,21 @@ export default function DriveRoutesPage() {
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
+                                    variant='outline'
+                                    size='icon'
+                                    onClick={() => duplicateRoute(route)}
+                                  >
+                                    <Copy className='h-4 w-4' />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Duplicar ruta</p>
+                                </TooltipContent>
+                              </Tooltip>
+
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
                                     variant='destructive'
                                     size='icon'
                                     onClick={() => handleDeleteRoute(route.id)}
@@ -650,8 +786,8 @@ export default function DriveRoutesPage() {
               {/* Estado: Actualización próxima */}
               <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
                 <Badge
-                  variant='warning'
-                  className='flex items-center gap-1 mt-0.5'
+                  variant='default'
+                  className='flex items-center gap-1 mt-0.5 bg-yellow-400'
                 >
                   <Clock className='h-4 w-4' />
                   Actualización próxima
@@ -889,6 +1025,42 @@ export default function DriveRoutesPage() {
               </DialogFooter>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal para confirmar eliminación */}
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className='max-w-md'>
+          <DialogHeader>
+            <DialogTitle>Confirmar eliminación</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar esta ruta? Esta acción no se
+              puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <div className='flex justify-end gap-3 mt-4'>
+            <Button
+              variant='outline'
+              onClick={() => setDeleteModalOpen(false)}
+              disabled={isDeleting}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant='destructive'
+              onClick={confirmDeleteRoute}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />{" "}
+                  Eliminando...
+                </>
+              ) : (
+                "Eliminar"
+              )}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

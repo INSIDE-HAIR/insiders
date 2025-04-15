@@ -31,3 +31,45 @@ model DriveRouteLog {
 
   @@index([routeId])
 }
+
+// Modelos para gestionar los códigos de archivos para decodificación de nombres
+
+model DriveFileCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique // Código único (ej: "0080")
+  description String // Descripción del código (ej: "Cartel 80x120cm")
+  category    String // Categoría a la que pertenece este código
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+}
+
+model DriveClientCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique // Código único (ej: "A")
+  name        String // Nombre del cliente (ej: "Insiders")
+  description String? // Descripción opcional
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+}
+
+model DriveCampaignCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique // Código único (ej: "A")
+  name        String // Nombre de la campaña (ej: "Campaign")
+  description String? // Descripción opcional
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+}
+
+model DriveLanguageCode {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  code        String   @unique // Código único (ej: "01")
+  language    String // Idioma (ej: "ES")
+  description String? // Descripción opcional (ej: "Español")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String?
+}

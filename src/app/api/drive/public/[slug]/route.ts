@@ -7,7 +7,8 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const slug = params.slug;
+    // Decode the slug to handle encoded slashes
+    const slug = decodeURIComponent(params.slug);
 
     // Buscar ruta en la base de datos
     const route = await prisma.driveRoute.findUnique({

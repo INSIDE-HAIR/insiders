@@ -16,9 +16,11 @@ import {
   getTransformedUrl,
   getPreviewUrl,
   getDownloadUrl,
+  getDownloadUrlWithDecodedName,
   mimeTypeIncludes,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 
 interface CustomCardProps {
   item: HierarchyItem;
@@ -36,6 +38,8 @@ interface CustomCardProps {
 export function CustomCard({ item }: CustomCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   // Decodificar el nombre del archivo
   const decodedInfo = decodeFileName(item.name);
@@ -102,7 +106,7 @@ export function CustomCard({ item }: CustomCardProps) {
           asChild
         >
           <a
-            href={getDownloadUrl(item)}
+            href={getDownloadUrlWithDecodedName(item)}
             target='_blank'
             rel='noopener noreferrer'
           >
@@ -111,23 +115,23 @@ export function CustomCard({ item }: CustomCardProps) {
           </a>
         </Button>
 
-        {decodedInfo && (
+        {decodedInfo && isAdmin && (
           <Button
-            className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-10 flex items-center justify-center'
+            className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center'
             onClick={() => setShowDetails(!showDetails)}
             title='Ver detalles del archivo'
           >
             {showDetails ? (
-              <ChevronUp className='h-4 w-4' />
+              <ChevronUp className='h-24 w-24' />
             ) : (
-              <Plus className='h-4 w-4' />
+              <Plus className='h-24 w-24' />
             )}
           </Button>
         )}
       </div>
 
       {/* File details section */}
-      {showDetails && decodedInfo && (
+      {showDetails && decodedInfo && isAdmin && (
         <div className='p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700'>
           <div className='flex items-center mb-1'>
             <Info className='h-3 w-3 mr-1 text-[#CEFF66]' />

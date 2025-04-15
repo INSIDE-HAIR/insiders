@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../../lib/prisma";
 import { auth } from "../../../../../config/auth/auth";
 import { z } from "zod";
+import { DriveSyncService } from "../../../../../lib/services/driveSync";
+import { GoogleDriveService } from "@drive/services/drive/GoogleDriveService";
+import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
+import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
 // Schema de validación para actualizar rutas
 const updateRouteSchema = z.object({
@@ -9,8 +13,9 @@ const updateRouteSchema = z.object({
     .string()
     .min(3)
     .max(50)
-    .regex(/^[a-z0-9-]+$/, {
-      message: "Slug can only contain lowercase letters, numbers, and hyphens",
+    .regex(/^[a-z0-9-\/]+$/, {
+      message:
+        "Slug can only contain lowercase letters, numbers, hyphens, and slashes",
     })
     .optional(),
   folderIds: z
@@ -23,7 +28,7 @@ const updateRouteSchema = z.object({
   subtitle: z.string().optional().nullable(),
   description: z.string().optional().nullable(),
   isActive: z.boolean().optional(),
-  customSettings: z.record(z.any()).optional(),
+  customSettings: z.record(z.any()).optional().default({}),
 });
 
 // GET /api/drive/management/[id] - Obtener una ruta específica
@@ -87,7 +92,13 @@ export async function PUT(
 
     if (!validationResult.success) {
       return NextResponse.json(
-        { error: "Validation error", details: validationResult.error.format() },
+        {
+          error: "Validation error",
+          details: {
+            issues: validationResult.error.errors,
+            formattedErrors: validationResult.error.format(),
+          },
+        },
         { status: 400 }
       );
     }
@@ -118,7 +129,9 @@ export async function PUT(
           description: body.description,
         }),
         ...(body.isActive !== undefined && { isActive: body.isActive }),
-        ...(body.customSettings && { customSettings: body.customSettings }),
+        ...(body.customSettings !== undefined && {
+          customSettings: body.customSettings || {},
+        }),
       },
     });
 
@@ -130,6 +143,46 @@ export async function PUT(
         success: true,
       },
     });
+
+    // Si se actualizaron los folderIds o se está activando una ruta, sincronizar automáticamente
+    if (body.folderIds || (body.isActive === true && !existingRoute.isActive)) {
+      try {
+        // Inicializar servicios para sincronización
+        const driveService = new GoogleDriveService();
+        await driveService.initialize();
+        const fileAnalyzer = new FileAnalyzer();
+        const hierarchyService = new HierarchyService(
+          driveService,
+          fileAnalyzer
+        );
+        const syncService = new DriveSyncService(
+          driveService,
+          hierarchyService,
+          prisma
+        );
+
+        // Sincronizar la ruta
+        const syncResult = await syncService.syncRoute(params.id);
+
+        // Devolver los datos actualizados después de la sincronización
+        return NextResponse.json({
+          ...updatedRoute,
+          syncStatus: "success",
+          syncResult,
+        });
+      } catch (syncError: any) {
+        // Si hay error en la sincronización, devolver la ruta actualizada pero con mensaje de error
+        console.error(
+          "Error al sincronizar después de la actualización:",
+          syncError
+        );
+        return NextResponse.json({
+          ...updatedRoute,
+          syncStatus: "error",
+          syncError: syncError.message || "Error al sincronizar",
+        });
+      }
+    }
 
     return NextResponse.json(updatedRoute);
   } catch (error: any) {
