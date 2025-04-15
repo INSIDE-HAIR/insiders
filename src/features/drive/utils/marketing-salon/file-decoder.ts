@@ -140,7 +140,7 @@ export function decodeFileName(fileName: string): DecodedFile | null {
   const extension = fileName.split(".").pop() || "";
 
   // Crear un nombre de archivo más descriptivo para la descarga
-  const downloadName = `${category}-${lang}-v${version}${
+  const downloadName = `${client}-${campaign}-${year}-${monthName}-${category}-${lang}-v${version}${
     extension ? "." + extension : ""
   }`;
 
