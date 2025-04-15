@@ -2,7 +2,7 @@ export const langCodes = {
   "01": "ES",
   "02": "CA",
   // más códigos según sea necesario
-}
+};
 
 export const filesCodes = {
   "0000": "Vinilo Puerta",
@@ -52,7 +52,7 @@ export const filesCodes = {
   "0032": "Plan de Color",
   "0880": "Porta Tarjetas",
   "0420": "Guía de visagismo",
-}
+};
 
 export const clientsCodes = {
   A: "insiders",
@@ -63,46 +63,86 @@ export const clientsCodes = {
   F: "latam",
   G: "ritape",
   // más códigos según sea necesario
-}
+};
 
 export const campaignCodes = {
   A: "campaign",
   B: "primelady",
   C: "start-marketing",
   // más códigos según sea necesario
-}
+};
 
 export interface DecodedFile {
-  client: string
-  campaign: string
-  category: string
-  lang: string
-  version: string
-  fullName: string
+  client: string;
+  campaign: string;
+  category: string;
+  lang: string;
+  version: string;
+  fullName: string;
+  year: string;
+  month: string;
 }
 
 export function decodeFileName(fileName: string): DecodedFile | null {
   // Eliminar "Copia de " si existe
-  const cleanName = fileName.replace(/^Copia de /, "")
+  const cleanName = fileName.replace(/^Copia de /, "");
 
   // Intentar extraer el código del formato A-A-2503-0002-01-00-01.pdf
-  const regex = /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/
-  const match = cleanName.match(regex)
+  const regex =
+    /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/;
+  const match = cleanName.match(regex);
 
-  if (!match) return null
+  if (!match) return null;
 
-  const [, clientsCode, campaignCode, yearCode, fileCode, langCode, , version] = match
+  const [
+    ,
+    clientsCode,
+    campaignCode,
+    yearMonthCode,
+    fileCode,
+    langCode,
+    ,
+    version,
+  ] = match;
 
-  const client = clientsCodes[clientsCode as keyof typeof clientsCodes] || "Desconocido"
-  const campaign = campaignCodes[campaignCode as keyof typeof campaignCodes] || "Desconocido"
-  const category = filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] || "Desconocido"
-  const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido"
+  const client =
+    clientsCodes[clientsCode as keyof typeof clientsCodes] || "Desconocido";
+  const campaign =
+    campaignCodes[campaignCode as keyof typeof campaignCodes] || "Desconocido";
+  const category =
+    filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
+    "Desconocido";
+  const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
+
+  // Extraer año y mes del código
+  const year = "20" + yearMonthCode.substring(0, 2);
+  const month = yearMonthCode.substring(2, 4);
+
+  // Nombres de los meses para mostrar
+  const monthNames = {
+    "01": "Enero",
+    "02": "Febrero",
+    "03": "Marzo",
+    "04": "Abril",
+    "05": "Mayo",
+    "06": "Junio",
+    "07": "Julio",
+    "08": "Agosto",
+    "09": "Septiembre",
+    "10": "Octubre",
+    "11": "Noviembre",
+    "12": "Diciembre",
+  };
+
+  const monthName = monthNames[month as keyof typeof monthNames] || month;
 
   // Extraer la extensión del archivo original
-  const extension = fileName.split(".").pop() || ""
+  const extension = fileName.split(".").pop() || "";
 
   // Crear un nombre de archivo más descriptivo para la descarga
-  const downloadName = `${category}-${lang}-v${version}${extension ? "." + extension : ""}`
+  const downloadName = `${category}-${lang}-v${version}${
+    extension ? "." + extension : ""
+  }`;
 
   return {
     client,
@@ -111,6 +151,7 @@ export function decodeFileName(fileName: string): DecodedFile | null {
     lang,
     version,
     fullName: downloadName,
-  }
+    year,
+    month: monthName,
+  };
 }
-
