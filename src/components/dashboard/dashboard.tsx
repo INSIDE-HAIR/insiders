@@ -74,6 +74,7 @@ const pagesWithSubpages: Record<
     { title: "Explorador de Drive", url: "/admin/drive" },
     { title: "Rutas de Drive", url: "/admin/drive/routes" },
     { title: "Documentación", url: "/admin/drive/routes/docs" },
+    { title: "Gestor de Códigos", url: "/admin/drive/codes" },
   ],
 };
 
@@ -81,7 +82,7 @@ const pagesWithSubpages: Record<
 const teamRoutes = {
   gestion: translations.adminRoutes, // Acceso completo
   creativos: translations.adminRoutes.filter((route) =>
-    ["pages", "menu", "drive"].includes(route.id)
+    ["pages", "menu", "drive", "codes"].includes(route.id)
   ),
   consultoria: translations.adminRoutes.filter((route) =>
     ["analytics", "users", "users2", "dashboard", "messages"].includes(route.id)
@@ -92,7 +93,7 @@ const teamRoutes = {
 };
 
 // Lista de páginas que NO deben ser acordiones (enlaces directos)
-const directLinkPages = ["admin", "dashboard", "analytics"];
+const directLinkPages = ["admin", "dashboard", "analytics", "codes"];
 
 // Función para crear los elementos de navegación con subpáginas cuando existen
 const createNavItems = (routes: TranslationRoute[]) => {

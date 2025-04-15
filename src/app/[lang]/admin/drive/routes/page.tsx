@@ -540,14 +540,29 @@ export default function DriveRoutesPage() {
           </p>
         </div>
         <div className='flex space-x-2'>
-          <Button onClick={() => setLegendModalOpen(true)} variant='outline'>
-            <InfoIcon className='mr-2 h-4 w-4' /> Leyenda
+          <Button
+            variant='outline'
+            onClick={() => setLegendModalOpen(true)}
+            size='sm'
+          >
+            <InfoIcon className='h-4 w-4 mr-2' /> Leyenda
           </Button>
-          <Button onClick={() => router.push("/admin/drive/routes/docs")}>
+          <Button
+            variant='outline'
+            onClick={() => router.push("/admin/drive/routes/docs")}
+            size='sm'
+          >
             Documentación
           </Button>
+          <Button
+            variant='outline'
+            onClick={() => router.push("/admin/drive/codes")}
+            size='sm'
+          >
+            Códigos
+          </Button>
           <Button onClick={() => setCreateModalOpen(true)}>
-            <PlusIcon className='mr-2 h-4 w-4' /> Crear Ruta
+            <PlusIcon className='h-4 w-4 mr-2' /> Crear Ruta
           </Button>
         </div>
       </div>

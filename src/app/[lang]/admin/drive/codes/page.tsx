@@ -426,7 +426,7 @@ export default function CodesAdminPage() {
                 <SelectItem
                   key={type.value}
                   value={type.value}
-                  className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                  className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                 >
                   {type.label}
                 </SelectItem>
@@ -435,14 +435,17 @@ export default function CodesAdminPage() {
           </Select>
         </div>
 
-        <Button onClick={loadCodes} className='bg-zinc-700 hover:bg-zinc-600'>
+        <Button
+          onClick={loadCodes}
+          className='bg-zinc-700 hover:bg-zinc-600 border-none'
+        >
           <RefreshCw size={18} className='mr-2' />
           Recargar
         </Button>
 
         <Button
           onClick={handleOpenAddDialog}
-          className='bg-inside hover:bg-[#bfef33] text-zinc-900'
+          className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
         >
           <Plus size={18} className='mr-2' />
           Nuevo código
@@ -451,7 +454,7 @@ export default function CodesAdminPage() {
         <Button
           onClick={handleExportCodes}
           variant='outline'
-          className='border-zinc-600'
+          className='bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none'
         >
           <Download size={18} className='mr-2' />
           Exportar
@@ -461,7 +464,7 @@ export default function CodesAdminPage() {
           onClick={importCodes}
           disabled={importLoading}
           variant='outline'
-          className='border-zinc-600'
+          className='bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none'
         >
           <Upload size={18} className='mr-2' />
           {importLoading ? "Importando..." : "Importar estáticos"}
@@ -471,7 +474,9 @@ export default function CodesAdminPage() {
           onClick={() => setShowPreview(!showPreview)}
           variant={showPreview ? "default" : "outline"}
           className={
-            showPreview ? "bg-inside text-zinc-900" : "border-zinc-600"
+            showPreview
+              ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+              : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
           }
         >
           Vista Previa de Archivos
@@ -491,8 +496,8 @@ export default function CodesAdminPage() {
               variant={previewMode === "generate" ? "default" : "outline"}
               className={
                 previewMode === "generate"
-                  ? "bg-inside text-zinc-900 hover:bg-inside"
-                  : "border-zinc-600 hover:bg-zinc-200"
+                  ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+                  : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
               }
             >
               Generar Nombre
@@ -502,8 +507,8 @@ export default function CodesAdminPage() {
               variant={previewMode === "decode" ? "default" : "outline"}
               className={
                 previewMode === "decode"
-                  ? "bg-inside text-zinc-900 hover:bg-inside"
-                  : "border-zinc-600 hover:bg-zinc-200"
+                  ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+                  : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
               }
             >
               Decodificar Nombre
@@ -535,7 +540,7 @@ export default function CodesAdminPage() {
                     <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
                       <SelectItem
                         value='none'
-                        className='bg-zinc-800 text-zinc-400 hover:bg-zinc-800 focus:bg-zinc-800'
+                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                       >
                         Sin cliente
                       </SelectItem>
@@ -543,7 +548,7 @@ export default function CodesAdminPage() {
                         <SelectItem
                           key={code.id}
                           value={code.code}
-                          className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                         >
                           {code.name}
                         </SelectItem>
@@ -569,7 +574,7 @@ export default function CodesAdminPage() {
                     <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
                       <SelectItem
                         value='none'
-                        className='bg-zinc-800 text-zinc-400 hover:bg-zinc-800 focus:bg-zinc-800'
+                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                       >
                         Sin campaña
                       </SelectItem>
@@ -577,7 +582,7 @@ export default function CodesAdminPage() {
                         <SelectItem
                           key={code.id}
                           value={code.code}
-                          className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                         >
                           {code.name}
                         </SelectItem>
@@ -620,7 +625,7 @@ export default function CodesAdminPage() {
                     <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
                       <SelectItem
                         value='none'
-                        className='bg-zinc-800 text-zinc-400 hover:bg-zinc-800 focus:bg-zinc-800'
+                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                       >
                         Sin tipo
                       </SelectItem>
@@ -628,7 +633,7 @@ export default function CodesAdminPage() {
                         <SelectItem
                           key={code.id}
                           value={code.code}
-                          className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                         >
                           {code.name}
                         </SelectItem>
@@ -654,7 +659,7 @@ export default function CodesAdminPage() {
                     <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
                       <SelectItem
                         value='none'
-                        className='bg-zinc-800 text-zinc-400 hover:bg-zinc-800 focus:bg-zinc-800'
+                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                       >
                         Sin idioma
                       </SelectItem>
@@ -662,7 +667,7 @@ export default function CodesAdminPage() {
                         <SelectItem
                           key={code.id}
                           value={code.code}
-                          className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                         >
                           {code.name}
                         </SelectItem>
@@ -676,16 +681,36 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Versión
                   </label>
-                  <Input
-                    type='text'
+                  <Select
                     value={generator.version}
-                    onChange={(e) =>
-                      handleGeneratorChange("version", e.target.value)
+                    onValueChange={(value) =>
+                      handleGeneratorChange("version", value)
                     }
-                    placeholder='Ej: 00, 01, 02...'
-                    className='text-white font-bold bg-zinc-900 border-zinc-700'
-                    maxLength={2}
-                  />
+                  >
+                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
+                      <SelectValue placeholder='Seleccionar versión' />
+                    </SelectTrigger>
+                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
+                      <SelectItem
+                        value='00'
+                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
+                      >
+                        00
+                      </SelectItem>
+                      <SelectItem
+                        value='01'
+                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
+                      >
+                        01
+                      </SelectItem>
+                      <SelectItem
+                        value='02'
+                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
+                      >
+                        02
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Número */}
@@ -719,7 +744,7 @@ export default function CodesAdminPage() {
                       navigator.clipboard.writeText(generateFileName());
                       toast.success("Nombre copiado al portapapeles");
                     }}
-                    className='ml-2'
+                    className='ml-2 hover:bg-zinc-800 hover:text-inside'
                   >
                     <span className='sr-only'>Copiar</span>
                     <svg
@@ -763,7 +788,7 @@ export default function CodesAdminPage() {
                 />
                 <Button
                   onClick={() => decodeFileName(fileCodeInput)}
-                  className='bg-inside hover:bg-[#bfef33] text-zinc-900'
+                  className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
                 >
                   Decodificar
                 </Button>
@@ -817,10 +842,14 @@ export default function CodesAdminPage() {
               </TableRow>
             ) : (
               codes.map((code) => (
-                <TableRow key={code.id} className='hover:bg-zinc-900'>
-                  <TableCell className='font-medium'>{code.code}</TableCell>
-                  <TableCell>{code.name}</TableCell>
-                  <TableCell className='text-sm text-zinc-400'>
+                <TableRow key={code.id} className='hover:bg-zinc-900 group'>
+                  <TableCell className='font-medium group-hover:text-inside'>
+                    {code.code}
+                  </TableCell>
+                  <TableCell className='group-hover:text-inside'>
+                    {code.name}
+                  </TableCell>
+                  <TableCell className='text-sm text-zinc-400 group-hover:text-inside'>
                     {code.description || "-"}
                   </TableCell>
                   <TableCell className='text-right'>
@@ -829,7 +858,7 @@ export default function CodesAdminPage() {
                         onClick={() => handleOpenEditDialog(code)}
                         variant='ghost'
                         size='icon'
-                        className='h-8 w-8'
+                        className='h-8 w-8 text-zinc-400 hover:text-inside hover:bg-zinc-800'
                         title='Editar'
                       >
                         <Pencil size={16} />
@@ -838,7 +867,7 @@ export default function CodesAdminPage() {
                         onClick={() => handleOpenDeleteDialog(code)}
                         variant='ghost'
                         size='icon'
-                        className='h-8 w-8 text-red-500 hover:text-red-600'
+                        className='h-8 w-8 text-red-500 hover:text-red-400 hover:bg-zinc-800'
                         title='Eliminar'
                       >
                         <Trash2 size={16} />
@@ -874,7 +903,7 @@ export default function CodesAdminPage() {
                     <SelectItem
                       key={type.value}
                       value={type.value}
-                      className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                      className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                     >
                       {type.label}
                     </SelectItem>
@@ -926,7 +955,7 @@ export default function CodesAdminPage() {
               variant='outline'
               onClick={() => setShowAddDialog(false)}
               disabled={isSubmitting}
-              className='border-zinc-700'
+              className='bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none'
             >
               Cancelar
             </Button>
@@ -934,7 +963,7 @@ export default function CodesAdminPage() {
               type='button'
               onClick={handleAddCode}
               disabled={isSubmitting}
-              className='bg-inside hover:bg-[#bfef33] text-zinc-900'
+              className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
             >
               {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
@@ -964,7 +993,7 @@ export default function CodesAdminPage() {
                     <SelectItem
                       key={type.value}
                       value={type.value}
-                      className='text-white hover:bg-zinc-800 focus:bg-zinc-800'
+                      className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
                     >
                       {type.label}
                     </SelectItem>
@@ -1016,7 +1045,7 @@ export default function CodesAdminPage() {
               variant='outline'
               onClick={() => setShowEditDialog(false)}
               disabled={isSubmitting}
-              className='border-zinc-700 text-zinc-900'
+              className='bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none'
             >
               Cancelar
             </Button>
@@ -1024,7 +1053,7 @@ export default function CodesAdminPage() {
               type='button'
               onClick={handleUpdateCode}
               disabled={isSubmitting}
-              className='bg-inside hover:bg-[#bfef33] text-zinc-900'
+              className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
             >
               {isSubmitting ? "Guardando..." : "Actualizar"}
             </Button>
@@ -1053,7 +1082,7 @@ export default function CodesAdminPage() {
               variant='outline'
               onClick={() => setShowDeleteDialog(false)}
               disabled={isSubmitting}
-              className='border-zinc-700'
+              className='bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none'
             >
               Cancelar
             </Button>
@@ -1062,6 +1091,7 @@ export default function CodesAdminPage() {
               onClick={handleDeleteCode}
               disabled={isSubmitting}
               variant='destructive'
+              className='bg-red-500 text-white hover:bg-red-600'
             >
               {isSubmitting ? "Eliminando..." : "Eliminar"}
             </Button>

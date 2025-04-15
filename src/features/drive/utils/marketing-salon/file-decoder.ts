@@ -1,3 +1,6 @@
+import { CodeService } from "./file-decoder-service";
+
+// Códigos estáticos como fallback (se usarán si no hay conexión a la BD)
 export const langCodes = {
   "01": "ES",
   "02": "CA",
@@ -83,6 +86,105 @@ export interface DecodedFile {
   month: string;
 }
 
+export async function decodeFileNameAsync(
+  fileName: string
+): Promise<DecodedFile | null> {
+  try {
+    // Cargar códigos desde la base de datos
+    const langCodesDB = await CodeService.getCodesByType("lang");
+    const fileCodesDB = await CodeService.getCodesByType("file");
+    const clientCodesDB = await CodeService.getCodesByType("client");
+    const campaignCodesDB = await CodeService.getCodesByType("campaign");
+
+    // Eliminar "Copia de " si existe
+    const cleanName = fileName.replace(/^Copia de /, "");
+
+    // Intentar extraer el código del formato A-A-2503-0002-01-00-01.pdf
+    const regex =
+      /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/;
+    const match = cleanName.match(regex);
+
+    if (!match) return null;
+
+    const [
+      ,
+      clientsCode,
+      campaignCode,
+      yearMonthCode,
+      fileCode,
+      langCode,
+      ,
+      version,
+    ] = match;
+
+    const client =
+      clientCodesDB[clientsCode] ||
+      clientsCodes[clientsCode as keyof typeof clientsCodes] ||
+      "Desconocido";
+    const campaign =
+      campaignCodesDB[campaignCode] ||
+      campaignCodes[campaignCode as keyof typeof campaignCodes] ||
+      "Desconocido";
+    const category =
+      fileCodesDB[fileCode.substring(0, 4)] ||
+      filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
+      "Desconocido";
+    const lang =
+      langCodesDB[langCode] ||
+      langCodes[langCode as keyof typeof langCodes] ||
+      "Desconocido";
+
+    // Extraer año y mes del código
+    const year = "20" + yearMonthCode.substring(0, 2);
+    const month = yearMonthCode.substring(2, 4);
+
+    // Nombres de los meses para mostrar
+    const monthNames = {
+      "01": "Enero",
+      "02": "Febrero",
+      "03": "Marzo",
+      "04": "Abril",
+      "05": "Mayo",
+      "06": "Junio",
+      "07": "Julio",
+      "08": "Agosto",
+      "09": "Septiembre",
+      "10": "Octubre",
+      "11": "Noviembre",
+      "12": "Diciembre",
+    };
+
+    const monthName = monthNames[month as keyof typeof monthNames] || month;
+
+    // Extraer la extensión del archivo original
+    const extension = fileName.split(".").pop() || "";
+
+    // Crear un nombre de archivo más descriptivo para la descarga
+    const downloadName = `${client}-${campaign}-${year}-${monthName}-${category}-${lang}-v${version}${
+      extension ? "." + extension : ""
+    }`;
+
+    return {
+      client,
+      campaign,
+      category,
+      lang,
+      version,
+      fullName: downloadName,
+      year,
+      month: monthName,
+    };
+  } catch (error) {
+    console.error(
+      "Error al decodificar nombre de archivo con base de datos:",
+      error
+    );
+    // Fallback al método sincrónico si hay error
+    return decodeFileName(fileName);
+  }
+}
+
+// Mantener la función sincrónica como fallback
 export function decodeFileName(fileName: string): DecodedFile | null {
   // Eliminar "Copia de " si existe
   const cleanName = fileName.replace(/^Copia de /, "");

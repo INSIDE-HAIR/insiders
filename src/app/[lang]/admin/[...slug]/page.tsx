@@ -14,8 +14,13 @@ export default function DynamicPage() {
   const [pageData, setPageData] = useState<PageData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const lang = params.lang as string;
-  const slug = Array.isArray(params.slug) ? params.slug.join("/") : params.slug;
+  // Manejar params nulos con valores predeterminados
+  const lang = (params?.lang as string) || "es";
+  const slug = params?.slug
+    ? Array.isArray(params.slug)
+      ? params.slug.join("/")
+      : params.slug
+    : "";
 
   useEffect(() => {
     async function fetchPageData() {
@@ -35,7 +40,11 @@ export default function DynamicPage() {
       }
     }
 
-    fetchPageData();
+    if (lang && slug) {
+      fetchPageData();
+    } else {
+      setIsLoading(false);
+    }
   }, [lang, slug]);
 
   if (isLoading) {
