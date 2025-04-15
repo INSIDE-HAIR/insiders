@@ -261,6 +261,12 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
 
             <span className='text-zinc-400'>Versión:</span>
             <span>{decodedInfo.version}</span>
+
+            <span className='text-zinc-400'>Año:</span>
+            <span>{decodedInfo.year}</span>
+
+            <span className='text-zinc-400'>Mes:</span>
+            <span>{decodedInfo.month}</span>
           </div>
         </div>
       )}
