@@ -1,0 +1,12 @@
+model Code {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  type        String // 'lang', 'file', 'client', 'campaign'
+  code        String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([type, code])
+  @@index([type])
+}
