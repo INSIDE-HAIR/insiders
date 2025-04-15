@@ -52,10 +52,13 @@ export default function DynamicJulyPage() {
   const [currentContent, setCurrentContent] = useState<DailyTip | null>(null);
   const [bgColor, setBgColor] = useState<string>("");
   const [textColor, setTextColor] = useState<string>("");
-  const { client, language } = useParams<{
+  const params = useParams<{
     client: string;
     language: string;
   }>();
+
+  const client = params?.client || "";
+  const language = params?.language || "";
 
   // Get the current date using moment-timezone
   const currentDate = moment().tz("Europe/Madrid"); // Zona horaria de Madrid
@@ -137,21 +140,21 @@ export default function DynamicJulyPage() {
           fontFamily: beVietnamPro.style.fontFamily,
           backgroundColor: clientData ? getRandomColor() : "#000", // Default to black if no clientData
         }}
-        className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
+        className='min-h-screen flex flex-col items-center justify-center p-4 w-screen'
       >
-        <div className="w-full flex justify-center mb-4 md:mb-0">
+        <div className='w-full flex justify-center mb-4 md:mb-0'>
           {clientImages && (
             <Image
               src={isEvenDay ? clientImages.even : clientImages.odd}
-              alt="Client Image"
+              alt='Client Image'
               width={600}
               height={300}
-              className="rounded w-full h-full object-cover max-w-96 md:max-w-full"
+              className='rounded w-full h-full object-cover max-w-96 md:max-w-full'
             />
           )}
         </div>
-        <p className="text-white mt-6 text-2xl">{message}</p>
-        <div className="text-white mt-6">
+        <p className='text-white mt-6 text-2xl'>{message}</p>
+        <div className='text-white mt-6'>
           <CountdownTimer targetDate={targetDate} />
         </div>
       </div>
@@ -169,30 +172,30 @@ export default function DynamicJulyPage() {
         backgroundColor: bgColor,
         color: textColor,
       }}
-      className="min-h-screen flex flex-col items-center justify-center p-4 w-screen"
+      className='min-h-screen flex flex-col items-center justify-center p-4 w-screen'
     >
-      <div className="flex flex-col md:flex-row items-center p-6 uppercase">
-        <div className="w-full flex justify-center mb-4 md:mb-0 max-w-screen-sm">
+      <div className='flex flex-col md:flex-row items-center p-6 uppercase'>
+        <div className='w-full flex justify-center mb-4 md:mb-0 max-w-screen-sm'>
           {clientImages && (
             <Image
               src={isEvenDay ? clientImages.even : clientImages.odd}
-              alt="Client Image"
+              alt='Client Image'
               width={600}
               height={600}
-              className="rounded w-full h-full object-cover md:max-w-full aspect-square max-w-[720px]"
+              className='rounded w-full h-full object-cover md:max-w-full aspect-square max-w-[720px]'
             />
           )}
         </div>
-        <div className="w-full max-w-[50rem] text-center">
-          <h1 className="text-3xl font-bold mb-4">{currentContent.header}</h1>
-          <p className="mb-4 text-xl px-10">{currentContent.desciption}</p>
+        <div className='w-full max-w-[50rem] text-center'>
+          <h1 className='text-3xl font-bold mb-4'>{currentContent.header}</h1>
+          <p className='mb-4 text-xl px-10'>{currentContent.desciption}</p>
           {currentContent.footer && <p>{currentContent.footer}</p>}
         </div>
       </div>
-      <div className="text-white mt-6">
+      <div className='text-white mt-6'>
         <CountdownTimer
           targetDate={getNextMidnight()}
-          header="No te pierdas el siguiente consejo:"
+          header='No te pierdas el siguiente consejo:'
           textColor={textColor}
         />
       </div>

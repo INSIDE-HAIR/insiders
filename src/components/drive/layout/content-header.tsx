@@ -31,7 +31,7 @@ export function ContentHeader({ title, subtitle }: ContentHeaderProps) {
 
   // Verificar si el usuario está logueado y es admin
   const { data: session } = useSession();
-  const isAdmin = searchParams.get("role") === "admin" || !!session?.user;
+  const isAdmin = searchParams?.get("role") === "admin" || !!session?.user;
 
   // Valores por defecto para título y subtítulo
   const displayTitle = title || "Sin título";
