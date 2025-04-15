@@ -36,6 +36,7 @@ import {
   Upload,
 } from "lucide-react";
 import { toast } from "sonner";
+import { Combobox, ComboboxOption } from "@/src/components/ui/combobox";
 
 // Tipos
 interface Code {
@@ -414,25 +415,14 @@ export default function CodesAdminPage() {
       {/* Filtros y controles */}
       <div className='flex flex-wrap gap-4 mb-6 items-center'>
         <div className='flex-grow max-w-xs'>
-          <Select
+          <Combobox
+            options={codeTypes}
             value={selectedType}
-            onValueChange={(value) => setSelectedType(value)}
-          >
-            <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-              {codeTypes.map((type) => (
-                <SelectItem
-                  key={type.value}
-                  value={type.value}
-                  className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                >
-                  {type.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={setSelectedType}
+            placeholder='Seleccionar tipo'
+            searchPlaceholder='Buscar tipo...'
+            emptyMessage='No se encontraron tipos'
+          />
         </div>
 
         <Button
@@ -528,33 +518,20 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Cliente
                   </label>
-                  <Select
+                  <Combobox
+                    options={[
+                      { value: "none", label: "Sin cliente" },
+                      ...codesByType.client.map((code) => ({
+                        value: code.code,
+                        label: code.name,
+                      })),
+                    ]}
                     value={generator.client}
-                    onValueChange={(value) =>
-                      handleGeneratorChange("client", value)
-                    }
-                  >
-                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-                      <SelectValue placeholder='Seleccionar cliente' />
-                    </SelectTrigger>
-                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-                      <SelectItem
-                        value='none'
-                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        Sin cliente
-                      </SelectItem>
-                      {codesByType.client.map((code) => (
-                        <SelectItem
-                          key={code.id}
-                          value={code.code}
-                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                        >
-                          {code.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => handleGeneratorChange("client", value)}
+                    placeholder='Seleccionar cliente'
+                    searchPlaceholder='Buscar cliente...'
+                    emptyMessage='No se encontraron clientes'
+                  />
                 </div>
 
                 {/* Campaña */}
@@ -562,33 +539,22 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Campaña
                   </label>
-                  <Select
+                  <Combobox
+                    options={[
+                      { value: "none", label: "Sin campaña" },
+                      ...codesByType.campaign.map((code) => ({
+                        value: code.code,
+                        label: code.name,
+                      })),
+                    ]}
                     value={generator.campaign}
-                    onValueChange={(value) =>
+                    onChange={(value) =>
                       handleGeneratorChange("campaign", value)
                     }
-                  >
-                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-                      <SelectValue placeholder='Seleccionar campaña' />
-                    </SelectTrigger>
-                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-                      <SelectItem
-                        value='none'
-                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        Sin campaña
-                      </SelectItem>
-                      {codesByType.campaign.map((code) => (
-                        <SelectItem
-                          key={code.id}
-                          value={code.code}
-                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                        >
-                          {code.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder='Seleccionar campaña'
+                    searchPlaceholder='Buscar campaña...'
+                    emptyMessage='No se encontraron campañas'
+                  />
                 </div>
 
                 {/* Fecha YYMM */}
@@ -613,33 +579,22 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Tipo de archivo
                   </label>
-                  <Select
+                  <Combobox
+                    options={[
+                      { value: "none", label: "Sin tipo" },
+                      ...codesByType.file.map((code) => ({
+                        value: code.code,
+                        label: code.name,
+                      })),
+                    ]}
                     value={generator.fileType}
-                    onValueChange={(value) =>
+                    onChange={(value) =>
                       handleGeneratorChange("fileType", value)
                     }
-                  >
-                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-                      <SelectValue placeholder='Seleccionar tipo' />
-                    </SelectTrigger>
-                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-                      <SelectItem
-                        value='none'
-                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        Sin tipo
-                      </SelectItem>
-                      {codesByType.file.map((code) => (
-                        <SelectItem
-                          key={code.id}
-                          value={code.code}
-                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                        >
-                          {code.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder='Seleccionar tipo'
+                    searchPlaceholder='Buscar tipo de archivo...'
+                    emptyMessage='No se encontraron tipos'
+                  />
                 </div>
 
                 {/* Idioma */}
@@ -647,33 +602,22 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Idioma
                   </label>
-                  <Select
+                  <Combobox
+                    options={[
+                      { value: "none", label: "Sin idioma" },
+                      ...codesByType.lang.map((code) => ({
+                        value: code.code,
+                        label: code.name,
+                      })),
+                    ]}
                     value={generator.language}
-                    onValueChange={(value) =>
+                    onChange={(value) =>
                       handleGeneratorChange("language", value)
                     }
-                  >
-                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-                      <SelectValue placeholder='Seleccionar idioma' />
-                    </SelectTrigger>
-                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-                      <SelectItem
-                        value='none'
-                        className='text-zinc-400 hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        Sin idioma
-                      </SelectItem>
-                      {codesByType.lang.map((code) => (
-                        <SelectItem
-                          key={code.id}
-                          value={code.code}
-                          className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                        >
-                          {code.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    placeholder='Seleccionar idioma'
+                    searchPlaceholder='Buscar idioma...'
+                    emptyMessage='No se encontraron idiomas'
+                  />
                 </div>
 
                 {/* Versión */}
@@ -681,36 +625,20 @@ export default function CodesAdminPage() {
                   <label className='text-white block text-sm mb-1'>
                     Versión
                   </label>
-                  <Select
+                  <Combobox
+                    options={[
+                      { value: "00", label: "00" },
+                      { value: "01", label: "01" },
+                      { value: "02", label: "02" },
+                    ]}
                     value={generator.version}
-                    onValueChange={(value) =>
+                    onChange={(value) =>
                       handleGeneratorChange("version", value)
                     }
-                  >
-                    <SelectTrigger className='text-white font-bold bg-zinc-900 border-zinc-700'>
-                      <SelectValue placeholder='Seleccionar versión' />
-                    </SelectTrigger>
-                    <SelectContent className='bg-zinc-900 border-zinc-700 text-white'>
-                      <SelectItem
-                        value='00'
-                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        00
-                      </SelectItem>
-                      <SelectItem
-                        value='01'
-                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        01
-                      </SelectItem>
-                      <SelectItem
-                        value='02'
-                        className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
-                      >
-                        02
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                    placeholder='Seleccionar versión'
+                    searchPlaceholder='Buscar versión...'
+                    emptyMessage='No se encontraron versiones'
+                  />
                 </div>
 
                 {/* Número */}
