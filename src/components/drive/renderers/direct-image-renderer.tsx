@@ -16,6 +16,7 @@ import {
   getTransformedUrl,
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
+import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
 
 /**
  * DirectImageRenderer
@@ -136,15 +137,19 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
 
         {/* Botón de descarga flotante (solo si tiene el sufijo correspondiente) */}
         {!isLoading && canDownload && downloadUrl && (
-          <a
-            href={getDownloadUrlWithDecodedName(item)}
-            target='_blank'
-            rel='noopener noreferrer'
+          <button
+            onClick={() => {
+              if (downloadUrl && decodedInfo) {
+                downloadFileWithCustomName(downloadUrl, decodedInfo.fullName);
+              } else if (downloadUrl) {
+                downloadFileWithCustomName(downloadUrl, item.name);
+              }
+            }}
             className='absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90'
-            title='Abrir archivo en nueva ventana'
+            title='Descargar archivo'
           >
             <Download className='h-5 w-5' />
-          </a>
+          </button>
         )}
       </div>
 
@@ -155,16 +160,16 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
           <div className='flex'>
             <Button
               className='bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center px-4 py-2'
-              asChild
+              onClick={() => {
+                if (downloadUrl && decodedInfo) {
+                  downloadFileWithCustomName(downloadUrl, decodedInfo.fullName);
+                } else if (downloadUrl) {
+                  downloadFileWithCustomName(downloadUrl, item.name);
+                }
+              }}
             >
-              <a
-                href={getDownloadUrlWithDecodedName(item)}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <Download className='h-4 w-4 mr-2' />
-                Descargar
-              </a>
+              <Download className='h-4 w-4 mr-2' />
+              Descargar
             </Button>
 
             {/* Botón de detalles (solo para administradores) */}
@@ -253,6 +258,12 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
             <span className='text-zinc-400'>Campaña:</span>
             <span className='capitalize'>{decodedInfo.campaign}</span>
 
+            <span className='text-zinc-400'>Año:</span>
+            <span>{decodedInfo.year}</span>
+
+            <span className='text-zinc-400'>Mes:</span>
+            <span>{decodedInfo.month}</span>
+
             <span className='text-zinc-400'>Categoría:</span>
             <span>{decodedInfo.category}</span>
 
@@ -261,12 +272,6 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
 
             <span className='text-zinc-400'>Versión:</span>
             <span>{decodedInfo.version}</span>
-
-            <span className='text-zinc-400'>Año:</span>
-            <span>{decodedInfo.year}</span>
-
-            <span className='text-zinc-400'>Mes:</span>
-            <span>{decodedInfo.month}</span>
           </div>
         </div>
       )}

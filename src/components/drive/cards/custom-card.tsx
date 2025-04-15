@@ -21,6 +21,7 @@ import {
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
+import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
 
 interface CustomCardProps {
   item: HierarchyItem;
@@ -103,16 +104,17 @@ export function CustomCard({ item }: CustomCardProps) {
       <div className='p-2 mt-2 flex gap-2'>
         <Button
           className='flex-1 bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
-          asChild
+          onClick={() => {
+            const downloadUrl = getDownloadUrl(item);
+            if (downloadUrl && decodedInfo) {
+              downloadFileWithCustomName(downloadUrl, decodedInfo.fullName);
+            } else if (downloadUrl) {
+              downloadFileWithCustomName(downloadUrl, item.name);
+            }
+          }}
         >
-          <a
-            href={getDownloadUrlWithDecodedName(item)}
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <Download className='h-4 w-4 mr-2' />
-            Descargar
-          </a>
+          <Download className='h-4 w-4 mr-2' />
+          Descargar
         </Button>
 
         {decodedInfo && isAdmin && (
@@ -144,6 +146,12 @@ export function CustomCard({ item }: CustomCardProps) {
             <span className='text-zinc-400'>Campaña:</span>
             <span className='capitalize'>{decodedInfo.campaign}</span>
 
+            <span className='text-zinc-400'>Año:</span>
+            <span>{decodedInfo.year}</span>
+
+            <span className='text-zinc-400'>Mes:</span>
+            <span>{decodedInfo.month}</span>
+
             <span className='text-zinc-400'>Categoría:</span>
             <span>{decodedInfo.category}</span>
 
@@ -152,12 +160,6 @@ export function CustomCard({ item }: CustomCardProps) {
 
             <span className='text-zinc-400'>Versión:</span>
             <span>{decodedInfo.version}</span>
-
-            <span className='text-zinc-400'>Año:</span>
-            <span>{decodedInfo.year}</span>
-
-            <span className='text-zinc-400'>Mes:</span>
-            <span>{decodedInfo.month}</span>
           </div>
         </div>
       )}

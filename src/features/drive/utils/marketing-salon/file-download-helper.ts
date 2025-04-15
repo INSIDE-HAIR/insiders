@@ -30,7 +30,7 @@ export const downloadFileWithCustomName = async (
         console.log("Intentando método de proxy para descargar:", url);
 
         // Crear URL para el proxy (actualizada para App Router)
-        const proxyUrl = `/api/proxy-download?url=${encodeURIComponent(url)}`;
+        const proxyUrl = `/api/drive/proxy-download?url=${encodeURIComponent(url)}`;
 
         // Intentar descargar a través del proxy
         const response = await fetch(proxyUrl);
