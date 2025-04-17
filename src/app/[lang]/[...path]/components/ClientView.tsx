@@ -115,6 +115,8 @@ export default function ClientView({
           <ContentProvider
             initialData={adaptedHierarchy}
             routeParams={{ id: rootId }}
+            title={title || undefined}
+            subtitle={subtitle || undefined}
           >
             <ContentLayout />
           </ContentProvider>

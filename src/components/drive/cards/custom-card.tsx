@@ -103,7 +103,7 @@ export function CustomCard({ item }: CustomCardProps) {
       {/* Download button and Info button */}
       <div className='p-2 mt-2 flex gap-2'>
         <Button
-          className='flex-1 bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
+          className='flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
           onClick={() => {
             const downloadUrl = getDownloadUrl(item);
             if (downloadUrl && decodedInfo) {

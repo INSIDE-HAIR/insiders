@@ -25,6 +25,8 @@ interface ContentContextProps {
   contentData: HierarchyItem[];
   navigationPath: NavigationPath[];
   routeParams: RouteParams | null;
+  title: string | undefined;
+  subtitle: string | undefined;
   setNavigationPath: (path: NavigationPath[]) => void;
   addToNavigationPath: (item: NavigationPath) => void;
   removeFromNavigationPathAfterLevel: (level: number) => void;
@@ -81,7 +83,9 @@ export const ContentProvider: React.FC<{
   children: React.ReactNode;
   initialData: HierarchyItem[];
   routeParams?: RouteParams;
-}> = ({ children, initialData, routeParams }) => {
+  title?: string;
+  subtitle?: string;
+}> = ({ children, initialData, routeParams, title, subtitle }) => {
   const [contentData, setContentData] = useState<HierarchyItem[]>(initialData);
   const [navigationPath, setNavigationPath] = useState<NavigationPath[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -228,6 +232,8 @@ export const ContentProvider: React.FC<{
       contentData,
       navigationPath,
       routeParams: routeParams || null,
+      title,
+      subtitle,
       setNavigationPath,
       addToNavigationPath,
       removeFromNavigationPathAfterLevel,
@@ -240,6 +246,8 @@ export const ContentProvider: React.FC<{
       contentData,
       navigationPath,
       routeParams,
+      title,
+      subtitle,
       setNavigationPath,
       addToNavigationPath,
       removeFromNavigationPathAfterLevel,

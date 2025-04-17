@@ -24,18 +24,25 @@ interface ContentHeaderProps {
  * @param {string} subtitle - Subtítulo a mostrar en la barra secundaria
  * @returns Encabezado del contenido con navegación
  */
-export function ContentHeader({ title, subtitle }: ContentHeaderProps) {
+export function ContentHeader({
+  title: propTitle,
+  subtitle: propSubtitle,
+}: ContentHeaderProps) {
   const { toggleSidebar } = useSidebar();
-  const { navigationPath } = useContent();
+  const {
+    navigationPath,
+    title: contextTitle,
+    subtitle: contextSubtitle,
+  } = useContent();
   const searchParams = useSearchParams();
 
   // Verificar si el usuario está logueado y es admin
   const { data: session } = useSession();
   const isAdmin = searchParams?.get("role") === "admin" || !!session?.user;
 
-  // Valores por defecto para título y subtítulo
-  const displayTitle = title || "Sin título";
-  const displaySubtitle = subtitle || "Sin subtítulo";
+  // Priorizar props s obre el contexto
+  const displayTitle =  contextTitle || propTitle || "Sin título";
+  const displaySubtitle = propSubtitle || contextSubtitle || "Sin subtítulo";
 
   return (
     <div className='flex flex-col shrink-0 w-full'>
@@ -73,7 +80,7 @@ export function ContentHeader({ title, subtitle }: ContentHeaderProps) {
       </div>
 
       {/* Green title bar */}
-      <div className='bg-[#CEFF66] py-2 flex items-center justify-center'>
+      <div className='bg-inside py-2 flex items-center justify-center'>
         <h1 className='text-zinc-900 font-bold text-center'>
           {displaySubtitle}
         </h1>

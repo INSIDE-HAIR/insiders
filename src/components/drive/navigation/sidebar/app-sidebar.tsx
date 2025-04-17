@@ -87,8 +87,8 @@ export const AppSidebar = memo(function AppSidebar() {
                   className={cn(
                     "h-12 px-6 py-3 rounded-none transition-colors text-left text-sm w-full",
                     isActive
-                      ? "bg-[#CEFF66] border-l-4 border-l-[#CEFF66] text-zinc-900 font-medium"
-                      : "hover:bg-zinc-800 hover:text-white border-l-4 border-l-transparent active:bg-[#CEFF66] active:text-zinc-900"
+                      ? "bg-inside border-l-4 border-l-[#CEFF66] text-zinc-900 font-medium"
+                      : "hover:bg-zinc-800 hover:text-white border-l-4 border-l-transparent active:bg-inside active:text-zinc-900"
                   )}
                   onClick={(e) => handleSidebarItemClick(item, e)}
                 >

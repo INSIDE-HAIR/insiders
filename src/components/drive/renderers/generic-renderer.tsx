@@ -326,7 +326,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                       key={index}
                       className={`h-1.5 w-1.5 rounded-full ${
                         index === currentCardPreviewIndex
-                          ? "bg-[#CEFF66]"
+                          ? "bg-inside"
                           : "bg-white/50"
                       }`}
                     />
@@ -347,7 +347,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         {getDownloadUrl(item) && (
           <div className='flex w-full'>
             <Button
-              className='flex-1 bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
+              className='flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
               onClick={() => {
                 const downloadUrl = getDownloadUrl(item);
                 if (downloadUrl && decodedInfo) {
@@ -519,7 +519,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                               key={index}
                               className={`h-2 w-2 rounded-full ${
                                 index === currentModalPreviewIndex
-                                  ? "bg-[#CEFF66]"
+                                  ? "bg-inside"
                                   : "bg-white/50"
                               }`}
                             />

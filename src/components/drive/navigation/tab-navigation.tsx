@@ -65,7 +65,7 @@ export const TabNavigation = memo(function TabNavigation({
             className={cn(
               "py-3 px-4 text-sm font-medium transition-colors relative whitespace-nowrap rounded-none",
               currentId === item.id
-                ? "bg-[#CEFF66] text-zinc-900 font-semibold"
+                ? "bg-inside text-zinc-900 font-semibold"
                 : "bg-zinc-700 text-white hover:bg-zinc-600"
             )}
           >

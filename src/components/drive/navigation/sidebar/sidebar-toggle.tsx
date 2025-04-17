@@ -12,7 +12,7 @@ export function SidebarToggle() {
       variant='ghost'
       size='icon'
       onClick={toggleSidebar}
-      className='fixed z-20 left-4 bottom-4 bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full h-12 w-12 flex items-center justify-center md:hidden'
+      className='fixed z-20 left-4 bottom-4 bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full h-12 w-12 flex items-center justify-center md:hidden'
       title='Mostrar panel lateral'
     >
       <PanelLeft className='h-5 w-5' />

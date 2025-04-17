@@ -159,7 +159,7 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
         {downloadUrl && (
           <div className='flex'>
             <Button
-              className='bg-[#CEFF66] hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center px-4 py-2'
+              className='bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center px-4 py-2'
               onClick={() => {
                 if (downloadUrl && decodedInfo) {
                   downloadFileWithCustomName(downloadUrl, decodedInfo.fullName);
