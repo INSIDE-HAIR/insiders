@@ -1,79 +1,11 @@
 import { CodeService } from "./file-decoder-service";
-
-// Códigos estáticos como fallback (se usarán si no hay conexión a la BD)
-export const langCodes = {
-  "01": "ES",
-  "02": "CA",
-  // más códigos según sea necesario
-};
-
-export const filesCodes = {
-  "0000": "Vinilo Puerta",
-  "0080": "Cartel 80x120cm",
-  "0050": "Cartel 50x70cm",
-  "0004": "Cartel A4 21x29,7cm",
-  "0005": "Cartel A5 14,8x21cm",
-  "0085": "Tarjeta",
-  "0048": "Díptico/Tríptico",
-  "0010": "Test Peluquero",
-  "0011": "Test Cliente",
-  "0012": "Test Salón",
-  "0100": "Revista",
-  "0360": "Escaparatismo",
-  "0300": "Pop Up",
-  "0090": "GMB",
-  "0216": "Móvil", // Video Móvil
-  "0217": "Televisión", // Video TV
-  "1111": "Lista de Control de Manager",
-  "1112": "Lista de Control de Colaborador",
-  "1080": "Post", // Post de Acción
-  "0192": "Post", // Post Mensual
-  "1920": "Story", // Story de Acción
-  "0129": "Story", // Story Mensual
-  "0002": "Guía",
-  "0500": "Filtro de Instagram",
-  "6969": "SMS/WhatsApp",
-  "0009": "Logotipo para Camiseta y Bolsa",
-  "0003": "Presentación",
-  "1602": "Cartel Animado",
-  "0087": "Escaparate",
-  "0057": "Horizontal", //Josep Pons
-  "0330": "Pegatina",
-  "0014": "Cartel A4 21x29,7cm",
-  "0015": "Cartel A5 14,8x21cm",
-  "0024": "Cartel A4 21x29,7cm",
-  "0025": "Cartel A5 14,8x21cm",
-  "0248": "Díptico",
-  "0348": "Tríptico",
-  "0249": "Díptico Transparente",
-  "1109": "Semana 1", // Stories Semanales 1
-  "2109": "Semana 2", // Stories Semanales 2
-  "3109": "Semana 3", // Stories Semanales 3
-  "4109": "Semana 4", // Stories Semanales 4
-  "1600": "Cartel 1200x600",
-  "1500": "Cartel 1500x1000",
-  "0032": "Plan de Color",
-  "0880": "Porta Tarjetas",
-  "0420": "Guía de visagismo",
-};
-
-export const clientsCodes = {
-  A: "insiders",
-  B: "salon-toro",
-  C: "toni-and-guy",
-  D: "ah-peluqueros",
-  E: "josep-pons",
-  F: "latam",
-  G: "ritape",
-  // más códigos según sea necesario
-};
-
-export const campaignCodes = {
-  A: "campaign",
-  B: "primelady",
-  C: "start-marketing",
-  // más códigos según sea necesario
-};
+import {
+  DEFAULT_LANG_CODES,
+  DEFAULT_FILE_CODES,
+  DEFAULT_CLIENT_CODES,
+  DEFAULT_CAMPAIGN_CODES,
+  MONTH_NAMES,
+} from "./static-code-defaults";
 
 export interface DecodedFile {
   client: string;
@@ -86,20 +18,164 @@ export interface DecodedFile {
   month: string;
 }
 
+/**
+ * Decodifica de forma asíncrona el nombre de un archivo obtieniendo los valores de códigos desde la base de datos
+ */
 export async function decodeFileNameAsync(
   fileName: string
 ): Promise<DecodedFile | null> {
-  try {
-    // Cargar códigos desde la base de datos
-    const langCodesDB = await CodeService.getCodesByType("lang");
-    const fileCodesDB = await CodeService.getCodesByType("file");
-    const clientCodesDB = await CodeService.getCodesByType("client");
-    const campaignCodesDB = await CodeService.getCodesByType("campaign");
+  console.log(`🔍 Decodificando nombre de archivo (ASYNC): ${fileName}`);
 
+  try {
+    // Buscar coincidencia con el patrón CLIENTE-CAMPAÑA-AÑOMES-CATEGORIA-GRUPO-VERSION
+    // Ejemplo: A-A-2505-0080-01-00-02
+    const match = fileName.match(
+      /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/
+    );
+
+    if (!match) {
+      console.log(`⚠️ Patrón no coincide para archivo: ${fileName}`);
+      return null;
+    }
+
+    const [
+      _,
+      clientCode, // A: Código del cliente
+      campaignCode, // A: Código de la campaña
+      yearMonthCode, // 2505: Año (25) y mes (05)
+      categoryCode, // 0080: Código de categoría/tipo de archivo
+      langCode, // 01: Código de idioma/grupo
+      positionCode, // 00: Posición (generalmente no usado)
+      versionCode, // 02: Versión
+    ] = match;
+
+    console.log(
+      `🔢 Códigos extraídos: Client=${clientCode}, Campaign=${campaignCode}, YearMonth=${yearMonthCode}, Category=${categoryCode}, Lang=${langCode}, Position=${positionCode}, Version=${versionCode}`
+    );
+
+    // Obtener datos de BD para cada tipo de código
+    const [langCodes, fileCodes, clientCodes, campaignCodes] =
+      await Promise.all([
+        CodeService.getCodesByType("lang"),
+        CodeService.getCodesByType("file"),
+        CodeService.getCodesByType("client"),
+        CodeService.getCodesByType("campaign"),
+      ]);
+
+    // Extraer año y mes del código
+    const yearCode = yearMonthCode.substring(0, 2);
+    const monthCode = yearMonthCode.substring(2, 4);
+    const year = `20${yearCode}`;
+
+    // Obtener nombre del mes
+    const monthNumber = parseInt(monthCode, 10);
+    const monthName =
+      monthNumber >= 1 && monthNumber <= 12
+        ? (MONTH_NAMES as Record<string, string>)[
+            monthNumber.toString().padStart(2, "0")
+          ]
+        : monthCode;
+
+    // Registrar si un valor se encuentra en la BD o se usa fallback
+    let clientName: string;
+    if (clientCode in clientCodes) {
+      clientName = clientCodes[clientCode];
+      console.log(`✅ Cliente encontrado en BD: ${clientCode} = ${clientName}`);
+    } else {
+      clientName =
+        (DEFAULT_CLIENT_CODES as Record<string, string>)[clientCode] ||
+        clientCode;
+      console.log(
+        `⚠️ FALLBACK de cliente (no encontrado en BD): ${clientCode} = ${clientName}`
+      );
+    }
+
+    let campaignName: string;
+    if (campaignCode in campaignCodes) {
+      campaignName = campaignCodes[campaignCode];
+      console.log(
+        `✅ Campaña encontrada en BD: ${campaignCode} = ${campaignName}`
+      );
+    } else {
+      campaignName =
+        (DEFAULT_CAMPAIGN_CODES as Record<string, string>)[campaignCode] ||
+        campaignCode;
+      console.log(
+        `⚠️ FALLBACK de campaña (no encontrada en BD): ${campaignCode} = ${campaignName}`
+      );
+    }
+
+    let categoryName: string;
+    if (categoryCode in fileCodes) {
+      categoryName = fileCodes[categoryCode];
+      console.log(
+        `✅ Categoría encontrada en BD: ${categoryCode} = ${categoryName}`
+      );
+    } else {
+      categoryName =
+        (DEFAULT_FILE_CODES as Record<string, string>)[categoryCode] ||
+        categoryCode;
+      console.log(
+        `⚠️ FALLBACK de categoría (no encontrada en BD): ${categoryCode} = ${categoryName}`
+      );
+    }
+
+    let langName: string;
+    if (langCode in langCodes) {
+      langName = langCodes[langCode];
+      console.log(`✅ Idioma encontrado en BD: ${langCode} = ${langName}`);
+    } else {
+      langName =
+        (DEFAULT_LANG_CODES as Record<string, string>)[langCode] || langCode;
+      console.log(
+        `⚠️ FALLBACK de idioma (no encontrado en BD): ${langCode} = ${langName}`
+      );
+    }
+
+    // Armar información decodificada
+    const result: DecodedFile = {
+      client: clientName,
+      campaign: campaignName,
+      category: categoryName,
+      lang: langName,
+      version: versionCode,
+      fullName: `${clientName}-${campaignName}-${year}-${monthName}-${categoryName}-${langName}-v${versionCode}`,
+      year,
+      month: monthName,
+    };
+
+    console.log(`✅ Decodificación exitosa (ASYNC):`, result);
+    return result;
+  } catch (error) {
+    console.error(`❌ Error en decodificación asíncrona:`, error);
+
+    // Intentar fallback a decodificación sincrónica
+    console.log(`⚠️ Intentando fallback a decodificación sincrónica...`);
+    try {
+      return decodeFileName(fileName);
+    } catch (fallbackError) {
+      console.error(`❌ Fallo completo en decodificación:`, fallbackError);
+      return null;
+    }
+  }
+}
+
+/**
+ * Mantener la función sincrónica como fallback
+ * IMPORTANTE: Esta función solo debe usarse como último recurso
+ * cuando decodeFileNameAsync falla o cuando es estrictamente necesario
+ * un comportamiento sincrónico
+ */
+export function decodeFileName(fileName: string): DecodedFile | null {
+  // Si el nombre está vacío, retornar null inmediatamente
+  if (!fileName) return null;
+
+  try {
     // Eliminar "Copia de " si existe
     const cleanName = fileName.replace(/^Copia de /, "");
 
-    // Intentar extraer el código del formato A-A-2503-0002-01-00-01.pdf
+    // Intentar extraer el código del formato CLIENTE-CAMPAÑA-AÑOMES-CATEGORIA-GRUPO-VERSION
+    // Ejemplo: A-A-2505-0080-01-00-02
     const regex =
       /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/;
     const match = cleanName.match(regex);
@@ -108,59 +184,42 @@ export async function decodeFileNameAsync(
 
     const [
       ,
-      clientsCode,
-      campaignCode,
-      yearMonthCode,
-      fileCode,
-      langCode,
-      ,
-      version,
+      clientCode, // A: Código del cliente
+      campaignCode, // A: Código de la campaña
+      yearMonthCode, // 2505: Año (25) y mes (05)
+      categoryCode, // 0080: Código de categoría/tipo de archivo
+      langCode, // 01: Código de idioma/grupo
+      positionCode, // 00: Posición (generalmente no usado)
+      versionCode, // 02: Versión
     ] = match;
 
+    // Buscar nombres desde los códigos usando los valores estáticos como fallback
     const client =
-      clientCodesDB[clientsCode] ||
-      clientsCodes[clientsCode as keyof typeof clientsCodes] ||
-      "Desconocido";
+      DEFAULT_CLIENT_CODES[clientCode as keyof typeof DEFAULT_CLIENT_CODES] ||
+      clientCode;
     const campaign =
-      campaignCodesDB[campaignCode] ||
-      campaignCodes[campaignCode as keyof typeof campaignCodes] ||
-      "Desconocido";
+      DEFAULT_CAMPAIGN_CODES[
+        campaignCode as keyof typeof DEFAULT_CAMPAIGN_CODES
+      ] || campaignCode;
     const category =
-      fileCodesDB[fileCode.substring(0, 4)] ||
-      filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
-      "Desconocido";
+      DEFAULT_FILE_CODES[categoryCode as keyof typeof DEFAULT_FILE_CODES] ||
+      categoryCode;
     const lang =
-      langCodesDB[langCode] ||
-      langCodes[langCode as keyof typeof langCodes] ||
-      "Desconocido";
+      DEFAULT_LANG_CODES[langCode as keyof typeof DEFAULT_LANG_CODES] ||
+      langCode;
 
     // Extraer año y mes del código
     const year = "20" + yearMonthCode.substring(0, 2);
     const month = yearMonthCode.substring(2, 4);
 
-    // Nombres de los meses para mostrar
-    const monthNames = {
-      "01": "Enero",
-      "02": "Febrero",
-      "03": "Marzo",
-      "04": "Abril",
-      "05": "Mayo",
-      "06": "Junio",
-      "07": "Julio",
-      "08": "Agosto",
-      "09": "Septiembre",
-      "10": "Octubre",
-      "11": "Noviembre",
-      "12": "Diciembre",
-    };
-
-    const monthName = monthNames[month as keyof typeof monthNames] || month;
+    // Obtener nombre del mes
+    const monthName = MONTH_NAMES[month as keyof typeof MONTH_NAMES] || month;
 
     // Extraer la extensión del archivo original
     const extension = fileName.split(".").pop() || "";
 
     // Crear un nombre de archivo más descriptivo para la descarga
-    const downloadName = `${client}-${campaign}-${year}-${monthName}-${category}-${lang}-v${version}${
+    const downloadName = `${client}-${campaign}-${year}-${monthName}-${category}-${lang}-v${versionCode}${
       extension ? "." + extension : ""
     }`;
 
@@ -169,91 +228,13 @@ export async function decodeFileNameAsync(
       campaign,
       category,
       lang,
-      version,
+      version: versionCode,
       fullName: downloadName,
       year,
       month: monthName,
     };
   } catch (error) {
-    console.error(
-      "Error al decodificar nombre de archivo con base de datos:",
-      error
-    );
-    // Fallback al método sincrónico si hay error
-    return decodeFileName(fileName);
+    console.error("Error en decodificación sincrónica:", error);
+    return null;
   }
-}
-
-// Mantener la función sincrónica como fallback
-export function decodeFileName(fileName: string): DecodedFile | null {
-  // Eliminar "Copia de " si existe
-  const cleanName = fileName.replace(/^Copia de /, "");
-
-  // Intentar extraer el código del formato A-A-2503-0002-01-00-01.pdf
-  const regex =
-    /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/;
-  const match = cleanName.match(regex);
-
-  if (!match) return null;
-
-  const [
-    ,
-    clientsCode,
-    campaignCode,
-    yearMonthCode,
-    fileCode,
-    langCode,
-    ,
-    version,
-  ] = match;
-
-  const client =
-    clientsCodes[clientsCode as keyof typeof clientsCodes] || "Desconocido";
-  const campaign =
-    campaignCodes[campaignCode as keyof typeof campaignCodes] || "Desconocido";
-  const category =
-    filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
-    "Desconocido";
-  const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
-
-  // Extraer año y mes del código
-  const year = "20" + yearMonthCode.substring(0, 2);
-  const month = yearMonthCode.substring(2, 4);
-
-  // Nombres de los meses para mostrar
-  const monthNames = {
-    "01": "Enero",
-    "02": "Febrero",
-    "03": "Marzo",
-    "04": "Abril",
-    "05": "Mayo",
-    "06": "Junio",
-    "07": "Julio",
-    "08": "Agosto",
-    "09": "Septiembre",
-    "10": "Octubre",
-    "11": "Noviembre",
-    "12": "Diciembre",
-  };
-
-  const monthName = monthNames[month as keyof typeof monthNames] || month;
-
-  // Extraer la extensión del archivo original
-  const extension = fileName.split(".").pop() || "";
-
-  // Crear un nombre de archivo más descriptivo para la descarga
-  const downloadName = `${client}-${campaign}-${year}-${monthName}-${category}-${lang}-v${version}${
-    extension ? "." + extension : ""
-  }`;
-
-  return {
-    client,
-    campaign,
-    category,
-    lang,
-    version,
-    fullName: downloadName,
-    year,
-    month: monthName,
-  };
 }

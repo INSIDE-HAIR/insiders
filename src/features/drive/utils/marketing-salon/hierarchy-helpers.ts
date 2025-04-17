@@ -1,5 +1,5 @@
 import type { HierarchyItem } from "@/src/features/drive/types/index";
-import { decodeFileName } from "./file-decoder";
+import { decodeFileName, decodeFileNameAsync } from "./file-decoder";
 
 /**
  * Verifica si un item tiene un prefijo específico
@@ -52,6 +52,8 @@ export const getDownloadUrl = (item: HierarchyItem): string | undefined => {
 
 /**
  * Obtiene una URL de descarga con nombre de archivo decodificado
+ * NOTA: Esta función usa la versión sincrónica de decodificación por compatibilidad.
+ * Para acceder a los valores actualizados de la BD, usar componentes con decodeFileNameAsync.
  */
 export const getDownloadUrlWithDecodedName = (
   item: HierarchyItem
@@ -59,6 +61,8 @@ export const getDownloadUrlWithDecodedName = (
   const downloadUrl = getDownloadUrl(item);
   if (!downloadUrl) return undefined;
 
+  // Usamos la versión sincrónica para compatibilidad
+  // Esta puede no reflejar los valores más recientes de la base de datos
   const decodedInfo = decodeFileName(item.name);
   if (!decodedInfo) return downloadUrl;
 

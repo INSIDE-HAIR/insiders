@@ -1,10 +1,23 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Download, Copy, Check, Info, ChevronUp, Plus } from "lucide-react";
+import {
+  Download,
+  Copy,
+  Check,
+  Info,
+  ChevronUp,
+  Plus,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
-import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-decoder";
+import {
+  decodeFileName,
+  decodeFileNameAsync,
+  type DecodedFile,
+} from "@/src/features/drive/utils/marketing-salon/file-decoder";
+import { CodeService } from "@/src/features/drive/utils/marketing-salon/file-decoder-service";
 import { extractCopyText } from "@/src/features/drive/utils/marketing-salon/description-parser";
 import { hasDownloadSuffix } from "@/src/features/drive/utils/marketing-salon/content-type-utils";
 import { useSearchParams } from "next/navigation";
@@ -58,6 +71,8 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
+  const [isDecodingInfo, setIsDecodingInfo] = useState(true);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
@@ -69,6 +84,49 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
+
+  // Cargar la información decodificada de manera asíncrona
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDecodedInfo = async () => {
+      if (!item.name) {
+        setIsDecodingInfo(false);
+        return;
+      }
+
+      try {
+        setIsDecodingInfo(true);
+        console.log(`Intentando decodificar archivo: ${item.name}`);
+
+        // Forzar una limpieza completa de la caché para asegurar datos frescos de la BD
+        CodeService.clearCache();
+
+        // Usar exclusivamente la versión asíncrona para obtener de la BD
+        const info = await decodeFileNameAsync(item.name);
+
+        // Solo actualizar el estado si el componente sigue montado
+        if (isMounted) {
+          console.log("Info decodificada:", info);
+          setDecodedInfo(info);
+          setIsDecodingInfo(false);
+        }
+      } catch (error) {
+        console.error("Error al decodificar nombre de archivo:", error);
+
+        if (isMounted) {
+          setIsDecodingInfo(false);
+        }
+      }
+    };
+
+    loadDecodedInfo();
+
+    // Cleanup function para prevenir memory leaks
+    return () => {
+      isMounted = false;
+    };
+  }, [item.name]);
 
   /**
    * Maneja la copia de texto al portapapeles
@@ -89,9 +147,6 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
       );
     }
   };
-
-  // Decodificar el nombre del archivo para obtener metadatos
-  const decodedInfo = decodeFileName(item.name);
 
   // Mostrar mensaje si no hay vista previa disponible
   if (!hasPreview) {
@@ -147,8 +202,13 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
             }}
             className='absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90'
             title='Descargar archivo'
+            disabled={isDecodingInfo}
           >
-            <Download className='h-5 w-5' />
+            {isDecodingInfo ? (
+              <Loader2 className='h-5 w-5 animate-spin' />
+            ) : (
+              <Download className='h-5 w-5' />
+            )}
           </button>
         )}
       </div>
@@ -167,8 +227,13 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
                   downloadFileWithCustomName(downloadUrl, item.name);
                 }
               }}
+              disabled={isDecodingInfo}
             >
-              <Download className='h-4 w-4 mr-2' />
+              {isDecodingInfo ? (
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              ) : (
+                <Download className='h-4 w-4 mr-2' />
+              )}
               Descargar
             </Button>
 
@@ -245,34 +310,46 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
       )}
 
       {/* Sección de detalles del archivo (expandible) */}
-      {showDetails && decodedInfo && (
+      {showDetails && (
         <div className='w-full max-w-md p-2 mt-2 bg-zinc-800 text-xs text-zinc-300 border border-zinc-700 rounded-md'>
           <div className='flex items-center mb-1'>
             <Info className='h-3 w-3 mr-1 text-[#CEFF66]' />
             <span className='font-semibold'>Detalles del archivo:</span>
           </div>
-          <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
-            <span className='text-zinc-400'>Cliente:</span>
-            <span className='capitalize'>{decodedInfo.client}</span>
 
-            <span className='text-zinc-400'>Campaña:</span>
-            <span className='capitalize'>{decodedInfo.campaign}</span>
+          {isDecodingInfo ? (
+            <div className='flex items-center justify-center p-4'>
+              <Loader2 className='h-5 w-5 animate-spin mr-2' />
+              <span>Cargando datos desde la base de datos...</span>
+            </div>
+          ) : decodedInfo ? (
+            <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
+              <span className='text-zinc-400'>Cliente:</span>
+              <span className='capitalize'>{decodedInfo.client}</span>
 
-            <span className='text-zinc-400'>Año:</span>
-            <span>{decodedInfo.year}</span>
+              <span className='text-zinc-400'>Campaña:</span>
+              <span className='capitalize'>{decodedInfo.campaign}</span>
 
-            <span className='text-zinc-400'>Mes:</span>
-            <span>{decodedInfo.month}</span>
+              <span className='text-zinc-400'>Año:</span>
+              <span>{decodedInfo.year}</span>
 
-            <span className='text-zinc-400'>Categoría:</span>
-            <span>{decodedInfo.category}</span>
+              <span className='text-zinc-400'>Mes:</span>
+              <span>{decodedInfo.month}</span>
 
-            <span className='text-zinc-400'>Idioma:</span>
-            <span>{decodedInfo.lang}</span>
+              <span className='text-zinc-400'>Categoría:</span>
+              <span>{decodedInfo.category}</span>
 
-            <span className='text-zinc-400'>Versión:</span>
-            <span>{decodedInfo.version}</span>
-          </div>
+              <span className='text-zinc-400'>Idioma:</span>
+              <span>{decodedInfo.lang}</span>
+
+              <span className='text-zinc-400'>Versión:</span>
+              <span>{decodedInfo.version}</span>
+            </div>
+          ) : (
+            <div className='text-center p-2'>
+              No se pudo decodificar la información del archivo
+            </div>
+          )}
         </div>
       )}
     </div>

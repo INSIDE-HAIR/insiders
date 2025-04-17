@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Download, Eye, Plus, ChevronUp, Info } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Download, Eye, Plus, ChevronUp, Info, Loader2 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
@@ -11,7 +11,11 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
-import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-decoder";
+import {
+  decodeFileName,
+  decodeFileNameAsync,
+  type DecodedFile,
+} from "@/src/features/drive/utils/marketing-salon/file-decoder";
 import {
   getTransformedUrl,
   getPreviewUrl,
@@ -39,11 +43,30 @@ interface CustomCardProps {
 export function CustomCard({ item }: CustomCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
+  const [isDecodingInfo, setIsDecodingInfo] = useState(true);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
 
-  // Decodificar el nombre del archivo
-  const decodedInfo = decodeFileName(item.name);
+  // Cargar la información decodificada de manera asíncrona
+  useEffect(() => {
+    const loadDecodedInfo = async () => {
+      try {
+        setIsDecodingInfo(true);
+        // Intentar obtener la información de la base de datos
+        const info = await decodeFileNameAsync(item.name);
+        setDecodedInfo(info);
+      } catch (error) {
+        console.error("Error al decodificar nombre de archivo:", error);
+        // En caso de error, usar la versión sincrónica como fallback
+        setDecodedInfo(decodeFileName(item.name));
+      } finally {
+        setIsDecodingInfo(false);
+      }
+    };
+
+    loadDecodedInfo();
+  }, [item.name]);
 
   // Determine content type for display
   const getContentType = () => {
@@ -68,7 +91,14 @@ export function CustomCard({ item }: CustomCardProps) {
     <div className='flex flex-col w-52 bg-black text-white'>
       {/* Filename at top - now showing language and version if decoded */}
       <div className='p-2 text-xs text-zinc-400 truncate text-center'>
-        {displayTitle}
+        {isDecodingInfo ? (
+          <div className='flex items-center justify-center'>
+            <Loader2 className='h-3 w-3 animate-spin mr-1' />
+            <span>Cargando...</span>
+          </div>
+        ) : (
+          displayTitle
+        )}
       </div>
 
       {/* Content type in bold - now showing category if decoded */}
@@ -112,8 +142,13 @@ export function CustomCard({ item }: CustomCardProps) {
               downloadFileWithCustomName(downloadUrl, item.name);
             }
           }}
+          disabled={isDecodingInfo}
         >
-          <Download className='h-4 w-4 mr-2' />
+          {isDecodingInfo ? (
+            <Loader2 className='h-4 w-4 animate-spin mr-2' />
+          ) : (
+            <Download className='h-4 w-4 mr-2' />
+          )}
           Descargar
         </Button>
 

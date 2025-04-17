@@ -1,48 +1,141 @@
 import { PrismaClient } from "@prisma/client";
 import {
-  langCodes,
-  filesCodes,
-  clientsCodes,
-  campaignCodes,
-} from "./file-decoder";
+  DEFAULT_LANG_CODES,
+  DEFAULT_FILE_CODES,
+  DEFAULT_CLIENT_CODES,
+  DEFAULT_CAMPAIGN_CODES,
+} from "./static-code-defaults";
 
 const prisma = new PrismaClient();
 
 // Clase para manejar los códigos en la base de datos
 export class CodeService {
-  // Obtener todos los códigos de un tipo específico
-  static async getCodesByType(
+  private static cache: Record<string, Record<string, string>> = {};
+  private static cacheTimestamps: Record<string, number> = {};
+  private static CACHE_EXPIRATION = 60 * 1000; // 1 minuto
+
+  /**
+   * Obtiene códigos por tipo desde la base de datos o fallback estático
+   */
+  public static async getCodesByType(
     type: "lang" | "file" | "client" | "campaign"
   ): Promise<Record<string, string>> {
+    // Verificar cache primero
+    const now = Date.now();
+    if (
+      this.cache[type] &&
+      this.cacheTimestamps[type] &&
+      now - this.cacheTimestamps[type] < this.CACHE_EXPIRATION
+    ) {
+      console.log(`⏩ Usando cache para códigos de tipo ${type}`);
+      return this.cache[type];
+    }
+
+    console.log(`🔄 Consultando base de datos para códigos de tipo ${type}...`);
+
     try {
-      const codes = await prisma.code.findMany({
-        where: { type },
-        orderBy: { code: "asc" },
+      // Intentar obtener códigos de la base de datos
+      const response = await fetch(`/api/codes?type=${type}`);
+
+      if (!response.ok) {
+        console.warn(
+          `⚠️ Error al obtener códigos de tipo ${type} desde la API: ${response.status} ${response.statusText}`
+        );
+        throw new Error(
+          `Error al obtener códigos de tipo ${type}: ${response.statusText}`
+        );
+      }
+
+      const codesArray = await response.json();
+
+      if (
+        !codesArray ||
+        !Array.isArray(codesArray) ||
+        codesArray.length === 0
+      ) {
+        console.warn(
+          `⚠️ No se encontraron códigos de tipo ${type} en la base de datos`
+        );
+        throw new Error(`No se encontraron códigos de tipo ${type}`);
+      }
+
+      // Transformar el array de objetos en un objeto de código:nombre
+      const codesMap: Record<string, string> = {};
+      codesArray.forEach((codeObj) => {
+        if (codeObj && codeObj.code && codeObj.name) {
+          codesMap[codeObj.code] = codeObj.name;
+        }
       });
 
-      // Convertir a formato clave-valor
-      const codeMap: Record<string, string> = {};
-      codes.forEach((code) => {
-        codeMap[code.code] = code.name;
-      });
+      if (Object.keys(codesMap).length === 0) {
+        console.warn(
+          `⚠️ No se pudieron transformar los códigos de tipo ${type} en un mapa válido`
+        );
+        throw new Error(
+          `No se pudieron transformar los códigos de tipo ${type}`
+        );
+      }
 
-      return codeMap;
+      console.log(
+        `✅ Códigos de ${type} obtenidos de la base de datos:`,
+        codesMap
+      );
+
+      // Actualizar cache
+      this.cache[type] = codesMap;
+      this.cacheTimestamps[type] = now;
+
+      return codesMap;
     } catch (error) {
-      console.error(`Error al obtener códigos de tipo ${type}:`, error);
+      console.error(`❌ Error consultando códigos de tipo ${type}:`, error);
 
-      // Retornar los códigos estáticos como fallback
+      // Usar valores fallback apropiados según el tipo
+      let fallbackData: Record<string, string> = {};
+
       switch (type) {
         case "lang":
-          return langCodes;
+          fallbackData = DEFAULT_LANG_CODES;
+          break;
         case "file":
-          return filesCodes;
+          fallbackData = DEFAULT_FILE_CODES;
+          break;
         case "client":
-          return clientsCodes;
+          fallbackData = DEFAULT_CLIENT_CODES;
+          break;
         case "campaign":
-          return campaignCodes;
-        default:
-          return {};
+          fallbackData = DEFAULT_CAMPAIGN_CODES;
+          break;
       }
+
+      console.warn(
+        `⚠️ USANDO FALLBACK ESTÁTICO para códigos de tipo ${type}:`,
+        fallbackData
+      );
+
+      // Guardar fallback en cache temporalmente
+      // ADVERTENCIA: Estos valores no vienen de la base de datos
+      this.cache[type] = fallbackData;
+      // Menor tiempo de cache para fallbacks (30 segundos) para intentar consultar BD más frecuentemente
+      this.cacheTimestamps[type] = now - this.CACHE_EXPIRATION / 2;
+
+      return fallbackData;
+    }
+  }
+
+  /**
+   * Limpia la caché para un tipo específico o toda la caché
+   */
+  public static clearCache(
+    type?: "lang" | "file" | "client" | "campaign"
+  ): void {
+    if (type) {
+      console.log(`🧹 Limpiando caché para códigos de tipo ${type}`);
+      delete this.cache[type];
+      delete this.cacheTimestamps[type];
+    } else {
+      console.log(`🧹 Limpiando toda la caché de códigos`);
+      this.cache = {};
+      this.cacheTimestamps = {};
     }
   }
 
@@ -50,7 +143,7 @@ export class CodeService {
   static async importAllStaticCodes(): Promise<void> {
     try {
       // Importar códigos de idioma
-      const langEntries = Object.entries(langCodes);
+      const langEntries = Object.entries(DEFAULT_LANG_CODES);
       for (const [code, name] of langEntries) {
         await this.createOrUpdateCode({
           type: "lang",
@@ -61,7 +154,7 @@ export class CodeService {
       }
 
       // Importar códigos de archivos
-      const fileEntries = Object.entries(filesCodes);
+      const fileEntries = Object.entries(DEFAULT_FILE_CODES);
       for (const [code, name] of fileEntries) {
         await this.createOrUpdateCode({
           type: "file",
@@ -72,7 +165,7 @@ export class CodeService {
       }
 
       // Importar códigos de clientes
-      const clientEntries = Object.entries(clientsCodes);
+      const clientEntries = Object.entries(DEFAULT_CLIENT_CODES);
       for (const [code, name] of clientEntries) {
         await this.createOrUpdateCode({
           type: "client",
@@ -83,7 +176,7 @@ export class CodeService {
       }
 
       // Importar códigos de campañas
-      const campaignEntries = Object.entries(campaignCodes);
+      const campaignEntries = Object.entries(DEFAULT_CAMPAIGN_CODES);
       for (const [code, name] of campaignEntries) {
         await this.createOrUpdateCode({
           type: "campaign",
@@ -92,6 +185,9 @@ export class CodeService {
           description: `Campaña: ${name}`,
         });
       }
+
+      // Limpiar la caché después de importar
+      this.clearCache();
 
       console.log("Importación de códigos completada con éxito");
     } catch (error) {
@@ -136,6 +232,9 @@ export class CodeService {
           },
         });
       }
+
+      // Limpiar caché para el tipo actualizado
+      this.clearCache(data.type as any);
     } catch (error) {
       console.error(
         `Error al crear/actualizar código ${data.type}:${data.code}:`,
@@ -145,4 +244,3 @@ export class CodeService {
     }
   }
 }
- 

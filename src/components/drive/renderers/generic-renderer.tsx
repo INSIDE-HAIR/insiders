@@ -14,6 +14,7 @@ import {
   Download,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import {
   Dialog,
@@ -24,7 +25,12 @@ import {
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
-import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-decoder";
+import {
+  decodeFileName,
+  decodeFileNameAsync,
+  type DecodedFile,
+} from "@/src/features/drive/utils/marketing-salon/file-decoder";
+import { CodeService } from "@/src/features/drive/utils/marketing-salon/file-decoder-service";
 import { extractCopyText } from "@/src/features/drive/utils/marketing-salon/description-parser";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -76,6 +82,8 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const [isCopied, setIsCopied] = useState(false);
   const [currentCardPreviewIndex, setCurrentCardPreviewIndex] = useState(0);
   const [currentModalPreviewIndex, setCurrentModalPreviewIndex] = useState(0);
+  const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
+  const [isDecodingInfo, setIsDecodingInfo] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
   const searchParams = useSearchParams();
@@ -100,6 +108,49 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     previewItems && previewItems.length > 0
       ? previewItems[currentModalPreviewIndex]
       : null;
+
+  // Cargar la información decodificada de manera asíncrona
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadDecodedInfo = async () => {
+      if (!item.name) {
+        setIsDecodingInfo(false);
+        return;
+      }
+
+      try {
+        setIsDecodingInfo(true);
+        console.log(`Intentando decodificar archivo: ${item.name}`);
+
+        // Forzar una limpieza completa de la caché para asegurar datos frescos de la BD
+        CodeService.clearCache();
+
+        // Usar exclusivamente la versión asíncrona para obtener de la BD
+        const info = await decodeFileNameAsync(item.name);
+
+        // Solo actualizar el estado si el componente sigue montado
+        if (isMounted) {
+          console.log("Info decodificada:", info);
+          setDecodedInfo(info);
+          setIsDecodingInfo(false);
+        }
+      } catch (error) {
+        console.error("Error al decodificar nombre de archivo:", error);
+
+        if (isMounted) {
+          setIsDecodingInfo(false);
+        }
+      }
+    };
+
+    loadDecodedInfo();
+
+    // Cleanup function para prevenir memory leaks
+    return () => {
+      isMounted = false;
+    };
+  }, [item.name]);
 
   /**
    * Maneja la copia de texto al portapapeles
@@ -168,9 +219,6 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   // Dimensiones fijas para el modal
   const modalWidth = 800;
   const modalHeight = 600;
-
-  // Decodificar el nombre del archivo para obtener metadatos
-  const decodedInfo = decodeFileName(item.name);
 
   // Verificar disponibilidad de recursos
   const hasPreview =
@@ -261,7 +309,14 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
       {/* Filename at top - now showing language and version if decoded */}
       <div className='p-2 text-xs text-zinc-400 truncate text-center'>
-        {displayTitle}
+        {isDecodingInfo ? (
+          <div className='flex items-center justify-center'>
+            <Loader2 className='h-3 w-3 animate-spin mr-1' />
+            <span>Cargando...</span>
+          </div>
+        ) : (
+          displayTitle
+        )}
       </div>
 
       {/* Content type in bold - now showing category if decoded */}
@@ -356,8 +411,13 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                   downloadFileWithCustomName(downloadUrl, item.name);
                 }
               }}
+              disabled={isDecodingInfo}
             >
-              <Download className='h-4 w-4 mr-2' />
+              {isDecodingInfo ? (
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              ) : (
+                <Download className='h-4 w-4 mr-2' />
+              )}
               Descargar
             </Button>
 
@@ -431,34 +491,46 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       )}
 
       {/* Sección de detalles del archivo (expandible) */}
-      {showDetails && decodedInfo && (
+      {showDetails && (
         <div className='p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700 mt-2'>
           <div className='flex items-center mb-1'>
             <Info className='h-3 w-3 mr-1 text-[#CEFF66]' />
             <span className='font-semibold'>Detalles del archivo:</span>
           </div>
-          <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
-            <span className='text-zinc-400'>Cliente:</span>
-            <span className='capitalize'>{decodedInfo.client}</span>
 
-            <span className='text-zinc-400'>Campaña:</span>
-            <span className='capitalize'>{decodedInfo.campaign}</span>
+          {isDecodingInfo ? (
+            <div className='flex items-center justify-center p-4'>
+              <Loader2 className='h-5 w-5 animate-spin mr-2' />
+              <span>Cargando datos desde la base de datos...</span>
+            </div>
+          ) : decodedInfo ? (
+            <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
+              <span className='text-zinc-400'>Cliente:</span>
+              <span className='capitalize'>{decodedInfo.client}</span>
 
-            <span className='text-zinc-400'>Año:</span>
-            <span>{decodedInfo.year}</span>
+              <span className='text-zinc-400'>Campaña:</span>
+              <span className='capitalize'>{decodedInfo.campaign}</span>
 
-            <span className='text-zinc-400'>Mes:</span>
-            <span>{decodedInfo.month}</span>
+              <span className='text-zinc-400'>Año:</span>
+              <span>{decodedInfo.year}</span>
 
-            <span className='text-zinc-400'>Categoría:</span>
-            <span>{decodedInfo.category}</span>
+              <span className='text-zinc-400'>Mes:</span>
+              <span>{decodedInfo.month}</span>
 
-            <span className='text-zinc-400'>Idioma:</span>
-            <span>{decodedInfo.lang}</span>
+              <span className='text-zinc-400'>Categoría:</span>
+              <span>{decodedInfo.category}</span>
 
-            <span className='text-zinc-400'>Versión:</span>
-            <span>{decodedInfo.version}</span>
-          </div>
+              <span className='text-zinc-400'>Idioma:</span>
+              <span>{decodedInfo.lang}</span>
+
+              <span className='text-zinc-400'>Versión:</span>
+              <span>{decodedInfo.version}</span>
+            </div>
+          ) : (
+            <div className='text-center p-2'>
+              No se pudo decodificar la información del archivo
+            </div>
+          )}
         </div>
       )}
 
