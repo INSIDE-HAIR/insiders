@@ -41,8 +41,8 @@ export function ContentHeader({
   const isAdmin = searchParams?.get("role") === "admin" || !!session?.user;
 
   // Priorizar props s obre el contexto
-  const displayTitle =  contextTitle || propTitle || "Sin título";
-  const displaySubtitle = propSubtitle || contextSubtitle || "Sin subtítulo";
+  const displayTitle = contextTitle || propTitle || "Sin título";
+  const displaySubtitle = contextSubtitle || propSubtitle || "Sin subtítulo";
 
   return (
     <div className='flex flex-col shrink-0 w-full'>
