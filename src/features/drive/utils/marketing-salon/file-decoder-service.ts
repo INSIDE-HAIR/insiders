@@ -35,7 +35,7 @@ export class CodeService {
 
     try {
       // Intentar obtener códigos de la base de datos
-      const response = await fetch(`/api/codes?type=${type}`);
+      const response = await fetch(`/api/drive/codes?type=${type}`);
 
       if (!response.ok) {
         console.warn(

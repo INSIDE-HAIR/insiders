@@ -115,7 +115,7 @@ export default function CodesAdminPage() {
   const loadCodes = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/codes?type=${selectedType}`);
+      const response = await fetch(`/api/drive/codes?type=${selectedType}`);
       if (!response.ok) {
         throw new Error("Error al cargar códigos");
       }
@@ -141,7 +141,7 @@ export default function CodesAdminPage() {
       };
 
       for (const type of types) {
-        const response = await fetch(`/api/codes?type=${type}`);
+        const response = await fetch(`/api/drive/codes?type=${type}`);
         if (response.ok) {
           const data = await response.json();
           newCodesByType[type] = data;
@@ -171,7 +171,7 @@ export default function CodesAdminPage() {
   const importCodes = async () => {
     setImportLoading(true);
     try {
-      const response = await fetch("/api/codes/import", {
+      const response = await fetch("/api/drive/codes/import", {
         method: "POST",
       });
 
@@ -302,7 +302,7 @@ export default function CodesAdminPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/codes", {
+      const response = await fetch("/api/drive/codes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -337,7 +337,7 @@ export default function CodesAdminPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/codes", {
+      const response = await fetch("/api/drive/codes", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -372,7 +372,7 @@ export default function CodesAdminPage() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/codes?id=${formData.id}`, {
+      const response = await fetch(`/api/drive/codes?id=${formData.id}`, {
         method: "DELETE",
       });
 
