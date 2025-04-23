@@ -6,6 +6,7 @@ import {
   DEFAULT_CAMPAIGN_CODES,
   MONTH_NAMES,
 } from "./static-code-defaults";
+import { getExtensionFromMimeType } from "./file-decoder-service";
 
 export interface DecodedFile {
   client: string;
@@ -20,21 +21,28 @@ export interface DecodedFile {
 
 /**
  * Decodifica de forma asíncrona el nombre de un archivo obtieniendo los valores de códigos desde la base de datos
+ * @param fileName Nombre del archivo a decodificar
+ * @param mimeType Tipo MIME del archivo (opcional)
+ * @returns Objeto con información decodificada o null si no se pudo decodificar
  */
 export async function decodeFileNameAsync(
-  fileName: string
+  fileName: string,
+  mimeType?: string
 ): Promise<DecodedFile | null> {
   console.log(`🔍 Decodificando nombre de archivo (ASYNC): ${fileName}`);
 
   try {
+    // Eliminar "Copia de " si existe al principio
+    const cleanName = fileName.replace(/^Copia de /, "");
+
     // Buscar coincidencia con el patrón CLIENTE-CAMPAÑA-AÑOMES-CATEGORIA-GRUPO-VERSION
     // Ejemplo: A-A-2505-0080-01-00-02
-    const match = fileName.match(
+    const match = cleanName.match(
       /([A-Z])-([A-Z])-(\d{4})-(\d{4})-(\d{2})-(\d{2})-(\d{2})(?:-P\d+)?/
     );
 
     if (!match) {
-      console.log(`⚠️ Patrón no coincide para archivo: ${fileName}`);
+      console.log(`⚠️ Patrón no coincide para archivo: ${cleanName}`);
       return null;
     }
 
@@ -132,6 +140,31 @@ export async function decodeFileNameAsync(
       );
     }
 
+    // Extraer la extensión del archivo original de manera más robusta
+    let extension = "";
+    const fileNameParts = cleanName.split(".");
+    if (fileNameParts.length > 1) {
+      extension = fileNameParts.pop() || "";
+      // Verificar que sea una extensión válida (solo caracteres alfanuméricos, entre 1-10 caracteres)
+      if (!/^[a-zA-Z0-9]{1,10}$/.test(extension)) {
+        extension = "";
+      }
+    }
+
+    // Si no se encontró extensión en el nombre y se proporcionó mimeType, intentar obtenerla del mimeType
+    if (!extension && mimeType) {
+      extension = getExtensionFromMimeType(mimeType);
+      console.log(
+        `📄 Extensión obtenida del mimeType (${mimeType}): ${
+          extension || "ninguna"
+        }`
+      );
+    } else {
+      console.log(
+        `📄 Extensión detectada del nombre: ${extension || "ninguna"}`
+      );
+    }
+
     // Armar información decodificada
     const result: DecodedFile = {
       client: clientName,
@@ -139,7 +172,9 @@ export async function decodeFileNameAsync(
       category: categoryName,
       lang: langName,
       version: versionCode,
-      fullName: `${clientName}-${campaignName}-${year}-${monthName}-${categoryName}-${langName}-v${versionCode}`,
+      fullName: `${clientName}-${campaignName}-${year}-${monthName}-${categoryName}-${langName}-v${versionCode}${
+        extension ? "." + extension : ""
+      }`,
       year,
       month: monthName,
     };

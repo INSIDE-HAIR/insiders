@@ -25,6 +25,7 @@ import {
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
+import { isFileItem } from "@/src/features/drive/types/hierarchy";
 import {
   decodeFileName,
   decodeFileNameAsync,
@@ -127,7 +128,11 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         CodeService.clearCache();
 
         // Usar exclusivamente la versión asíncrona para obtener de la BD
-        const info = await decodeFileNameAsync(item.name);
+        // Pasar el mimeType si está disponible
+        const info = await decodeFileNameAsync(
+          item.name,
+          isFileItem(item) ? item.mimeType : undefined
+        );
 
         // Solo actualizar el estado si el componente sigue montado
         if (isMounted) {
@@ -150,7 +155,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     return () => {
       isMounted = false;
     };
-  }, [item.name]);
+  }, [item.name, item.mimeType]);
 
   /**
    * Maneja la copia de texto al portapapeles
@@ -284,11 +289,11 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
    */
   const getFileIcon = () => {
     if (contentType === "Presentación") {
-      return <Presentation className='h-12 w-12 text-zinc-500' />;
+      return <Presentation className="h-12 w-12 text-zinc-500" />;
     } else if (contentType === "PDF") {
-      return <FileText className='h-12 w-12 text-zinc-500' />;
+      return <FileText className="h-12 w-12 text-zinc-500" />;
     } else {
-      return <File className='h-12 w-12 text-zinc-500' />;
+      return <File className="h-12 w-12 text-zinc-500" />;
     }
   };
 
@@ -305,13 +310,13 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     "";
 
   return (
-    <div className='flex flex-col w-52 bg-black text-white'>
+    <div className="flex flex-col w-52 bg-black text-white">
       <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
       {/* Filename at top - now showing language and version if decoded */}
-      <div className='p-2 text-xs text-zinc-400 truncate text-center'>
+      <div className="p-2 text-xs text-zinc-400 truncate text-center">
         {isDecodingInfo ? (
-          <div className='flex items-center justify-center'>
-            <Loader2 className='h-3 w-3 animate-spin mr-1' />
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-3 w-3 animate-spin mr-1" />
             <span>Cargando...</span>
           </div>
         ) : (
@@ -320,62 +325,62 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       </div>
 
       {/* Content type in bold - now showing category if decoded */}
-      <div className='text-center font-bold mb-2'>{displayType}</div>
+      <div className="text-center font-bold mb-2">{displayType}</div>
 
       {/* Content area - always use preview URL for thumbnails */}
-      <div className='px-2 flex-grow'>
+      <div className="px-2 flex-grow">
         {hasPreview ? (
           <div
-            className='relative cursor-pointer'
+            className="relative cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             {isCardImageLoading && (
-              <div className='absolute inset-0 overflow-hidden rounded-sm'>
+              <div className="absolute inset-0 overflow-hidden rounded-sm">
                 {/* Skeleton para la tarjeta */}
-                <div className='absolute inset-0 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse' />
-                <div className='absolute inset-0 flex items-center justify-center'>
-                  <div className='h-6 w-6 text-zinc-400 animate-spin border-2 border-zinc-400 border-t-transparent rounded-full' />
+                <div className="absolute inset-0 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-6 w-6 text-zinc-400 animate-spin border-2 border-zinc-400 border-t-transparent rounded-full" />
                 </div>
               </div>
             )}
             <Image
               src={cardPreviewUrl || "/placeholder.svg"}
               alt={item.displayName}
-              className='w-full object-cover rounded-sm'
+              className="w-full object-cover rounded-sm"
               onLoadingComplete={handleCardImageLoad}
               onError={() => setIsCardImageLoading(false)}
               width={300}
               height={200}
               unoptimized={true}
             />
-            <button className='absolute top-1 right-1 bg-white rounded-full p-1'>
-              <Eye className='h-4 w-4 text-black' />
+            <button className="absolute top-1 right-1 bg-white rounded-full p-1">
+              <Eye className="h-4 w-4 text-black" />
             </button>
 
             {/* Controles de navegación del carrusel para la tarjeta */}
             {multiplePreviewsAvailable && (
               <>
                 <button
-                  className='absolute left-1 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-1'
+                  className="absolute left-1 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     prevCardPreview();
                   }}
                 >
-                  <ChevronLeft className='h-4 w-4 text-white' />
+                  <ChevronLeft className="h-4 w-4 text-white" />
                 </button>
                 <button
-                  className='absolute right-1 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-1'
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-1"
                   onClick={(e) => {
                     e.stopPropagation();
                     nextCardPreview();
                   }}
                 >
-                  <ChevronRight className='h-4 w-4 text-white' />
+                  <ChevronRight className="h-4 w-4 text-white" />
                 </button>
 
                 {/* Indicadores de posición */}
-                <div className='absolute bottom-1 left-0 right-0 flex justify-center gap-1'>
+                <div className="absolute bottom-1 left-0 right-0 flex justify-center gap-1">
                   {previewItems?.map((_, index) => (
                     <div
                       key={index}
@@ -391,18 +396,18 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
             )}
           </div>
         ) : (
-          <div className='bg-zinc-800 p-4 rounded-sm text-zinc-400 flex items-center justify-center min-h-[100px]'>
+          <div className="bg-zinc-800 p-4 rounded-sm text-zinc-400 flex items-center justify-center min-h-[100px]">
             {getFileIcon()}
           </div>
         )}
       </div>
 
       {/* Download button y Info button - Siempre mostrar descarga */}
-      <div className='p-2 mt-2 flex gap-2 flex-wrap'>
+      <div className="p-2 mt-2 flex gap-2 flex-wrap">
         {getDownloadUrl(item) && (
-          <div className='flex w-full'>
+          <div className="flex w-full">
             <Button
-              className='flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
+              className="flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center"
               onClick={() => {
                 const downloadUrl = getDownloadUrl(item);
                 if (downloadUrl && decodedInfo) {
@@ -414,23 +419,23 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               disabled={isDecodingInfo}
             >
               {isDecodingInfo ? (
-                <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <Download className='h-4 w-4 mr-2' />
+                <Download className="h-4 w-4 mr-2" />
               )}
               Descargar
             </Button>
 
             {decodedInfo && isAdmin && (
               <Button
-                className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center'
+                className="bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center"
                 onClick={() => setShowDetails(!showDetails)}
-                title='Ver detalles del archivo'
+                title="Ver detalles del archivo"
               >
                 {showDetails ? (
-                  <ChevronUp className='h-24 w-24' />
+                  <ChevronUp className="h-24 w-24" />
                 ) : (
-                  <Plus className='h-24 w-24' />
+                  <Plus className="h-24 w-24" />
                 )}
               </Button>
             )}
@@ -439,17 +444,17 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
 
         {copyText && (
           <Button
-            className='w-full bg-zinc-700 hover:bg-zinc-600 text-white rounded-none flex items-center justify-center'
+            className="w-full bg-zinc-700 hover:bg-zinc-600 text-white rounded-none flex items-center justify-center"
             onClick={handleCopyText}
           >
             {isCopied ? (
               <>
-                <Check className='h-4 w-4 mr-2' />
+                <Check className="h-4 w-4 mr-2" />
                 Copiado
               </>
             ) : (
               <>
-                <Copy className='h-4 w-4 mr-2' />
+                <Copy className="h-4 w-4 mr-2" />
                 Copiar Texto
               </>
             )}
@@ -461,7 +466,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
           <textarea
             ref={copyTextRef}
             defaultValue={copyText}
-            className='hidden'
+            className="hidden"
             readOnly
           />
         )}
@@ -470,7 +475,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       {/* Mostrar el texto a copiar con scrollbar personalizado */}
       {copyText && (
         <div
-          className='p-2 bg-zinc-900 border border-zinc-700 rounded-md mt-2 max-h-40 overflow-y-auto'
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded-md mt-2 max-h-40 overflow-y-auto"
           style={{
             scrollbarWidth: "thin",
             scrollbarColor: "#CEFF66 #3f3f46",
@@ -484,7 +489,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
             "--scrollbar-thumb-color": "#CEFF66",
           }}
         >
-          <p className='text-zinc-300 text-xs whitespace-pre-wrap'>
+          <p className="text-zinc-300 text-xs whitespace-pre-wrap">
             {copyText}
           </p>
         </div>
@@ -492,42 +497,42 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
 
       {/* Sección de detalles del archivo (expandible) */}
       {showDetails && (
-        <div className='p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700 mt-2'>
-          <div className='flex items-center mb-1'>
-            <Info className='h-3 w-3 mr-1 text-[#CEFF66]' />
-            <span className='font-semibold'>Detalles del archivo:</span>
+        <div className="p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700 mt-2">
+          <div className="flex items-center mb-1">
+            <Info className="h-3 w-3 mr-1 text-[#CEFF66]" />
+            <span className="font-semibold">Detalles del archivo:</span>
           </div>
 
           {isDecodingInfo ? (
-            <div className='flex items-center justify-center p-4'>
-              <Loader2 className='h-5 w-5 animate-spin mr-2' />
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
               <span>Cargando datos desde la base de datos...</span>
             </div>
           ) : decodedInfo ? (
-            <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
-              <span className='text-zinc-400'>Cliente:</span>
-              <span className='capitalize'>{decodedInfo.client}</span>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2">
+              <span className="text-zinc-400">Cliente:</span>
+              <span className="capitalize">{decodedInfo.client}</span>
 
-              <span className='text-zinc-400'>Campaña:</span>
-              <span className='capitalize'>{decodedInfo.campaign}</span>
+              <span className="text-zinc-400">Campaña:</span>
+              <span className="capitalize">{decodedInfo.campaign}</span>
 
-              <span className='text-zinc-400'>Año:</span>
+              <span className="text-zinc-400">Año:</span>
               <span>{decodedInfo.year}</span>
 
-              <span className='text-zinc-400'>Mes:</span>
+              <span className="text-zinc-400">Mes:</span>
               <span>{decodedInfo.month}</span>
 
-              <span className='text-zinc-400'>Categoría:</span>
+              <span className="text-zinc-400">Categoría:</span>
               <span>{decodedInfo.category}</span>
 
-              <span className='text-zinc-400'>Idioma:</span>
+              <span className="text-zinc-400">Idioma:</span>
               <span>{decodedInfo.lang}</span>
 
-              <span className='text-zinc-400'>Versión:</span>
+              <span className="text-zinc-400">Versión:</span>
               <span>{decodedInfo.version}</span>
             </div>
           ) : (
-            <div className='text-center p-2'>
+            <div className="text-center p-2">
               No se pudo decodificar la información del archivo
             </div>
           )}
@@ -538,7 +543,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       {hasEmbed && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent
-            className='bg-zinc-900 text-zinc-50 border-zinc-700 p-0 flex flex-col'
+            className="bg-zinc-900 text-zinc-50 border-zinc-700 p-0 flex flex-col"
             style={{
               width: `${modalWidth}px`,
               maxWidth: "90vw",
@@ -547,19 +552,19 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               overflow: "hidden",
             }}
           >
-            <DialogHeader className='p-2'>
-              <DialogTitle className='text-center'>{displayTitle}</DialogTitle>
+            <DialogHeader className="p-2">
+              <DialogTitle className="text-center">{displayTitle}</DialogTitle>
             </DialogHeader>
 
             <div
-              className='flex-1 flex items-center justify-center overflow-auto p-4 relative'
+              className="flex-1 flex items-center justify-center overflow-auto p-4 relative"
               style={{ minHeight: "70vh", maxHeight: "calc(90vh - 100px)" }}
             >
               {contentType === "Presentación" ? (
                 <GoogleSlidesRenderer item={item} />
               ) : (
-                <div className='w-full h-full flex items-center justify-center'>
-                  <div className='relative w-full max-w-[600px] h-[400px] flex items-center justify-center'>
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="relative w-full max-w-[600px] h-[400px] flex items-center justify-center">
                     <ImageBlurUp
                       src={modalPreviewUrl || "/placeholder.svg"}
                       alt={item.displayName}
@@ -572,20 +577,20 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                     {multiplePreviewsAvailable && !isModalImageLoading && (
                       <>
                         <button
-                          className='absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 z-10'
+                          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 z-10"
                           onClick={prevModalPreview}
                         >
-                          <ChevronLeft className='h-6 w-6 text-white' />
+                          <ChevronLeft className="h-6 w-6 text-white" />
                         </button>
                         <button
-                          className='absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 z-10'
+                          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 z-10"
                           onClick={nextModalPreview}
                         >
-                          <ChevronRight className='h-6 w-6 text-white' />
+                          <ChevronRight className="h-6 w-6 text-white" />
                         </button>
 
                         {/* Indicadores de posición en el modal */}
-                        <div className='absolute bottom-0 left-0 right-0 flex justify-center gap-2 z-10 pb-1'>
+                        <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2 z-10 pb-1">
                           {previewItems?.map((_, index) => (
                             <div
                               key={index}
@@ -604,11 +609,11 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               )}
             </div>
 
-            <DialogFooter className='justify-center p-2'>
+            <DialogFooter className="justify-center p-2">
               <Button
-                variant='destructive'
+                variant="destructive"
                 onClick={() => setIsOpen(false)}
-                className='bg-red-900 hover:bg-red-800 rounded-none'
+                className="bg-red-900 hover:bg-red-800 rounded-none"
               >
                 Close
               </Button>

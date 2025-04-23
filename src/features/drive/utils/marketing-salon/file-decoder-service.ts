@@ -8,6 +8,86 @@ import {
 
 const prisma = new PrismaClient();
 
+/**
+ * Mapeo común de mimeType a extensiones de archivo
+ */
+export const MIME_TYPE_TO_EXTENSION: Record<string, string> = {
+  // Imágenes
+  "image/jpeg": "jpg",
+  "image/jpg": "jpg",
+  "image/png": "png",
+  "image/gif": "gif",
+  "image/webp": "webp",
+  "image/svg+xml": "svg",
+  "image/bmp": "bmp",
+  "image/tiff": "tiff",
+
+  // Documentos
+  "application/pdf": "pdf",
+  "application/vnd.ms-excel": "xls",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+  "application/msword": "doc",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    "docx",
+  "application/vnd.ms-powerpoint": "ppt",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+    "pptx",
+  "text/plain": "txt",
+  "text/html": "html",
+  "text/css": "css",
+  "text/javascript": "js",
+  "application/json": "json",
+  "application/xml": "xml",
+
+  // Audio
+  "audio/mpeg": "mp3",
+  "audio/wav": "wav",
+  "audio/ogg": "ogg",
+
+  // Video
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/ogg": "ogv",
+  "video/quicktime": "mov",
+  "video/x-msvideo": "avi",
+
+  // Archivos comprimidos
+  "application/zip": "zip",
+  "application/x-rar-compressed": "rar",
+  "application/gzip": "gz",
+  "application/x-7z-compressed": "7z",
+
+  // Otros
+  "application/octet-stream": "bin",
+};
+
+/**
+ * Obtiene la extensión de archivo más adecuada basada en un mimeType
+ * @param mimeType El tipo MIME del archivo
+ * @returns La extensión correspondiente o una cadena vacía si no se puede determinar
+ */
+export function getExtensionFromMimeType(mimeType: string): string {
+  if (!mimeType) return "";
+
+  // Comprobar mimeType directamente
+  if (MIME_TYPE_TO_EXTENSION[mimeType]) {
+    return MIME_TYPE_TO_EXTENSION[mimeType];
+  }
+
+  // Para tipos genéricos como application/vnd.google-apps.xyz
+  if (mimeType.includes("google-apps.presentation")) {
+    return "pptx";
+  } else if (mimeType.includes("google-apps.document")) {
+    return "docx";
+  } else if (mimeType.includes("google-apps.spreadsheet")) {
+    return "xlsx";
+  } else if (mimeType.includes("google-apps.drawing")) {
+    return "png";
+  }
+
+  return "";
+}
+
 // Clase para manejar los códigos en la base de datos
 export class CodeService {
   private static cache: Record<string, Record<string, string>> = {};
