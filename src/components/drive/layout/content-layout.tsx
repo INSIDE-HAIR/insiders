@@ -4,6 +4,7 @@ import { AppSidebar } from "@/src/components/drive/navigation/sidebar/app-sideba
 import { ContentRenderer } from "@/src/components/drive/content/content-renderer";
 import { SidebarProvider } from "@/src/components/ui/sidebar";
 import { SidebarToggle } from "@/src/components/drive/navigation/sidebar/sidebar-toggle";
+import { IframeSidebarToggle } from "@/src/components/drive/navigation/sidebar/iframe-sidebar-toggle";
 
 /**
  * ContentLayout
@@ -19,9 +20,13 @@ import { SidebarToggle } from "@/src/components/drive/navigation/sidebar/sidebar
 const ContentLayout = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [isInIframe, setIsInIframe] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
+    // Detect if we're in an iframe
+    setIsInIframe(window.self !== window.top);
+
     const checkScreenSize = () => {
       setIsLargeScreen(window.innerWidth > 768);
     };
@@ -44,12 +49,22 @@ const ContentLayout = () => {
 
   return (
     <SidebarProvider defaultOpen={isLargeScreen}>
-      <div className='flex h-screen w-full overflow-hidden bg-zinc-900 text-zinc-100 relative'>
+      <div
+        className={`flex w-full overflow-hidden bg-zinc-900 text-zinc-100 relative ${
+          isInIframe ? "iframe-container" : ""
+        }`}
+        style={{
+          height: isInIframe ? "100%" : "100vh",
+          minHeight: isInIframe ? "100%" : "100vh",
+          overflow: "hidden",
+        }}
+      >
         <AppSidebar />
-        <div className='flex-1 h-full overflow-hidden'>
+        <div className="flex-1 h-full overflow-hidden">
           <ContentRenderer />
         </div>
         <SidebarToggle />
+        <IframeSidebarToggle />
       </div>
     </SidebarProvider>
   );

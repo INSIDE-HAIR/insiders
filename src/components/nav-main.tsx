@@ -18,8 +18,20 @@ import {
   SidebarMenuSubItem,
 } from "@/src/components/ui/sidebar";
 import type { NavItem } from "@/src/types";
+import { useCallback, useState } from "react";
 
 export function NavMain({ items }: { items: NavItem[] }) {
+  // Estado para tracking de qué menús están abiertos
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+  // Callback para manejar el clic en un elemento desplegable
+  const handleCollapsibleClick = useCallback((title: string) => {
+    setOpenItems((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
+  }, []);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -43,26 +55,36 @@ export function NavMain({ items }: { items: NavItem[] }) {
           }
 
           // Otherwise render a collapsible dropdown
+          const isOpen = openItems[item.title] || item.isActive;
+
           return (
             <Collapsible
               key={item.title}
               asChild
-              defaultOpen={item.isActive}
-              className='group/collapsible'
+              open={isOpen}
+              onOpenChange={() => handleCollapsibleClick(item.title)}
+              className="group/collapsible"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    data-collapsible-trigger="true"
+                    className="android-click-fix touch-target"
+                  >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
-                    <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items?.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          className="touch-target android-click-fix"
+                        >
                           <a href={subItem.url}>
                             <span>{subItem.title}</span>
                           </a>

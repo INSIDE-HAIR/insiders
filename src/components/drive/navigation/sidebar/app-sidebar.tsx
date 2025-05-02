@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { useContent } from "@/src/context/DriveCompoentesContext";
 import { cn } from "@/src/lib/utils/utils";
 import {
@@ -30,6 +30,18 @@ export const AppSidebar = memo(function AppSidebar() {
   } = useContent();
   const sidebarItems = getSidebarItems();
 
+  // Fix for touch events on Android
+  useEffect(() => {
+    // Add passive touch listeners to improve performance
+    document.addEventListener("touchstart", () => {}, { passive: true });
+    document.addEventListener("touchmove", () => {}, { passive: true });
+
+    return () => {
+      document.removeEventListener("touchstart", () => {});
+      document.removeEventListener("touchmove", () => {});
+    };
+  }, []);
+
   /**
    * Maneja el clic en un elemento del sidebar
    * Resetea la ruta de navegación y establece el elemento seleccionado
@@ -38,10 +50,11 @@ export const AppSidebar = memo(function AppSidebar() {
    * @param {React.MouseEvent} e - Evento del mouse
    */
   const handleSidebarItemClick = useCallback(
-    (item: any, e?: React.MouseEvent) => {
+    (item: any, e?: React.MouseEvent | React.TouchEvent) => {
       // Prevent default behavior if event is provided
       if (e) {
         e.preventDefault();
+        e.stopPropagation();
       }
 
       // Reset navigation path to just this sidebar item
@@ -60,6 +73,8 @@ export const AppSidebar = memo(function AppSidebar() {
         type: "sidebar",
         level: 0,
       });
+
+      console.log("Clicked sidebar item:", item.displayName);
     },
     [setNavigationPath, addToNavigationPath]
   );
@@ -71,11 +86,11 @@ export const AppSidebar = memo(function AppSidebar() {
 
   return (
     <Sidebar
-      variant='sidebar'
-      className='bg-zinc-900 text-white border-r border-zinc-800 shadow-md  absolute'
-      collapsible='offcanvas'
+      variant="sidebar"
+      className="bg-zinc-900 text-white border-r border-zinc-800 shadow-md absolute z-40"
+      collapsible="offcanvas"
     >
-      <SidebarContent className='bg-zinc-900 text-white overflow-y-auto pt-20 '>
+      <SidebarContent className="bg-zinc-900 text-white overflow-y-auto pt-20">
         <SidebarMenu>
           {sidebarItems.map((item) => {
             const isActive =
@@ -85,12 +100,15 @@ export const AppSidebar = memo(function AppSidebar() {
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton
                   className={cn(
-                    "h-12 px-6 py-3 rounded-none transition-colors text-left text-sm w-full",
+                    "h-12 px-6 py-3 rounded-none transition-colors text-left text-sm w-full cursor-pointer touch-manipulation",
                     isActive
                       ? "bg-inside border-l-4 border-l-[#CEFF66] text-zinc-900 font-medium"
                       : "hover:bg-zinc-800 hover:text-white border-l-4 border-l-transparent active:bg-inside active:text-zinc-900"
                   )}
                   onClick={(e) => handleSidebarItemClick(item, e)}
+                  onTouchEnd={(e) => handleSidebarItemClick(item, e)}
+                  role="button"
+                  tabIndex={0}
                 >
                   {item.displayName}
                 </SidebarMenuButton>

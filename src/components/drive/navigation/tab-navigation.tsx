@@ -34,8 +34,16 @@ export const TabNavigation = memo(function TabNavigation({
     .filter((tab) => hasContent(tab))
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  const handleTabClick = useCallback(
-    (item: HierarchyItem) => {
+  const handleTabInteraction = useCallback(
+    (item: HierarchyItem, event?: React.MouseEvent | React.TouchEvent) => {
+      // Prevent default events to avoid issues with touch devices
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      console.log("Tab interaction with:", item.displayName);
+
       addToNavigationPath({
         id: item.id,
         type: "tab",
@@ -48,26 +56,31 @@ export const TabNavigation = memo(function TabNavigation({
   // Seleccionar automáticamente el primer tab si no hay ninguno seleccionado
   useEffect(() => {
     if (!currentId && activeAndOrderedTabs.length > 0) {
-      handleTabClick(activeAndOrderedTabs[0]);
+      handleTabInteraction(activeAndOrderedTabs[0]);
     }
-  }, [currentId, activeAndOrderedTabs, handleTabClick]);
+  }, [currentId, activeAndOrderedTabs, handleTabInteraction]);
 
   // Si no hay tabs con contenido, no renderizar nada
   if (activeAndOrderedTabs.length === 0) return null;
 
   return (
-    <div className='w-full mb-6 max-w-md mx-auto'>
-      <div className='flex flex-wrap h-full bg-transparent text-white border-none overflow-x-auto w-full justify-center'>
+    <div className="w-full mb-6 max-w-md mx-auto">
+      <div className="flex flex-wrap h-full bg-transparent text-white border-none overflow-x-auto w-full justify-center">
         {activeAndOrderedTabs.map((item) => (
           <button
             key={item.id}
-            onClick={() => handleTabClick(item)}
+            onClick={(e) => handleTabInteraction(item, e)}
+            onTouchEnd={(e) => handleTabInteraction(item, e)}
             className={cn(
-              "py-3 px-4 text-sm font-medium transition-colors relative whitespace-nowrap rounded-none",
+              "py-3 px-4 text-sm font-medium transition-colors relative whitespace-nowrap rounded-none cursor-pointer touch-manipulation",
               currentId === item.id
                 ? "bg-inside text-zinc-900 font-semibold"
-                : "bg-zinc-700 text-white hover:bg-zinc-600"
+                : "bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-600"
             )}
+            role="tab"
+            aria-selected={currentId === item.id}
+            tabIndex={0}
+            style={{ WebkitTapHighlightColor: "transparent" }}
           >
             {item.displayName}
           </button>

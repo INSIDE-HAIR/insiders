@@ -1,0 +1,60 @@
+/* Touch device fixes for better mobile interaction */
+
+/* Improve touch targets and responsiveness */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+/* Fix issues with touch events on buttons */
+button,
+[role="button"],
+a {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Add active states for touch feedback */
+.touch-feedback:active {
+  opacity: 0.7;
+  transform: scale(0.98);
+  transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
+}
+
+/* Disable pull-to-refresh on iOS inside scrollable areas */
+.disable-pull-refresh {
+  overscroll-behavior-y: contain;
+}
+
+/* Fix for Android click events in fixed/absolute positioned elements */
+.android-click-fix {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* Fix for click events on elements with transform */
+.transform-click-fix {
+  isolation: isolate;
+  contain: layout;
+  will-change: transform;
+}
+
+/* Fix for sticky hover states on mobile */
+@media (hover: hover) {
+  .hover-effect:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Prevent text selection on interactive elements */
+.prevent-select {
+  -webkit-user-select: none;
+  user-select: none;
+}

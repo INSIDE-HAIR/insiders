@@ -1,0 +1,28 @@
+/* Iframe integration helpers */
+
+/* Fix for elements with fixed positioning inside iframes */
+.iframe-fixed {
+  position: fixed !important;
+  z-index: 9999 !important;
+  visibility: visible !important;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Apply to parent containers in iframes */
+.iframe-container {
+  position: relative;
+  height: 100%;
+  min-height: 100%;
+  overflow: visible;
+}
+
+/* Ensure buttons have proper stacking context */
+.iframe-button {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  position: absolute;
+  transform: translateZ(0);
+  opacity: 1 !important;
+  visibility: visible !important;
+}
