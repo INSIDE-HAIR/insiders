@@ -12,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/src/components/ui/sidebar";
+import { SidebarCloseButton } from "./sidebar-close-button";
 
 /**
  * AppSidebar
@@ -90,6 +91,9 @@ export const AppSidebar = memo(function AppSidebar() {
       className="bg-zinc-900 text-white border-r border-zinc-800 shadow-md absolute z-40"
       collapsible="offcanvas"
     >
+      {/* Botón de cierre (X verde) */}
+      <SidebarCloseButton />
+
       <SidebarContent className="bg-zinc-900 text-white overflow-y-auto pt-20">
         <SidebarMenu>
           {sidebarItems.map((item) => {

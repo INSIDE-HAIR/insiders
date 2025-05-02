@@ -6,17 +6,21 @@ import { useSidebar } from "@/src/components/ui/sidebar";
 import { useEffect, useState } from "react";
 
 export function SidebarToggle() {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, openMobile, open } = useSidebar();
   const [isInIframe, setIsInIframe] = useState(false);
+
+  // Verificar si el sidebar está abierto (en cualquier modo)
+  const isSidebarOpen = openMobile || open;
 
   useEffect(() => {
     // Detectar si estamos en un iframe
     setIsInIframe(window.self !== window.top);
   }, []);
 
-  // No mostrar este botón si estamos en un iframe
-  // El botón específico para iframe se encargará
-  if (isInIframe) {
+  // No mostrar este botón si:
+  // - Estamos en un iframe o
+  // - El sidebar ya está abierto
+  if (isInIframe || isSidebarOpen) {
     return null;
   }
 

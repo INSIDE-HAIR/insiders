@@ -52,6 +52,17 @@
   pointer-events: auto !important;
 }
 
+/* Asegurar que el botón de cierre sea visible en iframes */
+.sidebar-close-button-iframe {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  z-index: 9999 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
 /* Para evitar botones duplicados en iframes */
 iframe [data-sidebar-regular-toggle="true"] {
   display: none !important;
