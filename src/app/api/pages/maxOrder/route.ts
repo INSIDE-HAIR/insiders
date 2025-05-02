@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
+// Configuración de la ruta como dinámica para evitar la generación estática
+// debido al uso de request.url
+export const dynamic = "force-dynamic";
+
 const prisma = new PrismaClient();
 
 export async function GET(request: Request) {

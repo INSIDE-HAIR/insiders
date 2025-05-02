@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Configuración de la ruta como dinámica para evitar la generación estática
+// debido al uso de parámetros de búsqueda (nextUrl.searchParams)
+export const dynamic = "force-dynamic";
+
 /**
  * API endpoint para actuar como proxy de descargas
  * Permite evitar las limitaciones de CORS descargando el archivo desde el servidor

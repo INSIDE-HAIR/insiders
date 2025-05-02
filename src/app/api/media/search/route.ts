@@ -4,6 +4,10 @@ import prisma from "@/prisma/database";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 
+// Configuración de la ruta como dinámica para evitar la generación estática
+// debido al uso de headers en la petición
+export const dynamic = "force-dynamic";
+
 const searchSchema = z.object({
   query: z.string().optional(),
   tags: z.array(z.string()).optional(),
@@ -20,7 +24,7 @@ export async function GET(req: Request) {
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     // Obtener y validar parámetros de búsqueda
     const { searchParams } = new URL(req.url);
     const params = searchSchema.parse({

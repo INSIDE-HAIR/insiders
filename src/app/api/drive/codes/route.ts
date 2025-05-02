@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/src/config/auth/auth";
 
+// Configuración de la ruta como dinámica para evitar la generación estática
+// debido al uso de parámetros de búsqueda (nextUrl.searchParams)
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 // GET - Obtener todos los códigos o códigos filtrados por tipo

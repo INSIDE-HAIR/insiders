@@ -4,6 +4,10 @@ import prisma from "@/prisma/database";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 
+// Configuración de la ruta como dinámica para evitar la generación estática
+// debido al uso de headers en la petición
+export const dynamic = "force-dynamic";
+
 const querySchema = z.object({
   folderId: z.string().optional(),
   type: z.enum(["IMAGE", "VIDEO", "AUDIO", "DOCUMENT", "OTHER"]).optional(),
