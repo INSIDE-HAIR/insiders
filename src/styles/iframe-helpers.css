@@ -21,11 +21,29 @@
 .iframe-button {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   z-index: 9999;
-  position: absolute;
   transform: translateZ(0);
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+}
+
+/* Contenedor para posicionamiento fijo mejorado en móviles */
+.fixed-mobile-container {
+  position: fixed !important;
+  z-index: 2147483647;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  /* Hacks para mejor compatibilidad en Safari Mobile y Android WebView */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
 }
 
 /* Enhanced iframe button positioning for top corner */

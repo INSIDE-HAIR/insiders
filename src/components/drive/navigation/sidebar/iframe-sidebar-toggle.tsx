@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export function IframeSidebarToggle() {
   const { toggleSidebar, openMobile, open } = useSidebar();
   const [isInIframe, setIsInIframe] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
   // Verificar si el sidebar está abierto (en cualquier modo)
   const isSidebarOpen = openMobile || open;
@@ -26,6 +27,23 @@ export function IframeSidebarToggle() {
         regularToggle.classList.add("hidden");
       }
     }
+
+    // Obtener altura real del viewport y actualizarla si cambia
+    const updateViewportHeight = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    // Actualizar al inicio y cuando cambie el tamaño
+    updateViewportHeight();
+    window.addEventListener("resize", updateViewportHeight);
+
+    // También actualizar en orientación change en móviles
+    window.addEventListener("orientationchange", updateViewportHeight);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("orientationchange", updateViewportHeight);
+    };
   }, []);
 
   // No mostrar el botón si:
@@ -35,29 +53,43 @@ export function IframeSidebarToggle() {
     return null;
   }
 
+  // Calcular posición bottom basada en la altura real del viewport
+  const bottomPosition =
+    viewportHeight > 0 ? Math.max(20, viewportHeight * 0.05) : 20;
+
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={toggleSidebar}
-      className="iframe-button iframe-button-fixed-bottom"
-      data-sidebar-iframe-toggle="true"
+    <div
+      className="fixed-mobile-container"
       style={{
         position: "fixed",
-        bottom: "5dvh", // Cambio de top a bottom para ubicarlo abajo
-        left: "5%", // Usa porcentaje relativo al ancho
+        bottom: `${bottomPosition}px`,
+        left: "20px",
+        zIndex: 2147483647,
         width: "60px",
         height: "60px",
-        borderRadius: "50%",
-        backgroundColor: "#CEFF66",
-        color: "#000",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 0 20px rgba(206, 255, 102, 0.7)",
       }}
     >
-      <PanelLeft className="h-8 w-8" />
-    </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}
+        className="iframe-button"
+        data-sidebar-iframe-toggle="true"
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "50%",
+          backgroundColor: "#CEFF66",
+          color: "#000",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 0 20px rgba(206, 255, 102, 0.7)",
+          animation: "pulse 2s infinite",
+        }}
+      >
+        <PanelLeft className="h-8 w-8" />
+      </Button>
+    </div>
   );
 }

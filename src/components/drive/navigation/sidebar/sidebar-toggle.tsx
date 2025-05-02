@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export function SidebarToggle() {
   const { toggleSidebar, openMobile, open } = useSidebar();
   const [isInIframe, setIsInIframe] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(0);
 
   // Verificar si el sidebar está abierto (en cualquier modo)
   const isSidebarOpen = openMobile || open;
@@ -15,6 +16,23 @@ export function SidebarToggle() {
   useEffect(() => {
     // Detectar si estamos en un iframe
     setIsInIframe(window.self !== window.top);
+
+    // Obtener altura real del viewport y actualizarla si cambia
+    const updateViewportHeight = () => {
+      setViewportHeight(window.innerHeight);
+    };
+
+    // Actualizar al inicio y cuando cambie el tamaño
+    updateViewportHeight();
+    window.addEventListener("resize", updateViewportHeight);
+
+    // También actualizar en orientación change en móviles
+    window.addEventListener("orientationchange", updateViewportHeight);
+
+    return () => {
+      window.removeEventListener("resize", updateViewportHeight);
+      window.removeEventListener("orientationchange", updateViewportHeight);
+    };
   }, []);
 
   // No mostrar este botón si:
@@ -24,24 +42,40 @@ export function SidebarToggle() {
     return null;
   }
 
+  // Calcular posición bottom basada en la altura real del viewport
+  const bottomPosition =
+    viewportHeight > 0 ? Math.max(20, viewportHeight * 0.05) : 20;
+
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={toggleSidebar}
-      className="fixed z-50 bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full h-14 w-14 flex items-center justify-center md:hidden"
-      title="Mostrar panel lateral"
-      data-sidebar-regular-toggle="true"
+    <div
+      className="fixed-mobile-container"
       style={{
         position: "fixed",
-        bottom: "5dvh", // Cambiado de top a bottom para ponerlo en la parte inferior
-        left: "5%", // Usar porcentaje relativo al ancho
-        transform: "translateZ(0)",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
-        animation: "pulse 2s infinite",
+        bottom: `${bottomPosition}px`,
+        left: "20px",
+        zIndex: 50,
+        width: "56px",
+        height: "56px",
       }}
     >
-      <PanelLeft className="h-6 w-6" />
-    </Button>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}
+        className="bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full flex items-center justify-center md:hidden"
+        title="Mostrar panel lateral"
+        data-sidebar-regular-toggle="true"
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "50%",
+          transform: "translateZ(0)",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.5)",
+          animation: "pulse 2s infinite",
+        }}
+      >
+        <PanelLeft className="h-6 w-6" />
+      </Button>
+    </div>
   );
 }
