@@ -274,7 +274,14 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         img.src = imageUrl;
       }
     }
-  }, [isOpen, hasEmbed, currentModalPreview, item, currentModalPreviewIndex]);
+  }, [
+    isOpen,
+    hasEmbed,
+    currentModalPreview,
+    currentModalPreviewIndex,
+    item,
+    getEmbedUrl,
+  ]);
 
   // Sincronizar índices de previsualización al abrir el modal
   useEffect(() => {
