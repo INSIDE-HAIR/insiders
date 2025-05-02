@@ -12,6 +12,17 @@ export function IframeSidebarToggle() {
   useEffect(() => {
     // Detect if the component is inside an iframe
     setIsInIframe(window.self !== window.top);
+
+    // Ocultar el otro botón si estamos en un iframe
+    // Para evitar duplicados
+    if (window.self !== window.top) {
+      const regularToggle = document.querySelector(
+        '[data-sidebar-regular-toggle="true"]'
+      );
+      if (regularToggle) {
+        regularToggle.classList.add("hidden");
+      }
+    }
   }, []);
 
   if (!isInIframe) {
@@ -23,28 +34,24 @@ export function IframeSidebarToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleSidebar}
-      className="iframe-button"
+      className="iframe-button iframe-button-fixed-bottom"
+      data-sidebar-iframe-toggle="true"
       style={{
         position: "fixed",
-        bottom: "20px",
-        left: "20px",
-        zIndex: 9999,
-        width: "50px",
-        height: "50px",
+        bottom: "5dvh", // Cambio de top a bottom para ubicarlo abajo
+        left: "5%", // Usa porcentaje relativo al ancho
+        width: "60px",
+        height: "60px",
         borderRadius: "50%",
         backgroundColor: "#CEFF66",
         color: "#000",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.3)",
-        opacity: 1,
-        visibility: "visible",
-        transform: "translateZ(0)",
-        willChange: "transform",
+        boxShadow: "0 0 20px rgba(206, 255, 102, 0.7)",
       }}
     >
-      <PanelLeft className="h-6 w-6" />
+      <PanelLeft className="h-8 w-8" />
     </Button>
   );
 }

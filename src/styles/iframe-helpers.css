@@ -25,4 +25,41 @@
   transform: translateZ(0);
   opacity: 1 !important;
   visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Enhanced iframe button positioning for top corner */
+.iframe-button-fixed-top {
+  position: fixed !important;
+  top: 10dvh !important; /* Usar dvh (dynamic viewport height) */
+  left: 5% !important; /* Usar porcentaje para posición horizontal */
+  z-index: 2147483647; /* Highest possible z-index */
+  visibility: visible !important;
+  opacity: 1 !important;
+  animation: pulse 2s infinite;
+  pointer-events: auto !important;
+}
+
+/* Nueva clase para posicionamiento en la parte inferior */
+.iframe-button-fixed-bottom {
+  position: fixed !important;
+  bottom: 5dvh !important; /* Posicionado en la parte inferior */
+  left: 5% !important; /* Usar porcentaje para posición horizontal */
+  z-index: 2147483647; /* Highest possible z-index */
+  visibility: visible !important;
+  opacity: 1 !important;
+  animation: pulse 2s infinite;
+  pointer-events: auto !important;
+}
+
+/* Para evitar botones duplicados en iframes */
+iframe [data-sidebar-regular-toggle="true"] {
+  display: none !important;
+}
+
+/* En iframes, asegurémonos de que el botón específico sea siempre visible */
+iframe [data-sidebar-iframe-toggle="true"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
