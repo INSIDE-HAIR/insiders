@@ -3,15 +3,13 @@ import { useEffect, useState, memo } from "react";
 import { AppSidebar } from "@/src/components/drive/navigation/sidebar/app-sidebar";
 import { ContentRenderer } from "@/src/components/drive/content/content-renderer";
 import { SidebarProvider } from "@/src/components/ui/sidebar";
-import { SidebarToggle } from "@/src/components/drive/navigation/sidebar/sidebar-toggle";
-import { IframeSidebarToggle } from "@/src/components/drive/navigation/sidebar/iframe-sidebar-toggle";
 
 /**
  * ContentLayout
  *
  * Componente principal que estructura el layout de la aplicación.
- * Incluye la barra lateral, el área de contenido y el botón para mostrar/ocultar
- * la barra lateral en dispositivos móviles.
+ * Incluye la barra lateral y el área de contenido.
+ * El botón para mostrar/ocultar la barra lateral está en el header.
  *
  * Gestiona el estado de la barra lateral según el tamaño de la pantalla.
  *
@@ -63,8 +61,6 @@ const ContentLayout = () => {
         <div className="flex-1 h-full overflow-hidden">
           <ContentRenderer />
         </div>
-        <SidebarToggle />
-        <IframeSidebarToggle />
       </div>
     </SidebarProvider>
   );

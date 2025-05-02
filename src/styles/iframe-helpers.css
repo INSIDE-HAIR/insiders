@@ -46,6 +46,27 @@
   perspective: 1000;
 }
 
+/* Estilo mejorado para el botón del header cuando está en un iframe */
+.header-button-iframe {
+  background-color: #3f3f46 !important; /* Un poco más oscuro que el header para destacar */
+  color: white !important;
+  z-index: 9999 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  /* Aumentar ligeramente el tamaño para mejorar visibilidad */
+  padding: 10px !important;
+  border-radius: 4px !important;
+  /* Dar un efecto sutil para llamar la atención */
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Efecto al pasar el ratón para el botón del header */
+.header-button-iframe:hover {
+  background-color: #52525b !important; /* Un poco más claro al pasar el cursor */
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3) !important;
+}
+
 /* Enhanced iframe button positioning for top corner */
 .iframe-button-fixed-top {
   position: fixed !important;
@@ -91,4 +112,12 @@ iframe [data-sidebar-iframe-toggle="true"] {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Asegurar que el botón del header sea siempre visible en iframes */
+iframe [data-header-sidebar-toggle="true"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
