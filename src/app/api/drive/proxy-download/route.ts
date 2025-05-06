@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // debido al uso de parámetros de búsqueda (nextUrl.searchParams)
 export const dynamic = "force-dynamic";
 // Aumentar el límite de tiempo de respuesta para archivos grandes
-export const maxDuration = 180; // 60 segundos
+export const maxDuration = 60; // 60 segundos (límite máximo en plan hobby de Vercel)
 
 /**
  * API endpoint para actuar como proxy de descargas
