@@ -87,12 +87,12 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const [currentModalPreviewIndex, setCurrentModalPreviewIndex] = useState(0);
   const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
   const [isDecodingInfo, setIsDecodingInfo] = useState(true);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
@@ -320,8 +320,20 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     "";
 
   return (
-    <div className="flex flex-col w-52 bg-black text-white">
+    <div className="flex flex-col w-52 bg-black text-white relative">
       <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
+
+      {/* Botón de reporte de error absoluto relativo a toda la tarjeta */}
+      <div
+        className="absolute right-2 top-2 z-20 rounded-full p-1 cursor-pointer bg-black bg-opacity-30 hover:bg-opacity-50"
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsReportModalOpen(true);
+        }}
+      >
+        <AlertTriangle className="h-4 w-4 text-red-600 hover:text-red-500" />
+      </div>
+
       {/* Filename at top - now showing language and version if decoded */}
       <div className="p-2 text-xs text-zinc-400 truncate text-center">
         {isDecodingInfo ? (
@@ -434,15 +446,6 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                 <Download className="h-4 w-4 mr-2" />
               )}
               Descargar
-            </Button>
-
-            {/* Botón de Reportar Error */}
-            <Button
-              className="bg-red-600 hover:bg-red-700 text-white rounded-none w-12 flex items-center justify-center"
-              onClick={() => setIsReportModalOpen(true)}
-              title="Reportar error en este archivo"
-            >
-              <AlertTriangle className="h-4 w-4" />
             </Button>
 
             {decodedInfo && isAdmin && (
@@ -647,6 +650,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         onClose={() => setIsReportModalOpen(false)}
         fileName={item.displayName}
         fileId={isFileItem(item) ? item.id : undefined}
+        isFileReport={true}
       />
     </div>
   );

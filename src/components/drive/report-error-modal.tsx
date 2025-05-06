@@ -9,6 +9,7 @@ interface ReportErrorModalProps {
   onClose: () => void;
   fileName: string;
   fileId?: string;
+  isFileReport?: boolean;
 }
 
 export const ReportErrorModal = ({
@@ -16,6 +17,7 @@ export const ReportErrorModal = ({
   onClose,
   fileName,
   fileId,
+  isFileReport = false,
 }: ReportErrorModalProps) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -90,16 +92,20 @@ export const ReportErrorModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden text-white">
         {/* Header */}
         <div className="bg-red-600 text-white px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <ClipboardDocumentIcon className="h-6 w-6" />
-            <h3 className="text-lg font-medium">Reportar error en archivo</h3>
+            <h3 className="text-lg font-medium">
+              {isFileReport || fileName !== "archivo general"
+                ? "Reporte de error de archivo"
+                : "Reporte de error general"}
+            </h3>
           </div>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 focus:outline-none"
+            className="text-white hover:text-gray-300 focus:outline-none"
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
@@ -108,7 +114,7 @@ export const ReportErrorModal = ({
         {/* Content */}
         <div className="px-6 py-4">
           {success ? (
-            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <div className="bg-green-900 border border-green-700 text-green-100 px-4 py-3 rounded mb-4">
               <p className="text-center">
                 ¡Gracias! Tu reporte ha sido enviado correctamente.
               </p>
@@ -118,13 +124,15 @@ export const ReportErrorModal = ({
             </div>
           ) : (
             <>
-              <p className="text-gray-700 mb-4">
-                Reporta cualquier problema con el archivo{" "}
-                <span className="font-medium">{fileName}</span>
+              <p className="text-zinc-300 mb-4">
+                Reporta cualquier problema
+                {fileName !== "archivo general"
+                  ? ` con el archivo ${fileName}`
+                  : ""}
               </p>
 
               {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div className="bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded mb-4">
                   {error}
                 </div>
               )}
@@ -133,7 +141,7 @@ export const ReportErrorModal = ({
                 <div className="mb-4">
                   <label
                     htmlFor="fullName"
-                    className="block text-gray-700 font-medium mb-1"
+                    className="block text-zinc-300 font-medium mb-1"
                   >
                     Nombre completo *
                   </label>
@@ -142,7 +150,7 @@ export const ReportErrorModal = ({
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
                     required
                   />
                 </div>
@@ -150,7 +158,7 @@ export const ReportErrorModal = ({
                 <div className="mb-4">
                   <label
                     htmlFor="email"
-                    className="block text-gray-700 font-medium mb-1"
+                    className="block text-zinc-300 font-medium mb-1"
                   >
                     Correo electrónico *
                   </label>
@@ -159,7 +167,7 @@ export const ReportErrorModal = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
                     required
                   />
                 </div>
@@ -167,7 +175,7 @@ export const ReportErrorModal = ({
                 <div className="mb-4">
                   <label
                     htmlFor="message"
-                    className="block text-gray-700 font-medium mb-1"
+                    className="block text-zinc-300 font-medium mb-1"
                   >
                     Mensaje *
                   </label>
@@ -176,7 +184,7 @@ export const ReportErrorModal = ({
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900"
+                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
                     required
                   ></textarea>
                 </div>
@@ -185,7 +193,7 @@ export const ReportErrorModal = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="mr-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
+                    className="mr-2 px-4 py-2 border border-zinc-700 rounded-md text-zinc-300 hover:bg-zinc-800"
                   >
                     Cancelar
                   </button>

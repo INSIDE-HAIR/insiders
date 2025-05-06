@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { useContent } from "@/src/context/DriveCompoentesContext";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { ReportErrorButton } from "@/src/components/drive/report-error-button";
 
 interface ContentHeaderProps {
   title?: string;
@@ -73,8 +74,10 @@ export function ContentHeader({
 
         <h2 className="text-zinc-50 font-bold text-center">{displayTitle}</h2>
 
-        {isAdmin && (
-          <div className="absolute right-4 flex gap-2">
+        <div className="absolute right-4 flex gap-2 items-center">
+          <ReportErrorButton isFileReport={false} />
+
+          {isAdmin && (
             <Button
               variant="ghost"
               size="icon"
@@ -86,8 +89,8 @@ export function ContentHeader({
                 <span className="sr-only">Documentación</span>
               </Link>
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Green title bar */}
