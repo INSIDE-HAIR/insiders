@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CheckCircle2,
   Clock,
@@ -9,6 +9,14 @@ import {
   ChevronDown,
   Users,
   Mail,
+  Tag,
+  RefreshCw,
+  Check,
+  ChevronsUpDown,
+  UserPlus,
+  X,
+  Search,
+  Calendar,
 } from "lucide-react";
 import {
   Table,
@@ -27,8 +35,44 @@ import {
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { CategoryManager } from "./components/category-manager";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/src/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/popover";
+import { cn } from "@/src/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
+import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/components/ui/input";
 
 type ErrorReport = {
   id: string;
@@ -42,6 +86,28 @@ type ErrorReport = {
   updatedAt: string;
   resolvedAt?: string;
   notes?: string;
+  category?: string;
+  assignedTo?: string[];
+  categoryRef?: {
+    id: string;
+    name: string;
+    color: string;
+  };
+};
+
+type ErrorCategory = {
+  id: string;
+  name: string;
+  description?: string;
+  color: string;
+};
+
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  role: string;
 };
 
 type RecipientConfig = {
@@ -52,6 +118,135 @@ type RecipientConfig = {
   active: boolean;
   updatedAt: string;
 };
+
+type UserRole = "ADMIN" | "CLIENT" | "EMPLOYEE";
+
+// Componente personalizado basado en ChipInput para seleccionar usuarios
+function UserChipSelect({
+  users,
+  selectedIds,
+  onChange,
+  placeholder = "Seleccionar usuarios...",
+}: {
+  users: User[];
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+  placeholder?: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar el dropdown cuando se hace clic fuera del componente
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [wrapperRef]);
+
+  const handleRemoveUser = (userId: string) => {
+    onChange(selectedIds.filter((id) => id !== userId));
+  };
+
+  const filteredUsers = users.filter(
+    (user) =>
+      !selectedIds.includes(user.id) &&
+      (user.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchValue.toLowerCase()))
+  );
+
+  const selectedUsers = users.filter((user) => selectedIds.includes(user.id));
+
+  return (
+    <div className="relative" ref={wrapperRef}>
+      <div
+        className="flex flex-wrap gap-2 p-2 min-h-10 border rounded-md cursor-text"
+        onClick={() => setIsOpen(true)}
+      >
+        {selectedUsers.map((user) => (
+          <Badge
+            key={user.id}
+            variant="secondary"
+            className="flex items-center gap-1"
+          >
+            {user.name}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRemoveUser(user.id);
+              }}
+              className="ml-1 hover:text-destructive"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </Badge>
+        ))}
+
+        <div className="flex-grow flex items-center">
+          <input
+            type="text"
+            className="flex-grow outline-none bg-transparent"
+            placeholder={selectedUsers.length === 0 ? placeholder : ""}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onFocus={() => setIsOpen(true)}
+          />
+        </div>
+      </div>
+
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md">
+          <div className="p-2 border-b flex items-center gap-2">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              className="flex-grow outline-none bg-transparent"
+              placeholder="Buscar usuarios..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="max-h-[200px] overflow-y-auto p-1">
+            {filteredUsers.length === 0 ? (
+              <div className="p-2 text-center text-sm text-muted-foreground">
+                No se encontraron usuarios
+              </div>
+            ) : (
+              filteredUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center gap-2 p-2 hover:bg-accent rounded cursor-pointer"
+                  onClick={() => {
+                    onChange([...selectedIds, user.id]);
+                    setSearchValue("");
+                  }}
+                >
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">{user.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function ErrorReportsPage() {
   const [reports, setReports] = useState<ErrorReport[]>([]);
@@ -66,6 +261,18 @@ export default function ErrorReportsPage() {
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
   const [newNote, setNewNote] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [activeTab, setActiveTab] = useState("reports");
+
+  // Estados para categorías y usuarios
+  const [categories, setCategories] = useState<ErrorCategory[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string>("pending");
+  const [updatingReport, setUpdatingReport] = useState(false);
+  const [resolvedDate, setResolvedDate] = useState<string>("");
 
   // Nuevos estados para editar la configuración de destinatarios
   const [editRecipients, setEditRecipients] = useState<string>("");
@@ -97,6 +304,10 @@ export default function ErrorReportsPage() {
 
         setReports(reportsData.reports);
         setRecipientConfig(configData.config);
+
+        // Cargar categorías y usuarios
+        await fetchCategories();
+        await fetchUsers();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
         console.error("Error al cargar datos:", err);
@@ -117,6 +328,87 @@ export default function ErrorReportsPage() {
     }
   }, [recipientConfig, isConfigDialogOpen]);
 
+  // Configurar los valores seleccionados cuando se abre el modal de reporte
+  useEffect(() => {
+    if (selectedReport && isReportDialogOpen) {
+      setSelectedCategory(selectedReport.category || "none");
+      setSelectedUsers(selectedReport.assignedTo || []);
+      setSelectedStatus(selectedReport.status);
+      setNewNote(selectedReport.notes || "");
+
+      // Inicializar la fecha de resolución si existe
+      if (selectedReport.resolvedAt) {
+        const date = new Date(selectedReport.resolvedAt);
+        // Formato para datetime-local: YYYY-MM-DDThh:mm
+        setResolvedDate(format(date, "yyyy-MM-dd'T'HH:mm"));
+      } else {
+        setResolvedDate("");
+      }
+    }
+  }, [selectedReport, isReportDialogOpen]);
+
+  // Cargar categorías
+  const fetchCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const response = await fetch("/api/drive/error-categories");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al cargar categorías");
+      }
+
+      setCategories(data.categories || []);
+    } catch (err) {
+      console.error("Error al cargar categorías:", err);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+
+  // Cargar usuarios (administradores y empleados)
+  const fetchUsers = async () => {
+    try {
+      setLoadingUsers(true);
+      const response = await fetch("/api/users/role?roles=ADMIN,EMPLOYEE");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al cargar usuarios");
+      }
+
+      setUsers(data.users || []);
+    } catch (err) {
+      console.error("Error al cargar usuarios:", err);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  // Actualizar reportes después de cambios en categorías
+  const handleCategoryChange = () => {
+    // Recargar la lista de reportes para obtener las categorías actualizadas
+    fetchReports();
+    fetchCategories();
+  };
+
+  // Función auxiliar para cargar reportes
+  const fetchReports = async () => {
+    try {
+      const response = await fetch("/api/drive/error-report");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al cargar reportes");
+      }
+
+      setReports(data.reports);
+      console.log("Reportes actualizados:", data.reports);
+    } catch (err) {
+      console.error("Error al recargar reportes:", err);
+    }
+  };
+
   // Actualizar estado de un reporte
   const updateReportStatus = async (reportId: string, status: string) => {
     try {
@@ -130,6 +422,8 @@ export default function ErrorReportsPage() {
         body: JSON.stringify({
           status,
           notes: newNote || undefined,
+          category: selectedCategory === "none" ? null : selectedCategory,
+          assignedTo: selectedUsers,
         }),
       });
 
@@ -140,25 +434,64 @@ export default function ErrorReportsPage() {
       }
 
       // Actualizar la lista de reportes
-      setReports(
-        reports.map((report) =>
-          report.id === reportId
-            ? {
-                ...report,
-                status,
-                notes: newNote,
-                updatedAt: new Date().toISOString(),
-              }
-            : report
-        )
-      );
-
+      await fetchReports();
       setIsReportDialogOpen(false);
     } catch (err) {
       console.error("Error al actualizar reporte:", err);
       alert("Error al actualizar el reporte");
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  // Actualizar un reporte completo
+  const handleUpdateReport = async () => {
+    if (!selectedReport) return;
+
+    try {
+      setUpdatingReport(true);
+
+      // Procesar la fecha de resolución
+      let resolvedAtDate = null;
+      if (resolvedDate) {
+        resolvedAtDate = new Date(resolvedDate);
+        // Asegurar que la fecha sea válida
+        if (isNaN(resolvedAtDate.getTime())) {
+          resolvedAtDate = null;
+        }
+      }
+
+      const response = await fetch(
+        `/api/drive/error-report/${selectedReport.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: selectedStatus,
+            notes: newNote || undefined,
+            category: selectedCategory === "none" ? null : selectedCategory,
+            assignedTo: selectedUsers,
+            resolvedAt: resolvedAtDate,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al actualizar reporte");
+      }
+
+      // Actualizar la lista de reportes
+      await fetchReports();
+      setIsReportDialogOpen(false);
+    } catch (err) {
+      console.error("Error al actualizar reporte:", err);
+      alert("Error al actualizar el reporte");
+    } finally {
+      setUpdatingReport(false);
     }
   };
 
@@ -244,6 +577,33 @@ export default function ErrorReportsPage() {
     }
   };
 
+  // Renderizar badge de categoría
+  const renderCategoryBadge = (report: ErrorReport) => {
+    if (!report.categoryRef) return null;
+
+    return (
+      <Badge
+        variant="outline"
+        className="ml-2"
+        style={{
+          backgroundColor: `${report.categoryRef.color}20`,
+          borderColor: report.categoryRef.color,
+          color: report.categoryRef.color,
+        }}
+      >
+        {report.categoryRef.name}
+      </Badge>
+    );
+  };
+
+  // Preparar opciones para el selector de usuarios
+  const userOptions = users.map((user) => ({
+    value: user.id,
+    label: user.name,
+    email: user.email,
+    image: user.image,
+  }));
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -266,7 +626,7 @@ export default function ErrorReportsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Reportes de Errores en Archivos</h1>
+        <h1 className="text-2xl font-bold">Gestión de Errores en Archivos</h1>
 
         <div className="flex gap-2">
           <Button
@@ -280,68 +640,171 @@ export default function ErrorReportsPage() {
         </div>
       </div>
 
-      {reports.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-500">
-            No hay reportes de errores registrados
-          </p>
-        </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Archivo</TableHead>
-                <TableHead>Reportado por</TableHead>
-                <TableHead>Fecha</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reports.map((report) => (
-                <TableRow key={report.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium">
-                    {report.fileName}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span>{report.fullName}</span>
-                      <span className="text-sm text-gray-500">
-                        {report.email}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {format(new Date(report.createdAt), "dd/MM/yyyy HH:mm", {
-                      locale: es,
-                    })}
-                  </TableCell>
-                  <TableCell>{renderStatusBadge(report.status)}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setSelectedReport(report);
-                        setNewNote(report.notes || "");
-                        setIsReportDialogOpen(true);
-                      }}
-                    >
-                      Ver detalles
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+      <Tabs
+        defaultValue="reports"
+        className="mb-8"
+        onValueChange={setActiveTab}
+      >
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="reports" className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            Reportes
+          </TabsTrigger>
+          <TabsTrigger value="categories" className="flex items-center gap-2">
+            <Tag className="h-4 w-4" />
+            Categorías
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="reports" className="mt-6">
+          {reports.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">
+                No hay reportes de errores registrados
+              </p>
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Archivo</TableHead>
+                    <TableHead>Reportado por</TableHead>
+                    <TableHead>Categoría</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Resuelto</TableHead>
+                    <TableHead>Asignado a</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {reports.map((report) => (
+                    <TableRow key={report.id} className="hover:bg-gray-50">
+                      <TableCell className="font-medium">
+                        <div className="flex flex-col">
+                          <span>{report.fileName}</span>
+                          <div className="flex mt-1">
+                            {renderStatusBadge(report.status)}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{report.fullName}</span>
+                          <span className="text-sm text-gray-500">
+                            {report.email}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {report.categoryRef ? (
+                          <Badge
+                            variant="outline"
+                            style={{
+                              backgroundColor: `${report.categoryRef.color}20`,
+                              borderColor: report.categoryRef.color,
+                              color: report.categoryRef.color,
+                            }}
+                          >
+                            {report.categoryRef.name}
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400 text-sm">
+                            Sin categoría
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {format(
+                          new Date(report.createdAt),
+                          "dd/MM/yyyy HH:mm",
+                          {
+                            locale: es,
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {report.resolvedAt
+                          ? format(
+                              new Date(report.resolvedAt),
+                              "dd/MM/yyyy HH:mm",
+                              {
+                                locale: es,
+                              }
+                            )
+                          : "-"}
+                      </TableCell>
+                      <TableCell>
+                        {report.assignedTo && report.assignedTo.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {report.assignedTo.length <= 2 ? (
+                              report.assignedTo.map((userId) => {
+                                const user = users.find((u) => u.id === userId);
+                                return user ? (
+                                  <Badge
+                                    key={userId}
+                                    variant="outline"
+                                    className="bg-blue-50 text-blue-700 border-blue-200"
+                                  >
+                                    {user.name.split(" ")[0]}
+                                  </Badge>
+                                ) : null;
+                              })
+                            ) : (
+                              <>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200"
+                                >
+                                  {users
+                                    .find((u) => u.id === report.assignedTo![0])
+                                    ?.name.split(" ")[0] || ""}
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200"
+                                >
+                                  +{report.assignedTo.length - 1}
+                                </Badge>
+                              </>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-sm">
+                            Sin asignar
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedReport(report);
+                            setNewNote(report.notes || "");
+                            setIsReportDialogOpen(true);
+                          }}
+                        >
+                          Ver detalles
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="categories" className="mt-6">
+          <CategoryManager onCategoryChange={handleCategoryChange} />
+        </TabsContent>
+      </Tabs>
 
       {/* Modal de detalles del reporte */}
       {selectedReport && (
         <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md max-h-[85dvh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Detalles del Reporte</DialogTitle>
             </DialogHeader>
@@ -389,11 +852,122 @@ export default function ErrorReportsPage() {
 
               <div>
                 <h3 className="text-sm font-medium text-gray-500">
-                  Estado actual
+                  Estado del reporte
                 </h3>
                 <div className="mt-1">
-                  {renderStatusBadge(selectedReport.status)}
+                  <Select
+                    value={selectedStatus}
+                    onValueChange={setSelectedStatus}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {selectedStatus === "pending" && (
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                            <span>Pendiente</span>
+                          </div>
+                        )}
+                        {selectedStatus === "in-progress" && (
+                          <div className="flex items-center">
+                            <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                            <span>En progreso</span>
+                          </div>
+                        )}
+                        {selectedStatus === "resolved" && (
+                          <div className="flex items-center">
+                            <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                            <span>Resuelto</span>
+                          </div>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                          <span>Pendiente</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="in-progress">
+                        <div className="flex items-center">
+                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                          <span>En progreso</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="resolved">
+                        <div className="flex items-center">
+                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                          <span>Resuelto</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">
+                  Fecha de resolución
+                </h3>
+                <div className="mt-1 relative">
+                  <div className="flex items-center">
+                    <Input
+                      type="datetime-local"
+                      value={resolvedDate}
+                      onChange={(e) => setResolvedDate(e.target.value)}
+                      className="w-full pr-10"
+                      placeholder="Seleccionar fecha y hora de resolución"
+                    />
+                    <Calendar className="absolute right-3 h-4 w-4 text-gray-400" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Fecha y hora en que se resolvió el error
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Categoría</h3>
+                <div className="mt-1">
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={setSelectedCategory}
+                    disabled={loadingCategories}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar categoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Sin categoría</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: category.color }}
+                            ></div>
+                            <span>{category.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Asignados</h3>
+                <div className="mt-1">
+                  <UserChipSelect
+                    users={users}
+                    selectedIds={selectedUsers}
+                    onChange={setSelectedUsers}
+                    placeholder="Buscar y seleccionar usuarios asignados..."
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Personas asignadas a resolver este error
+                </p>
               </div>
 
               <div>
@@ -408,52 +982,20 @@ export default function ErrorReportsPage() {
               </div>
             </div>
 
-            <DialogFooter className="flex flex-col sm:flex-row gap-2">
-              <div className="w-full sm:w-auto flex gap-2">
-                {selectedReport.status !== "resolved" && (
-                  <Button
-                    variant="default"
-                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
-                    onClick={() =>
-                      updateReportStatus(selectedReport.id, "resolved")
-                    }
-                    disabled={isUpdating}
-                  >
-                    {isUpdating ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    ) : (
-                      <CheckCircle2 className="h-4 w-4 mr-2" />
-                    )}
-                    Marcar como resuelto
-                  </Button>
+            <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+              <Button
+                variant="default"
+                className="w-full sm:w-auto"
+                onClick={handleUpdateReport}
+                disabled={updatingReport}
+              >
+                {updatingReport ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : (
+                  <RefreshCw className="h-4 w-4 mr-2" />
                 )}
-
-                {selectedReport.status === "pending" && (
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                    onClick={() =>
-                      updateReportStatus(selectedReport.id, "in-progress")
-                    }
-                    disabled={isUpdating}
-                  >
-                    En proceso
-                  </Button>
-                )}
-
-                {selectedReport.status === "resolved" && (
-                  <Button
-                    variant="outline"
-                    className="w-full sm:w-auto"
-                    onClick={() =>
-                      updateReportStatus(selectedReport.id, "pending")
-                    }
-                    disabled={isUpdating}
-                  >
-                    Reabrir
-                  </Button>
-                )}
-              </div>
+                Actualizar
+              </Button>
 
               <Button
                 variant="secondary"

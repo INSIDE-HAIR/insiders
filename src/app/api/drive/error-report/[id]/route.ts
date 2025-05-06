@@ -6,8 +6,43 @@ const prisma = new PrismaClient();
 export const dynamic = "force-dynamic";
 
 /**
- * API endpoint para gestionar reportes individuales de errores en Drive
- * Permite actualizar el estado y añadir notas a los reportes
+ * GET: Obtener un reporte específico por ID
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = params.id;
+    const report = await prisma.driveErrorReport.findUnique({
+      where: { id },
+      include: {
+        categoryRef: true,
+      },
+    });
+
+    if (!report) {
+      return NextResponse.json(
+        { error: "Reporte no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ report });
+  } catch (error) {
+    console.error("Error al obtener reporte:", error);
+    return NextResponse.json(
+      {
+        error: "Error interno al obtener el reporte",
+        details: error instanceof Error ? error.message : "Error desconocido",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PATCH: Actualizar un reporte específico por ID
  */
 export async function PATCH(
   request: NextRequest,
@@ -16,7 +51,7 @@ export async function PATCH(
   try {
     const id = params.id;
     const body = await request.json();
-    const { status, notes } = body;
+    const { status, notes, category, assignedTo, resolvedAt } = body;
 
     // Validación básica
     if (!id) {
@@ -26,35 +61,42 @@ export async function PATCH(
       );
     }
 
-    if (!status) {
-      return NextResponse.json(
-        { error: "Estado no proporcionado" },
-        { status: 400 }
-      );
-    }
-
-    // Validar que el estado sea válido
-    if (!["pending", "in-progress", "resolved"].includes(status)) {
-      return NextResponse.json({ error: "Estado no válido" }, { status: 400 });
-    }
-
     // Datos a actualizar
-    const updateData: any = { status };
+    const updateData: any = {};
 
-    // Si se proporciona notas, añadirlas a la actualización
+    // Actualizar solo los campos proporcionados
+    if (status !== undefined) {
+      updateData.status = status;
+
+      // Si el estado es "resolved" y no se proporciona una fecha de resolución, establecer la fecha actual
+      if (status === "resolved" && resolvedAt === undefined) {
+        updateData.resolvedAt = new Date();
+      }
+    }
+
     if (notes !== undefined) {
       updateData.notes = notes;
     }
 
-    // Si el estado es "resolved", actualizar la fecha de resolución
-    if (status === "resolved") {
-      updateData.resolvedAt = new Date();
+    if (category !== undefined) {
+      updateData.category = category || null; // Permitir establecer o quitar categoría
+    }
+
+    if (assignedTo !== undefined) {
+      updateData.assignedTo = assignedTo; // Asignar a usuarios
+    }
+
+    if (resolvedAt !== undefined) {
+      updateData.resolvedAt = resolvedAt ? new Date(resolvedAt) : null;
     }
 
     // Actualizar el reporte
     const updatedReport = await prisma.driveErrorReport.update({
       where: { id },
       data: updateData,
+      include: {
+        categoryRef: true,
+      },
     });
 
     return NextResponse.json({ report: updatedReport });
@@ -64,6 +106,50 @@ export async function PATCH(
     return NextResponse.json(
       {
         error: "Error interno al actualizar el reporte",
+        details: error instanceof Error ? error.message : "Error desconocido",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE: Eliminar un reporte específico por ID
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const id = params.id;
+
+    // Verificar que existe el reporte
+    const report = await prisma.driveErrorReport.findUnique({
+      where: { id },
+    });
+
+    if (!report) {
+      return NextResponse.json(
+        { error: "Reporte no encontrado" },
+        { status: 404 }
+      );
+    }
+
+    // Eliminar el reporte
+    await prisma.driveErrorReport.delete({
+      where: { id },
+    });
+
+    return NextResponse.json(
+      { message: "Reporte eliminado correctamente" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error al eliminar reporte:", error);
+
+    return NextResponse.json(
+      {
+        error: "Error interno al eliminar el reporte",
         details: error instanceof Error ? error.message : "Error desconocido",
       },
       { status: 500 }

@@ -103,6 +103,9 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        categoryRef: true,
+      },
     });
 
     return NextResponse.json({ reports });

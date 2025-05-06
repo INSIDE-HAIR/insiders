@@ -76,18 +76,32 @@ model DriveLanguageCode {
 
 // Modelo para reportes de errores en archivos de Drive
 model DriveErrorReport {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  id           String              @id @default(auto()) @map("_id") @db.ObjectId
   fileName     String // Nombre del archivo con error
   fileId       String? // ID del archivo en Google Drive (si está disponible)
   message      String // Mensaje del cliente reportando el error
   fullName     String // Nombre completo de quien reporta
   email        String // Correo electrónico de quien reporta
-  status       String    @default("pending") // pending, in-progress, resolved
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  status       String              @default("pending") // pending, in-progress, resolved
+  category     String?             @db.ObjectId // Referencia a la categoría
+  categoryRef  DriveErrorCategory? @relation(fields: [category], references: [id])
+  assignedTo   String[]            @db.ObjectId // IDs de usuarios asignados
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
   resolvedAt   DateTime? // Fecha en que se resolvió el error
   resolvedById String? // ID del usuario que resolvió el problema
   notes        String? // Notas internas sobre el error
+}
+
+// Modelo para categorías de reportes de errores
+model DriveErrorCategory {
+  id          String             @id @default(auto()) @map("_id") @db.ObjectId
+  name        String // Nombre de la categoría
+  description String? // Descripción opcional
+  color       String             @default("#6366F1") // Color para mostrar en la UI
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  reports     DriveErrorReport[]
 }
 
 // Configuración de destinatarios para reportes de errores
