@@ -17,6 +17,8 @@ import {
   X,
   Search,
   Calendar,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import {
   Table,
@@ -259,6 +261,7 @@ export default function ErrorReportsPage() {
   );
   const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newNote, setNewNote] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [activeTab, setActiveTab] = useState("reports");
@@ -542,6 +545,37 @@ export default function ErrorReportsPage() {
     }
   };
 
+  // Eliminar un reporte
+  const handleDeleteReport = async () => {
+    if (!selectedReport) return;
+
+    try {
+      setIsUpdating(true);
+
+      const response = await fetch(
+        `/api/drive/error-report/${selectedReport.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al eliminar reporte");
+      }
+
+      // Actualizar la lista de reportes
+      await fetchReports();
+      setIsDeleteDialogOpen(false);
+    } catch (err) {
+      console.error("Error al eliminar reporte:", err);
+      alert("Error al eliminar el reporte");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // Renderizar badge de estado
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -776,17 +810,49 @@ export default function ErrorReportsPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setNewNote(report.notes || "");
-                            setIsReportDialogOpen(true);
-                          }}
-                        >
-                          Ver detalles
-                        </Button>
+                        <div className="flex justify-end gap-2">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    setSelectedReport(report);
+                                    setNewNote(report.notes || "");
+                                    setIsReportDialogOpen(true);
+                                  }}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Editar</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-destructive hover:text-destructive"
+                                  onClick={() => {
+                                    setSelectedReport(report);
+                                    setIsDeleteDialogOpen(true);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Eliminar</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -1008,6 +1074,54 @@ export default function ErrorReportsPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de confirmación de eliminación */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirmar eliminación</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 my-4">
+            <p>¿Está seguro que desea eliminar este reporte?</p>
+            {selectedReport && (
+              <div className="bg-gray-50 p-3 rounded">
+                <p className="font-medium">{selectedReport.fileName}</p>
+                <p className="text-sm text-gray-500">
+                  Reportado por: {selectedReport.fullName}
+                </p>
+              </div>
+            )}
+            <p className="text-sm text-destructive">
+              Esta acción no se puede deshacer.
+            </p>
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button
+              variant="destructive"
+              className="w-full sm:w-auto"
+              onClick={handleDeleteReport}
+              disabled={isUpdating}
+            >
+              {isUpdating ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Trash2 className="h-4 w-4 mr-2" />
+              )}
+              Eliminar
+            </Button>
+
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de configuración de destinatarios */}
       <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
