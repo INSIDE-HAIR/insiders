@@ -75,6 +75,7 @@ const pagesWithSubpages: Record<
     { title: "Rutas de Drive", url: "/admin/drive/routes" },
     { title: "Documentación", url: "/admin/drive/routes/docs" },
     { title: "Gestor de Códigos", url: "/admin/drive/codes" },
+    { title: "Reportes de Errores", url: "/admin/drive/errors" },
   ],
 };
 
@@ -207,18 +208,18 @@ function Dashboard({ children }: DashboardProps) {
       <AppSidebar {...currentData} onTeamChange={handleTeamChange} />
 
       <SidebarInset>
-        <div className='flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 w-full'>
-          <SidebarTrigger className='-ml-1' />
-          <div className='w-full col-start-1 col-end-full '>
+        <div className="flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 w-full">
+          <SidebarTrigger className="-ml-1" />
+          <div className="w-full col-start-1 col-end-full ">
             <Header
-              type='admin'
-              homeLabel='INSIDERS'
+              type="admin"
+              homeLabel="INSIDERS"
               dropdownSliceEnd={-1}
               separator
             />
           </div>
         </div>
-        <div className='flex flex-1 flex-col gap-4'>{children}</div>
+        <div className="flex flex-1 flex-col gap-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

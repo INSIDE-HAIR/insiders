@@ -15,6 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Loader2,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Dialog,
@@ -49,6 +50,7 @@ import {
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
 import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
+import { ReportErrorModal } from "@/src/components/drive/report-error-modal";
 
 interface GenericRendererProps {
   item: HierarchyItem;
@@ -90,6 +92,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
@@ -433,6 +436,15 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               Descargar
             </Button>
 
+            {/* Botón de Reportar Error */}
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white rounded-none w-12 flex items-center justify-center"
+              onClick={() => setIsReportModalOpen(true)}
+              title="Reportar error en este archivo"
+            >
+              <AlertTriangle className="h-4 w-4" />
+            </Button>
+
             {decodedInfo && isAdmin && (
               <Button
                 className="bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center"
@@ -628,6 +640,14 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de reporte de error */}
+      <ReportErrorModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        fileName={item.displayName}
+        fileId={isFileItem(item) ? item.id : undefined}
+      />
     </div>
   );
 }
