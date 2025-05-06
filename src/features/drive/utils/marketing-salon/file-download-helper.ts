@@ -23,23 +23,141 @@ export const downloadFileWithCustomName = async (
   statusElement.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
   document.body.appendChild(statusElement);
 
+  // Función para validar que el blob no sea un error o esté vacío
+  const validateBlob = (blob: Blob): boolean => {
+    // Verificar tamaño mínimo (3KB para considerar válido)
+    return blob.size > 3 * 1024;
+  };
+
+  // Función para intentar descargar con el proxy hasta 3 veces
+  const tryProxyDownload = async (retries = 3): Promise<Blob> => {
+    let lastError;
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        statusElement.textContent = `Descargando... (Intento ${attempt}/${retries})`;
+
+        // Determinar qué endpoint del proxy usar (primero App Router, luego Pages Router)
+        const proxyUrl =
+          attempt <= 2
+            ? `/api/drive/proxy-download?url=${encodeURIComponent(url)}`
+            : `/api/proxy-download?url=${encodeURIComponent(url)}`;
+
+        console.log(`Intento ${attempt}: Descargando con ${proxyUrl}`);
+
+        // Añadir timestamp para evitar caché
+        const fetchUrl = `${proxyUrl}&t=${Date.now()}`;
+
+        // Descargar con fetch utilizando timeout adecuado para archivos grandes
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 segundos
+
+        const response = await fetch(fetchUrl, {
+          signal: controller.signal,
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+          },
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(
+            `Error HTTP: ${response.status} ${response.statusText}`
+          );
+        }
+
+        // Obtener el tamaño total si está disponible
+        const contentLength = response.headers.get("Content-Length");
+        let totalSize = contentLength ? parseInt(contentLength) : 0;
+
+        // Para archivos grandes, mostrar progreso con ReadableStream
+        if (totalSize > 5 * 1024 * 1024) {
+          // > 5MB
+          const reader = response.body?.getReader();
+          const chunks: Uint8Array[] = [];
+          let receivedLength = 0;
+
+          if (reader) {
+            while (true) {
+              const { done, value } = await reader.read();
+
+              if (done) {
+                break;
+              }
+
+              chunks.push(value);
+              receivedLength += value.length;
+
+              // Actualizar progreso
+              if (totalSize > 0) {
+                const percentComplete = Math.round(
+                  (receivedLength / totalSize) * 100
+                );
+                statusElement.textContent = `Descargando... ${percentComplete}%`;
+              } else {
+                statusElement.textContent = `Descargando... ${(
+                  receivedLength /
+                  (1024 * 1024)
+                ).toFixed(1)} MB`;
+              }
+            }
+
+            // Concatenar chunks en un solo Uint8Array
+            const chunksAll = new Uint8Array(receivedLength);
+            let position = 0;
+            for (const chunk of chunks) {
+              chunksAll.set(chunk, position);
+              position += chunk.length;
+            }
+
+            // Convertir a Blob
+            const blob = new Blob([chunksAll]);
+
+            // Validar que no sea un error pequeño
+            if (!validateBlob(blob)) {
+              throw new Error(
+                `Archivo descargado inválido (${blob.size} bytes)`
+              );
+            }
+
+            return blob;
+          }
+        }
+
+        // Fallback para archivos pequeños o si el stream no está disponible
+        const blob = await response.blob();
+
+        // Validar que el blob no sea un error pequeño
+        if (!validateBlob(blob)) {
+          throw new Error(`Archivo descargado inválido (${blob.size} bytes)`);
+        }
+
+        return blob;
+      } catch (error) {
+        lastError = error;
+        console.error(`Error en intento ${attempt}/${retries}:`, error);
+
+        // Esperar antes de reintentar (500ms, 1s, 2s)
+        if (attempt < retries) {
+          await new Promise((r) =>
+            setTimeout(r, 500 * Math.pow(2, attempt - 1))
+          );
+        }
+      }
+    }
+
+    // Si llegamos aquí, todos los intentos fallaron
+    throw lastError || new Error("Todos los intentos de descarga fallaron");
+  };
+
   try {
     // Método 1: Proxy del archivo - Solo intentar para URLs de Google Drive
     if (url.includes("drive.google.com") || url.includes("googleapis.com")) {
       try {
         console.log("Intentando método de proxy para descargar:", url);
 
-        // Crear URL para el proxy (actualizada para App Router)
-        const proxyUrl = `/api/drive/proxy-download?url=${encodeURIComponent(url)}`;
-
-        // Intentar descargar a través del proxy
-        const response = await fetch(proxyUrl);
-
-        if (!response.ok) {
-          throw new Error(`Error en proxy: ${response.status}`);
-        }
-
-        const blob = await response.blob();
+        // Intentar descargar a través del proxy con reintentos
+        const blob = await tryProxyDownload();
         const objectUrl = URL.createObjectURL(blob);
 
         // Crear el enlace de descarga
@@ -81,6 +199,12 @@ export const downloadFileWithCustomName = async (
       }
 
       const blob = await response.blob();
+
+      // Validar que el blob no sea un error pequeño
+      if (!validateBlob(blob)) {
+        throw new Error(`Archivo descargado inválido (${blob.size} bytes)`);
+      }
+
       const objectUrl = URL.createObjectURL(blob);
 
       // Crear el enlace de descarga
