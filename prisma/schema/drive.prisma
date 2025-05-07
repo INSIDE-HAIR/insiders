@@ -113,3 +113,15 @@ model DriveErrorReportConfig {
   active        Boolean  @default(true)
   updatedAt     DateTime @updatedAt
 }
+
+// Model for error report reminders
+model DriveErrorReminder {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  status    String // "pending" or "in-progress"
+  frequency String // "hourly", "daily", "weekly", or "monthly"
+  interval  Int // Interval number (e.g., every 2 days)
+  emails    String[] // Recipients' email addresses
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

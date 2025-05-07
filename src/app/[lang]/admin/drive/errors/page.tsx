@@ -19,6 +19,8 @@ import {
   Calendar,
   Pencil,
   Trash2,
+  Clock3,
+  BellRing,
 } from "lucide-react";
 import {
   Table,
@@ -46,6 +48,7 @@ import {
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CategoryManager } from "./components/category-manager";
+import { ReminderManager } from "./components/reminder-manager";
 import {
   Select,
   SelectContent,
@@ -469,12 +472,16 @@ export default function ErrorReportsPage() {
       const newAssignees = selectedUsers.filter(
         (userId) => !currentAssignees.includes(userId)
       );
-      
+
       // Preparar la lista de usuarios a notificar con sus emails
-      const usersToNotify = newAssignees.map(userId => {
-        const user = users.find(u => u.id === userId);
-        return user ? { id: user.id, name: user.name, email: user.email } : null;
-      }).filter(Boolean);
+      const usersToNotify = newAssignees
+        .map((userId) => {
+          const user = users.find((u) => u.id === userId);
+          return user
+            ? { id: user.id, name: user.name, email: user.email }
+            : null;
+        })
+        .filter(Boolean);
 
       const response = await fetch(
         `/api/drive/error-report/${selectedReport.id}`,
@@ -651,6 +658,20 @@ export default function ErrorReportsPage() {
     image: user.image,
   }));
 
+  // Función para establecer fecha y hora actuales en formato para datetime-local
+  const setCurrentDateTime = () => {
+    const now = new Date();
+    // Formato: YYYY-MM-DDThh:mm (formato que espera input datetime-local)
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    setResolvedDate(formattedDateTime);
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -692,7 +713,7 @@ export default function ErrorReportsPage() {
         className="mb-8"
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full max-w-md grid-cols-2">
+        <TabsList className="grid w-full max-w-md grid-cols-3">
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Reportes
@@ -700,6 +721,10 @@ export default function ErrorReportsPage() {
           <TabsTrigger value="categories" className="flex items-center gap-2">
             <Tag className="h-4 w-4" />
             Categorías
+          </TabsTrigger>
+          <TabsTrigger value="reminders" className="flex items-center gap-2">
+            <BellRing className="h-4 w-4" />
+            Recordatorios
           </TabsTrigger>
         </TabsList>
 
@@ -878,6 +903,10 @@ export default function ErrorReportsPage() {
         <TabsContent value="categories" className="mt-6">
           <CategoryManager onCategoryChange={handleCategoryChange} />
         </TabsContent>
+
+        <TabsContent value="reminders" className="mt-6">
+          <ReminderManager onReminderChange={fetchReports} />
+        </TabsContent>
       </Tabs>
 
       {/* Modal de detalles del reporte */}
@@ -989,15 +1018,34 @@ export default function ErrorReportsPage() {
                   Fecha de resolución
                 </h3>
                 <div className="mt-1 relative">
-                  <div className="flex items-center">
-                    <Input
-                      type="datetime-local"
-                      value={resolvedDate}
-                      onChange={(e) => setResolvedDate(e.target.value)}
-                      className="w-full pr-10"
-                      placeholder="Seleccionar fecha y hora de resolución"
-                    />
-                    <Calendar className="absolute right-3 h-4 w-4 text-gray-400" />
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <Input
+                        type="datetime-local"
+                        value={resolvedDate}
+                        onChange={(e) => setResolvedDate(e.target.value)}
+                        className="w-full pr-10"
+                        placeholder="Seleccionar fecha y hora de resolución"
+                      />
+                      <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                    </div>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={setCurrentDateTime}
+                          >
+                            <Clock3 className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          <p>Usar fecha y hora actuales</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">
                     Fecha y hora en que se resolvió el error
