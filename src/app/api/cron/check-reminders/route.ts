@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
+import { DriveErrorReminder, DriveErrorReport } from "@/src/types/drive";
 
 const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -16,7 +17,7 @@ const validateCronSecret = (request: NextRequest) => {
 };
 
 // Función para determinar si un recordatorio debe ejecutarse ahora
-const shouldSendReminder = (reminder: any, now = new Date()) => {
+const shouldSendReminder = (reminder: DriveErrorReminder, now = new Date()) => {
   // Si no tiene fecha de último envío, enviar ahora
   if (!reminder.lastSent) {
     return true;

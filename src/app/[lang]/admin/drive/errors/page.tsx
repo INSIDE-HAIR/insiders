@@ -603,7 +603,7 @@ export default function ErrorReportsPage() {
       setIsUpdating(true);
 
       // Determinar los destinatarios
-      const recipients: string[] = [];
+      const recipients: Array<string> = [];
 
       // Si hay usuarios asignados, usar sus emails
       if (report.assignedTo && report.assignedTo.length > 0) {
