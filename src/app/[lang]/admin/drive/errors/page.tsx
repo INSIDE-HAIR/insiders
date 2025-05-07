@@ -603,20 +603,23 @@ export default function ErrorReportsPage() {
       setIsUpdating(true);
 
       // Determinar los destinatarios
-      let recipients = [];
+      const recipients: string[] = [];
 
       // Si hay usuarios asignados, usar sus emails
       if (report.assignedTo && report.assignedTo.length > 0) {
-        recipients = report.assignedTo
-          .map((userId) => {
-            const user = users.find((u) => u.id === userId);
-            return user ? user.email : null;
-          })
-          .filter(Boolean);
+        // Encontrar usuarios por IDs
+        for (const userId of report.assignedTo) {
+          const user = users.find((u) => u.id === userId);
+          if (user && user.email) {
+            recipients.push(user.email);
+          }
+        }
       }
       // Si no hay usuarios asignados, usar la configuración general
       else if (recipientConfig && recipientConfig.recipients.length > 0) {
-        recipients = recipientConfig.recipients;
+        recipientConfig.recipients.forEach((email) => {
+          recipients.push(email);
+        });
       }
 
       if (recipients.length === 0) {

@@ -16,14 +16,14 @@ const validateCronSecret = (request: NextRequest) => {
 };
 
 // Función para determinar si un recordatorio debe ejecutarse ahora
-const shouldSendReminder = (reminder, now = new Date()) => {
+const shouldSendReminder = (reminder: any, now = new Date()) => {
   // Si no tiene fecha de último envío, enviar ahora
   if (!reminder.lastSent) {
     return true;
   }
 
   const lastSent = new Date(reminder.lastSent);
-  let nextSendTime;
+  let nextSendTime: Date;
 
   switch (reminder.frequency) {
     case "hourly":
@@ -120,7 +120,7 @@ export async function GET(request: NextRequest) {
       // Procesar cada reporte
       for (const report of reports) {
         try {
-          let recipients = [];
+          const recipients: string[] = [];
 
           // Si hay usuarios asignados, usar sus emails
           if (report.assignedTo && report.assignedTo.length > 0) {
@@ -136,11 +136,17 @@ export async function GET(request: NextRequest) {
               },
             });
 
-            recipients = assignedUsers.map((user) => user.email);
+            assignedUsers.forEach((user) => {
+              if (user.email) {
+                recipients.push(user.email);
+              }
+            });
           }
           // Si no hay usuarios asignados, usar la configuración general de destinatarios
           else if (recipientConfig && recipientConfig.recipients.length > 0) {
-            recipients = recipientConfig.recipients;
+            recipientConfig.recipients.forEach((email) => {
+              recipients.push(email);
+            });
           }
 
           // Si no hay destinatarios, omitir este reporte

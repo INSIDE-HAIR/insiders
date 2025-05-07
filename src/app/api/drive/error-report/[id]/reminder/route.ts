@@ -7,6 +7,11 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const dynamic = "force-dynamic";
 
+interface RequestBody {
+  recipients: string[];
+  manualTrigger: boolean;
+}
+
 /**
  * POST: Enviar un recordatorio inmediato para un reporte específico
  */
@@ -16,7 +21,7 @@ export async function POST(
 ) {
   try {
     const id = params.id;
-    const body = await request.json();
+    const body = (await request.json()) as RequestBody;
     const { recipients, manualTrigger = false } = body;
 
     // Validaciones básicas
