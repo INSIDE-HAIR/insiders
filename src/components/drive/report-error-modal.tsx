@@ -1,11 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ClipboardDocumentIcon,
   ArrowDownCircleIcon,
 } from "@heroicons/react/24/outline";
+import {
+  decodeFileNameAsync,
+  decodeFileName,
+  type DecodedFile,
+} from "@/src/features/drive/utils/marketing-salon/file-decoder";
 
 interface ReportErrorModalProps {
   isOpen: boolean;
@@ -28,16 +33,60 @@ export const ReportErrorModal = ({
 }: ReportErrorModalProps) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState(
-    downloadError
-      ? `No fue posible descargar el archivo. URL de descarga: ${
-          downloadUrl || "No disponible"
-        }`
-      : ""
-  );
+  const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
+
+  // Decodificar el nombre del archivo cuando se abre el modal
+  useEffect(() => {
+    if (isOpen && fileName && fileName !== "archivo general") {
+      const decodeFile = async () => {
+        try {
+          // Intentar decodificar el nombre del archivo
+          const decoded = await decodeFileNameAsync(fileName);
+          setDecodedInfo(decoded);
+
+          // Si es un error de descarga, agregar información sobre la URL y el nombre decodificado
+          if (downloadError) {
+            setMessage(
+              `No fue posible descargar el archivo. \n\nURL de descarga: ${
+                downloadUrl || "No disponible"
+              }\n\nNombre original: ${fileName}\n\nNombre decodificado: ${
+                decoded?.fullName || "No disponible"
+              }`
+            );
+          }
+        } catch (error) {
+          console.error("Error al decodificar nombre:", error);
+          // Fallback a la versión sincrónica
+          const fallbackDecoded = decodeFileName(fileName);
+          setDecodedInfo(fallbackDecoded);
+
+          if (downloadError) {
+            setMessage(
+              `No fue posible descargar el archivo. \n\nURL de descarga: ${
+                downloadUrl || "No disponible"
+              }\n\nNombre original: ${fileName}\n\nNombre decodificado: ${
+                fallbackDecoded?.fullName || "No disponible"
+              }`
+            );
+          }
+        }
+      };
+
+      decodeFile();
+    } else if (downloadError) {
+      setMessage(
+        `No fue posible descargar el archivo. \n\nURL de descarga: ${
+          downloadUrl || "No disponible"
+        }`
+      );
+    } else {
+      setMessage("");
+    }
+  }, [isOpen, fileName, downloadError, downloadUrl]);
 
   if (!isOpen) return null;
 
@@ -72,6 +121,7 @@ export const ReportErrorModal = ({
           message,
           fullName,
           email,
+          decodedFileName: decodedInfo?.fullName || null,
         }),
       });
 
