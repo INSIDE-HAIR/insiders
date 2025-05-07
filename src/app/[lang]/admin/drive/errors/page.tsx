@@ -464,6 +464,18 @@ export default function ErrorReportsPage() {
         }
       }
 
+      // Detectar usuarios nuevos que se están asignando
+      const currentAssignees = selectedReport.assignedTo || [];
+      const newAssignees = selectedUsers.filter(
+        (userId) => !currentAssignees.includes(userId)
+      );
+      
+      // Preparar la lista de usuarios a notificar con sus emails
+      const usersToNotify = newAssignees.map(userId => {
+        const user = users.find(u => u.id === userId);
+        return user ? { id: user.id, name: user.name, email: user.email } : null;
+      }).filter(Boolean);
+
       const response = await fetch(
         `/api/drive/error-report/${selectedReport.id}`,
         {
@@ -477,6 +489,7 @@ export default function ErrorReportsPage() {
             category: selectedCategory === "none" ? null : selectedCategory,
             assignedTo: selectedUsers,
             resolvedAt: resolvedAtDate,
+            notifyUsers: usersToNotify.length > 0 ? usersToNotify : undefined,
           }),
         }
       );

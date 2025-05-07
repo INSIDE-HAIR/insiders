@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { sendErrorReportAssignEmail } from "@/src/config/email/templates/error-report-assign-email";
+import { decodeFileName } from "@/src/features/drive/utils/marketing-salon/file-decoder";
 
 const prisma = new PrismaClient();
 
@@ -51,7 +53,8 @@ export async function PATCH(
   try {
     const id = params.id;
     const body = await request.json();
-    const { status, notes, category, assignedTo, resolvedAt } = body;
+    const { status, notes, category, assignedTo, resolvedAt, notifyUsers } =
+      body;
 
     // Validación básica
     if (!id) {
@@ -90,6 +93,21 @@ export async function PATCH(
       updateData.resolvedAt = resolvedAt ? new Date(resolvedAt) : null;
     }
 
+    // Obtener datos actuales del reporte para notificaciones
+    const currentReport = await prisma.driveErrorReport.findUnique({
+      where: { id },
+      include: {
+        categoryRef: true,
+      },
+    });
+
+    if (!currentReport) {
+      return NextResponse.json(
+        { error: "Reporte no encontrado" },
+        { status: 404 }
+      );
+    }
+
     // Actualizar el reporte
     const updatedReport = await prisma.driveErrorReport.update({
       where: { id },
@@ -98,6 +116,37 @@ export async function PATCH(
         categoryRef: true,
       },
     });
+
+    // Si hay usuarios para notificar, enviar correos electrónicos
+    if (notifyUsers && Array.isArray(notifyUsers) && notifyUsers.length > 0) {
+      try {
+        // Obtener nombre decodificado para incluirlo en el email
+        const decodedInfo = decodeFileName(currentReport.fileName);
+
+        // Enviar emails a todos los usuarios nuevos
+        for (const user of notifyUsers) {
+          await sendErrorReportAssignEmail(user.email, {
+            reportId: id,
+            fileName: currentReport.fileName,
+            fileId: currentReport.fileId || undefined,
+            message: currentReport.message,
+            reporterName: currentReport.fullName,
+            reporterEmail: currentReport.email,
+            assigneeName: user.name,
+            decodedFileName: decodedInfo?.fullName,
+            category: updatedReport.categoryRef?.name,
+            status: updatedReport.status,
+          });
+        }
+
+        console.log(
+          `Enviadas ${notifyUsers.length} notificaciones de asignación`
+        );
+      } catch (emailError) {
+        console.error("Error al enviar notificaciones por correo:", emailError);
+        // No interrumpir la operación principal por errores en el envío de correos
+      }
+    }
 
     return NextResponse.json({ report: updatedReport });
   } catch (error) {
