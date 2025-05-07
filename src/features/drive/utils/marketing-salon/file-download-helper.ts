@@ -29,8 +29,8 @@ export const downloadFileWithCustomName = async (
     return blob.size > 3 * 1024;
   };
 
-  // Función para intentar descargar con el proxy hasta 3 veces
-  const tryProxyDownload = async (retries = 3): Promise<Blob> => {
+  // Función para intentar descargar con el proxy hasta 5 veces (antes eran 3)
+  const tryProxyDownload = async (retries = 5): Promise<Blob> => {
     let lastError;
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -39,18 +39,24 @@ export const downloadFileWithCustomName = async (
 
         // Determinar qué endpoint del proxy usar (primero App Router, luego Pages Router)
         const proxyUrl =
-          attempt <= 2
+          attempt <= 3
             ? `/api/drive/proxy-download?url=${encodeURIComponent(url)}`
             : `/api/proxy-download?url=${encodeURIComponent(url)}`;
 
         console.log(`Intento ${attempt}: Descargando con ${proxyUrl}`);
+        console.log(`URL original: ${url}`);
 
         // Añadir timestamp para evitar caché
         const fetchUrl = `${proxyUrl}&t=${Date.now()}`;
 
         // Descargar con fetch utilizando timeout adecuado para archivos grandes
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 segundos
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+          console.log(
+            `Timeout alcanzado después de 60 segundos en intento ${attempt}`
+          );
+        }, 60000); // 60 segundos
 
         const response = await fetch(fetchUrl, {
           signal: controller.signal,
@@ -151,37 +157,35 @@ export const downloadFileWithCustomName = async (
   };
 
   try {
-    // Método 1: Proxy del archivo - Solo intentar para URLs de Google Drive
-    if (url.includes("drive.google.com") || url.includes("googleapis.com")) {
-      try {
-        console.log("Intentando método de proxy para descargar:", url);
+    // Método 1: Usar siempre el proxy para todas las URLs, independiente del dominio
+    try {
+      console.log("Intentando método de proxy para descargar:", url);
 
-        // Intentar descargar a través del proxy con reintentos
-        const blob = await tryProxyDownload();
-        const objectUrl = URL.createObjectURL(blob);
+      // Intentar descargar a través del proxy con reintentos
+      const blob = await tryProxyDownload();
+      const objectUrl = URL.createObjectURL(blob);
 
-        // Crear el enlace de descarga
-        const link = document.createElement("a");
-        link.href = objectUrl;
-        link.download = filename;
-        link.style.display = "none";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      // Crear el enlace de descarga
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = filename;
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-        // Liberar recursos
-        setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
+      // Liberar recursos
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 
-        // Mostrar mensaje de éxito
-        statusElement.textContent = "¡Descarga completada!";
-        statusElement.style.backgroundColor = "#4CAF50";
-        setTimeout(() => document.body.removeChild(statusElement), 2000);
+      // Mostrar mensaje de éxito
+      statusElement.textContent = "¡Descarga completada!";
+      statusElement.style.backgroundColor = "#4CAF50";
+      setTimeout(() => document.body.removeChild(statusElement), 2000);
 
-        return;
-      } catch (proxyError) {
-        console.error("Error al usar el proxy:", proxyError);
-        // Continuar con el método alternativo
-      }
+      return;
+    } catch (proxyError) {
+      console.error("Error al usar el proxy:", proxyError);
+      // Continuar con el método alternativo
     }
 
     // Método 2: Intentar fetchear directamente
@@ -227,6 +231,7 @@ export const downloadFileWithCustomName = async (
       return;
     } catch (fetchError) {
       console.error("Error al fetch directo:", fetchError);
+      console.log("URL que falló en fetch directo:", url);
       // Continuar con el método alternativo
     }
 
@@ -252,16 +257,58 @@ export const downloadFileWithCustomName = async (
     }, 6000);
   } catch (error) {
     console.error("Error al descargar archivo:", error);
+    console.log("URL de descarga fallida:", url);
+    console.log("Nombre de archivo:", filename);
 
-    // Mostrar mensaje de error
-    statusElement.textContent = "Error al descargar el archivo";
-    statusElement.style.backgroundColor = "#f44336";
-    statusElement.style.color = "#fff";
+    // Mostrar mensaje de error más detallado
+    statusElement.innerHTML = `
+      <div style="background-color: #f44336; color: white; padding: 10px 15px; border-radius: 4px; max-width: 300px;">
+        <div style="font-weight: bold; margin-bottom: 8px;">Error al descargar el archivo</div>
+        <div style="font-size: 0.85em; margin-bottom: 8px;">
+          No se pudo descargar: ${filename}
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+          <button id="retry-download" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+            Reintentar
+          </button>
+          <button id="report-download-error" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+            Reportar problema
+          </button>
+        </div>
+      </div>
+    `;
 
+    // Agregar eventos a los botones
+    setTimeout(() => {
+      const retryButton = document.getElementById("retry-download");
+      const reportButton = document.getElementById("report-download-error");
+
+      if (retryButton) {
+        retryButton.addEventListener("click", () => {
+          document.body.removeChild(statusElement);
+          downloadFileWithCustomName(url, filename);
+        });
+      }
+
+      if (reportButton) {
+        reportButton.addEventListener("click", () => {
+          // Crear y abrir modal de reporte de error
+          const event = new CustomEvent("report-download-error", {
+            detail: { filename, url },
+          });
+          document.dispatchEvent(event);
+
+          // Quitar la notificación después de abrir el modal
+          document.body.removeChild(statusElement);
+        });
+      }
+    }, 0);
+
+    // Mantener el mensaje por más tiempo (30 segundos)
     setTimeout(() => {
       if (document.body.contains(statusElement)) {
         document.body.removeChild(statusElement);
       }
-    }, 3000);
+    }, 30000);
   }
 };

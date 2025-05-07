@@ -88,6 +88,10 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const [decodedInfo, setDecodedInfo] = useState<DecodedFile | null>(null);
   const [isDecodingInfo, setIsDecodingInfo] = useState(true);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportDetail, setReportDetail] = useState<{
+    filename: string;
+    url: string;
+  } | null>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const copyTextRef = useRef<HTMLTextAreaElement>(null);
   const searchParams = useSearchParams();
@@ -159,6 +163,35 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       isMounted = false;
     };
   }, [item.name, item.mimeType]);
+
+  // Escuchar evento de error de descarga
+  useEffect(() => {
+    const handleDownloadError = (event: CustomEvent) => {
+      // Verificar si este componente debe manejar el evento
+      const errorDetail = event.detail;
+      if (errorDetail && errorDetail.filename === item.displayName) {
+        setReportDetail({
+          filename: errorDetail.filename,
+          url: errorDetail.url,
+        });
+        setIsReportModalOpen(true);
+      }
+    };
+
+    // Agregar el escuchador de eventos
+    document.addEventListener(
+      "report-download-error",
+      handleDownloadError as EventListener
+    );
+
+    // Limpiar el escuchador al desmontar
+    return () => {
+      document.removeEventListener(
+        "report-download-error",
+        handleDownloadError as EventListener
+      );
+    };
+  }, [item.displayName]);
 
   /**
    * Maneja la copia de texto al portapapeles
@@ -647,10 +680,15 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
       {/* Modal de reporte de error */}
       <ReportErrorModal
         isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
+        onClose={() => {
+          setIsReportModalOpen(false);
+          setReportDetail(null);
+        }}
         fileName={item.displayName}
         fileId={isFileItem(item) ? item.id : undefined}
         isFileReport={true}
+        downloadError={reportDetail !== null}
+        downloadUrl={reportDetail?.url}
       />
     </div>
   );

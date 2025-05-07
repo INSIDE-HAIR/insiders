@@ -2,7 +2,10 @@
 
 import React, { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
+import {
+  ClipboardDocumentIcon,
+  ArrowDownCircleIcon,
+} from "@heroicons/react/24/outline";
 
 interface ReportErrorModalProps {
   isOpen: boolean;
@@ -10,6 +13,8 @@ interface ReportErrorModalProps {
   fileName: string;
   fileId?: string;
   isFileReport?: boolean;
+  downloadError?: boolean;
+  downloadUrl?: string;
 }
 
 export const ReportErrorModal = ({
@@ -18,10 +23,18 @@ export const ReportErrorModal = ({
   fileName,
   fileId,
   isFileReport = false,
+  downloadError = false,
+  downloadUrl = "",
 }: ReportErrorModalProps) => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(
+    downloadError
+      ? `No fue posible descargar el archivo. URL de descarga: ${
+          downloadUrl || "No disponible"
+        }`
+      : ""
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -96,9 +109,15 @@ export const ReportErrorModal = ({
         {/* Header */}
         <div className="bg-red-600 text-white px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <ClipboardDocumentIcon className="h-6 w-6" />
+            {downloadError ? (
+              <ArrowDownCircleIcon className="h-6 w-6" />
+            ) : (
+              <ClipboardDocumentIcon className="h-6 w-6" />
+            )}
             <h3 className="text-lg font-medium">
-              {isFileReport || fileName !== "archivo general"
+              {downloadError
+                ? "Reporte de error de descarga"
+                : isFileReport || fileName !== "archivo general"
                 ? "Reporte de error de archivo"
                 : "Reporte de error general"}
             </h3>
@@ -125,10 +144,13 @@ export const ReportErrorModal = ({
           ) : (
             <>
               <p className="text-zinc-300 mb-4">
-                Reporta cualquier problema
-                {fileName !== "archivo general"
-                  ? ` con el archivo ${fileName}`
-                  : ""}
+                {downloadError
+                  ? `Reporta un problema con la descarga del archivo`
+                  : `Reporta cualquier problema${
+                      fileName !== "archivo general"
+                        ? ` con el archivo ${fileName}`
+                        : ""
+                    }`}
               </p>
 
               {error && (

@@ -15,6 +15,8 @@ interface ReportErrorButtonProps {
   fileId?: string;
   size?: "small" | "normal";
   isFileReport?: boolean;
+  downloadError?: boolean;
+  downloadUrl?: string;
 }
 
 export function ReportErrorButton({
@@ -22,6 +24,8 @@ export function ReportErrorButton({
   fileId,
   size = "normal",
   isFileReport = false,
+  downloadError = false,
+  downloadUrl = "",
 }: ReportErrorButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -63,6 +67,8 @@ export function ReportErrorButton({
         fileName={fileName}
         fileId={fileId}
         isFileReport={isFileReport}
+        downloadError={downloadError}
+        downloadUrl={downloadUrl}
       />
     </>
   );
