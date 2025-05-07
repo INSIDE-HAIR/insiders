@@ -116,12 +116,12 @@ model DriveErrorReportConfig {
 
 // Model for error report reminders
 model DriveErrorReminder {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   status    String // "pending" or "in-progress"
   frequency String // "hourly", "daily", "weekly", or "monthly"
   interval  Int // Interval number (e.g., every 2 days)
-  emails    String[] // Recipients' email addresses
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lastSent  DateTime? // Last time this reminder was sent
 }

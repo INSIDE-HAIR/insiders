@@ -34,8 +34,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   Loader2,
+  InfoIcon,
 } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 type Reminder = {
   id: string;
@@ -45,7 +48,7 @@ type Reminder = {
   active: boolean;
   createdAt: string;
   updatedAt: string;
-  emails: string[];
+  lastSent?: string;
 };
 
 interface ReminderManagerProps {
@@ -72,7 +75,6 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
     "hourly" | "daily" | "weekly" | "monthly"
   >("daily");
   const [formInterval, setFormInterval] = useState("1");
-  const [formEmails, setFormEmails] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Cargar recordatorios
@@ -109,12 +111,7 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
 
     try {
       // Validar entradas
-      if (
-        !formStatus ||
-        !formFrequency ||
-        !formInterval ||
-        !formEmails.trim()
-      ) {
+      if (!formStatus || !formFrequency || !formInterval) {
         throw new Error("Todos los campos son obligatorios");
       }
 
@@ -124,25 +121,12 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
         throw new Error("El intervalo debe ser un número positivo");
       }
 
-      // Procesar lista de correos
-      const emails = formEmails
-        .split(",")
-        .map((email) => email.trim())
-        .filter(Boolean);
-
-      if (emails.length === 0) {
-        throw new Error(
-          "Debes proporcionar al menos un correo electrónico válido"
-        );
-      }
-
       // Preparar datos
       const reminderData = {
         id: selectedReminder?.id,
         status: formStatus,
         frequency: formFrequency,
         interval,
-        emails,
         active: true,
       };
 
@@ -192,7 +176,6 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
     setFormStatus(reminder.status);
     setFormFrequency(reminder.frequency);
     setFormInterval(reminder.interval.toString());
-    setFormEmails(reminder.emails.join(", "));
     setIsDialogOpen(true);
   };
 
@@ -243,7 +226,6 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
     setFormStatus("pending");
     setFormFrequency("daily");
     setFormInterval("1");
-    setFormEmails("");
     setError(null);
   };
 
@@ -329,7 +311,7 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
               <TableRow>
                 <TableHead>Estado</TableHead>
                 <TableHead>Frecuencia</TableHead>
-                <TableHead>Destinatarios</TableHead>
+                <TableHead>Última ejecución</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
@@ -349,34 +331,13 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
                     {getFrequencyText(reminder.frequency, reminder.interval)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {reminder.emails.length <= 2 ? (
-                        reminder.emails.map((email, idx) => (
-                          <Badge
-                            key={idx}
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
-                            {email}
-                          </Badge>
-                        ))
-                      ) : (
-                        <>
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
-                            {reminder.emails[0]}
-                          </Badge>
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 text-blue-700 border-blue-200"
-                          >
-                            +{reminder.emails.length - 1} más
-                          </Badge>
-                        </>
-                      )}
-                    </div>
+                    {reminder.lastSent
+                      ? format(
+                          new Date(reminder.lastSent),
+                          "dd/MM/yyyy HH:mm",
+                          { locale: es }
+                        )
+                      : "Nunca ejecutado"}
                   </TableCell>
                   <TableCell>
                     <Badge variant={reminder.active ? "default" : "outline"}>
@@ -495,15 +456,11 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
               </div>
 
               <div>
-                <Label htmlFor="emails">Destinatarios</Label>
-                <Input
-                  id="emails"
-                  placeholder="Correos separados por comas"
-                  value={formEmails}
-                  onChange={(e) => setFormEmails(e.target.value)}
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Escriba los correos electrónicos separados por comas
+                <p className="text-sm mt-2">
+                  <InfoIcon className="h-4 w-4 inline-block mr-1 text-blue-500" />
+                  Los recordatorios se enviarán a los usuarios asignados a cada
+                  reporte. Si un reporte no tiene usuarios asignados, se
+                  utilizará la configuración general de destinatarios.
                 </p>
               </div>
             </div>

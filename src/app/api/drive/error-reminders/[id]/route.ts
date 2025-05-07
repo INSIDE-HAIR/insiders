@@ -48,7 +48,7 @@ export async function PUT(
   try {
     const id = params.id;
     const body = await request.json();
-    const { status, frequency, interval, emails, active } = body;
+    const { status, frequency, interval, active } = body;
 
     // Validar que el recordatorio exista
     const reminderExists = await prisma.driveErrorReminder.findUnique({
@@ -63,7 +63,7 @@ export async function PUT(
     }
 
     // Validaciones básicas
-    if (!status || !frequency || !interval || !emails || !emails.length) {
+    if (!status || !frequency || !interval) {
       return NextResponse.json(
         { error: "Faltan campos requeridos" },
         { status: 400 }
@@ -101,7 +101,6 @@ export async function PUT(
         status,
         frequency,
         interval,
-        emails,
         active: active !== undefined ? active : true,
       },
     });

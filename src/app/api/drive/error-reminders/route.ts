@@ -33,10 +33,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { status, frequency, interval, emails, active = true } = body;
+    const { status, frequency, interval, active = true } = body;
 
     // Validaciones básicas
-    if (!status || !frequency || !interval || !emails || !emails.length) {
+    if (!status || !frequency || !interval) {
       return NextResponse.json(
         { error: "Faltan campos requeridos" },
         { status: 400 }
@@ -73,7 +73,6 @@ export async function POST(request: NextRequest) {
         status,
         frequency,
         interval,
-        emails,
         active,
       },
     });

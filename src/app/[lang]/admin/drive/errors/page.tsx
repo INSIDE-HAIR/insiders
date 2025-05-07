@@ -21,6 +21,7 @@ import {
   Trash2,
   Clock3,
   BellRing,
+  SendIcon,
 } from "lucide-react";
 import {
   Table,
@@ -596,6 +597,62 @@ export default function ErrorReportsPage() {
     }
   };
 
+  // Enviar recordatorio inmediato
+  const sendImmediateReminder = async (report: ErrorReport) => {
+    try {
+      setIsUpdating(true);
+
+      // Determinar los destinatarios
+      let recipients = [];
+
+      // Si hay usuarios asignados, usar sus emails
+      if (report.assignedTo && report.assignedTo.length > 0) {
+        recipients = report.assignedTo
+          .map((userId) => {
+            const user = users.find((u) => u.id === userId);
+            return user ? user.email : null;
+          })
+          .filter(Boolean);
+      }
+      // Si no hay usuarios asignados, usar la configuración general
+      else if (recipientConfig && recipientConfig.recipients.length > 0) {
+        recipients = recipientConfig.recipients;
+      }
+
+      if (recipients.length === 0) {
+        alert("No hay destinatarios configurados para enviar el recordatorio");
+        return;
+      }
+
+      const response = await fetch(
+        `/api/drive/error-report/${report.id}/reminder`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipients,
+            manualTrigger: true,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al enviar recordatorio");
+      }
+
+      alert("Recordatorio enviado exitosamente");
+    } catch (error) {
+      console.error("Error al enviar recordatorio:", error);
+      alert("Error al enviar el recordatorio");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   // Renderizar badge de estado
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -866,6 +923,26 @@ export default function ErrorReportsPage() {
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p>Editar</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => sendImmediateReminder(report)}
+                                  disabled={
+                                    isUpdating || report.status === "resolved"
+                                  }
+                                >
+                                  <SendIcon className="h-4 w-4 text-blue-500" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Enviar recordatorio inmediato</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
