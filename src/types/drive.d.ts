@@ -31,7 +31,7 @@ export interface DriveErrorReport {
 
 export interface DriveErrorReminder {
   id: string;
-  status: "pending" | "in-progress";
+  status: string; // Más flexible, permitiendo cualquier string
   frequency: "hourly" | "daily" | "weekly" | "monthly";
   interval: number;
   active: boolean;

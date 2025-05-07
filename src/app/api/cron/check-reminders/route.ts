@@ -16,32 +16,51 @@ const validateCronSecret = (request: NextRequest) => {
   return token === process.env.CRON_SECRET;
 };
 
+// Tipo para el recordatorio desde la base de datos
+type DbReminder = {
+  id: string;
+  status: string;
+  frequency: string;
+  interval: number;
+  active: boolean;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  lastSent?: Date | string | null;
+};
+
+// Tipo para usuarios asignados
+type AssignedUser = {
+  name: string | null;
+  email: string;
+};
+
 // Función para determinar si un recordatorio debe ejecutarse ahora
-const shouldSendReminder = (reminder: DriveErrorReminder, now = new Date()) => {
+const shouldSendReminder = (reminder: DbReminder, now = new Date()) => {
+  // En lugar de lastSent, usaremos updatedAt para determinar cuándo se ejecutó por última vez
   // Si no tiene fecha de último envío, enviar ahora
-  if (!reminder.lastSent) {
+  if (!reminder.updatedAt) {
     return true;
   }
 
-  const lastSent = new Date(reminder.lastSent);
+  const lastUpdated = new Date(reminder.updatedAt);
   let nextSendTime: Date;
 
   switch (reminder.frequency) {
     case "hourly":
-      nextSendTime = new Date(lastSent);
-      nextSendTime.setHours(lastSent.getHours() + reminder.interval);
+      nextSendTime = new Date(lastUpdated);
+      nextSendTime.setHours(lastUpdated.getHours() + reminder.interval);
       break;
     case "daily":
-      nextSendTime = new Date(lastSent);
-      nextSendTime.setDate(lastSent.getDate() + reminder.interval);
+      nextSendTime = new Date(lastUpdated);
+      nextSendTime.setDate(lastUpdated.getDate() + reminder.interval);
       break;
     case "weekly":
-      nextSendTime = new Date(lastSent);
-      nextSendTime.setDate(lastSent.getDate() + reminder.interval * 7);
+      nextSendTime = new Date(lastUpdated);
+      nextSendTime.setDate(lastUpdated.getDate() + reminder.interval * 7);
       break;
     case "monthly":
-      nextSendTime = new Date(lastSent);
-      nextSendTime.setMonth(lastSent.getMonth() + reminder.interval);
+      nextSendTime = new Date(lastUpdated);
+      nextSendTime.setMonth(lastUpdated.getMonth() + reminder.interval);
       break;
     default:
       return false;
@@ -75,7 +94,7 @@ export async function GET(request: NextRequest) {
     const now = new Date();
 
     // Verificar cada recordatorio
-    for (const reminder of reminders) {
+    for (const reminder of reminders as DbReminder[]) {
       // Determinar si es hora de enviar el recordatorio
       if (!shouldSendReminder(reminder, now)) {
         results.push({
@@ -89,7 +108,8 @@ export async function GET(request: NextRequest) {
       // Buscar reportes en el estado especificado
       const reports = await prisma.driveErrorReport.findMany({
         where: {
-          status: reminder.status,
+          // Convertir status a string para que coincida con lo que viene de la BD
+          status: String(reminder.status),
           // Reportes que no se hayan resuelto
           resolvedAt: null,
         },
@@ -102,7 +122,9 @@ export async function GET(request: NextRequest) {
         // Actualizar la fecha de último envío incluso si no hay reportes
         await prisma.driveErrorReminder.update({
           where: { id: reminder.id },
-          data: { lastSent: now },
+          data: {
+            updatedAt: now, // Solo actualizamos updatedAt en lugar de lastSent
+          },
         });
 
         results.push({
@@ -125,7 +147,7 @@ export async function GET(request: NextRequest) {
 
           // Si hay usuarios asignados, usar sus emails
           if (report.assignedTo && report.assignedTo.length > 0) {
-            const assignedUsers = await prisma.user.findMany({
+            const assignedUsers: AssignedUser[] = await prisma.user.findMany({
               where: {
                 id: {
                   in: report.assignedTo as string[],
@@ -159,9 +181,9 @@ export async function GET(request: NextRequest) {
           const reportUrl = `${process.env.NEXT_PUBLIC_APP_URL}/es/admin/drive/errors?report=${report.id}`;
 
           // Obtener información de usuarios asignados
-          let assignedUsers = [];
+          const assignedUsers: AssignedUser[] = [];
           if (report.assignedTo && report.assignedTo.length > 0) {
-            assignedUsers = await prisma.user.findMany({
+            const users = await prisma.user.findMany({
               where: {
                 id: {
                   in: report.assignedTo as string[],
@@ -172,11 +194,14 @@ export async function GET(request: NextRequest) {
                 email: true,
               },
             });
+            users.forEach((user) => assignedUsers.push(user));
           }
 
           const assignedList =
             assignedUsers.length > 0
-              ? assignedUsers.map((u) => `${u.name} (${u.email})`).join(", ")
+              ? assignedUsers
+                  .map((u) => `${u.name || "Usuario sin nombre"} (${u.email})`)
+                  .join(", ")
               : "No asignado";
 
           const statusText =
@@ -249,7 +274,9 @@ export async function GET(request: NextRequest) {
       // Actualizar la fecha de último envío
       await prisma.driveErrorReminder.update({
         where: { id: reminder.id },
-        data: { lastSent: now },
+        data: {
+          updatedAt: now, // Solo actualizamos updatedAt en vez de lastSent
+        },
       });
 
       results.push({
