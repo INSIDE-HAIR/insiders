@@ -16,6 +16,8 @@ import {
   ChevronRight,
   Loader2,
   AlertTriangle,
+  Flag,
+  AlertOctagon,
 } from "lucide-react";
 import {
   Dialog,
@@ -352,6 +354,94 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     getPreviewUrl(item) ||
     "";
 
+  /**
+   * Simula un error de descarga para pruebas (solo para administradores)
+   * Fuerza a usar el método de descarga directa sin proxy
+   */
+  const simulateDownloadError = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // URL de descarga y nombre del archivo
+    const downloadUrl = getDownloadUrl(item);
+    const fileName = decodedInfo ? decodedInfo.fullName : item.name;
+
+    if (!downloadUrl) {
+      console.error("No hay URL de descarga disponible para simular error");
+      return;
+    }
+
+    console.log(
+      "Simulando error de proxy para probar descarga directa:",
+      fileName
+    );
+
+    // Crear y mostrar indicador de carga con apariencia especial para pruebas
+    const statusElement = document.createElement("div");
+    statusElement.textContent = "Simulando fallo de proxy...";
+    statusElement.style.position = "fixed";
+    statusElement.style.bottom = "20px";
+    statusElement.style.right = "20px";
+    statusElement.style.backgroundColor = "#FF9800"; // Naranja para indicar prueba
+    statusElement.style.color = "#000";
+    statusElement.style.padding = "10px 20px";
+    statusElement.style.borderRadius = "4px";
+    statusElement.style.zIndex = "9999";
+    statusElement.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+    document.body.appendChild(statusElement);
+
+    // Simular el intento fallido de proxy (esperar 1.5 segundos)
+    setTimeout(() => {
+      statusElement.innerHTML = `
+        <div style="margin-bottom: 5px;">Error en descarga con proxy (simulado)</div>
+        <div style="font-size: 0.9em;">Intentando descarga directa...</div>
+      `;
+
+      // Intentar descarga directa
+      try {
+        // Crear un enlace a la URL directa
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = fileName;
+        link.style.display = "none";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Actualizar mensaje de estado
+        setTimeout(() => {
+          statusElement.innerHTML = `
+            <div style="font-weight: bold;">Descarga directa iniciada</div>
+            <div style="font-size: 0.9em;">Prueba de fallback completada</div>
+          `;
+          statusElement.style.backgroundColor = "#4CAF50"; // Verde para éxito
+
+          // Remover el elemento después de 3 segundos
+          setTimeout(() => {
+            if (document.body.contains(statusElement)) {
+              document.body.removeChild(statusElement);
+            }
+          }, 3000);
+        }, 1000);
+      } catch (error) {
+        console.error("Error al simular descarga directa:", error);
+        statusElement.innerHTML = `
+          <div style="font-weight: bold;">Error en prueba de descarga</div>
+          <div style="font-size: 0.9em;">${
+            error instanceof Error ? error.message : "Error desconocido"
+          }</div>
+        `;
+        statusElement.style.backgroundColor = "#f44336"; // Rojo para error
+
+        // Remover el elemento después de 5 segundos
+        setTimeout(() => {
+          if (document.body.contains(statusElement)) {
+            document.body.removeChild(statusElement);
+          }
+        }, 5000);
+      }
+    }, 1500);
+  };
+
   return (
     <div className="flex flex-col w-52 bg-black text-white relative">
       <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
@@ -364,7 +454,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
           setIsReportModalOpen(true);
         }}
       >
-        <AlertTriangle className="h-4 w-4 text-red-600 hover:text-red-500" />
+        <Flag className="h-4 w-4 text-red-600 hover:text-red-500" />
       </div>
 
       {/* Filename at top - now showing language and version if decoded */}
@@ -513,6 +603,18 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                 Copiar Texto
               </>
             )}
+          </Button>
+        )}
+
+        {/* Botón para simular error de descarga (solo para administradores) */}
+        {isAdmin && (
+          <Button
+            className="w-full bg-rose-700 hover:bg-rose-600 text-white rounded-none flex items-center justify-center mt-2"
+            onClick={simulateDownloadError}
+            title="Simular error de descarga (solo para administradores)"
+          >
+            <AlertOctagon className="h-4 w-4 mr-2" />
+            Simular Error
           </Button>
         )}
 

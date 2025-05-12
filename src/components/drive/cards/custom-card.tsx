@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Download, Eye, Plus, ChevronUp, Info, Loader2 } from "lucide-react";
+import {
+  Download,
+  Eye,
+  Plus,
+  ChevronUp,
+  Info,
+  Loader2,
+  AlertOctagon,
+} from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
@@ -87,13 +95,33 @@ export function CustomCard({ item }: CustomCardProps) {
     : item.displayName;
   const displayType = decodedInfo ? decodedInfo.category : contentType;
 
+  /**
+   * Simula un error de descarga para pruebas (solo para administradores)
+   */
+  const simulateDownloadError = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // Crear evento de error de descarga
+    const event = new CustomEvent("report-download-error", {
+      detail: {
+        filename: item.displayName,
+        url: getDownloadUrl(item) || "URL-simulada-para-pruebas",
+      },
+    });
+
+    // Disparar el evento
+    document.dispatchEvent(event);
+
+    console.log("Simulando error de descarga para:", item.displayName);
+  };
+
   return (
-    <div className='flex flex-col w-52 bg-black text-white'>
+    <div className="flex flex-col w-52 bg-black text-white">
       {/* Filename at top - now showing language and version if decoded */}
-      <div className='p-2 text-xs text-zinc-400 truncate text-center'>
+      <div className="p-2 text-xs text-zinc-400 truncate text-center">
         {isDecodingInfo ? (
-          <div className='flex items-center justify-center'>
-            <Loader2 className='h-3 w-3 animate-spin mr-1' />
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-3 w-3 animate-spin mr-1" />
             <span>Cargando...</span>
           </div>
         ) : (
@@ -102,38 +130,38 @@ export function CustomCard({ item }: CustomCardProps) {
       </div>
 
       {/* Content type in bold - now showing category if decoded */}
-      <div className='text-center font-bold mb-2'>{displayType}</div>
+      <div className="text-center font-bold mb-2">{displayType}</div>
 
       {/* Content area - always use preview URL for thumbnails */}
-      <div className='px-2 flex-grow'>
+      <div className="px-2 flex-grow">
         {hasPreview ? (
           <div
-            className='relative cursor-pointer'
+            className="relative cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             <Image
               src={getPreviewUrl(item) || "/placeholder.svg"}
               alt={item.displayName}
-              className='w-full object-cover rounded-sm'
+              className="w-full object-cover rounded-sm"
               width={300}
               height={200}
               unoptimized={true}
             />
-            <button className='absolute top-1 right-1 bg-white rounded-full p-1'>
-              <Eye className='h-4 w-4 text-black' />
+            <button className="absolute top-1 right-1 bg-white rounded-full p-1">
+              <Eye className="h-4 w-4 text-black" />
             </button>
           </div>
         ) : (
-          <div className='bg-zinc-800 p-4 rounded-sm text-zinc-400 flex items-center justify-center min-h-[100px]'>
+          <div className="bg-zinc-800 p-4 rounded-sm text-zinc-400 flex items-center justify-center min-h-[100px]">
             {displayType}
           </div>
         )}
       </div>
 
       {/* Download button and Info button */}
-      <div className='p-2 mt-2 flex gap-2'>
+      <div className="p-2 mt-2 flex gap-2 flex-wrap">
         <Button
-          className='flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
+          className="flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center"
           onClick={() => {
             const downloadUrl = getDownloadUrl(item);
             if (downloadUrl && decodedInfo) {
@@ -145,55 +173,67 @@ export function CustomCard({ item }: CustomCardProps) {
           disabled={isDecodingInfo}
         >
           {isDecodingInfo ? (
-            <Loader2 className='h-4 w-4 animate-spin mr-2' />
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
           ) : (
-            <Download className='h-4 w-4 mr-2' />
+            <Download className="h-4 w-4 mr-2" />
           )}
           Descargar
         </Button>
 
         {decodedInfo && isAdmin && (
           <Button
-            className='bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center'
+            className="bg-zinc-700 hover:bg-zinc-600 text-white rounded-none w-12 flex items-center justify-center"
             onClick={() => setShowDetails(!showDetails)}
-            title='Ver detalles del archivo'
+            title="Ver detalles del archivo"
           >
             {showDetails ? (
-              <ChevronUp className='h-24 w-24' />
+              <ChevronUp className="h-24 w-24" />
             ) : (
-              <Plus className='h-24 w-24' />
+              <Plus className="h-24 w-24" />
             )}
+          </Button>
+        )}
+
+        {/* Botón para simular error de descarga (solo para administradores) */}
+        {isAdmin && (
+          <Button
+            className="w-full bg-rose-700 hover:bg-rose-600 text-white rounded-none flex items-center justify-center mt-2"
+            onClick={simulateDownloadError}
+            title="Simular error de descarga (solo para administradores)"
+          >
+            <AlertOctagon className="h-4 w-4 mr-2" />
+            Simular Error
           </Button>
         )}
       </div>
 
       {/* File details section */}
       {showDetails && decodedInfo && isAdmin && (
-        <div className='p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700'>
-          <div className='flex items-center mb-1'>
-            <Info className='h-3 w-3 mr-1 text-[#CEFF66]' />
-            <span className='font-semibold'>Detalles del archivo:</span>
+        <div className="p-2 bg-zinc-800 text-xs text-zinc-300 border-t border-zinc-700">
+          <div className="flex items-center mb-1">
+            <Info className="h-3 w-3 mr-1 text-[#CEFF66]" />
+            <span className="font-semibold">Detalles del archivo:</span>
           </div>
-          <div className='grid grid-cols-2 gap-x-2 gap-y-1 mt-2'>
-            <span className='text-zinc-400'>Cliente:</span>
-            <span className='capitalize'>{decodedInfo.client}</span>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2">
+            <span className="text-zinc-400">Cliente:</span>
+            <span className="capitalize">{decodedInfo.client}</span>
 
-            <span className='text-zinc-400'>Campaña:</span>
-            <span className='capitalize'>{decodedInfo.campaign}</span>
+            <span className="text-zinc-400">Campaña:</span>
+            <span className="capitalize">{decodedInfo.campaign}</span>
 
-            <span className='text-zinc-400'>Año:</span>
+            <span className="text-zinc-400">Año:</span>
             <span>{decodedInfo.year}</span>
 
-            <span className='text-zinc-400'>Mes:</span>
+            <span className="text-zinc-400">Mes:</span>
             <span>{decodedInfo.month}</span>
 
-            <span className='text-zinc-400'>Categoría:</span>
+            <span className="text-zinc-400">Categoría:</span>
             <span>{decodedInfo.category}</span>
 
-            <span className='text-zinc-400'>Idioma:</span>
+            <span className="text-zinc-400">Idioma:</span>
             <span>{decodedInfo.lang}</span>
 
-            <span className='text-zinc-400'>Versión:</span>
+            <span className="text-zinc-400">Versión:</span>
             <span>{decodedInfo.version}</span>
           </div>
         </div>
@@ -203,7 +243,7 @@ export function CustomCard({ item }: CustomCardProps) {
       {hasEmbed && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent
-            className='bg-zinc-900 text-zinc-50 border-zinc-700 p-0 flex flex-col'
+            className="bg-zinc-900 text-zinc-50 border-zinc-700 p-0 flex flex-col"
             style={{
               maxWidth: "90vw",
               maxHeight: "90vh",
@@ -212,26 +252,26 @@ export function CustomCard({ item }: CustomCardProps) {
               overflow: "hidden",
             }}
           >
-            <DialogHeader className='p-2'>
-              <DialogTitle className='text-center'>{displayTitle}</DialogTitle>
+            <DialogHeader className="p-2">
+              <DialogTitle className="text-center">{displayTitle}</DialogTitle>
             </DialogHeader>
 
-            <div className='flex-1 flex items-center justify-center overflow-hidden'>
+            <div className="flex-1 flex items-center justify-center overflow-hidden">
               <Image
                 src={getPreviewUrl(item) || "/placeholder.svg"}
                 alt={item.displayName}
-                className='max-w-full max-h-full object-contain'
+                className="max-w-full max-h-full object-contain"
                 width={800}
                 height={600}
                 unoptimized={true}
               />
             </div>
 
-            <DialogFooter className='justify-center p-2'>
+            <DialogFooter className="justify-center p-2">
               <Button
-                variant='destructive'
+                variant="destructive"
                 onClick={() => setIsOpen(false)}
-                className='bg-red-900 hover:bg-red-800 rounded-none'
+                className="bg-red-900 hover:bg-red-800 rounded-none"
               >
                 Close
               </Button>

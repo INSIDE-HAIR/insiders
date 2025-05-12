@@ -157,7 +157,7 @@ export const downloadFileWithCustomName = async (
   };
 
   try {
-    // Método 1: Usar siempre el proxy para todas las URLs, independiente del dominio
+    // Método 1: Usar el proxy para todas las URLs
     try {
       console.log("Intentando método de proxy para descargar:", url);
 
@@ -185,23 +185,123 @@ export const downloadFileWithCustomName = async (
       return;
     } catch (proxyError) {
       console.error("Error al usar el proxy:", proxyError);
-      // Continuar con el método alternativo
+
+      // Actualizar mensaje para informar al usuario que se usará método directo
+      statusElement.innerHTML = `
+        <div style="margin-bottom: 5px;">Error en descarga con proxy</div>
+        <div style="font-size: 0.9em;">Intentando descarga directa...</div>
+      `;
+      statusElement.style.backgroundColor = "#FF9800"; // Color de advertencia naranja
     }
 
-    // Método 2: Intentar fetchear directamente
+    // Método 2: Intentar descarga directa sin proxy
     try {
-      console.log("Intentando fetch directo para descargar:", url);
+      console.log("Intentando descarga directa sin proxy para:", url);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+        console.log(
+          `Timeout alcanzado después de 60 segundos en descarga directa`
+        );
+      }, 60000); // 60 segundos
 
       const response = await fetch(url, {
         method: "GET",
-        mode: "cors", // Intentar modo CORS
+        mode: "cors",
         credentials: "omit",
+        signal: controller.signal,
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        },
       });
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(`Error en fetch: ${response.status}`);
+        throw new Error(`Error en descarga directa: ${response.status}`);
       }
 
+      // Obtener el tamaño total si está disponible
+      const contentLength = response.headers.get("Content-Length");
+      let totalSize = contentLength ? parseInt(contentLength) : 0;
+
+      // Para archivos grandes, mostrar progreso
+      if (totalSize > 5 * 1024 * 1024) {
+        // > 5MB
+        const reader = response.body?.getReader();
+        const chunks: Uint8Array[] = [];
+        let receivedLength = 0;
+
+        if (reader) {
+          statusElement.textContent = `Descarga directa... 0%`;
+
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+              break;
+            }
+
+            chunks.push(value);
+            receivedLength += value.length;
+
+            // Actualizar progreso
+            if (totalSize > 0) {
+              const percentComplete = Math.round(
+                (receivedLength / totalSize) * 100
+              );
+              statusElement.textContent = `Descarga directa... ${percentComplete}%`;
+            } else {
+              statusElement.textContent = `Descarga directa... ${(
+                receivedLength /
+                (1024 * 1024)
+              ).toFixed(1)} MB`;
+            }
+          }
+
+          // Concatenar chunks en un solo Uint8Array
+          const chunksAll = new Uint8Array(receivedLength);
+          let position = 0;
+          for (const chunk of chunks) {
+            chunksAll.set(chunk, position);
+            position += chunk.length;
+          }
+
+          // Convertir a Blob
+          const blob = new Blob([chunksAll]);
+
+          // Validar que no sea un error pequeño
+          if (!validateBlob(blob)) {
+            throw new Error(`Archivo descargado inválido (${blob.size} bytes)`);
+          }
+
+          // Crear URL del blob
+          const objectUrl = URL.createObjectURL(blob);
+
+          // Crear enlace y descargar
+          const link = document.createElement("a");
+          link.href = objectUrl;
+          link.download = filename;
+          link.style.display = "none";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Liberar recursos
+          setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
+
+          // Mostrar mensaje de éxito
+          statusElement.textContent = "¡Descarga directa completada!";
+          statusElement.style.backgroundColor = "#4CAF50";
+          setTimeout(() => document.body.removeChild(statusElement), 2000);
+
+          return;
+        }
+      }
+
+      // Fallback para archivos pequeños o si el stream no está disponible
       const blob = await response.blob();
 
       // Validar que el blob no sea un error pequeño
@@ -224,30 +324,38 @@ export const downloadFileWithCustomName = async (
       setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 
       // Mostrar mensaje de éxito
-      statusElement.textContent = "¡Descarga completada!";
+      statusElement.textContent = "¡Descarga directa completada!";
       statusElement.style.backgroundColor = "#4CAF50";
       setTimeout(() => document.body.removeChild(statusElement), 2000);
 
       return;
-    } catch (fetchError) {
-      console.error("Error al fetch directo:", fetchError);
-      console.log("URL que falló en fetch directo:", url);
-      // Continuar con el método alternativo
+    } catch (directError) {
+      console.error("Error en descarga directa:", directError);
+      console.log("URL que falló en descarga directa:", url);
+
+      // Preparar para el método 3 de fallback
+      statusElement.style.backgroundColor = "#f44336"; // Rojo para error
     }
 
-    // Método 3: Fallback - Abrir en nueva ventana con instrucciones
+    // Método 3: Fallback - Descargar directamente con un enlace en la misma ventana
     console.log("Usando método de fallback para:", url);
 
     statusElement.innerHTML = `
       <div style="font-weight: bold; margin-bottom: 5px;">No se pudo descargar automáticamente</div>
-      <div style="margin-bottom: 8px;">Abriéndolo en nueva ventana</div>
+      <div style="margin-bottom: 8px;">Intentando descarga directa simple</div>
       <div style="font-size: 0.9em; padding: 5px; background: rgba(255,255,255,0.3); border-radius: 3px;">
         Guardar como: <strong>${filename}</strong>
       </div>
     `;
 
-    // Abrir en nueva ventana
-    window.open(url, "_blank");
+    // Crear un enlace para descargar directamente en la misma ventana
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
     // Mantener el mensaje por más tiempo
     setTimeout(() => {

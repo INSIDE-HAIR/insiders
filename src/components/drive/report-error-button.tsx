@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { Flag } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -46,9 +46,9 @@ export function ReportErrorButton({
               className={`flex items-center justify-center rounded-full transition-colors hover:bg-red-700/20 focus:outline-none ${
                 size === "small" ? "h-5 w-5 p-0.5" : "h-8 w-8"
               }`}
-              aria-label="Reportar error"
+              aria-label="Reportar problema"
             >
-              <AlertTriangle
+              <Flag
                 className={`text-red-600 hover:text-red-500 transition-colors ${
                   size === "small" ? "h-4 w-4" : "h-5 w-5"
                 }`}

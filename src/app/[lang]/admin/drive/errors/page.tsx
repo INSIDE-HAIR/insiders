@@ -22,6 +22,7 @@ import {
   Clock3,
   BellRing,
   SendIcon,
+  Flag,
 } from "lucide-react";
 import {
   Table,
@@ -1064,7 +1065,7 @@ export default function ErrorReportsPage() {
       >
         <TabsList className="grid w-full max-w-md grid-cols-3">
           <TabsTrigger value="reports" className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4" />
+            <Flag className="h-4 w-4" />
             Reportes
           </TabsTrigger>
           <TabsTrigger value="categories" className="flex items-center gap-2">
