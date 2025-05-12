@@ -286,6 +286,15 @@ export default function ErrorReportsPage() {
   const [editCcRecipients, setEditCcRecipients] = useState<string>("");
   const [editBccRecipients, setEditBccRecipients] = useState<string>("");
 
+  // Add these new state variables
+  const [selectedReportIds, setSelectedReportIds] = useState<string[]>([]);
+  const [isMassActionDialogOpen, setIsMassActionDialogOpen] = useState(false);
+  const [massActionType, setMassActionType] = useState<string | null>(null);
+  const [selectedMassStatus, setSelectedMassStatus] = useState("pending");
+  const [selectedMassCategory, setSelectedMassCategory] = useState("none");
+  const [selectedMassUsers, setSelectedMassUsers] = useState<string[]>([]);
+  const [isMassActionLoading, setIsMassActionLoading] = useState(false);
+
   // Cargar reportes y configuración al iniciar
   useEffect(() => {
     const fetchData = async () => {
@@ -732,6 +741,81 @@ export default function ErrorReportsPage() {
     setResolvedDate(formattedDateTime);
   };
 
+  // Function to toggle selection of a single report
+  const toggleReportSelection = (reportId: string) => {
+    setSelectedReportIds((prev) =>
+      prev.includes(reportId)
+        ? prev.filter((id) => id !== reportId)
+        : [...prev, reportId]
+    );
+  };
+
+  // Function to toggle selection of all reports
+  const toggleAllReports = () => {
+    if (selectedReportIds.length === reports.length) {
+      // If all are selected, unselect all
+      setSelectedReportIds([]);
+    } else {
+      // Otherwise, select all
+      setSelectedReportIds(reports.map((report) => report.id));
+    }
+  };
+
+  // Function to execute mass action
+  const executeMassAction = async () => {
+    if (selectedReportIds.length === 0) return;
+
+    try {
+      setIsMassActionLoading(true);
+
+      let payload: any = {
+        ids: selectedReportIds,
+        action: massActionType,
+      };
+
+      // Add specific data based on action type
+      switch (massActionType) {
+        case "update-status":
+          payload.data = { status: selectedMassStatus };
+          break;
+        case "assign-category":
+          payload.data = {
+            category:
+              selectedMassCategory === "none" ? null : selectedMassCategory,
+          };
+          break;
+        case "assign-users":
+          payload.data = { assignedTo: selectedMassUsers };
+          break;
+      }
+
+      const response = await fetch("/api/drive/error-report/batch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al procesar acción masiva");
+      }
+
+      // Reload reports and reset selections
+      await fetchReports();
+      setSelectedReportIds([]);
+      setIsMassActionDialogOpen(false);
+      setMassActionType(null);
+    } catch (error) {
+      console.error("Error ejecutando acción masiva:", error);
+      alert("Ha ocurrido un error al procesar la acción masiva");
+    } finally {
+      setIsMassActionLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -796,187 +880,268 @@ export default function ErrorReportsPage() {
               </p>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Archivo</TableHead>
-                    <TableHead>Reportado por</TableHead>
-                    <TableHead>Categoría</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Resuelto</TableHead>
-                    <TableHead>Asignado a</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {reports.map((report) => (
-                    <TableRow key={report.id} className="hover:bg-gray-50">
-                      <TableCell className="font-medium">
-                        <div className="flex flex-col">
-                          <span>{report.fileName}</span>
-                          <div className="flex mt-1">
-                            {renderStatusBadge(report.status)}
+            <>
+              {/* Bulk actions toolbar - appears when items are selected */}
+              {selectedReportIds.length > 0 && (
+                <div className="bg-blue-50 p-2 mb-4 rounded-md flex items-center justify-between">
+                  <div className="flex items-center">
+                    <span className="mr-2 text-blue-700 font-medium">
+                      {selectedReportIds.length}{" "}
+                      {selectedReportIds.length === 1
+                        ? "elemento seleccionado"
+                        : "elementos seleccionados"}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Select
+                      value={massActionType || ""}
+                      onValueChange={(value) => {
+                        setMassActionType(value);
+                        if (value) {
+                          setIsMassActionDialogOpen(true);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="w-48">
+                        <SelectValue placeholder="Acciones masivas" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="update-status">
+                          Cambiar estado
+                        </SelectItem>
+                        <SelectItem value="assign-category">
+                          Asignar categoría
+                        </SelectItem>
+                        <SelectItem value="assign-users">
+                          Asignar usuarios
+                        </SelectItem>
+                        <SelectItem value="delete">Eliminar</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedReportIds([])}
+                      size="sm"
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Limpiar selección
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-10">
+                        <div className="flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            checked={
+                              selectedReportIds.length === reports.length &&
+                              reports.length > 0
+                            }
+                            onChange={toggleAllReports}
+                            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                          />
+                        </div>
+                      </TableHead>
+                      <TableHead>Archivo</TableHead>
+                      <TableHead>Reportado por</TableHead>
+                      <TableHead>Categoría</TableHead>
+                      <TableHead>Fecha</TableHead>
+                      <TableHead>Resuelto</TableHead>
+                      <TableHead>Asignado a</TableHead>
+                      <TableHead className="text-right">Acciones</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {reports.map((report) => (
+                      <TableRow key={report.id} className="hover:bg-gray-50">
+                        <TableCell>
+                          <div className="flex items-center justify-center">
+                            <input
+                              type="checkbox"
+                              checked={selectedReportIds.includes(report.id)}
+                              onChange={() => toggleReportSelection(report.id)}
+                              className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                            />
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span>{report.fullName}</span>
-                          <span className="text-sm text-gray-500">
-                            {report.email}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {report.categoryRef ? (
-                          <Badge
-                            variant="outline"
-                            style={{
-                              backgroundColor: `${report.categoryRef.color}20`,
-                              borderColor: report.categoryRef.color,
-                              color: report.categoryRef.color,
-                            }}
-                          >
-                            {report.categoryRef.name}
-                          </Badge>
-                        ) : (
-                          <span className="text-gray-400 text-sm">
-                            Sin categoría
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {format(
-                          new Date(report.createdAt),
-                          "dd/MM/yyyy HH:mm",
-                          {
-                            locale: es,
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {report.resolvedAt
-                          ? format(
-                              new Date(report.resolvedAt),
-                              "dd/MM/yyyy HH:mm",
-                              {
-                                locale: es,
-                              }
-                            )
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        {report.assignedTo && report.assignedTo.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {report.assignedTo.length <= 2 ? (
-                              report.assignedTo.map((userId) => {
-                                const user = users.find((u) => u.id === userId);
-                                return user ? (
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          <div className="flex flex-col">
+                            <span>{report.fileName}</span>
+                            <div className="flex mt-1">
+                              {renderStatusBadge(report.status)}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-col">
+                            <span>{report.fullName}</span>
+                            <span className="text-sm text-gray-500">
+                              {report.email}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {report.categoryRef ? (
+                            <Badge
+                              variant="outline"
+                              style={{
+                                backgroundColor: `${report.categoryRef.color}20`,
+                                borderColor: report.categoryRef.color,
+                                color: report.categoryRef.color,
+                              }}
+                            >
+                              {report.categoryRef.name}
+                            </Badge>
+                          ) : (
+                            <span className="text-gray-400 text-sm">
+                              Sin categoría
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {format(
+                            new Date(report.createdAt),
+                            "dd/MM/yyyy HH:mm",
+                            {
+                              locale: es,
+                            }
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {report.resolvedAt
+                            ? format(
+                                new Date(report.resolvedAt),
+                                "dd/MM/yyyy HH:mm",
+                                {
+                                  locale: es,
+                                }
+                              )
+                            : "-"}
+                        </TableCell>
+                        <TableCell>
+                          {report.assignedTo && report.assignedTo.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {report.assignedTo.length <= 2 ? (
+                                report.assignedTo.map((userId) => {
+                                  const user = users.find(
+                                    (u) => u.id === userId
+                                  );
+                                  return user ? (
+                                    <Badge
+                                      key={userId}
+                                      variant="outline"
+                                      className="bg-blue-50 text-blue-700 border-blue-200"
+                                    >
+                                      {user.name.split(" ")[0]}
+                                    </Badge>
+                                  ) : null;
+                                })
+                              ) : (
+                                <>
                                   <Badge
-                                    key={userId}
                                     variant="outline"
                                     className="bg-blue-50 text-blue-700 border-blue-200"
                                   >
-                                    {user.name.split(" ")[0]}
+                                    {users
+                                      .find(
+                                        (u) => u.id === report.assignedTo![0]
+                                      )
+                                      ?.name.split(" ")[0] || ""}
                                   </Badge>
-                                ) : null;
-                              })
-                            ) : (
-                              <>
-                                <Badge
-                                  variant="outline"
-                                  className="bg-blue-50 text-blue-700 border-blue-200"
-                                >
-                                  {users
-                                    .find((u) => u.id === report.assignedTo![0])
-                                    ?.name.split(" ")[0] || ""}
-                                </Badge>
-                                <Badge
-                                  variant="outline"
-                                  className="bg-blue-50 text-blue-700 border-blue-200"
-                                >
-                                  +{report.assignedTo.length - 1}
-                                </Badge>
-                              </>
-                            )}
+                                  <Badge
+                                    variant="outline"
+                                    className="bg-blue-50 text-blue-700 border-blue-200"
+                                  >
+                                    +{report.assignedTo.length - 1}
+                                  </Badge>
+                                </>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-gray-400 text-sm">
+                              Sin asignar
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      setSelectedReport(report);
+                                      setNewNote(report.notes || "");
+                                      setIsReportDialogOpen(true);
+                                    }}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Editar</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() =>
+                                      sendImmediateReminder(report)
+                                    }
+                                    disabled={
+                                      isUpdating || report.status === "resolved"
+                                    }
+                                  >
+                                    <SendIcon className="h-4 w-4 text-blue-500" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Enviar recordatorio inmediato</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-destructive hover:text-destructive"
+                                    onClick={() => {
+                                      setSelectedReport(report);
+                                      setIsDeleteDialogOpen(true);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Eliminar</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </div>
-                        ) : (
-                          <span className="text-gray-400 text-sm">
-                            Sin asignar
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    setSelectedReport(report);
-                                    setNewNote(report.notes || "");
-                                    setIsReportDialogOpen(true);
-                                  }}
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Editar</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => sendImmediateReminder(report)}
-                                  disabled={
-                                    isUpdating || report.status === "resolved"
-                                  }
-                                >
-                                  <SendIcon className="h-4 w-4 text-blue-500" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Enviar recordatorio inmediato</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="text-destructive hover:text-destructive"
-                                  onClick={() => {
-                                    setSelectedReport(report);
-                                    setIsDeleteDialogOpen(true);
-                                  }}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Eliminar</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </TabsContent>
 
@@ -1334,6 +1499,181 @@ export default function ErrorReportsPage() {
                 <></>
               )}
               Guardar configuración
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mass action dialog */}
+      <Dialog
+        open={isMassActionDialogOpen}
+        onOpenChange={setIsMassActionDialogOpen}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {massActionType === "delete" && "Eliminar reportes"}
+              {massActionType === "update-status" && "Cambiar estado"}
+              {massActionType === "assign-category" && "Asignar categoría"}
+              {massActionType === "assign-users" && "Asignar usuarios"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 my-4">
+            <p className="mb-4">
+              {selectedReportIds.length}{" "}
+              {selectedReportIds.length === 1
+                ? "elemento seleccionado"
+                : "elementos seleccionados"}
+            </p>
+
+            {massActionType === "delete" && (
+              <div>
+                <p className="text-destructive font-medium">
+                  ¿Está seguro que desea eliminar todos los reportes
+                  seleccionados?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  Esta acción no se puede deshacer.
+                </p>
+              </div>
+            )}
+
+            {massActionType === "update-status" && (
+              <div>
+                <Label>Nuevo estado</Label>
+                <Select
+                  value={selectedMassStatus}
+                  onValueChange={setSelectedMassStatus}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue>
+                      {selectedMassStatus === "pending" && (
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                          <span>Pendiente</span>
+                        </div>
+                      )}
+                      {selectedMassStatus === "in-progress" && (
+                        <div className="flex items-center">
+                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                          <span>En progreso</span>
+                        </div>
+                      )}
+                      {selectedMassStatus === "resolved" && (
+                        <div className="flex items-center">
+                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                          <span>Resuelto</span>
+                        </div>
+                      )}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">
+                      <div className="flex items-center">
+                        <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                        <span>Pendiente</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="in-progress">
+                      <div className="flex items-center">
+                        <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                        <span>En progreso</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="resolved">
+                      <div className="flex items-center">
+                        <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                        <span>Resuelto</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {selectedMassStatus === "resolved" && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Se establecerá la fecha de resolución automáticamente.
+                  </p>
+                )}
+              </div>
+            )}
+
+            {massActionType === "assign-category" && (
+              <div>
+                <Label>Categoría</Label>
+                <Select
+                  value={selectedMassCategory}
+                  onValueChange={setSelectedMassCategory}
+ç                  disabled={loadingCategories}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Seleccionar categoría" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sin categoría</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: category.color }}
+                          ></div>
+                          <span>{category.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {massActionType === "assign-users" && (
+              <div>
+                <Label>Asignar a usuarios</Label>
+                <div className="mt-1">
+                  <UserChipSelect
+                    users={users}
+                    selectedIds={selectedMassUsers}
+                    onChange={setSelectedMassUsers}
+                    placeholder="Buscar y seleccionar usuarios..."
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Los usuarios seleccionados serán asignados a todos los
+                  reportes seleccionados.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button
+              variant={massActionType === "delete" ? "destructive" : "default"}
+              className="w-full sm:w-auto"
+              onClick={executeMassAction}
+              disabled={isMassActionLoading}
+            >
+              {isMassActionLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : massActionType === "delete" ? (
+                <Trash2 className="h-4 w-4 mr-2" />
+              ) : (
+                <Check className="h-4 w-4 mr-2" />
+              )}
+              {massActionType === "delete"
+                ? "Eliminar"
+                : massActionType === "update-status"
+                ? "Actualizar estado"
+                : massActionType === "assign-category"
+                ? "Asignar categoría"
+                : "Asignar usuarios"}
+            </Button>
+
+            <Button
+              variant="secondary"
+              className="w-full sm:w-auto"
+              onClick={() => setIsMassActionDialogOpen(false)}
+            >
+              Cancelar
             </Button>
           </DialogFooter>
         </DialogContent>

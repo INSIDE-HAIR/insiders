@@ -1,8 +1,6 @@
 "use client";
 
-import { notFound } from "next/navigation";
 import { useState, useEffect } from "react";
-import prisma from "../../../lib/prisma";
 import {
   Card,
   CardContent,
@@ -11,7 +9,6 @@ import {
   CardTitle,
   CardFooter,
 } from "@/src/components/ui/card";
-import { ViewSelector } from "@/src/app/[lang]/admin/drive/components/views";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import {
   Accordion,
