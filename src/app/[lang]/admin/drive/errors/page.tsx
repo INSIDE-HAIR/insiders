@@ -1603,7 +1603,7 @@ export default function ErrorReportsPage() {
                 <Select
                   value={selectedMassCategory}
                   onValueChange={setSelectedMassCategory}
-ç                  disabled={loadingCategories}
+                  disabled={loadingCategories}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar categoría" />
