@@ -53,7 +53,11 @@ export function ContentHeader({
   const displaySubtitle = contextSubtitle || propSubtitle || "Sin subtítulo";
 
   return (
-    <div className="flex flex-col shrink-0 w-full">
+    <div
+      className={`flex flex-col shrink-0 w-full ${
+        isInIframe ? "iframe-fixed top-0 left-0 right-0 z-30" : ""
+      }`}
+    >
       {/* Top navigation bar - dark zinc-700 */}
       <div className="flex h-auto items-center justify-center bg-zinc-700 text-zinc-50 py-2 relative">
         <div className="absolute left-4">

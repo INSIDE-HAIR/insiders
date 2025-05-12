@@ -17,6 +17,7 @@ interface RecursiveContentRendererProps {
   level: number;
   parentId: string | null;
   parentType: string;
+  isInIframe?: boolean;
 }
 
 /**
@@ -34,12 +35,14 @@ interface RecursiveContentRendererProps {
  * @param {number} level - Nivel de profundidad en la jerarquía de contenido
  * @param {string|null} parentId - ID del elemento padre
  * @param {string} parentType - Tipo del elemento padre (sidebar, tab, section)
+ * @param {boolean} isInIframe - Indica si el contenido se está renderizando en un iframe
  * @returns Contenido renderizado según la jerarquía y tipo
  */
 export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
   level,
   parentId,
   parentType,
+  isInIframe = false,
 }: RecursiveContentRendererProps) {
   const { getChildrenByType, navigationPath, getItemById } = useContent();
   const currentPathItem = navigationPath.find((item) => item.level === level);
@@ -141,19 +144,23 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
   }
 
   return (
-    <div className='w-full flex flex-col items-center max-w-screen-2xl mx-auto'>
-      {/* Título principal (solo en el primer nivel) */}
+    <div
+      className={`w-full flex flex-col items-center max-w-screen-2xl mx-auto ${
+        isInIframe ? "px-2" : ""
+      }`}
+    >
+      {/* Título principal (siempre visible, incluso en iframe) */}
       {level === 1 && (
-        <h1 className='text-3xl font-bold text-center w-full text-black my-4'>
+        <h1 className="text-3xl font-bold text-center w-full text-black my-4">
           {sidebarTitle}
         </h1>
       )}
 
       {/* 1. Renderizar formularios de Google primero */}
       {googleFormItems.length > 0 && (
-        <div className='w-full flex flex-col items-center mb-6'>
+        <div className="w-full flex flex-col items-center mb-6">
           {googleFormItems.map((item) => (
-            <div key={item.id} className='w-full max-w-md'>
+            <div key={item.id} className="w-full max-w-md">
               <ComponentSelector item={item} />
             </div>
           ))}
@@ -162,9 +169,9 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* 2. Renderizar botones */}
       {buttonItems.length > 0 && (
-        <div className='w-full flex justify-center mb-6 max-w-md mx-auto'>
+        <div className="w-full flex justify-center mb-6 max-w-md mx-auto">
           {buttonItems.map((item) => (
-            <div key={item.id} className='mx-2'>
+            <div key={item.id} className="mx-2">
               <ComponentSelector item={item} />
             </div>
           ))}
@@ -173,9 +180,9 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* 3. Renderizar modales */}
       {modalItems.length > 0 && (
-        <div className='w-full flex justify-center items-center mb-6 mx-auto'>
+        <div className="w-full flex justify-center items-center mb-6 mx-auto">
           {modalItems.map((item) => (
-            <div key={item.id} className='flex justify-center'>
+            <div key={item.id} className="flex justify-center">
               <ComponentSelector item={item} />
             </div>
           ))}
@@ -194,12 +201,13 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
       {/* 5. Si hay un tab seleccionado, renderizar su contenido */}
       {currentPathItem &&
         tabItems.some((item) => item.id === currentPathItem.id) && (
-          <div className='w-full flex justify-center overflow-hidden'>
-            <div className='w-full overflow-hidden'>
+          <div className="w-full flex justify-center overflow-hidden">
+            <div className="w-full overflow-hidden">
               <RecursiveContentRenderer
                 level={level + 1}
                 parentId={currentPathItem.id}
-                parentType='tab'
+                parentType="tab"
+                isInIframe={isInIframe}
               />
             </div>
           </div>
@@ -207,9 +215,9 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* 6. Renderizar videos de Vimeo */}
       {vimeoItems.length > 0 && (
-        <div className='w-full flex flex-col items-center max-w-4xl mx-auto'>
+        <div className="w-full flex flex-col items-center max-w-4xl mx-auto">
           {vimeoItems.map((item) => (
-            <div key={item.id} className='w-full max-w-4xl mb-8'>
+            <div key={item.id} className="w-full max-w-4xl mb-8">
               <ComponentSelector item={item} />
             </div>
           ))}
@@ -218,10 +226,10 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* 7. Renderizar presentaciones de Google Slides */}
       {googleSlidesItems.length > 0 && (
-        <div className='w-full flex flex-col items-center max-w-5xl mx-auto'>
+        <div className="w-full flex flex-col items-center max-w-5xl mx-auto">
           {googleSlidesItems.map((item) => (
-            <div key={item.id} className='w-full max-w-4xl mb-8'>
-              <h2 className='text-xl font-semibold text-black w-full text-center mb-4'>
+            <div key={item.id} className="w-full max-w-4xl mb-8">
+              <h2 className="text-xl font-semibold text-black w-full text-center mb-4">
                 {item.displayName}
               </h2>
               <GoogleSlidesRenderer item={item} />
@@ -232,12 +240,16 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* 8. Renderizar secciones si existen */}
       {sectionItems.length > 0 && (
-        <SectionNavigation sections={sectionItems} level={level} />
+        <SectionNavigation
+          sections={sectionItems}
+          level={level}
+          isInIframe={isInIframe}
+        />
       )}
 
       {/* 9. Renderizar otros elementos directos */}
       {otherDirectItems.length > 0 && (
-        <div className='w-full mt-2'>
+        <div className="w-full mt-2">
           <ContentGrid items={otherDirectItems} />
         </div>
       )}

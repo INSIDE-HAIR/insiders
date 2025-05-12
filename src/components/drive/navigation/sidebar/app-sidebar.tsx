@@ -14,6 +14,10 @@ import {
 } from "@/src/components/ui/sidebar";
 import { SidebarCloseButton } from "./sidebar-close-button";
 
+interface AppSidebarProps {
+  isInIframe?: boolean;
+}
+
 /**
  * AppSidebar
  *
@@ -22,7 +26,9 @@ import { SidebarCloseButton } from "./sidebar-close-button";
  *
  * @returns Barra lateral de navegación con elementos seleccionables
  */
-export const AppSidebar = memo(function AppSidebar() {
+export const AppSidebar = memo(function AppSidebar({
+  isInIframe = false,
+}: AppSidebarProps) {
   const {
     getSidebarItems,
     navigationPath,
@@ -88,7 +94,9 @@ export const AppSidebar = memo(function AppSidebar() {
   return (
     <Sidebar
       variant="sidebar"
-      className="bg-zinc-900 text-white border-r border-zinc-800 shadow-md absolute z-40"
+      className={`bg-zinc-900 text-white border-r border-zinc-800 shadow-md ${
+        isInIframe ? "iframe-fixed" : "absolute"
+      } z-40`}
       collapsible="offcanvas"
     >
       {/* Botón de cierre (X verde) */}

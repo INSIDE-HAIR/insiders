@@ -46,20 +46,25 @@ const ContentLayout = () => {
   }
 
   return (
-    <SidebarProvider defaultOpen={isLargeScreen}>
+    <SidebarProvider defaultOpen={isInIframe ? false : isLargeScreen}>
       <div
         className={`flex w-full overflow-hidden bg-white text-zinc-100 relative ${
           isInIframe ? "iframe-container" : ""
         }`}
         style={{
           height: isInIframe ? "100%" : "100vh",
-          minHeight: isInIframe ? "100%" : "100vh",
+          minHeight: isInIframe ? "auto" : "100vh",
+          maxHeight: isInIframe ? "100%" : "100vh",
           overflow: "hidden",
         }}
       >
-        <AppSidebar />
-        <div className="flex-1 h-full overflow-hidden bg-white">
-          <ContentRenderer />
+        <AppSidebar isInIframe={isInIframe} />
+        <div
+          className={`flex-1 h-full overflow-hidden bg-white ${
+            isInIframe ? "w-full" : ""
+          }`}
+        >
+          <ContentRenderer isInIframe={isInIframe} />
         </div>
       </div>
     </SidebarProvider>

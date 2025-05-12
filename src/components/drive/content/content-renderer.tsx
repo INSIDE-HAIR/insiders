@@ -16,7 +16,11 @@ import { RecursiveContentRenderer } from "@/src/components/drive/content/recursi
  *
  * @returns El contenido completo con encabezado y área de contenido
  */
-export const ContentRenderer = memo(function ContentRenderer() {
+export const ContentRenderer = memo(function ContentRenderer({
+  isInIframe = false,
+}: {
+  isInIframe?: boolean;
+}) {
   const { navigationPath, getItemById } = useContent();
 
   // Si no hay elementos seleccionados, mostrar mensaje
@@ -39,14 +43,30 @@ export const ContentRenderer = memo(function ContentRenderer() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div
+      className={`flex flex-col ${
+        isInIframe ? "h-full" : "h-full"
+      } overflow-hidden`}
+    >
       <ContentHeader title={sidebarItem.displayName} />
-      <div className="flex-1 overflow-auto bg-white">
-        <div className="w-full overflow-hidden py-6 pb-[120px]">
+      <div
+        className={`flex-1 overflow-auto bg-white ${
+          isInIframe ? "max-h-full" : ""
+        }`}
+        style={{
+          marginTop: isInIframe ? "80px" : "0",
+        }}
+      >
+        <div
+          className={`w-full overflow-visible py-6 ${
+            isInIframe ? "pb-6" : "pb-[120px]"
+          }`}
+        >
           <RecursiveContentRenderer
             level={1}
             parentId={navigationPath[0].id}
             parentType="sidebar"
+            isInIframe={isInIframe}
           />
         </div>
       </div>
