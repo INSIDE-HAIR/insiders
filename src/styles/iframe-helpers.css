@@ -3,16 +3,34 @@
 /* Fix for elements with fixed positioning inside iframes */
 .iframe-fixed {
   position: fixed !important;
-  z-index: 9999 !important;
+  z-index: 49 !important;
   visibility: visible !important;
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
-  perspective: 1000;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
+  backface-visibility: hidden !important;
+  -webkit-transform: translateZ(0) !important;
+  -webkit-backface-visibility: hidden !important;
+  -webkit-perspective: 1000 !important;
+  perspective: 1000 !important;
   transition: none !important;
+  top: 0 !important;
+  transform-style: preserve-3d !important;
+  -webkit-transform-style: preserve-3d !important;
+  transition: left 0.3s ease, right 0.3s ease, width 0.3s ease !important;
+}
+
+/* Header con sidebar abierto */
+.iframe-fixed-with-sidebar {
+  left: 255px !important; /* Ancho ajustado del sidebar */
+  right: 0 !important;
+  width: calc(100% - 255px) !important;
+}
+
+/* Header con sidebar cerrado */
+.iframe-fixed-without-sidebar {
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
 }
 
 /* Apply to parent containers in iframes */
@@ -21,14 +39,24 @@
   height: 100%;
   min-height: 100%;
   overflow: visible;
-  padding-top: 80px; /* Add padding to account for fixed header */
+  padding-top: 100px; /* Increased padding to account for fixed header */
   box-sizing: border-box;
+}
+
+/* Container for the content in iframes */
+.iframe-content-container {
+  position: relative;
+  padding-top: 100px; /* Space for fixed header */
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  transition: width 0.3s ease, margin-left 0.3s ease;
 }
 
 /* Ensure buttons have proper stacking context */
 .iframe-button {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  z-index: 9999;
+  z-index: 49;
   transform: translateZ(0);
   opacity: 1 !important;
   visibility: visible !important;
@@ -58,7 +86,7 @@
 .header-button-iframe {
   background-color: #3f3f46 !important; /* Un poco más oscuro que el header para destacar */
   color: white !important;
-  z-index: 9999 !important;
+  z-index: 59 !important;
   opacity: 1 !important;
   visibility: visible !important;
   pointer-events: auto !important;
@@ -104,7 +132,7 @@
   position: absolute !important;
   top: 16px !important;
   right: 16px !important;
-  z-index: 9999 !important;
+  z-index: 59 !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;

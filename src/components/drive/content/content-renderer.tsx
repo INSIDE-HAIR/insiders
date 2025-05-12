@@ -4,6 +4,7 @@ import React, { memo } from "react";
 import { useContent } from "@/src/context/DriveCompoentesContext";
 import { ContentHeader } from "@/src/components/drive/layout/content-header";
 import { RecursiveContentRenderer } from "@/src/components/drive/content/recursive-content-renderer";
+import { useSidebar } from "@/src/components/ui/sidebar";
 
 /**
  * ContentRenderer
@@ -22,6 +23,7 @@ export const ContentRenderer = memo(function ContentRenderer({
   isInIframe?: boolean;
 }) {
   const { navigationPath, getItemById } = useContent();
+  const { open: sidebarOpen } = useSidebar();
 
   // Si no hay elementos seleccionados, mostrar mensaje
   if (navigationPath.length === 0) {
@@ -51,10 +53,12 @@ export const ContentRenderer = memo(function ContentRenderer({
       <ContentHeader title={sidebarItem.displayName} />
       <div
         className={`flex-1 overflow-auto bg-white ${
-          isInIframe ? "max-h-full" : ""
+          isInIframe ? "max-h-full pt-2" : ""
         }`}
         style={{
-          marginTop: isInIframe ? "80px" : "0",
+          marginTop: isInIframe ? "100px" : "0",
+          paddingTop: isInIframe ? "10px" : "0",
+          transition: "margin-left 0.3s ease",
         }}
       >
         <div

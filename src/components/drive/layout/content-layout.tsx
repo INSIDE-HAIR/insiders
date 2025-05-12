@@ -56,13 +56,17 @@ const ContentLayout = () => {
           minHeight: isInIframe ? "auto" : "100vh",
           maxHeight: isInIframe ? "100%" : "100vh",
           overflow: "hidden",
+          position: "relative",
         }}
       >
         <AppSidebar isInIframe={isInIframe} />
         <div
           className={`flex-1 h-full overflow-hidden bg-white ${
-            isInIframe ? "w-full" : ""
+            isInIframe ? "w-full iframe-content-container" : ""
           }`}
+          style={{
+            position: isInIframe ? "relative" : "static",
+          }}
         >
           <ContentRenderer isInIframe={isInIframe} />
         </div>

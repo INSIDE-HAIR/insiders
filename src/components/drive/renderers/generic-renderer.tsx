@@ -385,7 +385,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     statusElement.style.color = "#000";
     statusElement.style.padding = "10px 20px";
     statusElement.style.borderRadius = "4px";
-    statusElement.style.zIndex = "9999";
+    statusElement.style.zIndex = "49";
     statusElement.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
     document.body.appendChild(statusElement);
 
