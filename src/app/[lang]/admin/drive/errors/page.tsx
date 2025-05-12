@@ -23,6 +23,8 @@ import {
   BellRing,
   SendIcon,
   Flag,
+  Info,
+  Bell,
 } from "lucide-react";
 import {
   Table,
@@ -38,6 +40,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/src/components/ui/dialog";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
@@ -82,6 +85,12 @@ import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
 import { useToast } from "@/src/components/ui/use-toast";
 import { Toaster } from "@/src/components/ui/toaster";
+import {
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+} from "@/src/components/ui/dropdown-menu";
+import { Send } from "lucide-react";
 
 type ErrorReport = {
   id: string;
@@ -129,6 +138,17 @@ type RecipientConfig = {
 };
 
 type UserRole = "ADMIN" | "CLIENT" | "EMPLOYEE";
+
+// Interfaz para plantillas de correo
+type EmailTemplate = {
+  id: string;
+  name: string;
+  subject: string;
+  content: string;
+  isDefault?: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
 // Componente personalizado basado en ChipInput para seleccionar usuarios
 function UserChipSelect({
@@ -306,6 +326,15 @@ export default function ErrorReportsPage() {
   const [customDateEnd, setCustomDateEnd] = useState<string>("");
   const [filteredReports, setFilteredReports] = useState<ErrorReport[]>([]);
   const [isCustomDateDialogOpen, setIsCustomDateDialogOpen] = useState(false);
+
+  // Estado para envío de correos
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+  const [customEmailSubject, setCustomEmailSubject] = useState("");
+  const [customEmailContent, setCustomEmailContent] = useState("");
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   // Cargar reportes y configuración al iniciar
   useEffect(() => {
@@ -1021,6 +1050,183 @@ export default function ErrorReportsPage() {
     }
   }, [isCustomDateDialogOpen, customDateStart, customDateEnd]);
 
+  // Función para cargar plantillas de correo
+  const fetchEmailTemplates = async () => {
+    try {
+      setLoadingTemplates(true);
+      const response = await fetch("/api/drive/email-templates");
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Error al cargar plantillas");
+      }
+
+      const data = await response.json();
+      setEmailTemplates(data.templates || []);
+
+      // Si hay plantillas y hay una por defecto, seleccionarla
+      const defaultTemplate = data.templates.find(
+        (t: EmailTemplate) => t.isDefault
+      );
+      if (defaultTemplate) {
+        setSelectedTemplate(defaultTemplate.id);
+        setCustomEmailSubject(defaultTemplate.subject);
+        setCustomEmailContent(defaultTemplate.content);
+      } else if (data.templates.length > 0) {
+        setSelectedTemplate(data.templates[0].id);
+        setCustomEmailSubject(data.templates[0].subject);
+        setCustomEmailContent(data.templates[0].content);
+      }
+    } catch (error) {
+      console.error("Error al cargar plantillas:", error);
+      toast({
+        title: "Error al cargar plantillas",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "error",
+      });
+    } finally {
+      setLoadingTemplates(false);
+    }
+  };
+
+  // Función para cambiar la plantilla seleccionada
+  const handleTemplateChange = (templateId: string) => {
+    setSelectedTemplate(templateId);
+
+    if (templateId === "custom") {
+      // Si es personalizado, dejar campos vacíos o con valores por defecto
+      setCustomEmailSubject("Resolución de problema reportado");
+      setCustomEmailContent(
+        "Estimado cliente,\n\nConsideramos que hemos resuelto el problema reportado. Si sigue teniendo problemas, no dude en responder a este correo.\n\nSaludos cordiales,\nEquipo de soporte"
+      );
+      return;
+    }
+
+    const template = emailTemplates.find((t) => t.id === templateId);
+    if (template) {
+      setCustomEmailSubject(template.subject);
+      setCustomEmailContent(template.content);
+    }
+  };
+
+  // Función para enviar correo de resolución
+  const sendResolutionEmail = async () => {
+    if (!selectedReport) return;
+
+    try {
+      setIsSendingEmail(true);
+
+      // Determinar los destinatarios (email del cliente que reportó)
+      const recipients = [selectedReport.email];
+
+      // Obtener emails de usuarios asignados para CC
+      const assignedUserEmails: string[] = [];
+      if (selectedReport.assignedTo && selectedReport.assignedTo.length > 0) {
+        selectedReport.assignedTo.forEach((userId) => {
+          const user = users.find((u) => u.id === userId);
+          if (user && user.email) {
+            assignedUserEmails.push(user.email);
+          }
+        });
+      }
+
+      // Preparar contenido personalizado
+      let emailContent = customEmailContent;
+
+      // Reemplazar variables en el contenido
+      emailContent = emailContent
+        .replace(/\{nombreCliente\}/g, selectedReport.fullName)
+        .replace(/\{nombreArchivo\}/g, selectedReport.fileName)
+        .replace(
+          /\{fechaReporte\}/g,
+          new Date(selectedReport.createdAt).toLocaleDateString()
+        )
+        .replace(
+          /\{correoAsignado\}/g,
+          assignedUserEmails.join(", ") || "soporte@example.com"
+        );
+
+      const response = await fetch(
+        `/api/drive/error-report/${selectedReport.id}/resolution-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            recipients,
+            cc: assignedUserEmails,
+            subject: customEmailSubject,
+            content: emailContent,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al enviar correo");
+      }
+
+      // Cerrar modal
+      setIsEmailModalOpen(false);
+
+      // Mostrar toast de éxito
+      toast({
+        title: "Correo enviado",
+        description: "El correo de resolución se envió correctamente.",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error al enviar correo:", error);
+      toast({
+        title: "Error al enviar correo",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "error",
+      });
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
+  // Editar un reporte
+  const handleEditReport = (report: ErrorReport) => {
+    setSelectedReport(report);
+
+    // Establecer valores iniciales
+    setSelectedStatus(report.status);
+    setResolvedDate(report.resolvedAt || "");
+    setSelectedCategory(report.category || "none");
+    setSelectedUsers(report.assignedTo || []);
+    setNewNote(report.notes || "");
+
+    setIsReportDialogOpen(true);
+  };
+
+  // Cargar datos necesarios cuando se abre el diálogo de reporte
+  useEffect(() => {
+    if (isReportDialogOpen) {
+      // Cargar categorías si no están cargadas
+      if (categories.length === 0) {
+        fetchCategories();
+      }
+
+      // Cargar usuarios si no están cargados
+      if (users.length === 0) {
+        fetchUsers();
+      }
+    }
+  }, [isReportDialogOpen, categories.length, users.length]);
+
+  // Cargar plantillas de correo cuando se abre el modal de correo
+  useEffect(() => {
+    if (isEmailModalOpen) {
+      fetchEmailTemplates();
+    }
+  }, [isEmailModalOpen]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -1162,7 +1368,7 @@ export default function ErrorReportsPage() {
                       <SelectItem value="resolved">
                         <div className="flex items-center">
                           <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
-                          <span>Resueltos</span>
+                          <span>Resuelto</span>
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -1369,9 +1575,7 @@ export default function ErrorReportsPage() {
                                     variant="ghost"
                                     size="icon"
                                     onClick={() => {
-                                      setSelectedReport(report);
-                                      setNewNote(report.notes || "");
-                                      setIsReportDialogOpen(true);
+                                      handleEditReport(report);
                                     }}
                                   >
                                     <Pencil className="h-4 w-4" />
@@ -1396,7 +1600,7 @@ export default function ErrorReportsPage() {
                                       isUpdating || report.status === "resolved"
                                     }
                                   >
-                                    <SendIcon className="h-4 w-4 text-blue-500" />
+                                    <BellRing className="h-4 w-4 text-blue-500" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -1422,6 +1626,26 @@ export default function ErrorReportsPage() {
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <p>Eliminar</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      setSelectedReport(report);
+                                      setIsEmailModalOpen(true);
+                                    }}
+                                  >
+                                    <Mail className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Enviar correo de resolución</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -2027,6 +2251,130 @@ export default function ErrorReportsPage() {
               variant="secondary"
               className="w-full sm:w-auto"
               onClick={() => setIsCustomDateDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de envío de correo de resolución */}
+      <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Enviar correo de resolución</DialogTitle>
+            <DialogDescription>
+              Envía un correo al cliente para informarle que su problema ha sido
+              resuelto.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 my-4">
+            {selectedReport && (
+              <div className="bg-slate-100 p-3 rounded-md mb-4">
+                <p className="font-medium">{selectedReport.fileName}</p>
+                <p className="text-sm">
+                  Reportado por: {selectedReport.fullName}
+                </p>
+                <p className="text-sm">Correo: {selectedReport.email}</p>
+                <div className="flex items-center mt-1">
+                  {renderStatusBadge(selectedReport.status)}
+                  {renderCategoryBadge(selectedReport)}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="template" className="text-sm font-medium">
+                Plantilla
+              </Label>
+              <Select
+                value={selectedTemplate}
+                onValueChange={handleTemplateChange}
+                disabled={loadingTemplates}
+              >
+                <SelectTrigger className="w-full bg-white">
+                  <SelectValue placeholder="Selecciona una plantilla" />
+                </SelectTrigger>
+                <SelectContent>
+                  {emailTemplates.map((template) => (
+                    <SelectItem key={template.id} value={template.id}>
+                      {template.name}
+                      {template.isDefault && " (Predeterminada)"}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="custom">Personalizada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="subject" className="text-sm font-medium">
+                Asunto
+              </Label>
+              <Input
+                id="subject"
+                value={customEmailSubject}
+                onChange={(e) => setCustomEmailSubject(e.target.value)}
+                placeholder="Asunto del correo"
+                className="w-full bg-white"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="content" className="text-sm font-medium">
+                Contenido
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="ml-2 cursor-help">
+                      <Info className="h-4 w-4 text-gray-400" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">
+                        Puedes usar las siguientes variables:
+                        <br />
+                        {"{nombreCliente}"} - Nombre del cliente
+                        <br />
+                        {"{nombreArchivo}"} - Nombre del archivo
+                        <br />
+                        {"{fechaReporte}"} - Fecha del reporte
+                        <br />
+                        {"{correoAsignado}"} - Correo del usuario asignado
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </Label>
+              <textarea
+                id="content"
+                value={customEmailContent}
+                onChange={(e) => setCustomEmailContent(e.target.value)}
+                rows={10}
+                className="w-full border rounded-md p-2 bg-white"
+                placeholder="Contenido del correo"
+              ></textarea>
+            </div>
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button
+              variant="default"
+              onClick={sendResolutionEmail}
+              disabled={isSendingEmail}
+              className="w-full sm:w-auto"
+            >
+              {isSendingEmail ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              Enviar correo
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => setIsEmailModalOpen(false)}
+              className="w-full sm:w-auto"
             >
               Cancelar
             </Button>
