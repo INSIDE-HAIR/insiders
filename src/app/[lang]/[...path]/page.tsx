@@ -143,7 +143,7 @@ export default function DynamicDrivePage({
   const isProduction = process.env.NODE_ENV === "production";
 
   return (
-    <div className="w-screen bg-white pb-[120px]">
+    <div className="w-screen">
       {/* Selector de modo de vista - solo visible para administradores */}
       {isAdmin && (
         <ViewModeSelector mode={viewMode} onChange={handleViewModeChange} />

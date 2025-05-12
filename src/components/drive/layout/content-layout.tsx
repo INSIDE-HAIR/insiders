@@ -48,7 +48,7 @@ const ContentLayout = () => {
   return (
     <SidebarProvider defaultOpen={isLargeScreen}>
       <div
-        className={`flex w-full overflow-hidden bg-zinc-900 text-zinc-100 relative ${
+        className={`flex w-full overflow-hidden bg-white text-zinc-100 relative ${
           isInIframe ? "iframe-container" : ""
         }`}
         style={{
@@ -58,7 +58,7 @@ const ContentLayout = () => {
         }}
       >
         <AppSidebar />
-        <div className="flex-1 h-full overflow-hidden">
+        <div className="flex-1 h-full overflow-hidden bg-white">
           <ContentRenderer />
         </div>
       </div>
