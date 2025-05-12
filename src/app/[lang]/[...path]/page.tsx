@@ -110,9 +110,9 @@ export default function DynamicDrivePage({
   // Mostrar carga
   if (isLoading) {
     return (
-      <div className='flex justify-center items-center min-h-[50vh]'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4'></div>
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p>Cargando contenido...</p>
         </div>
       </div>
@@ -122,10 +122,10 @@ export default function DynamicDrivePage({
   // Mostrar error
   if (error || !routeData) {
     return (
-      <div className=''>
-        <Card className='border-destructive'>
+      <div className="">
+        <Card className="border-destructive">
           <CardHeader>
-            <CardTitle className='text-destructive'>Error</CardTitle>
+            <CardTitle className="text-destructive">Error</CardTitle>
           </CardHeader>
           <CardContent>
             <p>{error || "No se pudo cargar el contenido"}</p>
@@ -143,7 +143,7 @@ export default function DynamicDrivePage({
   const isProduction = process.env.NODE_ENV === "production";
 
   return (
-    <div className='w-screen'>
+    <div className="w-screen bg-white pb-[120px]">
       {/* Selector de modo de vista - solo visible para administradores */}
       {isAdmin && (
         <ViewModeSelector mode={viewMode} onChange={handleViewModeChange} />
@@ -161,20 +161,20 @@ export default function DynamicDrivePage({
 
       {/* Vista de administrador - solo visible para administradores */}
       {isAdmin && viewMode === "admin" && (
-        <div className='container py-10'>
+        <div className="container py-10">
           {routeData.title && (
-            <div className='mb-8 text-center'>
-              <h1 className='text-4xl font-bold mb-2'>{routeData.title}</h1>
+            <div className="mb-8 text-center">
+              <h1 className="text-4xl font-bold mb-2">{routeData.title}</h1>
               {routeData.subtitle && (
-                <p className='text-xl text-muted-foreground'>
+                <p className="text-xl text-muted-foreground">
                   {routeData.subtitle}
                 </p>
               )}
-              <div className='flex justify-center mt-2'>
-                <Badge variant='warning' className='ml-2'>
+              <div className="flex justify-center mt-2">
+                <Badge variant="warning" className="ml-2">
                   Slug: {slug}
                 </Badge>
-                <Badge variant='default' className='ml-2'>
+                <Badge variant="default" className="ml-2">
                   Vistas: {routeData.viewCount}
                 </Badge>
               </div>
@@ -182,24 +182,24 @@ export default function DynamicDrivePage({
           )}
 
           {routeData.description && (
-            <Card className='mb-8'>
-              <CardContent className='pt-6'>
+            <Card className="mb-8">
+              <CardContent className="pt-6">
                 <p>{routeData.description}</p>
               </CardContent>
             </Card>
           )}
 
-          <Tabs defaultValue='content' className='mb-8'>
+          <Tabs defaultValue="content" className="mb-8">
             <TabsList>
-              <TabsTrigger value='content'>Contenido</TabsTrigger>
-              <TabsTrigger value='debug' disabled={isProduction}>
+              <TabsTrigger value="content">Contenido</TabsTrigger>
+              <TabsTrigger value="debug" disabled={isProduction}>
                 Debug
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value='content'>
+            <TabsContent value="content">
               <Card>
-                <CardContent className='p-0 sm:p-6'>
+                <CardContent className="p-0 sm:p-6">
                   <ClientViewSelector
                     hierarchy={
                       Array.isArray(hierarchy) ? hierarchy : [hierarchy]
@@ -209,7 +209,7 @@ export default function DynamicDrivePage({
               </Card>
             </TabsContent>
 
-            <TabsContent value='debug'>
+            <TabsContent value="debug">
               <Card>
                 <CardHeader>
                   <CardTitle>Información de Diagnóstico</CardTitle>
@@ -218,11 +218,11 @@ export default function DynamicDrivePage({
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Accordion type='single' collapsible className='w-full'>
-                    <AccordionItem value='route-params'>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="route-params">
                       <AccordionTrigger>Parámetros de ruta</AccordionTrigger>
                       <AccordionContent>
-                        <pre className='bg-muted p-4 rounded-md overflow-x-auto'>
+                        <pre className="bg-muted p-4 rounded-md overflow-x-auto">
                           {JSON.stringify(
                             {
                               path: params.path,
@@ -236,10 +236,10 @@ export default function DynamicDrivePage({
                       </AccordionContent>
                     </AccordionItem>
 
-                    <AccordionItem value='route-data'>
+                    <AccordionItem value="route-data">
                       <AccordionTrigger>Datos de DriveRoute</AccordionTrigger>
                       <AccordionContent>
-                        <pre className='bg-muted p-4 rounded-md overflow-x-auto'>
+                        <pre className="bg-muted p-4 rounded-md overflow-x-auto">
                           {JSON.stringify(
                             {
                               id: routeData.id,
@@ -259,12 +259,12 @@ export default function DynamicDrivePage({
                       </AccordionContent>
                     </AccordionItem>
 
-                    <AccordionItem value='hierarchy-data'>
+                    <AccordionItem value="hierarchy-data">
                       <AccordionTrigger>
                         Estructura de jerarquía
                       </AccordionTrigger>
                       <AccordionContent>
-                        <pre className='bg-muted p-4 rounded-md overflow-x-auto'>
+                        <pre className="bg-muted p-4 rounded-md overflow-x-auto">
                           {JSON.stringify(hierarchy, null, 2)}
                         </pre>
                       </AccordionContent>
@@ -275,7 +275,7 @@ export default function DynamicDrivePage({
             </TabsContent>
           </Tabs>
 
-          <div className='mt-4 text-center text-sm text-muted-foreground'>
+          <div className="mt-4 text-center text-sm text-muted-foreground">
             Última actualización:{" "}
             {new Date(routeData.lastUpdated).toLocaleString()}
           </div>
