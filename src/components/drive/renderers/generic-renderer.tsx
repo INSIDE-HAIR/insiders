@@ -448,7 +448,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
 
       {/* Botón de reporte de error absoluto relativo a toda la tarjeta */}
       <div
-        className="absolute right-2 top-2 z-20 rounded-full p-1 cursor-pointer bg-black bg-opacity-30 hover:bg-opacity-50"
+        className="absolute right-2 top-2 z-10 rounded-full p-1 cursor-pointer bg-black bg-opacity-30 hover:bg-opacity-50 "
         onClick={(e) => {
           e.stopPropagation();
           setIsReportModalOpen(true);
