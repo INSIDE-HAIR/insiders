@@ -7,6 +7,7 @@ import {
 import { DriveType } from "../../../types/drive";
 import { Prefix } from "../../../types/prefix";
 import { Suffix } from "../../../types/suffix";
+import { FolderItem, HierarchyItem } from "../../../types/hierarchy";
 
 // Función para crear un elemento de carpeta con prefijos específicos para pruebas
 function createFolderWithPrefixes(
@@ -14,8 +15,8 @@ function createFolderWithPrefixes(
   name: string,
   prefixes: string[] = [],
   suffixes: string[] = [],
-  children: any[] = []
-) {
+  children: HierarchyItem[] = []
+): FolderItem {
   return {
     id,
     name,
@@ -24,8 +25,8 @@ function createFolderWithPrefixes(
     driveType: DriveType.FOLDER,
     depth: 0,
     order: 0,
-    prefixes,
-    suffixes,
+    prefixes: prefixes as Prefix[],
+    suffixes: suffixes as Suffix[],
     children,
   };
 }
@@ -45,8 +46,8 @@ function createFileItem(
     driveType: DriveType.FILE,
     depth: 0,
     order: 0,
-    prefixes,
-    suffixes,
+    prefixes: prefixes as Prefix[],
+    suffixes: suffixes as Suffix[],
     children: [],
     mimeType: "text/plain",
   };

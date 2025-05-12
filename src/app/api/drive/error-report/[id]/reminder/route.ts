@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { Resend } from "resend";
+import { User } from "@/src/types/user";
 
 const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -10,6 +11,11 @@ export const dynamic = "force-dynamic";
 interface RequestBody {
   recipients: string[];
   manualTrigger: boolean;
+}
+
+interface AssignedUser {
+  name: string | null;
+  email: string;
 }
 
 /**
@@ -58,7 +64,7 @@ export async function POST(
     }
 
     // Obtener información de usuarios asignados si existen
-    let assignedUsers = [];
+    let assignedUsers: AssignedUser[] = [];
     if (report.assignedTo && report.assignedTo.length > 0) {
       assignedUsers = await prisma.user.findMany({
         where: {
@@ -77,7 +83,7 @@ export async function POST(
     const reportUrl = `${process.env.NEXT_PUBLIC_APP_URL}/es/admin/drive/errors?report=${report.id}`;
     const assignedList =
       assignedUsers.length > 0
-        ? assignedUsers.map((u) => `${u.name} (${u.email})`).join(", ")
+        ? assignedUsers.map((u) => `${u.name || "Usuario sin nombre"} (${u.email})`).join(", ")
         : "No asignado";
 
     const statusText =
@@ -160,7 +166,7 @@ export async function POST(
 
     return NextResponse.json({
       message: "Recordatorio enviado exitosamente",
-      emailId: emailResult.id,
+      emailSent: true,
     });
   } catch (error) {
     console.error("Error al enviar recordatorio:", error);
