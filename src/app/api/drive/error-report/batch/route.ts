@@ -66,24 +66,71 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        // Actualizar estado de reportes
-        result = await prisma.driveErrorReport.updateMany({
-          where: {
-            id: {
-              in: ids,
+        // Si el estado es "resolved", obtener primero reportes sin fecha de resolución
+        if (data.status === "resolved") {
+          // 1. Primero, identificar los reportes que no tienen fecha de resolución
+          const unresolvedReports = await prisma.driveErrorReport.findMany({
+            where: {
+              id: { in: ids },
+              resolvedAt: null,
             },
-          },
-          data: {
-            status: data.status,
-            // Si el estado es 'resolved', establecer la fecha de resolución
-            resolvedAt: data.status === "resolved" ? new Date() : undefined,
-          },
-        });
+            select: { id: true },
+          });
 
-        return NextResponse.json({
-          message: `${result.count} reportes actualizados a estado "${data.status}"`,
-          count: result.count,
-        });
+          const currentDate = new Date();
+
+          // 2. Actualizar estos reportes con la fecha actual
+          if (unresolvedReports.length > 0) {
+            await prisma.driveErrorReport.updateMany({
+              where: {
+                id: { in: unresolvedReports.map((report) => report.id) },
+              },
+              data: {
+                status: data.status,
+                resolvedAt: currentDate,
+              },
+            });
+          }
+
+          // 3. Actualizar el resto (mantener su fecha de resolución existente)
+          const remainingReports = ids.filter(
+            (id) => !unresolvedReports.map((r) => r.id).includes(id)
+          );
+
+          if (remainingReports.length > 0) {
+            await prisma.driveErrorReport.updateMany({
+              where: {
+                id: { in: remainingReports },
+              },
+              data: {
+                status: data.status,
+              },
+            });
+          }
+
+          return NextResponse.json({
+            message: `${ids.length} reportes actualizados a estado "${data.status}"`,
+            count: ids.length,
+            resolved: unresolvedReports.length,
+          });
+        } else {
+          // Para otros estados, actualizarlos normalmente
+          result = await prisma.driveErrorReport.updateMany({
+            where: {
+              id: {
+                in: ids,
+              },
+            },
+            data: {
+              status: data.status,
+            },
+          });
+
+          return NextResponse.json({
+            message: `${result.count} reportes actualizados a estado "${data.status}"`,
+            count: result.count,
+          });
+        }
 
       case "assign-category":
         // Actualizar categoría de reportes

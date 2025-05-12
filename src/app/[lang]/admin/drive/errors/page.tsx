@@ -79,6 +79,8 @@ import {
 } from "@/src/components/ui/tooltip";
 import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
+import { useToast } from "@/src/components/ui/use-toast";
+import { Toaster } from "@/src/components/ui/toaster";
 
 type ErrorReport = {
   id: string;
@@ -255,6 +257,7 @@ function UserChipSelect({
 }
 
 export default function ErrorReportsPage() {
+  const { toast } = useToast();
   const [reports, setReports] = useState<ErrorReport[]>([]);
   const [recipientConfig, setRecipientConfig] =
     useState<RecipientConfig | null>(null);
@@ -294,6 +297,14 @@ export default function ErrorReportsPage() {
   const [selectedMassCategory, setSelectedMassCategory] = useState("none");
   const [selectedMassUsers, setSelectedMassUsers] = useState<string[]>([]);
   const [isMassActionLoading, setIsMassActionLoading] = useState(false);
+
+  // Add these new state variables
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [dateRangeFilter, setDateRangeFilter] = useState<string>("all");
+  const [customDateStart, setCustomDateStart] = useState<string>("");
+  const [customDateEnd, setCustomDateEnd] = useState<string>("");
+  const [filteredReports, setFilteredReports] = useState<ErrorReport[]>([]);
+  const [isCustomDateDialogOpen, setIsCustomDateDialogOpen] = useState(false);
 
   // Cargar reportes y configuración al iniciar
   useEffect(() => {
@@ -362,6 +373,13 @@ export default function ErrorReportsPage() {
       }
     }
   }, [selectedReport, isReportDialogOpen]);
+
+  // Mostrar fecha actual cuando se cambia a resuelto
+  useEffect(() => {
+    if (selectedStatus === "resolved" && !resolvedDate) {
+      setCurrentDateTime();
+    }
+  }, [selectedStatus]);
 
   // Cargar categorías
   const fetchCategories = async () => {
@@ -466,12 +484,31 @@ export default function ErrorReportsPage() {
 
     try {
       setUpdatingReport(true);
+      // Mostrar toast de carga
+      toast({
+        title: "Actualizando reporte...",
+        description: "Guardando los cambios en el reporte.",
+        variant: "default",
+      });
 
       // Procesar la fecha de resolución
       let resolvedAtDate = null;
-      if (resolvedDate) {
+
+      // Si se marca como resuelto pero no hay fecha de resolución, usar la fecha actual
+      if (selectedStatus === "resolved") {
+        if (resolvedDate) {
+          resolvedAtDate = new Date(resolvedDate);
+          // Asegurar que la fecha sea válida
+          if (isNaN(resolvedAtDate.getTime())) {
+            resolvedAtDate = new Date(); // Usar fecha actual si no es válida
+          }
+        } else {
+          // Si no hay fecha de resolución pero está marcado como resuelto, usar fecha actual
+          resolvedAtDate = new Date();
+        }
+      } else if (resolvedDate) {
+        // Para otros estados, mantener la fecha de resolución si existe
         resolvedAtDate = new Date(resolvedDate);
-        // Asegurar que la fecha sea válida
         if (isNaN(resolvedAtDate.getTime())) {
           resolvedAtDate = null;
         }
@@ -520,9 +557,21 @@ export default function ErrorReportsPage() {
       // Actualizar la lista de reportes
       await fetchReports();
       setIsReportDialogOpen(false);
+
+      // Mostrar toast de éxito
+      toast({
+        title: "Reporte actualizado",
+        description: "El reporte se actualizó correctamente.",
+        variant: "success",
+      });
     } catch (err) {
       console.error("Error al actualizar reporte:", err);
-      alert("Error al actualizar el reporte");
+      // Mostrar toast de error
+      toast({
+        title: "Error al actualizar",
+        description: err instanceof Error ? err.message : "Error desconocido",
+        variant: "error",
+      });
     } finally {
       setUpdatingReport(false);
     }
@@ -532,6 +581,12 @@ export default function ErrorReportsPage() {
   const updateRecipientsConfig = async () => {
     try {
       setIsUpdating(true);
+      // Mostrar toast de carga
+      toast({
+        title: "Actualizando configuración...",
+        description: "Guardando la configuración de destinatarios.",
+        variant: "default",
+      });
 
       // Procesar listas de correos
       const recipients = editRecipients
@@ -567,9 +622,22 @@ export default function ErrorReportsPage() {
 
       setRecipientConfig(data.config);
       setIsConfigDialogOpen(false);
+
+      // Mostrar toast de éxito
+      toast({
+        title: "Configuración actualizada",
+        description:
+          "La configuración de destinatarios se actualizó correctamente.",
+        variant: "success",
+      });
     } catch (err) {
       console.error("Error al actualizar configuración:", err);
-      alert("Error al actualizar la configuración de destinatarios");
+      // Mostrar toast de error
+      toast({
+        title: "Error al actualizar configuración",
+        description: err instanceof Error ? err.message : "Error desconocido",
+        variant: "error",
+      });
     } finally {
       setIsUpdating(false);
     }
@@ -581,6 +649,12 @@ export default function ErrorReportsPage() {
 
     try {
       setIsUpdating(true);
+      // Mostrar toast de carga
+      toast({
+        title: "Eliminando reporte...",
+        description: "Eliminando el reporte seleccionado.",
+        variant: "default",
+      });
 
       const response = await fetch(
         `/api/drive/error-report/${selectedReport.id}`,
@@ -598,9 +672,21 @@ export default function ErrorReportsPage() {
       // Actualizar la lista de reportes
       await fetchReports();
       setIsDeleteDialogOpen(false);
+
+      // Mostrar toast de éxito
+      toast({
+        title: "Reporte eliminado",
+        description: "El reporte se eliminó correctamente.",
+        variant: "success",
+      });
     } catch (err) {
       console.error("Error al eliminar reporte:", err);
-      alert("Error al eliminar el reporte");
+      // Mostrar toast de error
+      toast({
+        title: "Error al eliminar",
+        description: err instanceof Error ? err.message : "Error desconocido",
+        variant: "error",
+      });
     } finally {
       setIsUpdating(false);
     }
@@ -610,6 +696,12 @@ export default function ErrorReportsPage() {
   const sendImmediateReminder = async (report: ErrorReport) => {
     try {
       setIsUpdating(true);
+      // Mostrar toast de carga
+      toast({
+        title: "Enviando recordatorio...",
+        description: "Enviando un recordatorio a los destinatarios.",
+        variant: "default",
+      });
 
       // Determinar los destinatarios
       const recipients: Array<string> = [];
@@ -656,10 +748,21 @@ export default function ErrorReportsPage() {
         throw new Error(data.error || "Error al enviar recordatorio");
       }
 
-      alert("Recordatorio enviado exitosamente");
+      // Mostrar toast de éxito
+      toast({
+        title: "Recordatorio enviado",
+        description: "El recordatorio se envió correctamente.",
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error al enviar recordatorio:", error);
-      alert("Error al enviar el recordatorio");
+      // Mostrar toast de error
+      toast({
+        title: "Error al enviar recordatorio",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "error",
+      });
     } finally {
       setIsUpdating(false);
     }
@@ -752,12 +855,17 @@ export default function ErrorReportsPage() {
 
   // Function to toggle selection of all reports
   const toggleAllReports = () => {
-    if (selectedReportIds.length === reports.length) {
-      // If all are selected, unselect all
+    const displayReports = getDisplayReports();
+
+    if (
+      selectedReportIds.length === displayReports.length &&
+      displayReports.length > 0
+    ) {
+      // If all visible reports are selected, unselect all
       setSelectedReportIds([]);
     } else {
-      // Otherwise, select all
-      setSelectedReportIds(reports.map((report) => report.id));
+      // Otherwise, select all visible reports
+      setSelectedReportIds(displayReports.map((report) => report.id));
     }
   };
 
@@ -767,6 +875,12 @@ export default function ErrorReportsPage() {
 
     try {
       setIsMassActionLoading(true);
+      // Mostrar toast de carga
+      toast({
+        title: "Procesando acción masiva...",
+        description: `Aplicando cambios a ${selectedReportIds.length} reportes.`,
+        variant: "default",
+      });
 
       let payload: any = {
         ids: selectedReportIds,
@@ -808,13 +922,103 @@ export default function ErrorReportsPage() {
       setSelectedReportIds([]);
       setIsMassActionDialogOpen(false);
       setMassActionType(null);
+
+      // Mostrar toast de éxito
+      toast({
+        title: "Acción completada",
+        description:
+          data.message || `${data.count} reportes actualizados correctamente.`,
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error ejecutando acción masiva:", error);
-      alert("Ha ocurrido un error al procesar la acción masiva");
+      // Mostrar toast de error
+      toast({
+        title: "Error en acción masiva",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
+        variant: "error",
+      });
     } finally {
       setIsMassActionLoading(false);
     }
   };
+
+  // Filter reports based on selected criteria
+  useEffect(() => {
+    let result = [...reports];
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      result = result.filter((report) => report.status === statusFilter);
+    }
+
+    // Apply date filter
+    if (dateRangeFilter !== "all") {
+      const now = new Date();
+      let startDate: Date;
+
+      switch (dateRangeFilter) {
+        case "7days":
+          startDate = new Date(now);
+          startDate.setDate(now.getDate() - 7);
+          break;
+        case "30days":
+          startDate = new Date(now);
+          startDate.setDate(now.getDate() - 30);
+          break;
+        case "3months":
+          startDate = new Date(now);
+          startDate.setMonth(now.getMonth() - 3);
+          break;
+        case "6months":
+          startDate = new Date(now);
+          startDate.setMonth(now.getMonth() - 6);
+          break;
+        case "custom":
+          if (customDateStart && customDateEnd) {
+            const start = new Date(customDateStart);
+            // Set end date to the end of the selected day (23:59:59)
+            const end = new Date(customDateEnd);
+            end.setHours(23, 59, 59, 999);
+
+            result = result.filter((report) => {
+              const reportDate = new Date(report.createdAt);
+              return reportDate >= start && reportDate <= end;
+            });
+          }
+          return; // Skip the default date filtering below
+      }
+
+      result = result.filter((report) => {
+        const reportDate = new Date(report.createdAt);
+        return reportDate >= startDate;
+      });
+    }
+
+    setFilteredReports(result);
+  }, [reports, statusFilter, dateRangeFilter, customDateStart, customDateEnd]);
+
+  // Get reports for rendering - either filtered or all
+  const getDisplayReports = () => {
+    return filteredReports.length > 0 ||
+      statusFilter !== "all" ||
+      dateRangeFilter !== "all"
+      ? filteredReports
+      : reports;
+  };
+
+  // Set default dates for custom filter when opening the dialog
+  useEffect(() => {
+    if (isCustomDateDialogOpen && (!customDateStart || !customDateEnd)) {
+      const today = new Date();
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(today.getDate() - 30);
+
+      setCustomDateStart(thirtyDaysAgo.toISOString().split("T")[0]);
+      setCustomDateEnd(today.toISOString().split("T")[0]);
+    }
+  }, [isCustomDateDialogOpen, customDateStart, customDateEnd]);
 
   if (isLoading) {
     return (
@@ -837,6 +1041,7 @@ export default function ErrorReportsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Toaster />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Gestión de Errores en Archivos</h1>
 
@@ -931,6 +1136,90 @@ export default function ErrorReportsPage() {
                 </div>
               )}
 
+              {/* Filters section */}
+              <div className="mb-4 flex flex-wrap gap-3 items-center border-b pb-4">
+                {/* Status filter */}
+                <div className="mt-1">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Estado" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos los estados</SelectItem>
+                      <SelectItem value="pending">
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                          <span>Pendientes</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="in-progress">
+                        <div className="flex items-center">
+                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                          <span>En progreso</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="resolved">
+                        <div className="flex items-center">
+                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                          <span>Resueltos</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Date filter */}
+                <div className="mt-1">
+                  <Select
+                    value={dateRangeFilter}
+                    onValueChange={(value) => {
+                      setDateRangeFilter(value);
+                      if (value === "custom") {
+                        setIsCustomDateDialogOpen(true);
+                      }
+                    }}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Período" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todo el tiempo</SelectItem>
+                      <SelectItem value="7days">Últimos 7 días</SelectItem>
+                      <SelectItem value="30days">Últimos 30 días</SelectItem>
+                      <SelectItem value="3months">Últimos 3 meses</SelectItem>
+                      <SelectItem value="6months">Últimos 6 meses</SelectItem>
+                      <SelectItem value="custom">Personalizado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Display selected custom date range if active */}
+                {dateRangeFilter === "custom" &&
+                  customDateStart &&
+                  customDateEnd && (
+                    <div className="flex items-center gap-2 text-sm text-blue-600">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        {new Date(customDateStart).toLocaleDateString()} -{" "}
+                        {new Date(customDateEnd).toLocaleDateString()}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setIsCustomDateDialogOpen(true)}
+                      >
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+
+                {/* Filter counts */}
+                <div className="ml-auto text-sm text-gray-500">
+                  {getDisplayReports().length} de {reports.length} reportes
+                </div>
+              </div>
+
               <div className="bg-white rounded-lg shadow overflow-hidden">
                 <Table>
                   <TableHeader>
@@ -940,8 +1229,9 @@ export default function ErrorReportsPage() {
                           <input
                             type="checkbox"
                             checked={
-                              selectedReportIds.length === reports.length &&
-                              reports.length > 0
+                              selectedReportIds.length ===
+                                getDisplayReports().length &&
+                              getDisplayReports().length > 0
                             }
                             onChange={toggleAllReports}
                             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
@@ -958,7 +1248,7 @@ export default function ErrorReportsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {reports.map((report) => (
+                    {getDisplayReports().map((report) => (
                       <TableRow key={report.id} className="hover:bg-gray-50">
                         <TableCell>
                           <div className="flex items-center justify-center">
@@ -1542,53 +1832,55 @@ export default function ErrorReportsPage() {
             {massActionType === "update-status" && (
               <div>
                 <Label>Nuevo estado</Label>
-                <Select
-                  value={selectedMassStatus}
-                  onValueChange={setSelectedMassStatus}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue>
-                      {selectedMassStatus === "pending" && (
+                <div className="mt-1">
+                  <Select
+                    value={selectedMassStatus}
+                    onValueChange={setSelectedMassStatus}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {selectedMassStatus === "pending" && (
+                          <div className="flex items-center">
+                            <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                            <span>Pendiente</span>
+                          </div>
+                        )}
+                        {selectedMassStatus === "in-progress" && (
+                          <div className="flex items-center">
+                            <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                            <span>En progreso</span>
+                          </div>
+                        )}
+                        {selectedMassStatus === "resolved" && (
+                          <div className="flex items-center">
+                            <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                            <span>Resuelto</span>
+                          </div>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">
                         <div className="flex items-center">
                           <Clock className="h-4 w-4 mr-2 text-yellow-500" />
                           <span>Pendiente</span>
                         </div>
-                      )}
-                      {selectedMassStatus === "in-progress" && (
+                      </SelectItem>
+                      <SelectItem value="in-progress">
                         <div className="flex items-center">
                           <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
                           <span>En progreso</span>
                         </div>
-                      )}
-                      {selectedMassStatus === "resolved" && (
+                      </SelectItem>
+                      <SelectItem value="resolved">
                         <div className="flex items-center">
                           <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
                           <span>Resuelto</span>
                         </div>
-                      )}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-2 text-yellow-500" />
-                        <span>Pendiente</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="in-progress">
-                      <div className="flex items-center">
-                        <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
-                        <span>En progreso</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="resolved">
-                      <div className="flex items-center">
-                        <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
-                        <span>Resuelto</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 {selectedMassStatus === "resolved" && (
                   <p className="text-sm text-gray-500 mt-1">
                     Se establecerá la fecha de resolución automáticamente.
@@ -1600,29 +1892,31 @@ export default function ErrorReportsPage() {
             {massActionType === "assign-category" && (
               <div>
                 <Label>Categoría</Label>
-                <Select
-                  value={selectedMassCategory}
-                  onValueChange={setSelectedMassCategory}
-                  disabled={loadingCategories}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Seleccionar categoría" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sin categoría</SelectItem>
-                    {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.id}>
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: category.color }}
-                          ></div>
-                          <span>{category.name}</span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="mt-1">
+                  <Select
+                    value={selectedMassCategory}
+                    onValueChange={setSelectedMassCategory}
+                    disabled={loadingCategories}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar categoría" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Sin categoría</SelectItem>
+                      {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          <div className="flex items-center gap-2">
+                            <div
+                              className="w-2 h-2 rounded-full"
+                              style={{ backgroundColor: category.color }}
+                            ></div>
+                            <span>{category.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             )}
 
@@ -1672,6 +1966,66 @@ export default function ErrorReportsPage() {
               variant="secondary"
               className="w-full sm:w-auto"
               onClick={() => setIsMassActionDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Custom date range dialog */}
+      <Dialog
+        open={isCustomDateDialogOpen}
+        onOpenChange={setIsCustomDateDialogOpen}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Seleccionar rango de fechas</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 my-4">
+            <div>
+              <Label htmlFor="start-date">Fecha de inicio</Label>
+              <Input
+                id="start-date"
+                type="date"
+                value={customDateStart}
+                onChange={(e) => setCustomDateStart(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="end-date">Fecha de fin</Label>
+              <Input
+                id="end-date"
+                type="date"
+                value={customDateEnd}
+                onChange={(e) => setCustomDateEnd(e.target.value)}
+                className="mt-1"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <Button
+              variant="default"
+              className="w-full sm:w-auto"
+              onClick={() => {
+                if (customDateStart && customDateEnd) {
+                  setIsCustomDateDialogOpen(false);
+                } else {
+                  alert("Por favor seleccione fechas de inicio y fin válidas");
+                }
+              }}
+            >
+              <Check className="h-4 w-4 mr-2" />
+              Aplicar filtro
+            </Button>
+
+            <Button
+              variant="secondary"
+              className="w-full sm:w-auto"
+              onClick={() => setIsCustomDateDialogOpen(false)}
             >
               Cancelar
             </Button>
