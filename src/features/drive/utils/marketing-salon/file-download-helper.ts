@@ -29,8 +29,8 @@ export const downloadFileWithCustomName = async (
     return blob.size > 3 * 1024;
   };
 
-  // Función para intentar descargar con el proxy hasta 5 veces (antes eran 3)
-  const tryProxyDownload = async (retries = 5): Promise<Blob> => {
+  // Función para intentar descargar con el proxy hasta 3 veces (antes eran 5)
+  const tryProxyDownload = async (retries = 3): Promise<Blob> => {
     let lastError;
 
     for (let attempt = 1; attempt <= retries; attempt++) {
@@ -39,7 +39,7 @@ export const downloadFileWithCustomName = async (
 
         // Determinar qué endpoint del proxy usar (primero App Router, luego Pages Router)
         const proxyUrl =
-          attempt <= 3
+          attempt <= 2
             ? `/api/drive/proxy-download?url=${encodeURIComponent(url)}`
             : `/api/proxy-download?url=${encodeURIComponent(url)}`;
 
