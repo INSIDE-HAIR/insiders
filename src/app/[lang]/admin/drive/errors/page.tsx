@@ -526,9 +526,9 @@ export default function ErrorReportsPage() {
 
       // Si se marca como resuelto pero no hay fecha de resolución, usar la fecha actual
       if (selectedStatus === "resolved") {
-        if (resolvedDate) {
-          resolvedAtDate = new Date(resolvedDate);
-          // Asegurar que la fecha sea válida
+      if (resolvedDate) {
+        resolvedAtDate = new Date(resolvedDate);
+        // Asegurar que la fecha sea válida
           if (isNaN(resolvedAtDate.getTime())) {
             resolvedAtDate = new Date(); // Usar fecha actual si no es válida
           }
@@ -1427,10 +1427,10 @@ export default function ErrorReportsPage() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg shadow overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
                       <TableHead className="w-10">
                         <div className="flex items-center justify-center">
                           <input
@@ -1445,18 +1445,18 @@ export default function ErrorReportsPage() {
                           />
                         </div>
                       </TableHead>
-                      <TableHead>Archivo</TableHead>
-                      <TableHead>Reportado por</TableHead>
-                      <TableHead>Categoría</TableHead>
-                      <TableHead>Fecha</TableHead>
-                      <TableHead>Resuelto</TableHead>
-                      <TableHead>Asignado a</TableHead>
-                      <TableHead className="text-right">Acciones</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
+                    <TableHead>Archivo</TableHead>
+                    <TableHead>Reportado por</TableHead>
+                    <TableHead>Categoría</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Resuelto</TableHead>
+                    <TableHead>Asignado a</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                     {getDisplayReports().map((report) => (
-                      <TableRow key={report.id} className="hover:bg-gray-50">
+                    <TableRow key={report.id} className="hover:bg-gray-50">
                         <TableCell>
                           <div className="flex items-center justify-center">
                             <input
@@ -1467,112 +1467,112 @@ export default function ErrorReportsPage() {
                             />
                           </div>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          <div className="flex flex-col">
-                            <span>{report.fileName}</span>
-                            <div className="flex mt-1">
-                              {renderStatusBadge(report.status)}
-                            </div>
+                      <TableCell className="font-medium">
+                        <div className="flex flex-col">
+                          <span>{report.fileName}</span>
+                          <div className="flex mt-1">
+                            {renderStatusBadge(report.status)}
                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col">
-                            <span>{report.fullName}</span>
-                            <span className="text-sm text-gray-500">
-                              {report.email}
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {report.categoryRef ? (
-                            <Badge
-                              variant="outline"
-                              style={{
-                                backgroundColor: `${report.categoryRef.color}20`,
-                                borderColor: report.categoryRef.color,
-                                color: report.categoryRef.color,
-                              }}
-                            >
-                              {report.categoryRef.name}
-                            </Badge>
-                          ) : (
-                            <span className="text-gray-400 text-sm">
-                              Sin categoría
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {format(
-                            new Date(report.createdAt),
-                            "dd/MM/yyyy HH:mm",
-                            {
-                              locale: es,
-                            }
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {report.resolvedAt
-                            ? format(
-                                new Date(report.resolvedAt),
-                                "dd/MM/yyyy HH:mm",
-                                {
-                                  locale: es,
-                                }
-                              )
-                            : "-"}
-                        </TableCell>
-                        <TableCell>
-                          {report.assignedTo && report.assignedTo.length > 0 ? (
-                            <div className="flex flex-wrap gap-1">
-                              {report.assignedTo.length <= 2 ? (
-                                report.assignedTo.map((userId) => {
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span>{report.fullName}</span>
+                          <span className="text-sm text-gray-500">
+                            {report.email}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {report.categoryRef ? (
+                          <Badge
+                            variant="outline"
+                            style={{
+                              backgroundColor: `${report.categoryRef.color}20`,
+                              borderColor: report.categoryRef.color,
+                              color: report.categoryRef.color,
+                            }}
+                          >
+                            {report.categoryRef.name}
+                          </Badge>
+                        ) : (
+                          <span className="text-gray-400 text-sm">
+                            Sin categoría
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {format(
+                          new Date(report.createdAt),
+                          "dd/MM/yyyy HH:mm",
+                          {
+                            locale: es,
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {report.resolvedAt
+                          ? format(
+                              new Date(report.resolvedAt),
+                              "dd/MM/yyyy HH:mm",
+                              {
+                                locale: es,
+                              }
+                            )
+                          : "-"}
+                      </TableCell>
+                      <TableCell>
+                        {report.assignedTo && report.assignedTo.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {report.assignedTo.length <= 2 ? (
+                              report.assignedTo.map((userId) => {
                                   const user = users.find(
                                     (u) => u.id === userId
                                   );
-                                  return user ? (
-                                    <Badge
-                                      key={userId}
-                                      variant="outline"
-                                      className="bg-blue-50 text-blue-700 border-blue-200"
-                                    >
-                                      {user.name.split(" ")[0]}
-                                    </Badge>
-                                  ) : null;
-                                })
-                              ) : (
-                                <>
+                                return user ? (
                                   <Badge
+                                    key={userId}
                                     variant="outline"
                                     className="bg-blue-50 text-blue-700 border-blue-200"
                                   >
-                                    {users
+                                    {user.name.split(" ")[0]}
+                                  </Badge>
+                                ) : null;
+                              })
+                            ) : (
+                              <>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200"
+                                >
+                                  {users
                                       .find(
                                         (u) => u.id === report.assignedTo![0]
                                       )
-                                      ?.name.split(" ")[0] || ""}
-                                  </Badge>
-                                  <Badge
-                                    variant="outline"
-                                    className="bg-blue-50 text-blue-700 border-blue-200"
-                                  >
-                                    +{report.assignedTo.length - 1}
-                                  </Badge>
-                                </>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-gray-400 text-sm">
-                              Sin asignar
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
+                                    ?.name.split(" ")[0] || ""}
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className="bg-blue-50 text-blue-700 border-blue-200"
+                                >
+                                  +{report.assignedTo.length - 1}
+                                </Badge>
+                              </>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-gray-400 text-sm">
+                            Sin asignar
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
+                        <Button
+                          variant="ghost"
                                     size="icon"
                                     onClick={() => {
                                       handleEditReport(report);
@@ -1616,13 +1616,13 @@ export default function ErrorReportsPage() {
                                     variant="ghost"
                                     size="icon"
                                     className="text-destructive hover:text-destructive"
-                                    onClick={() => {
-                                      setSelectedReport(report);
+                          onClick={() => {
+                            setSelectedReport(report);
                                       setIsDeleteDialogOpen(true);
-                                    }}
-                                  >
+                          }}
+                        >
                                     <Trash2 className="h-4 w-4" />
-                                  </Button>
+                        </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <p>Eliminar</p>
@@ -1650,12 +1650,12 @@ export default function ErrorReportsPage() {
                               </Tooltip>
                             </TooltipProvider>
                           </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
             </>
           )}
         </TabsContent>
@@ -1780,13 +1780,13 @@ export default function ErrorReportsPage() {
                 <div className="mt-1 relative">
                   <div className="flex items-center gap-2">
                     <div className="relative flex-1">
-                      <Input
-                        type="datetime-local"
-                        value={resolvedDate}
-                        onChange={(e) => setResolvedDate(e.target.value)}
-                        className="w-full pr-10"
-                        placeholder="Seleccionar fecha y hora de resolución"
-                      />
+                    <Input
+                      type="datetime-local"
+                      value={resolvedDate}
+                      onChange={(e) => setResolvedDate(e.target.value)}
+                      className="w-full pr-10"
+                      placeholder="Seleccionar fecha y hora de resolución"
+                    />
                       <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
                     </div>
                     <TooltipProvider>
