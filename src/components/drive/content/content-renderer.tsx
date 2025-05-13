@@ -63,7 +63,7 @@ export const ContentRenderer = memo(function ContentRenderer({
       >
         <div
           className={`w-full overflow-visible py-6 ${
-            isInIframe ? "pb-[120px]" : "pb-[120px]"
+            isInIframe ? "pb-[240px]" : "pb-[240px]"
           }`}
         >
           <RecursiveContentRenderer
