@@ -32,22 +32,48 @@ export const downloadFileWithCustomName = async (
     retryDelay: isMobile ? 1000 : 500, // Más tiempo entre reintentos en móviles
   };
 
-  // Crear y mostrar indicador de carga
+  // Emitir evento de inicio de descarga para feedback de botones
+  const downloadStartEvent = new CustomEvent("download-start", {
+    detail: { url, filename, isMobile },
+  });
+  document.dispatchEvent(downloadStartEvent);
+
+  // Crear y mostrar indicador de carga con mayor visibilidad
   const statusElement = document.createElement("div");
   statusElement.textContent = isMobile
     ? "Descargando (móvil)..."
     : "Descargando...";
   statusElement.style.position = "fixed";
-  statusElement.style.bottom = "20px";
-  statusElement.style.right = "20px";
+  statusElement.style.bottom = isMobile ? "10px" : "20px";
+  statusElement.style.right = isMobile ? "10px" : "20px";
   statusElement.style.backgroundColor = "#CEFF66";
   statusElement.style.color = "#000";
-  statusElement.style.padding = "10px 20px";
-  statusElement.style.borderRadius = "4px";
-  statusElement.style.zIndex = "40";
-  statusElement.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
-  statusElement.style.maxWidth = isMobile ? "280px" : "350px";
-  statusElement.style.fontSize = isMobile ? "0.9em" : "1em";
+  statusElement.style.padding = isMobile ? "12px 16px" : "10px 20px";
+  statusElement.style.borderRadius = "8px";
+  statusElement.style.zIndex = "2147483647"; // Máximo z-index para asegurar visibilidad
+  statusElement.style.boxShadow = isMobile
+    ? "0 4px 20px rgba(0,0,0,0.3), 0 0 0 2px rgba(206, 255, 102, 0.5)"
+    : "0 2px 8px rgba(0,0,0,0.2)";
+  statusElement.style.maxWidth = isMobile ? "calc(100vw - 20px)" : "350px";
+  statusElement.style.fontSize = isMobile ? "0.95em" : "1em";
+  statusElement.style.fontWeight = "500";
+  statusElement.style.border = isMobile ? "2px solid #000" : "none";
+  statusElement.style.animation = isMobile ? "pulse 2s infinite" : "none";
+
+  // Agregar animación de pulso para móviles
+  if (isMobile && !document.getElementById("download-pulse-style")) {
+    const style = document.createElement("style");
+    style.id = "download-pulse-style";
+    style.textContent = `
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.02); opacity: 0.9; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   document.body.appendChild(statusElement);
 
   // Función para validar que el blob no sea un error o esté vacío
@@ -88,9 +114,14 @@ export const downloadFileWithCustomName = async (
 
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        statusElement.textContent = `Descargando... (${attempt}/${retries})${
+        statusElement.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+            <span>Descargando... (${attempt}/${retries})${
           isMobile ? " [móvil]" : ""
-        }`;
+        }</span>
+          </div>
+        `;
 
         // Determinar qué endpoint del proxy usar
         const proxyUrl =
@@ -159,14 +190,29 @@ export const downloadFileWithCustomName = async (
                 const percentComplete = Math.round(
                   (receivedLength / totalSize) * 100
                 );
-                statusElement.textContent = `Descargando... ${percentComplete}%${
+                statusElement.innerHTML = `
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+                      <span>Descargando... ${percentComplete}%${
                   isMobile ? " [móvil]" : ""
-                }${isSlowConnection ? " [conexión lenta]" : ""}`;
+                }${isSlowConnection ? " [conexión lenta]" : ""}</span>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.1); height: 4px; border-radius: 2px; overflow: hidden;">
+                      <div style="background: #000; height: 100%; width: ${percentComplete}%; transition: width 0.2s;"></div>
+                    </div>
+                  </div>
+                `;
               } else {
                 const mbReceived = (receivedLength / (1024 * 1024)).toFixed(1);
-                statusElement.textContent = `Descargando... ${mbReceived} MB${
+                statusElement.innerHTML = `
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+                    <span>Descargando... ${mbReceived} MB${
                   isMobile ? " [móvil]" : ""
-                }`;
+                }</span>
+                  </div>
+                `;
               }
 
               // En móviles, dar un pequeño respiro al procesador cada cierto número de chunks
@@ -254,11 +300,25 @@ export const downloadFileWithCustomName = async (
       setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 
       // Mostrar mensaje de éxito
-      statusElement.textContent = isMobile
-        ? "¡Descarga completada! [móvil]"
-        : "¡Descarga completada!";
+      statusElement.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 8px; height: 8px; background: #4CAF50; border-radius: 50%;"></div>
+          <span>¡Descarga completada!${isMobile ? " [móvil]" : ""}</span>
+        </div>
+      `;
       statusElement.style.backgroundColor = "#4CAF50";
-      setTimeout(() => document.body.removeChild(statusElement), 2000);
+      statusElement.style.color = "white";
+      statusElement.style.boxShadow = isMobile
+        ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
+        : "0 2px 8px rgba(76, 175, 80, 0.3)";
+
+      // Emitir evento de finalización exitosa
+      const downloadCompleteEvent = new CustomEvent("download-complete", {
+        detail: { url, filename, success: true, isMobile },
+      });
+      document.dispatchEvent(downloadCompleteEvent);
+
+      setTimeout(() => document.body.removeChild(statusElement), 3000);
 
       return;
     } catch (proxyError) {
@@ -269,12 +329,15 @@ export const downloadFileWithCustomName = async (
 
       // Actualizar mensaje para informar al usuario que se usará método directo
       statusElement.innerHTML = `
-        <div style="margin-bottom: 5px;">Error en descarga con proxy</div>
-        <div style="font-size: 0.9em;">Intentando descarga directa...${
-          isMobile ? " [móvil]" : ""
-        }</div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <div style="font-weight: bold;">Error en descarga con proxy</div>
+          <div style="font-size: 0.9em;">Intentando descarga directa...${
+            isMobile ? " [móvil]" : ""
+          }</div>
+        </div>
       `;
       statusElement.style.backgroundColor = "#FF9800"; // Color de advertencia naranja
+      statusElement.style.color = "white";
     }
 
     // Método 2: Intentar descarga directa sin proxy (optimizada para móviles)
@@ -320,9 +383,12 @@ export const downloadFileWithCustomName = async (
         let receivedLength = 0;
 
         if (reader) {
-          statusElement.textContent = `Descarga directa... 0%${
-            isMobile ? " [móvil]" : ""
-          }`;
+          statusElement.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+              <span>Descarga directa... 0%${isMobile ? " [móvil]" : ""}</span>
+            </div>
+          `;
 
           while (true) {
             const { done, value } = await reader.read();
@@ -339,14 +405,29 @@ export const downloadFileWithCustomName = async (
               const percentComplete = Math.round(
                 (receivedLength / totalSize) * 100
               );
-              statusElement.textContent = `Descarga directa... ${percentComplete}%${
+              statusElement.innerHTML = `
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+                    <span>Descarga directa... ${percentComplete}%${
                 isMobile ? " [móvil]" : ""
-              }`;
+              }</span>
+                  </div>
+                  <div style="background: rgba(0,0,0,0.1); height: 4px; border-radius: 2px; overflow: hidden;">
+                    <div style="background: #000; height: 100%; width: ${percentComplete}%; transition: width 0.2s;"></div>
+                  </div>
+                </div>
+              `;
             } else {
               const mbReceived = (receivedLength / (1024 * 1024)).toFixed(1);
-              statusElement.textContent = `Descarga directa... ${mbReceived} MB${
+              statusElement.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="width: 8px; height: 8px; background: #000; border-radius: 50%; animation: pulse 1s infinite;"></div>
+                  <span>Descarga directa... ${mbReceived} MB${
                 isMobile ? " [móvil]" : ""
-              }`;
+              }</span>
+                </div>
+              `;
             }
 
             // En móviles, dar un pequeño respiro al procesador cada cierto número de chunks
@@ -387,11 +468,27 @@ export const downloadFileWithCustomName = async (
           setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 
           // Mostrar mensaje de éxito
-          statusElement.textContent = isMobile
-            ? "¡Descarga directa completada! [móvil]"
-            : "¡Descarga directa completada!";
+          statusElement.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 8px; height: 8px; background: #4CAF50; border-radius: 50%;"></div>
+              <span>¡Descarga directa completada!${
+                isMobile ? " [móvil]" : ""
+              }</span>
+            </div>
+          `;
           statusElement.style.backgroundColor = "#4CAF50";
-          setTimeout(() => document.body.removeChild(statusElement), 2000);
+          statusElement.style.color = "white";
+          statusElement.style.boxShadow = isMobile
+            ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
+            : "0 2px 8px rgba(76, 175, 80, 0.3)";
+
+          // Emitir evento de finalización exitosa
+          const downloadCompleteEvent = new CustomEvent("download-complete", {
+            detail: { url, filename, success: true, isMobile },
+          });
+          document.dispatchEvent(downloadCompleteEvent);
+
+          setTimeout(() => document.body.removeChild(statusElement), 3000);
 
           return;
         }
@@ -420,11 +517,27 @@ export const downloadFileWithCustomName = async (
       setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
 
       // Mostrar mensaje de éxito
-      statusElement.textContent = isMobile
-        ? "¡Descarga directa completada! [móvil]"
-        : "¡Descarga directa completada!";
+      statusElement.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 8px; height: 8px; background: #4CAF50; border-radius: 50%;"></div>
+          <span>¡Descarga directa completada!${
+            isMobile ? " [móvil]" : ""
+          }</span>
+        </div>
+      `;
       statusElement.style.backgroundColor = "#4CAF50";
-      setTimeout(() => document.body.removeChild(statusElement), 2000);
+      statusElement.style.color = "white";
+      statusElement.style.boxShadow = isMobile
+        ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
+        : "0 2px 8px rgba(76, 175, 80, 0.3)";
+
+      // Emitir evento de finalización exitosa
+      const downloadCompleteEvent = new CustomEvent("download-complete", {
+        detail: { url, filename, success: true, isMobile },
+      });
+      document.dispatchEvent(downloadCompleteEvent);
+
+      setTimeout(() => document.body.removeChild(statusElement), 3000);
 
       return;
     } catch (directError) {
@@ -436,6 +549,7 @@ export const downloadFileWithCustomName = async (
 
       // Preparar para el método 3 de fallback
       statusElement.style.backgroundColor = "#f44336"; // Rojo para error
+      statusElement.style.color = "white";
     }
 
     // Método 3: Fallback - Descargar directamente con un enlace (específico para móviles)
@@ -445,19 +559,23 @@ export const downloadFileWithCustomName = async (
     );
 
     statusElement.innerHTML = `
-      <div style="font-weight: bold; margin-bottom: 5px;">No se pudo descargar automáticamente</div>
-      <div style="margin-bottom: 8px;">Intentando descarga directa simple${
-        isMobile ? " [móvil]" : ""
-      }</div>
-      <div style="font-size: 0.9em; padding: 5px; background: rgba(255,255,255,0.3); border-radius: 3px;">
-        Guardar como: <strong>${filename}</strong>
+      <div style="padding: ${isMobile ? "12px" : "10px"};">
+        <div style="font-weight: bold; margin-bottom: 8px;">No se pudo descargar automáticamente</div>
+        <div style="margin-bottom: 10px;">Intentando descarga directa simple${
+          isMobile ? " [móvil]" : ""
+        }</div>
+        <div style="font-size: 0.9em; padding: 6px; background: rgba(255,255,255,0.3); border-radius: 4px; margin-bottom: 8px;">
+          Guardar como: <strong>${filename}</strong>
+        </div>
+        ${
+          isMobile
+            ? '<div style="font-size: 0.85em; color: rgba(255,255,255,0.9);">Tip: Mantén presionado el enlace y selecciona "Descargar"</div>'
+            : ""
+        }
       </div>
-      ${
-        isMobile
-          ? '<div style="font-size: 0.8em; margin-top: 5px; color: #333;">Tip: Mantén presionado el enlace y selecciona "Descargar"</div>'
-          : ""
-      }
     `;
+    statusElement.style.backgroundColor = "#FF9800";
+    statusElement.style.color = "white";
 
     // Crear un enlace para descargar directamente
     const link = document.createElement("a");
@@ -475,8 +593,14 @@ export const downloadFileWithCustomName = async (
     link.click();
     document.body.removeChild(link);
 
+    // Emitir evento de finalización (con advertencia)
+    const downloadCompleteEvent = new CustomEvent("download-complete", {
+      detail: { url, filename, success: false, fallback: true, isMobile },
+    });
+    document.dispatchEvent(downloadCompleteEvent);
+
     // Mantener el mensaje por más tiempo en móviles
-    const displayTime = isMobile ? 8000 : 6000;
+    const displayTime = isMobile ? 10000 : 8000;
     setTimeout(() => {
       if (document.body.contains(statusElement)) {
         document.body.removeChild(statusElement);
@@ -492,19 +616,22 @@ export const downloadFileWithCustomName = async (
 
     // Mostrar mensaje de error más detallado y específico para móviles
     statusElement.innerHTML = `
-      <div style="background-color: #f44336; color: white; padding: 10px 15px; border-radius: 4px; max-width: ${
-        isMobile ? "280px" : "300px"
-      };">
-        <div style="font-weight: bold; margin-bottom: 8px;">Error al descargar el archivo${
-          isMobile ? " [móvil]" : ""
-        }</div>
-        <div style="font-size: 0.85em; margin-bottom: 8px;">
+      <div style="background-color: #f44336; color: white; padding: ${
+        isMobile ? "15px" : "10px"
+      }; border-radius: 8px; max-width: ${
+      isMobile ? "calc(100vw - 20px)" : "350px"
+    };">
+        <div style="font-weight: bold; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <div style="width: 12px; height: 12px; background: white; border-radius: 50%;"></div>
+          Error al descargar el archivo${isMobile ? " [móvil]" : ""}
+        </div>
+        <div style="font-size: 0.9em; margin-bottom: 10px;">
           No se pudo descargar: ${filename}
         </div>
         ${
           isMobile
             ? `
-          <div style="font-size: 0.8em; margin-bottom: 8px; background: rgba(255,255,255,0.2); padding: 4px; border-radius: 2px;">
+          <div style="font-size: 0.85em; margin-bottom: 10px; background: rgba(255,255,255,0.2); padding: 6px; border-radius: 4px;">
             Problema común en móviles. Intenta conectarte a WiFi o usar un navegador diferente.
           </div>
         `
@@ -512,22 +639,29 @@ export const downloadFileWithCustomName = async (
         }
         <div style="display: flex; ${
           isMobile
-            ? "flex-direction: column; gap: 5px;"
-            : "justify-content: space-between;"
-        } margin-top: 10px;">
-          <button id="retry-download" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; ${
-            isMobile ? "width: 100%;" : ""
+            ? "flex-direction: column; gap: 8px;"
+            : "justify-content: space-between; gap: 8px;"
+        } margin-top: 12px;">
+          <button id="retry-download" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; ${
+            isMobile ? "width: 100%;" : "flex: 1;"
           }">
-            Reintentar
+            🔄 Reintentar
           </button>
-          <button id="report-download-error" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer; ${
-            isMobile ? "width: 100%;" : ""
+          <button id="report-download-error" style="background: rgba(255,255,255,0.3); border: none; color: white; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; ${
+            isMobile ? "width: 100%;" : "flex: 1;"
           }">
-            Reportar problema
+            📧 Reportar problema
           </button>
         </div>
       </div>
     `;
+    statusElement.style.backgroundColor = "transparent";
+
+    // Emitir evento de error
+    const downloadErrorEvent = new CustomEvent("download-complete", {
+      detail: { url, filename, success: false, error: true, isMobile },
+    });
+    document.dispatchEvent(downloadErrorEvent);
 
     // Agregar eventos a los botones
     setTimeout(() => {

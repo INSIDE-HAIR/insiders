@@ -18,6 +18,8 @@ import {
   AlertTriangle,
   Flag,
   AlertOctagon,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -54,6 +56,7 @@ import Image from "next/image";
 import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
 import { ReportErrorModal } from "@/src/components/drive/report-error-modal";
 import { MobileNetworkHelper } from "@/src/components/drive/mobile-network-helper";
+import { useDownloadState } from "@/src/hooks/useDownloadState";
 
 interface GenericRendererProps {
   item: HierarchyItem;
@@ -74,6 +77,7 @@ interface GenericRendererProps {
  * - Estados de carga con feedback visual
  * - Adaptación según el tipo de contenido
  * - Carrusel para múltiples imágenes de previsualización
+ * - Estado de descarga en tiempo real
  *
  * @param {HierarchyItem} item - Elemento de contenido a renderizar
  * @param {string} contentType - Tipo de contenido para mostrar en la interfaz
@@ -100,6 +104,14 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
   const searchParams = useSearchParams();
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
+
+  // Hook para estado de descarga
+  const { getDownloadStatus, isUrlDownloading } = useDownloadState();
+
+  // Obtener URL de descarga para verificar estado
+  const downloadUrl = getDownloadUrl(item);
+  const downloadStatus = downloadUrl ? getDownloadStatus(downloadUrl) : "idle";
+  const isDownloading = downloadUrl ? isUrlDownloading(downloadUrl) : false;
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
@@ -557,7 +569,15 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
           {getDownloadUrl(item) && (
             <div className='flex w-full'>
               <Button
-                className='flex-1 bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center'
+                className={`flex-1 rounded-none flex items-center justify-center transition-all duration-200 ${
+                  downloadStatus === "downloading"
+                    ? "bg-orange-500 hover:bg-orange-600 text-white animate-pulse"
+                    : downloadStatus === "success"
+                    ? "bg-green-500 hover:bg-green-600 text-white"
+                    : downloadStatus === "error"
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-inside hover:bg-[#bfef33] text-zinc-900"
+                }`}
                 onClick={() => {
                   const downloadUrl = getDownloadUrl(item);
                   if (downloadUrl && decodedInfo) {
@@ -569,14 +589,31 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                     downloadFileWithCustomName(downloadUrl, item.name);
                   }
                 }}
-                disabled={isDecodingInfo}
+                disabled={isDecodingInfo || isDownloading}
               >
                 {isDecodingInfo ? (
                   <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                ) : downloadStatus === "downloading" ? (
+                  <>
+                    <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                    Descargando...
+                  </>
+                ) : downloadStatus === "success" ? (
+                  <>
+                    <CheckCircle className='h-4 w-4 mr-2' />
+                    ¡Completado!
+                  </>
+                ) : downloadStatus === "error" ? (
+                  <>
+                    <XCircle className='h-4 w-4 mr-2' />
+                    Error
+                  </>
                 ) : (
-                  <Download className='h-4 w-4 mr-2' />
+                  <>
+                    <Download className='h-4 w-4 mr-2' />
+                    Descargar
+                  </>
                 )}
-                Descargar
               </Button>
 
               {decodedInfo && isAdmin && (

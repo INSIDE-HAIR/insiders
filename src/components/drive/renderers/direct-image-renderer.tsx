@@ -9,6 +9,8 @@ import {
   ChevronUp,
   Plus,
   Loader2,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
@@ -30,6 +32,7 @@ import {
 } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 import Image from "next/image";
 import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
+import { useDownloadState } from "@/src/hooks/useDownloadState";
 
 /**
  * DirectImageRenderer
@@ -43,6 +46,7 @@ import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing
  * - Soporte para copiar texto asociado al portapapeles
  * - Visualización de metadatos decodificados del nombre del archivo
  * - Estilos personalizados para scrollbars
+ * - Estado de descarga en tiempo real
  *
  * @param {HierarchyItem} item - Elemento de contenido que contiene la información de la imagen
  * @returns Imagen renderizada con controles adicionales
@@ -77,10 +81,17 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
 
+  // Hook para estado de descarga
+  const { getDownloadStatus, isUrlDownloading } = useDownloadState();
+
   // Verificar disponibilidad de recursos
   const hasPreview = !!getPreviewUrl(item);
   const canDownload = hasDownloadSuffix(item);
   const downloadUrl = getDownloadUrl(item);
+
+  // Obtener estado de descarga
+  const downloadStatus = downloadUrl ? getDownloadStatus(downloadUrl) : "idle";
+  const isDownloading = downloadUrl ? isUrlDownloading(downloadUrl) : false;
 
   // Extraer el texto a copiar desde el campo description
   const copyText = extractCopyText(item);
@@ -200,12 +211,34 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
                 downloadFileWithCustomName(downloadUrl, item.name);
               }
             }}
-            className='absolute bottom-2 right-2 bg-black bg-opacity-70 text-white p-2 rounded-full hover:bg-opacity-90'
-            title='Descargar archivo'
-            disabled={isDecodingInfo}
+            className={`absolute bottom-2 right-2 p-2 rounded-full transition-all duration-200 ${
+              downloadStatus === "downloading"
+                ? "bg-orange-500 text-white animate-pulse"
+                : downloadStatus === "success"
+                ? "bg-green-500 text-white"
+                : downloadStatus === "error"
+                ? "bg-red-500 text-white"
+                : "bg-black bg-opacity-70 text-white hover:bg-opacity-90"
+            }`}
+            title={
+              downloadStatus === "downloading"
+                ? "Descargando..."
+                : downloadStatus === "success"
+                ? "¡Descarga completada!"
+                : downloadStatus === "error"
+                ? "Error en descarga"
+                : "Descargar archivo"
+            }
+            disabled={isDecodingInfo || isDownloading}
           >
             {isDecodingInfo ? (
               <Loader2 className='h-5 w-5 animate-spin' />
+            ) : downloadStatus === "downloading" ? (
+              <Loader2 className='h-5 w-5 animate-spin' />
+            ) : downloadStatus === "success" ? (
+              <CheckCircle className='h-5 w-5' />
+            ) : downloadStatus === "error" ? (
+              <XCircle className='h-5 w-5' />
             ) : (
               <Download className='h-5 w-5' />
             )}
@@ -219,7 +252,15 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
         {downloadUrl && (
           <div className='flex'>
             <Button
-              className='bg-inside hover:bg-[#bfef33] text-zinc-900 rounded-none flex items-center justify-center px-4 py-2'
+              className={`rounded-none flex items-center justify-center px-4 py-2 transition-all duration-200 ${
+                downloadStatus === "downloading"
+                  ? "bg-orange-500 hover:bg-orange-600 text-white animate-pulse"
+                  : downloadStatus === "success"
+                  ? "bg-green-500 hover:bg-green-600 text-white"
+                  : downloadStatus === "error"
+                  ? "bg-red-500 hover:bg-red-600 text-white"
+                  : "bg-inside hover:bg-[#bfef33] text-zinc-900"
+              }`}
               onClick={() => {
                 if (downloadUrl && decodedInfo) {
                   downloadFileWithCustomName(downloadUrl, decodedInfo.fullName);
@@ -227,14 +268,31 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
                   downloadFileWithCustomName(downloadUrl, item.name);
                 }
               }}
-              disabled={isDecodingInfo}
+              disabled={isDecodingInfo || isDownloading}
             >
               {isDecodingInfo ? (
                 <Loader2 className='h-4 w-4 animate-spin mr-2' />
+              ) : downloadStatus === "downloading" ? (
+                <>
+                  <Loader2 className='h-4 w-4 animate-spin mr-2' />
+                  Descargando...
+                </>
+              ) : downloadStatus === "success" ? (
+                <>
+                  <CheckCircle className='h-4 w-4 mr-2' />
+                  ¡Completado!
+                </>
+              ) : downloadStatus === "error" ? (
+                <>
+                  <XCircle className='h-4 w-4 mr-2' />
+                  Error
+                </>
               ) : (
-                <Download className='h-4 w-4 mr-2' />
+                <>
+                  <Download className='h-4 w-4 mr-2' />
+                  Descargar
+                </>
               )}
-              Descargar
             </Button>
 
             {/* Botón de detalles (solo para administradores) */}

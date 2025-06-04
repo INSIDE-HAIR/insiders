@@ -165,25 +165,6 @@ export function MobileNetworkHelper({ className }: MobileNetworkHelperProps) {
     };
   };
 
-  const getMobileTips = () => [
-    {
-      icon: Wifi,
-      title: "Conéctate a WiFi",
-      description: "Para mejores descargas y evitar usar datos móviles",
-    },
-    {
-      icon: Smartphone,
-      title: "Cierra otras apps",
-      description: "Libera memoria y ancho de banda para la descarga",
-    },
-    {
-      icon: CheckCircle,
-      title: "Mantén la pantalla activa",
-      description:
-        "Evita que el dispositivo entre en modo de suspensión durante la descarga",
-    },
-  ];
-
   if (!showHelper || !isMobile) {
     return null;
   }
@@ -216,32 +197,9 @@ export function MobileNetworkHelper({ className }: MobileNetworkHelperProps) {
         <p className='text-sm text-gray-600'>{connectionStatus.advice}</p>
       </div>
 
-      {/* Tips para móviles */}
-      <div className='p-4'>
-        <h4 className='text-sm font-medium text-gray-900 mb-3'>
-          Tips para mejorar las descargas en móvil:
-        </h4>
-        <div className='space-y-3'>
-          {getMobileTips().map((tip, index) => {
-            const TipIcon = tip.icon;
-            return (
-              <div key={index} className='flex items-start gap-3'>
-                <TipIcon className='h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0' />
-                <div>
-                  <p className='text-sm font-medium text-gray-800'>
-                    {tip.title}
-                  </p>
-                  <p className='text-xs text-gray-600'>{tip.description}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Información técnica (solo si hay datos de red) */}
       {networkInfo && (
-        <div className='p-4 bg-gray-50 rounded-b-lg'>
+        <div className='p-4 bg-gray-50 rounded-b-lg border-b'>
           <h5 className='text-xs font-medium text-gray-700 mb-2'>
             Información técnica:
           </h5>
