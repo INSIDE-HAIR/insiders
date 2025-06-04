@@ -55,7 +55,6 @@ import {
 import Image from "next/image";
 import { downloadFileWithCustomName } from "@/src/features/drive/utils/marketing-salon/file-download-helper";
 import { ReportErrorModal } from "@/src/components/drive/report-error-modal";
-import { MobileNetworkHelper } from "@/src/components/drive/mobile-network-helper";
 import { useDownloadState } from "@/src/hooks/useDownloadState";
 
 interface GenericRendererProps {
@@ -457,9 +456,6 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
 
   return (
     <div className='space-y-4'>
-      {/* Mobile Network Helper - Solo se muestra en dispositivos móviles */}
-      <MobileNetworkHelper />
-
       <div className='flex flex-col w-52 bg-black text-white relative'>
         <style dangerouslySetInnerHTML={{ __html: scrollbarStyles }} />
 

@@ -38,7 +38,10 @@ export const downloadFileWithCustomName = async (
   });
   document.dispatchEvent(downloadStartEvent);
 
-  // Crear y mostrar indicador de carga con mayor visibilidad
+  // Detectar si estamos dentro de un iframe
+  const isInIframe = window !== window.top;
+
+  // Crear y mostrar indicador de carga con mayor visibilidad (optimizado para iframes)
   const statusElement = document.createElement("div");
   statusElement.textContent = isMobile
     ? "Descargando (móvil)..."
@@ -60,21 +63,74 @@ export const downloadFileWithCustomName = async (
   statusElement.style.border = isMobile ? "2px solid #000" : "none";
   statusElement.style.animation = isMobile ? "pulse 2s infinite" : "none";
 
-  // Agregar animación de pulso para móviles
+  // Estilos específicos para iframes
+  if (isInIframe) {
+    statusElement.style.position = "fixed";
+    statusElement.style.zIndex = "999999999"; // Z-index ultra alto para iframes
+    statusElement.style.pointerEvents = "auto";
+    statusElement.style.isolation = "isolate"; // Crear nuevo contexto de apilamiento
+    statusElement.style.transform = "translateZ(0)"; // Forzar capa de composición
+    statusElement.style.willChange = "transform"; // Optimización de rendering
+    statusElement.style.border = "3px solid #000"; // Borde más prominente en iframes
+    statusElement.style.boxShadow =
+      "0 8px 32px rgba(0,0,0,0.4), 0 0 0 3px rgba(206, 255, 102, 0.8), inset 0 0 0 1px rgba(0,0,0,0.1)";
+  }
+
+  // Agregar animación de pulso para móviles (compatible con iframes)
   if (isMobile && !document.getElementById("download-pulse-style")) {
     const style = document.createElement("style");
     style.id = "download-pulse-style";
     style.textContent = `
       @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.02); opacity: 0.9; }
-        100% { transform: scale(1); opacity: 1; }
+        0% { transform: scale(1) translateZ(0); opacity: 1; }
+        50% { transform: scale(1.02) translateZ(0); opacity: 0.9; }
+        100% { transform: scale(1) translateZ(0); opacity: 1; }
+      }
+      /* Estilos específicos para iframes */
+      ${
+        isInIframe
+          ? `
+      .download-toast-iframe {
+        position: fixed !important;
+        z-index: 999999999 !important;
+        isolation: isolate !important;
+        transform: translateZ(0) !important;
+        will-change: transform !important;
+      }
+      `
+          : ""
       }
     `;
     document.head.appendChild(style);
   }
 
+  // Agregar clase específica para iframes
+  if (isInIframe) {
+    statusElement.classList.add("download-toast-iframe");
+  }
+
   document.body.appendChild(statusElement);
+
+  // Función helper para mantener estilos de iframe en todas las actualizaciones
+  const ensureIframeVisibility = (element: HTMLElement) => {
+    if (isInIframe) {
+      element.style.position = "fixed";
+      element.style.zIndex = "999999999";
+      element.style.pointerEvents = "auto";
+      element.style.isolation = "isolate";
+      element.style.transform = "translateZ(0)";
+      element.style.willChange = "transform";
+      // Mantener borde prominente pero ajustar según el estado
+      if (!element.style.border || element.style.border === "none") {
+        element.style.border = "3px solid #000";
+      }
+      // Realzar boxShadow para iframe si no está ya configurado específicamente
+      if (!element.style.boxShadow.includes("rgba(206, 255, 102")) {
+        element.style.boxShadow =
+          element.style.boxShadow + ", 0 0 0 3px rgba(206, 255, 102, 0.6)";
+      }
+    }
+  };
 
   // Función para validar que el blob no sea un error o esté vacío
   const validateBlob = (blob: Blob): boolean => {
@@ -312,6 +368,9 @@ export const downloadFileWithCustomName = async (
         ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
         : "0 2px 8px rgba(76, 175, 80, 0.3)";
 
+      // Asegurar visibilidad en iframe
+      ensureIframeVisibility(statusElement);
+
       // Emitir evento de finalización exitosa
       const downloadCompleteEvent = new CustomEvent("download-complete", {
         detail: { url, filename, success: true, isMobile },
@@ -338,6 +397,9 @@ export const downloadFileWithCustomName = async (
       `;
       statusElement.style.backgroundColor = "#FF9800"; // Color de advertencia naranja
       statusElement.style.color = "white";
+
+      // Asegurar visibilidad en iframe
+      ensureIframeVisibility(statusElement);
     }
 
     // Método 2: Intentar descarga directa sin proxy (optimizada para móviles)
@@ -482,6 +544,9 @@ export const downloadFileWithCustomName = async (
             ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
             : "0 2px 8px rgba(76, 175, 80, 0.3)";
 
+          // Asegurar visibilidad en iframe
+          ensureIframeVisibility(statusElement);
+
           // Emitir evento de finalización exitosa
           const downloadCompleteEvent = new CustomEvent("download-complete", {
             detail: { url, filename, success: true, isMobile },
@@ -531,6 +596,9 @@ export const downloadFileWithCustomName = async (
         ? "0 4px 20px rgba(76, 175, 80, 0.3), 0 0 0 2px rgba(76, 175, 80, 0.5)"
         : "0 2px 8px rgba(76, 175, 80, 0.3)";
 
+      // Asegurar visibilidad en iframe
+      ensureIframeVisibility(statusElement);
+
       // Emitir evento de finalización exitosa
       const downloadCompleteEvent = new CustomEvent("download-complete", {
         detail: { url, filename, success: true, isMobile },
@@ -550,6 +618,9 @@ export const downloadFileWithCustomName = async (
       // Preparar para el método 3 de fallback
       statusElement.style.backgroundColor = "#f44336"; // Rojo para error
       statusElement.style.color = "white";
+
+      // Asegurar visibilidad en iframe
+      ensureIframeVisibility(statusElement);
     }
 
     // Método 3: Fallback - Descargar directamente con un enlace (específico para móviles)
@@ -576,6 +647,9 @@ export const downloadFileWithCustomName = async (
     `;
     statusElement.style.backgroundColor = "#FF9800";
     statusElement.style.color = "white";
+
+    // Asegurar visibilidad en iframe
+    ensureIframeVisibility(statusElement);
 
     // Crear un enlace para descargar directamente
     const link = document.createElement("a");
@@ -656,6 +730,9 @@ export const downloadFileWithCustomName = async (
       </div>
     `;
     statusElement.style.backgroundColor = "transparent";
+
+    // Asegurar visibilidad en iframe
+    ensureIframeVisibility(statusElement);
 
     // Emitir evento de error
     const downloadErrorEvent = new CustomEvent("download-complete", {
