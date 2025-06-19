@@ -10,6 +10,7 @@ import { google } from "googleapis";
 import { Logger } from "../../utils/logger";
 import { extractPrefixes } from "../../types/prefix";
 import { extractSuffixes } from "../../types/suffix";
+import { Readable } from "stream";
 
 // Tipos de elementos de Google Drive
 export interface DriveFile {
@@ -106,7 +107,10 @@ export class GoogleDriveService {
           ),
           project_id: process.env.GOOGLE_DRIVE_PROJECT_ID,
         },
-        scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+        scopes: [
+          "https://www.googleapis.com/auth/drive.readonly",
+          "https://www.googleapis.com/auth/drive.file",
+        ],
       });
 
       this.drive = google.drive({ version: "v3", auth });
@@ -331,13 +335,23 @@ export class GoogleDriveService {
    */
   async createFolder(name: string, parentId: string): Promise<DriveFile> {
     this.logger.info(`Creando carpeta: ${name} en ${parentId}`);
-    // En una implementación real, aquí se haría la llamada a la API
-    return {
-      id: "new-folder-id",
-      name,
-      mimeType: "application/vnd.google-apps.folder",
-      parents: [parentId],
-    };
+
+    try {
+      const response = await this.drive.files.create({
+        requestBody: {
+          name,
+          mimeType: "application/vnd.google-apps.folder",
+          parents: [parentId],
+        },
+        fields: "id, name, mimeType, parents, createdTime, modifiedTime",
+        supportsAllDrives: true,
+      });
+
+      return this.convertToFile(response.data);
+    } catch (error) {
+      this.logger.error(`Error creating folder ${name}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -400,15 +414,40 @@ export class GoogleDriveService {
     file: File,
     options: { parentId?: string; description?: string }
   ): Promise<DriveFile> {
-    this.logger.info(`Subiendo archivo: ${file.name}`);
-    // En una implementación real, aquí se haría la llamada a la API
-    return {
-      id: "new-file-id",
-      name: file.name,
-      mimeType: file.type,
-      parents: options.parentId ? [options.parentId] : undefined,
-      description: options.description,
-      size: file.size,
-    };
+    this.logger.info(`Subiendo archivo: ${file.name} (${file.size} bytes)`);
+
+    try {
+      // Convertir File a ArrayBuffer
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      // Crear un stream readable desde el buffer
+      const stream = new Readable({
+        read() {
+          this.push(buffer);
+          this.push(null); // Signal end of stream
+        },
+      });
+
+      const response = await this.drive.files.create({
+        requestBody: {
+          name: file.name,
+          parents: options.parentId ? [options.parentId] : undefined,
+          description: options.description,
+        },
+        media: {
+          mimeType: file.type,
+          body: stream,
+        },
+        fields:
+          "id, name, mimeType, size, parents, createdTime, modifiedTime, webViewLink",
+        supportsAllDrives: true,
+      });
+
+      return this.convertToFile(response.data);
+    } catch (error) {
+      this.logger.error(`Error uploading file ${file.name}:`, error);
+      throw error;
+    }
   }
 }
