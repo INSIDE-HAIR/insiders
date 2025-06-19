@@ -34,6 +34,7 @@ interface ContentContextProps {
   getSidebarItems: () => HierarchyItem[];
   getChildrenByType: (parentId: string | null, type: string) => HierarchyItem[];
   selectFirstTab: (parentId: string, level: number) => void;
+  refreshContent: () => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextProps | undefined>(
@@ -85,7 +86,15 @@ export const ContentProvider: React.FC<{
   routeParams?: RouteParams;
   title?: string;
   subtitle?: string;
-}> = ({ children, initialData, routeParams, title, subtitle }) => {
+  onDataRefresh?: () => Promise<HierarchyItem[]>;
+}> = ({
+  children,
+  initialData,
+  routeParams,
+  title,
+  subtitle,
+  onDataRefresh,
+}) => {
   const [contentData, setContentData] = useState<HierarchyItem[]>(initialData);
   const [navigationPath, setNavigationPath] = useState<NavigationPath[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -200,6 +209,19 @@ export const ContentProvider: React.FC<{
     [getChildrenByType, addToNavigationPath]
   );
 
+  // Función para refrescar el contenido
+  const refreshContent = useCallback(async () => {
+    if (onDataRefresh) {
+      try {
+        const newData = await onDataRefresh();
+        setContentData(newData);
+        console.log("Content refreshed successfully");
+      } catch (error) {
+        console.error("Error refreshing content:", error);
+      }
+    }
+  }, [onDataRefresh]);
+
   // Initialize navigation only once when the component mounts
   useEffect(() => {
     if (contentData.length > 0 && !isInitialized) {
@@ -241,6 +263,7 @@ export const ContentProvider: React.FC<{
       getSidebarItems,
       getChildrenByType,
       selectFirstTab,
+      refreshContent,
     }),
     [
       contentData,
@@ -255,6 +278,7 @@ export const ContentProvider: React.FC<{
       getSidebarItems,
       getChildrenByType,
       selectFirstTab,
+      refreshContent,
     ]
   );
 

@@ -7,6 +7,7 @@ import { mimeTypeIncludes } from "@/src/features/drive/utils/marketing-salon/hie
 
 interface ContentGridProps {
   items: HierarchyItem[];
+  onContentUpdated?: () => void;
 }
 
 /**
@@ -18,7 +19,7 @@ interface ContentGridProps {
  * @param {HierarchyItem[]} items - Lista de elementos a mostrar en la cuadrícula
  * @returns Cuadrícula de contenido adaptada al tipo de elementos
  */
-export function ContentGrid({ items }: ContentGridProps) {
+export function ContentGrid({ items, onContentUpdated }: ContentGridProps) {
   // Check if all items are PDFs - if so, use the custom grid
   const allPdfs =
     items.length > 0 && items.every((item) => mimeTypeIncludes(item, "pdf"));
@@ -42,7 +43,11 @@ export function ContentGrid({ items }: ContentGridProps) {
               </div>
             ) : (
               <div className='flex justify-center'>
-                <ComponentSelector item={item} />
+                <ComponentSelector
+                  item={item}
+                  onItemUpdated={onContentUpdated}
+                  onItemDeleted={onContentUpdated}
+                />
               </div>
             )}
           </div>
@@ -52,7 +57,7 @@ export function ContentGrid({ items }: ContentGridProps) {
   }
 
   if (allPdfs) {
-    return <PdfGrid items={items} />;
+    return <PdfGrid items={items} onContentUpdated={onContentUpdated} />;
   }
 
   // Otherwise use the original grid
@@ -60,7 +65,11 @@ export function ContentGrid({ items }: ContentGridProps) {
     <div className='flex flex-wrap gap-6 justify-center'>
       {items.map((item) => (
         <div key={item.id}>
-          <ComponentSelector item={item} />
+          <ComponentSelector
+            item={item}
+            onItemUpdated={onContentUpdated}
+            onItemDeleted={onContentUpdated}
+          />
         </div>
       ))}
     </div>
@@ -75,12 +84,22 @@ export function ContentGrid({ items }: ContentGridProps) {
  * @param {HierarchyItem[]} items - Lista de PDFs a mostrar
  * @returns Cuadrícula especializada para PDFs
  */
-function PdfGrid({ items }: { items: HierarchyItem[] }) {
+function PdfGrid({
+  items,
+  onContentUpdated,
+}: {
+  items: HierarchyItem[];
+  onContentUpdated?: () => void;
+}) {
   return (
     <div className='flex flex-wrap gap-6 justify-center p-4'>
       {items.map((item) => (
         <div key={item.id}>
-          <ComponentSelector item={item} />
+          <ComponentSelector
+            item={item}
+            onItemUpdated={onContentUpdated}
+            onItemDeleted={onContentUpdated}
+          />
         </div>
       ))}
     </div>

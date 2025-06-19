@@ -90,7 +90,7 @@ export async function GET(request: Request) {
         status: "pass",
         details: {
           id: folderInfo.id,
-          name: folderInfo.name || folderInfo.displayName,
+          name: folderInfo.name,
           mimeType: folderInfo.mimeType,
           parents: folderInfo.parents,
         },
@@ -124,7 +124,7 @@ export async function GET(request: Request) {
           details: {
             filesCount: files.length,
             fileNames: files.map((f) => ({
-              name: f.name || f.displayName,
+              name: f.name,
               mimeType: f.mimeType,
             })),
           },
@@ -173,7 +173,7 @@ export async function GET(request: Request) {
           status: "pass",
           details: {
             fileId: uploadResult.id,
-            fileName: uploadResult.name || uploadResult.displayName,
+            fileName: uploadResult.name,
             fileSize: testFile.size,
             webViewLink: uploadResult.webViewLink,
             message:

@@ -69,7 +69,7 @@ export async function POST(request: Request) {
       const folderInfo = await driveService.getFolder(folderId);
       console.log("Folder verification successful:", {
         id: folderInfo.id,
-        name: folderInfo.name || folderInfo.displayName,
+        name: folderInfo.name,
         mimeType: folderInfo.mimeType,
       });
     } catch (error) {
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
 
         console.log("Successfully uploaded file:", {
           id: uploadedFile.id,
-          name: uploadedFile.name || uploadedFile.displayName,
+          name: uploadedFile.name,
           size: uploadedFile.size,
           mimeType: uploadedFile.mimeType,
           webViewLink: uploadedFile.webViewLink,

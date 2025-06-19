@@ -14,6 +14,7 @@ import { ImageRenderer } from "@/src/components/drive/renderers/image-renderer";
 import { ModalRenderer } from "@/src/components/drive/renderers/modal-renderer";
 import { DirectImageRenderer } from "@/src/components/drive/renderers/direct-image-renderer";
 import { GenericRenderer } from "@/src/components/drive/renderers/generic-renderer";
+import { FileContextMenu } from "@/src/components/drive/ui/context-menu";
 import {
   hasPrefix,
   getFormUrl,
@@ -22,6 +23,8 @@ import {
 interface ComponentSelectorProps {
   item: HierarchyItem;
   index?: number;
+  onItemUpdated?: () => void;
+  onItemDeleted?: () => void;
 }
 
 /**
@@ -32,9 +35,16 @@ interface ComponentSelectorProps {
  *
  * @param {HierarchyItem} item - El elemento de contenido a renderizar
  * @param {number} index - Índice opcional para identificar la posición del elemento
+ * @param {function} onItemUpdated - Callback para cuando un elemento es actualizado
+ * @param {function} onItemDeleted - Callback para cuando un elemento es eliminado
  * @returns El componente específico para el tipo de contenido
  */
-export function ComponentSelector({ item, index }: ComponentSelectorProps) {
+export function ComponentSelector({
+  item,
+  index,
+  onItemUpdated,
+  onItemDeleted,
+}: ComponentSelectorProps) {
   // Procesamiento especial para formularios de Google
   // Si el elemento tiene el prefijo "googleform" o "form", añadimos la URL del formulario
   if (
@@ -55,25 +65,40 @@ export function ComponentSelector({ item, index }: ComponentSelectorProps) {
   // Determine component type based on prefixes and mimeType
   const componentType = determineComponentType(item);
 
-  // Render appropriate component based on type
-  switch (componentType) {
-    case "button":
-      return <ButtonRenderer item={item} />;
-    case "vimeo":
-      return <VimeoRenderer item={item} />;
-    case "google-slides":
-      return <GoogleSlidesRenderer item={item} />;
-    case "google-form":
-      return <GoogleFormRenderer item={item} />;
-    case "pdf":
-      return <PdfRenderer item={item} />;
-    case "image":
-      return <ImageRenderer item={item} />;
-    case "modal":
-      return <ModalRenderer item={item} />;
-    case "direct-image":
-      return <DirectImageRenderer item={item} />;
-    default:
-      return <GenericRenderer item={item} contentType={getContentType(item)} />;
-  }
+  // Función para renderizar el componente específico
+  const renderComponent = () => {
+    switch (componentType) {
+      case "button":
+        return <ButtonRenderer item={item} />;
+      case "vimeo":
+        return <VimeoRenderer item={item} />;
+      case "google-slides":
+        return <GoogleSlidesRenderer item={item} />;
+      case "google-form":
+        return <GoogleFormRenderer item={item} />;
+      case "pdf":
+        return <PdfRenderer item={item} />;
+      case "image":
+        return <ImageRenderer item={item} />;
+      case "modal":
+        return <ModalRenderer item={item} />;
+      case "direct-image":
+        return <DirectImageRenderer item={item} />;
+      default:
+        return (
+          <GenericRenderer item={item} contentType={getContentType(item)} />
+        );
+    }
+  };
+
+  // Envolver en el menú contextual
+  return (
+    <FileContextMenu
+      item={item}
+      onFileUpdated={onItemUpdated}
+      onFileDeleted={onItemDeleted}
+    >
+      {renderComponent()}
+    </FileContextMenu>
+  );
 }

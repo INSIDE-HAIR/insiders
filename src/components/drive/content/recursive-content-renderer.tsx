@@ -20,6 +20,7 @@ interface RecursiveContentRendererProps {
   parentId: string | null;
   parentType: string;
   isInIframe?: boolean;
+  onContentUpdated?: () => void;
 }
 
 /**
@@ -38,6 +39,7 @@ interface RecursiveContentRendererProps {
  * @param {string|null} parentId - ID del elemento padre
  * @param {string} parentType - Tipo del elemento padre (sidebar, tab, section)
  * @param {boolean} isInIframe - Indica si el contenido se está renderizando en un iframe
+ * @param {function} onContentUpdated - Callback para refrescar el contenido cuando hay cambios
  * @returns Contenido renderizado según la jerarquía y tipo
  */
 export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
@@ -45,9 +47,11 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
   parentId,
   parentType,
   isInIframe = false,
+  onContentUpdated,
 }: RecursiveContentRendererProps) {
   const { data: session } = useSession();
-  const { getChildrenByType, navigationPath, getItemById } = useContent();
+  const { getChildrenByType, navigationPath, getItemById, refreshContent } =
+    useContent();
   const currentPathItem = navigationPath.find((item) => item.level === level);
   const sidebarItem =
     navigationPath.length > 0 ? getItemById(navigationPath[0].id) : null;
@@ -55,6 +59,14 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
   // Verificar si el usuario es admin
   const isAdmin = session?.user?.role === "ADMIN";
+
+  // Función para manejar actualizaciones de contenido
+  const handleContentUpdate = async () => {
+    await refreshContent();
+    if (onContentUpdated) {
+      onContentUpdated();
+    }
+  };
 
   // Debug logging temporal
   if (isAdmin) {
@@ -182,7 +194,11 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
         <div className='w-full flex flex-col items-center mb-6'>
           {googleFormItems.map((item) => (
             <div key={item.id} className='w-full max-w-md'>
-              <ComponentSelector item={item} />
+              <ComponentSelector
+                item={item}
+                onItemUpdated={handleContentUpdate}
+                onItemDeleted={handleContentUpdate}
+              />
             </div>
           ))}
         </div>
@@ -193,7 +209,11 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
         <div className='w-full flex justify-center mb-6 max-w-md mx-auto'>
           {buttonItems.map((item) => (
             <div key={item.id} className='mx-2'>
-              <ComponentSelector item={item} />
+              <ComponentSelector
+                item={item}
+                onItemUpdated={handleContentUpdate}
+                onItemDeleted={handleContentUpdate}
+              />
             </div>
           ))}
         </div>
@@ -204,7 +224,11 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
         <div className='w-full flex justify-center items-center mb-6 mx-auto'>
           {modalItems.map((item) => (
             <div key={item.id} className='flex justify-center'>
-              <ComponentSelector item={item} />
+              <ComponentSelector
+                item={item}
+                onItemUpdated={handleContentUpdate}
+                onItemDeleted={handleContentUpdate}
+              />
             </div>
           ))}
         </div>
@@ -243,6 +267,7 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
                 parentId={currentPathItem.id}
                 parentType='tab'
                 isInIframe={isInIframe}
+                onContentUpdated={handleContentUpdate}
               />
             </div>
 
@@ -271,7 +296,11 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
         <div className='w-full flex flex-col items-center max-w-4xl mx-auto'>
           {vimeoItems.map((item) => (
             <div key={item.id} className='w-full max-w-4xl mb-8'>
-              <ComponentSelector item={item} />
+              <ComponentSelector
+                item={item}
+                onItemUpdated={handleContentUpdate}
+                onItemDeleted={handleContentUpdate}
+              />
             </div>
           ))}
         </div>
@@ -297,13 +326,17 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
           sections={sectionItems}
           level={level}
           isInIframe={isInIframe}
+          onContentUpdated={handleContentUpdate}
         />
       )}
 
       {/* 9. Renderizar otros elementos directos */}
       {otherDirectItems.length > 0 && (
         <div className='w-full mt-2'>
-          <ContentGrid items={otherDirectItems} />
+          <ContentGrid
+            items={otherDirectItems}
+            onContentUpdated={handleContentUpdate}
+          />
         </div>
       )}
 

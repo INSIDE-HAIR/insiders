@@ -82,8 +82,12 @@ export interface SearchOptions {
  * con la API de Google Drive y recuperar información de archivos y carpetas.
  */
 export class GoogleDriveService {
-  private drive!: ReturnType<typeof google.drive>;
+  private _drive!: ReturnType<typeof google.drive>;
   private logger: Logger;
+
+  public get drive() {
+    return this._drive;
+  }
 
   /**
    * Constructor del servicio
@@ -107,16 +111,13 @@ export class GoogleDriveService {
           ),
           project_id: process.env.GOOGLE_DRIVE_PROJECT_ID,
         },
-        scopes: [
-          "https://www.googleapis.com/auth/drive.readonly",
-          "https://www.googleapis.com/auth/drive.file",
-        ],
+        scopes: ["https://www.googleapis.com/auth/drive"],
       });
 
-      this.drive = google.drive({ version: "v3", auth });
+      this._drive = google.drive({ version: "v3", auth });
 
       // Test connection
-      await this.drive.files.list({
+      await this._drive.files.list({
         pageSize: 1,
         supportsAllDrives: true,
         includeItemsFromAllDrives: true,
@@ -199,7 +200,7 @@ export class GoogleDriveService {
   ): Promise<{ files: DriveFile[]; nextPageToken?: string }> {
     this.logger.info(`Listando archivos en: ${params.folderId}`);
 
-    const response = await this.drive.files.list({
+    const response = await this._drive.files.list({
       q: `'${params.folderId}' in parents and trashed = false`,
       pageSize: params.pageSize || 100,
       pageToken: params.pageToken,
@@ -238,7 +239,7 @@ export class GoogleDriveService {
   async getFolder(folderId: string): Promise<DriveFile> {
     this.logger.info(`Obteniendo carpeta: ${folderId}`);
 
-    const response = await this.drive.files.get({
+    const response = await this._drive.files.get({
       fileId: folderId,
       fields:
         "id, name, mimeType, modifiedTime, parents, webViewLink, iconLink, thumbnailLink, hasThumbnail, size, md5Checksum, trashed, shared, owners, capabilities",
@@ -282,7 +283,7 @@ export class GoogleDriveService {
   async getFolderContents(folderId: string): Promise<DriveFile[]> {
     this.logger.info(`Obteniendo contenido de carpeta: ${folderId}`);
 
-    const response = await this.drive.files.list({
+    const response = await this._drive.files.list({
       q: `'${folderId}' in parents and trashed = false`,
       pageSize: 1000,
       fields:
@@ -337,7 +338,7 @@ export class GoogleDriveService {
     this.logger.info(`Creando carpeta: ${name} en ${parentId}`);
 
     try {
-      const response = await this.drive.files.create({
+      const response = await this._drive.files.create({
         requestBody: {
           name,
           mimeType: "application/vnd.google-apps.folder",
@@ -385,23 +386,192 @@ export class GoogleDriveService {
     options: { name?: string; description?: string; parentId?: string }
   ): Promise<DriveFile> {
     this.logger.info(`Actualizando archivo: ${fileId}`);
-    // En una implementación real, aquí se haría la llamada a la API
-    return {
-      id: fileId,
-      name: options.name || "Archivo actualizado",
-      mimeType: "application/octet-stream",
-      description: options.description,
-      parents: options.parentId ? [options.parentId] : undefined,
-    };
+
+    try {
+      const updateRequest: any = {};
+
+      if (options.name) {
+        updateRequest.name = options.name;
+      }
+
+      if (options.description !== undefined) {
+        updateRequest.description = options.description;
+      }
+
+      const response = await this._drive.files.update({
+        fileId,
+        requestBody: updateRequest,
+        fields:
+          "id, name, mimeType, description, modifiedTime, parents, webViewLink, iconLink, thumbnailLink, size",
+        supportsAllDrives: true,
+      });
+
+      // Manejar cambio de padre si se especifica
+      if (options.parentId) {
+        const currentFile = await this._drive.files.get({
+          fileId,
+          fields: "parents",
+          supportsAllDrives: true,
+        });
+
+        const previousParents = currentFile.data.parents?.join(",") || "";
+
+        await this._drive.files.update({
+          fileId,
+          addParents: options.parentId,
+          removeParents: previousParents,
+          supportsAllDrives: true,
+        });
+      }
+
+      return this.convertToFile(response.data);
+    } catch (error) {
+      this.logger.error(`Error updating file ${fileId}:`, error);
+      throw error;
+    }
   }
 
   /**
-   * Elimina un archivo o carpeta
+   * Renombra un archivo o carpeta
    * @param fileId ID del archivo o carpeta
+   * @param newName Nuevo nombre
+   * @returns Archivo renombrado
    */
-  async deleteFile(fileId: string): Promise<void> {
-    this.logger.info(`Eliminando archivo/carpeta: ${fileId}`);
-    // En una implementación real, aquí se haría la llamada a la API
+  async renameFile(fileId: string, newName: string): Promise<DriveFile> {
+    this.logger.info(`Renombrando archivo/carpeta: ${fileId} -> ${newName}`);
+
+    try {
+      const response = await this._drive.files.update({
+        fileId,
+        requestBody: {
+          name: newName,
+        },
+        fields:
+          "id, name, mimeType, description, modifiedTime, parents, webViewLink, iconLink, thumbnailLink, size",
+        supportsAllDrives: true,
+      });
+
+      return this.convertToFile(response.data);
+    } catch (error) {
+      this.logger.error(`Error renaming file ${fileId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verifica si un archivo existe y está accesible
+   * @param fileId ID del archivo a verificar
+   * @returns información del archivo si existe, null si no existe
+   */
+  async fileExists(
+    fileId: string
+  ): Promise<{ exists: boolean; fileInfo?: any; error?: string }> {
+    try {
+      const response = await this._drive.files.get({
+        fileId,
+        fields: "id, name, mimeType, trashed, parents, capabilities",
+        supportsAllDrives: true,
+      });
+
+      const fileInfo = response.data;
+
+      // Encontramos el archivo, así que existe. Quien llama puede verificar el estado 'trashed'.
+      return {
+        exists: true,
+        fileInfo,
+      };
+    } catch (error: any) {
+      if (error?.status === 404 || error?.code === 404) {
+        return {
+          exists: false,
+          error: "File not found",
+        };
+      }
+      // Para otros errores, lo consideramos como no accesible
+      this.logger.warn(
+        `Error checking file existence for ${fileId}:`,
+        error?.message
+      );
+      return {
+        exists: false,
+        error: error?.message || "Unknown error",
+      };
+    }
+  }
+
+  /**
+   * Mueve un archivo o carpeta a la papelera
+   * @param fileId ID del archivo o carpeta
+   * @returns Resultado de la operación con información adicional
+   */
+  async deleteFile(fileId: string): Promise<{
+    success: boolean;
+    alreadyDeleted?: boolean;
+    message: string;
+    fileInfo?: any;
+  }> {
+    this.logger.info(
+      `Intentando mover a la papelera el archivo/carpeta: ${fileId}`
+    );
+
+    // Primero verificar si el archivo existe y es accesible
+    const existsResult = await this.fileExists(fileId);
+
+    if (!existsResult.exists) {
+      this.logger.warn(
+        `Archivo ${fileId} no existe o no es accesible: ${existsResult.error}`
+      );
+      return {
+        success: false,
+        alreadyDeleted: true,
+        message: `File not found, cannot move to trash: ${existsResult.error}`,
+        fileInfo: existsResult.fileInfo,
+      };
+    }
+
+    // Verificar si ya está en la papelera
+    if (existsResult.fileInfo?.trashed) {
+      this.logger.info(`El archivo ${fileId} ya está en la papelera.`);
+      return {
+        success: true,
+        alreadyDeleted: true,
+        message: "File is already in trash",
+        fileInfo: existsResult.fileInfo,
+      };
+    }
+
+    // Verificar permisos para mover a la papelera
+    const canTrash = existsResult.fileInfo?.capabilities?.canTrash;
+    if (canTrash === false) {
+      this.logger.error(
+        `No hay permisos para mover a la papelera el archivo ${fileId}. Capacidades del archivo:`,
+        existsResult.fileInfo
+      );
+      throw new Error("Permission denied: Cannot move this file to trash");
+    }
+
+    try {
+      // Usar update para mover a la papelera en lugar de delete
+      await this._drive.files.update({
+        fileId,
+        requestBody: {
+          trashed: true,
+        },
+        supportsAllDrives: true,
+      });
+
+      this.logger.info(
+        `Archivo/carpeta movido a la papelera exitosamente: ${fileId}`
+      );
+      return {
+        success: true,
+        message: "File moved to trash successfully",
+        fileInfo: existsResult.fileInfo,
+      };
+    } catch (error: any) {
+      this.logger.error(`Error moving file to trash ${fileId}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -429,7 +599,7 @@ export class GoogleDriveService {
         },
       });
 
-      const response = await this.drive.files.create({
+      const response = await this._drive.files.create({
         requestBody: {
           name: file.name,
           parents: options.parentId ? [options.parentId] : undefined,

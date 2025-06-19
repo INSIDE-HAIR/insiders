@@ -12,6 +12,7 @@ interface SectionNavigationProps {
   sections: HierarchyItem[];
   level: number;
   isInIframe?: boolean;
+  onContentUpdated?: () => void;
 }
 
 /**
@@ -23,12 +24,14 @@ interface SectionNavigationProps {
  * @param {HierarchyItem[]} sections - Lista de elementos de sección
  * @param {number} level - Nivel de profundidad en la jerarquía
  * @param {boolean} isInIframe - Indica si el contenido se está renderizando en un iframe
+ * @param {function} onContentUpdated - Callback para refrescar el contenido cuando hay cambios
  * @returns Componente de navegación por secciones
  */
 export const SectionNavigation = memo(function SectionNavigation({
   sections,
   level,
   isInIframe = false,
+  onContentUpdated,
 }: SectionNavigationProps) {
   return (
     <div className='w-full px-4'>
@@ -40,6 +43,7 @@ export const SectionNavigation = memo(function SectionNavigation({
             section={section}
             level={level}
             isInIframe={isInIframe}
+            onContentUpdated={onContentUpdated}
           />
         ))}
       </div>
@@ -51,6 +55,7 @@ interface SectionWithContentProps {
   section: HierarchyItem;
   level: number;
   isInIframe?: boolean;
+  onContentUpdated?: () => void;
 }
 
 /**
@@ -62,12 +67,14 @@ interface SectionWithContentProps {
  * @param {HierarchyItem} section - Elemento de sección a mostrar
  * @param {number} level - Nivel de profundidad en la jerarquía
  * @param {boolean} isInIframe - Indica si el contenido se está renderizando en un iframe
+ * @param {function} onContentUpdated - Callback para refrescar el contenido cuando hay cambios
  * @returns Componente de sección con su contenido
  */
 const SectionWithContent = memo(function SectionWithContent({
   section,
   level,
   isInIframe = false,
+  onContentUpdated,
 }: SectionWithContentProps) {
   const { data: session } = useSession();
 
@@ -98,10 +105,14 @@ const SectionWithContent = memo(function SectionWithContent({
             parentId={section.id}
             parentType='section'
             isInIframe={isInIframe}
+            onContentUpdated={onContentUpdated}
           />
         ) : (
           /* Si no tiene subsecciones, renderizar el contenido directamente */
-          <ContentGrid items={sectionItems} />
+          <ContentGrid
+            items={sectionItems}
+            onContentUpdated={onContentUpdated}
+          />
         )}
       </div>
 
