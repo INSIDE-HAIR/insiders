@@ -50,6 +50,7 @@ export function DirectFileUploadManager({
   // Test direct upload capability (only in development)
   const testDirectUpload = async (): Promise<boolean> => {
     if (process.env.NODE_ENV !== "development") return false;
+
     if (session?.user?.role !== "ADMIN") return false;
 
     try {
