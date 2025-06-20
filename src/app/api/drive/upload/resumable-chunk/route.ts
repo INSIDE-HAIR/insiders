@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 
-// Type for duplex streaming
-type RequestDuplex = "half" | "full";
-
 // Configuración de la ruta como dinámica para evitar la generación estática
 export const dynamic = "force-dynamic";
 // Aumentar el límite de tiempo de respuesta para archivos grandes
@@ -88,7 +85,6 @@ export async function PUT(request: NextRequest) {
       method: "PUT",
       headers,
       body: request.body, // Stream the body directly
-      duplex: "half" as RequestDuplex, // Required for streaming
     });
 
     console.log("Google Drive response:", {

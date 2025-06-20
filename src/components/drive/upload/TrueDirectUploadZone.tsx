@@ -165,7 +165,7 @@ export function TrueDirectUploadZone({
       "🆔 PROXY VERSION: TrueDirectUploadZone v2.0 - Using /api/drive/upload/resumable-chunk"
     );
 
-    const chunkSize = 8 * 1024 * 1024; // 8MB chunks for optimal performance
+    const chunkSize = 4 * 1024 * 1024; // 4MB chunks to stay under Vercel's 4.5MB limit
     let uploadedBytes = 0;
 
     for (let start = 0; start < file.size; start += chunkSize) {
@@ -745,7 +745,7 @@ export function TrueDirectUploadZone({
         </p>
         <p>
           📦 <strong>Chunking:</strong> Archivos grandes se dividen en chunks de
-          8MB
+          4MB
         </p>
         <p>
           🚀 <strong>Performance:</strong> Evita límites CORS • Resumable upload
