@@ -36,14 +36,8 @@ export function DirectFileUploadManager({
 
   // Determine upload mode based on environment and user permissions
   const shouldUseDirectUpload = () => {
-    // Check if we're in development mode
-    const isDevelopment =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1" ||
-        window.location.hostname.includes(".local") ||
-        window.location.port !== "");
-
+    // Check if we're in development mode using NODE_ENV
+    const isDevelopment = process.env.NODE_ENV === "development";
     const isAdmin = session?.user?.role === "ADMIN";
 
     if (isDevelopment && isAdmin) {
@@ -55,14 +49,7 @@ export function DirectFileUploadManager({
 
   // Test direct upload capability (only in development)
   const testDirectUpload = async (): Promise<boolean> => {
-    const isDevelopment =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1" ||
-        window.location.hostname.includes(".local") ||
-        window.location.port !== "");
-
-    if (!isDevelopment) return false;
+    if (process.env.NODE_ENV !== "development") return false;
     if (session?.user?.role !== "ADMIN") return false;
 
     try {
