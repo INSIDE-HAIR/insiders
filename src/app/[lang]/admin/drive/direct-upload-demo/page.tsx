@@ -30,8 +30,8 @@ import {
 import {
   DirectFileUploadManager,
   EnhancedDropZone,
+  TrueDirectUploadZone,
 } from "@/src/components/drive/upload";
-import { ServerDirectUploadZone } from "@/src/components/drive/upload/ServerDirectUploadZone";
 import type { UploadFileItem } from "@/src/components/drive/upload";
 
 export default function DirectUploadDemoPage() {
@@ -269,15 +269,16 @@ export default function DirectUploadDemoPage() {
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 <Cloud className='w-5 h-5 text-blue-600' />
-                Subida Directa Pura
+                TRUE Direct Upload (Implementación Final)
               </CardTitle>
               <CardDescription>
-                Subida directa a Google Drive sin pasar por el servidor. Ideal
-                para archivos grandes que exceden los límites de Vercel.
+                Verdadera subida directa a Google Drive usando resumable upload.
+                Bypassa completamente Vercel • Sin límites de tamaño • Chunks de
+                8MB.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <ServerDirectUploadZone
+              <TrueDirectUploadZone
                 folderId={demoFolder.id}
                 folderName={`${demoFolder.name} (Directo)`}
                 onUploadComplete={handleUploadComplete}
@@ -432,12 +433,12 @@ export default function DirectUploadDemoPage() {
 
             <div>
               <h4 className='font-semibold mb-2'>
-                2. Para subida directa únicamente:
+                2. Para subida directa únicamente (TRUE DIRECT):
               </h4>
               <pre className='bg-gray-100 p-3 rounded text-xs overflow-x-auto'>
-                {`import { ServerDirectUploadZone } from '@/components/drive/upload/ServerDirectUploadZone';
+                {`import { TrueDirectUploadZone } from '@/components/drive/upload';
 
-<ServerDirectUploadZone
+<TrueDirectUploadZone
   folderId={folderId}
   folderName={folderName}
   onUploadComplete={handleUploadComplete}

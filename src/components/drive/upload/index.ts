@@ -10,6 +10,7 @@ export { EnhancedFileUploadManager } from "./EnhancedFileUploadManager";
 // Direct upload components (bypasses Vercel 4.5MB limit)
 export { DirectUploadDropZone } from "./DirectUploadDropZone";
 export { ServerDirectUploadZone } from "./ServerDirectUploadZone";
+export { TrueDirectUploadZone } from "./TrueDirectUploadZone";
 export { DirectFileUploadManager } from "./DirectFileUploadManager";
 
 export type { UploadFileItem, UploadStatus } from "./EnhancedDropZone";
