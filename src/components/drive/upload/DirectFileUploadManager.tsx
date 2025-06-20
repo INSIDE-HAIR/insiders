@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ServerDirectUploadZone } from "./ServerDirectUploadZone";
+import { TrueDirectUploadZone } from "./TrueDirectUploadZone";
 import { EnhancedDropZone } from "./EnhancedDropZone";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Button } from "@/src/components/ui/button";
@@ -149,9 +149,9 @@ export function DirectFileUploadManager({
             <>
               <Wifi className='h-4 w-4' />
               <AlertDescription>
-                <strong>Modo Directo:</strong> Archivos se suben usando el
-                GoogleDriveService existente, sin límites de tamaño (recomendado
-                para archivos grandes).
+                <strong>Modo Directo:</strong> Archivos se suben directamente a
+                Google Drive via proxy, sin límites de tamaño (recomendado para
+                archivos grandes).
               </AlertDescription>
             </>
           ) : (
@@ -185,7 +185,7 @@ export function DirectFileUploadManager({
 
       {/* Upload Component */}
       {useDirectUpload && canUseDirectUpload() ? (
-        <ServerDirectUploadZone
+        <TrueDirectUploadZone
           folderId={folderId}
           folderName={folderName}
           disabled={disabled}
