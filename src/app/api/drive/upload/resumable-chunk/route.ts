@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 
+// Type for duplex streaming
+type RequestDuplex = "half" | "full";
+
 // Configuración de la ruta como dinámica para evitar la generación estática
 export const dynamic = "force-dynamic";
 // Aumentar el límite de tiempo de respuesta para archivos grandes
 export const maxDuration = 60;
+// Configurar para manejar payloads grandes via streaming
+export const preferredRegion = "auto";
 
 export async function PUT(request: NextRequest) {
   console.log("=== RESUMABLE CHUNK PROXY START ===");
@@ -54,30 +59,36 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Get the chunk data from the request
-    console.log("3. Reading chunk data...");
-    const chunkData = await request.arrayBuffer();
-    console.log(`✅ Chunk data read: ${chunkData.byteLength} bytes`);
+    // Stream the chunk data without loading into memory
+    console.log("3. Setting up streaming proxy...");
 
-    // Prepare headers for Google Drive
+    // Get content length from headers
+    const contentLength = request.headers.get("content-length");
+    console.log(`✅ Content-Length: ${contentLength} bytes`);
+
+    // Prepare headers for Google Drive (forward from original request)
     const headers: Record<string, string> = {
       "Content-Type":
         request.headers.get("content-type") || "application/octet-stream",
-      "Content-Length": chunkData.byteLength.toString(),
     };
+
+    if (contentLength) {
+      headers["Content-Length"] = contentLength;
+    }
 
     if (contentRange) {
       headers["Content-Range"] = contentRange;
     }
 
-    console.log("4. Forwarding chunk to Google Drive...");
+    console.log("4. Forwarding stream to Google Drive...");
     console.log("Headers to send:", headers);
 
-    // Forward the chunk to Google Drive
+    // Forward the stream directly to Google Drive without loading into memory
     const response = await fetch(resumableURI, {
       method: "PUT",
       headers,
-      body: chunkData,
+      body: request.body, // Stream the body directly
+      duplex: "half" as RequestDuplex, // Required for streaming
     });
 
     console.log("Google Drive response:", {
