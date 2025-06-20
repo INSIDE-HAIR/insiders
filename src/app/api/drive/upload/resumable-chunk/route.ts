@@ -85,6 +85,8 @@ export async function PUT(request: NextRequest) {
       method: "PUT",
       headers,
       body: request.body, // Stream the body directly
+      // @ts-ignore - duplex is required for streaming but not yet in TypeScript types
+      duplex: "half",
     });
 
     console.log("Google Drive response:", {
@@ -104,14 +106,22 @@ export async function PUT(request: NextRequest) {
     const responseBody = await response.text();
     console.log("Google Drive response body:", responseBody.substring(0, 500));
 
-    if (!response.ok) {
+    // Status 308 "Resume Incomplete" is EXPECTED for chunked uploads
+    // Status 200/201 means upload completed successfully
+    if (!response.ok && response.status !== 308) {
       console.log("❌ Google Drive upload failed");
       throw new Error(
         `Google Drive upload failed: ${response.status} ${response.statusText}`
       );
     }
 
-    console.log("✅ Chunk uploaded successfully to Google Drive");
+    if (response.status === 308) {
+      console.log(
+        "✅ Chunk uploaded - more chunks expected (308 Resume Incomplete)"
+      );
+    } else {
+      console.log("✅ Upload completed successfully");
+    }
     console.log("=== RESUMABLE CHUNK PROXY SUCCESS ===");
 
     // Return the response from Google Drive to the client
