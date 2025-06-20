@@ -521,18 +521,18 @@ export function TrueDirectUploadZone({
 
   return (
     <div className={`space-y-4 ${className}`}>
-      {/* Header with folder info and true direct upload badge */}
-      <div className='flex items-center justify-between'>
+      {/* Header */}
+      <div className='mb-4 flex items-center justify-between'>
         <div>
-          <h3 className='text-lg font-semibold'>
-            True Direct Upload a Google Drive
+          <h3 className='text-lg font-semibold flex items-center gap-2 text-zinc-900'>
+            <Cloud className='w-5 h-5 text-black' />
+            Subida Directa
           </h3>
-          <p className='text-sm text-gray-600'>
-            Carpeta: {folderName} • Sin límites de tamaño • Bypass total de
-            Vercel
+          <p className='text-sm text-zinc-600'>
+            {folderName} • Sin límites de tamaño • Bypass total de Vercel
           </p>
         </div>
-        <Badge variant='default' className='bg-green-600'>
+        <Badge variant='secondary' className='bg-inside text-black font-medium'>
           <Cloud className='w-3 h-3 mr-1' />
           Directo
         </Badge>
@@ -540,31 +540,48 @@ export function TrueDirectUploadZone({
 
       {/* Drop Zone */}
       <Card
-        className={`border-2 border-dashed transition-colors ${
+        className={`border-2 border-dashed transition-all duration-300 ${
           isDragOver
-            ? "border-blue-400 bg-blue-50"
+            ? "border-inside bg-inside/15 shadow-lg border-solid"
             : disabled
-            ? "border-gray-300 bg-gray-50"
-            : "border-gray-300 hover:border-gray-400"
+            ? "border-zinc-300 bg-zinc-50"
+            : "border-zinc-400 hover:border-inside hover:bg-inside/8 hover:shadow-md"
         }`}
       >
         <CardContent
-          className='flex flex-col items-center justify-center py-8 cursor-pointer'
+          className='flex flex-col items-center justify-center py-16 cursor-pointer'
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onClick={() => !disabled && fileInputRef.current?.click()}
         >
-          <Cloud className='w-12 h-12 text-gray-400 mb-4' />
-          <p className='text-lg font-medium text-gray-700 mb-2'>
+          <div
+            className={`p-6 rounded-full mb-6 transition-all duration-300 ${
+              isDragOver
+                ? "bg-inside text-black scale-110 shadow-lg"
+                : "bg-zinc-800 text-white hover:bg-zinc-700"
+            }`}
+          >
+            <Cloud className='w-10 h-10' />
+          </div>
+          <h4 className='text-xl font-bold text-zinc-900 mb-3 text-center'>
+            {isDragOver ? "¡Suelta los archivos aquí!" : "Subir Archivos"}
+          </h4>
+          <p className='text-base font-medium text-zinc-700 text-center max-w-md mb-4 leading-relaxed'>
             {isDragOver
-              ? "Suelta los archivos aquí"
-              : "Arrastra archivos o haz clic para seleccionar"}
+              ? "Listo para recibir tus archivos"
+              : "Arrastra archivos aquí o haz clic para seleccionar"}
           </p>
-          <p className='text-sm text-gray-500 text-center max-w-md'>
-            Subida directa a Google Drive • Sin límites de tamaño • Archivos
-            grandes optimizados con chunks de 8MB
-          </p>
+          <div className='bg-zinc-100 rounded-lg px-4 py-2 mb-2'>
+            <p className='text-sm font-semibold text-zinc-800 text-center'>
+              📁 Subida directa a Google Drive • Sin límites de tamaño
+            </p>
+          </div>
+          <div className='text-xs font-medium text-zinc-600 flex items-center gap-2'>
+            <span className='bg-inside/10 px-2 py-1 rounded text-zinc-800'>
+              🚀 Optimizado para archivos grandes (chunks de 4MB)
+            </span>
+          </div>
           <input
             ref={fileInputRef}
             type='file'
@@ -578,20 +595,26 @@ export function TrueDirectUploadZone({
 
       {/* Files List */}
       {files.length > 0 && (
-        <Card>
-          <CardContent className='p-4'>
-            <div className='flex items-center justify-between mb-4'>
-              <h4 className='font-medium'>Archivos ({files.length})</h4>
-              <div className='flex gap-2'>
+        <Card className='border-zinc-300 shadow-sm'>
+          <CardContent className='p-6'>
+            <div className='flex items-center justify-between mb-6'>
+              <h4 className='text-lg font-bold text-zinc-900 flex items-center gap-3'>
+                <div className='p-2 rounded-lg bg-inside/10'>
+                  <Upload className='w-5 h-5 text-zinc-800' />
+                </div>
+                <span>Archivos Seleccionados ({files.length})</span>
+              </h4>
+              <div className='flex gap-3'>
                 {!isUploading && (
                   <Button
                     size='sm'
                     variant='outline'
                     onClick={clearAllFiles}
                     disabled={disabled}
+                    className='border-zinc-400 text-zinc-700 hover:bg-zinc-100 font-medium'
                   >
-                    <Trash2 className='w-4 h-4 mr-1' />
-                    Limpiar
+                    <Trash2 className='w-4 h-4 mr-2' />
+                    Limpiar Todo
                   </Button>
                 )}
                 {files.some((f) => f.status === "pending") && (
@@ -599,8 +622,9 @@ export function TrueDirectUploadZone({
                     size='sm'
                     onClick={startUpload}
                     disabled={disabled || isUploading}
+                    className='bg-inside text-black hover:bg-inside/90 border-inside font-semibold shadow-sm'
                   >
-                    <Upload className='w-4 h-4 mr-1' />
+                    <Upload className='w-4 h-4 mr-2' />
                     {isUploading ? "Subiendo..." : "Subir Archivos"}
                   </Button>
                 )}
@@ -609,30 +633,35 @@ export function TrueDirectUploadZone({
                     size='sm'
                     variant='destructive'
                     onClick={cancelUpload}
+                    className='bg-red-600 hover:bg-red-700 font-medium'
                   >
-                    <X className='w-4 h-4 mr-1' />
+                    <X className='w-4 h-4 mr-2' />
                     Cancelar
                   </Button>
                 )}
               </div>
             </div>
 
-            <div className='space-y-3'>
+            <div className='space-y-4'>
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className='flex items-center gap-3 p-3 border rounded-lg bg-gray-50'
+                  className='flex items-center gap-4 p-4 border rounded-xl bg-white border-zinc-300 hover:border-inside/50 hover:bg-inside/5 hover:shadow-sm transition-all duration-200'
                 >
-                  <div className='flex-shrink-0'>{getFileIcon(file.file)}</div>
+                  <div className='flex-shrink-0 p-2 rounded-lg bg-zinc-100'>
+                    <div className='text-zinc-700'>
+                      {getFileIcon(file.file)}
+                    </div>
+                  </div>
 
                   <div className='flex-1 min-w-0'>
-                    <div className='flex items-center gap-2 mb-1'>
+                    <div className='flex items-center gap-3 mb-2'>
                       {editingId === file.id ? (
                         <div className='flex items-center gap-2 flex-1'>
                           <Input
                             value={editingName}
                             onChange={(e) => setEditingName(e.target.value)}
-                            className='flex-1 h-7'
+                            className='flex-1 h-8 border-inside focus:border-inside focus:ring-inside/20 font-medium'
                             onKeyDown={(e) => {
                               if (e.key === "Enter") saveEdit();
                               if (e.key === "Escape") cancelEdit();
@@ -642,22 +671,22 @@ export function TrueDirectUploadZone({
                             size='sm'
                             variant='ghost'
                             onClick={saveEdit}
-                            className='h-7 w-7 p-0'
+                            className='h-8 w-8 p-0 text-inside hover:bg-inside/15 hover:text-black'
                           >
-                            <Save className='w-3 h-3' />
+                            <Save className='w-4 h-4' />
                           </Button>
                           <Button
                             size='sm'
                             variant='ghost'
                             onClick={cancelEdit}
-                            className='h-7 w-7 p-0'
+                            className='h-8 w-8 p-0 text-zinc-600 hover:text-zinc-800 hover:bg-zinc-100'
                           >
-                            <X className='w-3 h-3' />
+                            <X className='w-4 h-4' />
                           </Button>
                         </div>
                       ) : (
                         <>
-                          <span className='font-medium text-sm truncate'>
+                          <span className='font-semibold text-base truncate text-zinc-900'>
                             {file.newName}
                           </span>
                           {file.status === "pending" && (
@@ -665,42 +694,54 @@ export function TrueDirectUploadZone({
                               size='sm'
                               variant='ghost'
                               onClick={() => startEditing(file)}
-                              className='h-6 w-6 p-0'
+                              className='h-7 w-7 p-0 text-zinc-500 hover:text-inside hover:bg-inside/15'
                               disabled={disabled || isUploading}
                             >
-                              <Edit2 className='w-3 h-3' />
+                              <Edit2 className='w-4 h-4' />
                             </Button>
                           )}
                         </>
                       )}
                     </div>
 
-                    <div className='flex items-center gap-2 text-xs text-gray-500'>
-                      <span>{formatFileSize(file.file.size)}</span>
+                    <div className='flex items-center gap-3 text-sm font-medium text-zinc-600 mb-2'>
+                      <span className='bg-zinc-100 px-2 py-1 rounded'>
+                        {formatFileSize(file.file.size)}
+                      </span>
                       <span>•</span>
                       <span>{file.file.type || "Tipo desconocido"}</span>
                     </div>
 
                     {file.status === "uploading" && (
-                      <div className='mt-2'>
-                        <Progress value={file.progress} className='h-1' />
-                        <div className='text-xs text-gray-500 mt-1'>
-                          {file.progress.toFixed(1)}% completado
+                      <div className='mt-3'>
+                        <div className='flex justify-between items-center mb-2'>
+                          <span className='text-sm font-semibold text-zinc-800'>
+                            Subiendo...
+                          </span>
+                          <span className='text-sm font-bold text-inside'>
+                            {file.progress.toFixed(1)}%
+                          </span>
                         </div>
+                        <Progress
+                          value={file.progress}
+                          className='h-3 bg-zinc-200'
+                        />
                       </div>
                     )}
 
                     {file.error && (
-                      <div className='mt-1 text-xs text-red-600'>
-                        Error: {file.error}
+                      <div className='mt-2 text-sm font-medium text-red-700 bg-red-100 px-3 py-2 rounded-lg border border-red-200'>
+                        ⚠️ Error: {file.error}
                       </div>
                     )}
                   </div>
 
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-3'>
                     <Badge
                       variant='secondary'
-                      className={`text-xs ${getStatusColor(file.status)}`}
+                      className={`text-sm font-medium ${getStatusColor(
+                        file.status
+                      )}`}
                     >
                       {getStatusIcon(file.status)}
                       {getStatusText(file.status)}
@@ -709,24 +750,24 @@ export function TrueDirectUploadZone({
                     {file.status === "error" && (
                       <Button
                         size='sm'
-                        variant='ghost'
+                        variant='outline'
                         onClick={() => retryFile(file.id)}
-                        className='h-6 w-6 p-0'
+                        className='h-8 w-8 p-0 text-inside border-inside hover:bg-inside hover:text-black'
                         disabled={disabled || isUploading}
                       >
-                        <RotateCcw className='w-3 h-3' />
+                        <RotateCcw className='w-4 h-4' />
                       </Button>
                     )}
 
                     {file.status === "pending" && (
                       <Button
                         size='sm'
-                        variant='ghost'
+                        variant='outline'
                         onClick={() => removeFile(file.id)}
-                        className='h-6 w-6 p-0'
+                        className='h-8 w-8 p-0 text-zinc-500 hover:text-red-600 hover:bg-red-50 hover:border-red-300'
                         disabled={disabled || isUploading}
                       >
-                        <X className='w-3 h-3' />
+                        <X className='w-4 h-4' />
                       </Button>
                     )}
                   </div>
@@ -738,19 +779,33 @@ export function TrueDirectUploadZone({
       )}
 
       {/* Technical Info */}
-      <div className='text-xs text-gray-500 space-y-1'>
-        <p>
-          🔧 <strong>Tecnología:</strong> Servidor inicializa + proxy chunked
-          upload
-        </p>
-        <p>
-          📦 <strong>Chunking:</strong> Archivos grandes se dividen en chunks de
-          4MB
-        </p>
-        <p>
-          🚀 <strong>Performance:</strong> Evita límites CORS • Resumable upload
-          completo
-        </p>
+      <div className='bg-gradient-to-r from-zinc-50 to-zinc-100 rounded-xl p-5 border border-zinc-300'>
+        <h5 className='text-sm font-bold text-zinc-900 mb-3 flex items-center gap-2'>
+          Información Técnica
+        </h5>
+        <div className='text-sm text-zinc-700 space-y-2 font-medium'>
+          <div className='flex items-start gap-3'>
+            <span className='text-inside text-base'>🔧</span>
+            <span>
+              <strong className='text-zinc-900'>Tecnología:</strong> Servidor
+              inicializa + proxy chunked upload
+            </span>
+          </div>
+          <div className='flex items-start gap-3'>
+            <span className='text-inside text-base'>📦</span>
+            <span>
+              <strong className='text-zinc-900'>Chunking:</strong> Archivos
+              grandes se dividen en chunks de 4MB
+            </span>
+          </div>
+          <div className='flex items-start gap-3'>
+            <span className='text-inside text-base'>🚀</span>
+            <span>
+              <strong className='text-zinc-900'>Performance:</strong> Evita
+              límites CORS • Resumable upload completo
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

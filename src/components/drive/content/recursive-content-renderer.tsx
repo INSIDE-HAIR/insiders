@@ -5,7 +5,6 @@ import { useSession } from "next-auth/react";
 import { useContent } from "@/src/context/DriveCompoentesContext";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { GoogleSlidesRenderer } from "@/src/components/drive/renderers/google-slides-renderer";
-import { FileUploadManager } from "@/src/components/drive/upload/FileUploadManager";
 import { Prefix, isFileItem } from "@/src/features/drive/types/index";
 
 // Importar los nuevos componentes
@@ -14,6 +13,7 @@ import { hasContent } from "@/src/components/drive/navigation/tab-navigation";
 import { SectionNavigation } from "@/src/components/drive/navigation/section-navigation";
 import { ContentGrid } from "@/src/components/drive/content/content-grid";
 import { ComponentSelector } from "@/src/components/drive/selectors/component-selector";
+import { DirectFileUploadManager } from "@/src/components/drive/upload/DirectFileUploadManager";
 
 interface RecursiveContentRendererProps {
   level: number;
@@ -273,17 +273,17 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
             {/* Drop zone dentro del tab seleccionado (solo para administradores) */}
             {isAdmin && (
-              <div className='w-full mt-4 mb-2'>
-                <div className='text-center text-xs text-gray-500 mb-2'>
-                  Drop zone dentro del tab:{" "}
-                  {getItemById(currentPathItem.id)?.displayName}
+              <div className='w-full mt-4 mb-2 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
+                <div className='text-center font-bold text-black mb-2 tracking-wide'>
+                  📁 ZONA DE CARGA •{" "}
+                  {getItemById(currentPathItem.id)?.displayName?.toUpperCase()}
                 </div>
-                <FileUploadManager
+                <DirectFileUploadManager
                   folderId={currentPathItem.id}
                   folderName={
                     getItemById(currentPathItem.id)?.displayName || "Tab"
                   }
-                  className='max-w-md mx-auto'
+                  className='max-w-lg mx-auto'
                 />
               </div>
             )}
@@ -342,14 +342,14 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
       {/* Drop zone SOLO para sidemenu (nivel 1) */}
       {isAdmin && level === 1 && parentType === "sidebar" && sidebarItem && (
-        <div className='w-full mt-8 mb-4'>
-          <div className='text-center text-xs text-gray-500 mb-2'>
-            Drop zone para sidemenu: {sidebarItem.displayName}
+        <div className='w-full mt-8 mb-4 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
+          <div className='text-center font-bold text-black mb-2 tracking-wide'>
+            📁 ZONA DE CARGA • {sidebarItem.displayName.toUpperCase()}
           </div>
-          <FileUploadManager
+          <DirectFileUploadManager
             folderId={sidebarItem.id}
             folderName={sidebarItem.displayName}
-            className='max-w-md mx-auto'
+            className='max-w-lg mx-auto'
           />
         </div>
       )}

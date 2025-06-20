@@ -496,14 +496,14 @@ export function EnhancedDropZone({
       {/* Drop Zone */}
       <div
         className={cn(
-          "border-2 border-dashed rounded-lg transition-all duration-200",
+          "border-2 border-dashed rounded-lg transition-all duration-300",
           isDragOver
-            ? "border-blue-400 bg-blue-50"
+            ? "border-inside bg-inside/10 shadow-lg"
             : files.length > 0
-            ? "border-gray-300 bg-gray-50"
-            : "border-gray-300 hover:border-gray-400 cursor-pointer",
+            ? "border-zinc-300 bg-zinc-50"
+            : "border-zinc-300 hover:border-inside/50 hover:bg-inside/5 cursor-pointer",
           disabled && "opacity-50 cursor-not-allowed",
-          isUploading && "border-blue-300 bg-blue-25"
+          isUploading && "border-inside/50 bg-inside/5"
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -513,119 +513,154 @@ export function EnhancedDropZone({
       >
         {files.length === 0 ? (
           // Empty state
-          <div className='p-8 text-center'>
+          <div className='p-16 text-center bg-white'>
             {isDragOver ? (
-              <div className='text-blue-600'>
-                <Upload className='h-12 w-12 mx-auto mb-4' />
-                <p className='text-lg font-semibold'>
-                  Suelta los archivos aquí
-                </p>
-                <p className='text-sm text-blue-500'>
-                  para subir a: {folderName}
+              <div className='text-zinc-900'>
+                <div className='p-6 rounded-full bg-inside mx-auto mb-6 w-fit shadow-lg scale-110 transition-all duration-300'>
+                  <Upload className='h-10 w-10 text-black' />
+                </div>
+                <h4 className='text-xl font-bold mb-3'>
+                  ¡Suelta los archivos aquí!
+                </h4>
+                <p className='text-base font-medium text-zinc-700'>
+                  Listo para recibir tus archivos en: {folderName}
                 </p>
               </div>
             ) : (
-              <div className='text-gray-600'>
-                <Plus className='h-12 w-12 mx-auto mb-4' />
-                <p className='text-lg font-semibold mb-2'>
+              <div className='text-zinc-600'>
+                <div className='p-6 rounded-full bg-zinc-800 mx-auto mb-6 w-fit hover:bg-zinc-700 transition-colors duration-300'>
+                  <Plus className='h-10 w-10 text-white' />
+                </div>
+                <h4 className='text-xl font-bold mb-3 text-zinc-900'>
+                  Subir Archivos
+                </h4>
+                <p className='text-base font-medium text-zinc-700 mb-4 leading-relaxed'>
                   Arrastra archivos aquí o haz clic para seleccionar
                 </p>
-                <p className='text-sm text-gray-500 mb-4'>
-                  Subir a: <span className='font-medium'>{folderName}</span>
-                </p>
-                <div className='text-xs text-gray-400 space-y-1'>
-                  <p>Máximo 100MB por archivo</p>
-                  <p>Formatos: imágenes, videos, audio, documentos</p>
+                <div className='bg-zinc-100 rounded-lg px-4 py-2 mb-3 inline-block'>
+                  <p className='text-sm font-semibold text-zinc-800'>
+                    📁 Destino:{" "}
+                    <span className='text-black font-bold'>{folderName}</span>
+                  </p>
+                </div>
+                <div className='text-sm font-medium text-zinc-600 space-y-1'>
+                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block mr-2'>
+                    📁 Máximo 100MB por archivo
+                  </div>
+                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block'>
+                    🎯 Todos los formatos soportados
+                  </div>
                 </div>
               </div>
             )}
           </div>
         ) : (
           // Files present state
-          <div className='p-4'>
-            <div className='flex items-center justify-between mb-4'>
-              <div className='flex items-center gap-2'>
-                <Upload className='h-5 w-5 text-gray-600' />
-                <h3 className='font-semibold text-gray-900'>
-                  Archivos para subir ({totalFiles})
+          <div className='p-6'>
+            <div className='flex items-center justify-between mb-6'>
+              <div className='flex items-center gap-3'>
+                <div className='p-3 rounded-lg bg-inside/10'>
+                  <Upload className='h-5 w-5 text-zinc-800' />
+                </div>
+                <h3 className='text-lg font-bold text-zinc-900'>
+                  Archivos para Subir ({totalFiles})
                 </h3>
               </div>
-              <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-3'>
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={handleClick}
                   disabled={isUploading}
-                  className='text-blue-600 border-blue-300 hover:bg-blue-50'
+                  className='border-inside text-inside hover:bg-inside hover:text-black transition-colors font-medium'
                 >
-                  <Plus className='h-4 w-4 mr-1' />
-                  Añadir más
+                  <Plus className='h-4 w-4 mr-2' />
+                  Añadir Más
                 </Button>
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={clearAllFiles}
                   disabled={isUploading}
-                  className='text-red-600 border-red-300 hover:bg-red-50'
+                  className='text-zinc-700 border-zinc-400 hover:bg-zinc-100 font-medium'
                 >
-                  <Trash2 className='h-4 w-4 mr-1' />
-                  Limpiar todo
+                  <Trash2 className='h-4 w-4 mr-2' />
+                  Limpiar Todo
                 </Button>
               </div>
             </div>
 
             {/* Summary info */}
-            <div className='flex items-center justify-between text-sm text-gray-600 mb-4 p-3 bg-gray-50 rounded-lg'>
-              <div className='flex items-center gap-4'>
-                <span>Total: {formatFileSize(totalSize)}</span>
-                <span>Destino: {folderName}</span>
+            <div className='flex items-center justify-between text-sm font-medium text-zinc-700 mb-6 p-4 bg-gradient-to-r from-zinc-50 to-zinc-100 rounded-lg border border-zinc-300'>
+              <div className='flex items-center gap-6'>
+                <span className='bg-white px-3 py-1 rounded-md border font-semibold'>
+                  <strong className='text-zinc-900'>Total:</strong>{" "}
+                  {formatFileSize(totalSize)}
+                </span>
+                <span className='bg-white px-3 py-1 rounded-md border font-semibold'>
+                  <strong className='text-zinc-900'>Destino:</strong>{" "}
+                  {folderName}
+                </span>
               </div>
               <div className='flex items-center gap-2'>
                 {pendingFiles > 0 && (
-                  <Badge variant='secondary'>{pendingFiles} pendientes</Badge>
+                  <Badge
+                    variant='secondary'
+                    className='bg-zinc-200 text-zinc-800 font-medium'
+                  >
+                    {pendingFiles} pendientes
+                  </Badge>
                 )}
                 {uploadingFiles > 0 && (
-                  <Badge className='bg-blue-500'>
+                  <Badge className='bg-inside text-black font-medium'>
                     {uploadingFiles} subiendo
                   </Badge>
                 )}
                 {completedFiles > 0 && (
-                  <Badge className='bg-green-500'>
+                  <Badge className='bg-green-600 text-white font-medium'>
                     {completedFiles} completados
                   </Badge>
                 )}
                 {errorFiles > 0 && (
-                  <Badge variant='destructive'>{errorFiles} con error</Badge>
+                  <Badge variant='destructive' className='font-medium'>
+                    {errorFiles} con error
+                  </Badge>
                 )}
               </div>
             </div>
 
             {/* Warnings */}
             {hasLargeFiles && (
-              <Alert className='mb-4'>
-                <AlertTriangle className='h-4 w-4' />
-                <AlertDescription>
-                  Archivos grandes detectados. Pueden tardar más tiempo en
-                  subirse.
+              <Alert className='mb-4 border-amber-300 bg-amber-50'>
+                <AlertTriangle className='h-5 w-5 text-amber-600' />
+                <AlertDescription className='text-amber-800 font-medium'>
+                  <strong>⚠️ Archivos grandes detectados.</strong> Pueden tardar
+                  más tiempo en subirse. Considera usar el modo directo para
+                  mejor rendimiento.
                 </AlertDescription>
               </Alert>
             )}
 
             {hasErrors && (
-              <Alert variant='destructive' className='mb-4'>
-                <AlertTriangle className='h-4 w-4' />
-                <AlertDescription>
-                  {errorFiles} archivo(s) fallaron. Puedes reintentar o
-                  eliminarlos.
+              <Alert
+                variant='destructive'
+                className='mb-4 border-red-300 bg-red-50'
+              >
+                <AlertTriangle className='h-5 w-5 text-red-600' />
+                <AlertDescription className='text-red-800 font-medium'>
+                  <strong>❌ {errorFiles} archivo(s) fallaron.</strong> Puedes
+                  reintentar o eliminarlos de la lista.
                 </AlertDescription>
               </Alert>
             )}
 
             {isCompleted && !hasErrors && (
-              <Alert className='mb-4'>
-                <Check className='h-4 w-4' />
-                <AlertDescription>
-                  ¡Todos los archivos se subieron correctamente!
+              <Alert className='mb-4 border-green-300 bg-green-50'>
+                <Check className='h-5 w-5 text-green-600' />
+                <AlertDescription className='text-green-800 font-medium'>
+                  <strong>
+                    ✅ ¡Todos los archivos se subieron correctamente!
+                  </strong>
                 </AlertDescription>
               </Alert>
             )}
@@ -635,51 +670,61 @@ export function EnhancedDropZone({
 
       {/* File List */}
       {files.length > 0 && (
-        <div className='space-y-3'>
+        <div className='space-y-4'>
           <ScrollArea className='max-h-96'>
-            <div className='space-y-2'>
+            <div className='space-y-3'>
               {files.map((file) => (
                 <div
                   key={file.id}
                   className={cn(
-                    "border rounded-lg p-4 transition-all",
-                    file.status === "error" && "border-red-200 bg-red-50",
+                    "border rounded-xl p-5 transition-all duration-200 shadow-sm",
+                    file.status === "error" && "border-red-300 bg-red-50",
                     file.status === "completed" &&
-                      "border-green-200 bg-green-50",
-                    file.status === "uploading" && "border-blue-200 bg-blue-50",
+                      "border-green-300 bg-green-50",
+                    file.status === "uploading" &&
+                      "border-inside/40 bg-inside/8",
                     file.status === "pending" &&
-                      "border-gray-200 bg-white hover:bg-gray-50"
+                      "border-zinc-300 bg-white hover:border-inside/40 hover:bg-inside/5 hover:shadow-md"
                   )}
                 >
                   {/* File header */}
-                  <div className='flex items-center justify-between mb-3'>
-                    <div className='flex items-center gap-2 flex-1 min-w-0'>
-                      {getFileIcon(file.file)}
-                      <span className='font-medium text-sm truncate'>
-                        {file.originalName}
-                      </span>
-                      <span className='text-xs text-gray-500 flex-shrink-0'>
-                        ({formatFileSize(file.file.size)})
-                      </span>
-                      {file.file.size > WARN_FILE_SIZE && (
-                        <Badge
-                          variant='outline'
-                          className='text-amber-600 border-amber-300'
-                        >
-                          Grande
-                        </Badge>
-                      )}
+                  <div className='flex items-center justify-between mb-4'>
+                    <div className='flex items-center gap-3 flex-1 min-w-0'>
+                      <div className='p-2 rounded-lg bg-zinc-100'>
+                        <div className='text-zinc-700'>
+                          {getFileIcon(file.file)}
+                        </div>
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <span className='font-semibold text-base truncate text-zinc-900 block'>
+                          {file.originalName}
+                        </span>
+                        <div className='flex items-center gap-3 mt-1'>
+                          <span className='text-sm font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded'>
+                            {formatFileSize(file.file.size)}
+                          </span>
+                          {file.file.size > WARN_FILE_SIZE && (
+                            <Badge
+                              variant='outline'
+                              className='text-amber-700 border-amber-400 bg-amber-100 font-medium'
+                            >
+                              📦 Grande
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div className='flex items-center gap-2'>
+                    <div className='flex items-center gap-3'>
                       {getStatusBadge(file.status)}
                       {file.status === "error" && (
                         <Button
                           variant='outline'
                           size='sm'
                           onClick={() => retryFile(file.id)}
-                          className='text-blue-600 border-blue-300'
+                          className='text-inside border-inside hover:bg-inside hover:text-black font-medium'
                         >
-                          <RotateCcw className='h-3 w-3' />
+                          <RotateCcw className='h-4 w-4 mr-1' />
+                          Reintentar
                         </Button>
                       )}
                       {(file.status === "pending" ||
@@ -688,9 +733,10 @@ export function EnhancedDropZone({
                           variant='outline'
                           size='sm'
                           onClick={() => removeFile(file.id)}
-                          className='text-red-600 border-red-300'
+                          className='text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400 font-medium'
                         >
-                          <X className='h-3 w-3' />
+                          <X className='h-4 w-4 mr-1' />
+                          Eliminar
                         </Button>
                       )}
                     </div>
@@ -698,16 +744,16 @@ export function EnhancedDropZone({
 
                   {/* Name editing */}
                   {(file.status === "pending" || file.status === "error") && (
-                    <div className='mb-3'>
-                      <label className='text-xs font-medium text-gray-600 block mb-1'>
-                        Nombre en Drive:
+                    <div className='mb-4'>
+                      <label className='text-sm font-semibold text-zinc-800 block mb-2'>
+                        📝 Nombre en Google Drive:
                       </label>
                       {editingFileId === file.id ? (
                         <div className='flex gap-2'>
                           <Input
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
-                            className='text-sm'
+                            className='text-sm border-inside focus:border-inside focus:ring-inside/20 font-medium'
                             placeholder='Nombre del archivo'
                             onKeyDown={(e) => {
                               if (e.key === "Enter") saveEdit();
@@ -719,15 +765,18 @@ export function EnhancedDropZone({
                             size='sm'
                             onClick={saveEdit}
                             disabled={!tempName.trim()}
+                            className='bg-inside text-black hover:bg-inside/90 font-medium'
                           >
-                            <Save className='w-3 h-3' />
+                            <Save className='w-4 h-4 mr-1' />
+                            Guardar
                           </Button>
                           <Button
                             size='sm'
                             variant='outline'
                             onClick={cancelEdit}
+                            className='border-zinc-400 text-zinc-700 hover:bg-zinc-100 font-medium'
                           >
-                            <X className='w-3 h-3' />
+                            <X className='w-4 h-4' />
                           </Button>
                         </div>
                       ) : (
@@ -735,14 +784,16 @@ export function EnhancedDropZone({
                           <Input
                             value={file.newName}
                             readOnly
-                            className='text-sm bg-gray-50'
+                            className='text-sm bg-zinc-100 border-zinc-300 font-medium text-zinc-800'
                           />
                           <Button
                             size='sm'
                             variant='outline'
                             onClick={() => startEditing(file)}
+                            className='border-inside text-inside hover:bg-inside hover:text-black font-medium'
                           >
-                            <Edit2 className='w-3 h-3' />
+                            <Edit2 className='w-4 h-4 mr-1' />
+                            Editar
                           </Button>
                         </div>
                       )}
@@ -751,28 +802,42 @@ export function EnhancedDropZone({
 
                   {/* Progress bar */}
                   {file.status === "uploading" && (
-                    <div className='mb-3'>
-                      <div className='flex justify-between text-xs mb-1'>
-                        <span>Subiendo...</span>
-                        <span>{file.progress}%</span>
+                    <div className='mb-4'>
+                      <div className='flex justify-between text-sm mb-2'>
+                        <span className='font-semibold text-zinc-800'>
+                          📤 Subiendo archivo...
+                        </span>
+                        <span className='font-bold text-inside'>
+                          {file.progress}%
+                        </span>
                       </div>
-                      <Progress value={file.progress} className='h-2' />
+                      <Progress
+                        value={file.progress}
+                        className='h-3 bg-zinc-200'
+                      />
                     </div>
                   )}
 
                   {/* Error message */}
                   {file.status === "error" && file.error && (
-                    <Alert variant='destructive' className='mb-2'>
-                      <AlertDescription className='text-xs'>
-                        {file.error}
+                    <Alert
+                      variant='destructive'
+                      className='mb-2 border-red-300 bg-red-100'
+                    >
+                      <AlertTriangle className='h-4 w-4 text-red-600' />
+                      <AlertDescription className='text-sm font-medium text-red-800'>
+                        ❌ <strong>Error:</strong> {file.error}
                       </AlertDescription>
                     </Alert>
                   )}
 
                   {/* Success info */}
                   {file.status === "completed" && file.driveFileId && (
-                    <div className='text-xs text-green-600 bg-green-50 p-2 rounded border border-green-200'>
-                      Subido exitosamente • ID: {file.driveFileId}
+                    <div className='text-sm font-medium text-green-800 bg-green-100 p-3 rounded-lg border border-green-300'>
+                      ✅ <strong>Subido exitosamente</strong> • ID:{" "}
+                      <code className='bg-green-200 px-1 rounded'>
+                        {file.driveFileId}
+                      </code>
                     </div>
                   )}
                 </div>
@@ -781,33 +846,44 @@ export function EnhancedDropZone({
           </ScrollArea>
 
           {/* Action buttons */}
-          <div className='flex justify-between items-center pt-4 border-t bg-gray-50 px-4 py-3 rounded-lg'>
-            <div className='text-sm text-gray-600'>
+          <div className='flex justify-between items-center pt-6 border-t border-zinc-300 bg-gradient-to-r from-zinc-50 to-zinc-100 px-6 py-4 rounded-xl'>
+            <div className='text-base font-medium text-zinc-700'>
               {isUploading ? (
-                <span className='flex items-center gap-2'>
-                  <Loader2 className='h-4 w-4 animate-spin' />
-                  Subiendo archivos...
+                <span className='flex items-center gap-3 font-semibold'>
+                  <Loader2 className='h-5 w-5 animate-spin text-inside' />
+                  <span className='text-zinc-900'>Subiendo archivos...</span>
                 </span>
               ) : isCompleted ? (
-                "¡Carga completada!"
+                <span className='text-green-700 font-bold flex items-center gap-2'>
+                  <Check className='h-5 w-5' />
+                  ¡Carga completada exitosamente!
+                </span>
               ) : (
-                `${pendingFiles} archivo(s) listos para subir`
+                <span className='text-zinc-800'>
+                  <strong className='text-inside'>{pendingFiles}</strong>{" "}
+                  archivo{pendingFiles !== 1 ? "s" : ""} listo
+                  {pendingFiles !== 1 ? "s" : ""} para subir
+                </span>
               )}
             </div>
-            <div className='flex gap-2'>
+            <div className='flex gap-3'>
               {isUploading && (
-                <Button variant='destructive' onClick={cancelUpload}>
+                <Button
+                  variant='destructive'
+                  onClick={cancelUpload}
+                  className='bg-red-600 hover:bg-red-700 text-white font-semibold'
+                >
                   <X className='h-4 w-4 mr-2' />
-                  Cancelar
+                  Cancelar Subida
                 </Button>
               )}
               {canUpload && (
                 <Button
                   onClick={startUpload}
-                  className='bg-blue-600 hover:bg-blue-700'
+                  className='bg-inside text-black hover:bg-inside/90 border-inside font-semibold shadow-md'
                 >
                   <Upload className='h-4 w-4 mr-2' />
-                  Subir {pendingFiles} archivo{pendingFiles !== 1 ? "s" : ""}
+                  Subir {pendingFiles} Archivo{pendingFiles !== 1 ? "s" : ""}
                 </Button>
               )}
             </div>

@@ -1,18 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TrueDirectUploadZone } from "./TrueDirectUploadZone";
 import { EnhancedDropZone } from "./EnhancedDropZone";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Button } from "@/src/components/ui/button";
-import {
-  Wifi,
-  WifiOff,
-  RefreshCw,
-  Shield,
-  AlertTriangle,
-  Server,
-} from "lucide-react";
+import { RefreshCw, Shield, ExternalLink } from "lucide-react";
 import { useSession } from "next-auth/react";
 import type { UploadFileItem } from "./EnhancedDropZone";
 
@@ -32,24 +25,45 @@ export function DirectFileUploadManager({
   onUploadComplete,
 }: DirectFileUploadManagerProps) {
   const { data: session, status } = useSession();
-  const [useDirectUpload, setUseDirectUpload] = useState(true);
+  const [useDirectUpload, setUseDirectUpload] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
 
-  // Check if user can use direct upload
-  const canUseDirectUpload = () => {
-    if (status === "loading") return false;
-    if (!session?.user) return false;
-    return session.user.role === "ADMIN";
+  // Function to open Google Drive folder
+  const openInDrive = () => {
+    const driveUrl = `https://drive.google.com/drive/folders/${folderId}`;
+    window.open(driveUrl, "_blank", "noopener,noreferrer");
   };
 
-  // Test direct upload capability
-  const testDirectUpload = async (): Promise<boolean> => {
-    if (!canUseDirectUpload()) {
-      setConnectionError(
-        "Se requiere acceso de administrador para uploads directos"
-      );
-      return false;
+  // Determine upload mode based on environment and user permissions
+  const shouldUseDirectUpload = () => {
+    // Check if we're in development mode
+    const isDevelopment =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname.includes(".local") ||
+        window.location.port !== "");
+
+    const isAdmin = session?.user?.role === "ADMIN";
+
+    if (isDevelopment && isAdmin) {
+      return true; // Development + Admin = Direct upload
     }
+
+    return false; // Production or non-admin = Server upload
+  };
+
+  // Test direct upload capability (only in development)
+  const testDirectUpload = async (): Promise<boolean> => {
+    const isDevelopment =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1" ||
+        window.location.hostname.includes(".local") ||
+        window.location.port !== "");
+
+    if (!isDevelopment) return false;
+    if (session?.user?.role !== "ADMIN") return false;
 
     try {
       const response = await fetch("/api/drive/auth/token");
@@ -57,71 +71,49 @@ export function DirectFileUploadManager({
         setConnectionError(null);
         return true;
       } else {
-        const error = await response.json();
-        setConnectionError(error.error || "Token service unavailable");
+        setConnectionError("Token service unavailable");
         return false;
       }
     } catch (error) {
-      setConnectionError("Network error - cannot reach token service");
+      setConnectionError("Network error");
       return false;
     }
   };
 
-  // Handle upload mode switch
-  const handleModeSwitch = async () => {
-    if (!useDirectUpload) {
-      // Switching to direct upload - test capability first
-      const canUseDirectUpload = await testDirectUpload();
-      if (canUseDirectUpload) {
-        setUseDirectUpload(true);
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      const shouldUseDirect = shouldUseDirectUpload();
+
+      if (shouldUseDirect) {
+        testDirectUpload().then((canUse) => {
+          setUseDirectUpload(canUse);
+        });
+      } else {
+        setUseDirectUpload(false);
       }
-    } else {
-      // Switching to server upload
-      setUseDirectUpload(false);
-      setConnectionError(null);
-    }
-  };
-
-  // Auto-fallback on direct upload failure
-  const handleDirectUploadError = async () => {
-    console.warn("Direct upload failed, falling back to server upload");
-    setUseDirectUpload(false);
-    setConnectionError("Direct upload failed - using server fallback");
-  };
-
-  React.useEffect(() => {
-    // Test direct upload capability on mount
-    if (canUseDirectUpload()) {
-      testDirectUpload().then((canUse) => {
-        if (!canUse) {
-          setUseDirectUpload(false);
-        }
-      });
-    } else {
-      setUseDirectUpload(false);
     }
   }, [session, status]);
 
-  // Show auth warning if needed
+  // Loading state
   if (status === "loading") {
     return (
       <div className={className}>
-        <Alert>
-          <RefreshCw className='h-4 w-4 animate-spin' />
-          <AlertDescription>Verificando permisos...</AlertDescription>
-        </Alert>
+        <div className='p-4 text-center text-zinc-500'>
+          <RefreshCw className='w-5 h-5 animate-spin mx-auto mb-2' />
+          Cargando...
+        </div>
       </div>
     );
   }
 
+  // No authentication
   if (!session?.user) {
     return (
       <div className={className}>
         <Alert variant='destructive'>
           <Shield className='h-4 w-4' />
           <AlertDescription>
-            <strong>Autenticación Requerida:</strong> Necesitas estar
-            autenticado para subir archivos.
+            Necesitas estar autenticado para subir archivos.
           </AlertDescription>
         </Alert>
       </div>
@@ -130,61 +122,28 @@ export function DirectFileUploadManager({
 
   return (
     <div className={className}>
-      {/* Auth/Permission Info */}
-      {session.user.role !== "ADMIN" && (
+      {/* Show error if any */}
+      {connectionError && (
         <Alert variant='destructive' className='mb-4'>
-          <AlertTriangle className='h-4 w-4' />
-          <AlertDescription>
-            <strong>Solo Servidor Disponible:</strong> Los uploads directos
-            requieren permisos de administrador. Usando modo servidor (límite
-            4.5MB).
-          </AlertDescription>
+          <AlertDescription>{connectionError}</AlertDescription>
         </Alert>
       )}
 
-      {/* Upload Mode Info */}
-      <div className='mb-4 flex items-center justify-between'>
-        <Alert className='flex-1 mr-4'>
-          {useDirectUpload && canUseDirectUpload() ? (
-            <>
-              <Wifi className='h-4 w-4' />
-              <AlertDescription>
-                <strong>Modo Directo:</strong> Archivos se suben directamente a
-                Google Drive via proxy, sin límites de tamaño (recomendado para
-                archivos grandes).
-              </AlertDescription>
-            </>
-          ) : (
-            <>
-              <WifiOff className='h-4 w-4' />
-              <AlertDescription>
-                <strong>Modo Servidor:</strong> Archivos pasan por el servidor
-                (límite 4.5MB por Vercel).
-                {connectionError && (
-                  <span className='text-red-600 block mt-1'>
-                    Razón: {connectionError}
-                  </span>
-                )}
-              </AlertDescription>
-            </>
-          )}
-        </Alert>
-
+      {/* Drive Button */}
+      <div className='flex justify-end mb-3'>
         <Button
-          onClick={handleModeSwitch}
+          onClick={openInDrive}
           variant='outline'
           size='sm'
-          disabled={disabled || !canUseDirectUpload()}
+          className='text-zinc-700 border-zinc-300 hover:bg-zinc-50 hover:border-zinc-400 transition-colors'
         >
-          <RefreshCw className='w-4 h-4 mr-2' />
-          {useDirectUpload && canUseDirectUpload()
-            ? "Usar Servidor"
-            : "Usar Directo"}
+          <ExternalLink className='w-4 h-4 mr-2' />
+          Abrir en Drive
         </Button>
       </div>
 
       {/* Upload Component */}
-      {useDirectUpload && canUseDirectUpload() ? (
+      {useDirectUpload ? (
         <TrueDirectUploadZone
           folderId={folderId}
           folderName={folderName}
@@ -199,15 +158,6 @@ export function DirectFileUploadManager({
           onUploadComplete={onUploadComplete}
         />
       )}
-
-      {/* Help Information */}
-      <div className='mt-4 text-xs text-gray-500'>
-        <p>
-          💡 <strong>Tip:</strong> Para archivos mayores a 4.5MB, usa el modo
-          directo. El modo servidor es útil para archivos pequeños y cuando hay
-          problemas de conectividad.
-        </p>
-      </div>
     </div>
   );
 }

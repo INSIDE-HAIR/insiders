@@ -5,7 +5,9 @@ import { useSession } from "next-auth/react";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { RecursiveContentRenderer } from "@/src/components/drive/content/recursive-content-renderer";
 import { ContentGrid } from "@/src/components/drive/content/content-grid";
-import { FileUploadManager } from "@/src/components/drive/upload/FileUploadManager";
+import { DirectFileUploadManager } from "@/src/components/drive/upload/DirectFileUploadManager";
+import { TrueDirectUploadZone } from "@/src/components/drive/upload/TrueDirectUploadZone";
+
 import { hasPrefix } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 
 interface SectionNavigationProps {
@@ -118,14 +120,14 @@ const SectionWithContent = memo(function SectionWithContent({
 
       {/* Drop zone debajo de cada section (solo para administradores) */}
       {isAdmin && (
-        <div className='w-full mt-4 mb-2'>
-          <div className='text-center text-xs text-gray-500 mb-2'>
-            Drop zone para section: {section.displayName}
+        <div className='w-full mt-4 mb-2 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
+          <div className='text-center font-bold text-black mb-2 tracking-wide'>
+            📁 ZONA DE CARGA • {section.displayName.toUpperCase()}
           </div>
-          <FileUploadManager
+          <DirectFileUploadManager
             folderId={section.id}
             folderName={section.displayName}
-            className='max-w-md mx-auto'
+            className='max-w-lg mx-auto'
           />
         </div>
       )}
