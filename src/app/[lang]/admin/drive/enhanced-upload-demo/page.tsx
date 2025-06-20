@@ -42,11 +42,9 @@ export default function EnhancedUploadDemoPage() {
     totalSize: 0,
   });
 
-  // Use the same pattern as test-upload page - use root folder ID
+  // Use a real folder ID from the marketing salon content data
   const demoFolder = {
-    id:
-      process.env.NEXT_PUBLIC_GOOGLE_DRIVE_ROOT_FOLDER_ID ||
-      "19wn0b3uaOT81NVxQARXLht8Nbukn-0u_",
+    id: "1uksAN7jXW_xhNcLhKP2EIBZGDS8QJqmF", // Marketing salon folder from content-data.json
     name: "Carpeta Demo",
   };
 

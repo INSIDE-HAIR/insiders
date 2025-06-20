@@ -20,10 +20,8 @@ export default function TestUploadPage() {
   const [diagnosticData, setDiagnosticData] = useState<any>(null);
   const [isRunningDiagnostic, setIsRunningDiagnostic] = useState(false);
 
-  // ID de carpeta de prueba - usar la carpeta raíz por defecto
-  const testFolderId =
-    process.env.NEXT_PUBLIC_GOOGLE_DRIVE_ROOT_FOLDER_ID ||
-    "19wn0b3uaOT81NVxQARXLht8Nbukn-0u_";
+  // ID de carpeta de prueba - usar una carpeta real del marketing salon
+  const testFolderId = "1uksAN7jXW_xhNcLhKP2EIBZGDS8QJqmF"; // Marketing salon folder from content-data.json
   const testFolderName = "Carpeta de Prueba";
 
   const runDiagnostic = async () => {
