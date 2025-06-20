@@ -5,6 +5,14 @@
       "schedule": "0 23 * * *"
     }
   ],
+  "functions": {
+    "src/app/api/drive/upload/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/drive/diagnostic/route.ts": {
+      "maxDuration": 60
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

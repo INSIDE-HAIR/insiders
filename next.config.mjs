@@ -9,6 +9,14 @@ const nextConfig = {
       { hostname: "drive.google.com" },
     ],
   },
+  // Configuración para archivos grandes
+  experimental: {
+    serverComponentsExternalPackages: ["googleapis"],
+  },
+  // Aumentar límites para uploads
+  serverRuntimeConfig: {
+    maxDuration: 300, // 5 minutes
+  },
   async headers() {
     return [
       {

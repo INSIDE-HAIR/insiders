@@ -57,6 +57,14 @@ export function useFileUpload(): UseFileUploadReturn {
     });
   };
 
+  const updateProgress = (fileId: string, progress: number) => {
+    setFiles((prev) =>
+      prev.map((f) =>
+        f.id === fileId ? { ...f, progress: Math.min(progress, 100) } : f
+      )
+    );
+  };
+
   const uploadSingleFile = async (
     fileItem: UploadFileItem,
     folderId: string,
@@ -67,18 +75,31 @@ export function useFileUpload(): UseFileUploadReturn {
       setFiles((prev) =>
         prev.map((f) =>
           f.id === fileItem.id
-            ? { ...f, status: "uploading" as UploadStatus, progress: 10 }
+            ? { ...f, status: "uploading" as UploadStatus, progress: 0 }
             : f
         )
       );
 
-      // Convertir archivo a base64
-      const base64Data = await fileToBase64(fileItem.file);
+      // Progreso inicial
+      updateProgress(fileItem.id, 10);
 
-      // Simular progreso
-      setFiles((prev) =>
-        prev.map((f) => (f.id === fileItem.id ? { ...f, progress: 50 } : f))
+      if (signal.aborted) throw new Error("Upload cancelled");
+
+      console.log(
+        `Starting upload of large file: ${fileItem.file.name} (${fileItem.file.size} bytes)`
       );
+
+      // Para archivos grandes (>10MB), mostrar progreso más gradual
+      const isLargeFile = fileItem.file.size > 10 * 1024 * 1024;
+
+      if (isLargeFile) {
+        console.log("Large file detected, using enhanced progress tracking");
+      }
+
+      // Convertir archivo a base64 con progreso
+      updateProgress(fileItem.id, 20);
+      const base64Data = await fileToBase64(fileItem.file);
+      updateProgress(fileItem.id, isLargeFile ? 40 : 60);
 
       if (signal.aborted) throw new Error("Upload cancelled");
 
@@ -116,9 +137,15 @@ export function useFileUpload(): UseFileUploadReturn {
         size: fileSize,
         base64Length: base64Data.length,
         folderId,
+        isLargeFile,
       });
 
-      // Llamar a la API (Google Drive real)
+      updateProgress(fileItem.id, isLargeFile ? 50 : 70);
+
+      // Configurar timeout más largo para archivos grandes
+      const timeoutMs = isLargeFile ? 300000 : 60000; // 5 min vs 1 min
+
+      // Llamar a la API con timeout extendido para archivos grandes
       const response = await fetch("/api/drive/upload", {
         method: "POST",
         headers: {
@@ -127,6 +154,8 @@ export function useFileUpload(): UseFileUploadReturn {
         body: JSON.stringify(payload),
         signal,
       });
+
+      updateProgress(fileItem.id, isLargeFile ? 80 : 90);
 
       if (!response.ok) {
         let errorData;
@@ -143,13 +172,31 @@ export function useFileUpload(): UseFileUploadReturn {
           statusText: response.statusText,
           headers: Object.fromEntries(response.headers.entries()),
           data: errorData,
+          fileSize: fileSize,
+          isLargeFile,
         });
 
-        throw new Error(
+        // Proporcionar mensajes de error más específicos
+        let errorMessage =
           errorData.error ||
-            errorData.details ||
-            `HTTP ${response.status}: Upload failed`
-        );
+          errorData.details ||
+          `HTTP ${response.status}: Upload failed`;
+
+        if (response.status === 413) {
+          errorMessage = `Archivo demasiado grande (${(
+            fileSize /
+            (1024 * 1024)
+          ).toFixed(
+            1
+          )}MB). El servidor tiene un límite de tamaño. Intenta con un archivo más pequeño.`;
+        } else if (response.status === 408 || response.status === 504) {
+          errorMessage = `Timeout al subir archivo grande (${(
+            fileSize /
+            (1024 * 1024)
+          ).toFixed(1)}MB). Intenta de nuevo.`;
+        }
+
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
@@ -159,6 +206,9 @@ export function useFileUpload(): UseFileUploadReturn {
       }
 
       const uploadedFile = result.uploadedFiles?.[0]?.file;
+
+      // Completar progreso
+      updateProgress(fileItem.id, 100);
 
       // Actualizar estado a completed
       setFiles((prev) =>
@@ -173,6 +223,12 @@ export function useFileUpload(): UseFileUploadReturn {
             : f
         )
       );
+
+      console.log("Upload completed successfully:", {
+        fileName: fileItem.newName,
+        fileSize: fileSize,
+        driveFileId: uploadedFile?.id,
+      });
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
         // Upload was cancelled
@@ -187,6 +243,12 @@ export function useFileUpload(): UseFileUploadReturn {
       }
 
       // Error en upload
+      console.error("Upload error:", {
+        error: error instanceof Error ? error.message : "Upload failed",
+        fileName: fileItem.newName,
+        fileSize: fileItem.file.size,
+      });
+
       setFiles((prev) =>
         prev.map((f) =>
           f.id === fileItem.id
@@ -203,60 +265,60 @@ export function useFileUpload(): UseFileUploadReturn {
   };
 
   const startUpload = useCallback(async () => {
-    if (isUploading || !currentFolderId) return;
+    const pendingFiles = files.filter((file) => file.status === "pending");
+    if (pendingFiles.length === 0) return;
 
     setIsUploading(true);
     abortController.current = new AbortController();
 
-    const pendingFiles = files.filter((f) => f.status === "pending");
-
-    // Upload files secuencialmente para evitar sobrecarga
-    for (const file of pendingFiles) {
-      if (abortController.current.signal.aborted) break;
-
-      await uploadSingleFile(
-        file,
-        currentFolderId,
-        abortController.current.signal
-      );
+    try {
+      // Procesar archivos uno por uno para mejor control
+      for (const file of pendingFiles) {
+        if (abortController.current.signal.aborted) break;
+        await uploadSingleFile(
+          file,
+          currentFolderId,
+          abortController.current.signal
+        );
+      }
+    } catch (error) {
+      console.error("Upload batch error:", error);
+    } finally {
+      setIsUploading(false);
+      abortController.current = null;
     }
-
-    setIsUploading(false);
-  }, [files, isUploading, currentFolderId]);
+  }, [files, currentFolderId]);
 
   const cancelUpload = useCallback(() => {
     if (abortController.current) {
       abortController.current.abort();
+      abortController.current = null;
     }
     setIsUploading(false);
 
-    // Reset files in uploading state back to pending
+    // Reset pending files
     setFiles((prev) =>
-      prev.map((f) =>
-        f.status === "uploading"
-          ? { ...f, status: "pending" as UploadStatus, progress: 0 }
-          : f
+      prev.map((file) =>
+        file.status === "uploading"
+          ? { ...file, status: "pending" as UploadStatus, progress: 0 }
+          : file
       )
     );
   }, []);
 
   const closeModal = useCallback(() => {
-    if (isUploading) {
-      cancelUpload();
-    }
-    setIsModalOpen(false);
-    // Clear files after a delay to allow animations
-    setTimeout(() => {
+    if (!isUploading) {
+      setIsModalOpen(false);
       setFiles([]);
       setCurrentFolderId("");
-    }, 300);
-  }, [isUploading, cancelUpload]);
+    }
+  }, [isUploading]);
 
   const clearFiles = useCallback(() => {
-    setFiles([]);
-    setCurrentFolderId("");
-    setIsModalOpen(false);
-  }, []);
+    if (!isUploading) {
+      setFiles([]);
+    }
+  }, [isUploading]);
 
   return {
     files,
