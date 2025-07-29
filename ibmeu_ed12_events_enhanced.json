@@ -1,0 +1,940 @@
+{
+  "calendarId": "primary",
+  "defaultTimeZone": "Europe/Madrid",
+  "events": [
+    {
+      "summary": "IBMEU_ED12 - Módulo 1 (08/09/2025)",
+      "description": "IBMEU_ED12 – Módulo 1 (08/09/2025)\nLunes, 8 de September – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Introducción al programa\n• Fundamentos teóricos\n• Casos prácticos\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-09-08",
+      "startTime": "09:30",
+      "endDate": "2025-09-08",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod1-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          },
+          "status": {
+            "statusCode": "success"
+          }
+        },
+        "entryPoints": [
+          {
+            "entryPointType": "video",
+            "uri": "https://meet.google.com/lookup/generated-link",
+            "label": "meet.google.com/lookup/generated-link"
+          },
+          {
+            "entryPointType": "phone",
+            "uri": "tel:+34-91-787-04-01",
+            "label": "+34 91 787 04 01",
+            "pin": "123456789"
+          }
+        ],
+        "conferenceSolution": {
+          "key": {
+            "type": "hangoutsMeet"
+          },
+          "name": "Google Meet",
+          "iconUri": "https://fonts.gstatic.com/s/i/productlogos/googlemeet/v1/web-24dp/logo_googlemeet_color_24dp.png"
+        },
+        "conferenceId": "ibmeu-ed12-mod1",
+        "signature": "ADiJIXm8Q9",
+        "notes": "Configuración automática de Google Meet con grabación y transcripción activadas"
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "1",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        },
+        "shared": {
+          "course_id": "IBMEU_ED12",
+          "session_type": "module",
+          "duration_hours": "4"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 2 (15/09/2025)",
+      "description": "IBMEU_ED12 – Módulo 2 (15/09/2025)\nLunes, 15 de September – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Desarrollo de competencias avanzadas\n• Análisis de casos reales\n• Ejercicios prácticos colaborativos\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-09-15",
+      "startTime": "09:30",
+      "endDate": "2025-09-15",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod2-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          },
+          "status": {
+            "statusCode": "success"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "2",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 3 (22/09/2025)",
+      "description": "IBMEU_ED12 – Módulo 3 (22/09/2025)\nLunes, 22 de September – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Técnicas avanzadas de implementación\n• Workshop interactivo\n• Sesión de preguntas y respuestas\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-09-22",
+      "startTime": "09:30",
+      "endDate": "2025-09-22",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod3-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "3",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 4 (29/09/2025)",
+      "description": "IBMEU_ED12 – Módulo 4 (29/09/2025)\nLunes, 29 de September – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Evaluación de progreso\n• Casos de estudio específicos\n• Planificación de siguientes pasos\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-09-29",
+      "startTime": "09:30",
+      "endDate": "2025-09-29",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod4-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "4",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 5 (06/10/2025)",
+      "description": "IBMEU_ED12 – Módulo 5 (06/10/2025)\nLunes, 6 de October – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Especialización temática\n• Laboratorio práctico\n• Revisión de mejores prácticas\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-10-06",
+      "startTime": "09:30",
+      "endDate": "2025-10-06",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod5-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "5",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 6 (13/10/2025)",
+      "description": "IBMEU_ED12 – Módulo 6 (13/10/2025)\nLunes, 13 de October – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Análisis de resultados intermedio\n• Optimización de estrategias\n• Casos de éxito y fracaso\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-10-13",
+      "startTime": "09:30",
+      "endDate": "2025-10-13",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod6-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "6",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 7 (20/10/2025)",
+      "description": "IBMEU_ED12 – Módulo 7 (20/10/2025)\nLunes, 20 de October – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Técnicas avanzadas de análisis\n• Herramientas especializadas\n• Metodologías innovadoras\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-10-20",
+      "startTime": "09:30",
+      "endDate": "2025-10-20",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod7-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "7",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 8 (27/10/2025)",
+      "description": "IBMEU_ED12 – Módulo 8 (27/10/2025)\nLunes, 27 de October – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Integración de conocimientos\n• Preparación para certificación\n• Evaluación práctica\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-10-27",
+      "startTime": "09:30",
+      "endDate": "2025-10-27",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod8-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "8",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 9 (03/11/2025)",
+      "description": "IBMEU_ED12 – Módulo 9 (03/11/2025)\nLunes, 3 de November – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Proyectos finales\n• Presentaciones individuales\n• Feedback personalizado\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-11-03",
+      "startTime": "09:30",
+      "endDate": "2025-11-03",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod9-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "9",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 10 (10/11/2025)",
+      "description": "IBMEU_ED12 – Módulo 10 (10/11/2025)\nLunes, 10 de November – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Revisión exhaustiva de contenidos\n• Resolución de dudas avanzadas\n• Preparación examen final\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-11-10",
+      "startTime": "09:30",
+      "endDate": "2025-11-10",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod10-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "10",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 11 (17/11/2025)",
+      "description": "IBMEU_ED12 – Módulo 11 (17/11/2025)\nLunes, 17 de November – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Simulacro de examen\n• Corrección grupal\n• Estrategias de mejora\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-11-17",
+      "startTime": "09:30",
+      "endDate": "2025-11-17",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod11-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "11",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    },
+    {
+      "summary": "IBMEU_ED12 - Módulo 12 (24/11/2025)",
+      "description": "IBMEU_ED12 – Módulo 12 (24/11/2025)\nLunes, 24 de November – 9:30am – 1:30pm\nZona horaria: Europe/Madrid\n\n🎯 Contenidos del módulo:\n• Examen final\n• Entrega de certificaciones\n• Celebración de clausura\n• Evaluación del programa\n\n📹 Esta sesión será grabada y transcrita automáticamente\n📝 Se generarán notas automáticas con Gemini AI\n🌍 Transcripción y traducción disponible en español",
+      "location": "Google Meet (Enlace generado automáticamente)",
+      "startDate": "2025-11-24",
+      "startTime": "09:30",
+      "endDate": "2025-11-24",
+      "endTime": "13:30",
+      "allDay": false,
+      "timeZone": "Europe/Madrid",
+      "attendees": [
+        {
+          "email": "lorena@insidesalons.com",
+          "displayName": "Lorena - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "patricia@insidesalons.com",
+          "displayName": "Patricia - Inside Salons",
+          "optional": false
+        },
+        {
+          "email": "pedro@insidesalons.com",
+          "displayName": "Pedro - Inside Salons",
+          "optional": false
+        }
+      ],
+      "reminders": [
+        {
+          "method": "email",
+          "minutes": 1440
+        },
+        {
+          "method": "popup",
+          "minutes": 30
+        },
+        {
+          "method": "email",
+          "minutes": 60
+        }
+      ],
+      "visibility": "private",
+      "transparency": "opaque",
+      "guestsCanInviteOthers": true,
+      "guestsCanModify": true,
+      "guestsCanSeeOtherGuests": true,
+      "conferenceData": {
+        "createRequest": {
+          "requestId": "meet-ibmeu-ed12-mod12-2025",
+          "conferenceSolutionKey": {
+            "type": "hangoutsMeet"
+          }
+        }
+      },
+      "extendedProperties": {
+        "private": {
+          "recording": "enabled",
+          "transcription": "enabled",
+          "gemini_notes": "enabled",
+          "captions": "enabled",
+          "caption_language": "es",
+          "translation_target": "es",
+          "auto_transcript": "true",
+          "meeting_series": "IBMEU_ED12_SEP25_NOV25",
+          "module_number": "12",
+          "course_type": "training",
+          "all_attendees_hosts": "true",
+          "breakout_rooms": "enabled",
+          "chat_enabled": "true",
+          "screen_sharing": "all_participants",
+          "recording_storage": "google_drive",
+          "transcript_language": "spanish"
+        }
+      }
+    }
+  ]
+}

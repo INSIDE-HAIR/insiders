@@ -11,6 +11,7 @@ import {
   FolderIcon,
   Route as RouteIcon,
   FileText,
+  Calendar as CalendarIcon,
 } from "lucide-react";
 import { AppSidebar } from "../app-sidebar";
 import { Icons } from "@/src/components/icons";
@@ -35,6 +36,7 @@ const iconMap = {
   FolderIcon: FolderIcon,
   RouteIcon: RouteIcon,
   FileTextIcon: FileText,
+  CalendarIcon: CalendarIcon,
 } as const;
 
 // Definimos un tipo para las rutas de traducción
@@ -77,13 +79,20 @@ const pagesWithSubpages: Record<
     { title: "Gestor de Códigos", url: "/admin/drive/codes" },
     { title: "Reportes de Errores", url: "/admin/drive/errors" },
   ],
+  calendar: [
+    { title: "Dashboard de Calendar", url: "/admin/calendar" },
+    { title: "Lista de Eventos", url: "/admin/calendar/events" },
+    { title: "Crear Evento", url: "/admin/calendar/events/create" },
+    { title: "Importar desde JSON", url: "/admin/calendar/import/json" },
+    { title: "Importar desde CSV", url: "/admin/calendar/import/csv" },
+  ],
 };
 
 // Definir las rutas por equipo
 const teamRoutes = {
   gestion: translations.adminRoutes, // Acceso completo
   creativos: translations.adminRoutes.filter((route) =>
-    ["pages", "menu", "drive", "codes"].includes(route.id)
+    ["pages", "menu", "drive", "codes", "calendar"].includes(route.id)
   ),
   consultoria: translations.adminRoutes.filter((route) =>
     ["analytics", "users", "users2", "dashboard", "messages"].includes(route.id)

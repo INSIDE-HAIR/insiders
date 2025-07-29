@@ -89,6 +89,15 @@
         "en": "Holded",
         "es": "Holded"
       }
+    },
+    {
+      "id": "calendar",
+      "icon": "CalendarIcon",
+      "path": "/calendar",
+      "translations": {
+        "en": "Calendar",
+        "es": "Calendario"
+      }
     }
   ],
   "actionsRoutes": [
