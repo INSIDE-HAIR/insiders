@@ -25,7 +25,7 @@ import {
 } from "@/src/components/ui/table";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { DownloadIcon, UserPlusIcon, VideoIcon } from "lucide-react";
+import { DownloadIcon, UserPlusIcon, VideoIcon, FileTextIcon } from "lucide-react";
 import moment from "moment-timezone";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { AdvancedColumnFilter } from "./AdvancedColumnFilter";
@@ -36,6 +36,7 @@ interface DataTableProps<TData> {
   onRowClick?: (item: TData) => void;
   onBulkAddParticipants?: (selectedEvents: TData[]) => void;
   onBulkGenerateMeetLinks?: (selectedEvents: TData[]) => void;
+  onBulkGenerateDescriptions?: (selectedEvents: TData[]) => void;
   calendars?: Array<{ 
     id: string; 
     summary: string; 
@@ -51,6 +52,7 @@ export function DataTable<TData>({
   onRowClick,
   onBulkAddParticipants,
   onBulkGenerateMeetLinks,
+  onBulkGenerateDescriptions,
   calendars = [],
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -302,13 +304,25 @@ export function DataTable<TData>({
                 Generar Meet ({selectedEventsWithoutMeet.length})
               </Button>
             )}
+            {onBulkGenerateDescriptions && (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => {
+                  const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                  onBulkGenerateDescriptions(selectedData);
+                }}
+                className="text-xs bg-purple-600 hover:bg-purple-700"
+                title={`Generar descripciones automáticas para ${selectedRowsCount} evento${selectedRowsCount !== 1 ? 's' : ''}`}
+              >
+                <FileTextIcon className="mr-1 h-3 w-3" />
+                Generar Descripciones
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
-                handleExportCSV(); // Exportar solo los seleccionados
-              }}
+              onClick={handleExportCSV}
               className="text-xs"
             >
               <DownloadIcon className="mr-1 h-3 w-3" />

@@ -39,6 +39,7 @@ import { ColumnController } from "./components/ColumnController";
 import { AttendeesFilter } from "./components/AttendeesFilter";
 import { EventDetailModal } from "./components/EventDetailModal";
 import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal";
+import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
 
@@ -57,6 +58,8 @@ interface EventsPageState {
   isModalOpen: boolean;
   selectedEventsForBulk: GoogleCalendarEvent[];
   isBulkModalOpen: boolean;
+  selectedEventsForDescriptions: GoogleCalendarEvent[];
+  isBulkDescriptionsModalOpen: boolean;
 }
 
 const CalendarEventsPage: React.FC = () => {
@@ -71,6 +74,8 @@ const CalendarEventsPage: React.FC = () => {
     isModalOpen: false,
     selectedEventsForBulk: [],
     isBulkModalOpen: false,
+    selectedEventsForDescriptions: [],
+    isBulkDescriptionsModalOpen: false,
   });
 
   const {
@@ -358,14 +363,67 @@ const CalendarEventsPage: React.FC = () => {
     }));
   };
 
-  const handleEditEvent = (eventId: string, calendarId: string) => {
+
+  const handleDeleteEventFromModal = async () => {
+    if (!state.selectedEvent) return;
+    
+    const eventId = state.selectedEvent.id!;
+    const calendarId = (state.selectedEvent as any).calendarId || activeCalendars[0];
+    
     handleCloseModal();
-    router.push(`/admin/calendar/events/${eventId}?calendarId=${calendarId}`);
+    await handleDeleteEvent(eventId, calendarId);
   };
 
-  const handleDeleteEventFromModal = (eventId: string, calendarId: string) => {
-    handleCloseModal();
-    handleDeleteEvent(eventId, calendarId);
+  const handleSaveEvent = async (updatedEvent: Partial<GoogleCalendarEvent>) => {
+    if (!state.selectedEvent) return;
+    
+    const eventId = state.selectedEvent.id!;
+    const calendarId = (state.selectedEvent as any).calendarId || activeCalendars[0];
+    
+    try {
+      const response = await fetch(
+        `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al actualizar el evento');
+      }
+
+      const result = await response.json();
+      
+      // Actualizar el evento en la lista local
+      setState((prev) => ({
+        ...prev,
+        events: prev.events.map(event => 
+          event.id === eventId ? { ...event, ...result.event } : event
+        ),
+        selectedEvent: { ...state.selectedEvent, ...result.event }
+      }));
+
+      toast({
+        title: "Evento actualizado",
+        description: "Los cambios se guardaron correctamente",
+        duration: 3000,
+      });
+
+    } catch (error: any) {
+      console.error("Error saving event:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Error al guardar los cambios",
+        variant: "destructive",
+        duration: 5000,
+      });
+      throw error;
+    }
   };
 
   const handleBulkAddParticipants = (selectedEvents: GoogleCalendarEvent[]) => {
@@ -440,6 +498,82 @@ const CalendarEventsPage: React.FC = () => {
       
     } catch (error: any) {
       console.error('Error adding participants to events:', error);
+      throw error; // Re-throw para que el modal pueda manejar el error
+    }
+  };
+
+  const handleBulkGenerateDescriptions = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState(prev => ({
+      ...prev,
+      selectedEventsForDescriptions: selectedEvents,
+      isBulkDescriptionsModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkDescriptionsModal = () => {
+    setState(prev => ({
+      ...prev,
+      selectedEventsForDescriptions: [],
+      isBulkDescriptionsModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkGenerateDescriptions = async (
+    eventIds: Array<{ eventId: string; calendarId: string }>,
+    options: {
+      template: string;
+      customTemplate?: string;
+      includeAttendees: boolean;
+      includeLocation: boolean;
+      includeDateTime: boolean;
+    }
+  ) => {
+    try {
+      const response = await fetch('/api/calendar/events/bulk-generate-descriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventIds,
+          ...options,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al generar descripciones');
+      }
+
+      const result = await response.json();
+      
+      // Recargar eventos para mostrar los cambios
+      await loadEvents();
+      
+      // Mostrar notificación de éxito
+      toast({
+        title: "Descripciones generadas",
+        description: `Se generaron descripciones para ${result.successful} de ${result.processed} eventos`,
+        duration: 3000,
+      });
+
+      // Si hubo errores, mostrar detalles
+      if (result.failed > 0) {
+        console.error('Errores en generación de descripciones:', result.errors);
+        const errorDetails = result.errors.slice(0, 3).map((err: any) => 
+          `• ${err.title || err.eventId}: ${err.error}`
+        ).join('\n');
+        
+        toast({
+          title: "Algunos eventos tuvieron errores",
+          description: `${result.failed} eventos no pudieron procesarse:\n${errorDetails}${result.errors.length > 3 ? '\n...y más' : ''}`,
+          variant: "destructive",
+          duration: 8000,
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('Error generating descriptions:', error);
       throw error; // Re-throw para que el modal pueda manejar el error
     }
   };
@@ -697,6 +831,7 @@ const CalendarEventsPage: React.FC = () => {
               onRowClick={handleRowClick}
               onBulkAddParticipants={handleBulkAddParticipants}
               onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
+              onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
               calendars={state.calendars}
             />
           ) : viewMode === "json" ? (
@@ -852,7 +987,7 @@ const CalendarEventsPage: React.FC = () => {
         event={state.selectedEvent}
         isOpen={state.isModalOpen}
         onClose={handleCloseModal}
-        onEdit={handleEditEvent}
+        onSave={handleSaveEvent}
         onDelete={handleDeleteEventFromModal}
         calendars={state.calendars}
       />
@@ -863,6 +998,14 @@ const CalendarEventsPage: React.FC = () => {
         onClose={handleCloseBulkModal}
         selectedEvents={state.selectedEventsForBulk}
         onConfirm={handleConfirmBulkAddParticipants}
+      />
+
+      {/* Bulk Generate Descriptions Modal */}
+      <BulkGenerateDescriptionsModal
+        isOpen={state.isBulkDescriptionsModalOpen}
+        onClose={handleCloseBulkDescriptionsModal}
+        selectedEvents={state.selectedEventsForDescriptions}
+        onConfirm={handleConfirmBulkGenerateDescriptions}
       />
     </div>
   );

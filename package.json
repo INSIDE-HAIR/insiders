@@ -16,6 +16,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
+    "@geobio/google-workspace-server": "^0.1.0",
+    "@google-apps/meet": "^0.7.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.3.4",
@@ -75,6 +77,7 @@
     "react-hook-form": "^7.49.3",
     "react-icons": "^5.4.0",
     "react-query": "^3.39.3",
+    "react-quill": "^2.0.0",
     "react-toastify": "^10.0.4",
     "resend": "^3.2.0",
     "sonner": "^1.7.4",
