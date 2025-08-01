@@ -102,6 +102,15 @@ import {
   Package2Icon,
   BookOpen,
   Cog,
+  Sparkles,
+  Menu,
+  Calculator,
+  BarChart3,
+  Facebook,
+  Youtube,
+  Instagram,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 
 export type Icon = LucideIcon | React.ComponentType<any>;
@@ -205,6 +214,11 @@ export const Icons = {
   FaXTwitter: FaXTwitter,
   FaInstagram: FaInstagram,
   FaWhatsapp: FaWhatsapp,
+  Facebook,
+  Youtube,
+  Instagram,
+  Linkedin,
+  Twitter,
   
   // Communication & Contact
   Mail,
@@ -245,9 +259,13 @@ export const Icons = {
   Moon,
   Sun,
   Loader2,
+  Sparkles,
+  Menu,
   
   // Business & Analytics
   LineChart,
+  BarChart3,
+  Calculator,
   Workflow,
   Database,
   Palette,

@@ -3,7 +3,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import dataMonths from "@/db/dates/months.json";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import Container from "@/src/components/layout/container";
+import Container from "@/src/app/[lang]/marketing-salon/components/container";
 import { usePathname } from "next/navigation";
 import ComponentsSelector from "@/src/components/shared/components-selector/components-selector";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ServiceUser } from "../app/[lang]/admin/users/lib/types/user";
+import { ServiceUser } from "../app/[lang]/(private)/admin/users/lib/types/user";
 
 const fetchUsers = async (): Promise<ServiceUser[]> => {
   const response = await fetch("/api/users");

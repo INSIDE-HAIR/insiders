@@ -1,0 +1,215 @@
+{
+  "FORMACIONES": {
+    "path": "/formaciones",
+    "sub": {
+      "Master IBM": {
+        "path": "/formaciones/master-ibm",
+        "sub": {
+          "Programa": { "path": "/formaciones/master-ibm/programa" },
+          "Precio y Modalidades": {
+            "path": "/formaciones/master-ibm/precio-y-modalidades"
+          },
+          "Testimonios": { "path": "/formaciones/master-ibm/testimonios" },
+          "Calendario": { "path": "/formaciones/master-ibm/calendario" },
+          "Inscripción": { "path": "/formaciones/master-ibm/inscripcion" }
+        }
+      },
+      "Master Star Club": { "path": "/formaciones/master-star-club" },
+      "Master Scaling": { "path": "/formaciones/master-scaling" },
+      "Master Salón Experience": {
+        "path": "/formaciones/master-salon-experience"
+      },
+      "Peluquerías Imparables": {
+        "path": "/formaciones/peluquerias-imparables"
+      },
+      "Salón Hiperventas": { "path": "/formaciones/salon-hiperventas" },
+      "Comparar Formaciones": { "path": "/formaciones/comparar-formaciones" }
+    }
+  },
+  "CONSULTORIA": {
+    "path": "/consultoria",
+    "sub": {
+      "Estratégica": {
+        "path": "/consultoria/estrategica",
+        "sub": {
+          "Plan de Negocio": {
+            "path": "/consultoria/estrategica/plan-de-negocio"
+          },
+          "Plan Estratégico": {
+            "path": "/consultoria/estrategica/plan-estrategico"
+          },
+          "Consultoría 360": {
+            "path": "/consultoria/estrategica/consultoria-360"
+          }
+        }
+      },
+      "Operativa": {
+        "path": "/consultoria/operativa",
+        "sub": {
+          "Consultoría Digital": {
+            "path": "/consultoria/operativa/consultoria-digital"
+          },
+          "Consultoría Negocio": {
+            "path": "/consultoria/operativa/consultoria-negocio"
+          },
+          "Consultoría Organizativa": {
+            "path": "/consultoria/operativa/consultoria-organizativa"
+          },
+          "Consultoría Actividad": {
+            "path": "/consultoria/operativa/consultoria-actividad"
+          }
+        }
+      },
+      "Mentoring": {
+        "path": "/consultoria/mentoring",
+        "sub": {
+          "Individual": { "path": "/consultoria/mentoring/individual" },
+          "Bonos Master": { "path": "/consultoria/mentoring/bonos-master" },
+          "Bonos Especialista": {
+            "path": "/consultoria/mentoring/bonos-especialista"
+          },
+          "Bonos Consultoría": {
+            "path": "/consultoria/mentoring/bonos-consultoria"
+          }
+        }
+      }
+    }
+  },
+  "HERRAMIENTAS": {
+    "path": "/herramientas",
+    "sub": {
+      "IBM Tools": { "path": "/herramientas/ibm-tools" },
+      "Social Marketing": { "path": "/herramientas/social-marketing" },
+      "Marketing Salón": { "path": "/herramientas/marketing-salon" },
+      "Marketing Salón Avanzado": {
+        "path": "/herramientas/marketing-salon-avanzado"
+      },
+      "Gestión Directiva": { "path": "/herramientas/gestion-directiva" }
+    }
+  },
+  "EVENTOS": {
+    "path": "/eventos",
+    "sub": {
+      "Eventos Presenciales": { "path": "/eventos/eventos-presenciales" },
+      "Fin de Master": { "path": "/eventos/fin-de-master" },
+      "Calendario Eventos": { "path": "/eventos/calendario-eventos" },
+      "Inscripciones": { "path": "/eventos/inscripciones" }
+    }
+  },
+  "CLUB INSIDE": {
+    "path": "/club-inside",
+    "sub": {
+      "Beneficios": { "path": "/club-inside/beneficios" },
+      "Descuentos": { "path": "/club-inside/descuentos" },
+      "Eventos Exclusivos": { "path": "/club-inside/eventos-exclusivos" },
+      "Cómo Unirse": { "path": "/club-inside/como-unirse" }
+    }
+  },
+  "RECURSOS": {
+    "path": "/recursos",
+    "sub": {
+      "Blog": {
+        "path": "/recursos/blog",
+        "sub": {
+          "Gestión Salón": { "path": "/recursos/blog/gestion-salon" },
+          "Marketing Peluquerías": {
+            "path": "/recursos/blog/marketing-peluquerias"
+          },
+          "Formación Equipo": { "path": "/recursos/blog/formacion-equipo" },
+          "Casos Éxito": { "path": "/recursos/blog/casos-exito" }
+        }
+      },
+      "Guías Gratuitas": { "path": "/recursos/guias-gratuitas" },
+      "Webinars": { "path": "/recursos/webinars" },
+      "Podcast": { "path": "/recursos/podcast" },
+      "Biblioteca Recursos": { "path": "/recursos/biblioteca-recursos" }
+    }
+  },
+  "SOLUCIONES": {
+    "path": "/soluciones",
+    "sub": {
+      "Por Tipo Salón": {
+        "path": "/soluciones/por-tipo-salon",
+        "sub": {
+          "Salón Nuevo": { "path": "/soluciones/por-tipo-salon/salon-nuevo" },
+          "Salón Establecido": {
+            "path": "/soluciones/por-tipo-salon/salon-establecido"
+          },
+          "Franquicia": { "path": "/soluciones/por-tipo-salon/franquicia" },
+          "Cadena Salones": {
+            "path": "/soluciones/por-tipo-salon/cadena-salones"
+          }
+        }
+      },
+      "Por Objetivo": {
+        "path": "/soluciones/por-objetivo",
+        "sub": {
+          "Aumentar Ventas": {
+            "path": "/soluciones/por-objetivo/aumentar-ventas"
+          },
+          "Fidelizar Clientes": {
+            "path": "/soluciones/por-objetivo/fidelizar-clientes"
+          },
+          "Mejorar Equipo": {
+            "path": "/soluciones/por-objetivo/mejorar-equipo"
+          },
+          "Expansión": { "path": "/soluciones/por-objetivo/expansion" }
+        }
+      },
+      "Por Presupuesto": {
+        "path": "/soluciones/por-presupuesto",
+        "sub": {
+          "Hasta 500€": { "path": "/soluciones/por-presupuesto/hasta-500" },
+          "500€ - 1500€": { "path": "/soluciones/por-presupuesto/500-1500" },
+          "Más de 1500€": { "path": "/soluciones/por-presupuesto/mas-1500" }
+        }
+      }
+    }
+  },
+  "PRECIOS": {
+    "path": "/precios",
+    "sub": {
+      "Calculadora Precios": { "path": "/precios/calculadora-precios" },
+      "Comparador Paquetes": { "path": "/precios/comparador-paquetes" },
+      "Descuentos Disponibles": { "path": "/precios/descuentos-disponibles" },
+      "Financiación": { "path": "/precios/financiacion" }
+    }
+  },
+  "EMPRESA": {
+    "path": "/empresa",
+    "sub": {
+      "Sobre Nosotros": { "path": "/empresa/sobre-nosotros" },
+      "Metodología IBM": { "path": "/empresa/metodologia-ibm" },
+      "Equipo": { "path": "/empresa/equipo" },
+      "Valores": { "path": "/empresa/valores" },
+      "Historia": { "path": "/empresa/historia" }
+    }
+  },
+  "CONTACTO": {
+    "path": "/contacto",
+    "sub": {
+      "Formulario Contacto": { "path": "/contacto/formulario-contacto" },
+      "Consultoría Gratuita": { "path": "/contacto/consultoria-gratuita" },
+      "Teléfono/WhatsApp": { "path": "/contacto/telefono-whatsapp" },
+      "Oficinas": { "path": "/contacto/oficinas" }
+    }
+  },
+  "LEGAL": {
+    "path": "/legal",
+    "sub": {
+      "Términos y Condiciones": { "path": "/legal/terminos-condiciones" },
+      "Política Privacidad": { "path": "/legal/politica-privacidad" },
+      "Cookies": { "path": "/legal/cookies" },
+      "Aviso Legal": { "path": "/legal/aviso-legal" }
+    }
+  },
+  "ACCESO": {
+    "path": "/acceso",
+    "sub": {
+      "Login": { "path": "/acceso/login" },
+      "Registro": { "path": "/acceso/registro" },
+      "Recuperar Contraseña": { "path": "/acceso/recuperar-password" },
+      "Verificación Email": { "path": "/acceso/verificacion-email" }
+    }
+  }
+}

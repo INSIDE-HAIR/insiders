@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Dashboard from "@/src/components/dashboard/dashboard";
 import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import Header from "@/src/components/layout/header";
+import Header from "../../(private)/_components/layout/header";
 
 export const metadata: Metadata = {
   title: "AUTH | INSIDERS",

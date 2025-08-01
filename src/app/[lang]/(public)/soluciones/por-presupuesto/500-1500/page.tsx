@@ -1,0 +1,8 @@
+export default function Presupuesto500a1500Page() {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1 className="text-4xl font-bold">Presupuesto 500€ - 1500€</h1>
+      <p>Contenido de la página para presupuesto entre 500€ y 1500€.</p>
+    </main>
+  )
+}

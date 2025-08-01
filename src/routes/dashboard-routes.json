@@ -1,0 +1,169 @@
+[
+  {
+    "label": "General",
+    "isTitle": true
+  },
+  {
+    "label": "Dashboard",
+    "href": "/dashboard",
+    "icon": "LayoutDashboard"
+  },
+  {
+    "label": "Mi Perfil",
+    "href": "/dashboard/profile",
+    "icon": "UserCircle"
+  },
+  {
+    "label": "Configuración",
+    "href": "/dashboard/settings",
+    "icon": "Settings"
+  },
+  {
+    "label": "Administración",
+    "isTitle": true,
+    "role": "admin"
+  },
+  {
+    "label": "Métricas Generales",
+    "href": "/dashboard/admin/metricas-generales",
+    "icon": "BarChart3",
+    "role": "admin"
+  },
+  {
+    "label": "KPIs Negocio",
+    "href": "/dashboard/admin/kpis-negocio",
+    "icon": "TrendingUp",
+    "role": "admin"
+  },
+  {
+    "label": "Alertas Sistema",
+    "href": "/dashboard/admin/alertas-sistema",
+    "icon": "AlertTriangle",
+    "role": "admin"
+  },
+  {
+    "label": "Resumen Actividad",
+    "href": "/dashboard/admin/resumen-actividad",
+    "icon": "Activity",
+    "role": "admin"
+  },
+  {
+    "label": "Gestión Clientes",
+    "icon": "Users",
+    "role": "admin",
+    "subItems": [
+      {
+        "label": "Lista Clientes",
+        "href": "/dashboard/admin/gestion-clientes/lista-clientes",
+        "subItems": [
+          {
+            "label": "Filtros Avanzados",
+            "href": "/dashboard/admin/gestion-clientes/lista-clientes/filtros-avanzados"
+          },
+          {
+            "label": "Estados Detallados",
+            "href": "/dashboard/admin/gestion-clientes/lista-clientes/estados-detallados"
+          },
+          { "label": "Segmentación", "href": "/dashboard/admin/gestion-clientes/lista-clientes/segmentacion" },
+          { "label": "Acciones Masivas", "href": "/dashboard/admin/gestion-clientes/lista-clientes/acciones-masivas" }
+        ]
+      },
+      {
+        "label": "Cliente Individual",
+        "href": "/dashboard/admin/gestion-clientes/cliente-individual",
+        "subItems": [
+          { "label": "Vista 360", "href": "/dashboard/admin/gestion-clientes/cliente-individual/vista-360" },
+          {
+            "label": "Historial Completo",
+            "href": "/dashboard/admin/gestion-clientes/cliente-individual/historial-completo"
+          },
+          {
+            "label": "Servicios Contratados",
+            "href": "/dashboard/admin/gestion-clientes/cliente-individual/servicios-contratados"
+          },
+          {
+            "label": "Pagos y Facturación",
+            "href": "/dashboard/admin/gestion-clientes/cliente-individual/pagos-facturacion"
+          },
+          { "label": "Comunicaciones", "href": "/dashboard/admin/gestion-clientes/cliente-individual/comunicaciones" },
+          { "label": "Notas Internas", "href": "/dashboard/admin/gestion-clientes/cliente-individual/notas-internas" }
+        ]
+      },
+      {
+        "label": "Leads",
+        "href": "/dashboard/admin/gestion-clientes/leads",
+        "subItems": [
+          { "label": "Pipeline Ventas", "href": "/dashboard/admin/gestion-clientes/leads/pipeline-ventas" },
+          { "label": "Seguimiento", "href": "/dashboard/admin/gestion-clientes/leads/seguimiento" },
+          { "label": "Conversión", "href": "/dashboard/admin/gestion-clientes/leads/conversion" }
+        ]
+      },
+      {
+        "label": "Ex-Clientes",
+        "href": "/dashboard/admin/gestion-clientes/ex-clientes",
+        "subItems": [
+          { "label": "Razón Abandono", "href": "/dashboard/admin/gestion-clientes/ex-clientes/razon-abandono" },
+          { "label": "Reactivación", "href": "/dashboard/admin/gestion-clientes/ex-clientes/reactivacion" },
+          { "label": "Análisis Churn", "href": "/dashboard/admin/gestion-clientes/ex-clientes/analisis-churn" }
+        ]
+      }
+    ]
+  },
+  {
+    "label": "Gestión Plataforma",
+    "icon": "AppWindow",
+    "role": "admin",
+    "subItems": [
+      { "label": "Servicios", "href": "/dashboard/services", "icon": "Briefcase" },
+      { "label": "Productos", "href": "/dashboard/products", "icon": "Package" },
+      { "label": "Paquetes", "href": "/dashboard/packages", "icon": "PackageSearch" },
+      {
+        "label": "Herramientas (Calculadora)",
+        "href": "/dashboard/platform/tools/price-calculator",
+        "icon": "Calculator"
+      },
+      { "label": "Integraciones", "href": "/dashboard/integrations", "icon": "Plug" }
+    ]
+  },
+  {
+    "label": "Gestión Web Pública",
+    "icon": "Globe",
+    "role": "admin",
+    "subItems": [
+      { "label": "Formaciones", "href": "/dashboard/admin/web/formaciones", "icon": "BookOpen" },
+      { "label": "Consultoría", "href": "/dashboard/admin/web/consultoria", "icon": "Users" },
+      { "label": "Herramientas", "href": "/dashboard/admin/web/herramientas", "icon": "Tool" },
+      { "label": "Eventos", "href": "/dashboard/admin/web/eventos", "icon": "CalendarDays" },
+      { "label": "Club Inside", "href": "/dashboard/admin/web/club-inside", "icon": "Gem" },
+      { "label": "Recursos", "href": "/dashboard/admin/web/recursos", "icon": "Library" },
+      { "label": "Soluciones", "href": "/dashboard/admin/web/soluciones", "icon": "Lightbulb" },
+      { "label": "Precios", "href": "/dashboard/admin/web/precios", "icon": "DollarSign" },
+      { "label": "Páginas Empresa", "href": "/dashboard/admin/web/empresa", "icon": "Building2" }
+    ]
+  },
+  {
+    "label": "Configuración Sistema",
+    "icon": "Settings2",
+    "role": "admin",
+    "subItems": [
+      { "label": "Productos y Servicios", "href": "/dashboard/admin/configuracion-sistema/productos-servicios" },
+      { "label": "Precios y Tarifas", "href": "/dashboard/admin/configuracion-sistema/precios-tarifas" },
+      { "label": "Descuentos", "href": "/dashboard/admin/configuracion-sistema/descuentos-promociones" },
+      { "label": "Integraciones", "href": "/dashboard/admin/configuracion-sistema/integraciones" },
+      { "label": "Parámetros Generales", "href": "/dashboard/admin/configuracion-sistema/parametros-generales" },
+      { "label": "Gestor de Workspace", "href": "/dashboard/admin/configuracion-sistema/workspace" },
+      { "label": "Editor de Tema", "href": "/dashboard/admin/configuracion-sistema/theme-editor" }
+    ]
+  },
+  {
+    "label": "Auditoría y Logs",
+    "icon": "ShieldCheck",
+    "role": "admin",
+    "subItems": [
+      { "label": "Actividad Usuarios", "href": "/dashboard/admin/auditoria-logs/actividad-usuarios" },
+      { "label": "Cambios Sistema", "href": "/dashboard/admin/auditoria-logs/cambios-sistema" },
+      { "label": "Accesos", "href": "/dashboard/admin/auditoria-logs/accesos" },
+      { "label": "Errores", "href": "/dashboard/admin/auditoria-logs/errores" }
+    ]
+  }
+]

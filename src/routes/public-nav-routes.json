@@ -1,0 +1,22 @@
+[
+  {
+    "label": "FORMACIONES",
+    "href": "/formaciones",
+    "mainCategory": "FORMACIONES"
+  },
+  {
+    "label": "CONSULTORIA",
+    "href": "/consultoria",
+    "mainCategory": "CONSULTORIA"
+  },
+  {
+    "label": "HERRAMIENTAS",
+    "href": "/herramientas",
+    "mainCategory": "HERRAMIENTAS"
+  },
+  {
+    "label": "EVENTOS",
+    "href": "/eventos",
+    "mainCategory": "EVENTOS"
+  }
+]
