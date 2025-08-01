@@ -69,28 +69,28 @@ export default function DirectUploadDemoPage() {
 
   const features = [
     {
-      icon: <Cloud className='w-5 h-5' />,
+      icon: <Cloud className="w-5 h-5" />,
       title: "Sin Límites de Tamaño",
       description:
         "Sube archivos de cualquier tamaño directamente a Google Drive",
       color: "text-green-600",
     },
     {
-      icon: <Zap className='w-5 h-5' />,
+      icon: <Zap className="w-5 h-5" />,
       title: "Transferencia Resumible",
       description:
         "Los archivos grandes se suben en chunks, permitiendo pausar y reanudar",
       color: "text-blue-600",
     },
     {
-      icon: <Wifi className='w-5 h-5' />,
+      icon: <Wifi className="w-5 h-5" />,
       title: "Bypass Vercel",
       description:
         "Evita el límite de 4.5MB de las funciones serverless de Vercel",
       color: "text-purple-600",
     },
     {
-      icon: <Server className='w-5 h-5' />,
+      icon: <Server className="w-5 h-5" />,
       title: "Fallback Automático",
       description:
         "Si falla la subida directa, automáticamente usa el servidor",
@@ -103,31 +103,31 @@ export default function DirectUploadDemoPage() {
       method: "Vercel Serverless Functions",
       limit: "4.5MB",
       suitable: "Archivos pequeños",
-      icon: <Server className='w-4 h-4' />,
+      icon: <Server className="w-4 h-4" />,
       color: "bg-red-100 text-red-800",
     },
     {
       method: "Direct Upload to Google Drive",
       limit: "15GB (Google Drive limit)",
       suitable: "Archivos de cualquier tamaño",
-      icon: <Cloud className='w-4 h-4' />,
+      icon: <Cloud className="w-4 h-4" />,
       color: "bg-green-100 text-green-800",
     },
   ];
 
   return (
-    <div className='container mx-auto p-6 space-y-6'>
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className='text-center space-y-4'>
-        <h1 className='text-3xl font-bold'>
+      <div className="text-center space-y-4">
+        <h1 className="text-3xl font-bold">
           Sistema de Subida Directa a Google Drive
         </h1>
-        <p className='text-gray-600 max-w-2xl mx-auto'>
+        <p className="text-gray-600 max-w-2xl mx-auto">
           Solución avanzada que bypassa los límites de Vercel enviando archivos
           directamente a Google Drive usando resumable uploads.
         </p>
         <Alert>
-          <CheckCircle className='h-4 w-4' />
+          <CheckCircle className="h-4 w-4" />
           <AlertDescription>
             <strong>Carpeta de demo:</strong> {demoFolder.name} (ID:{" "}
             {demoFolder.id})
@@ -136,35 +136,35 @@ export default function DirectUploadDemoPage() {
       </div>
 
       {/* Problem Statement */}
-      <Card className='border-orange-200 bg-orange-50'>
+      <Card className="border-orange-200 bg-orange-50">
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <AlertTriangle className='w-5 h-5 text-orange-600' />
+          <CardTitle className="flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-orange-600" />
             Problema: Límite de 4.5MB en Vercel
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className='text-sm text-gray-700 mb-4'>
+          <p className="text-sm text-gray-700 mb-4">
             Las funciones serverless de Vercel tienen un límite de 4.5MB para el
             cuerpo de las peticiones, lo que impide subir archivos grandes. Este
             sistema soluciona el problema subiendo directamente a Google Drive
             desde el navegador.
           </p>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {limitComparison.map((item, index) => (
               <div
                 key={index}
-                className='flex items-center gap-3 p-3 border rounded-lg bg-white'
+                className="flex items-center gap-3 p-3 border rounded-lg bg-white"
               >
                 <div className={`p-2 rounded-full ${item.color}`}>
                   {item.icon}
                 </div>
                 <div>
-                  <div className='font-medium'>{item.method}</div>
-                  <div className='text-sm text-gray-600'>
+                  <div className="font-medium">{item.method}</div>
+                  <div className="text-sm text-gray-600">
                     Límite: {item.limit}
                   </div>
-                  <div className='text-xs text-gray-500'>{item.suitable}</div>
+                  <div className="text-xs text-gray-500">{item.suitable}</div>
                 </div>
               </div>
             ))}
@@ -173,15 +173,15 @@ export default function DirectUploadDemoPage() {
       </Card>
 
       {/* Features */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {features.map((feature, index) => (
-          <Card key={index} className='text-center'>
-            <CardContent className='pt-4'>
+          <Card key={index} className="text-center">
+            <CardContent className="pt-4">
               <div className={`flex justify-center mb-2 ${feature.color}`}>
                 {feature.icon}
               </div>
-              <h3 className='font-semibold mb-1'>{feature.title}</h3>
-              <p className='text-sm text-gray-600'>{feature.description}</p>
+              <h3 className="font-semibold mb-1">{feature.title}</h3>
+              <p className="text-sm text-gray-600">{feature.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -189,8 +189,8 @@ export default function DirectUploadDemoPage() {
 
       {/* Statistics */}
       {uploadStats.lastUpload && (
-        <Alert className='mb-6'>
-          <CheckCircle className='h-4 w-4' />
+        <Alert className="mb-6">
+          <CheckCircle className="h-4 w-4" />
           <AlertDescription>
             <strong>Última carga exitosa:</strong> {uploadStats.totalFiles}{" "}
             archivo(s), {formatFileSize(uploadStats.totalSize)} total -{" "}
@@ -200,31 +200,31 @@ export default function DirectUploadDemoPage() {
       )}
 
       {/* Demo Tabs */}
-      <Tabs defaultValue='smart' className='w-full'>
-        <TabsList className='grid w-full grid-cols-3'>
-          <TabsTrigger value='smart' className='flex items-center gap-2'>
-            <Zap className='w-4 h-4' />
+      <Tabs defaultValue="smart" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="smart" className="flex items-center gap-2">
+            <Zap className="w-4 h-4" />
             Smart Upload
-            <Badge variant='default' className='bg-green-500'>
+            <Badge variant="default" className="bg-green-500">
               Recomendado
             </Badge>
           </TabsTrigger>
-          <TabsTrigger value='direct' className='flex items-center gap-2'>
-            <Cloud className='w-4 h-4' />
+          <TabsTrigger value="direct" className="flex items-center gap-2">
+            <Cloud className="w-4 h-4" />
             Solo Directo
           </TabsTrigger>
-          <TabsTrigger value='server' className='flex items-center gap-2'>
-            <Server className='w-4 h-4' />
+          <TabsTrigger value="server" className="flex items-center gap-2">
+            <Server className="w-4 h-4" />
             Solo Servidor
-            <Badge variant='destructive'>4.5MB Límite</Badge>
+            <Badge variant="destructive">4.5MB Límite</Badge>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value='smart' className='space-y-4'>
+        <TabsContent value="smart" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Zap className='w-5 h-5 text-green-600' />
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-green-600" />
                 Smart Upload Manager
               </CardTitle>
               <CardDescription>
@@ -247,7 +247,7 @@ export default function DirectUploadDemoPage() {
               <CardTitle>Ventajas del Smart Upload</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className='list-disc list-inside space-y-2 text-sm'>
+              <ul className="list-disc list-inside space-y-2 text-sm">
                 <li>
                   ✅ Detecta automáticamente si la subida directa está
                   disponible
@@ -264,11 +264,11 @@ export default function DirectUploadDemoPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value='direct' className='space-y-4'>
+        <TabsContent value="direct" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Cloud className='w-5 h-5 text-blue-600' />
+              <CardTitle className="flex items-center gap-2">
+                <Cloud className="w-5 h-5 text-blue-600" />
                 TRUE Direct Upload (Implementación Final)
               </CardTitle>
               <CardDescription>
@@ -291,7 +291,7 @@ export default function DirectUploadDemoPage() {
               <CardTitle>Cómo funciona la subida directa</CardTitle>
             </CardHeader>
             <CardContent>
-              <ol className='list-decimal list-inside space-y-2 text-sm'>
+              <ol className="list-decimal list-inside space-y-2 text-sm">
                 <li>
                   El cliente solicita un token de acceso temporal al servidor
                 </li>
@@ -318,11 +318,11 @@ export default function DirectUploadDemoPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value='server' className='space-y-4'>
+        <TabsContent value="server" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Server className='w-5 h-5 text-orange-600' />
+              <CardTitle className="flex items-center gap-2">
+                <Server className="w-5 h-5 text-orange-600" />
                 Subida via Servidor (Limitada)
               </CardTitle>
               <CardDescription>
@@ -339,8 +339,8 @@ export default function DirectUploadDemoPage() {
             </CardContent>
           </Card>
 
-          <Alert variant='destructive'>
-            <FileX className='h-4 w-4' />
+          <Alert variant="destructive">
+            <FileX className="h-4 w-4" />
             <AlertDescription>
               <strong>⚠️ Limitación:</strong> Este método fallará con archivos
               mayores a 4.5MB debido al límite de Vercel. Usa los otros métodos
@@ -356,52 +356,52 @@ export default function DirectUploadDemoPage() {
           <CardTitle>Detalles Técnicos</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='overflow-x-auto'>
-            <table className='w-full border-collapse text-sm'>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className='border-b'>
-                  <th className='text-left p-2'>Aspecto</th>
-                  <th className='text-center p-2'>Servidor</th>
-                  <th className='text-center p-2'>Directo</th>
-                  <th className='text-center p-2'>Smart</th>
+                <tr className="border-b">
+                  <th className="text-left p-2">Aspecto</th>
+                  <th className="text-center p-2">Servidor</th>
+                  <th className="text-center p-2">Directo</th>
+                  <th className="text-center p-2">Smart</th>
                 </tr>
               </thead>
-              <tbody className='text-sm'>
-                <tr className='border-b'>
-                  <td className='p-2'>Límite de tamaño</td>
-                  <td className='text-center p-2'>4.5MB</td>
-                  <td className='text-center p-2'>15GB</td>
-                  <td className='text-center p-2'>15GB</td>
+              <tbody className="text-sm">
+                <tr className="border-b">
+                  <td className="p-2">Límite de tamaño</td>
+                  <td className="text-center p-2">4.5MB</td>
+                  <td className="text-center p-2">15GB</td>
+                  <td className="text-center p-2">15GB</td>
                 </tr>
-                <tr className='border-b'>
-                  <td className='p-2'>Carga del servidor</td>
-                  <td className='text-center p-2'>Alta</td>
-                  <td className='text-center p-2'>Mínima</td>
-                  <td className='text-center p-2'>Mínima</td>
+                <tr className="border-b">
+                  <td className="p-2">Carga del servidor</td>
+                  <td className="text-center p-2">Alta</td>
+                  <td className="text-center p-2">Mínima</td>
+                  <td className="text-center p-2">Mínima</td>
                 </tr>
-                <tr className='border-b'>
-                  <td className='p-2'>Velocidad</td>
-                  <td className='text-center p-2'>Media</td>
-                  <td className='text-center p-2'>Rápida</td>
-                  <td className='text-center p-2'>Rápida</td>
+                <tr className="border-b">
+                  <td className="p-2">Velocidad</td>
+                  <td className="text-center p-2">Media</td>
+                  <td className="text-center p-2">Rápida</td>
+                  <td className="text-center p-2">Rápida</td>
                 </tr>
-                <tr className='border-b'>
-                  <td className='p-2'>Resumable</td>
-                  <td className='text-center p-2'>❌</td>
-                  <td className='text-center p-2'>✅</td>
-                  <td className='text-center p-2'>✅</td>
+                <tr className="border-b">
+                  <td className="p-2">Resumable</td>
+                  <td className="text-center p-2">❌</td>
+                  <td className="text-center p-2">✅</td>
+                  <td className="text-center p-2">✅</td>
                 </tr>
-                <tr className='border-b'>
-                  <td className='p-2'>Fallback</td>
-                  <td className='text-center p-2'>❌</td>
-                  <td className='text-center p-2'>❌</td>
-                  <td className='text-center p-2'>✅</td>
+                <tr className="border-b">
+                  <td className="p-2">Fallback</td>
+                  <td className="text-center p-2">❌</td>
+                  <td className="text-center p-2">❌</td>
+                  <td className="text-center p-2">✅</td>
                 </tr>
-                <tr className='border-b'>
-                  <td className='p-2'>Compatibilidad</td>
-                  <td className='text-center p-2'>100%</td>
-                  <td className='text-center p-2'>95%</td>
-                  <td className='text-center p-2'>100%</td>
+                <tr className="border-b">
+                  <td className="p-2">Compatibilidad</td>
+                  <td className="text-center p-2">100%</td>
+                  <td className="text-center p-2">95%</td>
+                  <td className="text-center p-2">100%</td>
                 </tr>
               </tbody>
             </table>
@@ -415,13 +415,13 @@ export default function DirectUploadDemoPage() {
           <CardTitle>Guía de Implementación</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className='space-y-4'>
+          <div className="space-y-4">
             <div>
-              <h4 className='font-semibold mb-2'>
+              <h4 className="font-semibold mb-2">
                 1. Para uso general (recomendado):
               </h4>
-              <pre className='bg-gray-100 p-3 rounded text-xs overflow-x-auto'>
-                {`import { DirectFileUploadManager } from '@/components/drive/upload';
+              <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto">
+                {`import { DirectFileUploadManager } from '@/src/components/drive/upload';
 
 <DirectFileUploadManager
   folderId={folderId}
@@ -432,11 +432,11 @@ export default function DirectUploadDemoPage() {
             </div>
 
             <div>
-              <h4 className='font-semibold mb-2'>
+              <h4 className="font-semibold mb-2">
                 2. Para subida directa únicamente (TRUE DIRECT):
               </h4>
-              <pre className='bg-gray-100 p-3 rounded text-xs overflow-x-auto'>
-                {`import { TrueDirectUploadZone } from '@/components/drive/upload';
+              <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto">
+                {`import { TrueDirectUploadZone } from '@/src/components/drive/upload';
 
 <TrueDirectUploadZone
   folderId={folderId}
@@ -447,10 +447,10 @@ export default function DirectUploadDemoPage() {
             </div>
 
             <div>
-              <h4 className='font-semibold mb-2'>
+              <h4 className="font-semibold mb-2">
                 3. Variables de entorno requeridas:
               </h4>
-              <pre className='bg-gray-100 p-3 rounded text-xs overflow-x-auto'>
+              <pre className="bg-gray-100 p-3 rounded text-xs overflow-x-auto">
                 {`GOOGLE_DRIVE_CLIENT_EMAIL=tu-service-account@proyecto.iam.gserviceaccount.com
 GOOGLE_DRIVE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n...\\n-----END PRIVATE KEY-----\\n"
 GOOGLE_DRIVE_PROJECT_ID=tu-proyecto-id`}

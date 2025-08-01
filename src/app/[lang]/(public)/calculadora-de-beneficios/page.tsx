@@ -1,35 +1,36 @@
-"use client"
+"use client";
 
-import { shallow } from "zustand/shallow"
-import { redirect } from "next/navigation"
-import { useEffect } from "react"
+import { shallow } from "zustand/shallow";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
-import { useCalculatorStore } from "@/stores/calculator"
-import { Steps } from "@/components/calculadora-de-beneficios/steps"
-import { StepContent } from "@/components/calculadora-de-beneficios/step-content"
+import { useCalculatorStore } from "@/stores/calculator";
+import { Steps } from "@/src/components/calculadora-de-beneficios/steps";
+import { StepContent } from "@/src/components/calculadora-de-beneficios/step-content";
 
 export default function CalculadoraDeBeneficiosPage({
   searchParams,
 }: {
-  searchParams: { step?: string }
+  searchParams: { step?: string };
 }) {
-  const { nextStep, initializeStepFromPath, currentStep, goToStep } = useCalculatorStore(
-    // Added goToStep
-    (state) => ({
-      nextStep: state.nextStep,
-      initializeStepFromPath: state.initializeStepFromPath,
-      currentStep: state.currentStep,
-      goToStep: state.goToStep, // Added goToStep
-    }),
-    shallow, // Add shallow equality checker
-  )
+  const { nextStep, initializeStepFromPath, currentStep, goToStep } =
+    useCalculatorStore(
+      // Added goToStep
+      (state) => ({
+        nextStep: state.nextStep,
+        initializeStepFromPath: state.initializeStepFromPath,
+        currentStep: state.currentStep,
+        goToStep: state.goToStep, // Added goToStep
+      }),
+      shallow // Add shallow equality checker
+    );
 
   useEffect(() => {
-    initializeStepFromPath(searchParams.step)
-  }, [searchParams.step, initializeStepFromPath])
+    initializeStepFromPath(searchParams.step);
+  }, [searchParams.step, initializeStepFromPath]);
 
   if (!currentStep) {
-    redirect("/calculadora-de-beneficios/1")
+    redirect("/calculadora-de-beneficios/1");
   }
 
   return (
@@ -49,5 +50,5 @@ export default function CalculadoraDeBeneficiosPage({
         </div>
       </main>
     </div>
-  )
+  );
 }
