@@ -169,7 +169,7 @@ export default function DynamicJulyPage() {
         </div>
       </div>
       <div className="flex flex-col md:flex-row items-center p-6 uppercase">
-        <div className="w-full flex justify-center mb-4 md:mb-0 max-w-screen-sm">
+        <div className="w-full flex justify-center mb-4 md:mb-0 max-w-(--breakpoint-sm)">
           <Image
             src={isEvenDay ? clientImages.even : clientImages.odd}
             alt="Client Image"
@@ -178,7 +178,7 @@ export default function DynamicJulyPage() {
             className="rounded w-full h-full object-cover md:max-w-full aspect-square max-w-[720px]"
           />
         </div>
-        <div className="w-full max-w-[50rem] text-center">
+        <div className="w-full max-w-200 text-center">
           <h1 className="text-3xl font-bold mb-4" style={{ color: textColor }}>
             {currentContent.header}
           </h1>

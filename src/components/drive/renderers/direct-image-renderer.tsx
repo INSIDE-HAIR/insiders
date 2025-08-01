@@ -176,7 +176,7 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
         {isLoading && (
           <div className='relative w-[280px] h-[400px] bg-zinc-800 rounded-sm overflow-hidden mx-auto'>
             {/* Gradiente animado para efecto de skeleton */}
-            <div className='absolute inset-0 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse' />
+            <div className='absolute inset-0 bg-linear-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse' />
 
             {/* Spinner centrado */}
             <div className='absolute inset-0 flex items-center justify-center'>

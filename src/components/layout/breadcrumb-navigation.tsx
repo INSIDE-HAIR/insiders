@@ -74,9 +74,9 @@ export default function BreadcrumbNavigation({
   return (
     <>
       <GoBackButton href={goBackHref} label={getGoBackLabel()} />
-      <Breadcrumb className="[&>*]:text-zinc-800 [&>*]:text-tiny">
+      <Breadcrumb className="*:text-zinc-800 [&>*]:text-tiny">
         <BreadcrumbList>
-          <BreadcrumbItem className="capitalize underline [&>*]:hover:text-zinc-400">
+          <BreadcrumbItem className="capitalize underline *:hover:text-zinc-400">
             <BreadcrumbLink href="/">{homeLabel}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -90,7 +90,7 @@ export default function BreadcrumbNavigation({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="capitalize underline [&>*]:hover:text-zinc-400"
+                    className="capitalize underline *:hover:text-zinc-400"
                   >
                     {dropdownItems}
                   </DropdownMenuContent>
@@ -99,7 +99,7 @@ export default function BreadcrumbNavigation({
               <BreadcrumbSeparator />
             </>
           )}
-          <BreadcrumbItem className="hover:underline [&>*]:hover:text-zinc-400 pointer-events-none [&>*]:text-tiny">
+          <BreadcrumbItem className="hover:underline *:hover:text-zinc-400 pointer-events-none [&>*]:text-tiny">
             <BreadcrumbPage>
               {getTranslation(pathSegments[pathSegments.length - 1], "es")}
             </BreadcrumbPage>

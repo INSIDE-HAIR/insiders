@@ -178,7 +178,7 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
 
   return (
     <div
-      className={`w-full flex flex-col items-center max-w-screen-2xl mx-auto ${
+      className={`w-full flex flex-col items-center max-w-(--breakpoint-2xl) mx-auto ${
         isInIframe ? "px-2" : ""
       }`}
     >

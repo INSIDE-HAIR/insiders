@@ -5,7 +5,7 @@ import CustomImageModal from "@/src/components/shared/components-selector/modal/
 export default function CustomCarouselModal({ item }: ComponentsProps) {
   return (
     <div className="flex flex-col items-center my-4">
-      <Carousel className="w-full max-w-screen-lg">
+      <Carousel className="w-full max-w-(--breakpoint-lg)">
         {item.content && item.content.length > 0 ? (
           item.content.map((contentItem, contentIndex) => (
             <CarouselItem key={contentItem.id}>

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/src/config/auth/auth";
+import { auth } from "@/src/config/auth/auth";
 
 /**
  * GET /api/admin/consultant-workload
@@ -14,7 +13,7 @@ import { authOptions } from "@/src/config/auth/auth";
 export async function GET(request: NextRequest) {
   try {
     // Verificar autenticación y permisos de admin
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     
     if (!session?.user) {
       return NextResponse.json(

@@ -557,7 +557,7 @@ export function DirectUploadDropZone({
                   key={file.id}
                   className='flex items-center gap-3 p-3 bg-white border rounded-lg'
                 >
-                  <div className='flex-shrink-0'>{getFileIcon(file.file)}</div>
+                  <div className='shrink-0'>{getFileIcon(file.file)}</div>
 
                   <div className='flex-1 min-w-0'>
                     {editingId === file.id ? (

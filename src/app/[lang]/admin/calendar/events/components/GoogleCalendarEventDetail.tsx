@@ -170,7 +170,7 @@ export const GoogleCalendarEventDetail: React.FC<
           {/* Main Content */}
           <div className='flex-1 flex flex-col bg-white w-full md:w-auto'>
             {/* Header */}
-            <div className='flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50'>
+            <div className='flex items-center justify-between p-6 border-b border-gray-100 bg-linear-to-r from-blue-50 to-indigo-50'>
               <div className='flex items-center gap-4 flex-1'>
                 <button
                   onClick={onClose}
@@ -201,7 +201,7 @@ export const GoogleCalendarEventDetail: React.FC<
               </div>
               <div className='flex items-center gap-3'>
                 <Button
-                  className='bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6'
+                  className='bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6'
                   onClick={isEditing ? handleSave : () => setIsEditing(true)}
                 >
                   {isEditing ? "Guardar" : "Editar"}
@@ -250,7 +250,7 @@ export const GoogleCalendarEventDetail: React.FC<
                     {formatDateTime(event.end)}
                   </span>
                 </div>
-                <div className='flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2'>
+                <div className='flex items-center gap-2 bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2'>
                   <span className='text-xs text-blue-700 font-medium'>
                     (GMT+02:00) Europa central - Madrid
                   </span>
@@ -300,7 +300,7 @@ export const GoogleCalendarEventDetail: React.FC<
                 >
                   Detalles del evento
                   {activeTab === "details" && (
-                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500'></div>
+                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500'></div>
                   )}
                 </button>
                 <button
@@ -313,7 +313,7 @@ export const GoogleCalendarEventDetail: React.FC<
                 >
                   Encontrar un hueco
                   {activeTab === "find-time" && (
-                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500'></div>
+                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500'></div>
                   )}
                 </button>
                 <button
@@ -326,7 +326,7 @@ export const GoogleCalendarEventDetail: React.FC<
                 >
                   Invitados
                   {activeTab === "guests" && (
-                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500'></div>
+                    <div className='absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500'></div>
                   )}
                 </button>
               </nav>

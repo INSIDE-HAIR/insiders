@@ -42,7 +42,7 @@ export default function CustomCards({
         backdrop={"blur"}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className="max-h-screen bg-zinc-900 text-zinc-50 [&>button]:text-zinc-50 [&>button]:border-red-900 hover:[&>button]:border-red-950 hover:[&>button]:transition-colors-opacity  hover:[&>button]:bg-red-950  hover:[&>button]:transition [&>button]:bg-red-900   [&>button]:mt-2 [&>button]:mr-4  hover:[&>button]:text-zinc-50 [&>button]:border-1 flex mb-40 justify-center align-middle "
+        className="max-h-screen bg-zinc-900 text-zinc-50 [&>button]:text-zinc-50 [&>button]:border-red-900 hover:[&>button]:border-red-950 hover:[&>button]:transition-colors-opacity  hover:[&>button]:bg-red-950  hover:[&>button]:transition [&>button]:bg-red-900   [&>button]:mt-2 [&>button]:mr-4  hover:[&>button]:text-zinc-50 [&>button]:border flex mb-40 justify-center align-middle "
       >
         <ModalContent className="items-center">
           {(onClose) => (
@@ -58,7 +58,7 @@ export default function CustomCards({
                         <CarouselItem key={index}>
                           <Image
                             alt={`${alt} ${index + 1}`}
-                            className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
+                            className="object-cover border-gray-700/20 border shadow-sm w-full"
                             height={1080}
                             src={preview.transformedUrl.imgEmbed}
                             width={1080}
@@ -69,7 +69,7 @@ export default function CustomCards({
                       <CarouselItem>
                         <Image
                           alt={alt}
-                          className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
+                          className="object-cover border-gray-700/20 border shadow-sm w-full"
                           height={1080}
                           src={src}
                           width={1080}
@@ -137,7 +137,7 @@ export default function CustomCards({
 
           <Image
             alt={item.title}
-            className="object-cover border-gray-700/20 border-1 shadow-sm w-52"
+            className="object-cover border-gray-700/20 border shadow-sm w-52"
             height={200}
             src={
               item.preview[0]?.transformedUrl.imgEmbed ||
@@ -148,7 +148,7 @@ export default function CustomCards({
         </div>
       )}
 
-      <CardFooter className="flex mx-auto flex-row flex-wrap self-start justify-center before:bg-zinc-50/10 border-zinc-50/20 border-1 overflow-hidden py-1  bottom-1 w-52 shadow-small z-10">
+      <CardFooter className="flex mx-auto flex-row flex-wrap self-start justify-center before:bg-zinc-50/10 border-zinc-50/20 border overflow-hidden py-1  bottom-1 w-52 shadow-small z-10">
         {renderButtons(item)}
       </CardFooter>
     </Card>

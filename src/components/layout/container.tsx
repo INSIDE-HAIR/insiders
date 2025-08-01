@@ -7,7 +7,7 @@ type ContainerProps = {
 export default function Container({ children }: ContainerProps) {
   return (
     <div
-      className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full "
+      className="flex w-full flex-col items-center justify-center content-center *:w-full "
       style={{
         justifyContent: "center",
         flexDirection: "column",

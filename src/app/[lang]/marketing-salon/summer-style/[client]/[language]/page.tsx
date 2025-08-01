@@ -175,7 +175,7 @@ export default function DynamicJulyPage() {
       className='min-h-screen flex flex-col items-center justify-center p-4 w-screen'
     >
       <div className='flex flex-col md:flex-row items-center p-6 uppercase'>
-        <div className='w-full flex justify-center mb-4 md:mb-0 max-w-screen-sm'>
+        <div className='w-full flex justify-center mb-4 md:mb-0 max-w-(--breakpoint-sm)'>
           {clientImages && (
             <Image
               src={isEvenDay ? clientImages.even : clientImages.odd}
@@ -186,7 +186,7 @@ export default function DynamicJulyPage() {
             />
           )}
         </div>
-        <div className='w-full max-w-[50rem] text-center'>
+        <div className='w-full max-w-200 text-center'>
           <h1 className='text-3xl font-bold mb-4'>{currentContent.header}</h1>
           <p className='mb-4 text-xl px-10'>{currentContent.desciption}</p>
           {currentContent.footer && <p>{currentContent.footer}</p>}

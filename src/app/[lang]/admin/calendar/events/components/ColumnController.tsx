@@ -430,7 +430,7 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
                       className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
                       onClick={() => handleToggleColumn(column.id)}
                     >
-                      <div className="flex-shrink-0 mt-0.5">
+                      <div className="shrink-0 mt-0.5">
                         {isVisible ? (
                           <EyeIcon className="h-4 w-4 text-blue-600" />
                         ) : (

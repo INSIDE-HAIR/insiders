@@ -36,7 +36,7 @@ export default function CustomTabs({
           className="self-center w-full flex flex-col  "
         >
           <div className=" flex flex-wrap w-full justify-center">
-            <TabsList className="rounded-none flex flex-wrap h-full  bg-transparent text-white border-none [&>[data-state=active]]:bg-inside [&>[data-state=active]]:font-semibold">
+            <TabsList className="rounded-none flex flex-wrap h-full  bg-transparent text-white border-none *:data-[state=active]:bg-inside *:data-[state=active]:font-semibold">
               {activeAndOrderedTabs &&
                 activeAndOrderedTabs.map((tab) => (
                   <TabsTrigger

@@ -247,7 +247,7 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
           {/* Advertencia */}
           <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 shrink-0 mt-0.5" />
             <div className="text-sm text-yellow-800">
               <p className="font-medium">Importante:</p>
               <p>Los participantes recibirán invitaciones para todos los eventos seleccionados.</p>

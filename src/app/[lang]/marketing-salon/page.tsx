@@ -122,7 +122,7 @@ export default function Page() {
                     item.active && (
                       <li
                         key={index + item.id}
-                        className={`relative border-b-1 cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-inside hover:border-inside  w-full ${
+                        className={`relative border-b cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-inside hover:border-inside  w-full ${
                           item.id === tab
                             ? " text-inside border-inside"
                             : "text-zinc-50"

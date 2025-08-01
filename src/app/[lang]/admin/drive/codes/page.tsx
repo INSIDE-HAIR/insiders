@@ -414,7 +414,7 @@ export default function CodesAdminPage() {
 
       {/* Filtros y controles */}
       <div className='flex flex-wrap gap-4 mb-6 items-center'>
-        <div className='flex-grow max-w-xs'>
+        <div className='grow max-w-xs'>
           <Combobox
             options={codeTypes}
             value={selectedType}
@@ -712,7 +712,7 @@ export default function CodesAdminPage() {
                   value={fileCodeInput}
                   onChange={(e) => setFileCodeInput(e.target.value)}
                   placeholder='Ej: A-A-2404-0080-01-00-01'
-                  className='text-white font-bold bg-zinc-900 border-zinc-700 flex-grow'
+                  className='text-white font-bold bg-zinc-900 border-zinc-700 grow'
                 />
                 <Button
                   onClick={() => decodeFileName(fileCodeInput)}

@@ -1,4 +1,3 @@
-import type { Config } from "tailwindcss";
 const { nextui } = require("@nextui-org/react");
 
 const config = {
@@ -111,7 +110,7 @@ const config = {
       fontFamily: {},
     },
   },
-  plugins: [require("tailwindcss-animate"), nextui()],
-} satisfies Config;
+  plugins: [require("tailwindcss-animate")],
+};
 
-export default config;
+module.exports = config;

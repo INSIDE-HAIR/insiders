@@ -648,7 +648,7 @@ export function TrueDirectUploadZone({
                   key={file.id}
                   className='flex items-center gap-4 p-4 border rounded-xl bg-white border-zinc-300 hover:border-inside/50 hover:bg-inside/5 hover:shadow-sm transition-all duration-200'
                 >
-                  <div className='flex-shrink-0 p-2 rounded-lg bg-zinc-100'>
+                  <div className='shrink-0 p-2 rounded-lg bg-zinc-100'>
                     <div className='text-zinc-700'>
                       {getFileIcon(file.file)}
                     </div>
@@ -779,7 +779,7 @@ export function TrueDirectUploadZone({
       )}
 
       {/* Technical Info */}
-      <div className='bg-gradient-to-r from-zinc-50 to-zinc-100 rounded-xl p-5 border border-zinc-300'>
+      <div className='bg-linear-to-r from-zinc-50 to-zinc-100 rounded-xl p-5 border border-zinc-300'>
         <h5 className='text-sm font-bold text-zinc-900 mb-3 flex items-center gap-2'>
           Información Técnica
         </h5>

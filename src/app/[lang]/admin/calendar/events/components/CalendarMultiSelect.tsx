@@ -189,7 +189,7 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
                   
                   {/* Calendar Color */}
                   <div 
-                    className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                    className="w-4 h-4 rounded-full border border-gray-300 shrink-0"
                     style={{ 
                       backgroundColor: calendar.backgroundColor || '#4285f4',
                       border: `2px solid ${calendar.foregroundColor || '#ffffff'}`

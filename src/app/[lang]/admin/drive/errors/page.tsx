@@ -221,10 +221,10 @@ function UserChipSelect({
           </Badge>
         ))}
 
-        <div className="flex-grow flex items-center">
+        <div className="grow flex items-center">
           <input
             type="text"
-            className="flex-grow outline-none bg-transparent"
+            className="grow outline-none bg-transparent"
             placeholder={selectedUsers.length === 0 ? placeholder : ""}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -239,7 +239,7 @@ function UserChipSelect({
             <Search className="h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              className="flex-grow outline-none bg-transparent"
+              className="grow outline-none bg-transparent"
               placeholder="Buscar usuarios..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}

@@ -105,13 +105,6 @@ const CalendarDashboard: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar estadísticas del dashboard
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadDashboardStats();
-    }
-  }, [status, session, loadDashboardStats]);
-
   const loadDashboardStats = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -199,6 +192,13 @@ const CalendarDashboard: React.FC = () => {
       setIsLoading(false);
     }
   }, []);
+
+  // Cargar estadísticas del dashboard
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadDashboardStats();
+    }
+  }, [status, session, loadDashboardStats]);
 
   const quickActions: QuickAction[] = [
     {

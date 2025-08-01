@@ -51,7 +51,7 @@ export const ChipInput: React.FC<ChipInputProps> = ({
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleInputKeyDown}
-        className='flex-grow outline-none'
+        className='grow outline-none'
         placeholder={placeholder}
       />
     </div>

@@ -1,10 +1,9 @@
-@import url("https://use.typekit.net/poc1qid.css");
-@import "../styles/iframe-helpers.css";
-@import "../styles/touch-fixes.css";
+@import 'tailwindcss';
+@import url('https://use.typekit.net/poc1qid.css') layer(base);
+@import '../styles/iframe-helpers.css' layer(base);
+@import '../styles/touch-fixes.css' layer(base);
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@config "../../tailwind.config.ts";
 
 @layer base {
   :root {

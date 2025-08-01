@@ -486,7 +486,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         <div className='text-center font-bold mb-2'>{displayType}</div>
 
         {/* Content area - always use preview URL for thumbnails */}
-        <div className='px-2 flex-grow'>
+        <div className='px-2 grow'>
           {hasPreview ? (
             <div
               className='relative cursor-pointer'
@@ -495,7 +495,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
               {isCardImageLoading && (
                 <div className='absolute inset-0 overflow-hidden rounded-sm'>
                   {/* Skeleton para la tarjeta */}
-                  <div className='absolute inset-0 bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse' />
+                  <div className='absolute inset-0 bg-linear-to-r from-zinc-800 via-zinc-700 to-zinc-800 animate-pulse' />
                   <div className='absolute inset-0 flex items-center justify-center'>
                     <div className='h-6 w-6 text-zinc-400 animate-spin border-2 border-zinc-400 border-t-transparent rounded-full' />
                   </div>

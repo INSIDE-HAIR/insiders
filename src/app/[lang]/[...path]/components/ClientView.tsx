@@ -81,14 +81,14 @@ export default function ClientView({
             </div>
           )}
           {/* Botones para cambiar el modo de vista - solo visibles para administradores */}
-          <div className='mt-2 flex justify-center space-x-2 border-b-1 border-white mb-0 pb-4'>
+          <div className='mt-2 flex justify-center space-x-2 border-b border-white mb-0 pb-4'>
             <Button
               size='sm'
               onClick={() => setViewMode("content")}
               className={
                 viewMode === "content"
                   ? "bg-inside text-zinc-900 hover:bg-inside/90"
-                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border-1 hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
+                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
               }
             >
               Ver Contenido
@@ -99,7 +99,7 @@ export default function ClientView({
               className={
                 viewMode === "json"
                   ? "bg-inside text-zinc-900 hover:bg-inside/90"
-                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border-1 hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
+                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
               }
             >
               Ver JSON

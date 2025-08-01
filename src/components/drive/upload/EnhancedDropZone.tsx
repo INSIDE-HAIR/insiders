@@ -591,7 +591,7 @@ export function EnhancedDropZone({
             </div>
 
             {/* Summary info */}
-            <div className='flex items-center justify-between text-sm font-medium text-zinc-700 mb-6 p-4 bg-gradient-to-r from-zinc-50 to-zinc-100 rounded-lg border border-zinc-300'>
+            <div className='flex items-center justify-between text-sm font-medium text-zinc-700 mb-6 p-4 bg-linear-to-r from-zinc-50 to-zinc-100 rounded-lg border border-zinc-300'>
               <div className='flex items-center gap-6'>
                 <span className='bg-white px-3 py-1 rounded-md border font-semibold'>
                   <strong className='text-zinc-900'>Total:</strong>{" "}
@@ -846,7 +846,7 @@ export function EnhancedDropZone({
           </ScrollArea>
 
           {/* Action buttons */}
-          <div className='flex justify-between items-center pt-6 border-t border-zinc-300 bg-gradient-to-r from-zinc-50 to-zinc-100 px-6 py-4 rounded-xl'>
+          <div className='flex justify-between items-center pt-6 border-t border-zinc-300 bg-linear-to-r from-zinc-50 to-zinc-100 px-6 py-4 rounded-xl'>
             <div className='text-base font-medium text-zinc-700'>
               {isUploading ? (
                 <span className='flex items-center gap-3 font-semibold'>

@@ -35,13 +35,13 @@ export default function CustomImageModal({ item }: ComponentsProps) {
           <ModalHeader className="flex flex-col gap-1">
             {item.title || "Imagen"}
           </ModalHeader>
-          <ModalBody className="relative w-full max-w-screen-md">
+          <ModalBody className="relative w-full max-w-(--breakpoint-md)">
             {item.url && item.darkModeUrl ? (
               <>
                 <div className="relative w-full h-64 dark:hidden">
                   <Image
                     alt={item.title || "Custom Image"}
-                    className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
+                    className="object-cover border-gray-700/20 border shadow-sm w-full"
                     height={1080}
                     src={item.url}
                     width={1080}
@@ -50,7 +50,7 @@ export default function CustomImageModal({ item }: ComponentsProps) {
                 <div className="relative w-full h-64 hidden dark:block">
                   <Image
                     alt={item.title || "Custom Image"}
-                    className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
+                    className="object-cover border-gray-700/20 border shadow-sm w-full"
                     height={1080}
                     src={item.url}
                     width={1080}
@@ -62,7 +62,7 @@ export default function CustomImageModal({ item }: ComponentsProps) {
                 <div className="relative w-full h-64">
                   <Image
                     alt={item.title || "Custom Image"}
-                    className="object-cover border-gray-700/20 border-1 shadow-sm w-full"
+                    className="object-cover border-gray-700/20 border shadow-sm w-full"
                     height={1080}
                     src={item.url}
                     width={1080}

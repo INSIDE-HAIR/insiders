@@ -31,7 +31,7 @@ export default function ModalHoldedSync({
         backdrop={"blur"}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        className="max-h-screen bg-gray-100/60 [&>button]:text-danger [&>button]:border-danger hover:[&>button]:bg-danger hover:[&>button]:text-white [&>button]:border-1 flex mb-40 justify-center align-middle "
+        className="max-h-screen bg-gray-100/60 [&>button]:text-danger [&>button]:border-danger hover:[&>button]:bg-danger hover:[&>button]:text-white [&>button]:border flex mb-40 justify-center align-middle "
       >
         <ModalContent className="items-center">
           {(onClose) => (

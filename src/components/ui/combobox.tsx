@@ -86,7 +86,7 @@ export function Combobox({
         </PopoverTrigger>
         <PopoverContent
           className={cn(
-            "p-0 bg-zinc-900 border-zinc-700 z-[100]",
+            "p-0 bg-zinc-900 border-zinc-700 z-100",
             popoverClass
           )}
           align='start'

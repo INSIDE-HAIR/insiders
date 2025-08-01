@@ -133,7 +133,7 @@ export function CustomCard({ item }: CustomCardProps) {
       <div className="text-center font-bold mb-2">{displayType}</div>
 
       {/* Content area - always use preview URL for thumbnails */}
-      <div className="px-2 flex-grow">
+      <div className="px-2 grow">
         {hasPreview ? (
           <div
             className="relative cursor-pointer"

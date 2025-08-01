@@ -94,7 +94,7 @@ export default function CustomTabsCardsList({
     : [];
 
   return (
-    <div className="flex w-full flex-col items-center justify-center content-center [&>*]:w-full ">
+    <div className="flex w-full flex-col items-center justify-center content-center *:w-full ">
       {languageEntries.length === 1
         ? languageEntries.map(([language, categories]) =>
             Object.entries(categories as { [key: string]: any }).map(
@@ -146,9 +146,9 @@ export default function CustomTabsCardsList({
         : defaultValue && (
             <Tabs
               defaultValue={defaultValue}
-              className="max-w-full [&>*]:flex-wrap md:[&>*]:flex-nowrap items-center justify-center content-center reverse "
+              className="max-w-full *:flex-wrap md:*:flex-nowrap items-center justify-center content-center reverse "
             >
-              <TabsList className=" [&>[data-state=active]]:bg-inside [&>[data-state=active]]:font-semibold rounded-none flex flex-wrap h-full  bg-transparent  text-white border-none">
+              <TabsList className=" *:data-[state=active]:bg-inside *:data-[state=active]:font-semibold rounded-none flex flex-wrap h-full  bg-transparent  text-white border-none">
                 {languageEntries
                   .sort(([a], [b]) => {
                     if (a === "ES") return -1;

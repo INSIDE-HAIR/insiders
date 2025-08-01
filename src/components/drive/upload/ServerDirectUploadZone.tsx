@@ -450,7 +450,7 @@ export function ServerDirectUploadZone({
                   className='flex items-center gap-3 p-3 bg-gray-50 rounded-lg'
                 >
                   {/* File Icon */}
-                  <div className='flex-shrink-0'>{getFileIcon(file.file)}</div>
+                  <div className='shrink-0'>{getFileIcon(file.file)}</div>
 
                   {/* File Info */}
                   <div className='flex-1 min-w-0'>

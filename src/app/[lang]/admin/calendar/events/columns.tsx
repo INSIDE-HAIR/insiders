@@ -106,7 +106,7 @@ export const useEventsColumns = (
           header: "Título",
           cell: ({ row }) => (
             <div className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <CalendarIcon className="h-4 w-4 text-gray-400 shrink-0" />
               <span className="font-medium truncate" title={event(row).summary}>
                 {event(row).summary || 'Sin título'}
               </span>
@@ -255,7 +255,7 @@ export const useEventsColumns = (
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           <span className={`w-2 h-2 ${config.color} rounded-full`} title={config.label}></span>
                           <span className={`text-xs font-medium ${config.text}`}>{config.icon}</span>
                         </div>
@@ -350,7 +350,7 @@ export const useEventsColumns = (
                 {/* Círculo de color si es un calendario */}
                 {calendarColor && (
                   <div 
-                    className="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0"
+                    className="w-3 h-3 rounded-full border border-gray-300 shrink-0"
                     style={{ 
                       backgroundColor: calendarColor.backgroundColor,
                       border: `1px solid ${calendarColor.foregroundColor}`
@@ -435,7 +435,7 @@ export const useEventsColumns = (
                 {/* Círculo de color si es un calendario */}
                 {calendarColor && (
                   <div 
-                    className="w-3 h-3 rounded-full border border-gray-300 flex-shrink-0"
+                    className="w-3 h-3 rounded-full border border-gray-300 shrink-0"
                     style={{ 
                       backgroundColor: calendarColor.backgroundColor,
                       border: `1px solid ${calendarColor.foregroundColor}`
@@ -651,7 +651,7 @@ export const useEventsColumns = (
                     <div className="text-xs text-gray-500 font-medium">Puntos de Acceso:</div>
                     {conferenceData.entryPoints.map((entry: any, index: number) => (
                       <div key={index} className="flex items-center gap-2 p-1 bg-gray-50 rounded text-xs">
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                           {entry.entryPointType === 'video' && '🎥'}
                           {entry.entryPointType === 'phone' && '📞'}
                           {entry.entryPointType === 'sip' && '📡'}
@@ -924,7 +924,7 @@ export const useEventsColumns = (
             return (
               <div className="flex items-center gap-2 text-sm">
                 <div 
-                  className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                  className="w-4 h-4 rounded-full border border-gray-300 shrink-0"
                   style={{ 
                     backgroundColor: calendarColor.backgroundColor,
                     border: `2px solid ${calendarColor.foregroundColor}`
