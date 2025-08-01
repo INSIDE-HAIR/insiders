@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     const { google } = require('googleapis');
 
     // Configurar autenticación de servicio
-    const auth = new google.auth.GoogleAuth({
+    const googleAuth = new google.auth.GoogleAuth({
       credentials: {
         client_email: clientEmail,
         private_key: privateKey.replace(/\\n/g, '\n'),
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
       scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
     });
 
-    const calendar = google.calendar({ version: 'v3', auth });
+    const calendar = google.calendar({ version: 'v3', auth: googleAuth });
 
     // Obtener lista de calendarios
     const calendarsResponse = await calendar.calendarList.list();

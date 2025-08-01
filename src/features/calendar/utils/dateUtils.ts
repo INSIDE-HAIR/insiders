@@ -4,7 +4,7 @@
  */
 
 import { format, parse, isValid, addDays, startOfDay, endOfDay } from 'date-fns';
-import { zonedTimeToUtc, utcToZonedTime, format as formatTz } from 'date-fns-tz';
+import { fromZonedTime, toZonedTime, format as formatTz } from 'date-fns-tz';
 
 /**
  * Formatos de fecha comunes
@@ -39,14 +39,14 @@ export const COMMON_TIMEZONES = [
  * Convierte una fecha y hora local a UTC
  */
 export function toUTC(date: Date, timeZone: string): Date {
-  return zonedTimeToUtc(date, timeZone);
+  return fromZonedTime(date, timeZone);
 }
 
 /**
  * Convierte una fecha UTC a zona horaria específica
  */
 export function fromUTC(date: Date, timeZone: string): Date {
-  return utcToZonedTime(date, timeZone);
+  return toZonedTime(date, timeZone);
 }
 
 /**

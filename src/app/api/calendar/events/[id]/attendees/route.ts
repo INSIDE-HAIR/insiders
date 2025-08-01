@@ -123,7 +123,7 @@ export async function GET(
 
     // Aquí podrías implementar lógica para sugerir contactos
     // Por ahora, devolvemos un array vacío
-    const suggestions = [];
+    const suggestions: Array<{email: string; name?: string}> = [];
 
     // En una implementación real, podrías:
     // 1. Buscar en Google Contacts API

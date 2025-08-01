@@ -120,7 +120,7 @@ export async function DELETE(
     // Usar la API directa para eliminar Google Meet
     const calendar = (calendarService as any).calendar;
     
-    const eventUpdate = {
+    const eventUpdate: any = {
       ...currentEvent,
       conferenceData: null,
       hangoutLink: null

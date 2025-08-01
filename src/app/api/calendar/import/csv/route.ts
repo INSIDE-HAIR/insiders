@@ -22,7 +22,7 @@ const csvEventSchema = z.object({
   startTime: z.string().regex(/^\d{2}:\d{2}$/, "Invalid start time format").optional(),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid end date format"),
   endTime: z.string().regex(/^\d{2}:\d{2}$/, "Invalid end time format").optional(),
-  allDay: z.string().transform(val => val?.toLowerCase() === 'true').default("false"),
+  allDay: z.string().default("false"),
   timeZone: z.string().optional().default("Europe/Madrid"),
   attendeeEmails: z.string().optional().default(""),
   reminderMinutes: z.string().optional().default(""),
@@ -193,8 +193,8 @@ export async function POST(request: NextRequest) {
     logger.info(`Parsed ${csvEvents.length} events from CSV`);
 
     // Validar y convertir eventos
-    const validEvents = [];
-    const validationErrors = [];
+    const validEvents: any[] = [];
+    const validationErrors: any[] = [];
 
     for (let i = 0; i < csvEvents.length; i++) {
       const csvEvent = csvEvents[i];

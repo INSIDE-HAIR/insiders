@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
 
     // Parsear query parameters
     const { searchParams } = new URL(request.url);
-    const queryParams = Object.fromEntries(searchParams.entries());
+    const queryParams: any = Object.fromEntries(searchParams.entries());
     
     // Convertir strings a tipos apropiados
     if (queryParams.maxResults) {
@@ -182,7 +182,11 @@ export async function POST(request: NextRequest) {
     await calendarService.initialize();
 
     // Crear evento (el servicio usa academia@insidesalons.com por defecto si no se especifica calendarId)
-    const createdEvent = await calendarService.createEvent(eventData, eventData.calendarId);
+    const finalEventData = {
+      ...eventData,
+      calendarId: eventData.calendarId || 'academia@insidesalons.com'
+    };
+    const createdEvent = await calendarService.createEvent(finalEventData, finalEventData.calendarId);
 
     logger.info(`Event created successfully: ${createdEvent.id}`);
 

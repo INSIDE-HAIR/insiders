@@ -99,7 +99,7 @@ export class GoogleCalendarAuthProvider {
       }
 
       logger.info("Calendar access token refreshed successfully");
-      return this.accessToken;
+      return this.accessToken!;
     } catch (error) {
       logger.error("Failed to get Calendar access token", error);
       throw new Error("Failed to authenticate with Google Calendar API");

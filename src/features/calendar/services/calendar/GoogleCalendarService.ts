@@ -293,7 +293,7 @@ export class GoogleCalendarService {
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       try {
-        const createdEvent = await this.createEvent(calendarId, event);
+        const createdEvent = await this.createEvent(event, calendarId);
         successful.push(createdEvent);
         logger.info(`Batch event ${i + 1}/${events.length} created successfully`);
       } catch (error: any) {
@@ -388,7 +388,7 @@ export class GoogleCalendarService {
 
     // Propiedades extendidas para características avanzadas
     if ((formData as any).extendedProperties) {
-      googleEvent.extendedProperties = (formData as any).extendedProperties;
+      (googleEvent as any).extendedProperties = (formData as any).extendedProperties;
     }
 
     return googleEvent;

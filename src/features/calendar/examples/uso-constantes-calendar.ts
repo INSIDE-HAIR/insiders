@@ -25,20 +25,43 @@ async function ejemplosDeUso() {
   const eventoAcademia = await calendarService.createEvent({
     summary: "Masterclass de Colorimetría",
     description: "Sesión avanzada sobre técnicas de color",
-    start: { dateTime: "2024-02-20T10:00:00" },
-    end: { dateTime: "2024-02-20T12:00:00" },
+    startDate: "2024-02-20",
+    startTime: "10:00",
+    endDate: "2024-02-20",
+    endTime: "12:00",
+    allDay: false,
+    timeZone: "Europe/Madrid",
+    calendarId: "academia@insidesalons.com",
     attendees: [
-      { email: "estudiante1@example.com" },
-      { email: "estudiante2@example.com" }
-    ]
+      { email: "estudiante1@example.com", optional: false },
+      { email: "estudiante2@example.com", optional: false }
+    ],
+    reminders: [],
+    visibility: "default" as any,
+    transparency: "opaque" as any,
+    guestsCanInviteOthers: true,
+    guestsCanModify: false,
+    guestsCanSeeOtherGuests: true
   }); // <- NO se especifica calendarId, usa DEFAULT (academia)
 
   // 2️⃣ CREAR EVENTO CON TIPO ESPECÍFICO
   const eventoConTipo = applyEventType({
     summary: "Introducción a las Técnicas de Corte",
     description: "Formación básica de corte",
-    start: { dateTime: "2024-02-21T10:00:00" },
-    end: { dateTime: "2024-02-21T12:00:00" }
+    startDate: "2024-02-21",
+    startTime: "10:00",
+    endDate: "2024-02-21",
+    endTime: "12:00",
+    allDay: false,
+    timeZone: "Europe/Madrid",
+    calendarId: "academia@insidesalons.com",
+    attendees: [],
+    reminders: [],
+    visibility: "default" as any,
+    transparency: "opaque" as any,
+    guestsCanInviteOthers: true,
+    guestsCanModify: false,
+    guestsCanSeeOtherGuests: true
   }, 'FORMACION');
   
   // Resultado: summary = "[FORMACIÓN] Introducción a las Técnicas de Corte"
@@ -51,8 +74,20 @@ async function ejemplosDeUso() {
     {
       summary: "Reunión de Sistemas",
       description: "Revisión de infraestructura",
-      start: { dateTime: "2024-02-22T15:00:00" },
-      end: { dateTime: "2024-02-22T16:00:00" }
+      startDate: "2024-02-22",
+      startTime: "15:00",
+      endDate: "2024-02-22",
+      endTime: "16:00",
+      allDay: false,
+      timeZone: "Europe/Madrid",
+      calendarId: ORGANIZATION_CALENDARS.SISTEMAS,
+      attendees: [],
+      reminders: [],
+      visibility: "default" as any,
+      transparency: "opaque" as any,
+      guestsCanInviteOthers: true,
+      guestsCanModify: false,
+      guestsCanSeeOtherGuests: true
     },
     ORGANIZATION_CALENDARS.SISTEMAS // Usa sistemas@insidesalons.com
   );
@@ -66,18 +101,42 @@ async function ejemplosDeUso() {
     {
       summary: "Taller de Peinados de Novia",
       description: "Técnicas especializadas",
-      start: { dateTime: "2024-03-01T10:00:00" },
-      end: { dateTime: "2024-03-01T14:00:00" }
+      startDate: "2024-03-01",
+      startTime: "10:00",
+      endDate: "2024-03-01",
+      endTime: "14:00",
+      allDay: false,
+      timeZone: "Europe/Madrid",
+      calendarId: "academia@insidesalons.com",
+      attendees: [],
+      reminders: [],
+      visibility: "default" as any,
+      transparency: "opaque" as any,
+      guestsCanInviteOthers: true,
+      guestsCanModify: false,
+      guestsCanSeeOtherGuests: true
     },
     {
       summary: "Certificación en Alisados",
       description: "Programa de certificación oficial",
-      start: { dateTime: "2024-03-05T09:00:00" },
-      end: { dateTime: "2024-03-05T18:00:00" }
+      startDate: "2024-03-05",
+      startTime: "09:00",
+      endDate: "2024-03-05",
+      endTime: "18:00",
+      allDay: false,
+      timeZone: "Europe/Madrid",
+      calendarId: "academia@insidesalons.com",
+      attendees: [],
+      reminders: [],
+      visibility: "default" as any,
+      transparency: "opaque" as any,
+      guestsCanInviteOthers: true,
+      guestsCanModify: false,
+      guestsCanSeeOtherGuests: true
     }
   ];
   
-  const resultado = await calendarService.createEventsInBatch(eventosParaImportar);
+  const resultado = await calendarService.createEventsInBatch('academia@insidesalons.com', eventosParaImportar);
   // Todos se crean en academia@insidesalons.com por defecto
 
   // 6️⃣ USO DE HELPER getCalendarId
