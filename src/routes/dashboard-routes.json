@@ -1,169 +1,379 @@
-[
-  {
-    "label": "General",
-    "isTitle": true
-  },
-  {
-    "label": "Dashboard",
-    "href": "/dashboard",
-    "icon": "LayoutDashboard"
-  },
-  {
-    "label": "Mi Perfil",
-    "href": "/dashboard/profile",
-    "icon": "UserCircle"
-  },
-  {
-    "label": "Configuración",
-    "href": "/dashboard/settings",
-    "icon": "Settings"
-  },
-  {
-    "label": "Administración",
-    "isTitle": true,
-    "role": "admin"
-  },
-  {
-    "label": "Métricas Generales",
-    "href": "/dashboard/admin/metricas-generales",
-    "icon": "BarChart3",
-    "role": "admin"
-  },
-  {
-    "label": "KPIs Negocio",
-    "href": "/dashboard/admin/kpis-negocio",
-    "icon": "TrendingUp",
-    "role": "admin"
-  },
-  {
-    "label": "Alertas Sistema",
-    "href": "/dashboard/admin/alertas-sistema",
-    "icon": "AlertTriangle",
-    "role": "admin"
-  },
-  {
-    "label": "Resumen Actividad",
-    "href": "/dashboard/admin/resumen-actividad",
-    "icon": "Activity",
-    "role": "admin"
-  },
-  {
-    "label": "Gestión Clientes",
-    "icon": "Users",
-    "role": "admin",
-    "subItems": [
-      {
-        "label": "Lista Clientes",
-        "href": "/dashboard/admin/gestion-clientes/lista-clientes",
-        "subItems": [
-          {
-            "label": "Filtros Avanzados",
-            "href": "/dashboard/admin/gestion-clientes/lista-clientes/filtros-avanzados"
-          },
-          {
-            "label": "Estados Detallados",
-            "href": "/dashboard/admin/gestion-clientes/lista-clientes/estados-detallados"
-          },
-          { "label": "Segmentación", "href": "/dashboard/admin/gestion-clientes/lista-clientes/segmentacion" },
-          { "label": "Acciones Masivas", "href": "/dashboard/admin/gestion-clientes/lista-clientes/acciones-masivas" }
-        ]
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-01T00:00:00Z",
+  "teams": {
+    "gestion": {
+      "name": {
+        "en": "Management Team",
+        "es": "Equipo de Gestión"
       },
-      {
-        "label": "Cliente Individual",
-        "href": "/dashboard/admin/gestion-clientes/cliente-individual",
-        "subItems": [
-          { "label": "Vista 360", "href": "/dashboard/admin/gestion-clientes/cliente-individual/vista-360" },
-          {
-            "label": "Historial Completo",
-            "href": "/dashboard/admin/gestion-clientes/cliente-individual/historial-completo"
-          },
-          {
-            "label": "Servicios Contratados",
-            "href": "/dashboard/admin/gestion-clientes/cliente-individual/servicios-contratados"
-          },
-          {
-            "label": "Pagos y Facturación",
-            "href": "/dashboard/admin/gestion-clientes/cliente-individual/pagos-facturacion"
-          },
-          { "label": "Comunicaciones", "href": "/dashboard/admin/gestion-clientes/cliente-individual/comunicaciones" },
-          { "label": "Notas Internas", "href": "/dashboard/admin/gestion-clientes/cliente-individual/notas-internas" }
-        ]
+      "plan": "Enterprise",
+      "routes": ["admin", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap"]
+    },
+    "creativos": {
+      "name": {
+        "en": "Creative Team", 
+        "es": "Equipo Creativo"
       },
-      {
-        "label": "Leads",
-        "href": "/dashboard/admin/gestion-clientes/leads",
-        "subItems": [
-          { "label": "Pipeline Ventas", "href": "/dashboard/admin/gestion-clientes/leads/pipeline-ventas" },
-          { "label": "Seguimiento", "href": "/dashboard/admin/gestion-clientes/leads/seguimiento" },
-          { "label": "Conversión", "href": "/dashboard/admin/gestion-clientes/leads/conversion" }
-        ]
+      "plan": "Pro",
+      "routes": ["pages", "menu", "drive", "calendar"]
+    },
+    "consultoria": {
+      "name": {
+        "en": "Consulting Team",
+        "es": "Equipo de Consultoría"
       },
-      {
-        "label": "Ex-Clientes",
-        "href": "/dashboard/admin/gestion-clientes/ex-clientes",
-        "subItems": [
-          { "label": "Razón Abandono", "href": "/dashboard/admin/gestion-clientes/ex-clientes/razon-abandono" },
-          { "label": "Reactivación", "href": "/dashboard/admin/gestion-clientes/ex-clientes/reactivacion" },
-          { "label": "Análisis Churn", "href": "/dashboard/admin/gestion-clientes/ex-clientes/analisis-churn" }
-        ]
+      "plan": "Pro", 
+      "routes": ["analytics", "users", "admin", "messages"]
+    },
+    "crecimiento": {
+      "name": {
+        "en": "Growth Team",
+        "es": "Equipo de Crecimiento"
+      },
+      "plan": "Pro",
+      "routes": ["analytics", "products", "admin", "messages"]
+    }
+  },
+  "routes": [
+    {
+      "id": "admin",
+      "label": {
+        "en": "Home",
+        "es": "Inicio"
+      },
+      "href": "/admin",
+      "icon": "Home",
+      "type": "direct",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "consultoria", "crecimiento"]
       }
-    ]
-  },
-  {
-    "label": "Gestión Plataforma",
-    "icon": "AppWindow",
-    "role": "admin",
-    "subItems": [
-      { "label": "Servicios", "href": "/dashboard/services", "icon": "Briefcase" },
-      { "label": "Productos", "href": "/dashboard/products", "icon": "Package" },
-      { "label": "Paquetes", "href": "/dashboard/packages", "icon": "PackageSearch" },
-      {
-        "label": "Herramientas (Calculadora)",
-        "href": "/dashboard/platform/tools/price-calculator",
-        "icon": "Calculator"
+    },
+    {
+      "id": "products",
+      "label": {
+        "en": "Products",
+        "es": "Productos"
       },
-      { "label": "Integraciones", "href": "/dashboard/integrations", "icon": "Plug" }
-    ]
-  },
-  {
-    "label": "Gestión Web Pública",
-    "icon": "Globe",
-    "role": "admin",
-    "subItems": [
-      { "label": "Formaciones", "href": "/dashboard/admin/web/formaciones", "icon": "BookOpen" },
-      { "label": "Consultoría", "href": "/dashboard/admin/web/consultoria", "icon": "Users" },
-      { "label": "Herramientas", "href": "/dashboard/admin/web/herramientas", "icon": "Tool" },
-      { "label": "Eventos", "href": "/dashboard/admin/web/eventos", "icon": "CalendarDays" },
-      { "label": "Club Inside", "href": "/dashboard/admin/web/club-inside", "icon": "Gem" },
-      { "label": "Recursos", "href": "/dashboard/admin/web/recursos", "icon": "Library" },
-      { "label": "Soluciones", "href": "/dashboard/admin/web/soluciones", "icon": "Lightbulb" },
-      { "label": "Precios", "href": "/dashboard/admin/web/precios", "icon": "DollarSign" },
-      { "label": "Páginas Empresa", "href": "/dashboard/admin/web/empresa", "icon": "Building2" }
-    ]
-  },
-  {
-    "label": "Configuración Sistema",
-    "icon": "Settings2",
-    "role": "admin",
-    "subItems": [
-      { "label": "Productos y Servicios", "href": "/dashboard/admin/configuracion-sistema/productos-servicios" },
-      { "label": "Precios y Tarifas", "href": "/dashboard/admin/configuracion-sistema/precios-tarifas" },
-      { "label": "Descuentos", "href": "/dashboard/admin/configuracion-sistema/descuentos-promociones" },
-      { "label": "Integraciones", "href": "/dashboard/admin/configuracion-sistema/integraciones" },
-      { "label": "Parámetros Generales", "href": "/dashboard/admin/configuracion-sistema/parametros-generales" },
-      { "label": "Gestor de Workspace", "href": "/dashboard/admin/configuracion-sistema/workspace" },
-      { "label": "Editor de Tema", "href": "/dashboard/admin/configuracion-sistema/theme-editor" }
-    ]
-  },
-  {
-    "label": "Auditoría y Logs",
-    "icon": "ShieldCheck",
-    "role": "admin",
-    "subItems": [
-      { "label": "Actividad Usuarios", "href": "/dashboard/admin/auditoria-logs/actividad-usuarios" },
-      { "label": "Cambios Sistema", "href": "/dashboard/admin/auditoria-logs/cambios-sistema" },
-      { "label": "Accesos", "href": "/dashboard/admin/auditoria-logs/accesos" },
-      { "label": "Errores", "href": "/dashboard/admin/auditoria-logs/errores" }
-    ]
+      "href": "/admin/products",
+      "icon": "Package",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin", "editor"],
+        "teams": ["gestion", "crecimiento"]
+      },
+      "subItems": [
+        {
+          "id": "products-list",
+          "label": {
+            "en": "Product List",
+            "es": "Lista de Productos"
+          },
+          "href": "/admin/products",
+          "icon": "List"
+        },
+        {
+          "id": "products-create",
+          "label": {
+            "en": "Create Product",
+            "es": "Crear Producto"
+          },
+          "href": "/admin/products/create",
+          "icon": "Plus"
+        }
+      ]
+    },
+    {
+      "id": "users",
+      "label": {
+        "en": "Users",
+        "es": "Usuarios"
+      },
+      "href": "/admin/users",
+      "icon": "Users",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "consultoria"]
+      },
+      "subItems": [
+        {
+          "id": "users-list",
+          "label": {
+            "en": "User List",
+            "es": "Lista de Usuarios"
+          },
+          "href": "/admin/users",
+          "icon": "List"
+        },
+        {
+          "id": "users-create",
+          "label": {
+            "en": "Create User",
+            "es": "Crear Usuario"
+          },
+          "href": "/admin/users/create",
+          "icon": "UserPlus"
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "label": {
+        "en": "Analytics",
+        "es": "Analíticas"
+      },
+      "href": "/admin/analytics",
+      "icon": "BarChart3",
+      "type": "direct",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "consultoria", "crecimiento"]
+      }
+    },
+    {
+      "id": "messages",
+      "label": {
+        "en": "Messages",
+        "es": "Mensajes"
+      },
+      "href": "/admin/messages",
+      "icon": "Mail",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "consultoria", "crecimiento"]
+      },
+      "subItems": [
+        {
+          "id": "messages-all",
+          "label": {
+            "en": "All Messages",
+            "es": "Todos los Mensajes"
+          },
+          "href": "/admin/messages",
+          "icon": "Mail"
+        }
+      ]
+    },
+    {
+      "id": "pages",
+      "label": {
+        "en": "Pages",
+        "es": "Páginas"
+      },
+      "href": "/admin/pages",
+      "icon": "FileText",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin", "editor"],
+        "teams": ["gestion", "creativos"]
+      },
+      "subItems": [
+        {
+          "id": "pages-list",
+          "label": {
+            "en": "Page List",
+            "es": "Lista de Páginas"
+          },
+          "href": "/admin/pages",
+          "icon": "FileText"
+        }
+      ]
+    },
+    {
+      "id": "menu",
+      "label": {
+        "en": "Menu",
+        "es": "Menú"
+      },
+      "href": "/admin/menu",
+      "icon": "Menu",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "creativos"]
+      },
+      "subItems": [
+        {
+          "id": "menu-config",
+          "label": {
+            "en": "Menu Configuration",
+            "es": "Configuración de Menú"
+          },
+          "href": "/admin/menu",
+          "icon": "Settings"
+        }
+      ]
+    },
+    {
+      "id": "drive",
+      "label": {
+        "en": "Drive",
+        "es": "Drive"
+      },
+      "href": "/admin/drive",
+      "icon": "HardDrive",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "creativos"]
+      },
+      "subItems": [
+        {
+          "id": "drive-explorer",
+          "label": {
+            "en": "Drive Explorer",
+            "es": "Explorador de Drive"
+          },
+          "href": "/admin/drive",
+          "icon": "Folder"
+        },
+        {
+          "id": "drive-codes",
+          "label": {
+            "en": "Code Manager",
+            "es": "Gestor de Códigos"
+          },
+          "href": "/admin/drive/codes",
+          "icon": "Code"
+        },
+        {
+          "id": "drive-errors",
+          "label": {
+            "en": "Error Reports",
+            "es": "Reportes de Errores"
+          },
+          "href": "/admin/drive/errors",
+          "icon": "AlertTriangle"
+        },
+        {
+          "id": "drive-routes",
+          "label": {
+            "en": "Drive Routes",
+            "es": "Rutas de Drive"
+          },
+          "href": "/admin/drive/routes",
+          "icon": "Route"
+        },
+        {
+          "id": "drive-docs",
+          "label": {
+            "en": "Documentation",
+            "es": "Documentación"
+          },
+          "href": "/admin/drive/routes/docs",
+          "icon": "Book"
+        },
+        {
+          "id": "drive-test-upload",
+          "label": {
+            "en": "Test Upload",
+            "es": "Prueba de Subida"
+          },
+          "href": "/admin/drive/test-upload",
+          "icon": "Upload"
+        },
+        {
+          "id": "drive-direct-upload",
+          "label": {
+            "en": "Direct Upload Demo",
+            "es": "Demo Subida Directa"
+          },
+          "href": "/admin/drive/direct-upload-demo",
+          "icon": "Upload"
+        },
+        {
+          "id": "drive-enhanced-upload",
+          "label": {
+            "en": "Enhanced Upload Demo",
+            "es": "Demo Subida Mejorada"
+          },
+          "href": "/admin/drive/enhanced-upload-demo",
+          "icon": "UploadCloud"
+        }
+      ]
+    },
+    {
+      "id": "holded",
+      "label": {
+        "en": "Holded",
+        "es": "Holded"
+      },
+      "href": "/admin/holded",
+      "icon": "Building",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion"]
+      },
+      "subItems": [
+        {
+          "id": "holded-panel",
+          "label": {
+            "en": "Holded Panel",
+            "es": "Panel de Holded"
+          },
+          "href": "/admin/holded",
+          "icon": "Building"
+        }
+      ]
+    },
+    {
+      "id": "calendar",
+      "label": {
+        "en": "Calendar",
+        "es": "Calendario"
+      },
+      "href": "/admin/calendar",
+      "icon": "Calendar",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "creativos"]
+      },
+      "subItems": [
+        {
+          "id": "calendar-dashboard",
+          "label": {
+            "en": "Calendar Dashboard",
+            "es": "Dashboard de Calendario"
+          },
+          "href": "/admin/calendar",
+          "icon": "Calendar"
+        },
+        {
+          "id": "calendar-events",
+          "label": {
+            "en": "Event List",
+            "es": "Lista de Eventos"
+          },
+          "href": "/admin/calendar/events",
+          "icon": "CalendarDays"
+        }
+      ]
+    },
+    {
+      "id": "sitemap",
+      "label": {
+        "en": "Sitemap",
+        "es": "Mapa del Sitio"
+      },
+      "href": "/admin/sitemap",
+      "icon": "Map",
+      "type": "direct",
+      "access": {
+        "roles": ["super-admin"],
+        "teams": ["gestion"],
+        "domains": ["@insidesalons.com"]
+      }
+    }
+  ],
+  "directLinkRoutes": ["admin", "analytics", "sitemap"],
+  "settings": {
+    "defaultTeam": "gestion",
+    "enableTeamSwitching": true,
+    "showTeamIndicator": true
   }
-]
+}

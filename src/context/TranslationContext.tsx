@@ -162,3 +162,13 @@ export function useTranslations(namespace?: string) {
 
   return context.t;
 }
+
+export function useTranslationContext() {
+  const context = useContext(TranslationsContext);
+  if (context === undefined) {
+    throw new Error(
+      "useTranslationContext must be used within a TranslationsProvider"
+    );
+  }
+  return context;
+}

@@ -17,7 +17,7 @@ import {
   FormMessage,
 } from "@/src/components/ui/form";
 import { HoldedDataDeleteSchema } from "@/src/types/zod-schemas";
-import { useHolded } from "@/src/components/providers/HoldedProvider";
+import { useHolded } from "@/src/context/providers/HoldedProvider";
 
 type DeleteFormValues = z.infer<typeof HoldedDataDeleteSchema>;
 
@@ -61,15 +61,15 @@ const DeleteHoldedDataUserForm = ({
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className='max-w-md mx-auto'>
       <Form {...form}>
-        <form className="space-y-4">
+        <form className='space-y-4'>
           <FormField
             control={form.control}
-            name="confirmation"
+            name='confirmation'
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex items-center gap-x-1 text-tiny">
+                <FormLabel className='flex items-center gap-x-1 text-tiny'>
                   Confirmación
                 </FormLabel>
                 <FormControl>
@@ -88,7 +88,7 @@ const DeleteHoldedDataUserForm = ({
           {errorMessage && <FormError message={errorMessage} />}
           {successMessage && <FormSuccess message={successMessage} />}
           <Button
-            className="w-full"
+            className='w-full'
             disabled={loading}
             onClick={() =>
               onSubmitHoldedDeleteData({
@@ -99,7 +99,7 @@ const DeleteHoldedDataUserForm = ({
             {loading ? "Eliminando..." : "Confirmar"}
           </Button>
 
-          <p className="text-center mb-6 text-tiny">
+          <p className='text-center mb-6 text-tiny'>
             Para eliminar los datos importados de Holded, escribe <b>borrar</b>{" "}
             en el campo a continuación y presiona el botón de eliminar.
           </p>

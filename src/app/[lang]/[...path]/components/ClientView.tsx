@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import { DriveType } from "@/src/features/drive/types";
-import { ContentProvider } from "@/src/context/DriveCompoentesContext";
+import { ContentProvider } from "@/src/context/DriveComponentsContext";
 import ContentLayout from "@/src/components/drive/layout/content-layout";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";

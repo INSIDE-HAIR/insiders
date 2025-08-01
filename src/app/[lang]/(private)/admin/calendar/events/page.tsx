@@ -7,7 +7,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -30,7 +30,6 @@ import {
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-import { Spinner } from "@/src/components/ui/spinner";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { DataTable } from "./components/DataTable";
 import { useEventsColumns } from "./columns";
@@ -42,6 +41,7 @@ import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal"
 import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
+import { Spinner } from "@/src/components/ui/spinner";
 
 interface EventsPageState {
   events: GoogleCalendarEvent[];
@@ -107,7 +107,21 @@ const CalendarEventsPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  const loadInitialData = useCallback(async () => {
+  // Cargar datos iniciales
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadInitialData();
+    }
+  }, [status, session]);
+
+  // Recargar eventos cuando cambien los filtros
+  useEffect(() => {
+    if (state.calendars.length > 0) {
+      loadEvents();
+    }
+  }, [activeCalendars, timeRange, search]);
+
+  const loadInitialData = async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -135,9 +149,9 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, [initializeCalendars]);
+  };
 
-  const loadEvents = useCallback(async () => {
+  const loadEvents = async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -247,21 +261,7 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, [activeCalendars, timeRange, search]);
-
-  // Cargar datos iniciales
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadInitialData();
-    }
-  }, [status, session, loadInitialData]);
-
-  // Recargar eventos cuando cambien los filtros
-  useEffect(() => {
-    if (state.calendars.length > 0) {
-      loadEvents();
-    }
-  }, [activeCalendars, timeRange, search, loadEvents, state.calendars.length]);
+  };
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
@@ -606,95 +606,68 @@ const CalendarEventsPage: React.FC = () => {
   ) => {
     if (selectedEvents.length === 0) return;
 
-    // Importar las funciones necesarias
-    const { hasMeetEnabled } = await import("@/src/features/calendar/utils/meetUtils");
-    const { processMeetBulkOperation, generateBulkMeetSummary } = await import("@/src/features/calendar/utils/bulkMeetOperations");
-
-    // Filtrar eventos que no tienen Google Meet
-    const eventsWithoutMeet = selectedEvents.filter(event => !hasMeetEnabled(event));
-    const eventsWithMeet = selectedEvents.filter(event => hasMeetEnabled(event));
-
-    if (eventsWithoutMeet.length === 0) {
-      toast({
-        title: "Sin cambios necesarios",
-        description: "Todos los eventos seleccionados ya tienen enlaces de Google Meet",
-        duration: 3000,
-      });
-      return;
-    }
-
-    let confirmMessage = `¿Estás seguro de que quieres generar enlaces de Google Meet para ${eventsWithoutMeet.length} evento${eventsWithoutMeet.length !== 1 ? "s" : ""}?`;
-    
-    if (eventsWithMeet.length > 0) {
-      confirmMessage += `\n\nNota: ${eventsWithMeet.length} evento${eventsWithMeet.length !== 1 ? 's' : ''} ya ${eventsWithMeet.length !== 1 ? 'tienen' : 'tiene'} Google Meet y ${eventsWithMeet.length !== 1 ? 'serán ignorados' : 'será ignorado'}.`;
-    }
-
-    const confirmed = confirm(confirmMessage);
+    const confirmed = confirm(
+      `¿Estás seguro de que quieres generar enlaces de Google Meet para ${
+        selectedEvents.length
+      } evento${selectedEvents.length !== 1 ? "s" : ""}?`
+    );
 
     if (!confirmed) return;
 
     try {
       setState((prev) => ({ ...prev, isLoading: true }));
 
-      // Mostrar toast de progreso
-      const progressToast = toast({
-        title: "Generando enlaces de Meet",
-        description: "Procesando eventos...",
-        duration: Infinity,
+      const promises = selectedEvents.map(async (event) => {
+        const eventCalendarId = (event as any).calendarId || activeCalendars[0];
+
+        // Configurar conferenceData para Google Meet
+        const updateData = {
+          conferenceData: {
+            createRequest: {
+              requestId: `meet-${event.id}-${Date.now()}`,
+              conferenceSolutionKey: {
+                type: "hangoutsMeet",
+              },
+            },
+          },
+        };
+
+        const response = await fetch(
+          `/api/calendar/events/${event.id}?calendarId=${eventCalendarId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateData),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Error en evento "${event.summary}": ${
+              errorData.message || "Error desconocido"
+            }`
+          );
+        }
+
+        return response.json();
       });
 
-      // Procesar eventos con la nueva función
-      const results = await processMeetBulkOperation(
-        eventsWithoutMeet,
-        5, // Procesar en lotes de 5
-        (processed, total) => {
-          // Actualizar el toast con el progreso
-          toast({
-            title: "Generando enlaces de Meet",
-            description: `Procesados ${processed} de ${total} eventos...`,
-            duration: 2000,
-          });
-        }
-      );
+      await Promise.all(promises);
 
       // Recargar eventos para mostrar los cambios
       await loadEvents();
 
-      // Generar resumen detallado
-      const summary = generateBulkMeetSummary(results);
-      
-      // Mostrar notificación con el resumen
-      if (results.successful > 0) {
-        // Log de los Meet IDs generados
-        results.results.forEach(r => {
-          if (r.meetLink) {
-            console.log(`✅ Meet generado - Evento: "${r.title}", Link: ${r.meetLink}`);
-          }
-        });
-        
-        toast({
-          title: "Operación completada",
-          description: summary + (eventsWithMeet.length > 0 
-            ? `\n\nℹ️ ${eventsWithMeet.length} evento${eventsWithMeet.length !== 1 ? 's' : ''} ya ${eventsWithMeet.length !== 1 ? 'tenían' : 'tenía'} Meet`
-            : ""),
-          duration: 5000,
-        });
-      }
-
-      // Mostrar errores si los hay (el resumen ya incluye los detalles)
-      if (results.failed > 0) {
-        console.error("Errores al generar Meet links:", results.errors);
-        
-        // Si solo hubo errores, mostrar el resumen como error
-        if (results.successful === 0) {
-          toast({
-            title: "Error al generar Meet",
-            description: summary,
-            variant: "destructive",
-            duration: 8000,
-          });
-        }
-      }
+      // Mostrar notificación de éxito
+      toast({
+        title: "Enlaces de Meet generados",
+        description: `Se generaron enlaces de Google Meet para ${
+          selectedEvents.length
+        } evento${selectedEvents.length !== 1 ? "s" : ""}`,
+        duration: 3000,
+      });
     } catch (error: any) {
       console.error("Error generating Meet links:", error);
 
@@ -710,185 +683,10 @@ const CalendarEventsPage: React.FC = () => {
     }
   };
 
-  const handleBulkChangeCalendar = async (
-    selectedEvents: GoogleCalendarEvent[],
-    targetCalendarId: string
-  ) => {
-    if (selectedEvents.length === 0) return;
-
-    const targetCalendar = state.calendars.find(
-      (cal) => cal.id === targetCalendarId
-    );
-    const confirmed = confirm(
-      `¿Estás seguro de que quieres mover ${selectedEvents.length} evento${
-        selectedEvents.length !== 1 ? "s" : ""
-      } al calendario "${targetCalendar?.summary || targetCalendarId}"?`
-    );
-
-    if (!confirmed) return;
-
-    try {
-      setState((prev) => ({ ...prev, isLoading: true }));
-
-      const response = await fetch("/api/calendar/events/bulk-move", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          events: selectedEvents.map((event) => ({
-            eventId: event.id,
-            sourceCalendarId: (event as any).calendarId || activeCalendars[0],
-          })),
-          targetCalendarId,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al mover eventos");
-      }
-
-      const result = await response.json();
-
-      // Recargar eventos para mostrar los cambios
-      await loadEvents();
-
-      // Mostrar notificación de éxito
-      toast({
-        title: "Eventos movidos",
-        description: `Se movieron ${result.successful} de ${
-          result.processed
-        } eventos al calendario "${
-          targetCalendar?.summary || targetCalendarId
-        }"`,
-        duration: 3000,
-      });
-
-      if (result.failed > 0) {
-        const errorDetails = result.errors
-          .slice(0, 3)
-          .map((err: any) => `• ${err.title || err.eventId}: ${err.error}`)
-          .join("\n");
-
-        toast({
-          title: "Algunos eventos tuvieron errores",
-          description: `${
-            result.failed
-          } eventos no pudieron moverse:\n${errorDetails}${
-            result.errors.length > 3 ? "\n...y más" : ""
-          }`,
-          variant: "destructive",
-          duration: 8000,
-        });
-      }
-    } catch (error: any) {
-      console.error("Error moving events:", error);
-
-      toast({
-        title: "Error",
-        description: error.message || "Error al mover eventos de calendario",
-        variant: "destructive",
-        duration: 5000,
-      });
-    } finally {
-      setState((prev) => ({ ...prev, isLoading: false }));
-    }
-  };
-
-  const handleBulkUpdatePermissions = async (
-    selectedEvents: GoogleCalendarEvent[],
-    permissions: {
-      guestsCanInviteOthers?: boolean;
-      guestsCanModify?: boolean;
-      guestsCanSeeOtherGuests?: boolean;
-    }
-  ) => {
-    if (selectedEvents.length === 0) return;
-
-    // Crear descripción de los permisos que se van a cambiar
-    const permissionChanges = [];
-    if (permissions.guestsCanInviteOthers !== undefined) {
-      permissionChanges.push(`Invitar otros: ${permissions.guestsCanInviteOthers ? 'SI' : 'NO'}`);
-    }
-    if (permissions.guestsCanModify !== undefined) {
-      permissionChanges.push(`Modificar evento: ${permissions.guestsCanModify ? 'SI' : 'NO'}`);
-    }
-    if (permissions.guestsCanSeeOtherGuests !== undefined) {
-      permissionChanges.push(`Ver otros invitados: ${permissions.guestsCanSeeOtherGuests ? 'SI' : 'NO'}`);
-    }
-
-    const confirmed = confirm(
-      `¿Estás seguro de que quieres actualizar los permisos de ${selectedEvents.length} evento${selectedEvents.length !== 1 ? 's' : ''}?\n\nCambios:\n${permissionChanges.join('\n')}`
-    );
-
-    if (!confirmed) return;
-
-    try {
-      setState(prev => ({ ...prev, isLoading: true }));
-
-      const response = await fetch('/api/calendar/events/bulk-permissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          events: selectedEvents.map(event => ({
-            eventId: event.id,
-            calendarId: (event as any).calendarId || activeCalendars[0],
-          })),
-          permissions,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al actualizar permisos de eventos');
-      }
-
-      const result = await response.json();
-      
-      // Recargar eventos para mostrar los cambios
-      await loadEvents();
-      
-      // Mostrar notificación de éxito
-      toast({
-        title: "Permisos actualizados",
-        description: `Se actualizaron permisos en ${result.successful} de ${result.processed} eventos`,
-        duration: 3000,
-      });
-
-      if (result.failed > 0) {
-        const errorDetails = result.errors.slice(0, 3).map((err: any) => 
-          `• ${err.title || err.eventId}: ${err.error}`
-        ).join('\n');
-        
-        toast({
-          title: "Algunos eventos tuvieron errores",
-          description: `${result.failed} eventos no pudieron actualizarse:\n${errorDetails}${result.errors.length > 3 ? '\n...y más' : ''}`,
-          variant: "destructive",
-          duration: 8000,
-        });
-      }
-      
-    } catch (error: any) {
-      console.error('Error updating permissions:', error);
-      
-      toast({
-        title: "Error",
-        description: error.message || "Error al actualizar permisos de eventos",
-        variant: "destructive",
-        duration: 5000,
-      });
-    } finally {
-      setState(prev => ({ ...prev, isLoading: false }));
-    }
-  };
-
   if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
-        <Spinner />
+        <Spinner size='lg' />
       </div>
     );
   }
@@ -1018,6 +816,23 @@ const CalendarEventsPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* Segunda fila: Búsqueda */}
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>
+                Buscar eventos
+              </label>
+              <div className='relative'>
+                <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-gray-400' />
+                <input
+                  type='text'
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder='Buscar por título, descripción...'
+                  className='w-full pl-10 pr-4 py-2 border rounded-md text-sm'
+                />
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -1032,7 +847,7 @@ const CalendarEventsPage: React.FC = () => {
       {/* Events Display */}
       {state.isLoading ? (
         <div className='flex justify-center py-8'>
-          <Spinner />
+          <Spinner size='lg' />
         </div>
       ) : filteredEvents.length === 0 ? (
         <Card>
@@ -1052,8 +867,6 @@ const CalendarEventsPage: React.FC = () => {
               onBulkAddParticipants={handleBulkAddParticipants}
               onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
               onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
-              onBulkChangeCalendar={handleBulkChangeCalendar}
-              onBulkUpdatePermissions={handleBulkUpdatePermissions}
               calendars={state.calendars}
             />
           ) : viewMode === "json" ? (

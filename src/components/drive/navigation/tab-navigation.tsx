@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, memo } from "react";
-import { useContent } from "@/src/context/DriveCompoentesContext";
+import { useContent } from "@/src/context/DriveComponentsContext";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { cn } from "@/src/lib/utils/utils";
 
@@ -64,8 +64,8 @@ export const TabNavigation = memo(function TabNavigation({
   if (activeAndOrderedTabs.length === 0) return null;
 
   return (
-    <div className="w-full mb-6 max-w-md mx-auto">
-      <div className="flex flex-wrap h-full bg-transparent text-white border-none overflow-x-auto w-full justify-center">
+    <div className='w-full mb-6 max-w-md mx-auto'>
+      <div className='flex flex-wrap h-full bg-transparent text-white border-none overflow-x-auto w-full justify-center'>
         {activeAndOrderedTabs.map((item) => (
           <button
             key={item.id}
@@ -77,7 +77,7 @@ export const TabNavigation = memo(function TabNavigation({
                 ? "bg-inside text-zinc-900 font-semibold"
                 : "bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-600"
             )}
-            role="tab"
+            role='tab'
             aria-selected={currentId === item.id}
             tabIndex={0}
             style={{ WebkitTapHighlightColor: "transparent" }}

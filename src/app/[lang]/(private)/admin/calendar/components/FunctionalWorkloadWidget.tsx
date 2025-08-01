@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 
@@ -43,7 +43,7 @@ const FunctionalWorkloadWidget: React.FC = () => {
   });
   const [consultants, setConsultants] = useState<ConsultantData[]>([]);
 
-  const loadWorkloadData = useCallback(async () => {
+  const loadWorkloadData = async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -80,11 +80,11 @@ const FunctionalWorkloadWidget: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [startDate, endDate]);
+  };
 
   useEffect(() => {
     loadWorkloadData();
-  }, [startDate, endDate, loadWorkloadData]);
+  }, [startDate, endDate]);
 
   const formatHours = (hours: number) => {
     const h = Math.floor(hours);

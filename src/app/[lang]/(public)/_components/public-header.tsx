@@ -14,6 +14,9 @@ import {
 } from "@/src/components/ui/dropdown-menu";
 import { Icons } from "@/src/components/shared/icons";
 import { cn } from "@/src/lib/utils";
+import { LanguageSelector } from "@/src/components/custom/language-selector";
+import MyAccountButton from "./my-account-button";
+import { useSession } from "next-auth/react";
 
 import navRoutesData from "@/src/routes/public-nav-routes.json";
 import footerRoutes from "@/src/routes/footer-routes.json";
@@ -27,18 +30,21 @@ const navRoutes = navRoutesData as NavRoute[];
 
 export default function PublicHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const logoSrc = "https://lh3.googleusercontent.com/d/1EKdctOIcuowPzQ8aLZXe14EkPKIWPfnT";
+  const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const logoSrc =
+    "https://lh3.googleusercontent.com/d/1EKdctOIcuowPzQ8aLZXe14EkPKIWPfnT";
 
   const handleMobileLinkClick = () => {
     setIsMobileMenuOpen(false);
   };
 
   return (
-    <header className='bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b border-border'>
+    <header className='bg-background/80 backdrop-blur-sm sticky top-0 z-50 border-b border-borde col-span-full'>
       <nav className='container mx-auto px-4 sm:px-6 py-3 flex items-center'>
         <Link
           href='/'
-          className='text-2xl font-bold text-foreground uppercase flex items-center'
+          className='text-2xl font-bold text-foreground uppercase flex items-center '
         >
           <Image
             src={logoSrc || "/placeholder.svg?width=150&height=40&text=Logo"}
@@ -55,32 +61,49 @@ export default function PublicHeader() {
           <div className='hidden md:flex items-center space-x-1'>
             {navRoutes.map((route) => {
               const categoryKey = route.mainCategory as keyof FooterRoutesType;
-              const subItems = categoryKey ? typedFooterRoutes[categoryKey]?.sub : null;
+              const subItems = categoryKey
+                ? typedFooterRoutes[categoryKey]?.sub
+                : null;
 
               if (subItems) {
                 return (
-                  <DropdownMenu key={route.label}>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        className='text-sm font-medium text-muted-foreground hover:text-primary bg-transparent h-10 px-4 py-2'
-                      >
-                        {route.label}
-                        <Icons.ChevronDown className='ml-1 h-3 w-3' />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align='start' className='w-[250px]'>
-                      {Object.entries(subItems).map(([subLabel, subRoute]) => (
-                        <DropdownMenuItem key={subLabel} asChild>
-                          <Link
-                            href={subRoute.path}
-                            className='block w-full px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer'
-                          >
-                            {subLabel}
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
+                  <DropdownMenu
+                    key={route.label}
+                    open={hoveredDropdown === route.label}
+                    onOpenChange={(open) =>
+                      setHoveredDropdown(open ? route.label : null)
+                    }
+                  >
+                    <div
+                      onMouseEnter={() => setHoveredDropdown(route.label)}
+                      onMouseLeave={() => setHoveredDropdown(null)}
+                      className='relative'
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button variant='ghost' className='hover:bg-primary '>
+                          {route.label}
+                          <Icons.ChevronDown className='ml-1 h-3 w-3' />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align='start' className='w-[250px]'>
+                        {Object.entries(subItems).map(
+                          ([subLabel, subRoute]) => (
+                            <DropdownMenuItem
+                              key={subLabel}
+                              asChild
+                              className='focus:bg-primary'
+                            >
+                              <Link
+                                href={subRoute.path}
+                                className='block w-full px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer'
+                              >
+                                {subLabel}
+                              </Link>
+                            </DropdownMenuItem>
+                          )
+                        )}
+                      </DropdownMenuContent>
+                    </div>
                   </DropdownMenu>
                 );
               } else {
@@ -99,16 +122,17 @@ export default function PublicHeader() {
           </div>
 
           <div className='hidden md:flex items-center space-x-3'>
-            <Button
-              variant='outline'
-              size='sm'
-              asChild
-              className='border-primary text-primary hover:bg-primary hover:text-primary-foreground p-2 h-9 w-9'
-            >
-              <Link href='/dashboard'>
-                <Icons.User className='h-4 w-4' />
-              </Link>
-            </Button>
+            <LanguageSelector />
+            {session?.user ? (
+              <MyAccountButton />
+            ) : (
+              <Button variant='outline' size='sm' asChild>
+                <Link href='/auth/login'>
+                  <Icons.User className='mr-2 h-4 w-4' />
+                  Iniciar Sesión
+                </Link>
+              </Button>
+            )}
             <Button size='sm' asChild>
               <a href='#para-quien'>Empezar Diagnóstico</a>
             </Button>
@@ -153,39 +177,59 @@ export default function PublicHeader() {
                     >
                       {route.label}
                     </Link>
-                    {route.mainCategory && typedFooterRoutes[
-                      route.mainCategory as keyof FooterRoutesType
-                    ]?.sub && (
-                      <div className='pl-4 mt-1 border-l border-border ml-2'>
-                        {Object.entries(
-                          typedFooterRoutes[
-                            route.mainCategory as keyof FooterRoutesType
-                          ]!.sub!
-                        ).map(([subLabel, subRoute]) => (
-                          <Link
-                            key={subLabel}
-                            href={subRoute.path}
-                            onClick={handleMobileLinkClick}
-                            className='block py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md'
-                          >
-                            {subLabel}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                    {route.mainCategory &&
+                      typedFooterRoutes[
+                        route.mainCategory as keyof FooterRoutesType
+                      ]?.sub && (
+                        <div className='pl-4 mt-1 border-l border-border ml-2'>
+                          {Object.entries(
+                            typedFooterRoutes[
+                              route.mainCategory as keyof FooterRoutesType
+                            ]!.sub!
+                          ).map(([subLabel, subRoute]) => (
+                            <Link
+                              key={subLabel}
+                              href={subRoute.path}
+                              onClick={handleMobileLinkClick}
+                              className='block py-1.5 px-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md'
+                            >
+                              {subLabel}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                   </div>
                 ))}
                 <div className='pt-6 space-y-3 border-t border-border mt-4'>
-                  <Button
-                    variant='outline'
-                    className='w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground'
-                    asChild
-                  >
-                    <Link href='/dashboard' onClick={handleMobileLinkClick}>
-                      <Icons.User className='mr-2 h-4 w-4' />
-                      Entrar
-                    </Link>
-                  </Button>
+                  <div className='flex justify-center mb-4'>
+                    <LanguageSelector />
+                  </div>
+                  {session?.user ? (
+                    <Button
+                      variant='outline'
+                      className='w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground'
+                      asChild
+                    >
+                      <Link
+                        href='/admin/dashboard'
+                        onClick={handleMobileLinkClick}
+                      >
+                        <Icons.LayoutGrid className='mr-2 h-4 w-4' />
+                        Dashboard
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button
+                      variant='outline'
+                      className='w-full border-primary text-primary hover:bg-primary hover:text-primary-foreground'
+                      asChild
+                    >
+                      <Link href='/auth/login' onClick={handleMobileLinkClick}>
+                        <Icons.User className='mr-2 h-4 w-4' />
+                        Iniciar Sesión
+                      </Link>
+                    </Button>
+                  )}
                   <Button className='w-full' asChild>
                     <a href='#para-quien' onClick={handleMobileLinkClick}>
                       Empezar Diagnóstico

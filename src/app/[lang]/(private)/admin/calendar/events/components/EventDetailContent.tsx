@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
-import { getGoogleCalendarLink } from "@/src/features/calendar/utils/meetUtils";
 import {
   XMarkIcon,
   ChevronDownIcon,
@@ -12,8 +11,14 @@ import {
   BellIcon,
   CalendarIcon,
   EyeIcon,
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
+  ListBulletIcon,
+  NumberedListIcon,
+  LinkIcon,
+  SpeakerXMarkIcon,
   PlusIcon,
-  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/src/components/ui/button";
 import { Checkbox } from "@/src/components/ui/checkbox";
@@ -26,7 +31,7 @@ import {
 } from "@/src/components/ui/select";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { DescriptionTemplateSelector } from "./DescriptionTemplateSelector";
+import { invitedUsers } from "./constants";
 
 interface EventDetailContentProps {
   event: GoogleCalendarEvent;
@@ -115,18 +120,6 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
     }
   };
 
-  const handleOpenInGoogleCalendar = () => {
-    const calendarId = (event as any).calendarId || "primary";
-    const googleCalendarUrl = getGoogleCalendarLink(event, calendarId);
-    
-    if (googleCalendarUrl) {
-      window.open(googleCalendarUrl, "_blank");
-    } else {
-      console.error("No se pudo generar el link de Google Calendar");
-      // Opcionalmente, mostrar un mensaje de error al usuario
-    }
-  };
-
   const currentCalendar = calendars.find(
     (cal) => cal.id === (event as any).calendarId
   );
@@ -136,7 +129,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-white w-full md:w-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-linear-to-r from-blue-50 to-indigo-50">
+        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
           <div className="flex items-center gap-4 flex-1">
             {showCloseButton && onClose && (
               <button
@@ -169,7 +162,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
           </div>
           <div className="flex items-center gap-3">
             <Button
-              className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6"
               onClick={isEditing ? handleSave : () => setIsEditing(true)}
             >
               {isEditing ? "Guardar" : "Editar"}
@@ -185,13 +178,6 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
               </Button>
               {showMoreActions && (
                 <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 min-w-48 py-2">
-                  <button 
-                    className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors"
-                    onClick={handleOpenInGoogleCalendar}
-                  >
-                    <ArrowTopRightOnSquareIcon className="h-4 w-4" />
-                    Ver en Google Calendar
-                  </button>
                   <button className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors">
                     <DocumentDuplicateIcon className="h-4 w-4" />
                     Duplicar evento
@@ -225,7 +211,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                 {formatDateTime(event.end)}
               </span>
             </div>
-            <div className="flex items-center gap-2 bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2">
               <span className="text-xs text-blue-700 font-medium">
                 (GMT+02:00) Europa central - Madrid
               </span>
@@ -272,7 +258,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             >
               Detalles del evento
               {activeTab === "details" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500"></div>
+                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
               )}
             </button>
             <button
@@ -285,7 +271,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             >
               Encontrar un hueco
               {activeTab === "find-time" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500"></div>
+                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
               )}
             </button>
             <button
@@ -298,7 +284,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             >
               Invitados
               {activeTab === "guests" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-blue-500 to-indigo-500"></div>
+                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
               )}
             </button>
           </nav>
@@ -502,56 +488,60 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
 
               {/* Description Editor */}
               <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <SpeakerXMarkIcon className="h-4 w-4" />
+                  <button className="text-blue-600 hover:underline border border-dashed border-gray-300 px-2 py-1 rounded">
+                    Crear notas de la reunión con IA
+                  </button>
+                </div>
+
+                {/* Rich Text Editor Toolbar */}
+                <div className="border-t border-b py-2">
+                  <div className="flex items-center gap-2">
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <BoldIcon className="h-4 w-4" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <ItalicIcon className="h-4 w-4" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <UnderlineIcon className="h-4 w-4" />
+                    </button>
+                    <div className="w-px h-4 bg-gray-300 mx-1"></div>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <ListBulletIcon className="h-4 w-4" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <NumberedListIcon className="h-4 w-4" />
+                    </button>
+                    <div className="w-px h-4 bg-gray-300 mx-1"></div>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <LinkIcon className="h-4 w-4" />
+                    </button>
+                    <button className="p-1 hover:bg-gray-100 rounded">
+                      <SpeakerXMarkIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+
                 {/* Description Text Area */}
-                <div className="bg-gray-50 rounded p-4 min-h-32 relative">
+                <div className="bg-gray-50 rounded p-4 min-h-32">
                   {isEditing ? (
-                    <div className="space-y-3">
-                      {/* Template Selector - Integrated naturally */}
-                      <div className="flex justify-end">
-                        <DescriptionTemplateSelector
-                          eventId={event.id!}
-                          calendarId={(event as any).calendarId || "primary"}
-                          currentDescription={editedEvent.description}
-                          onDescriptionGenerated={(newDescription) => {
-                            setEditedEvent({
-                              ...editedEvent,
-                              description: newDescription,
-                            });
-                          }}
-                        />
-                      </div>
-                      <ReactQuill
-                        value={editedEvent.description || ""}
-                        onChange={(value) =>
-                          setEditedEvent({
-                            ...editedEvent,
-                            description: value,
-                          })
-                        }
-                        className="bg-white rounded overflow-hidden"
-                        theme="snow"
-                        modules={{
-                          toolbar: [
-                            [{ 'header': [1, 2, 3, false] }],
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            ['link'],
-                            ['clean']
-                          ],
-                        }}
-                        formats={[
-                          'header',
-                          'bold', 'italic', 'underline',
-                          'list', 'bullet',
-                          'link'
-                        ]}
-                      />
-                    </div>
+                    <ReactQuill
+                      value={editedEvent.description || ""}
+                      onChange={(value) =>
+                        setEditedEvent({
+                          ...editedEvent,
+                          description: value,
+                        })
+                      }
+                      className="bg-white"
+                    />
                   ) : (
                     <div
                       className="prose prose-sm max-w-none"
                       dangerouslySetInnerHTML={{
-                        __html: event.description || "<p class='text-gray-500 italic'>No hay descripción</p>",
+                        __html: event.description || "",
                       }}
                     />
                   )}
@@ -593,55 +583,36 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
           </div>
 
           <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>{event.attendees?.length || 0} invitados</span>
-            {event.attendees && event.attendees.length > 0 && (
-              <div className="flex items-center gap-2">
-                <span>
-                  {event.attendees.filter((a) => a.responseStatus === "accepted").length} sí
-                </span>
-                <span>
-                  {event.attendees.filter((a) => a.responseStatus === "declined").length} no
-                </span>
-                <span>
-                  {event.attendees.filter((a) => a.responseStatus === "needsAction").length} en espera
-                </span>
-              </div>
-            )}
+            <span>{invitedUsers.length} invitados</span>
+            <div className="flex items-center gap-2">
+              <span>
+                {invitedUsers.filter((a) => a.responseStatus === "accepted").length} sí
+              </span>
+              <span>
+                {invitedUsers.filter((a) => a.responseStatus === "declined").length} no
+              </span>
+              <span>
+                {invitedUsers.filter((a) => a.responseStatus === "needsAction").length} en espera
+              </span>
+            </div>
           </div>
         </div>
 
         <div className="p-4 space-y-3">
-          {event.attendees && event.attendees.length > 0 ? (
-            event.attendees.map((attendee, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium">
-                    {(attendee.displayName || attendee.email)?.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium">
-                    {attendee.displayName || attendee.email}
-                  </div>
-                  {attendee.email !== attendee.displayName && attendee.displayName && (
-                    <div className="text-xs text-gray-500">
-                      {attendee.email}
-                    </div>
-                  )}
-                </div>
-                <div className="text-xs">
-                  {attendee.responseStatus === "accepted" && "✅"}
-                  {attendee.responseStatus === "declined" && "❌"}
-                  {attendee.responseStatus === "tentative" && "❓"}
-                  {attendee.responseStatus === "needsAction" && "⏳"}
+          {invitedUsers.map((attendee, index) => (
+            <div key={index} className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium">
+                  {attendee.email?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-medium">
+                  {attendee.email}
                 </div>
               </div>
-            ))
-          ) : (
-            <div className="text-sm text-gray-500 text-center py-4">
-              No hay invitados en este evento
             </div>
-          )}
+          ))}
         </div>
 
         <div className="p-4 border-t">

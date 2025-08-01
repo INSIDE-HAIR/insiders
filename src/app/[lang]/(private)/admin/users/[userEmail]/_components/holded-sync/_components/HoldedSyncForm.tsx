@@ -19,7 +19,7 @@ import moment from "moment-timezone";
 import "moment/locale/es";
 import ErrorMessageBox from "@/src/components/shared/messages/MessageErrorBox";
 import SuccessMessageBox from "@/src/components/shared/messages/MessageSuccessBox";
-import { useHolded } from "@/src/components/providers/HoldedProvider";
+import { useHolded } from "@/src/context/providers/HoldedProvider";
 import { useDebounce } from "@uidotdev/usehooks";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
 import { Button } from "@/src/components/ui/button";
@@ -156,9 +156,9 @@ const HoldedSyncForm = ({
         onSubmit={form.handleSubmit((values) =>
           onSubmitHoldedId(values.holdedId || "")
         )}
-        className="space-y-6"
+        className='space-y-6'
       >
-        <div className="space-y-4">
+        <div className='space-y-4'>
           <HoldedIdField
             form={form}
             setHoldedId={setHoldedId}
@@ -197,10 +197,10 @@ const HoldedIdField = ({
 }) => (
   <FormField
     control={form.control}
-    name="holdedId"
+    name='holdedId'
     render={({ field }) => (
       <FormItem>
-        <FormLabel className="flex items-center gap-x-1 text-tiny">
+        <FormLabel className='flex items-center gap-x-1 text-tiny'>
           Holded ID
         </FormLabel>
         <FormControl>
@@ -212,7 +212,7 @@ const HoldedIdField = ({
               field.onChange(e);
               setHoldedId(e.target.value);
             }}
-            placeholder="Holded ID"
+            placeholder='Holded ID'
           />
         </FormControl>
         <FormMessage />
@@ -230,7 +230,7 @@ const InsidersIdField = ({
 }) => (
   <FormField
     control={form.control}
-    name="insidersId"
+    name='insidersId'
     render={({ field }) => (
       <FormItem>
         <FormLabel>Insiders ID</FormLabel>
@@ -238,7 +238,7 @@ const InsidersIdField = ({
           <Input
             {...field}
             placeholder={insidersId || ""}
-            type="text"
+            type='text'
             value={insidersId || ""}
             disabled
           />
@@ -264,8 +264,8 @@ const ContactInfo = ({
   isValidId: boolean;
   onUpdateHoldedId: () => void;
 }) => (
-  <div className="text-tiny">
-    <h3 className="font-bold text-center mb-2">Información del contacto</h3>
+  <div className='text-tiny'>
+    <h3 className='font-bold text-center mb-2'>Información del contacto</h3>
     {loading ? (
       <LoadingIndicator />
     ) : (
@@ -296,12 +296,12 @@ const ContactInfo = ({
               <b>Insiders ID: </b>
               {insidersIdValue}
             </p>
-            <div className="mt-4">
+            <div className='mt-4'>
               {insidersIdValue === insidersId ? (
                 <>
                   <SuccessMessageBox message={"ID correcto."} />
-                  <div className="flex">
-                    <Button onClick={onUpdateHoldedId} className="mt-4 mx-auto">
+                  <div className='flex'>
+                    <Button onClick={onUpdateHoldedId} className='mt-4 mx-auto'>
                       Actualizar Holded ID en el servidor
                     </Button>
                   </div>
@@ -330,15 +330,15 @@ const ContactInfo = ({
 );
 
 const LoadingIndicator = () => (
-  <div className="w-full h-10 flex justify-center max-w-full overflow-hidden">
-    <div className="text-center h-8 w-8 items-center justify-center content-center flex overflow-hidden m-auto">
+  <div className='w-full h-10 flex justify-center max-w-full overflow-hidden'>
+    <div className='text-center h-8 w-8 items-center justify-center content-center flex overflow-hidden m-auto'>
       <Spinner />
     </div>
   </div>
 );
 
 const NoContactFoundMessage = () => (
-  <p className="text-tiny">
+  <p className='text-tiny'>
     <b>No se ha encontrado ningún contacto en Holded.</b> Introduce un Holded ID
     para buscarlo, recuerda que tiene que tener <b> 24 caracteres.</b>
   </p>

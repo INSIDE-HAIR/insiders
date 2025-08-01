@@ -1,0 +1,565 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-01T00:00:00Z",
+  "settings": {
+    "defaultRole": "user",
+    "allowedDomains": ["@insidesalons.com"],
+    "roles": {
+      "user": {
+        "name": "User",
+        "description": "Standard user with basic access",
+        "permissions": ["read"]
+      },
+      "editor": {
+        "name": "Editor",
+        "description": "Content editor with additional permissions",
+        "permissions": ["read", "write"]
+      },
+      "admin": {
+        "name": "Administrator",
+        "description": "Administrator with extended access",
+        "permissions": ["read", "write", "manage"]
+      },
+      "super-admin": {
+        "name": "Super Administrator",
+        "description": "Full system access",
+        "permissions": ["read", "write", "manage", "configure"]
+      }
+    }
+  },
+  "routes": {
+    "public": [
+      {
+        "path": "/",
+        "label": "Home",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        },
+        "component": "HomePage",
+        "metadata": {
+          "title": "Inside Salons - Home",
+          "description": "Página principal de Inside Salons"
+        }
+      },
+      {
+        "path": "/formaciones",
+        "label": "Formaciones",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        },
+        "children": [
+          {
+            "path": "/formaciones/master-ibm",
+            "label": "Master IBM",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            },
+            "children": [
+              {
+                "path": "/formaciones/master-ibm/programa",
+                "label": "Programa",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              },
+              {
+                "path": "/formaciones/master-ibm/precio-y-modalidades",
+                "label": "Precio y Modalidades",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              },
+              {
+                "path": "/formaciones/master-ibm/testimonios",
+                "label": "Testimonios",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              },
+              {
+                "path": "/formaciones/master-ibm/calendario",
+                "label": "Calendario",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              },
+              {
+                "path": "/formaciones/master-ibm/inscripcion",
+                "label": "Inscripción",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              }
+            ]
+          },
+          {
+            "path": "/formaciones/master-star-club",
+            "label": "Master Star Club",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            }
+          },
+          {
+            "path": "/formaciones/master-scaling",
+            "label": "Master Scaling",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            }
+          },
+          {
+            "path": "/formaciones/master-salon-experience",
+            "label": "Master Salón Experience",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/consultoria",
+        "label": "Consultoría",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        },
+        "children": [
+          {
+            "path": "/consultoria/estrategica",
+            "label": "Estratégica",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            },
+            "children": [
+              {
+                "path": "/consultoria/estrategica/plan-de-negocio",
+                "label": "Plan de Negocio",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              },
+              {
+                "path": "/consultoria/estrategica/plan-estrategico",
+                "label": "Plan Estratégico",
+                "access": {
+                  "type": "public",
+                  "requireAuth": false
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "path": "/herramientas",
+        "label": "Herramientas",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/eventos",
+        "label": "Eventos",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/recursos",
+        "label": "Recursos",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/empresa",
+        "label": "Empresa",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/contacto",
+        "label": "Contacto",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/legal",
+        "label": "Legal",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      }
+    ],
+    "auth": [
+      {
+        "path": "/auth/login",
+        "label": "Login",
+        "access": {
+          "type": "auth",
+          "requireAuth": false,
+          "redirectIfAuthenticated": "/admin"
+        },
+        "metadata": {
+          "title": "Login - Inside Salons",
+          "description": "Iniciar sesión en Inside Salons"
+        }
+      },
+      {
+        "path": "/auth/register",
+        "label": "Register",
+        "access": {
+          "type": "auth",
+          "requireAuth": false,
+          "redirectIfAuthenticated": "/admin"
+        }
+      },
+      {
+        "path": "/auth/reset-password",
+        "label": "Reset Password",
+        "access": {
+          "type": "auth",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/auth/new-password",
+        "label": "New Password",
+        "access": {
+          "type": "auth",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/auth/verify-request",
+        "label": "Verify Request",
+        "access": {
+          "type": "auth",
+          "requireAuth": false
+        }
+      }
+    ],
+    "private": [
+      {
+        "path": "/profile",
+        "label": "Profile",
+        "access": {
+          "type": "private",
+          "requireAuth": true,
+          "roles": ["user", "editor", "admin", "super-admin"]
+        }
+      }
+    ],
+    "admin": [
+      {
+        "path": "/admin",
+        "label": "Admin Dashboard",
+        "access": {
+          "type": "admin",
+          "requireAuth": true,
+          "roles": ["admin", "super-admin"]
+        },
+        "children": [
+          {
+            "path": "/admin/analytics",
+            "label": "Analytics",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            }
+          },
+          {
+            "path": "/admin/users",
+            "label": "Users Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            },
+            "children": [
+              {
+                "path": "/admin/users/create",
+                "label": "Create User",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              }
+            ]
+          },
+          {
+            "path": "/admin/calendar",
+            "label": "Calendar",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            },
+            "children": [
+              {
+                "path": "/admin/calendar/events",
+                "label": "Events",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              }
+            ]
+          },
+          {
+            "path": "/admin/drive",
+            "label": "Drive Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            },
+            "children": [
+              {
+                "path": "/admin/drive/codes",
+                "label": "Drive Codes",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/errors",
+                "label": "Drive Errors",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/routes",
+                "label": "Drive Routes",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/routes/docs",
+                "label": "Drive Documentation",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/test-upload",
+                "label": "Test Upload",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/direct-upload-demo",
+                "label": "Direct Upload Demo",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              },
+              {
+                "path": "/admin/drive/enhanced-upload-demo",
+                "label": "Enhanced Upload Demo",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin"]
+                }
+              }
+            ]
+          },
+          {
+            "path": "/admin/holded",
+            "label": "Holded Integration",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            }
+          },
+          {
+            "path": "/admin/products",
+            "label": "Products Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin", "editor"]
+            },
+            "children": [
+              {
+                "path": "/admin/products/create",
+                "label": "Create Product",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["admin", "super-admin", "editor"]
+                }
+              }
+            ]
+          },
+          {
+            "path": "/admin/messages",
+            "label": "Messages",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            }
+          },
+          {
+            "path": "/admin/menu",
+            "label": "Menu Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            }
+          },
+          {
+            "path": "/admin/pages",
+            "label": "Pages Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin", "editor"]
+            }
+          },
+          {
+            "path": "/admin/sitemap",
+            "label": "Sitemap & Routes",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["super-admin"],
+              "domains": ["@insidesalons.com"]
+            }
+          }
+        ]
+      }
+    ],
+    "api": [
+      {
+        "path": "/api/auth",
+        "label": "Auth API",
+        "access": {
+          "type": "api",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/api/users",
+        "label": "Users API",
+        "access": {
+          "type": "api",
+          "requireAuth": true,
+          "roles": ["admin", "super-admin"]
+        }
+      },
+      {
+        "path": "/api/calendar",
+        "label": "Calendar API",
+        "access": {
+          "type": "api",
+          "requireAuth": true,
+          "roles": ["admin", "super-admin"]
+        }
+      },
+      {
+        "path": "/api/drive",
+        "label": "Drive API",
+        "access": {
+          "type": "api",
+          "requireAuth": true,
+          "roles": ["admin", "super-admin"]
+        }
+      }
+    ],
+    "marketing": [
+      {
+        "path": "/marketing-salon",
+        "label": "Marketing Salon",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        },
+        "children": [
+          {
+            "path": "/marketing-salon/primelady",
+            "label": "Prime Lady",
+            "access": {
+              "type": "public",
+              "requireAuth": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "exceptions": {
+    "byEmail": {
+      "dev@insidesalons.com": {
+        "accessLevel": "super-admin",
+        "bypassDomainCheck": true,
+        "allowedRoutes": ["*"]
+      },
+      "admin@insidesalons.com": {
+        "accessLevel": "admin",
+        "bypassDomainCheck": false,
+        "allowedRoutes": ["/admin/*"]
+      }
+    },
+    "byDomain": {
+      "@insidesalons.com": {
+        "defaultRole": "editor",
+        "allowedRoutes": ["/admin/*", "/profile", "/dashboard/*"]
+      }
+    },
+    "maintenance": {
+      "enabled": false,
+      "allowedRoles": ["super-admin"],
+      "allowedEmails": ["dev@insidesalons.com"],
+      "maintenancePage": "/maintenance"
+    }
+  },
+  "redirects": {
+    "unauthorized": "/auth/login",
+    "forbidden": "/403",
+    "notFound": "/404",
+    "maintenance": "/maintenance"
+  }
+}

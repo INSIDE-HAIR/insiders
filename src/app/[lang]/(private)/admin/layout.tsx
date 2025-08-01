@@ -1,7 +1,5 @@
+import Dashboard from "@/src/components/custom/dashboard/dashboard";
 import type { Metadata } from "next";
-import Dashboard from "@/src/components/dashboard/dashboard";
-import TailwindGrid from "@/src/components/grid/TailwindGrid";
-import Header from "@/src/components/layout/header";
 
 export const metadata: Metadata = {
   title: "DASHBOARD | INSIDERS",
@@ -15,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-screen h-screen">
+    <div className='w-screen h-screen'>
       <Dashboard>{children}</Dashboard>
     </div>
   );

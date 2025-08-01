@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo } from "react";
-import { useContent } from "@/src/context/DriveCompoentesContext";
+import { useContent } from "@/src/context/DriveComponentsContext";
 import { ContentHeader } from "@/src/components/drive/layout/content-header";
 import { RecursiveContentRenderer } from "@/src/components/drive/content/recursive-content-renderer";
 import { useSidebar } from "@/src/components/ui/sidebar";
@@ -28,8 +28,8 @@ export const ContentRenderer = memo(function ContentRenderer({
   // Si no hay elementos seleccionados, mostrar mensaje
   if (navigationPath.length === 0) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">No hay contenido disponible</p>
+      <div className='flex h-full items-center justify-center'>
+        <p className='text-muted-foreground'>No hay contenido disponible</p>
       </div>
     );
   }
@@ -38,8 +38,8 @@ export const ContentRenderer = memo(function ContentRenderer({
   const sidebarItem = getItemById(navigationPath[0].id);
   if (!sidebarItem) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">No hay contenido disponible</p>
+      <div className='flex h-full items-center justify-center'>
+        <p className='text-muted-foreground'>No hay contenido disponible</p>
       </div>
     );
   }
@@ -69,7 +69,7 @@ export const ContentRenderer = memo(function ContentRenderer({
           <RecursiveContentRenderer
             level={1}
             parentId={navigationPath[0].id}
-            parentType="sidebar"
+            parentType='sidebar'
             isInIframe={isInIframe}
           />
         </div>

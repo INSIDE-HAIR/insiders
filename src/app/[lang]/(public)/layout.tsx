@@ -1,6 +1,7 @@
 import type React from "react";
 import PublicHeader from "@/src/app/[lang]/(public)/_components/public-header";
 import Footer from "@/src/app/[lang]/(public)/_components/footer";
+import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 // The SubNavbar is specific to the homepage, so it's rendered in app/(public)/page.tsx
 
 export default function PublicLayout({
@@ -9,10 +10,12 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <TailwindGrid fullSize>
       <PublicHeader />
-      <main className="flex-1">{children}</main>
+      < >
+        <main className='col-span-full'>{children}</main>
+      </>
       <Footer />
-    </div>
+    </TailwindGrid>
   );
 }

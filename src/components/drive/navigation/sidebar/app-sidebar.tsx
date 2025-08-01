@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { memo, useCallback, useEffect } from "react";
-import { useContent } from "@/src/context/DriveCompoentesContext";
+import { useContent } from "@/src/context/DriveComponentsContext";
 import { cn } from "@/src/lib/utils/utils";
 import {
   Sidebar,
@@ -93,16 +93,16 @@ export const AppSidebar = memo(function AppSidebar({
 
   return (
     <Sidebar
-      variant="sidebar"
+      variant='sidebar'
       className={`bg-zinc-900 text-white border-r border-zinc-800 shadow-md ${
         isInIframe ? "iframe-fixed" : "absolute"
       } z-40`}
-      collapsible="offcanvas"
+      collapsible='offcanvas'
     >
       {/* Botón de cierre (X verde) */}
       <SidebarCloseButton />
 
-      <SidebarContent className="bg-zinc-900 text-white overflow-y-auto pt-20">
+      <SidebarContent className='bg-zinc-900 text-white overflow-y-auto pt-20'>
         <SidebarMenu>
           {sidebarItems.map((item) => {
             const isActive =
@@ -119,7 +119,7 @@ export const AppSidebar = memo(function AppSidebar({
                   )}
                   onClick={(e) => handleSidebarItemClick(item, e)}
                   onTouchEnd={(e) => handleSidebarItemClick(item, e)}
-                  role="button"
+                  role='button'
                   tabIndex={0}
                 >
                   {item.displayName}

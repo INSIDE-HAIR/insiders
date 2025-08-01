@@ -2,7 +2,7 @@
 
 import React, { memo } from "react";
 import { useSession } from "next-auth/react";
-import { useContent } from "@/src/context/DriveCompoentesContext";
+import { useContent } from "@/src/context/DriveComponentsContext";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { GoogleSlidesRenderer } from "@/src/components/drive/renderers/google-slides-renderer";
 import { Prefix, isFileItem } from "@/src/features/drive/types/index";

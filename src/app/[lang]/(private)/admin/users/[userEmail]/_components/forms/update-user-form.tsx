@@ -20,9 +20,9 @@ import LoadingButton from "@/src/components/shared/LoadingButton";
 import { UserSchema } from "@/src/types/inside-schemas";
 import Image from "next/image";
 import { CheckCircleIcon, XCircleIcon } from "lucide-react";
-import ModalResetPassword from "@/src/components/modals/modal-reset-password";
+import ModalResetPassword from "@/src/components/custom/auth/modals/modal-reset-password";
 import ModalHoldedSync from "../holded-sync/modal-holded-sync";
-import { useHolded } from "@/src/components/providers/HoldedProvider";
+import { useHolded } from "@/src/context/providers/HoldedProvider";
 import { User } from "@prisma/client";
 import ModalDeleteUser from "../delete-user/modal-delete-user";
 import ModalDeleteUserHoldedData from "../delete-user-holded-data/modal-delete-user-holded-data";
@@ -94,29 +94,29 @@ export default function UpdateUserForm({ user }: Props) {
     <>
       <Form {...form}>
         <form
-          className="space-y-6 w-full flex flex-col justify-center items-center py-4"
+          className='space-y-6 w-full flex flex-col justify-center items-center py-4'
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col items-center space-y-4 w-full">
+          <div className='flex flex-col items-center space-y-4 w-full'>
             {/* Image */}
             <Image
               src={user?.image || "/default-profile.png"}
-              alt="Profile Image"
+              alt='Profile Image'
               width={96}
               height={96}
-              className="rounded-full"
+              className='rounded-full'
             />
           </div>
-          <hr className="w-full border-t-2 border-gray-200" />
+          <hr className='w-full border-t-2 border-gray-200' />
 
           <ContactInfoSection form={form} user={user} isPending={isPending} />
-          <hr className="w-full border-t-2 border-gray-200" />
+          <hr className='w-full border-t-2 border-gray-200' />
 
           <DateSection form={form} user={user} isPending={isPending} />
-          <hr className="w-full border-t-2 border-gray-200" />
+          <hr className='w-full border-t-2 border-gray-200' />
 
           <InsidersSection form={form} user={user} isPending={isPending} />
-          <hr className="w-full border-t-2 border-gray-200" />
+          <hr className='w-full border-t-2 border-gray-200' />
 
           <LegalAgreementsSection
             form={form}
@@ -130,7 +130,7 @@ export default function UpdateUserForm({ user }: Props) {
 
           <FormError message={error} />
           <FormSuccess message={success} />
-          <LoadingButton type="submit" isLoading={isPending} className="w-full">
+          <LoadingButton type='submit' isLoading={isPending} className='w-full'>
             Guardar
           </LoadingButton>
         </form>
@@ -149,16 +149,16 @@ const ContactInfoSection = ({
   isPending: boolean;
 }) => {
   return (
-    <fieldset className="space-y-4 w-full">
-      <legend className="font-bold">Informacion de Contacto</legend>
-      <div className="flex flex-wrap gap-x-2 gap-y-4">
+    <fieldset className='space-y-4 w-full'>
+      <legend className='font-bold'>Informacion de Contacto</legend>
+      <div className='flex flex-wrap gap-x-2 gap-y-4'>
         {/* Name */}
         <FormField
           control={form.control}
-          name="name"
+          name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Name
               </FormLabel>
               <FormControl>
@@ -166,7 +166,7 @@ const ContactInfoSection = ({
                   {...field}
                   value={field.value || ""}
                   disabled={isPending}
-                  placeholder="John"
+                  placeholder='John'
                 />
               </FormControl>
               <FormMessage />
@@ -176,10 +176,10 @@ const ContactInfoSection = ({
         {/* Last Name */}
         <FormField
           control={form.control}
-          name="lastName"
+          name='lastName'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Last Name
               </FormLabel>
               <FormControl>
@@ -187,7 +187,7 @@ const ContactInfoSection = ({
                   {...field}
                   value={field.value || ""}
                   disabled={isPending}
-                  placeholder="Doe"
+                  placeholder='Doe'
                 />
               </FormControl>
               <FormMessage />
@@ -197,10 +197,10 @@ const ContactInfoSection = ({
         {/* Email */}
         <FormField
           control={form.control}
-          name="email"
+          name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Email
               </FormLabel>
               <FormControl>
@@ -208,8 +208,8 @@ const ContactInfoSection = ({
                   {...field}
                   value={field.value || ""}
                   disabled
-                  type="email"
-                  placeholder="john.doe@gmail.com"
+                  type='email'
+                  placeholder='john.doe@gmail.com'
                 />
               </FormControl>
               <FormMessage />
@@ -219,10 +219,10 @@ const ContactInfoSection = ({
         {/* Contact Number */}
         <FormField
           control={form.control}
-          name="contactNumber"
+          name='contactNumber'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Telefono
               </FormLabel>
               <FormControl>
@@ -230,7 +230,7 @@ const ContactInfoSection = ({
                   {...field}
                   value={field.value || ""}
                   disabled={isPending}
-                  placeholder="+1234567890"
+                  placeholder='+1234567890'
                 />
               </FormControl>
               <FormMessage />
@@ -250,21 +250,21 @@ const DateSection = ({
   user: User;
   isPending: boolean;
 }) => (
-  <fieldset className="space-y-4 w-full">
-    <legend className="font-bold">Fechas de Interés</legend>
-    <div className="flex flex-wrap gap-x-2 gap-y-4">
+  <fieldset className='space-y-4 w-full'>
+    <legend className='font-bold'>Fechas de Interés</legend>
+    <div className='flex flex-wrap gap-x-2 gap-y-4'>
       {/* Email Verified */}
       <FormField
         control={form.control}
-        name="emailVerified"
+        name='emailVerified'
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-x-1 text-tiny">
+            <FormLabel className='flex items-center gap-x-1 text-tiny'>
               Verificación de Email:
               {user.emailVerified ? (
-                <CheckCircleIcon className="text-green-500 w-3 h-3" />
+                <CheckCircleIcon className='text-green-500 w-3 h-3' />
               ) : (
-                <XCircleIcon className="text-red-500 w-3 h-3" />
+                <XCircleIcon className='text-red-500 w-3 h-3' />
               )}
             </FormLabel>
             <FormControl>
@@ -276,8 +276,8 @@ const DateSection = ({
                     : ""
                 }
                 disabled
-                type="date"
-                placeholder="Email Verified"
+                type='date'
+                placeholder='Email Verified'
               />
             </FormControl>
             <FormMessage />
@@ -287,10 +287,10 @@ const DateSection = ({
       {/* Last Connection */}
       <FormField
         control={form.control}
-        name="lastLogin"
+        name='lastLogin'
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-x-1 text-tiny">
+            <FormLabel className='flex items-center gap-x-1 text-tiny'>
               Última Conexión:
             </FormLabel>
             <FormControl>
@@ -302,8 +302,8 @@ const DateSection = ({
                     : ""
                 }
                 disabled
-                type="date"
-                placeholder="Last Login"
+                type='date'
+                placeholder='Last Login'
               />
             </FormControl>
             <FormMessage />
@@ -313,10 +313,10 @@ const DateSection = ({
       {/* Created At */}
       <FormField
         control={form.control}
-        name="createdAt"
+        name='createdAt'
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-x-1 text-tiny">
+            <FormLabel className='flex items-center gap-x-1 text-tiny'>
               Creación del contacto:
             </FormLabel>
             <FormControl>
@@ -328,8 +328,8 @@ const DateSection = ({
                     : ""
                 }
                 disabled
-                type="date"
-                placeholder="Created At"
+                type='date'
+                placeholder='Created At'
               />
             </FormControl>
             <FormMessage />
@@ -339,10 +339,10 @@ const DateSection = ({
       {/* Updated At */}
       <FormField
         control={form.control}
-        name="updatedAt"
+        name='updatedAt'
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-x-1 text-tiny">
+            <FormLabel className='flex items-center gap-x-1 text-tiny'>
               Fecha de Actualización:
             </FormLabel>
             <FormControl>
@@ -354,8 +354,8 @@ const DateSection = ({
                     : ""
                 }
                 disabled
-                type="date"
-                placeholder="Updated At"
+                type='date'
+                placeholder='Updated At'
               />
             </FormControl>
             <FormMessage />
@@ -377,16 +377,16 @@ const InsidersSection = ({
 }) => {
   const { setHoldedId } = useHolded();
   return (
-    <fieldset className="space-y-4 w-full">
-      <legend className="font-bold">INSIDERS:</legend>
-      <div className="flex flex-wrap gap-x-2 gap-y-4">
+    <fieldset className='space-y-4 w-full'>
+      <legend className='font-bold'>INSIDERS:</legend>
+      <div className='flex flex-wrap gap-x-2 gap-y-4'>
         {/* Role */}
         <FormField
           control={form.control}
-          name="role"
+          name='role'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Nivel de Acceso:
               </FormLabel>
               <FormControl>
@@ -394,7 +394,7 @@ const InsidersSection = ({
                   {...field}
                   value={field.value || ""}
                   disabled
-                  placeholder="Role"
+                  placeholder='Role'
                 />
               </FormControl>
               <FormMessage />
@@ -404,10 +404,10 @@ const InsidersSection = ({
         {/* ID INSIDERS */}
         <FormField
           control={form.control}
-          name="id"
+          name='id'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 ID:
               </FormLabel>
               <FormControl>
@@ -420,10 +420,10 @@ const InsidersSection = ({
         {/* ID Holded */}
         <FormField
           control={form.control}
-          name="holdedId"
+          name='holdedId'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="flex items-center gap-x-1 text-tiny">
+              <FormLabel className='flex items-center gap-x-1 text-tiny'>
                 Holded ID:
               </FormLabel>
               <FormControl>
@@ -435,7 +435,7 @@ const InsidersSection = ({
                     field.onChange(e);
                     setHoldedId(e.target.value);
                   }}
-                  placeholder="ID"
+                  placeholder='ID'
                 />
               </FormControl>
               <FormMessage />
@@ -443,11 +443,11 @@ const InsidersSection = ({
           )}
         />
         {/* Actions */}
-        <div className="flex flex-col gap-x-2 gap-y-2">
-          <FormLabel className="flex items-center gap-x-1 text-tiny">
+        <div className='flex flex-col gap-x-2 gap-y-2'>
+          <FormLabel className='flex items-center gap-x-1 text-tiny'>
             Acciones:
           </FormLabel>
-          <div className="flex flex-wrap gap-x-2 gap-y-4">
+          <div className='flex flex-wrap gap-x-2 gap-y-4'>
             <ModalHoldedSync holdedId={user?.holdedId} insidersId={user?.id} />
             <ModalResetPassword email={user?.email} />
             <ModalDeleteUser holdedId={user?.holdedId} insidersId={user?.id} />
@@ -471,20 +471,20 @@ const LegalAgreementsSection = ({
   user: User;
   isPending: boolean;
 }) => (
-  <fieldset className="space-y-4 w-full">
-    <legend className="font-bold">Acuerdos legales:</legend>
-    <div className="flex flex-wrap gap-x-2 gap-y-4">
+  <fieldset className='space-y-4 w-full'>
+    <legend className='font-bold'>Acuerdos legales:</legend>
+    <div className='flex flex-wrap gap-x-2 gap-y-4'>
       {/* Terms */}
       <FormField
         control={form.control}
-        name="terms"
+        name='terms'
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="flex items-center gap-x-1 text-tiny">
+            <FormLabel className='flex items-center gap-x-1 text-tiny'>
               Acuerdos & Condiciones aceptados:
             </FormLabel>
             <FormControl>
-              <div className="flex items-center gap-x-2 text-xs">
+              <div className='flex items-center gap-x-2 text-xs'>
                 <p>No</p>
                 <Switch
                   disabled
@@ -513,11 +513,11 @@ const TwoFactorSection = ({
 }) => (
   <FormField
     control={form.control}
-    name="isTwoFactorEnabled"
+    name='isTwoFactorEnabled'
     render={({ field }) => (
-      <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-        <div className="space-y-0.5">
-          <FormLabel className="flex items-center gap-x-1 text-tiny">
+      <FormItem className='flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm'>
+        <div className='space-y-0.5'>
+          <FormLabel className='flex items-center gap-x-1 text-tiny'>
             Two Factor Authentication
           </FormLabel>
         </div>

@@ -29,11 +29,17 @@ export function UserCard({ user }: UserCardProps) {
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar className="w-16 h-16">
           <AvatarImage
-            src={user.image || undefined}
+            src={user.image || "https://lh3.googleusercontent.com/d/1C2OO4r3kGDhvEp-yw-cS9vRiSiVBZpae"}
             alt={user.name || "Usuario"}
             referrerPolicy="no-referrer"
           />
-          <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
+          <AvatarFallback>
+            <img 
+              src="https://lh3.googleusercontent.com/d/1C2OO4r3kGDhvEp-yw-cS9vRiSiVBZpae" 
+              alt="Avatar" 
+              className="w-full h-full object-cover"
+            />
+          </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
           <CardTitle className="text-2xl">{user.name || "Usuario"}</CardTitle>

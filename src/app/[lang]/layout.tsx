@@ -1,5 +1,5 @@
 import "./globals.css";
-import Providers from "@/src/components/providers/Providers";
+import Providers from "@/src/context/providers/Providers";
 import { cn, inter } from "@/src/lib/utils/utils";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -15,10 +15,10 @@ export default async function RootLayout({
   params: { locale: string };
 }) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang='es' suppressHydrationWarning>
       <body suppressHydrationWarning={true}>
         <TranslationsProvider
-          initialLocale="es"
+          initialLocale='es'
           initialTranslations={defaultTranslations}
         >
           <Providers>
@@ -28,12 +28,12 @@ export default async function RootLayout({
                 inter.className
               )}
             >
-              <ReactQueryProvider>
-                {children}
-                <Toaster />
-              </ReactQueryProvider>
-              <Analytics />
-              <SpeedInsights />
+                <ReactQueryProvider>
+                  {children}
+                  <Toaster />
+                </ReactQueryProvider>
+                <Analytics />
+                <SpeedInsights />
             </main>
           </Providers>
         </TranslationsProvider>

@@ -1,4 +1,12 @@
-import { FaGoogle, FaGithub, FaFacebookF, FaLinkedinIn, FaInstagram, FaWhatsapp, FaRegUser } from "react-icons/fa";
+import {
+  FaGoogle,
+  FaGithub,
+  FaFacebookF,
+  FaLinkedinIn,
+  FaInstagram,
+  FaWhatsapp,
+  FaRegUser,
+} from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import {
   Home,
@@ -111,6 +119,12 @@ import {
   Instagram,
   Linkedin,
   Twitter,
+  Building,
+  Briefcase,
+  Globe,
+  Zap,
+  Target,
+  Crown,
 } from "lucide-react";
 
 export type Icon = LucideIcon | React.ComponentType<any>;
@@ -131,7 +145,7 @@ export const Icons = {
   GitHubIcon: FaGithub,
   GoogleIcon: FaGoogle,
   SpinnerIcon: Loader2,
-  
+
   // Navigation & Layout
   ChevronDown,
   ChevronUp,
@@ -148,7 +162,7 @@ export const Icons = {
   PanelLeftClose,
   LayoutPanelTop,
   MoreHorizontal,
-  
+
   // Content & Media
   Code,
   Play,
@@ -165,7 +179,7 @@ export const Icons = {
   BookOpen,
   EyeIcon,
   Eye,
-  
+
   // Actions
   Plus,
   Minus,
@@ -189,7 +203,7 @@ export const Icons = {
   Share,
   Flag,
   RefreshCw,
-  
+
   // User & Social
   User,
   Users,
@@ -205,7 +219,7 @@ export const Icons = {
   LockKeyhole,
   Shield,
   LogOutIcon,
-  
+
   // Social Media
   FaGoogle: FaGoogle,
   FaGithub: FaGithub,
@@ -219,7 +233,7 @@ export const Icons = {
   Instagram,
   Linkedin,
   Twitter,
-  
+
   // Communication & Contact
   Mail,
   Phone,
@@ -228,13 +242,13 @@ export const Icons = {
   CalendarDays,
   Clock,
   MessageCircle,
-  
+
   // Status & Notifications
   Info,
   AlertCircle,
   AlertTriangle,
   XCircle,
-  
+
   // Organization & Structure
   Home,
   Folder,
@@ -250,18 +264,18 @@ export const Icons = {
   Hash,
   Circle,
   AlignLeft,
-  
+
   // Forms
   FormInput,
   Radio,
-  
+
   // Theme & UI
   Moon,
   Sun,
   Loader2,
   Sparkles,
   Menu,
-  
+
   // Business & Analytics
   LineChart,
   BarChart3,
@@ -270,6 +284,18 @@ export const Icons = {
   Database,
   Palette,
   Rocket,
+
+  // Team Logos
+  TeamLogo1: Users,
+  TeamLogo2: Building,
+  TeamLogo3: Briefcase,
+  TeamLogo4: Globe,
+  TeamLogo5: Zap,
+  TeamLogo6: Target,
+  TeamLogo7: Shield,
+  TeamLogo8: Star,
+  TeamLogo9: Heart,
+  TeamLogo10: Crown,
 } as const;
 
 export type IconKeys = keyof typeof Icons;
@@ -277,26 +303,78 @@ export type IconKeys = keyof typeof Icons;
 // Icon categories for organized usage
 export const iconCategories = {
   Navegación: [
-    "ChevronDown", "ChevronUp", "ChevronLeft", "ChevronRight", "ArrowRight", "ArrowLeft", 
-    "ArrowUp", "ArrowDown", "ExternalLink", "Link", "PanelLeft"
+    "ChevronDown",
+    "ChevronUp",
+    "ChevronLeft",
+    "ChevronRight",
+    "ArrowRight",
+    "ArrowLeft",
+    "ArrowUp",
+    "ArrowDown",
+    "ExternalLink",
+    "Link",
+    "PanelLeft",
   ],
   Acciones: [
-    "Plus", "Minus", "Check", "X", "Download", "Upload", "Save", "Trash", "Trash2", 
-    "Edit", "Pencil", "Share", "Copy", "RefreshCw"
+    "Plus",
+    "Minus",
+    "Check",
+    "X",
+    "Download",
+    "Upload",
+    "Save",
+    "Trash",
+    "Trash2",
+    "Edit",
+    "Pencil",
+    "Share",
+    "Copy",
+    "RefreshCw",
   ],
   Usuario: [
-    "User", "Users", "Settings", "Star", "Heart", "Bookmark", "Lock", "Shield", "LogOutIcon"
+    "User",
+    "Users",
+    "Settings",
+    "Star",
+    "Heart",
+    "Bookmark",
+    "Lock",
+    "Shield",
+    "LogOutIcon",
   ],
   Contenido: [
-    "File", "FileText", "Image", "Video", "Music", "Code", "BookOpen", "Eye"
+    "File",
+    "FileText",
+    "Image",
+    "Video",
+    "Music",
+    "Code",
+    "BookOpen",
+    "Eye",
   ],
   Comunicación: [
-    "Mail", "Phone", "MapPin", "Calendar", "Clock", "MessageCircle"
+    "Mail",
+    "Phone",
+    "MapPin",
+    "Calendar",
+    "Clock",
+    "MessageCircle",
   ],
   Estado: [
-    "Bell", "Info", "AlertCircle", "AlertTriangle", "CheckCircle", "XCircle"
+    "Bell",
+    "Info",
+    "AlertCircle",
+    "AlertTriangle",
+    "CheckCircle",
+    "XCircle",
   ],
   Social: [
-    "FaGoogle", "FaGithub", "FaFacebookF", "FaLinkedinIn", "FaXTwitter", "FaInstagram", "FaWhatsapp"
-  ]
+    "FaGoogle",
+    "FaGithub",
+    "FaFacebookF",
+    "FaLinkedinIn",
+    "FaXTwitter",
+    "FaInstagram",
+    "FaWhatsapp",
+  ],
 } as const;
