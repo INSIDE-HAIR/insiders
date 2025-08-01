@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "@/src/context/TranslationContext";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -112,7 +112,7 @@ export default function CodesAdminPage() {
   });
 
   // Cargar códigos
-  const loadCodes = async () => {
+  const loadCodes = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/drive/codes?type=${selectedType}`);
@@ -127,7 +127,7 @@ export default function CodesAdminPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedType]);
 
   // Cargar todos los códigos para el generador/decodificador
   const loadAllCodeTypes = async () => {
@@ -158,7 +158,7 @@ export default function CodesAdminPage() {
   // Cargar códigos cuando cambia el tipo seleccionado
   useEffect(() => {
     loadCodes();
-  }, [selectedType]);
+  }, [selectedType, loadCodes]);
 
   // Cargar todos los tipos de códigos cuando se muestra la vista previa
   useEffect(() => {

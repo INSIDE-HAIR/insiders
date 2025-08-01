@@ -24,7 +24,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { DEFAULT_CALENDAR_ID } from "@/src/features/calendar/constants/calendar.constants";
 
 interface EnvHealthStatus {
@@ -138,7 +138,7 @@ const CalendarHealthPage: React.FC = () => {
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <LoadingSpinner />
+        <Spinner />
       </div>
     );
   }

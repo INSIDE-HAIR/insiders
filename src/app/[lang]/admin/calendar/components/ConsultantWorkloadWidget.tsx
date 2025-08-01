@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
@@ -8,9 +8,9 @@ import {
   ClockIcon,
   UserIcon,
   CalendarIcon,
-  ChartBarIcon,
-  RefreshCwIcon
+  ChartBarIcon
 } from "@heroicons/react/24/outline";
+import { Icons } from "@/src/components/shared/icons";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 
 interface ConsultantSession {
@@ -75,7 +75,7 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
   const [selectedConsultant, setSelectedConsultant] = useState<string>('');
 
   // Load workload data using optimized endpoint
-  const loadWorkloadData = async () => {
+  const loadWorkloadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -142,12 +142,12 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [startDate, endDate, selectedConsultant]);
 
   // Load data on component mount and when date range or consultant filter changes
   useEffect(() => {
     loadWorkloadData();
-  }, [startDate, endDate, selectedConsultant]);
+  }, [startDate, endDate, selectedConsultant, loadWorkloadData]);
 
   // Calculate consultant workload data
   const consultantWorkload = useMemo(() => {
@@ -169,7 +169,7 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
         (person.email.includes('consultor') || 
          person.email.includes('consultant') ||
          person.email.includes('@insiders') ||
-         person.responseStatus === 'accepted' ||
+         (person as any).responseStatus === 'accepted' ||
          person.email === event.organizer?.email)
       );
 
@@ -178,7 +178,7 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
 
         const email = consultant.email;
         const name = consultant.displayName || consultant.email.split('@')[0];
-        const status = consultant.responseStatus || 'needsAction';
+        const status = (consultant as any).responseStatus || 'needsAction';
 
         if (!consultantMap.has(email)) {
           consultantMap.set(email, {
@@ -318,7 +318,7 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
             onClick={loadWorkloadData}
             disabled={isLoading}
           >
-            <RefreshCwIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <Icons.RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
 
@@ -432,7 +432,7 @@ export const ConsultantWorkloadWidget: React.FC<ConsultantWorkloadWidgetProps> =
         {isLoading ? (
           <div className="flex justify-center py-8">
             <div className="flex items-center gap-2">
-              <RefreshCwIcon className="h-4 w-4 animate-spin" />
+              <Icons.RefreshCw className="h-4 w-4 animate-spin" />
               <span className="text-sm text-gray-600">Cargando datos...</span>
             </div>
           </div>

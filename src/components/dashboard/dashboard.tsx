@@ -14,7 +14,7 @@ import {
   Calendar as CalendarIcon,
 } from "lucide-react";
 import { AppSidebar } from "../app-sidebar";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 import Header from "../layout/header";
 
 // Mapeo de strings a componentes de iconos

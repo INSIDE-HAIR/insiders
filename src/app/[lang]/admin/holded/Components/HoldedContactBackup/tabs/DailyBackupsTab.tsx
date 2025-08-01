@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { DataTable } from "../DataTable";
 import { Columns } from "../columns/dailyColumns";
 import { useBackups } from "@/src/hooks/useBackups";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { Button } from "@/src/components/ui/button";
 import { DeleteConfirmationModal } from "../modals/DeleteConfirmationModal";
 import { useToast } from "@/src/components/ui/use-toast";
@@ -145,7 +145,7 @@ const DailyBackupsTab: React.FC = () => {
   if (isLoading) {
     return (
       <div className="my-4 flex items-center justify-center">
-        <LoadingSpinner className="w-10 h-10" />
+        <Spinner size="lg" />
       </div>
     );
   }

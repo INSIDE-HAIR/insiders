@@ -786,7 +786,7 @@ export const useEventsColumns = (
             const hangoutLink = event(row).hangoutLink;
             
             // Extraer código de meet del enlace si está disponible
-            let meetingCode = null;
+            let meetingCode: string | null = null;
             if (hangoutLink) {
               const match = hangoutLink.match(/meet\.google\.com\/([a-z-]+)/);
               meetingCode = match ? match[1] : null;
@@ -800,7 +800,7 @@ export const useEventsColumns = (
                   {meetingCode}
                 </div>
                 <button
-                  onClick={() => navigator.clipboard.writeText(meetingCode)}
+                  onClick={() => navigator.clipboard.writeText(meetingCode || '')}
                   className="text-xs text-blue-600 hover:underline"
                 >
                   Copiar código

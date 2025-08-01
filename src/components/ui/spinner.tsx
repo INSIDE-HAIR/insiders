@@ -1,40 +1,57 @@
-// components/ui/spinner.tsx
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/src/lib/utils/utils";
+import React from 'react';
+import { cn } from '@/src/lib/utils';
+import { VariantProps, cva } from 'class-variance-authority';
+import { Loader2 } from 'lucide-react';
 
-const spinnerVariants = cva(
-  "inline-block animate-spin rounded-full border-2 border-current border-t-transparent text-primary",
-  {
-    variants: {
-      size: {
-        default: "w-4 h-4",
-        sm: "w-3 h-3",
-        lg: "w-6 h-6",
-        xl: "w-8 h-8",
-      },
+const spinnerVariants = cva('flex-col items-center justify-center', {
+  variants: {
+    show: {
+      true: 'flex',
+      false: 'hidden',
     },
-    defaultVariants: {
-      size: "default",
+  },
+  defaultVariants: {
+    show: true,
+  },
+});
+
+const loaderVariants = cva('animate-spin text-primary', {
+  variants: {
+    size: {
+      xs: 'size-3',
+      sm: 'size-4', 
+      md: 'size-6',
+      lg: 'size-8',
+      xl: 'size-12',
     },
-  }
-);
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+});
 
 export interface SpinnerProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof spinnerVariants> {}
+  extends VariantProps<typeof spinnerVariants>,
+    VariantProps<typeof loaderVariants> {
+  className?: string;
+  children?: React.ReactNode;
+}
 
-const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ className, size, ...props }, ref) => {
+const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
+  ({ size, show, children, className, ...props }, ref) => {
     return (
-      <div
+      <span 
         ref={ref}
-        className={cn(spinnerVariants({ size, className }))}
+        className={spinnerVariants({ show })}
         {...props}
-      />
+      >
+        <Loader2 className={cn(loaderVariants({ size }), className)} />
+        {children}
+      </span>
     );
   }
 );
-Spinner.displayName = "Spinner";
 
-export { Spinner, spinnerVariants };
+Spinner.displayName = 'Spinner';
+
+export { Spinner, spinnerVariants, loaderVariants };

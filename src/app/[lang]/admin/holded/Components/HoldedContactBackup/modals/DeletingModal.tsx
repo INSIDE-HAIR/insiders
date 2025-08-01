@@ -6,7 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/src/components/ui/alert-dialog";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { useTranslations } from "@/src/context/TranslationContext";
 
 interface DeletingModalProps {
@@ -26,7 +26,7 @@ export const DeletingModal: React.FC<DeletingModalProps> = ({ isOpen }) => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex justify-center items-center p-4">
-          <LoadingSpinner className="h-8 w-8" />
+          <Spinner size="lg" />
         </div>
       </AlertDialogContent>
     </AlertDialog>

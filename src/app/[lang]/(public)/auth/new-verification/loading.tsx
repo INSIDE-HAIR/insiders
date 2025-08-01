@@ -1,5 +1,5 @@
 import CardWrapper from "@/src/components/custom/auth/card/auth-card-wrapper";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import React from "react";
 
 type Props = {};
@@ -13,7 +13,7 @@ const NewVerificationPageLoading = (props: Props) => {
         backButtonHref="/auth/login"
       >
         <div className="flex items-center justify-center w-full">
-          <LoadingSpinner className="w-24 h-24 text-primary dark:text-primary-foreground" />
+          <Spinner size="xl" className="w-24 h-24 text-primary dark:text-primary-foreground" />
         </div>
       </CardWrapper>
     </div>

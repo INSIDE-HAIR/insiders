@@ -210,7 +210,7 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
           {/* No results message */}
           {filteredCalendars.length === 0 && searchTerm && (
             <div className="p-4 text-center text-gray-500 text-sm">
-              No se encontraron calendarios que coincidan con "{searchTerm}"
+              No se encontraron calendarios que coincidan con &quot;{searchTerm}&quot;
             </div>
           )}
 

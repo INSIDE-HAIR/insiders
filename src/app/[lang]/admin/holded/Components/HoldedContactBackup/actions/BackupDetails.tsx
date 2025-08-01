@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import {
   Select,
   SelectTrigger,
@@ -204,7 +204,7 @@ const BackupDetails: React.FC<BackupDetailsProps> = ({
         </div>
         {loading ? (
           <div className="my-4 flex items-center justify-center bg-black text-white rounded-md min-h-96">
-            <LoadingSpinner className="w-10 h-10" />
+            <Spinner size="lg" />
           </div>
         ) : (
           <div className="max-h-96 scroll-smooth overflow-auto bg-black text-white rounded-md">

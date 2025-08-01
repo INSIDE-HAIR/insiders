@@ -10,7 +10,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { 
@@ -31,7 +31,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { DEFAULT_CALENDAR_ID } from "@/src/features/calendar/constants/calendar.constants";
 import FunctionalWorkloadWidget from "./components/FunctionalWorkloadWidget";
 
@@ -110,9 +110,9 @@ const CalendarDashboard: React.FC = () => {
     if (status === "authenticated" && session?.user?.role === "ADMIN") {
       loadDashboardStats();
     }
-  }, [status, session]);
+  }, [status, session, loadDashboardStats]);
 
-  const loadDashboardStats = async () => {
+  const loadDashboardStats = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -198,7 +198,7 @@ const CalendarDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const quickActions: QuickAction[] = [
     {
@@ -244,7 +244,7 @@ const CalendarDashboard: React.FC = () => {
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <LoadingSpinner />
+        <Spinner />
       </div>
     );
   }

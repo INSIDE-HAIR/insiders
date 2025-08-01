@@ -1,5 +1,5 @@
 import { Button } from "@/src/components/ui/button";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 
 function GoogleProvider({
   isPending,

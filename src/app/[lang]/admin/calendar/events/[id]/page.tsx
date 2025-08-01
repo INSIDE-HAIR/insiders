@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { EventDetailContent } from "../components/EventDetailContent";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { toast } from "@/src/components/ui/use-toast";
 
 interface EventDetailPageState {
@@ -26,8 +26,8 @@ const EventDetailPage: React.FC = () => {
   const params = useParams();
   const searchParams = useSearchParams();
   
-  const eventId = params.id as string;
-  const calendarId = searchParams.get('calendarId') || 'primary';
+  const eventId = params?.id as string;
+  const calendarId = searchParams?.get('calendarId') || 'primary';
 
   const [state, setState] = useState<EventDetailPageState>({
     event: null,
@@ -49,14 +49,7 @@ const EventDetailPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar datos
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadEventAndCalendars();
-    }
-  }, [status, session, eventId, calendarId]);
-
-  const loadEventAndCalendars = async () => {
+  const loadEventAndCalendars = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }));
 
@@ -92,7 +85,14 @@ const EventDetailPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [eventId, calendarId]);
+
+  // Cargar datos
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadEventAndCalendars();
+    }
+  }, [status, session, eventId, calendarId, loadEventAndCalendars]);
 
   const handleSaveEvent = async (updatedEvent: Partial<GoogleCalendarEvent>) => {
     try {
@@ -183,7 +183,7 @@ const EventDetailPage: React.FC = () => {
   if (status === "loading" || state.isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <LoadingSpinner />
+        <Spinner />
       </div>
     );
   }

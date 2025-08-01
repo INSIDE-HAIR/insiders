@@ -5,7 +5,7 @@ import { LoginSchema } from "@/src/types/general-schemas";
 import * as z from "zod";
 import { login } from "@/src/lib/actions/auth/user/login/login";
 import { useState, useTransition } from "react";
-import { Icons } from "../../../icons";
+import { Icons } from "../../../shared/icons";
 import { Input } from "../../../ui/input";
 import { Button } from "../../../ui/button";
 import {

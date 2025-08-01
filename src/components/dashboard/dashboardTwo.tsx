@@ -4,7 +4,7 @@ import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 import translations from "@/db/translations.json";
 import { Home, Palette, LineChart, Rocket, LucideIcon } from "lucide-react";
 import { AppSidebar } from "../app-sidebar";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 import { IconKeys } from "@/src/types";
 import TailwindGrid from "../grid/TailwindGrid";
 

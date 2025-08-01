@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import LogoutButton from "../custom/auth/buttons/logout-button";
 import translations from "@/db/translations.json";
-import { Icons } from "../icons";
+import { Icons } from "../shared/icons";
 
 function Dashboard() {
   const navLinks = translations.adminRoutes.map((route) => {

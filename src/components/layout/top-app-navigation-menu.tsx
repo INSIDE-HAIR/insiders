@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 import {
   NavigationMenu,
   NavigationMenuContent,

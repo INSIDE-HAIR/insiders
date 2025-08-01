@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import { RefreshCwIcon, ChartBarIcon } from "@heroicons/react/24/outline";
+import { ChartBarIcon } from "@heroicons/react/24/outline";
+import { Icons } from "@/src/components/shared/icons";
 
 const WorkloadWidgetBasic: React.FC = () => {
   const [startDate, setStartDate] = useState(() => {
@@ -40,7 +41,7 @@ const WorkloadWidgetBasic: React.FC = () => {
             onClick={loadData}
             disabled={isLoading}
           >
-            <RefreshCwIcon className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <Icons.RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
 
@@ -95,7 +96,7 @@ const WorkloadWidgetBasic: React.FC = () => {
         {isLoading ? (
           <div className="flex justify-center py-8">
             <div className="flex items-center gap-2">
-              <RefreshCwIcon className="h-4 w-4 animate-spin" />
+              <Icons.RefreshCw className="h-4 w-4 animate-spin" />
               <span className="text-sm text-gray-600">Cargando datos...</span>
             </div>
           </div>

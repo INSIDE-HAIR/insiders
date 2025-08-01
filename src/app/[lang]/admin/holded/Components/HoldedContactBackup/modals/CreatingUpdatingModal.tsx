@@ -6,7 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/src/components/ui/alert-dialog";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { useTranslations } from "@/src/context/TranslationContext";
 
 interface CreatingUpdatingModalProps {
@@ -28,7 +28,7 @@ export const CreatingUpdatingModal: React.FC<CreatingUpdatingModalProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="flex justify-center items-center p-4">
-          <LoadingSpinner className="h-8 w-8" />
+          <Spinner size="lg" />
         </div>
       </AlertDialogContent>
     </AlertDialog>

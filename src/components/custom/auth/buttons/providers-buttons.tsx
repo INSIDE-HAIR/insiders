@@ -1,5 +1,5 @@
 import React from "react";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 import { Button } from "@/src/components/ui/button";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/lib/routes";
 import { signIn } from "next-auth/react";

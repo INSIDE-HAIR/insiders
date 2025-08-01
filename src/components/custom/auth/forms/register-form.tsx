@@ -17,7 +17,7 @@ import {
 } from "../../../ui/form";
 import { FormError } from "../../../shared/messages/form-error";
 import { FormSuccess } from "../../../shared/messages/form-success";
-import { Icons } from "@/src/components/icons";
+import { Icons } from "@/src/components/shared/icons";
 
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition();

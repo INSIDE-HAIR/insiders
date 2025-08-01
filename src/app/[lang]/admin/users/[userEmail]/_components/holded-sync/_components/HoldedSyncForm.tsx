@@ -24,7 +24,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
 import { Button } from "@/src/components/ui/button";
 import { z } from "zod";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 
 type Props = {
   holdedId?: string | null;
@@ -332,7 +332,7 @@ const ContactInfo = ({
 const LoadingIndicator = () => (
   <div className="w-full h-10 flex justify-center max-w-full overflow-hidden">
     <div className="text-center h-8 w-8 items-center justify-center content-center flex overflow-hidden m-auto">
-      <LoadingSpinner />
+      <Spinner />
     </div>
   </div>
 );

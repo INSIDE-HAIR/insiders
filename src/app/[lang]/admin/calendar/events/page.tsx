@@ -7,7 +7,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -30,7 +30,7 @@ import {
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { Spinner } from "@/src/components/ui/spinner";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { DataTable } from "./components/DataTable";
 import { useEventsColumns } from "./columns";
@@ -107,21 +107,7 @@ const CalendarEventsPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar datos iniciales
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadInitialData();
-    }
-  }, [status, session]);
-
-  // Recargar eventos cuando cambien los filtros
-  useEffect(() => {
-    if (state.calendars.length > 0) {
-      loadEvents();
-    }
-  }, [activeCalendars, timeRange, search]);
-
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -149,9 +135,9 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [initializeCalendars]);
 
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -261,7 +247,21 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [activeCalendars, timeRange, search]);
+
+  // Cargar datos iniciales
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadInitialData();
+    }
+  }, [status, session, loadInitialData]);
+
+  // Recargar eventos cuando cambien los filtros
+  useEffect(() => {
+    if (state.calendars.length > 0) {
+      loadEvents();
+    }
+  }, [activeCalendars, timeRange, search, loadEvents, state.calendars.length]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
@@ -651,7 +651,7 @@ const CalendarEventsPage: React.FC = () => {
   if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
-        <LoadingSpinner />
+        <Spinner />
       </div>
     );
   }
@@ -812,7 +812,7 @@ const CalendarEventsPage: React.FC = () => {
       {/* Events Display */}
       {state.isLoading ? (
         <div className='flex justify-center py-8'>
-          <LoadingSpinner />
+          <Spinner />
         </div>
       ) : filteredEvents.length === 0 ? (
         <Card>
