@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { GoogleCalendarService } from "@/src/features/calendar/services/calendar/GoogleCalendarService";
 import { Logger } from "@/src/features/calendar/utils/logger";
+import { getMeetInfo } from "@/src/features/calendar/utils/meetUtils";
 import { z } from "zod";
 import { 
   EventVisibility, 
@@ -94,9 +95,16 @@ export async function GET(
     // Obtener evento
     const event = await calendarService.getEvent(calendarId, eventId);
 
-    logger.info(`Event fetched successfully: ${eventId}`);
+    // Agregar información de Google Meet si existe
+    const meetInfo = getMeetInfo(event);
+    const eventWithMeetInfo = {
+      ...event,
+      meetInfo // Información adicional de Meet extraída
+    };
 
-    return NextResponse.json(event);
+    logger.info(`Event fetched successfully: ${eventId}`, { hasMeet: !!meetInfo });
+
+    return NextResponse.json(eventWithMeetInfo);
 
   } catch (error: any) {
     logger.error(`Failed to fetch event ${params.id}`, error);
@@ -117,10 +125,9 @@ export async function GET(
 }
 
 /**
- * PUT /api/calendar/events/[id]
- * Actualiza un evento existente
+ * Función helper para actualizar eventos
  */
-export async function PUT(
+async function updateEvent(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
@@ -144,8 +151,9 @@ export async function PUT(
     // Parsear body
     const body = await request.json();
     
-    // Obtener calendarId del body o query params
-    const calendarId = body.calendarId || 'primary';
+    // Obtener calendarId de query params primero, luego del body
+    const { searchParams } = new URL(request.url);
+    const calendarId = searchParams.get('calendarId') || body.calendarId || 'primary';
     
     // Validar datos
     const validationResult = updateEventSchema.safeParse(body);
@@ -190,6 +198,28 @@ export async function PUT(
       { status: 500 }
     );
   }
+}
+
+/**
+ * PUT /api/calendar/events/[id]
+ * Actualiza un evento existente
+ */
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return updateEvent(request, { params });
+}
+
+/**
+ * PATCH /api/calendar/events/[id]
+ * Actualiza un evento existente (alias de PUT)
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return updateEvent(request, { params });
 }
 
 /**

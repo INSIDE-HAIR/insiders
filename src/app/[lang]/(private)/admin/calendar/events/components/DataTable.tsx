@@ -25,9 +25,10 @@ import {
 } from "@/src/components/ui/table";
 import { Input } from "@/src/components/ui/input";
 import { Button } from "@/src/components/ui/button";
-import { DownloadIcon, UserPlusIcon, VideoIcon, FileTextIcon } from "lucide-react";
+import { DownloadIcon, UserPlusIcon, VideoIcon, FileTextIcon, CalendarIcon, KeyIcon } from "lucide-react";
 import moment from "moment-timezone";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
+import { hasMeetEnabled } from "@/src/features/calendar/utils/meetUtils";
 import { AdvancedColumnFilter } from "./AdvancedColumnFilter";
 
 interface DataTableProps<TData> {
@@ -37,6 +38,12 @@ interface DataTableProps<TData> {
   onBulkAddParticipants?: (selectedEvents: TData[]) => void;
   onBulkGenerateMeetLinks?: (selectedEvents: TData[]) => void;
   onBulkGenerateDescriptions?: (selectedEvents: TData[]) => void;
+  onBulkChangeCalendar?: (selectedEvents: TData[], targetCalendarId: string) => void;
+  onBulkUpdatePermissions?: (selectedEvents: TData[], permissions: {
+    guestsCanInviteOthers?: boolean;
+    guestsCanModify?: boolean;
+    guestsCanSeeOtherGuests?: boolean;
+  }) => void;
   calendars?: Array<{ 
     id: string; 
     summary: string; 
@@ -53,6 +60,8 @@ export function DataTable<TData>({
   onBulkAddParticipants,
   onBulkGenerateMeetLinks,
   onBulkGenerateDescriptions,
+  onBulkChangeCalendar,
+  onBulkUpdatePermissions,
   calendars = [],
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -63,6 +72,26 @@ export function DataTable<TData>({
   const [appliedFilters, setAppliedFilters] = useState<{
     [key: string]: any[];
   }>({});
+  const [showCalendarDropdown, setShowCalendarDropdown] = useState(false);
+  const [showPermissionsDropdown, setShowPermissionsDropdown] = useState(false);
+
+  // Close dropdown when clicking outside
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    const target = event.target as Element;
+    if (!target?.closest('.calendar-dropdown-container')) {
+      setShowCalendarDropdown(false);
+    }
+    if (!target?.closest('.permissions-dropdown-container')) {
+      setShowPermissionsDropdown(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    if (showCalendarDropdown || showPermissionsDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showCalendarDropdown, showPermissionsDropdown, handleClickOutside]);
 
   const columns = useMemo(() => {
     const selectColumn: ColumnDef<TData> = {
@@ -243,15 +272,10 @@ export function DataTable<TData>({
 
   const selectedRowsCount = table.getFilteredSelectedRowModel().rows.length;
   
-  // Helper para verificar si un evento tiene Google Meet
-  const hasGoogleMeet = (event: any) => {
-    return !!(event.hangoutLink || event.conferenceData);
-  };
-  
-  // Filtrar eventos seleccionados sin Google Meet
+  // Filtrar eventos seleccionados sin Google Meet usando la función importada
   const selectedEventsWithoutMeet = table.getFilteredSelectedRowModel().rows
     .map(row => row.original)
-    .filter(event => !hasGoogleMeet(event));
+    .filter(event => !hasMeetEnabled(event as any));
 
   // Helper para obtener el color del calendario
   const getCalendarColor = (item: TData) => {
@@ -318,6 +342,193 @@ export function DataTable<TData>({
                 <FileTextIcon className="mr-1 h-3 w-3" />
                 Generar Descripciones
               </Button>
+            )}
+            {onBulkChangeCalendar && calendars.length > 0 && (
+              <div className="relative calendar-dropdown-container">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowCalendarDropdown(!showCalendarDropdown)}
+                  className="text-xs bg-orange-600 hover:bg-orange-700"
+                  title={`Cambiar calendario para ${selectedRowsCount} evento${selectedRowsCount !== 1 ? 's' : ''}`}
+                >
+                  <CalendarIcon className="mr-1 h-3 w-3" />
+                  Cambiar Calendario
+                </Button>
+                {showCalendarDropdown && (
+                  <div className="absolute top-full mt-1 right-0 z-10 bg-white border border-gray-300 rounded-md shadow-lg min-w-48">
+                    <div className="py-1">
+                      <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b">
+                        Seleccionar calendario destino:
+                      </div>
+                      {calendars.map((calendar) => (
+                        <button
+                          key={calendar.id}
+                          onClick={() => {
+                            const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                            onBulkChangeCalendar(selectedData, calendar.id);
+                            setShowCalendarDropdown(false);
+                          }}
+                          className="w-full text-left px-3 py-2 text-xs hover:bg-gray-100 flex items-center gap-2"
+                        >
+                          <div 
+                            className="w-3 h-3 rounded-full border"
+                            style={{ backgroundColor: calendar.backgroundColor || '#4285f4' }}
+                          />
+                          <span className="truncate">{calendar.summary}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            {onBulkUpdatePermissions && (
+              <div className="relative permissions-dropdown-container">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => setShowPermissionsDropdown(!showPermissionsDropdown)}
+                  className="text-xs bg-indigo-600 hover:bg-indigo-700"
+                  title={`Configurar permisos para ${selectedRowsCount} evento${selectedRowsCount !== 1 ? 's' : ''}`}
+                >
+                  <KeyIcon className="mr-1 h-3 w-3" />
+                  Permisos
+                </Button>
+                {showPermissionsDropdown && (
+                  <div className="absolute top-full mt-1 right-0 z-10 bg-white border border-gray-300 rounded-md shadow-lg min-w-64">
+                    <div className="py-1">
+                      <div className="px-3 py-2 text-xs font-medium text-gray-500 border-b">
+                        Configurar permisos de invitados:
+                      </div>
+                      
+                      {/* Activar todos los permisos */}
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanInviteOthers: true,
+                            guestsCanModify: true,
+                            guestsCanSeeOtherGuests: true,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-green-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span>✓ Activar todos los permisos</span>
+                      </button>
+
+                      {/* Desactivar todos los permisos */}
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanInviteOthers: false,
+                            guestsCanModify: false,
+                            guestsCanSeeOtherGuests: false,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-red-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span>✗ Desactivar todos los permisos</span>
+                      </button>
+
+                      <div className="border-t my-1"></div>
+
+                      {/* Permisos individuales */}
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanInviteOthers: true,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-blue-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span>✓ Permitir invitar otros</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanModify: true,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-purple-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                        <span>✓ Permitir modificar evento</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanSeeOtherGuests: true,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-yellow-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <span>✓ Permitir ver otros invitados</span>
+                      </button>
+
+                      <div className="border-t my-1"></div>
+
+                      {/* Desactivar permisos individuales */}
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanInviteOthers: false,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-gray-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                        <span>✗ Prohibir invitar otros</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanModify: false,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-gray-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                        <span>✗ Prohibir modificar evento</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
+                          onBulkUpdatePermissions(selectedData, {
+                            guestsCanSeeOtherGuests: false,
+                          });
+                          setShowPermissionsDropdown(false);
+                        }}
+                        className="w-full text-left px-3 py-2 text-xs hover:bg-gray-50 flex items-center gap-2"
+                      >
+                        <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                        <span>✗ Prohibir ver otros invitados</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
             <Button
               variant="outline"
