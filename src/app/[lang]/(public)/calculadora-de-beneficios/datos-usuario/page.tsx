@@ -3,7 +3,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useCalculatorStore, stepToPathMap } from "@/store/calculator-store"; // --- CORRECCIÓN: Importar stepToPathMap ---
+import { useCalculatorStore, stepToPathMap } from "@/src/store/calculator-store";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";

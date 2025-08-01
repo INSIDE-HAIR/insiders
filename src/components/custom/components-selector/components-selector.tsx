@@ -1,13 +1,13 @@
 import useIsAuth from "@/src/hooks/useIsAuth";
 import useIsAvailable from "@/src/hooks/useIsAvailable";
-import CustomVideosPlayer from "@/src/components/shared/components-selector/videos-players/custom-video-player";
-import CustomSlides from "@/src/components/shared/components-selector/sliders/slides";
-import CustomTabs from "@/src/components/shared/components-selector/tabs/custom-tabs";
-import CustomButton from "@/src/components/shared/components-selector/buttons/custom-button";
-import CustomTabsCardsList from "@/src/components/shared/components-selector/tabs/custom-tabs-cards-list";
-import CustomCarouselModal from "@/src/components/shared/components-selector/modal/custom-modal-carousel";
-import CustomImageModal from "@/src/components/shared/components-selector/modal/custom-modal-image";
-import CustomModal from "@/src/components/shared/components-selector/modal/custom-modal";
+import CustomVideosPlayer from "@/src/components/custom/components-selector/videos-players/custom-video-player";
+import CustomSlides from "@/src/components/custom/components-selector/sliders/slides";
+import CustomTabs from "@/src/components/custom/components-selector/tabs/custom-tabs";
+import CustomButton from "@/src/components/custom/components-selector/buttons/custom-button";
+import CustomTabsCardsList from "@/src/components/custom/components-selector/tabs/custom-tabs-cards-list";
+import CustomCarouselModal from "@/src/components/custom/components-selector/modal/custom-modal-carousel";
+import CustomImageModal from "@/src/components/custom/components-selector/modal/custom-modal-image";
+import CustomModal from "@/src/components/custom/components-selector/modal/custom-modal";
 import { ComponentsProps } from "@/src/types/components-schemas";
 
 export default function ComponentsSelector({

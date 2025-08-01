@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import routesConfig from '@/config/routes-config.json'
+import routesConfig from '@/src/config/routes-config.json'
 import { RoutesConfiguration } from '@/types/routes'
 
 export async function GET(request: NextRequest) {

@@ -1,9 +1,8 @@
 "use client";
 
-import { useCalculatorStore, stepToPathMap } from "@/store/calculator-store";
+import { useCalculatorStore, stepToPathMap } from "@/src/store/calculator-store";
 import { Button } from "@/src/components/ui/button";
 import { useEffect, useState, useCallback } from "react";
-import { saveCalculatorLead } from "@/lib/actions/calculator-lead.actions";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -30,10 +29,6 @@ export default function ResultadosPage() {
     initializeStepFromPath,
   } = useCalculatorStore();
 
-  const [isLoadingSave, setIsLoadingSave] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [leadSaved, setLeadSaved] = useState(false);
-  const [saveAttempted, setSaveAttempted] = useState(false); // New state to prevent retries
   const [isCurrentPageStep, setIsCurrentPageStep] = useState(false);
 
   useEffect(() => {
@@ -66,64 +61,6 @@ export default function ResultadosPage() {
     }
   }, [currentStep, pathname, router]);
 
-  const attemptSaveLead = useCallback(async () => {
-    if (
-      expenses_per_hour === undefined ||
-      income_per_hour === undefined ||
-      profit_percentage === undefined ||
-      !email ||
-      saveAttempted // Check if we've already tried
-    ) {
-      return;
-    }
-
-    setSaveAttempted(true); // Mark that we are attempting to save
-    setIsLoadingSave(true);
-    setError(null);
-
-    try {
-      const leadDataToSave = {
-        full_name,
-        email,
-        phone_number,
-        country_code,
-        total_expenses_no_vat,
-        total_team_hours,
-        total_income_no_vat,
-        expenses_per_hour,
-        income_per_hour,
-        profit_percentage,
-      };
-      const result = await saveCalculatorLead(leadDataToSave);
-      if (result.success) {
-        setLeadSaved(true);
-      } else {
-        setError(result.error || "Error al guardar los datos.");
-      }
-    } catch (e: any) {
-      setError(e.message || "Ocurrió un error inesperado al guardar.");
-    } finally {
-      setIsLoadingSave(false);
-    }
-  }, [
-    expenses_per_hour,
-    income_per_hour,
-    profit_percentage,
-    full_name,
-    email,
-    phone_number,
-    country_code,
-    total_expenses_no_vat,
-    total_team_hours,
-    total_income_no_vat,
-    saveAttempted, // Add to dependency array
-  ]);
-
-  useEffect(() => {
-    if (isCurrentPageStep) {
-      attemptSaveLead();
-    }
-  }, [isCurrentPageStep, attemptSaveLead]);
 
   const handleReset = () => {
     resetCalculator(router);
@@ -196,18 +133,6 @@ export default function ResultadosPage() {
         peluquería está generando los márgenes esperados.
       </p>
 
-      {isLoadingSave && (
-        <div className="flex justify-center items-center py-4">
-          <Loader2 className="h-8 w-8 animate-spin text-brand-cta-accent" />
-          <span className="ml-2">Guardando tus datos...</span>
-        </div>
-      )}
-      {error && <p className="text-red-500 text-center py-2">{error}</p>}
-      {leadSaved && !error && (
-        <p className="text-green-500 text-center py-2">
-          ¡Tus resultados han sido guardados!
-        </p>
-      )}
 
       <div className="space-y-4 pt-4">
         <div className="p-4 bg-brand-gray-dark rounded-md">

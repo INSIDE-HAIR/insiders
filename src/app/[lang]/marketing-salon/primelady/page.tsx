@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 import Container from "@/src/app/[lang]/marketing-salon/components/container";
 import { usePathname } from "next/navigation";
-import ComponentsSelector from "@/src/components/shared/components-selector/components-selector";
+import ComponentsSelector from "@/src/components/custom/components-selector/components-selector";
 
 interface MonthlyData {
   [x: string]: any;
