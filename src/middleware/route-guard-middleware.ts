@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { RouteConfig, UserSession, UserRole } from '../types/routes';
-import { checkRouteAccess, getEffectiveRole } from '@/lib/route-guard';
+import { RouteConfig, UserSession, UserRole, Permission } from '../types/routes';
+import { checkRouteAccess, getEffectiveRole } from '../lib/route-guard';
 
 // Routes that should be excluded from middleware processing
 const EXCLUDED_PATHS = [
@@ -123,8 +123,8 @@ async function createUserSession(token: AuthToken): Promise<UserSession | null> 
   }
 }
 
-function getPermissionsForRole(role: UserRole) {
-  const permissions = {
+function getPermissionsForRole(role: UserRole): Permission[] {
+  const permissions: Record<UserRole, Permission[]> = {
     'user': ['read'],
     'editor': ['read', 'write'],
     'admin': ['read', 'write', 'manage'],
