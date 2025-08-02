@@ -1,0 +1,45 @@
+{
+  "userMenuRoutes": [
+    {
+      "id": "profile",
+      "label": "Mi Perfil",
+      "href": "/profile",
+      "icon": "User",
+      "requiredRoles": ["user", "editor", "admin", "super-admin"],
+      "type": "link"
+    },
+    {
+      "id": "dashboard",
+      "label": "Dashboard",
+      "href": "/admin/dashboard",
+      "icon": "LayoutGrid",
+      "requiredRoles": ["user", "editor", "admin", "super-admin"],
+      "type": "link"
+    },
+    {
+      "id": "users",
+      "label": "Usuarios",
+      "href": "/admin/users",
+      "icon": "Users",
+      "requiredRoles": ["admin", "super-admin"],
+      "type": "action"
+    },
+    {
+      "id": "settings",
+      "label": "Configuración",
+      "href": "/settings",
+      "icon": "Settings",
+      "requiredRoles": ["user", "editor", "admin", "super-admin"],
+      "type": "action"
+    },
+    {
+      "id": "logout",
+      "label": "Cerrar Sesión",
+      "href": null,
+      "icon": "ExitIcon",
+      "requiredRoles": ["user", "editor", "admin", "super-admin"],
+      "type": "logout",
+      "separator": true
+    }
+  ]
+}

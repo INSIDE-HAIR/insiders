@@ -16,6 +16,7 @@ import { Icons } from "@/src/components/shared/icons";
 import { cn } from "@/src/lib/utils";
 import { LanguageSelector } from "@/src/components/custom/language-selector";
 import MyAccountButton from "./my-account-button";
+import { ThemeToggle } from "@/src/components/shared/theme-toggle";
 import { useSession } from "next-auth/react";
 
 import navRoutesData from "@/src/routes/public-nav-routes.json";
@@ -122,6 +123,7 @@ export default function PublicHeader() {
           </div>
 
           <div className='hidden md:flex items-center space-x-3'>
+            <ThemeToggle />
             <LanguageSelector />
             {session?.user ? (
               <MyAccountButton />
@@ -201,7 +203,8 @@ export default function PublicHeader() {
                   </div>
                 ))}
                 <div className='pt-6 space-y-3 border-t border-border mt-4'>
-                  <div className='flex justify-center mb-4'>
+                  <div className='flex justify-center items-center space-x-3 mb-4'>
+                    <ThemeToggle />
                     <LanguageSelector />
                   </div>
                   {session?.user ? (

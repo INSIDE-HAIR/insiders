@@ -23,6 +23,7 @@ export function LanguageSelector() {
   const router = useRouter();
   const pathname = usePathname();
   const { locale, setLocale } = useTranslationContext();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const currentLanguage = languages.find((lang) => lang.code === locale) || languages[0];
 
@@ -41,34 +42,44 @@ export function LanguageSelector() {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-9 w-9 px-0 hover:bg-accent"
-        >
-          <Globe className="h-4 w-4" />
-          <span className="sr-only">Select language</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[160px]">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className={`cursor-pointer ${
-              language.code === locale ? "bg-accent" : ""
-            }`}
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <div
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        className="relative"
+      >
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 w-9 px-0 hover:bg-primary"
           >
-            <span className="mr-2">{language.flag}</span>
-            <span>{language.name}</span>
-            {language.code === locale && (
-              <span className="ml-auto text-xs">✓</span>
-            )}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
+            <Globe className="h-4 w-4" />
+            <span className="sr-only">Select language</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[160px]">
+          {languages.map((language) => (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => handleLanguageChange(language.code)}
+              className="cursor-pointer focus:bg-primary"
+            >
+              <div className={`block w-full px-2 py-1.5 text-sm cursor-pointer ${
+                language.code === locale 
+                  ? "bg-primary text-primary-foreground" 
+                  : "hover:bg-accent hover:text-accent-foreground"
+              }`}>
+                <span className="mr-2">{language.flag}</span>
+                <span>{language.name}</span>
+                {language.code === locale && (
+                  <span className="ml-auto text-xs float-right">✓</span>
+                )}
+              </div>
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </div>
     </DropdownMenu>
   );
 }
