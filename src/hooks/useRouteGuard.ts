@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
-import type { UserSession, AccessCheckResult, RouteConfig, UserRole } from '../types/routes';
+import type { UserSession, AccessCheckResult, RouteConfig, UserRole, Permission } from '../types/routes';
 import { 
   checkRouteAccess, 
   getAccessibleRoutes, 
@@ -44,7 +44,7 @@ export function useRouteGuard(): UseRouteGuardReturn {
 
   // Check current route access
   useEffect(() => {
-    if (status === 'loading') {
+    if (status === 'loading' || !pathname) {
       setIsLoading(true)
       return
     }
@@ -108,7 +108,7 @@ export function useAdminRouteGuard() {
   const routeGuard = useRouteGuard()
   const pathname = usePathname()
 
-  const isAdminRoute = pathname.startsWith('/admin')
+  const isAdminRoute = pathname?.startsWith('/admin') ?? false
   const canAccessAdmin = routeGuard.user?.role === 'admin' || routeGuard.user?.role === 'super-admin'
 
   return {
@@ -141,8 +141,8 @@ export function useFeatureAccess() {
     return requiredRoles ? requiredRoles.includes(user.role) : false
   }, [user])
 
-  const hasPermission = useCallback((permission: string): boolean => {
-    return user?.permissions.includes(permission as any) ?? false
+  const hasPermission = useCallback((permission: Permission): boolean => {
+    return user?.permissions.includes(permission) ?? false
   }, [user])
 
   return {
@@ -170,8 +170,8 @@ export function useDomainValidation() {
 }
 
 // Utility function to get permissions for role
-function getPermissionsForRole(role: UserRole) {
-  const permissions = {
+function getPermissionsForRole(role: UserRole): Permission[] {
+  const permissions: Record<UserRole, Permission[]> = {
     'user': ['read'],
     'editor': ['read', 'write'],
     'admin': ['read', 'write', 'manage'],
