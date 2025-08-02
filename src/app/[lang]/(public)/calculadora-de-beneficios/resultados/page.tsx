@@ -1,6 +1,9 @@
 "use client";
 
-import { useCalculatorStore, stepToPathMap } from "@/src/store/calculator-store";
+import {
+  useCalculatorStore,
+  stepToPathMap,
+} from "@/src/store/calculator-store";
 import { Button } from "@/src/components/ui/button";
 import { useEffect, useState, useCallback } from "react";
 import { Loader2 } from "lucide-react";
@@ -32,12 +35,14 @@ export default function ResultadosPage() {
   const [isCurrentPageStep, setIsCurrentPageStep] = useState(false);
 
   useEffect(() => {
-    initializeStepFromPath(pathname);
+    if (pathname) {
+      initializeStepFromPath(pathname);
+    }
   }, [pathname, initializeStepFromPath]);
 
   useEffect(() => {
     const expectedPath = stepToPathMap[currentStep];
-    if (pathname !== expectedPath && expectedPath) {
+    if (pathname && expectedPath && pathname !== expectedPath) {
       console.log(
         `[ResultadosPage] Path mismatch. Current: ${pathname}, Expected for step ${currentStep}: ${expectedPath}. Redirecting...`
       );
@@ -48,6 +53,7 @@ export default function ResultadosPage() {
     } else if (
       currentStep !== CURRENT_PAGE_STEP &&
       !expectedPath &&
+      pathname &&
       pathname === stepToPathMap[CURRENT_PAGE_STEP]
     ) {
       // This case might happen if store is reset but user is on results page.
@@ -60,7 +66,6 @@ export default function ResultadosPage() {
       setIsCurrentPageStep(false);
     }
   }, [currentStep, pathname, router]);
-
 
   const handleReset = () => {
     resetCalculator(router);
@@ -132,7 +137,6 @@ export default function ResultadosPage() {
         Estos son tus resultados de rentabilidad. Aquí puedes ver si tu
         peluquería está generando los márgenes esperados.
       </p>
-
 
       <div className="space-y-4 pt-4">
         <div className="p-4 bg-brand-gray-dark rounded-md">

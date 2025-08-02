@@ -73,7 +73,7 @@ export default function DynamicAdminPage({
 
   // Build breadcrumb
   const breadcrumbItems = [
-    { label: "Admin", href: "/admin" },
+    { label: "Admin", href: "/admin", isLast: false },
     ...slug.split("/").map((segment, index, array) => {
       const path = `/admin/${array.slice(0, index + 1).join("/")}`;
       const segmentRouteId = array.slice(0, index + 1).join("-");

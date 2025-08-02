@@ -1,12 +1,4 @@
-import { 
-  RoutesConfiguration, 
-  RouteConfig, 
-  UserSession, 
-  AccessCheckResult, 
-  RouteMatch,
-  UserRole,
-  AccessType 
-} from '@/types/routes'
+import { RouteConfig, UserSession, AccessCheckResult } from '@/types/routes';
 import routesConfig from '@/config/routes-config.json'
 
 class RouteGuard {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
+import { auth } from '@/src/config/auth/auth'
 
 // This would typically come from a database or CMS
 // For now, we'll use static data as examples
@@ -168,7 +168,7 @@ const adminPages: Record<string, any> = {
 export async function GET(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getServerSession()
+    const session = await auth()
     
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

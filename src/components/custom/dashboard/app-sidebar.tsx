@@ -12,12 +12,13 @@ import {
   SidebarRail,
 } from "@/src/components/ui/sidebar";
 import { LucideIcon } from "lucide-react";
-import type { NavItem, User, Team } from "@/src/types";
+import type { NavItem, Team } from "@/src/types";
+import type { ExtendedUser } from "@/src/next-auth.d";
 import { IconType } from "react-icons";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   navMain?: NavItem[];
-  user?: User;
+  user?: ExtendedUser;
   teams?: {
     name: string;
     logo: LucideIcon | IconType;

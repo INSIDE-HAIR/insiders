@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
-import { UserSession, UserRole } from '@/types/routes'
-import { checkRouteAccess, isValidDomain } from '@/lib/route-guard'
+import { RouteConfig, UserSession } from '@/types/routes';
+import { checkRouteAccess, getEffectiveRole } from '@/lib/route-guard';
 
 // Routes that should be excluded from middleware processing
 const EXCLUDED_PATHS = [

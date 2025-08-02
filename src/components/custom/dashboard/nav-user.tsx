@@ -32,13 +32,10 @@ import {
 } from "@/src/components/ui/sidebar";
 import Image from "next/image";
 
+import { ExtendedUser } from "@/src/next-auth.d";
+
 interface NavUserProps {
-  user: {
-    id: string;
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-  };
+  user: ExtendedUser;
 }
 
 export function NavUser({ user }: NavUserProps) {

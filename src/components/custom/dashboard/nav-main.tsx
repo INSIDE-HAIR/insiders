@@ -44,7 +44,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
   // Function to check if a route is currently active (exact match only)
   const isRouteActive = useCallback((routePath: string): boolean => {
     // Remove language prefix from pathname for comparison
-    const cleanPathname = pathname.replace(/^\/[a-z]{2}/, '') || '/';
+    const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
     
     // Only exact match
     return cleanPathname === routePath;
@@ -52,7 +52,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
 
   // Function to check if a parent route should be highlighted (only if no more specific child is active)
   const shouldHighlightParent = useCallback((item: NavItem): boolean => {
-    const cleanPathname = pathname.replace(/^\/[a-z]{2}/, '') || '/';
+    const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
     
     // If any subitem is exactly active, don't highlight parent
     if (item.items && item.items.some(subItem => subItem.url === cleanPathname)) {

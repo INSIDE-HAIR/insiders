@@ -3,18 +3,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
-import { 
-  UserSession, 
-  AccessCheckResult, 
-  RouteConfig,
-  UserRole 
-} from '@/types/routes'
+import type { UserSession, AccessCheckResult, RouteConfig, UserRole } from '../types/routes';
 import { 
   checkRouteAccess, 
   getAccessibleRoutes, 
   getEffectiveRole,
   isValidDomain 
-} from '@/lib/route-guard'
+} from '../lib/route-guard';
 
 interface UseRouteGuardReturn {
   isLoading: boolean

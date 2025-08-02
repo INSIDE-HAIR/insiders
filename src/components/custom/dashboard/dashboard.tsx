@@ -70,12 +70,7 @@ function Dashboard({
   };
 
   // Create user object from session
-  const user = session?.user ? {
-    id: session.user.id,
-    name: session.user.name,
-    email: session.user.email,
-    image: session.user.image
-  } : undefined;
+  const user = session?.user;
 
   return (
     <SidebarProvider>

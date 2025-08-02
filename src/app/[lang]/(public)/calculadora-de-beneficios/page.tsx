@@ -3,7 +3,10 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/src/components/ui/button";
-import { useCalculatorStore, stepToPathMap } from "@/src/store/calculator-store";
+import {
+  useCalculatorStore,
+  stepToPathMap,
+} from "@/src/store/calculator-store";
 import { shallow } from "zustand/shallow";
 
 const CURRENT_PAGE_STEP = 1;
@@ -11,11 +14,7 @@ const CURRENT_PAGE_STEP = 1;
 export default function CalculadoraDeBeneficiosPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const {
-    nextStep,
-    currentStep,
-    initializeStepFromPath,
-  } = useCalculatorStore(
+  const { nextStep, currentStep, initializeStepFromPath } = useCalculatorStore(
     (state) => ({
       nextStep: state.nextStep,
       currentStep: state.currentStep,
@@ -25,12 +24,18 @@ export default function CalculadoraDeBeneficiosPage() {
   );
 
   useEffect(() => {
-    initializeStepFromPath(pathname);
+    if (pathname) {
+      initializeStepFromPath(pathname);
+    }
   }, [pathname, initializeStepFromPath]);
 
   useEffect(() => {
     const expectedPathForStoreStep = stepToPathMap[currentStep];
-    if (expectedPathForStoreStep && pathname !== expectedPathForStoreStep) {
+    if (
+      expectedPathForStoreStep &&
+      pathname &&
+      pathname !== expectedPathForStoreStep
+    ) {
       console.log(
         `[CalculadoraPage] Store step (${currentStep}) changed. Redirecting from ${pathname} to ${expectedPathForStoreStep}.`
       );
@@ -42,7 +47,7 @@ export default function CalculadoraDeBeneficiosPage() {
     nextStep(router);
   };
 
-  if (pathname !== stepToPathMap[CURRENT_PAGE_STEP]) {
+  if (!pathname || pathname !== stepToPathMap[CURRENT_PAGE_STEP]) {
     return <div className="text-center p-6">Cargando...</div>;
   }
 
@@ -56,10 +61,11 @@ export default function CalculadoraDeBeneficiosPage() {
           Descubre la rentabilidad real de tu salón de belleza
         </p>
         <p className="text-gray-400">
-          Una herramienta gratuita para analizar tus números y mejorar tu negocio
+          Una herramienta gratuita para analizar tus números y mejorar tu
+          negocio
         </p>
       </div>
-      
+
       <div className="space-y-6">
         <div className="bg-gray-800 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-brand-white mb-4">
@@ -72,7 +78,7 @@ export default function CalculadoraDeBeneficiosPage() {
             <li>• Recomendaciones personalizadas</li>
           </ul>
         </div>
-        
+
         <div className="bg-gray-800 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-brand-white mb-4">
             Proceso simple en 3 pasos:

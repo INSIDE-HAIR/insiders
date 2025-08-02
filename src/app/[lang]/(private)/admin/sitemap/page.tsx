@@ -1,120 +1,135 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
-import { Badge } from "@/src/components/ui/badge"
-import { ScrollArea } from "@/src/components/ui/scroll-area"
-import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
-import { 
-  Search, 
-  Filter, 
-  ChevronRight, 
-  Lock, 
-  Globe, 
+import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
+import { Badge } from "@/src/components/ui/badge";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import {
+  Search,
+  Filter,
+  ChevronRight,
+  Lock,
+  Globe,
   Users,
   Shield,
   Eye,
   EyeOff,
   Edit,
   Save,
-  X
-} from "lucide-react"
+  X,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/src/components/ui/select"
+} from "@/src/components/ui/select";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/src/components/ui/collapsible"
-import { cn } from "@/src/lib/utils"
-import { RoutesConfiguration } from "@/src/types/routes"
+} from "@/src/components/ui/collapsible";
+import { cn } from "@/src/lib/utils";
+import { RoutesConfiguration } from "@/src/types/routes";
 
 interface RouteConfig {
-  path: string
-  label: string
+  path: string;
+  label: string;
   access: {
-    type: "public" | "private" | "auth" | "admin"
-    roles?: string[]
-    emails?: string[]
-    domains?: string[]
-  }
-  children?: RouteConfig[]
-  component?: string
-  redirect?: string
+    type: "public" | "private" | "auth" | "admin" | "api";
+    roles?: string[];
+    emails?: string[];
+    domains?: string[];
+  };
+  children?: RouteConfig[];
+  component?: string;
+  redirect?: string;
 }
 
 interface RouteCategory {
-  name: string
-  routes: RouteConfig[]
+  name: string;
+  routes: RouteConfig[];
 }
 
 export default function SitemapPage() {
-  const pathname = usePathname()
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterType, setFilterType] = useState<string>("all")
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
-  const [editingRoute, setEditingRoute] = useState<string | null>(null)
-  const [routeData, setRouteData] = useState<RouteCategory[]>([])
+  const pathname = usePathname();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set()
+  );
+  const [editingRoute, setEditingRoute] = useState<string | null>(null);
+  const [routeData, setRouteData] = useState<RouteCategory[]>([]);
 
   useEffect(() => {
-    loadRouteData()
-  }, [])
+    loadRouteData();
+  }, []);
 
   // Auto-expand categories with active routes
   useEffect(() => {
-    const categoriesToExpand = new Set(expandedCategories)
-    
-    routeData.forEach(category => {
+    const categoriesToExpand = new Set(expandedCategories);
+
+    routeData.forEach((category) => {
       if (isCategoryActive(category)) {
-        categoriesToExpand.add(category.name)
+        categoriesToExpand.add(category.name);
       }
-    })
-    
+    });
+
     if (categoriesToExpand.size !== expandedCategories.size) {
-      setExpandedCategories(categoriesToExpand)
+      setExpandedCategories(categoriesToExpand);
     }
-  }, [routeData, pathname, expandedCategories])
+  }, [routeData, pathname, expandedCategories]);
 
   // Function to check if a route is currently active
   const isRouteActive = (routePath: string): boolean => {
     // Remove language prefix from pathname for comparison
-    const cleanPathname = pathname.replace(/^\/[a-z]{2}/, '')
-    return cleanPathname === routePath || cleanPathname.startsWith(routePath + '/')
-  }
+    if (!pathname) return false;
+    const cleanPathname = pathname.replace(/^\/[a-z]{2}/, "");
+    return (
+      cleanPathname === routePath || cleanPathname.startsWith(routePath + "/")
+    );
+  };
 
   // Function to check if a category has any active routes
   const isCategoryActive = (category: RouteCategory): boolean => {
-    return category.routes.some(route => {
-      if (isRouteActive(route.path)) return true
+    return category.routes.some((route) => {
+      if (isRouteActive(route.path)) return true;
       if (route.children) {
-        return route.children.some(child => isRouteActive(child.path))
+        return route.children.some((child) => isRouteActive(child.path));
       }
-      return false
-    })
-  }
+      return false;
+    });
+  };
 
   const loadRouteData = async () => {
     try {
       // Cargar configuración real de rutas
-      const response = await fetch('/api/routes/config')
+      const response = await fetch("/api/routes/config");
       if (response.ok) {
-        const config = await response.json()
-        const categorizedData = categorizeRoutes(config)
-        setRouteData(categorizedData)
-        return
+        const config = await response.json();
+        const categorizedData = categorizeRoutes(config);
+        setRouteData(categorizedData);
+        return;
       }
     } catch (error) {
-      console.error('Error loading route config:', error)
+      console.error("Error loading route config:", error);
     }
-    
+
     // Fallback a datos de ejemplo si no se puede cargar la configuración
     const exampleData: RouteCategory[] = [
       {
@@ -124,7 +139,7 @@ export default function SitemapPage() {
             path: "/",
             label: "Home",
             access: { type: "public" },
-            component: "HomePage"
+            component: "HomePage",
           },
           {
             path: "/formaciones",
@@ -139,23 +154,23 @@ export default function SitemapPage() {
                   {
                     path: "/formaciones/master-ibm/programa",
                     label: "Programa",
-                    access: { type: "public" }
+                    access: { type: "public" },
                   },
                   {
                     path: "/formaciones/master-ibm/precio-y-modalidades",
                     label: "Precio y Modalidades",
-                    access: { type: "public" }
-                  }
-                ]
-              }
-            ]
+                    access: { type: "public" },
+                  },
+                ],
+              },
+            ],
           },
           {
             path: "/consultoria",
             label: "Consultoría",
-            access: { type: "public" }
-          }
-        ]
+            access: { type: "public" },
+          },
+        ],
       },
       {
         name: "Auth Routes",
@@ -163,19 +178,19 @@ export default function SitemapPage() {
           {
             path: "/auth/login",
             label: "Login",
-            access: { type: "auth" }
+            access: { type: "auth" },
           },
           {
             path: "/auth/register",
             label: "Register",
-            access: { type: "auth" }
+            access: { type: "auth" },
           },
           {
             path: "/auth/reset-password",
             label: "Reset Password",
-            access: { type: "auth" }
-          }
-        ]
+            access: { type: "auth" },
+          },
+        ],
       },
       {
         name: "Private Routes",
@@ -183,9 +198,9 @@ export default function SitemapPage() {
           {
             path: "/profile",
             label: "Profile",
-            access: { type: "private" }
-          }
-        ]
+            access: { type: "private" },
+          },
+        ],
       },
       {
         name: "Admin Routes",
@@ -193,157 +208,183 @@ export default function SitemapPage() {
           {
             path: "/admin",
             label: "Admin Dashboard",
-            access: { 
+            access: {
               type: "admin",
-              roles: ["admin", "super-admin"]
+              roles: ["admin", "super-admin"],
             },
             children: [
               {
                 path: "/admin/users",
                 label: "Users Management",
-                access: { 
+                access: {
                   type: "admin",
-                  roles: ["admin", "super-admin"]
-                }
+                  roles: ["admin", "super-admin"],
+                },
               },
               {
                 path: "/admin/calendar",
                 label: "Calendar",
-                access: { 
+                access: {
                   type: "admin",
                   roles: ["admin"],
-                  domains: ["@insidesalons.com"]
-                }
+                  domains: ["@insidesalons.com"],
+                },
               },
               {
                 path: "/admin/sitemap",
                 label: "Sitemap",
-                access: { 
+                access: {
                   type: "admin",
-                  roles: ["super-admin"]
-                }
-              }
-            ]
-          }
-        ]
-      }
-    ]
-    
-    setRouteData(exampleData)
-  }
+                  roles: ["super-admin"],
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    setRouteData(exampleData);
+  };
 
   const categorizeRoutes = (config: RoutesConfiguration): RouteCategory[] => {
-    const categories: RouteCategory[] = []
-    
+    const categories: RouteCategory[] = [];
+
     Object.entries(config.routes).forEach(([categoryName, routes]) => {
-      const categoryRoutes = routes.map(route => ({
+      const categoryRoutes = routes.map((route) => ({
         path: route.path,
         label: route.label,
         access: {
           type: route.access.type,
           roles: route.access.roles,
           emails: route.access.emails,
-          domains: route.access.domains
+          domains: route.access.domains,
         },
-        children: route.children?.map(child => ({
+        children: route.children?.map((child) => ({
           path: child.path,
           label: child.label,
           access: {
             type: child.access.type,
             roles: child.access.roles,
             emails: child.access.emails,
-            domains: child.access.domains
-          }
-        }))
-      }))
-      
+            domains: child.access.domains,
+          },
+        })),
+      }));
+
       categories.push({
-        name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1) + " Routes",
-        routes: categoryRoutes
-      })
-    })
-    
-    return categories
-  }
+        name:
+          categoryName.charAt(0).toUpperCase() +
+          categoryName.slice(1) +
+          " Routes",
+        routes: categoryRoutes,
+      });
+    });
+
+    return categories;
+  };
 
   const toggleCategory = (categoryName: string) => {
-    const newExpanded = new Set(expandedCategories)
+    const newExpanded = new Set(expandedCategories);
     if (newExpanded.has(categoryName)) {
-      newExpanded.delete(categoryName)
+      newExpanded.delete(categoryName);
     } else {
-      newExpanded.add(categoryName)
+      newExpanded.add(categoryName);
     }
-    setExpandedCategories(newExpanded)
-  }
+    setExpandedCategories(newExpanded);
+  };
 
   const getAccessIcon = (access: RouteConfig["access"]) => {
     switch (access.type) {
       case "public":
-        return <Globe className="h-4 w-4" />
+        return <Globe className="h-4 w-4" />;
       case "private":
-        return <Lock className="h-4 w-4" />
+        return <Lock className="h-4 w-4" />;
       case "auth":
-        return <Users className="h-4 w-4" />
+        return <Users className="h-4 w-4" />;
       case "admin":
-        return <Shield className="h-4 w-4" />
+        return <Shield className="h-4 w-4" />;
+      case "api":
+        return <Shield className="h-4 w-4" />;
     }
-  }
+  };
 
   const getAccessColor = (access: RouteConfig["access"]) => {
     switch (access.type) {
       case "public":
-        return "default"
+        return "default";
       case "private":
-        return "secondary"
+        return "secondary";
       case "auth":
-        return "outline"
+        return "outline";
       case "admin":
-        return "destructive"
+        return "destructive";
+      case "api":
+        return "destructive";
     }
-  }
+  };
 
-  const RouteItem = ({ route, depth = 0 }: { route: RouteConfig; depth?: number }) => {
-    const [isExpanded, setIsExpanded] = useState(false)
-    const isEditing = editingRoute === route.path
-    const hasChildren = route.children && route.children.length > 0
-    const isActive = isRouteActive(route.path)
-    const hasActiveChild = route.children?.some(child => isRouteActive(child.path))
+  const RouteItem = ({
+    route,
+    depth = 0,
+  }: {
+    route: RouteConfig;
+    depth?: number;
+  }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    const isEditing = editingRoute === route.path;
+    const hasChildren = route.children && route.children.length > 0;
+    const isActive = isRouteActive(route.path);
+    const hasActiveChild = route.children?.some((child) =>
+      isRouteActive(child.path)
+    );
 
     // Auto-expand if this route or any child is active
     React.useEffect(() => {
       if (isActive || hasActiveChild) {
-        setIsExpanded(true)
+        setIsExpanded(true);
       }
-    }, [isActive, hasActiveChild])
+    }, [isActive, hasActiveChild]);
 
-    const filteredChildren = route.children?.filter(child => {
-      if (filterType === "all") return true
-      return child.access.type === filterType
-    })
+    const filteredChildren = route.children?.filter((child) => {
+      if (filterType === "all") return true;
+      return child.access.type === filterType;
+    });
 
-    const matchesSearch = searchTerm === "" || 
+    const matchesSearch =
+      searchTerm === "" ||
       route.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.label.toLowerCase().includes(searchTerm.toLowerCase())
+      route.label.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const hasMatchingChildren = filteredChildren?.some(child => 
-      child.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      child.label.toLowerCase().includes(searchTerm.toLowerCase())
+    const hasMatchingChildren = filteredChildren?.some(
+      (child) =>
+        child.path.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        child.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (!matchesSearch && !hasMatchingChildren) return null;
+    if (
+      filterType !== "all" &&
+      route.access.type !== filterType &&
+      !hasMatchingChildren
     )
-
-    if (!matchesSearch && !hasMatchingChildren) return null
-    if (filterType !== "all" && route.access.type !== filterType && !hasMatchingChildren) return null
+      return null;
 
     return (
-      <div className={cn(
-        "border-l-2 transition-colors",
-        isActive ? "border-primary" : "border-gray-100",
-        depth > 0 && "ml-4"
-      )}>
-        <div className={cn(
-          "flex items-center gap-2 p-2 hover:bg-gray-50 rounded-md transition-colors",
-          isEditing && "bg-blue-50",
-          isActive && "bg-primary/5 border-l-2 border-primary"
-        )}>
+      <div
+        className={cn(
+          "border-l-2 transition-colors",
+          isActive ? "border-primary" : "border-gray-100",
+          depth > 0 && "ml-4"
+        )}
+      >
+        <div
+          className={cn(
+            "flex items-center gap-2 p-2 hover:bg-gray-50 rounded-md transition-colors",
+            isEditing && "bg-blue-50",
+            isActive && "bg-primary/5 border-l-2 border-primary"
+          )}
+        >
           {hasChildren && (
             <Button
               variant="ghost"
@@ -351,48 +392,56 @@ export default function SitemapPage() {
               className="h-6 w-6 p-0"
               onClick={() => setIsExpanded(!isExpanded)}
             >
-              <ChevronRight className={cn(
-                "h-4 w-4 transition-transform",
-                isExpanded && "rotate-90"
-              )} />
+              <ChevronRight
+                className={cn(
+                  "h-4 w-4 transition-transform",
+                  isExpanded && "rotate-90"
+                )}
+              />
             </Button>
           )}
-          
+
           <div className="flex items-center gap-2 flex-1">
-            <div className={cn(
-              "transition-colors",
-              isActive ? "text-primary" : ""
-            )}>
+            <div
+              className={cn(
+                "transition-colors",
+                isActive ? "text-primary" : ""
+              )}
+            >
               {getAccessIcon(route.access)}
             </div>
-            <span className={cn(
-              "font-medium transition-colors",
-              isActive ? "text-primary font-semibold" : ""
-            )}>
+            <span
+              className={cn(
+                "font-medium transition-colors",
+                isActive ? "text-primary font-semibold" : ""
+              )}
+            >
               {route.label}
             </span>
-            <code className={cn(
-              "text-xs px-2 py-0.5 rounded transition-colors",
-              isActive 
-                ? "text-primary bg-primary/10 font-medium" 
-                : "text-gray-500 bg-gray-100"
-            )}>
+            <code
+              className={cn(
+                "text-xs px-2 py-0.5 rounded transition-colors",
+                isActive
+                  ? "text-primary bg-primary/10 font-medium"
+                  : "text-gray-500 bg-gray-100"
+              )}
+            >
               {route.path}
             </code>
             <Badge variant={getAccessColor(route.access)}>
               {route.access.type}
             </Badge>
-            
+
             {route.access.roles && (
               <div className="flex gap-1">
-                {route.access.roles.map(role => (
+                {route.access.roles.map((role) => (
                   <Badge key={role} variant="outline" className="text-xs">
                     {role}
                   </Badge>
                 ))}
               </div>
             )}
-            
+
             {route.access.domains && (
               <Badge variant="secondary" className="text-xs">
                 {route.access.domains.join(", ")}
@@ -407,7 +456,11 @@ export default function SitemapPage() {
               className="h-6 w-6 p-0"
               onClick={() => setEditingRoute(isEditing ? null : route.path)}
             >
-              {isEditing ? <X className="h-3 w-3" /> : <Edit className="h-3 w-3" />}
+              {isEditing ? (
+                <X className="h-3 w-3" />
+              ) : (
+                <Edit className="h-3 w-3" />
+              )}
             </Button>
           </div>
         </div>
@@ -431,15 +484,19 @@ export default function SitemapPage() {
               </div>
               <div>
                 <label className="text-xs font-medium">Roles</label>
-                <Input 
-                  className="h-8" 
-                  placeholder="admin, user" 
+                <Input
+                  className="h-8"
+                  placeholder="admin, user"
                   defaultValue={route.access.roles?.join(", ")}
                 />
               </div>
             </div>
             <div className="flex justify-end gap-2">
-              <Button size="sm" variant="outline" onClick={() => setEditingRoute(null)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setEditingRoute(null)}
+              >
                 Cancel
               </Button>
               <Button size="sm">
@@ -452,14 +509,14 @@ export default function SitemapPage() {
 
         {hasChildren && isExpanded && filteredChildren && (
           <div className="ml-4">
-            {filteredChildren.map(child => (
+            {filteredChildren.map((child) => (
               <RouteItem key={child.path} route={child} depth={depth + 1} />
             ))}
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
@@ -509,45 +566,55 @@ export default function SitemapPage() {
             <CardContent>
               <ScrollArea className="h-[600px]">
                 <div className="space-y-4">
-                  {routeData.map(category => {
-                    const categoryActive = isCategoryActive(category)
+                  {routeData.map((category) => {
+                    const categoryActive = isCategoryActive(category);
                     return (
                       <div key={category.name}>
-                        <div 
+                        <div
                           className={cn(
                             "flex items-center gap-2 mb-2 cursor-pointer p-2 rounded-md transition-colors hover:bg-gray-50",
-                            categoryActive && "bg-primary/5 border-l-4 border-primary"
+                            categoryActive &&
+                              "bg-primary/5 border-l-4 border-primary"
                           )}
                           onClick={() => toggleCategory(category.name)}
                         >
-                          <ChevronRight className={cn(
-                            "h-4 w-4 transition-all",
-                            expandedCategories.has(category.name) && "rotate-90",
-                            categoryActive ? "text-primary" : "text-gray-500"
-                          )} />
-                          <h3 className={cn(
-                            "font-semibold transition-colors",
-                            categoryActive ? "text-primary" : "text-gray-900"
-                          )}>
+                          <ChevronRight
+                            className={cn(
+                              "h-4 w-4 transition-all",
+                              expandedCategories.has(category.name) &&
+                                "rotate-90",
+                              categoryActive ? "text-primary" : "text-gray-500"
+                            )}
+                          />
+                          <h3
+                            className={cn(
+                              "font-semibold transition-colors",
+                              categoryActive ? "text-primary" : "text-gray-900"
+                            )}
+                          >
                             {category.name}
                           </h3>
-                          <Badge 
+                          <Badge
                             variant={categoryActive ? "default" : "outline"}
-                            className={categoryActive ? "bg-primary text-primary-foreground" : ""}
+                            className={
+                              categoryActive
+                                ? "bg-primary text-primary-foreground"
+                                : ""
+                            }
                           >
                             {category.routes.length}
                           </Badge>
                         </div>
-                      
-                      {expandedCategories.has(category.name) && (
-                        <div className="ml-2">
-                          {category.routes.map(route => (
-                            <RouteItem key={route.path} route={route} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    )
+
+                        {expandedCategories.has(category.name) && (
+                          <div className="ml-2">
+                            {category.routes.map((route) => (
+                              <RouteItem key={route.path} route={route} />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
                   })}
                 </div>
               </ScrollArea>
@@ -566,28 +633,43 @@ export default function SitemapPage() {
             <CardContent>
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Current Path:</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Current Path:
+                  </p>
                   <code className="text-sm bg-primary/10 text-primary px-2 py-1 rounded font-mono">
                     {pathname}
                   </code>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Clean Path:</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Clean Path:
+                  </p>
                   <code className="text-sm bg-gray-100 px-2 py-1 rounded font-mono">
-                    {pathname.replace(/^\/[a-z]{2}/, '') || '/'}
+                    {pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "/"}
                   </code>
                 </div>
-                {routeData.some(category => category.routes.some(route => isRouteActive(route.path))) && (
+                {routeData.some((category) =>
+                  category.routes.some((route) => isRouteActive(route.path))
+                ) && (
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Active Routes:</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      Active Routes:
+                    </p>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {routeData.flatMap(category => 
-                        category.routes.filter(route => isRouteActive(route.path))
-                      ).map(route => (
-                        <Badge key={route.path} className="bg-primary text-primary-foreground text-xs">
-                          {route.label}
-                        </Badge>
-                      ))}
+                      {routeData
+                        .flatMap((category) =>
+                          category.routes.filter((route) =>
+                            isRouteActive(route.path)
+                          )
+                        )
+                        .map((route) => (
+                          <Badge
+                            key={route.path}
+                            className="bg-primary text-primary-foreground text-xs"
+                          >
+                            {route.label}
+                          </Badge>
+                        ))}
                     </div>
                   </div>
                 )}
@@ -647,10 +729,18 @@ export default function SitemapPage() {
               <div className="space-y-1">
                 <p className="font-medium">Available Roles:</p>
                 <div className="flex gap-1 flex-wrap">
-                  <Badge variant="outline" className="text-xs">admin</Badge>
-                  <Badge variant="outline" className="text-xs">super-admin</Badge>
-                  <Badge variant="outline" className="text-xs">user</Badge>
-                  <Badge variant="outline" className="text-xs">editor</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    admin
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    super-admin
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    user
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    editor
+                  </Badge>
                 </div>
               </div>
             </CardContent>
@@ -678,5 +768,5 @@ export default function SitemapPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

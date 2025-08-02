@@ -26,8 +26,8 @@ const EventDetailPage: React.FC = () => {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const eventId = params.id as string;
-  const calendarId = searchParams.get("calendarId") || "primary";
+  const eventId = params?.id as string;
+  const calendarId = searchParams?.get("calendarId") || "primary";
 
   const [state, setState] = useState<EventDetailPageState>({
     event: null,

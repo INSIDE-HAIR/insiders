@@ -3,7 +3,10 @@
 import type React from "react";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useCalculatorStore, stepToPathMap } from "@/src/store/calculator-store";
+import {
+  useCalculatorStore,
+  stepToPathMap,
+} from "@/src/store/calculator-store";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -39,12 +42,18 @@ export default function CalculadoraPage() {
   );
 
   useEffect(() => {
-    initializeStepFromPath(pathname);
+    if (pathname) {
+      initializeStepFromPath(pathname);
+    }
   }, [pathname, initializeStepFromPath]);
 
   useEffect(() => {
     const expectedPathForStoreStep = stepToPathMap[currentStep];
-    if (expectedPathForStoreStep && pathname !== expectedPathForStoreStep) {
+    if (
+      expectedPathForStoreStep &&
+      pathname &&
+      pathname !== expectedPathForStoreStep
+    ) {
       console.log(
         `[CalculadoraPage] Store step (${currentStep}) changed. Redirecting from ${pathname} to ${expectedPathForStoreStep}.`
       );
@@ -83,7 +92,7 @@ export default function CalculadoraPage() {
   };
 
   // --- CORRECCIÓN: Simplificar la lógica de renderizado ---
-  if (pathname !== stepToPathMap[CURRENT_PAGE_STEP]) {
+  if (!pathname || pathname !== stepToPathMap[CURRENT_PAGE_STEP]) {
     return <div className="text-center p-6">Cargando...</div>;
   }
 

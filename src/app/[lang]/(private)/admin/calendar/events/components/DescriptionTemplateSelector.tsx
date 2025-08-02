@@ -39,12 +39,9 @@ const PREDEFINED_TEMPLATES = [
   { value: "personalizado", label: "Plantilla personalizada..." },
 ];
 
-export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorProps> = ({
-  eventId,
-  calendarId,
-  currentDescription,
-  onDescriptionGenerated,
-}) => {
+export const DescriptionTemplateSelector: React.FC<
+  DescriptionTemplateSelectorProps
+> = ({ eventId, calendarId, currentDescription, onDescriptionGenerated }) => {
   const [selectedTemplate, setSelectedTemplate] = useState("automático");
   const [customTemplate, setCustomTemplate] = useState("");
   const [includeAttendees, setIncludeAttendees] = useState(true);
@@ -58,20 +55,24 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
   const handleGenerateDescription = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(`/api/calendar/events/${eventId}/generate-description`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          calendarId,
-          template: selectedTemplate,
-          customTemplate: selectedTemplate === "personalizado" ? customTemplate : undefined,
-          includeAttendees,
-          includeLocation,
-          includeDateTime,
-        }),
-      });
+      const response = await fetch(
+        `/api/calendar/events/${eventId}/generate-description`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            calendarId,
+            template: selectedTemplate,
+            customTemplate:
+              selectedTemplate === "personalizado" ? customTemplate : undefined,
+            includeAttendees,
+            includeLocation,
+            includeDateTime,
+          }),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -80,13 +81,13 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
 
       const result = await response.json();
       onDescriptionGenerated(result.description);
-      
+
       toast({
         title: "Descripción generada",
         description: "La descripción se ha generado correctamente",
         duration: 3000,
       });
-      
+
       setIsDialogOpen(false);
       setPreview(""); // Reset preview
     } catch (error: any) {
@@ -104,23 +105,27 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
 
   const loadPreview = async () => {
     if (!eventId || !calendarId) return;
-    
+
     setIsLoadingPreview(true);
     try {
-      const response = await fetch(`/api/calendar/events/${eventId}/preview-description`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          calendarId,
-          template: selectedTemplate,
-          customTemplate: selectedTemplate === "personalizado" ? customTemplate : undefined,
-          includeAttendees,
-          includeLocation,
-          includeDateTime,
-        }),
-      });
+      const response = await fetch(
+        `/api/calendar/events/${eventId}/preview-description`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            calendarId,
+            template: selectedTemplate,
+            customTemplate:
+              selectedTemplate === "personalizado" ? customTemplate : undefined,
+            includeAttendees,
+            includeLocation,
+            includeDateTime,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Error al cargar preview");
@@ -141,7 +146,14 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
     if (isDialogOpen) {
       loadPreview();
     }
-  }, [isDialogOpen, selectedTemplate, customTemplate, includeAttendees, includeLocation, includeDateTime]);
+  }, [
+    isDialogOpen,
+    selectedTemplate,
+    customTemplate,
+    includeAttendees,
+    includeLocation,
+    includeDateTime,
+  ]);
 
   // Reset states when dialog opens
   useEffect(() => {
@@ -166,93 +178,110 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
         <DialogHeader>
           <DialogTitle>Generar descripción con plantilla</DialogTitle>
         </DialogHeader>
-        
+
         <div className="flex gap-6 h-full">
           {/* Left Panel - Configuration */}
           <div className="w-1/2 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Plantilla
-            </label>
-            <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PREDEFINED_TEMPLATES.map((template) => (
-                  <SelectItem key={template.value} value={template.value}>
-                    {template.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {selectedTemplate === "personalizado" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Plantilla personalizada
+                Plantilla
               </label>
-              <Textarea
-                value={customTemplate}
-                onChange={(e) => setCustomTemplate(e.target.value)}
-                placeholder="Escribe tu plantilla personalizada aquí. Puedes usar variables como {titulo}, {fecha_inicio}, {ubicacion}, etc."
-                rows={4}
-              />
-              <div className="text-xs text-gray-500 mt-1">
-                Variables disponibles: {"{titulo}, {fecha_inicio}, {hora_inicio}, {ubicacion}, {meet_link}, {lista_participantes}"}
-              </div>
+              <Select
+                value={selectedTemplate}
+                onValueChange={setSelectedTemplate}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PREDEFINED_TEMPLATES.map((template) => (
+                    <SelectItem key={template.value} value={template.value}>
+                      {template.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          )}
 
-          <div className="space-y-3">
-            <h4 className="text-sm font-medium text-gray-700">Incluir información</h4>
-            
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={includeDateTime}
-                onCheckedChange={setIncludeDateTime}
-              />
-              Fecha y hora
-            </label>
-            
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={includeLocation}
-                onCheckedChange={setIncludeLocation}
-              />
-              Ubicación
-            </label>
-            
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox
-                checked={includeAttendees}
-                onCheckedChange={setIncludeAttendees}
-              />
-              Lista de participantes
-            </label>
+            {selectedTemplate === "personalizado" && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Plantilla personalizada
+                </label>
+                <Textarea
+                  value={customTemplate}
+                  onChange={(e) => setCustomTemplate(e.target.value)}
+                  placeholder="Escribe tu plantilla personalizada aquí. Puedes usar variables como {titulo}, {fecha_inicio}, {ubicacion}, etc."
+                  rows={4}
+                />
+                <div className="text-xs text-gray-500 mt-1">
+                  Variables disponibles:{" "}
+                  {
+                    "{titulo}, {fecha_inicio}, {hora_inicio}, {ubicacion}, {meet_link}, {lista_participantes}"
+                  }
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              <h4 className="text-sm font-medium text-gray-700">
+                Incluir información
+              </h4>
+
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox
+                  checked={includeDateTime}
+                  onCheckedChange={(checked) =>
+                    setIncludeDateTime(checked === true)
+                  }
+                />
+                Fecha y hora
+              </label>
+
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox
+                  checked={includeLocation}
+                  onCheckedChange={(checked) =>
+                    setIncludeLocation(checked === true)
+                  }
+                />
+                Ubicación
+              </label>
+
+              <label className="flex items-center gap-2 text-sm">
+                <Checkbox
+                  checked={includeAttendees}
+                  onCheckedChange={(checked) =>
+                    setIncludeAttendees(checked === true)
+                  }
+                />
+                Lista de participantes
+              </label>
+            </div>
           </div>
 
-          </div>
-          
           {/* Right Panel - Preview */}
           <div className="w-1/2 border-l pl-6">
-            <h4 className="text-sm font-medium text-gray-700 mb-3">Vista previa</h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-3">
+              Vista previa
+            </h4>
             <div className="bg-gray-50 rounded-lg p-4 min-h-96 max-h-96 overflow-y-auto">
               {isLoadingPreview ? (
                 <div className="flex items-center justify-center h-20">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                 </div>
               ) : (
-                <div 
+                <div
                   className="text-sm text-gray-700 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: preview || "<p class='text-gray-500 italic'>Configura las opciones para ver la vista previa</p>"
+                    __html:
+                      preview ||
+                      "<p class='text-gray-500 italic'>Configura las opciones para ver la vista previa</p>",
                   }}
                 />
               )}
             </div>
-            
+
             <div className="flex justify-end gap-2 pt-4">
               <Button
                 variant="outline"
@@ -263,7 +292,11 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
               </Button>
               <Button
                 onClick={handleGenerateDescription}
-                disabled={isGenerating || (selectedTemplate === "personalizado" && !customTemplate.trim())}
+                disabled={
+                  isGenerating ||
+                  (selectedTemplate === "personalizado" &&
+                    !customTemplate.trim())
+                }
               >
                 {isGenerating ? "Generando..." : "Aplicar Plantilla"}
               </Button>
