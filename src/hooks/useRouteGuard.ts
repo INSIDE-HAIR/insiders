@@ -73,7 +73,7 @@ export function useRouteGuard(): UseRouteGuardReturn {
 
   // Function to redirect to an authorized route
   const redirectToAuthorized = useCallback(() => {
-    const accessibleRoutes = getAccessibleRoutes(user)
+    const accessibleRoutes = getAccessibleRoutesCallback()
     
     if (accessibleRoutes.length > 0) {
       // Try to find a suitable route based on user role
@@ -91,7 +91,7 @@ export function useRouteGuard(): UseRouteGuardReturn {
     } else {
       router.push('/')
     }
-  }, [user, router])
+  }, [user, router, getAccessibleRoutesCallback])
 
   return {
     isLoading,

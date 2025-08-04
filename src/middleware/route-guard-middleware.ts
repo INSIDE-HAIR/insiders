@@ -235,6 +235,9 @@ export function canAccessAdminFeature(
 }
 
 // Export middleware function
-export function routeGuardMiddleware(request: NextRequest, event: NextFetchEvent) {
+export function routeGuardMiddleware(
+  request: NextRequest,
+  event: NextFetchEvent
+) {
   return routeGuardHandler(request);
 }
