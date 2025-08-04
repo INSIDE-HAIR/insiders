@@ -17,7 +17,11 @@
       "Bash(sed:*)",
       "Bash(npx next lint:*)",
       "Bash(grep:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npx npm-check-updates:*)",
+      "Bash(tasklist)",
+      "Bash(cmd /c \"rmdir /s /q node_modules\")",
+      "Bash(del package-lock.json)"
     ],
     "deny": []
   }

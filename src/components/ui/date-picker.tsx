@@ -322,16 +322,16 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100 rounded-l-md rounded-r-md"
         ),
-        range_end: "day-range-end",
-        selected:
+        day_range_end: "day-range-end",
+        day_selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground rounded-l-md rounded-r-md",
-        today: "bg-accent text-accent-foreground",
-        outside:
+        day_today: "bg-accent text-accent-foreground",
+        day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        disabled: "text-muted-foreground opacity-50",
-        range_middle:
+        day_disabled: "text-muted-foreground opacity-50",
+        day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
-        hidden: "invisible",
+        day_hidden: "invisible",
         ...classNames,
       }}
       components={{

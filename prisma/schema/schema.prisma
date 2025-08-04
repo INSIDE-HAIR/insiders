@@ -11,16 +11,17 @@ generator client {
 }
 
 // Import all schema files
-
-// model Offer {
-//   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-//   name        String
-//   description String
-//   price       Float
-//   services    String[]
-//   users       User[]
-//   startDate   DateTime
-//   endDate     DateTime
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-// }
+import "access.prisma"
+import "auth.prisma"
+import "codes.prisma"
+import "contactBackup.prisma"
+import "documents.prisma"
+import "drive.prisma"
+import "fields.prisma"
+import "forms.prisma"
+import "holded.prisma"
+import "media.prisma"
+import "page.prisma"
+import "products.prisma"
+import "services.prisma"
+import "user.prisma"
