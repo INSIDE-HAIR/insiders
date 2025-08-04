@@ -228,11 +228,6 @@ export const Icons = {
   FaXTwitter: FaXTwitter,
   FaInstagram: FaInstagram,
   FaWhatsapp: FaWhatsapp,
-  Facebook,
-  Youtube,
-  Instagram,
-  Linkedin,
-  Twitter,
 
   // Communication & Contact
   Mail,
@@ -284,6 +279,8 @@ export const Icons = {
   Database,
   Palette,
   Rocket,
+  Target,
+  Zap,
 
   // Team Logos
   TeamLogo1: Users,

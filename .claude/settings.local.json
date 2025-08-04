@@ -25,7 +25,8 @@
       "Bash(npm uninstall:*)",
       "Bash(npx prisma:*)",
       "WebFetch(domain:www.prisma.io)",
-      "Bash(npm run type-check:*)"
+      "Bash(npm run type-check:*)",
+      "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")"
     ],
     "deny": []
   }

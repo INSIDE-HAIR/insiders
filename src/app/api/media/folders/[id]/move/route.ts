@@ -7,10 +7,8 @@ const moveFolderSchema = z.object({
   newParentId: z.string().nullable(),
 });
 
-export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {

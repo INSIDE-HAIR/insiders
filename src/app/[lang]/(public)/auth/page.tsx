@@ -4,14 +4,15 @@ import { auth } from "@/src/config/auth/auth";
 import { redirect } from "next/navigation";
 
 interface AuthHomeProps {
-  params: {
+  params: Promise<{
     lang: string;
-  };
+  }>;
 }
 
-export default async function AuthHome({ params }: AuthHomeProps) {
+export default async function AuthHome(props: AuthHomeProps) {
+  const params = await props.params;
   const { lang } = params;
-  
+
   const session = await auth();
   if (!session) {
     redirect(`/${lang}/auth/login`);

@@ -2,10 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/src/lib/prisma";
 
 // GET /api/drive/public/[slug]
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   try {
     // Decode the slug to handle encoded slashes
     const slug = decodeURIComponent(params.slug);

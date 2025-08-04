@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../globals.css";
 import Providers from "@/src/context/providers/Providers";
 import { cn, inter } from "@/src/lib/utils/utils";
 import { Analytics } from "@vercel/analytics/react";

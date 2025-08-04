@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { ipAddress } from "@vercel/functions";
 import { getToken } from 'next-auth/jwt'
 import { checkDatabaseAccess, AccessCheckRequest } from '../lib/access-control-service'
 import { UserSession, UserRole, Permission } from '../types/routes'
@@ -53,7 +54,7 @@ export async function withDatabaseAccessControl(
           user: user,
           route: new URL(req.url).pathname,
           userAgent: req.headers.get('user-agent') || '',
-          ip: req.ip || req.headers.get('x-forwarded-for') || 'unknown',
+          ip: ipAddress(req) || req.headers.get('x-forwarded-for') || 'unknown',
         }
 
         try {
@@ -92,7 +93,7 @@ export async function withDatabaseAccessControl(
         { status: 500 }
       )
     }
-  }
+  };
 }
 
 function createUserSession(token: any): UserSession {

@@ -7,11 +7,12 @@ import { HoldedProvider } from "@/src/context/providers/HoldedProvider";
 import type { User } from "@prisma/client";
 import TabsUserSettings from "./_components/tabs/tabs-user-setttings";
 
-export default async function Page({
-  params,
-}: {
-  params: { userEmail: string };
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ userEmail: string }>;
+  }
+) {
+  const params = await props.params;
   const user = await getUserByEmail(decodeURIComponent(params.userEmail));
   const session = await auth();
 

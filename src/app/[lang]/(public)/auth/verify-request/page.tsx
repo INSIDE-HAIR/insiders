@@ -1,11 +1,11 @@
 import CardWrapper from "@/src/components/custom/auth/card/auth-card-wrapper";
-import { headers } from "next/headers";
+import { headers, type UnsafeUnwrappedHeaders } from "next/headers";
 import React from "react";
 
 type Props = {};
 
 const VerifyRequestPage = (props: Props) => {
-  const headersList = headers();
+  const headersList = (headers() as unknown as UnsafeUnwrappedHeaders);
   const domain = headersList.get("host") || "";
 
   return (

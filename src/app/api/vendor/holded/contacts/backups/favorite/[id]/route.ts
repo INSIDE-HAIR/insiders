@@ -4,10 +4,8 @@ import {
 } from "@/src/lib/utils/holdedContactsFavoriteUtils";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const id = params.id;
     await deleteFavoriteBackup(id);
@@ -23,10 +21,8 @@ export async function DELETE(
   }
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { id } = params;
 

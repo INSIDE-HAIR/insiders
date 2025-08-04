@@ -1,7 +1,6 @@
 @import "tailwindcss";
-@import url("https://use.typekit.net/poc1qid.css") layer(base);
 
-@config "../../../tailwind.config.ts";
+@config "../../tailwind.config.ts";
 
 @layer base {
   :root {

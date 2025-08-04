@@ -10,9 +10,7 @@ const nextConfig = {
     ],
   },
   // Configuración para archivos grandes
-  experimental: {
-    serverComponentsExternalPackages: ["googleapis"],
-  },
+  serverExternalPackages: ["googleapis"],
   // Aumentar límites para uploads
   serverRuntimeConfig: {
     maxDuration: 300, // 5 minutes

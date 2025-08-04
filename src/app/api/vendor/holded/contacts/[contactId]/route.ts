@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  {
-    params,
-  }: {
-    params: { contactId: string };
+  props: {
+    params: Promise<{ contactId: string }>;
   }
 ) {
+  const params = await props.params;
   const { contactId } = params;
   console.log("contactId", contactId);
 

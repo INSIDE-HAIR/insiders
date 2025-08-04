@@ -3,10 +3,16 @@ import prisma from "@/prisma/database";
 import React from "react";
 
 type Props = {
-  searchParams: { token: string };
+  searchParams: Promise<{ token: string }>;
 };
 
-const NewVerificationPage = async ({ searchParams: { token } }: Props) => {
+const NewVerificationPage = async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const {
+    token
+  } = searchParams;
+
   // await new Promise((resolve, reject) => {
   //   setTimeout(resolve, 3000);
   // });

@@ -46,7 +46,7 @@ export async function validatePageAccess(
   // Check database access control (if not skipped)
   if (!options.skipDatabaseCheck) {
     try {
-      const headersList = headers()
+      const headersList = await headers()
       const userAgent = headersList.get('user-agent') || ''
       const forwardedFor = headersList.get('x-forwarded-for')
       const realIP = headersList.get('x-real-ip')

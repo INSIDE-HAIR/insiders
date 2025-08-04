@@ -6,10 +6,8 @@ import { GoogleDriveService } from "@drive/services/drive/GoogleDriveService";
 import { FileAnalyzer } from "@drive/services/analyzer/fileAnalyzer";
 import { HierarchyService } from "@drive/services/hierarchy/hierarchyService";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {

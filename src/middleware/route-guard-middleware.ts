@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse, NextFetchEvent } from "next/server";
+import { NextRequest, NextResponse, NextFetchEvent, NextMiddleware } from "next/server";
+import { geolocation, ipAddress } from "@vercel/functions";
 import { getToken } from "next-auth/jwt";
 import {
   RouteConfig,
@@ -7,6 +8,8 @@ import {
   Permission,
 } from "../types/routes";
 import { checkRouteAccess, getEffectiveRole } from "../lib/route-guard";
+
+type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;
 
 // Routes that should be excluded from middleware processing
 const EXCLUDED_PATHS = [
@@ -70,7 +73,7 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Extract request information for database access control
     const clientIP =
-      request.ip ||
+      ipAddress(request) ||
       request.headers.get("x-forwarded-for") ||
       request.headers.get("x-real-ip") ||
       "unknown";
@@ -78,9 +81,9 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Basic geo info (in production, use proper geo IP service)
     const geo = {
-      country: request.geo?.country || undefined,
-      region: request.geo?.region || undefined,
-      city: request.geo?.city || undefined,
+      country: geolocation(request)?.country || undefined,
+      region: geolocation(request)?.region || undefined,
+      city: geolocation(request)?.city || undefined,
     };
 
     // Check access using route guard with request context
@@ -234,10 +237,24 @@ export function canAccessAdminFeature(
   return requiredRoles ? requiredRoles.includes(user.role) : false;
 }
 
-// Export middleware function
-export function routeGuardMiddleware(
-  request: NextRequest,
-  event: NextFetchEvent
-) {
-  return routeGuardHandler(request);
-}
+// Export middleware factory
+export const routeGuardMiddleware: MiddlewareFactory = (next: NextMiddleware) => {
+  return async (request: NextRequest, event: NextFetchEvent) => {
+    // Check if request and nextUrl are properly defined
+    if (!request || !request.nextUrl) {
+      console.error('Invalid request object in route guard middleware');
+      return NextResponse.next();
+    }
+
+    // Handle route guard logic
+    const guardResponse = await routeGuardHandler(request);
+    
+    // If guard response is a redirect or error, return it
+    if (guardResponse.status !== 200 || guardResponse.headers.get('location')) {
+      return guardResponse;
+    }
+    
+    // Otherwise, continue to next middleware
+    return next(request, event);
+  };
+};

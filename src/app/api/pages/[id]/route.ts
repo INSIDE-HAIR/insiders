@@ -3,10 +3,8 @@ import { PrismaClient, PageStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const { searchParams } = new URL(request.url);
     const deleteOption = searchParams.get("deleteOption");

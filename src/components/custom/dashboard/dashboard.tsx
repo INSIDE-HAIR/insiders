@@ -83,7 +83,7 @@ function Dashboard({
   return (
     <SidebarProvider>
       <AppSidebar
-        {...sidebarData}
+        navMain={sidebarData.navMain}
         user={user}
         teams={teamsWithLogos}
         onTeamChange={handleTeamChange}

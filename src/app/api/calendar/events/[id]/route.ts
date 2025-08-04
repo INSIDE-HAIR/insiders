@@ -61,10 +61,8 @@ const updateEventSchema = z.object({
  * GET /api/calendar/events/[id]
  * Obtiene un evento específico
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Verificar autenticación
     const session = await auth();
@@ -204,10 +202,8 @@ async function updateEvent(
  * PUT /api/calendar/events/[id]
  * Actualiza un evento existente
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return updateEvent(request, { params });
 }
 
@@ -215,10 +211,8 @@ export async function PUT(
  * PATCH /api/calendar/events/[id]
  * Actualiza un evento existente (alias de PUT)
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return updateEvent(request, { params });
 }
 
@@ -226,10 +220,8 @@ export async function PATCH(
  * DELETE /api/calendar/events/[id]
  * Elimina un evento
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Verificar autenticación
     const session = await auth();

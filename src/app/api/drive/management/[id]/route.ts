@@ -32,10 +32,8 @@ const updateRouteSchema = z.object({
 });
 
 // GET /api/drive/management/[id] - Obtener una ruta específica
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {
@@ -67,10 +65,8 @@ export async function GET(
 }
 
 // PUT /api/drive/management/[id] - Actualizar una ruta
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {
@@ -194,10 +190,8 @@ export async function PUT(
 }
 
 // DELETE /api/drive/management/[id] - Eliminar una ruta
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {

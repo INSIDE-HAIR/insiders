@@ -179,11 +179,8 @@ export const downloadFileWithCustomName = async (
           </div>
         `;
 
-        // Determinar qué endpoint del proxy usar
-        const proxyUrl =
-          attempt <= Math.ceil(retries / 2)
-            ? `/api/drive/proxy-download?url=${encodeURIComponent(url)}`
-            : `/api/proxy-download?url=${encodeURIComponent(url)}`;
+        // Usar solo App Router endpoint
+        const proxyUrl = `/api/drive/proxy-download?url=${encodeURIComponent(url)}`;
 
         console.log(
           `Intento ${attempt} (${

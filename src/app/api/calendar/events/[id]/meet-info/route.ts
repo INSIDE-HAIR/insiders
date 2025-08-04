@@ -10,10 +10,8 @@ const logger = new Logger("API:MeetInfo");
  * GET /api/calendar/events/[id]/meet-info
  * Obtiene información detallada de Google Meet de un evento
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
 
@@ -99,10 +97,8 @@ export async function GET(
  * - Regenerar el link de Meet (creando una nueva conferencia)
  * - Actualizar la configuración de la conferencia
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
 

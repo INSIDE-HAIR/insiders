@@ -47,10 +47,8 @@ const updateAccessControlSchema = z.object({
 });
 
 // GET - Obtener control de acceso por ID
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     
@@ -95,10 +93,8 @@ export async function GET(
 }
 
 // PUT - Actualizar control de acceso
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     
@@ -269,10 +265,8 @@ export async function PUT(
 }
 
 // DELETE - Eliminar control de acceso
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     

@@ -3,10 +3,8 @@ import { auth } from "@/src/config/auth/auth";
 import { GoogleCalendarService } from "@/src/features/calendar/services/calendar/GoogleCalendarService";
 
 // Crear/Actualizar enlace de Google Meet
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
 
@@ -79,10 +77,8 @@ export async function POST(
 }
 
 // Eliminar enlace de Google Meet
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
 

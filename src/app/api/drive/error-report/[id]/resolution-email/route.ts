@@ -17,10 +17,8 @@ export const dynamic = "force-dynamic";
  * - subject: Asunto del correo
  * - content: Contenido del correo
  */
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     // Obtener ID del reporte
     const { id } = params;

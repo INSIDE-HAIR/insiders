@@ -8,7 +8,7 @@
         "es": "Equipo de Gestión"
       },
       "plan": "Enterprise",
-      "routes": ["admin", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
+      "routes": ["admin", "dashboard", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
     },
     "creativos": {
       "name": {
@@ -24,7 +24,7 @@
         "es": "Equipo de Consultoría"
       },
       "plan": "Pro", 
-      "routes": ["analytics", "users", "admin", "messages"]
+      "routes": ["analytics", "users", "admin", "dashboard", "messages"]
     },
     "crecimiento": {
       "name": {
@@ -32,7 +32,7 @@
         "es": "Equipo de Crecimiento"
       },
       "plan": "Pro",
-      "routes": ["analytics", "products", "admin", "messages"]
+      "routes": ["analytics", "products", "admin", "dashboard", "messages"]
     }
   },
   "routes": [
@@ -44,6 +44,20 @@
       },
       "href": "/admin",
       "icon": "Home",
+      "type": "direct",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion", "consultoria", "crecimiento"]
+      }
+    },
+    {
+      "id": "dashboard",
+      "label": {
+        "en": "Dashboard",
+        "es": "Dashboard"
+      },
+      "href": "/admin/dashboard",
+      "icon": "BarChart3",
       "type": "direct",
       "access": {
         "roles": ["admin", "super-admin"],

@@ -194,12 +194,11 @@ function filterAndGroupByCategoriesAndLanguages(
 
 export async function GET(
   request: Request,
-  {
-    params,
-  }: {
-    params: { campaign: string };
+  props: {
+    params: Promise<{ campaign: string }>;
   }
 ) {
+  const params = await props.params;
   const { campaign } = params;
 
   if (!campaign) {

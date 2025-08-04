@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import {
   Card,
   CardContent,
@@ -62,11 +62,12 @@ async function getDriveRouteData(slug: string) {
 }
 
 // Componente principal
-export default function DynamicDrivePage({
-  params,
-}: {
-  params: { path: string[]; lang: string };
-}) {
+export default function DynamicDrivePage(
+  props: {
+    params: Promise<{ path: string[]; lang: string }>;
+  }
+) {
+  const params = use(props.params);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
 

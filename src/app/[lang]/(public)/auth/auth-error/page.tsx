@@ -2,10 +2,16 @@ import CardWrapper from "@/src/components/custom/auth/card/auth-card-wrapper";
 import React from "react";
 
 type Props = {
-  searchParams: { error: string };
+  searchParams: Promise<{ error: string }>;
 };
 
-const AuthErrorPage = ({ searchParams: { error } }: Props) => {
+const AuthErrorPage = async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const {
+    error
+  } = searchParams;
+
   if (error === "Verification") {
     return (
       <section className="shadow-2xl h-screen flex items-center justify-center w-screen">

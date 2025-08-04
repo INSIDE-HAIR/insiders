@@ -3,10 +3,8 @@ import { auth } from '@/src/config/auth/auth';
 import prisma from '@/prisma/database';
 
 // GET - Obtener excepción específica
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     
@@ -38,10 +36,8 @@ export async function GET(
 }
 
 // PATCH - Actualizar campos específicos de una excepción
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     
@@ -80,10 +76,8 @@ export async function PATCH(
 }
 
 // DELETE - Eliminar excepción específica
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     
@@ -108,10 +102,8 @@ export async function DELETE(
 }
 
 // POST - Usar excepción (incrementar contador de uso)
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const exception = await prisma.userException.update({
       where: { id: params.id },

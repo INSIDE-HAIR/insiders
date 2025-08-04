@@ -4,12 +4,11 @@ import path from "path";
 
 export async function GET(
   request: Request,
-  {
-    params,
-  }: {
-    params: { year: string; month: string; client: string };
+  props: {
+    params: Promise<{ year: string; month: string; client: string }>;
   }
 ) {
+  const params = await props.params;
   const { client, month, year } = params;
 
   console.log("year", year);

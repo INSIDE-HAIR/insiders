@@ -8,10 +8,8 @@ const updateTagsSchema = z.object({
   action: z.enum(["add", "remove", "set"]),
 });
 
-export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user) {
