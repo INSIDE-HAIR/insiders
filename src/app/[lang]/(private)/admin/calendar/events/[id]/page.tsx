@@ -49,13 +49,6 @@ const EventDetailPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar datos
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadEventAndCalendars();
-    }
-  }, [status, session, loadEventAndCalendars]);
-
   const loadEventAndCalendars = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
@@ -92,6 +85,13 @@ const EventDetailPage: React.FC = () => {
       }));
     }
   }, [eventId, calendarId]);
+
+  // Cargar datos
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadEventAndCalendars();
+    }
+  }, [status, session, loadEventAndCalendars]);
 
   const handleSaveEvent = async (
     updatedEvent: Partial<GoogleCalendarEvent>

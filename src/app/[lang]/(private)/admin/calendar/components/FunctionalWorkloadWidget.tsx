@@ -48,10 +48,9 @@ const FunctionalWorkloadWidget: React.FC = () => {
       setIsLoading(true);
       setError(null);
 
-      const params = new URLSearchParams({
-        startDate,
-        endDate
-      });
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
 
       const response = await fetch(`/api/admin/consultant-workload?${params}`);
       
