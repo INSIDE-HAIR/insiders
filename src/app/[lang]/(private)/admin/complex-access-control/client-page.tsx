@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { UserSession } from '@/src/types/routes';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
@@ -73,9 +73,9 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
 
   useEffect(() => {
     loadComplexControls();
-  }, [currentPage, searchTerm, filterResourceType]);
+  }, [loadComplexControls]);
 
-  const loadComplexControls = async () => {
+  const loadComplexControls = useCallback(async () => {
     try {
       setIsLoading(true);
       const params = new URLSearchParams({
@@ -102,7 +102,7 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, filterResourceType]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Estás seguro de que quieres eliminar este control de acceso complejo?')) {

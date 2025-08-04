@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
@@ -54,9 +54,9 @@ const EventDetailPage: React.FC = () => {
     if (status === "authenticated" && session?.user?.role === "ADMIN") {
       loadEventAndCalendars();
     }
-  }, [status, session, eventId, calendarId]);
+  }, [status, session, loadEventAndCalendars]);
 
-  const loadEventAndCalendars = async () => {
+  const loadEventAndCalendars = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -91,7 +91,7 @@ const EventDetailPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [eventId, calendarId]);
 
   const handleSaveEvent = async (
     updatedEvent: Partial<GoogleCalendarEvent>

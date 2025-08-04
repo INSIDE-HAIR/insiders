@@ -38,7 +38,7 @@ export async function validatePageAccess(
     ? options.requiredRole 
     : options.requiredRole ? [options.requiredRole] : []
     
-  if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
+  if (requiredRoles.length > 0 && !requiredRoles.map(r => r.toLowerCase()).includes(user.role.toLowerCase())) {
     console.log(`❌ Role check failed for ${user.email}: required ${requiredRoles}, has ${user.role}`)
     redirect('/es/unauthorized')
   }
@@ -155,7 +155,7 @@ export async function canAccessAdminFeature(
   if (!requiredRoles) return false
 
   // Basic role check
-  if (!requiredRoles.includes(user.role)) return false
+  if (!requiredRoles.map(r => r.toLowerCase()).includes(user.role.toLowerCase())) return false
 
   // Database check for enhanced security
   try {
@@ -172,7 +172,7 @@ export async function canAccessAdminFeature(
   } catch (error) {
     console.error(`Feature access check failed for ${feature}:`, error)
     // Fall back to role-based check if DB fails
-    return requiredRoles.includes(user.role)
+    return requiredRoles.map(r => r.toLowerCase()).includes(user.role.toLowerCase())
   }
 }
 

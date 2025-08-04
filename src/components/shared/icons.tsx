@@ -228,6 +228,13 @@ export const Icons = {
   FaXTwitter: FaXTwitter,
   FaInstagram: FaInstagram,
   FaWhatsapp: FaWhatsapp,
+  
+  // Lucide Social Media Icons
+  Facebook,
+  Youtube,
+  Instagram,
+  Linkedin,
+  Twitter,
 
   // Communication & Contact
   Mail,

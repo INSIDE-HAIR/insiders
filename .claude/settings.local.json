@@ -26,7 +26,9 @@
       "Bash(npx prisma:*)",
       "WebFetch(domain:www.prisma.io)",
       "Bash(npm run type-check:*)",
-      "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")"
+      "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")",
+      "Bash(rg:*)",
+      "Bash(awk:*)"
     ],
     "deny": []
   }

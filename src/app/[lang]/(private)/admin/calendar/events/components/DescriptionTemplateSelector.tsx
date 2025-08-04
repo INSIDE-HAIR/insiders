@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Select,
   SelectContent,
@@ -103,7 +103,7 @@ export const DescriptionTemplateSelector: React.FC<
     }
   };
 
-  const loadPreview = async () => {
+  const loadPreview = useCallback(async () => {
     if (!eventId || !calendarId) return;
 
     setIsLoadingPreview(true);
@@ -139,21 +139,14 @@ export const DescriptionTemplateSelector: React.FC<
     } finally {
       setIsLoadingPreview(false);
     }
-  };
+  }, [eventId, calendarId, selectedTemplate, customTemplate, includeAttendees, includeLocation, includeDateTime]);
 
   // Load preview when dialog opens and when settings change
   useEffect(() => {
     if (isDialogOpen) {
       loadPreview();
     }
-  }, [
-    isDialogOpen,
-    selectedTemplate,
-    customTemplate,
-    includeAttendees,
-    includeLocation,
-    includeDateTime,
-  ]);
+  }, [isDialogOpen, loadPreview]);
 
   // Reset states when dialog opens
   useEffect(() => {

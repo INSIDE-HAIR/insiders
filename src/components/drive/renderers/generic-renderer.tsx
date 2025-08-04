@@ -330,7 +330,6 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
     currentModalPreview,
     currentModalPreviewIndex,
     item,
-    getEmbedUrl,
   ]);
 
   // Sincronizar índices de previsualización al abrir el modal

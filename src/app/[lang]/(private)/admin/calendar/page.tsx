@@ -10,9 +10,10 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   CalendarIcon,
   PlusIcon,
@@ -110,14 +111,7 @@ const CalendarDashboard: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar estadísticas del dashboard
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadDashboardStats();
-    }
-  }, [status, session]);
-
-  const loadDashboardStats = async () => {
+  const loadDashboardStats = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -208,7 +202,14 @@ const CalendarDashboard: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  // Cargar estadísticas del dashboard
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadDashboardStats();
+    }
+  }, [status, session, loadDashboardStats]);
 
   const quickActions: QuickAction[] = [
     {
@@ -482,7 +483,7 @@ const CalendarDashboard: React.FC = () => {
 
       {/* Quick Link to Health */}
       <div className='text-center'>
-        <a
+        <Link
           href='/admin/calendar/health'
           className='inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors'
         >
@@ -490,7 +491,7 @@ const CalendarDashboard: React.FC = () => {
           <span className='font-medium'>
             Ver Diagnóstico Completo y Documentación
           </span>
-        </a>
+        </Link>
       </div>
     </div>
   );

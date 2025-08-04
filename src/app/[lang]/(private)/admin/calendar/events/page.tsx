@@ -7,7 +7,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -116,21 +116,7 @@ const CalendarEventsPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar datos iniciales
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadInitialData();
-    }
-  }, [status, session]);
-
-  // Recargar eventos cuando cambien los filtros
-  useEffect(() => {
-    if (state.calendars.length > 0) {
-      loadEvents();
-    }
-  }, [activeCalendars, timeRange, search]);
-
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -158,9 +144,9 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, []);
 
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -270,7 +256,21 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [activeCalendars, timeRange, search]);
+
+  // Cargar datos iniciales
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadInitialData();
+    }
+  }, [status, session, loadInitialData]);
+
+  // Recargar eventos cuando cambien los filtros
+  useEffect(() => {
+    if (state.calendars.length > 0) {
+      loadEvents();
+    }
+  }, [loadEvents, state.calendars.length]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
