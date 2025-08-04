@@ -40,6 +40,9 @@ enum UserRole {
   ADMIN
   CLIENT
   EMPLOYEE
+  DEBTOR
+  PROVIDER
+  LEAD
 }
 
 model Group {

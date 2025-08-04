@@ -166,13 +166,15 @@ async function createUserSession(
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: ["read"],
-    editor: ["read", "write"],
-    admin: ["read", "write", "manage", "configure"],
-    "super-admin": ["read", "write", "manage", "configure"],
+    CLIENT: ["read"],
+    EMPLOYEE: ["read", "write"],
+    ADMIN: ["read", "write", "manage", "configure"],
+    DEBTOR: ["read"],
+    PROVIDER: ["read", "write"],
+    LEAD: ["read"],
   };
 
-  return permissions[role] || permissions["user"];
+  return permissions[role] || permissions["CLIENT"];
 }
 
 function shouldExcludePath(pathname: string): boolean {
@@ -223,14 +225,14 @@ export function canAccessAdminFeature(
   if (!user?.isAuthenticated) return false;
 
   const adminFeatures = {
-    users: ["admin"],
-    calendar: ["admin"],
-    drive: ["admin"],
-    holded: ["admin"],
-    sitemap: ["admin"],
-    "system-config": ["admin"],
-    "access-control": ["admin"],
-    "complex-access-control": ["admin"],
+    users: ["ADMIN"],
+    calendar: ["ADMIN"],
+    drive: ["ADMIN"],
+    holded: ["ADMIN"],
+    sitemap: ["ADMIN"],
+    "system-config": ["ADMIN"],
+    "access-control": ["ADMIN"],
+    "complex-access-control": ["ADMIN"],
   };
 
   const requiredRoles = adminFeatures[feature as keyof typeof adminFeatures];
