@@ -102,8 +102,8 @@ function createUserSession(token: any): UserSession {
   return {
     id: token.sub,
     email: token.email,
-    role: token.role || 'user',
-    permissions: getPermissionsForRole(token.role || 'user'),
+    role: token.role || 'CLIENT',
+    permissions: getPermissionsForRole(token.role || 'CLIENT'),
     isAuthenticated: true,
     domain
   }
@@ -111,13 +111,12 @@ function createUserSession(token: any): UserSession {
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: ['read'],
-    editor: ['read', 'write'],
-    admin: ['read', 'write', 'manage', 'configure'],
-    "super-admin": ['read', 'write', 'manage', 'configure']
+    CLIENT: ['read'],
+    EMPLOYEE: ['read', 'write'],
+    ADMIN: ['read', 'write', 'manage', 'configure']
   }
   
-  return permissions[role] || permissions['user']
+  return permissions[role] || permissions['CLIENT']
 }
 
 /**
@@ -147,7 +146,7 @@ export function protectedApiRoute(
 export function adminApiRoute(
   handler: (req: NextRequest, user: UserSession) => Promise<NextResponse>
 ) {
-  return protectedApiRoute(handler, { roles: ['admin'] })
+  return protectedApiRoute(handler, { roles: ['ADMIN'] })
 }
 
 /**

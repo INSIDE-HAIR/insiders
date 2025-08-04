@@ -36,8 +36,8 @@ export function useRouteGuard(): UseRouteGuardReturn {
     return {
       id: session.user.email || '',
       email: session.user.email || '',
-      role: (session.user as any).role || 'user',
-      permissions: getPermissionsForRole((session.user as any).role || 'user'),
+      role: (session.user as any).role || 'CLIENT',
+      permissions: getPermissionsForRole((session.user as any).role || 'CLIENT'),
       isAuthenticated: true,
       domain: session.user.email?.split('@')[1]
     };
@@ -82,7 +82,7 @@ export function useRouteGuard(): UseRouteGuardReturn {
       // Try to find a suitable route based on user role
       let targetRoute = '/'
       
-      if (user?.role === 'admin' || user?.role === 'super-admin') {
+      if (user?.role === 'ADMIN') {
         const adminRoute = accessibleRoutes.find(r => r.path.startsWith('/admin'))
         if (adminRoute) targetRoute = adminRoute.path
       } else if (user?.isAuthenticated) {
@@ -114,7 +114,7 @@ export function useAdminRouteGuard() {
   const pathname = usePathname()
 
   const isAdminRoute = pathname?.startsWith('/admin') ?? false
-  const canAccessAdmin = routeGuard.user?.role === 'admin' || routeGuard.user?.role === 'super-admin'
+  const canAccessAdmin = routeGuard.user?.role === 'ADMIN'
 
   return {
     ...routeGuard,
@@ -132,14 +132,14 @@ export function useFeatureAccess() {
     if (!user?.isAuthenticated) return false
 
     const featurePermissions = {
-      'user-management': ['admin', 'super-admin'],
-      'calendar-management': ['admin', 'super-admin'],
-      'drive-management': ['admin', 'super-admin'],
-      'holded-integration': ['admin', 'super-admin'],
-      'sitemap-management': ['super-admin'],
-      'system-configuration': ['super-admin'],
-      'content-editing': ['editor', 'admin', 'super-admin'],
-      'analytics': ['admin', 'super-admin']
+      'user-management': ['ADMIN'],
+      'calendar-management': ['ADMIN'],
+      'drive-management': ['ADMIN'],
+      'holded-integration': ['ADMIN'],
+      'sitemap-management': ['ADMIN'],
+      'system-configuration': ['ADMIN'],
+      'content-editing': ['EMPLOYEE', 'ADMIN'],
+      'analytics': ['ADMIN']
     }
 
     const requiredRoles = featurePermissions[feature as keyof typeof featurePermissions]
@@ -177,11 +177,10 @@ export function useDomainValidation() {
 // Utility function to get permissions for role
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    'user': ['read'],
-    'editor': ['read', 'write'],
-    'admin': ['read', 'write', 'manage'],
-    'super-admin': ['read', 'write', 'manage', 'configure']
+    'CLIENT': ['read'],
+    'EMPLOYEE': ['read', 'write'],
+    'ADMIN': ['read', 'write', 'manage', 'configure']
   }
   
-  return permissions[role] || permissions['user']
+  return permissions[role] || permissions['CLIENT']
 }

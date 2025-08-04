@@ -212,14 +212,14 @@ async function createUserSession(
 
   const domain = token.email.split("@")[1];
   
-  // Normalize role to lowercase for consistency
-  const normalizedRole = (token.role || "user").toLowerCase() as UserRole;
+  // Use role directly from Prisma (already in correct format)
+  const userRole = (token.role || "CLIENT") as UserRole;
 
   const userSession = {
     id: token.sub,
     email: token.email,
-    role: normalizedRole,
-    permissions: getPermissionsForRole(normalizedRole),
+    role: userRole,
+    permissions: getPermissionsForRole(userRole),
     isAuthenticated: true,
     domain,
   };
@@ -228,7 +228,7 @@ async function createUserSession(
   if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
     console.log(`\n======= USER SESSION DEBUG =======`);
     console.log(`Original token role: "${token.role}"`);
-    console.log(`Normalized role: "${normalizedRole}"`);
+    console.log(`Final user role: "${userRole}"`);
     console.log(`Domain: "${domain}"`);
     console.log(`Permissions:`, userSession.permissions);
     console.log(`Full session:`, userSession);
@@ -240,13 +240,12 @@ async function createUserSession(
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: ["read"],
-    editor: ["read", "write"],
-    admin: ["read", "write", "manage", "configure"],
-    "super-admin": ["read", "write", "manage", "configure"],
+    CLIENT: ["read"],
+    EMPLOYEE: ["read", "write"],
+    ADMIN: ["read", "write", "manage", "configure"],
   };
 
-  return permissions[role] || permissions["user"];
+  return permissions[role] || permissions["CLIENT"];
 }
 
 function shouldExcludePath(pathname: string): boolean {
@@ -298,14 +297,14 @@ export function canAccessAdminFeature(
   if (!user?.isAuthenticated) return false;
 
   const adminFeatures = {
-    users: ["admin"],
-    calendar: ["admin"],
-    drive: ["admin"],
-    holded: ["admin"],
-    sitemap: ["admin"],
-    "system-config": ["admin"],
-    "access-control": ["admin"],
-    "complex-access-control": ["admin"],
+    users: ["ADMIN"],
+    calendar: ["ADMIN"],
+    drive: ["ADMIN"],
+    holded: ["ADMIN"],
+    sitemap: ["ADMIN"],
+    "system-config": ["ADMIN"],
+    "access-control": ["ADMIN"],
+    "complex-access-control": ["ADMIN"],
   };
 
   const requiredRoles = adminFeatures[feature as keyof typeof adminFeatures];

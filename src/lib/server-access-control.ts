@@ -85,7 +85,7 @@ export async function validatePageAccess(
  */
 export async function validateAdminAccess(path: string): Promise<UserSession> {
   return validatePageAccess(path, {
-    requiredRole: 'admin',
+    requiredRole: 'ADMIN',
     redirectTo: '/es/auth/login'
   })
 }
@@ -97,7 +97,7 @@ export async function validateComplexAccessControl(
   ruleId: string,
   path: string
 ): Promise<{ user: UserSession; hasAccess: boolean; reason?: string }> {
-  const user = await validatePageAccess(path, { requiredRole: 'admin' })
+  const user = await validatePageAccess(path, { requiredRole: 'ADMIN' })
   
   try {
     const accessRequest: AccessCheckRequest = {
@@ -200,13 +200,12 @@ function createUserSessionFromServerSession(session: any): UserSession {
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: ["read"],
-    editor: ["read", "write"],
-    admin: ["read", "write", "manage", "configure"],
-    "super-admin": ["read", "write", "manage", "configure"]
+    CLIENT: ["read"],
+    EMPLOYEE: ["read", "write"],
+    ADMIN: ["read", "write", "manage", "configure"]
   }
   
-  return permissions[role] || permissions['user']
+  return permissions[role] || permissions['CLIENT']
 }
 
 /**

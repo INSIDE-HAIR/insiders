@@ -1,5 +1,5 @@
 export type AccessType = 'public' | 'private' | 'auth' | 'admin' | 'api'
-export type UserRole = 'user' | 'editor' | 'admin' | 'super-admin'
+export type UserRole = 'CLIENT' | 'EMPLOYEE' | 'ADMIN'
 export type Permission = 'read' | 'write' | 'manage' | 'configure'
 
 export interface RoleDefinition {
