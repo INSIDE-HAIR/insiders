@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
 import type { UserSession, AccessCheckResult, RouteConfig, UserRole, Permission } from '../types/routes';
@@ -31,16 +31,19 @@ export function useRouteGuard(): UseRouteGuardReturn {
   const [isLoading, setIsLoading] = useState(true)
 
   // Convert NextAuth session to UserSession
-  const user: UserSession | null = session?.user ? {
-    id: session.user.email || '',
-    email: session.user.email || '',
-    role: (session.user as any).role || 'user',
-    permissions: getPermissionsForRole((session.user as any).role || 'user'),
-    isAuthenticated: true,
-    domain: session.user.email?.split('@')[1]
-  } : null
+  const user: UserSession | null = useMemo(() => {
+    if (!session?.user) return null;
+    return {
+      id: session.user.email || '',
+      email: session.user.email || '',
+      role: (session.user as any).role || 'user',
+      permissions: getPermissionsForRole((session.user as any).role || 'user'),
+      isAuthenticated: true,
+      domain: session.user.email?.split('@')[1]
+    };
+  }, [session])
 
-  const effectiveRole = getEffectiveRole(user)
+  const effectiveRole = useMemo(() => getEffectiveRole(user), [user])
 
   // Check current route access
   useEffect(() => {

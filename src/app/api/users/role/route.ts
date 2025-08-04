@@ -1,13 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminApiRoute } from "@/src/middleware/api-access-control";
+import { getToken } from "next-auth/jwt";
 import prisma from "@/src/lib/prisma";
 export const dynamic = "force-dynamic";
 
 /**
  * GET: Obtener usuarios por rol
  */
-export const GET = adminApiRoute(async (request: NextRequest, user) => {
+export async function GET(request: NextRequest) {
   try {
+    // Check authentication and admin role
+    const token = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const userRole = token.role as string || 'user';
+    if (userRole !== 'admin' && userRole !== 'super-admin') {
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
+    }
+
+    const user = {
+      id: token.sub,
+      email: token.email,
+      role: userRole
+    };
+
     console.log(`✅ Admin ${user.email} requesting users by role`);
     
     const url = new URL(request.url);
@@ -54,4 +81,4 @@ export const GET = adminApiRoute(async (request: NextRequest, user) => {
       { status: 500 }
     );
   }
-});
+}

@@ -1,11 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminApiRoute } from "@/src/middleware/api-access-control";
+import { getToken } from "next-auth/jwt";
 import prisma from "@/src/lib/prisma";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
 const HOLDED_API_BASE_URL = "https://api.holded.com/api/invoicing/v1/contacts";
 
-export const POST = adminApiRoute(async (request: NextRequest, user) => {
+export async function POST(request: NextRequest) {
   try {
+    // Check authentication and admin role
+    const token = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+
+    if (!token) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    const userRole = token.role as string || 'user';
+    if (userRole !== 'admin' && userRole !== 'super-admin') {
+      return NextResponse.json(
+        { error: 'Admin access required' },
+        { status: 403 }
+      );
+    }
+
+    const user = {
+      id: token.sub,
+      email: token.email,
+      role: userRole
+    };
+
     console.log(`✅ Admin ${user.email} starting user sync with Holded`);
     
     // Get all existing users with holdedId
@@ -98,4 +125,4 @@ export const POST = adminApiRoute(async (request: NextRequest, user) => {
       { status: 500 }
     );
   }
-});
+}
