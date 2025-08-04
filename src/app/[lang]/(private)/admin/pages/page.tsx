@@ -714,7 +714,7 @@ export default function PageCreator({}) {
       )),
     ].flat();
 
-    return options.filter((option): option is React.JSX.Element => option !== null);
+    return options.filter((option): option is React.ReactElement => option !== null);
   };
 
   const handleParentChange = (parentId: string) => {
