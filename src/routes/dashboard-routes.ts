@@ -1,4 +1,6 @@
-{
+import { DashboardRoutes } from '@/src/types/dashboard-routes'
+
+export const dashboardRoutesData: DashboardRoutes = {
   "version": "1.0.0",
   "lastUpdated": "2025-01-01T00:00:00Z",
   "teams": {
@@ -8,7 +10,7 @@
         "es": "Equipo de Gestión"
       },
       "plan": "Enterprise",
-      "routes": ["admin", "dashboard", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
+      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
     },
     "creativos": {
       "name": {
@@ -129,6 +131,15 @@
           },
           "href": "/admin/users/create",
           "icon": "UserPlus"
+        },
+        {
+          "id": "groups",
+          "label": {
+            "en": "Groups",
+            "es": "Grupos"
+          },
+          "href": "/admin/groups",
+          "icon": "Users"
         }
       ]
     },
@@ -405,6 +416,15 @@
           },
           "href": "/admin/complex-access-control/metrics",
           "icon": "BarChart3"
+        },
+        {
+          "id": "access-control-docs",
+          "label": {
+            "en": "Authentication Docs",
+            "es": "Documentación de Auth"
+          },
+          "href": "/admin/access-control/docs",
+          "icon": "BookOpen"
         }
       ]
     }

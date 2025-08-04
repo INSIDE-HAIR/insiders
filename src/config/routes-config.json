@@ -314,6 +314,15 @@
             ]
           },
           {
+            "path": "/admin/groups",
+            "label": "Groups Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
+          },
+          {
             "path": "/admin/calendar",
             "label": "Calendar",
             "access": {
@@ -471,6 +480,15 @@
               "requireAuth": true,
               "roles": ["super-admin"],
               "domains": ["@insidesalons.com"]
+            }
+          },
+          {
+            "path": "/admin/access-control/docs",
+            "label": "Authentication Documentation",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
             }
           }
         ]

@@ -111,10 +111,15 @@ class RouteGuard {
         }
       }
       
+      // CAMBIO: Por defecto, las rutas no encontradas son públicas
+      // Solo restringimos las rutas que están explícitamente definidas como privadas
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`Route ${path} not found in config - allowing as public by default`);
+        console.log(`=================================\n`);
+      }
       return {
-        allowed: false,
-        reason: 'Route not found',
-        redirect: this.config.redirects.notFound
+        allowed: true,
+        reason: 'Route not in config - public by default'
       }
     }
 

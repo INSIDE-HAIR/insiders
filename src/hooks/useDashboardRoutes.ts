@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslations } from '@/src/context/TranslationContext'
 import { DashboardRoutes, DashboardRoute, ProcessedNavItem, Locale } from '@/src/types/dashboard-routes'
-import dashboardRoutesData from '@/src/routes/dashboard-routes.json'
+import { dashboardRoutesData } from '@/src/routes/dashboard-routes'
 import { Icons } from '@/src/components/shared/icons'
 import { 
   Home, 
@@ -91,7 +91,7 @@ export function useDashboardRoutes({
   
   const t = useTranslations()
   const [currentTeam, setCurrentTeam] = useState(team)
-  const [routes, setRoutes] = useState<DashboardRoutes>(dashboardRoutesData as DashboardRoutes)
+  const [routes, setRoutes] = useState<DashboardRoutes>(dashboardRoutesData)
 
   // Filter routes based on team access
   const getRoutesForTeam = useCallback((teamId: string): DashboardRoute[] => {
@@ -210,7 +210,6 @@ export function useDashboardRoutes({
 // Hook específico para obtener datos transformados para el sidebar
 export function useSidebarData(options: UseDashboardRoutesOptions = {}) {
   const dashboardRoutes = useDashboardRoutes(options)
-  const [routes] = useState<DashboardRoutes>(dashboardRoutesData as DashboardRoutes)
   
   const sidebarData = useMemo(() => ({
     navMain: dashboardRoutes.navItems,
@@ -225,7 +224,7 @@ export function useSidebarData(options: UseDashboardRoutesOptions = {}) {
       logo: Home, // Default logo, could be made configurable
       plan: team.plan,
       routes: team.routes.map(routeId => {
-        const route = routes.routes.find(r => r.id === routeId)
+        const route = dashboardRoutesData.routes.find(r => r.id === routeId)
         return route ? {
           id: route.id,
           icon: route.icon,
@@ -245,7 +244,7 @@ export function useSidebarData(options: UseDashboardRoutesOptions = {}) {
         }
       })
     }))
-  }), [dashboardRoutes, routes])
+  }), [dashboardRoutes])
 
   return {
     ...sidebarData,
