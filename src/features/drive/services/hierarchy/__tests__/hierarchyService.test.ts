@@ -129,9 +129,9 @@ describe("HierarchyService", () => {
     expect(result.root.children.length).toBe(3);
 
     // Verificar ordenamiento (carpetas primero, luego por número)
-    expect(result.root.children[0].id).toBe("folder1");
-    expect(result.root.children[1].id).toBe("folder2");
-    expect(result.root.children[2].id).toBe("file1");
+    expect(result.root.children[0]?.id).toBe("folder1");
+    expect(result.root.children[1]?.id).toBe("folder2");
+    expect(result.root.children[2]?.id).toBe("file1");
   });
 
   it("Debe manejar correctamente la profundidad máxima", async () => {

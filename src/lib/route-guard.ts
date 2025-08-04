@@ -111,7 +111,7 @@ class RouteGuard {
     // PRIORITY 3: Check email exceptions from config (fallback)
     if (user?.email && this.config.exceptions.byEmail[user.email]) {
       const exception = this.config.exceptions.byEmail[user.email]
-      if (this.matchesRoutePattern(path, exception.allowedRoutes)) {
+      if (exception && this.matchesRoutePattern(path, exception.allowedRoutes)) {
         return { allowed: true, reason: 'Config email exception allows access' }
       }
     }
@@ -190,7 +190,7 @@ class RouteGuard {
 
     // Check domain requirements
     if (access.domains && access.domains.length > 0) {
-      const userDomain = user.email.split('@')[1]
+      const userDomain = user.email.split('@')[1] || ''
       const allowedDomains = access.domains.map(d => d.replace('@', ''))
       
       if (!allowedDomains.includes(userDomain)) {
@@ -208,7 +208,7 @@ class RouteGuard {
 
   private findRoute(path: string): RouteMatch | null {
     // Remove query parameters and hash
-    const cleanPath = path.split('?')[0].split('#')[0]
+    const cleanPath = (path.split('?')[0] || '').split('#')[0] || ''
     
     // Check all route categories
     for (const category of Object.values(this.config.routes)) {
@@ -266,7 +266,7 @@ class RouteGuard {
         
         if (!targetSegment) return false
         
-        if (routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
+        if (routeSegment && routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
           continue // Dynamic segment matches
         }
         if (routeSegment !== targetSegment) {
@@ -299,7 +299,7 @@ class RouteGuard {
           const catchAllName = paramName.slice(3)
           params[catchAllName] = targetSegments.slice(index).join('/')
         } else {
-          params[paramName] = targetSegments[index]
+          params[paramName] = targetSegments[index] || ''
         }
       }
     })
@@ -359,7 +359,7 @@ class RouteGuard {
 
     // Check email exceptions
     if (this.config.exceptions.byEmail[user.email]) {
-      return this.config.exceptions.byEmail[user.email].accessLevel
+      return this.config.exceptions.byEmail[user.email]?.accessLevel || this.config.settings.defaultRole
     }
 
     // Check domain exceptions

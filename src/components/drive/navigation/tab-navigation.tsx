@@ -55,7 +55,7 @@ export const TabNavigation = memo(function TabNavigation({
 
   // Seleccionar automáticamente el primer tab si no hay ninguno seleccionado
   useEffect(() => {
-    if (!currentId && activeAndOrderedTabs.length > 0) {
+    if (!currentId && activeAndOrderedTabs.length > 0 && activeAndOrderedTabs[0]) {
       handleTabInteraction(activeAndOrderedTabs[0]);
     }
   }, [currentId, activeAndOrderedTabs, handleTabInteraction]);

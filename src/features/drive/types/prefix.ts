@@ -74,7 +74,7 @@ export function removePrefix(name: string, prefix: Prefix): string {
 export function extractNumericPrefix(name: string): number | null {
   const match = name.match(/^(\d+)_/);
   if (match && match[1]) {
-    return parseInt(match[1], 10);
+    return parseInt(match[1] || '0', 10);
   }
   return null;
 }
@@ -95,7 +95,7 @@ export function extractPrefixes(name: string): {
   // Detectar prefijos numéricos (01_, 02_, etc.)
   const orderMatch = name.match(/^(\d+)_/);
   if (orderMatch) {
-    order = parseInt(orderMatch[1], 10);
+    order = parseInt(orderMatch[1] || '0', 10);
     prefixes.push(Prefix.ORDER);
     displayName = displayName.replace(/^\d+_/, "");
   }

@@ -20,7 +20,7 @@ export const cleanFieldName = (field: string): string => {
     " ": "",
     "-": "",
   };
-  return field.replace(/[áéíóúÁÉÍÓÚñÑ&+º\s-]/g, (match) => accentsMap[match]);
+  return field?.replace(/[áéíóúÁÉÍÓÚñÑ&+º\s-]/g, (match) => accentsMap[match] || match) || field;
 };
 
 export const transformHoldedData = (

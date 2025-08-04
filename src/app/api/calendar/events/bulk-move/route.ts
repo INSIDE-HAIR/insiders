@@ -86,11 +86,11 @@ export async function POST(request: NextRequest) {
           startDate:
             event.start?.date || event.start?.dateTime?.split("T")[0] || "",
           startTime: event.start?.dateTime
-            ? event.start.dateTime.split("T")[1].substring(0, 5)
+            ? event.start.dateTime.split("T")[1]?.substring(0, 5)
             : undefined,
           endDate: event.end?.date || event.end?.dateTime?.split("T")[0] || "",
           endTime: event.end?.dateTime
-            ? event.end.dateTime.split("T")[1].substring(0, 5)
+            ? event.end.dateTime.split("T")[1]?.substring(0, 5)
             : undefined,
           allDay: !!event.start?.date,
           timeZone: event.start?.timeZone || "Europe/Madrid",

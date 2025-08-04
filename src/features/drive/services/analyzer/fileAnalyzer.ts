@@ -211,7 +211,7 @@ export class FileAnalyzer {
    */
   extractNumericPrefix(name: string): number | null {
     const match = name.match(/^(\d+)_/);
-    return match ? parseInt(match[1], 10) : null;
+    return match ? parseInt(match[1] || '0', 10) : null;
   }
 
   /**
@@ -293,7 +293,7 @@ export class FileAnalyzer {
       // Carpetas con prefijo numérico
       const numericMatch = item.name.match(/^(\d+)_/);
       if (numericMatch) {
-        const order = parseInt(numericMatch[1], 10);
+        const order = parseInt(numericMatch[1] || '0', 10);
         importance += 100 - Math.min(order, 99);
       }
     }

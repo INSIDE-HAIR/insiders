@@ -157,7 +157,7 @@ export const {
       normalizeIdentifier(identifier: string): string {
         // Normaliza el identificador del usuario
         let [local, domain] = identifier.toLowerCase().trim().split("@");
-        domain = domain.split(",")[0];
+        domain = (domain || '').split(",")[0];
         return `${local}@${domain}`; // Retorna el identificador normalizado
       },
     }),

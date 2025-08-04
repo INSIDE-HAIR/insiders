@@ -54,7 +54,7 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
     useContent();
   const currentPathItem = navigationPath.find((item) => item.level === level);
   const sidebarItem =
-    navigationPath.length > 0 ? getItemById(navigationPath[0].id) : null;
+    navigationPath?.length > 0 ? getItemById(navigationPath[0]?.id || '') : null;
   const sidebarTitle = sidebarItem?.displayName || "";
 
   // Verificar si el usuario es admin

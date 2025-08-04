@@ -121,7 +121,9 @@ export class DriveSyncService {
         const processedHierarchy = this.hierarchyService.processPreviewItems([
           hierarchy,
         ])[0];
-        hierarchies.push(processedHierarchy);
+        if (processedHierarchy) {
+          hierarchies.push(processedHierarchy);
+        }
       }
 
       // Calcular próxima sincronización (24 horas después)

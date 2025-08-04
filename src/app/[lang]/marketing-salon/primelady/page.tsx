@@ -59,7 +59,7 @@ export default function Page() {
 
         const menuItems = generateSideMenu(newDataStructure);
         setSideMenu({ list: menuItems });
-        setTab(menuItems[0].id);
+        setTab(menuItems[0]?.id || '');
       } catch (err) {
         setError(err instanceof Error ? err : new Error("An error occurred"));
       } finally {

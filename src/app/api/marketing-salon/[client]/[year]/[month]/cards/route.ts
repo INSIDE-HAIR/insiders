@@ -81,19 +81,19 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         version,
       ] = obj.title.split(/[-_]/);
 
-      const baseId = obj.title.split('.')[0]; // Asumiendo que el formato es consistente
+      const baseId = obj.title.split('.')[0] || obj.title; // Asumiendo que el formato es consistente
       const transformedUrl = convertGoogleDriveLink(obj.url);
       
-      const client = clientsCodes[clientsCode.substring(0, 4) as keyof typeof clientsCodes] || "Desconocido";
-      const campaign = campaignCodes[campaignCode as keyof typeof campaignCodes] || "Desconocido";
-      const category = filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] || "Desconocido";
-      const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
-      const downloadName = `${category}-${lang}-${version}`;
+      const client = clientsCodes[(clientsCode?.substring(0, 4) || '') as keyof typeof clientsCodes] || "Desconocido";
+      const campaign = campaignCodes[(campaignCode || '') as keyof typeof campaignCodes] || "Desconocido";
+      const category = filesCodes[(fileCode?.substring(0, 4) || '') as keyof typeof filesCodes] || "Desconocido";
+      const lang = langCodes[(langCode || '') as keyof typeof langCodes] || "Desconocido";
+      const downloadName = `${category}-${lang}-${version || ''}`;
 
       grouped[baseId] = {
         id: baseId,
-        order: Number(version?.substring(0, 2)) || Number(version),
-        title: `${category}: ${lang}-${version?.substring(0, 2)}`,
+        order: Number(version?.substring(0, 2)) || Number(version || '0'),
+        title: `${category}: ${lang}-${version?.substring(0, 2) || ''}`,
         url: obj.url,
         copy: obj.copy || "",
         transformedUrl: transformedUrl,
@@ -102,9 +102,9 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         downloadName: downloadName,
         client: client,
         campaign: campaign,
-        year: Number(yearAndMonth?.substring(0, 2)),
-        month: Number(yearAndMonth?.substring(2, 4)),
-        groupOrder: Number(family),
+        year: Number(yearAndMonth?.substring(0, 2) || '0'),
+        month: Number(yearAndMonth?.substring(2, 4) || '0'),
+        groupOrder: Number(family || '0'),
         groupTitle: obj.groupTitle || "",
         buttonTitle: obj.buttonTitle || "",
         preview: [],
@@ -116,11 +116,11 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
   // Segunda pasada: procesar objetos con "-P"
   objects.forEach((obj) => {
     if (obj.title.includes("-P")) {
-      const baseId = obj.title.split('-P')[0];
-      const orderMatch = obj.title.split("-P")[1].match(/\d+/);
+      const baseId = obj.title.split('-P')[0] || obj.title;
+      const orderMatch = obj.title.split("-P")[1]?.match(/\d+/);
       const order = orderMatch ? Number(orderMatch[0]) : 0;
 
-      if (grouped[baseId]) {
+      if (baseId && grouped[baseId]) {
         const previewItem: PreviewItem = {
           id: obj.title.substring(0, 25),
           order: order,
@@ -151,13 +151,13 @@ function filterAndGroupByCategoriesAndLanguages(
 
   const filteredItems = items.filter((item) => {
     const parts = item.id.split("-");
-    return categoryCodes.includes(parts[3]);
+    return parts[3] && categoryCodes.includes(parts[3]);
   });
 
   const groupedByCategoryAndLanguage = filteredItems.reduce((acc, item) => {
     const parts = item.id.split("-");
-    const categoryCode = parts[3];
-    const languageCode = parts[4];
+    const categoryCode = parts[3] || '';
+    const languageCode = parts[4] || '';
     const language = langCodes[languageCode] || "Desconocido";
 
     if (!acc[categoryCode]) {

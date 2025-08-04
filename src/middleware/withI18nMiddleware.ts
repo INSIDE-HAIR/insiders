@@ -53,5 +53,5 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
 
 function getLocaleFromPath(pathname: string): string | null {
   const firstSegment = pathname.split("/")[1];
-  return SUPPORTED_LOCALES.includes(firstSegment) ? firstSegment : null;
+  return SUPPORTED_LOCALES.includes(firstSegment || '') ? firstSegment || null : null;
 } 

@@ -483,7 +483,7 @@ export class ComplexRuleEvaluator {
     
     // Parsear período (ej: "365_days", "30_days", "24_hours")
     const [amount, unit] = period.split('_');
-    const amountNum = parseInt(amount);
+    const amountNum = parseInt(amount || '0');
     
     let periodMs = 0;
     switch (unit) {
@@ -514,7 +514,7 @@ export class ComplexRuleEvaluator {
     // Jerarquía de niveles de acceso
     const hierarchy = [AccessLevel.READ, AccessLevel.CREATE, AccessLevel.UPDATE, AccessLevel.DELETE, AccessLevel.FULL];
     
-    const maxLevel = validResults.reduce((max, result) => {
+    const maxLevel = validResults.reduce((max: AccessLevel, result: RuleResult) => {
       const currentIndex = hierarchy.indexOf(result.accessLevel!);
       const maxIndex = hierarchy.indexOf(max);
       return currentIndex > maxIndex ? result.accessLevel! : max;

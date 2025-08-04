@@ -22,7 +22,7 @@ async function reorderSiblings(parentId: string | null) {
 
   for (let i = 0; i < siblings.length; i++) {
     await prisma.dynamicPage.update({
-      where: { id: siblings[i].id },
+      where: { id: siblings[i]?.id || '' },
       data: { order: i },
     });
   }

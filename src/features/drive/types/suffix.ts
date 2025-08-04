@@ -119,7 +119,7 @@ export function extractPreviewPattern(name: string): {
 
   if (match) {
     // Construir el nombre base incluyendo la extensión si existe
-    let baseName = match[1].trim();
+    let baseName = (match[1] || '').trim();
     if (match[3]) {
       baseName += match[3]; // Añadir la extensión al nombre base
     }

@@ -106,7 +106,7 @@ export const AppSidebar = memo(function AppSidebar({
         <SidebarMenu>
           {sidebarItems.map((item) => {
             const isActive =
-              navigationPath.length > 0 && navigationPath[0].id === item.id;
+              navigationPath?.length > 0 && navigationPath[0]?.id === item.id;
 
             return (
               <SidebarMenuItem key={item.id}>

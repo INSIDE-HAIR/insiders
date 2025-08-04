@@ -195,7 +195,7 @@ function isPublicPath(pathname: string): boolean {
 
 // Enhanced middleware with domain validation
 export async function enhancedRouteGuardMiddleware(request: NextRequest) {
-  const response = await routeGuardMiddleware(request, {} as NextFetchEvent);
+  const response = await routeGuardMiddleware(request);
 
   // Add additional security headers
   if (response instanceof NextResponse) {

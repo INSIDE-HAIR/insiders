@@ -96,7 +96,7 @@ function parseCSV(csvContent: string): CsvEventData[] {
   }
 
   // Procesar header
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const headers = lines[0]?.split(',').map(h => h.trim().replace(/"/g, '')) || [];
   
   // Validar headers requeridos
   const requiredHeaders = ['title', 'startDate', 'endDate'];
@@ -109,7 +109,7 @@ function parseCSV(csvContent: string): CsvEventData[] {
   const events: CsvEventData[] = [];
   
   for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
+    const line = lines[i]?.trim() || '';
     if (!line) continue; // Skip empty lines
 
     // Simple CSV parsing (handles basic quoted fields)
@@ -134,7 +134,8 @@ function parseCSV(csvContent: string): CsvEventData[] {
     // Crear objeto evento
     const eventData: any = {};
     headers.forEach((header, index) => {
-      eventData[header] = values[index]?.trim() || '';
+      const value = values[index];
+      eventData[header] = value?.trim() || '';
     });
 
     events.push(eventData as CsvEventData);
@@ -205,7 +206,7 @@ export async function POST(request: NextRequest) {
         if (!validationResult.success) {
           validationErrors.push({
             row: i + 2, // +2 porque empezamos en 1 y saltamos header
-            title: csvEvent.title || 'Unknown',
+            title: csvEvent?.title || 'Unknown',
             errors: validationResult.error.errors.map(e => e.message)
           });
           continue;
@@ -218,7 +219,7 @@ export async function POST(request: NextRequest) {
       } catch (error: any) {
         validationErrors.push({
           row: i + 2,
-          title: csvEvent.title || 'Unknown',
+          title: csvEvent?.title || 'Unknown',
           errors: [error.message]
         });
       }

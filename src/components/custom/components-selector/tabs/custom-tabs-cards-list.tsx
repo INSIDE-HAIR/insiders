@@ -117,14 +117,14 @@ export default function CustomTabsCardsList({
                         key={groupTitle}
                         style={{
                           order:
-                            parseInt(groupTitle.split("-")[0]) === 0
-                              ? groupTitle.split(" ")[1]
-                              : groupTitle.split("-")[0],
+                            parseInt((groupTitle.split("-")[0] || '0')) === 0
+                              ? (groupTitle.split(" ")[1] || '0')
+                              : (groupTitle.split("-")[0] || '0'),
                         }}
                       >
                         {groupTitle !== "Sin Grupo de Familia" && (
                           <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                            {groupTitle.split("-")[1].replace(/_/g, "")}
+                            {(groupTitle.split("-")[1] || '').replace(/_/g, "")}
                           </h4>
                         )}
                         <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
@@ -189,14 +189,14 @@ export default function CustomTabsCardsList({
                               key={groupTitle}
                               style={{
                                 order:
-                                  parseInt(groupTitle.split("-")[0]) === 0
-                                    ? groupTitle.split(" ")[1]
-                                    : groupTitle.split("-")[0],
+                                  parseInt((groupTitle.split("-")[0] || '0')) === 0
+                                    ? (groupTitle.split(" ")[1] || '0')
+                                    : (groupTitle.split("-")[0] || '0'),
                               }}
                             >
                               {groupTitle !== "Sin Grupo de Familia" && (
                                 <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                                  {groupTitle.split("-")[1].replace(/_/g, "")}
+                                  {(groupTitle.split("-")[1] || '').replace(/_/g, "")}
                                 </h4>
                               )}
                               <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
