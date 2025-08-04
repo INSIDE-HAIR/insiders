@@ -39,7 +39,7 @@ export function MoveToModal({
   const renderSelectOptions = (
     pages: DynamicPage[],
     level: number = 0
-  ): JSX.Element[] => {
+  ): React.JSX.Element[] => {
     return pages
       .filter((page) => page.id !== currentPage?.id)
       .map((page) => (

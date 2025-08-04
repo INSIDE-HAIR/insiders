@@ -1045,8 +1045,8 @@ export default function ErrorReportsPage() {
       const thirtyDaysAgo = new Date();
       thirtyDaysAgo.setDate(today.getDate() - 30);
 
-      setCustomDateStart(thirtyDaysAgo.toISOString().split("T")[0]);
-      setCustomDateEnd(today.toISOString().split("T")[0]);
+      setCustomDateStart(thirtyDaysAgo.toISOString().split("T")[0]!);
+      setCustomDateEnd(today.toISOString().split("T")[0]!);
     }
   }, [isCustomDateDialogOpen, customDateStart, customDateEnd]);
 
