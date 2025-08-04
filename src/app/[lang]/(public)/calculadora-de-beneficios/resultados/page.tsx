@@ -61,7 +61,7 @@ export default function ResultadosPage() {
       console.warn(
         `[ResultadosPage] Store step ${currentStep} is not ${CURRENT_PAGE_STEP} and no valid path in map. Forcing to step 1.`
       );
-      router.push(stepToPathMap[1]);
+      router.push(stepToPathMap[1] || '/');
     } else {
       setIsCurrentPageStep(false);
     }
