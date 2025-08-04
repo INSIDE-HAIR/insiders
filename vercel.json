@@ -1,4 +1,6 @@
 {
+  "buildCommand": "turbo build",
+  "outputDirectory": ".next",
   "crons": [
     {
       "path": "/api/cron/backup",
