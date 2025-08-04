@@ -10,7 +10,7 @@ import { Textarea } from '@/src/components/ui/textarea';
 import { Switch } from '@/src/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
 import { Trash2, Plus, Edit, Eye } from 'lucide-react';
-import type { UserException, ExceptionAccessLevel } from '@prisma/client';
+import { UserException, ExceptionAccessLevel } from '@prisma/client';
 
 export default function UserExceptionsPage() {
   const [exceptions, setExceptions] = useState<UserException[]>([]);

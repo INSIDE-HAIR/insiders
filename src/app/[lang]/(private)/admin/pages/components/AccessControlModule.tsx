@@ -41,7 +41,7 @@ import {
   TabsTrigger,
 } from "@/src/components/ui/tabs";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
-import type { UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { toast } from "sonner";
 import { PlusCircle, Trash2 } from "lucide-react";
 
