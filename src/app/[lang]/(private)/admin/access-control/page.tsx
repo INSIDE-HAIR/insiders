@@ -225,7 +225,7 @@ export default function AccessControlPage() {
 
   const updateRule = (index: number, field: keyof AccessRule, value: any) => {
     const newRules = [...formData.rules];
-    newRules[index] = { ...newRules[index], [field]: value };
+    newRules[index] = { ...newRules[index], [field]: value } as AccessRule;
     setFormData({ ...formData, rules: newRules });
   };
 
