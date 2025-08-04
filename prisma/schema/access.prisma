@@ -1,24 +1,28 @@
 // Enums para el control de acceso
 enum ResourceType {
   PAGE
+  API
+  FILE
   FOLDER
-  MEDIA
-  OTHER
+  SERVICE
 }
 
 enum AccessLevel {
   READ
+  WRITE
   CREATE
-  UPDATE
   DELETE
-  FULL
+  MANAGE
+  CONFIGURE
 }
 
 enum SubjectType {
   USER
   ROLE
+  EMAIL
+  DOMAIN
+  IP
   GROUP
-  TAG
 }
 
 // Nuevos enums para lógica compleja
@@ -34,17 +38,17 @@ enum EvaluationStrategy {
 
 enum ConditionOperator {
   EQUALS
+  NOT_EQUALS
   CONTAINS
-  STARTS_WITH
-  ENDS_WITH
-  IN
-  NOT_IN
-  BETWEEN
-  WITHIN_LAST
+  NOT_CONTAINS
   GREATER_THAN
   LESS_THAN
-  NOT_EQUALS
-  NOT_CONTAINS
+  GREATER_THAN_OR_EQUAL
+  LESS_THAN_OR_EQUAL
+  IN
+  NOT_IN
+  EXISTS
+  NOT_EXISTS
 }
 
 model AccessControl {
@@ -245,7 +249,7 @@ model UserException {
   
   // Configuración de equipos y roles temporales
   temporaryTeams String[] @default([]) // Equipos adicionales temporales
-  temporaryRole  UserRole? // Rol temporal que sobrescribe el rol actual
+  temporaryRole  String? // Rol temporal que sobrescribe el rol actual
   
   // Metadatos
   reason      String? // Razón de la excepción
