@@ -14,14 +14,9 @@ const CURRENT_PAGE_STEP = 1;
 export default function CalculadoraDeBeneficiosPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const { nextStep, currentStep, initializeStepFromPath } = useCalculatorStore(
-    (state) => ({
-      nextStep: state.nextStep,
-      currentStep: state.currentStep,
-      initializeStepFromPath: state.initializeStepFromPath,
-    }),
-    shallow
-  );
+  const nextStep = useCalculatorStore((state) => state.nextStep);
+  const currentStep = useCalculatorStore((state) => state.currentStep);
+  const initializeStepFromPath = useCalculatorStore((state) => state.initializeStepFromPath);
 
   useEffect(() => {
     if (pathname) {

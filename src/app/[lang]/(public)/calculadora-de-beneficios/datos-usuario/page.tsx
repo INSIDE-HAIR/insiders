@@ -20,29 +20,19 @@ const CURRENT_PAGE_STEP = 2;
 export default function DatosUsuarioPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const {
-    formData: { full_name, email, phone_number, country_code }, // Added country_code
-    updateFormData,
-    nextStep,
-    goToStep,
-    currentStep,
-    initializeStepFromPath,
-  } = useCalculatorStore(
-    (state) => ({
-      formData: {
-        full_name: state.full_name,
-        email: state.email,
-        phone_number: state.phone_number,
-        country_code: state.country_code, // Added country_code
-      },
-      updateFormData: state.updateFormData,
-      nextStep: state.nextStep,
-      goToStep: state.goToStep,
-      currentStep: state.currentStep,
-      initializeStepFromPath: state.initializeStepFromPath,
-    }),
-    shallow // Add shallow equality checker
-  );
+  const formData = useCalculatorStore((state) => ({
+    full_name: state.full_name,
+    email: state.email,
+    phone_number: state.phone_number,
+    country_code: state.country_code,
+  }));
+  const updateFormData = useCalculatorStore((state) => state.updateFormData);
+  const nextStep = useCalculatorStore((state) => state.nextStep);
+  const goToStep = useCalculatorStore((state) => state.goToStep);
+  const currentStep = useCalculatorStore((state) => state.currentStep);
+  const initializeStepFromPath = useCalculatorStore((state) => state.initializeStepFromPath);
+  
+  const { full_name, email, phone_number, country_code } = formData;
 
   const [errors, setErrors] = useState({
     fullName: "",

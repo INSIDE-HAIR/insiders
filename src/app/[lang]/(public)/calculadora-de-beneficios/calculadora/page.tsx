@@ -18,28 +18,18 @@ const CURRENT_PAGE_STEP = 3;
 export default function CalculadoraPage() {
   const router = useRouter();
   const pathname = usePathname();
-  const {
-    formData: { total_expenses_no_vat, total_team_hours, total_income_no_vat },
-    updateFormData,
-    nextStep,
-    prevStep,
-    currentStep,
-    initializeStepFromPath,
-  } = useCalculatorStore(
-    (state) => ({
-      formData: {
-        total_expenses_no_vat: state.total_expenses_no_vat,
-        total_team_hours: state.total_team_hours,
-        total_income_no_vat: state.total_income_no_vat,
-      },
-      updateFormData: state.updateFormData,
-      nextStep: state.nextStep,
-      prevStep: state.prevStep,
-      currentStep: state.currentStep,
-      initializeStepFromPath: state.initializeStepFromPath,
-    }),
-    shallow // Add shallow equality checker
-  );
+  const formData = useCalculatorStore((state) => ({
+    total_expenses_no_vat: state.total_expenses_no_vat,
+    total_team_hours: state.total_team_hours,
+    total_income_no_vat: state.total_income_no_vat,
+  }));
+  const updateFormData = useCalculatorStore((state) => state.updateFormData);
+  const nextStep = useCalculatorStore((state) => state.nextStep);
+  const prevStep = useCalculatorStore((state) => state.prevStep);
+  const currentStep = useCalculatorStore((state) => state.currentStep);
+  const initializeStepFromPath = useCalculatorStore((state) => state.initializeStepFromPath);
+  
+  const { total_expenses_no_vat, total_team_hours, total_income_no_vat } = formData;
 
   useEffect(() => {
     if (pathname) {
