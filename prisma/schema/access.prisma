@@ -5,6 +5,8 @@ enum ResourceType {
   FILE
   FOLDER
   SERVICE
+  MEDIA
+  OTHER
 }
 
 enum AccessLevel {
