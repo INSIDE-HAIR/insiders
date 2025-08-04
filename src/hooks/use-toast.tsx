@@ -1,6 +1,6 @@
 import * as React from "react"
 
-interface Toast {
+interface ToastBase {
   id: string
   title?: string
   description?: string
@@ -10,7 +10,7 @@ interface Toast {
 
 type ToastActionElement = React.ReactElement<typeof React.Fragment>
 
-interface ToastProps extends Toast {}
+interface ToastProps extends ToastBase {}
 
 const TOAST_LIMIT = 1
 const TOAST_REMOVE_DELAY = 4000

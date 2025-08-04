@@ -95,7 +95,6 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
     } catch (error) {
       console.error('Error loading complex controls:', error);
       toast({
-        id: "load-error",
         title: "Error",
         description: "No se pudieron cargar los controles de acceso complejos",
         variant: "destructive",
@@ -119,7 +118,6 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
 
       if (response.ok) {
         toast({
-          id: "delete-success",
           title: "Éxito",
           description: "Control de acceso eliminado correctamente",
         });
@@ -128,7 +126,6 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
     } catch (error) {
       console.error('Error deleting complex control:', error);
       toast({
-        id: "delete-error",
         title: "Error",
         description: "No se pudo eliminar el control de acceso",
         variant: "destructive",
