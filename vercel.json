@@ -1,6 +1,17 @@
 {
-  "buildCommand": "turbo build",
+  "buildCommand": "npm run build",
   "outputDirectory": ".next",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next",
+      "config": {
+        "buildCommand": "npm run build"
+      }
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/backup",
@@ -12,6 +23,9 @@
       "maxDuration": 300
     },
     "src/app/api/drive/diagnostic/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/**/*.ts": {
       "maxDuration": 60
     }
   },

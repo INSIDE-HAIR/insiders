@@ -1056,7 +1056,7 @@ export const useEventsColumns = (
             let meetingCode: string | null = null;
             if (hangoutLink) {
               const match = hangoutLink.match(/meet\.google\.com\/([a-z-]+)/);
-              meetingCode = match ? match[1] : null;
+              meetingCode = match ? match[1] || null : null;
             }
 
             if (!meetingCode) return <span className="text-muted-foreground">-</span>;

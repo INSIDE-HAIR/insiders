@@ -188,7 +188,6 @@ export function TestingPanel({ resourceId, control }: TestingPanelProps) {
   const handleEvaluate = async () => {
     if (!resourceId) {
       toast({
-        id: "resource-id-error",
         title: "Error",
         description: "Debes especificar un Resource ID para probar",
         variant: "destructive",

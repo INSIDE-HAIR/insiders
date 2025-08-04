@@ -71,10 +71,6 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    loadComplexControls();
-  }, [loadComplexControls]);
-
   const loadComplexControls = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -103,6 +99,10 @@ export function ComplexAccessControlClient({ user }: ComplexAccessControlClientP
       setIsLoading(false);
     }
   }, [currentPage, searchTerm, filterResourceType]);
+
+  useEffect(() => {
+    loadComplexControls();
+  }, [loadComplexControls]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('¿Estás seguro de que quieres eliminar este control de acceso complejo?')) {
