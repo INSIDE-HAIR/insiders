@@ -77,7 +77,9 @@ export default async function ProfilePage() {
                     {session.user.email}
                   </div>
                   <Badge variant={session.user.role === "ADMIN" ? "default" : "secondary"}>
-                    {session.user.role || "Usuario"}
+                    {session.user.role === "ADMIN" ? "Administrador" : 
+                     session.user.role === "EMPLOYEE" ? "Empleado" : 
+                     session.user.role === "CLIENT" ? "Cliente" : "Usuario"}
                   </Badge>
                 </div>
               </div>
@@ -97,6 +99,14 @@ export default async function ProfilePage() {
                     {session.user.isOAuth ? "OAuth" : "Email/Contraseña"}
                   </Badge>
                 </div>
+                {session.user.email && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-muted-foreground">Dominio</p>
+                    <p className="font-mono text-sm bg-muted px-2 py-1 rounded">
+                      {session.user.email.split('@')[1]}
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -124,7 +134,9 @@ export default async function ProfilePage() {
                 <p className="text-sm font-medium">Estado de Verificación</p>
                 <div className="flex items-center gap-2">
                   <UserCheck className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600">Verificado</span>
+                  <span className="text-sm text-green-600">
+                    {session.user.emailVerified ? "Email Verificado" : "Verificado por OAuth"}
+                  </span>
                 </div>
               </div>
               
@@ -144,17 +156,28 @@ export default async function ProfilePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <p className="text-sm font-medium">Último Acceso</p>
+                <p className="text-sm font-medium">Sesión Iniciada</p>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  <span>Hoy, {new Date().toLocaleTimeString()}</span>
+                  <span>
+                    {session.expires ? 
+                      `Expira: ${new Date(session.expires).toLocaleString('es-ES')}` : 
+                      `Activa desde: ${new Date().toLocaleString('es-ES')}`
+                    }
+                  </span>
                 </div>
               </div>
               
               <div className="space-y-2">
-                <p className="text-sm font-medium">Sesiones Activas</p>
-                <p className="text-2xl font-bold">1</p>
-                <p className="text-xs text-muted-foreground">Esta sesión</p>
+                <p className="text-sm font-medium">Información de Sesión</p>
+                <div className="space-y-1">
+                  <p className="text-sm text-muted-foreground">
+                    Token: {session.user.id ? 'Válido' : 'No disponible'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Permisos: {session.user.role === 'ADMIN' ? 'Completos' : session.user.role === 'EMPLOYEE' ? 'Limitados' : 'Básicos'}
+                  </p>
+                </div>
               </div>
               
               <Button variant="outline" size="sm" className="w-full">
