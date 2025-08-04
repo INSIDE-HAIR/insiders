@@ -239,11 +239,11 @@ export default function CodesAdminPage() {
     const [client, campaign, date, fileType, language, version, number] = parts;
 
     const decoded: Record<string, string> = {
-      Cliente: findCodeName("client", client) || client,
-      Campaña: findCodeName("campaign", campaign) || campaign,
+      Cliente: findCodeName("client", client) || client || '',
+      Campaña: findCodeName("campaign", campaign) || campaign || '',
       Fecha: `${date.slice(0, 2)}/${date.slice(2, 4)}`,
-      "Tipo de archivo": findCodeName("file", fileType) || fileType,
-      Idioma: findCodeName("lang", language) || language,
+      "Tipo de archivo": findCodeName("file", fileType) || fileType || '',
+      Idioma: findCodeName("lang", language) || language || '',
       Versión: version,
       Número: number,
     };

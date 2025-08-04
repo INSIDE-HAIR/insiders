@@ -2,6 +2,7 @@
   "name": "authjs",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.8.3",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -114,7 +115,6 @@
     "prisma": "^6.13.0",
     "tailwindcss": "^4.1.11",
     "ts-node": "^10.9.2",
-    "turbo": "^2.5.5",
     "typescript": "^5"
   },
   "overrides": {

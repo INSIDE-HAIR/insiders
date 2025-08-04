@@ -222,14 +222,12 @@ export function TestingPanel({ resourceId, control }: TestingPanelProps) {
       setEvaluationResult(result.result);
 
       toast({
-        id: "evaluation-success",
         title: "Evaluación completada",
         description: `Resultado: ${result.result?.allowed ? 'PERMITIDO' : 'DENEGADO'}`,
       });
     } catch (error) {
       console.error('Error evaluating:', error);
       toast({
-        id: "evaluation-error",
         title: "Error",
         description: error instanceof Error ? error.message : "Error en la evaluación",
         variant: "destructive",
