@@ -6,22 +6,9 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["prismaSchemaFolder"]
+  provider = "prisma-client-js"
 }
 
-// Import all schema files
-import "access.prisma"
-import "auth.prisma"
-import "codes.prisma"
-import "contactBackup.prisma"
-import "documents.prisma"
-import "drive.prisma"
-import "fields.prisma"
-import "forms.prisma"
-import "holded.prisma"
-import "media.prisma"
-import "page.prisma"
-import "products.prisma"
-import "services.prisma"
-import "user.prisma"
+// Configuración para usar múltiples archivos schema
+// Con prismaSchemaFolder habilitado, todos los archivos .prisma en este directorio
+// se cargan automáticamente
