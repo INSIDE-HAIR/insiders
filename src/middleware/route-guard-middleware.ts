@@ -74,16 +74,23 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Debug logging for production
     if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
-      console.log(`[AUTH DEBUG] Path: ${pathname}`);
-      console.log(`[AUTH DEBUG] Token exists: ${!!token}`);
-      console.log(`[AUTH DEBUG] NEXTAUTH_SECRET exists: ${!!process.env.NEXTAUTH_SECRET}`);
-      console.log(`[AUTH DEBUG] Cookies:`, Object.keys(request.cookies.getAll().reduce((acc, cookie) => {
+      console.log(`\n======= AUTH TOKEN DEBUG =======`);
+      console.log(`Path: ${pathname}`);
+      console.log(`Token exists: ${!!token}`);
+      console.log(`NEXTAUTH_SECRET exists: ${!!process.env.NEXTAUTH_SECRET}`);
+      console.log(`Cookies available:`, Object.keys(request.cookies.getAll().reduce((acc, cookie) => {
         acc[cookie.name] = cookie.value.substring(0, 20) + '...';
         return acc;
       }, {} as Record<string, string>)));
       if (token) {
-        console.log(`[AUTH DEBUG] Token sub: ${token.sub}, email: ${token.email}, role: ${token.role}`);
+        console.log(`Token data:`, {
+          sub: token.sub,
+          email: token.email,
+          role: token.role,
+          name: token.name
+        });
       }
+      console.log(`===============================\n`);
     }
 
     const user = token ? await createUserSession(token) : null;
@@ -112,15 +119,24 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Enhanced debug logging
     if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
-      console.log(`[ROUTE-GUARD] Path: ${pathname}`);
-      console.log(`[ROUTE-GUARD] User authenticated: ${user?.isAuthenticated}`);
-      console.log(`[ROUTE-GUARD] User role: ${user?.role}`);
-      console.log(`[ROUTE-GUARD] User email: ${user?.email}`);
-      console.log(`[ROUTE-GUARD] Access allowed: ${accessResult.allowed}`);
-      console.log(`[ROUTE-GUARD] Access reason: ${accessResult.reason}`);
+      console.log(`\n======= ROUTE GUARD DEBUG =======`);
+      console.log(`Path: ${pathname}`);
+      console.log(`User authenticated: ${user?.isAuthenticated}`);
+      console.log(`User ID: ${user?.id}`);
+      console.log(`User email: ${user?.email}`);
+      console.log(`User role (raw): "${user?.role}"`);
+      console.log(`User role (type): ${typeof user?.role}`);
+      console.log(`User domain: ${user?.domain}`);
+      console.log(`User permissions: ${JSON.stringify(user?.permissions)}`);
+      console.log(`Access allowed: ${accessResult.allowed}`);
+      console.log(`Access reason: ${accessResult.reason}`);
       if (accessResult.redirect) {
-        console.log(`[ROUTE-GUARD] Redirect to: ${accessResult.redirect}`);
+        console.log(`Redirect to: ${accessResult.redirect}`);
       }
+      if (accessResult.requiredRole) {
+        console.log(`Required role: ${accessResult.requiredRole}`);
+      }
+      console.log(`================================\n`);
     }
 
     // Handle access result
@@ -195,15 +211,31 @@ async function createUserSession(
   if (!token.sub || !token.email) return null;
 
   const domain = token.email.split("@")[1];
+  
+  // Normalize role to lowercase for consistency
+  const normalizedRole = (token.role || "user").toLowerCase() as UserRole;
 
-  return {
+  const userSession = {
     id: token.sub,
     email: token.email,
-    role: token.role || "user",
-    permissions: getPermissionsForRole(token.role || "user"),
+    role: normalizedRole,
+    permissions: getPermissionsForRole(normalizedRole),
     isAuthenticated: true,
     domain,
   };
+
+  // Debug user session creation
+  if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+    console.log(`\n======= USER SESSION DEBUG =======`);
+    console.log(`Original token role: "${token.role}"`);
+    console.log(`Normalized role: "${normalizedRole}"`);
+    console.log(`Domain: "${domain}"`);
+    console.log(`Permissions:`, userSession.permissions);
+    console.log(`Full session:`, userSession);
+    console.log(`=================================\n`);
+  }
+
+  return userSession;
 }
 
 function getPermissionsForRole(role: UserRole): Permission[] {
