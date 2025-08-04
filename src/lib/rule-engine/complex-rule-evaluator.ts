@@ -512,11 +512,11 @@ export class ComplexRuleEvaluator {
     if (validResults.length === 0) return undefined;
     
     // Jerarquía de niveles de acceso
-    const hierarchy = [AccessLevel.READ, AccessLevel.CREATE, AccessLevel.UPDATE, AccessLevel.DELETE, AccessLevel.FULL];
+    const hierarchy = [AccessLevel.READ, AccessLevel.WRITE, AccessLevel.CREATE, AccessLevel.UPDATE, AccessLevel.DELETE, AccessLevel.MANAGE, AccessLevel.CONFIGURE, AccessLevel.FULL];
     
     const maxLevel = validResults.reduce((max: AccessLevel, result: RuleResult) => {
-      const currentIndex = hierarchy.indexOf(result.accessLevel!);
-      const maxIndex = hierarchy.indexOf(max);
+      const currentIndex = hierarchy.indexOf(result.accessLevel! as any);
+      const maxIndex = hierarchy.indexOf(max as any);
       return currentIndex > maxIndex ? result.accessLevel! : max;
     }, AccessLevel.READ);
     

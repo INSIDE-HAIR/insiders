@@ -28,7 +28,8 @@
       "Bash(npm run type-check:*)",
       "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")",
       "Bash(rg:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
