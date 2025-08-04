@@ -24,7 +24,8 @@
       "Bash(del package-lock.json)",
       "Bash(npm uninstall:*)",
       "Bash(npx prisma:*)",
-      "WebFetch(domain:www.prisma.io)"
+      "WebFetch(domain:www.prisma.io)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": []
   }

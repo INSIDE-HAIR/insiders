@@ -18,6 +18,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "plugins": [
       {
         "name": "next"

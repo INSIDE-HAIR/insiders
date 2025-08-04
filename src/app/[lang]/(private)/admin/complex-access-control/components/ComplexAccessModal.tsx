@@ -302,7 +302,6 @@ export function ComplexAccessModal({ control, onClose, onSuccess }: ComplexAcces
       }
 
       toast({
-        id: "save-success",
         title: "Éxito",
         description: control?.id 
           ? "Control de acceso actualizado correctamente"
@@ -313,7 +312,6 @@ export function ComplexAccessModal({ control, onClose, onSuccess }: ComplexAcces
     } catch (error) {
       console.error('Error:', error);
       toast({
-        id: "save-error",
         title: "Error",
         description: error instanceof Error ? error.message : "Error al guardar el control de acceso",
         variant: "destructive",
