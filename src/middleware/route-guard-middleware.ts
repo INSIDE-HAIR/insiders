@@ -63,11 +63,28 @@ async function routeGuardHandler(request: NextRequest) {
   }
 
   try {
-    // Get user session from token
+    // Get user session from token with more robust configuration
     const token = (await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
+      cookieName: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token' 
+        : 'next-auth.session-token',
     })) as AuthToken | null;
+
+    // Debug logging for production
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`[AUTH DEBUG] Path: ${pathname}`);
+      console.log(`[AUTH DEBUG] Token exists: ${!!token}`);
+      console.log(`[AUTH DEBUG] NEXTAUTH_SECRET exists: ${!!process.env.NEXTAUTH_SECRET}`);
+      console.log(`[AUTH DEBUG] Cookies:`, Object.keys(request.cookies.getAll().reduce((acc, cookie) => {
+        acc[cookie.name] = cookie.value.substring(0, 20) + '...';
+        return acc;
+      }, {} as Record<string, string>)));
+      if (token) {
+        console.log(`[AUTH DEBUG] Token sub: ${token.sub}, email: ${token.email}, role: ${token.role}`);
+      }
+    }
 
     const user = token ? await createUserSession(token) : null;
 
@@ -92,6 +109,19 @@ async function routeGuardHandler(request: NextRequest) {
       userAgent,
       geo,
     });
+
+    // Enhanced debug logging
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`[ROUTE-GUARD] Path: ${pathname}`);
+      console.log(`[ROUTE-GUARD] User authenticated: ${user?.isAuthenticated}`);
+      console.log(`[ROUTE-GUARD] User role: ${user?.role}`);
+      console.log(`[ROUTE-GUARD] User email: ${user?.email}`);
+      console.log(`[ROUTE-GUARD] Access allowed: ${accessResult.allowed}`);
+      console.log(`[ROUTE-GUARD] Access reason: ${accessResult.reason}`);
+      if (accessResult.redirect) {
+        console.log(`[ROUTE-GUARD] Redirect to: ${accessResult.redirect}`);
+      }
+    }
 
     // Handle access result
     if (!accessResult.allowed) {
@@ -121,7 +151,19 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Handle redirects for authenticated users
     if (accessResult.redirect && user?.isAuthenticated) {
-      return NextResponse.redirect(new URL(accessResult.redirect, request.url));
+      // Extract current language from URL path for proper redirect
+      const pathname = request.nextUrl.pathname;
+      const currentLang = pathname.startsWith('/es/') ? 'es' : 
+                         pathname.startsWith('/en/') ? 'en' : 'es';
+      
+      // If redirect doesn't have language prefix, add it
+      let redirectUrl = accessResult.redirect;
+      if (!redirectUrl.startsWith('/es/') && !redirectUrl.startsWith('/en/')) {
+        redirectUrl = `/${currentLang}${redirectUrl}`;
+      }
+      
+      console.log(`[ROUTE-GUARD] Redirecting authenticated user from ${pathname} to ${redirectUrl}`);
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
 
     // Add user info to headers for use in pages

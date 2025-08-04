@@ -554,7 +554,7 @@
     },
     "byDomain": {
       "@insidesalons.com": {
-        "defaultRole": "editor",
+        "defaultRole": "admin",  
         "allowedRoutes": ["/admin/*", "/profile", "/dashboard/*"]
       }
     },

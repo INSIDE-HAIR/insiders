@@ -83,6 +83,9 @@ export const {
   unstable_update,
 } = NextAuth({
   ...authConfig, // Configuración de autenticación importada
+  // Configuración explícita de variables de entorno críticas
+  secret: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
+  basePath: "/api/auth",
   providers: [
     CredentialsProvider({
       id: "credentials", // ID del proveedor de credenciales
@@ -174,6 +177,19 @@ export const {
   session: {
     strategy: "jwt", // Estrategia de sesión basada en JWT
     maxAge: 24 * 60 * 60, // Duración máxima de la sesión en segundos
+  },
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token' 
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
   events: {
     async linkAccount({ user }) {
