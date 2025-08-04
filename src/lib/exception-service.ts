@@ -3,7 +3,7 @@
  */
 
 import prisma from '@/prisma/database';
-import type { UserException, DomainException, ExceptionAccessLevel } from '@prisma/client';
+import { UserException, DomainException, ExceptionAccessLevel } from '@prisma/client';
 
 // Cache para excepciones (5 minutos)
 const CACHE_DURATION = 5 * 60 * 1000;
