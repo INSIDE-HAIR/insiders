@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, NextFetchEvent } from "next/server";
 import { getToken } from "next-auth/jwt";
 import {
   RouteConfig,
@@ -163,21 +163,10 @@ async function createUserSession(
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: [Permission.READ],
-    editor: [Permission.READ, Permission.WRITE],
-    admin: [
-      Permission.READ,
-      Permission.WRITE,
-      Permission.MANAGE,
-      Permission.CONFIGURE,
-    ],
-    "super-admin": [
-      Permission.READ,
-      Permission.WRITE,
-      Permission.MANAGE,
-      Permission.CONFIGURE,
-      Permission.OWNER,
-    ],
+    user: ["read"],
+    editor: ["read", "write"],
+    admin: ["read", "write", "manage", "configure"],
+    "super-admin": ["read", "write", "manage", "configure"],
   };
 
   return permissions[role] || permissions["user"];
@@ -203,7 +192,7 @@ function isPublicPath(pathname: string): boolean {
 
 // Enhanced middleware with domain validation
 export async function enhancedRouteGuardMiddleware(request: NextRequest) {
-  const response = await routeGuardMiddleware(request);
+  const response = await routeGuardMiddleware(request, {} as NextFetchEvent);
 
   // Add additional security headers
   if (response instanceof NextResponse) {
@@ -231,14 +220,14 @@ export function canAccessAdminFeature(
   if (!user?.isAuthenticated) return false;
 
   const adminFeatures = {
-    users: ["ADMIN"],
-    calendar: ["ADMIN"],
-    drive: ["ADMIN"],
-    holded: ["ADMIN"],
-    sitemap: ["ADMIN"],
-    "system-config": ["ADMIN"],
-    "access-control": ["ADMIN"],
-    "complex-access-control": ["ADMIN"],
+    users: ["admin"],
+    calendar: ["admin"],
+    drive: ["admin"],
+    holded: ["admin"],
+    sitemap: ["admin"],
+    "system-config": ["admin"],
+    "access-control": ["admin"],
+    "complex-access-control": ["admin"],
   };
 
   const requiredRoles = adminFeatures[feature as keyof typeof adminFeatures];
@@ -246,6 +235,6 @@ export function canAccessAdminFeature(
 }
 
 // Export middleware function
-export function routeGuardMiddleware(request: NextRequest, event: any) {
+export function routeGuardMiddleware(request: NextRequest, event: NextFetchEvent) {
   return routeGuardHandler(request);
 }

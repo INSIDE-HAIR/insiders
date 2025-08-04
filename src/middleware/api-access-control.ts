@@ -51,14 +51,9 @@ export async function withDatabaseAccessControl(
       if (!options.skipDatabaseCheck && user) {
         const dbAccessRequest: AccessCheckRequest = {
           user: user,
-          requestedPath: new URL(req.url).pathname,
+          route: new URL(req.url).pathname,
           userAgent: req.headers.get('user-agent') || '',
-          ipAddress: req.ip || req.headers.get('x-forwarded-for') || 'unknown',
-          requestData: {
-            method: req.method,
-            headers: Object.fromEntries(req.headers.entries()),
-            timestamp: new Date().toISOString()
-          }
+          ip: req.ip || req.headers.get('x-forwarded-for') || 'unknown',
         }
 
         try {
@@ -76,7 +71,7 @@ export async function withDatabaseAccessControl(
           }
 
           // Log successful access for analytics
-          console.log(`✅ DB Access allowed for ${user.email} to ${dbAccessRequest.requestedPath}`)
+          console.log(`✅ DB Access allowed for ${user.email} to ${dbAccessRequest.route}`)
           
         } catch (dbError) {
           console.error('Database access check failed:', dbError)
@@ -106,8 +101,8 @@ function createUserSession(token: any): UserSession {
   return {
     id: token.sub,
     email: token.email,
-    role: token.role || 'CLIENT',
-    permissions: getPermissionsForRole(token.role || 'CLIENT'),
+    role: token.role || 'user',
+    permissions: getPermissionsForRole(token.role || 'user'),
     isAuthenticated: true,
     domain
   }
@@ -115,10 +110,10 @@ function createUserSession(token: any): UserSession {
 
 function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
-    user: [Permission.READ],
-    editor: [Permission.READ, Permission.WRITE],
-    admin: [Permission.READ, Permission.WRITE, Permission.MANAGE, Permission.CONFIGURE],
-    "super-admin": [Permission.READ, Permission.WRITE, Permission.MANAGE, Permission.CONFIGURE, Permission.OWNER]
+    user: ['read'],
+    editor: ['read', 'write'],
+    admin: ['read', 'write', 'manage', 'configure'],
+    "super-admin": ['read', 'write', 'manage', 'configure']
   }
   
   return permissions[role] || permissions['user']
@@ -169,15 +164,9 @@ export async function checkComplexAccessControl(
   try {
     const accessRequest: AccessCheckRequest = {
       user: user,
-      userRole: user.role,
-      requestedPath: `/admin/complex-access-control/${ruleId}`,
+      route: `/admin/complex-access-control/${ruleId}`,
       userAgent: '',
-      ipAddress: 'api-check',
-      requestData: {
-        ruleId,
-        checkType: 'complex-rule-validation',
-        ...requestData
-      }
+      ip: 'api-check',
     }
 
     const result = await checkDatabaseAccess(accessRequest)

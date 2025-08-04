@@ -54,16 +54,9 @@ export async function validatePageAccess(
 
       const dbAccessRequest: AccessCheckRequest = {
         user: user,
-        requestedPath: path,
+        route: path,
         userAgent,
-        ipAddress,
-        requestData: {
-          accessType: 'page-access',
-          timestamp: new Date().toISOString(),
-          requiredRoles,
-          requiredPermissions: options.requiredPermissions,
-          teams: options.teams
-        }
+        ip: ipAddress,
       }
 
       const dbAccessResult = await checkDatabaseAccess(dbAccessRequest)
@@ -109,14 +102,9 @@ export async function validateComplexAccessControl(
   try {
     const accessRequest: AccessCheckRequest = {
       user: user,
-      requestedPath: path,
+      route: path,
       userAgent: '',
-      ipAddress: 'server-component',
-      requestData: {
-        ruleId,
-        accessType: 'complex-rule-check',
-        timestamp: new Date().toISOString()
-      }
+      ip: 'server-component',
     }
 
     const result = await checkDatabaseAccess(accessRequest)
@@ -173,14 +161,9 @@ export async function canAccessAdminFeature(
   try {
     const accessRequest: AccessCheckRequest = {
       user: user,
-      requestedPath: `/admin/${feature}`,
+      route: `/admin/${feature}`,
       userAgent: '',
-      ipAddress: 'server-component',
-      requestData: {
-        feature,
-        accessType: 'feature-check',
-        timestamp: new Date().toISOString()
-      }
+      ip: 'server-component',
     }
 
     const result = await checkDatabaseAccess(accessRequest)
@@ -220,7 +203,7 @@ function getPermissionsForRole(role: UserRole): Permission[] {
     user: ["read"],
     editor: ["read", "write"],
     admin: ["read", "write", "manage", "configure"],
-    "super-admin": ["read", "write", "manage", "configure", "owner"]
+    "super-admin": ["read", "write", "manage", "configure"]
   }
   
   return permissions[role] || permissions['user']
