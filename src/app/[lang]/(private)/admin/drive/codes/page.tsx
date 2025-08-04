@@ -239,13 +239,13 @@ export default function CodesAdminPage() {
     const [client, campaign, date, fileType, language, version, number] = parts;
 
     const decoded: Record<string, string> = {
-      Cliente: findCodeName("client", client) || client || '',
-      Campaña: findCodeName("campaign", campaign) || campaign || '',
-      Fecha: `${date.slice(0, 2)}/${date.slice(2, 4)}`,
-      "Tipo de archivo": findCodeName("file", fileType) || fileType || '',
-      Idioma: findCodeName("lang", language) || language || '',
-      Versión: version,
-      Número: number,
+      Cliente: findCodeName("client", client || '') || client || '',
+      Campaña: findCodeName("campaign", campaign || '') || campaign || '',
+      Fecha: `${(date || '').slice(0, 2)}/${(date || '').slice(2, 4)}`,
+      "Tipo de archivo": findCodeName("file", fileType || '') || fileType || '',
+      Idioma: findCodeName("lang", language || '') || language || '',
+      Versión: version || '',
+      Número: number || '',
     };
 
     setDecodedParts(decoded);
@@ -521,7 +521,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin cliente" },
-                      ...codesByType.client.map((code) => ({
+                      ...(codesByType.client || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -542,7 +542,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin campaña" },
-                      ...codesByType.campaign.map((code) => ({
+                      ...(codesByType.campaign || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -582,7 +582,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin tipo" },
-                      ...codesByType.file.map((code) => ({
+                      ...(codesByType.file || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -605,7 +605,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin idioma" },
-                      ...codesByType.lang.map((code) => ({
+                      ...(codesByType.lang || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
