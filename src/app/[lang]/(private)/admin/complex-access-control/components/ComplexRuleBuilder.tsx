@@ -81,9 +81,12 @@ export function ComplexRuleBuilder({
   const getAccessLevelColor = (level: AccessLevel) => {
     const colors: Record<AccessLevel, string> = {
       [AccessLevel.READ]: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+      [AccessLevel.WRITE]: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200",
       [AccessLevel.CREATE]: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-      [AccessLevel.UPDATE]: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
       [AccessLevel.DELETE]: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+      [AccessLevel.MANAGE]: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
+      [AccessLevel.CONFIGURE]: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200",
+      [AccessLevel.UPDATE]: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
       [AccessLevel.FULL]: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
     };
     return colors[level] || colors[AccessLevel.READ];

@@ -257,9 +257,12 @@ export default function AccessControlPage() {
   const getAccessLevelBadge = (level: AccessLevel) => {
     const colors = {
       [AccessLevel.READ]: 'bg-blue-100 text-blue-800',
+      [AccessLevel.WRITE]: 'bg-cyan-100 text-cyan-800',
       [AccessLevel.CREATE]: 'bg-green-100 text-green-800',
-      [AccessLevel.UPDATE]: 'bg-yellow-100 text-yellow-800',
       [AccessLevel.DELETE]: 'bg-red-100 text-red-800',
+      [AccessLevel.MANAGE]: 'bg-indigo-100 text-indigo-800',
+      [AccessLevel.CONFIGURE]: 'bg-pink-100 text-pink-800',
+      [AccessLevel.UPDATE]: 'bg-yellow-100 text-yellow-800',
       [AccessLevel.FULL]: 'bg-purple-100 text-purple-800',
     };
 
