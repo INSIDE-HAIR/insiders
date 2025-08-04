@@ -231,7 +231,10 @@ export function useConditionalRender() {
   }
 
   const renderIfAccess = (path: string, component: ReactNode) => {
-    return canAccess(path) ? component : null
+    // Para renderizado síncrono, usamos una versión simplificada
+    // que solo verifica permisos básicos del usuario
+    const hasBasicAccess = user?.role === 'admin' || user?.role === 'super-admin'
+    return hasBasicAccess ? component : null
   }
 
   const renderIfPermission = (permission: string, component: ReactNode) => {

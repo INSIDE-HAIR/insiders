@@ -76,7 +76,7 @@ export function DataTable<TData>({
             table.toggleAllPageRowsSelected(e.target.checked);
           }}
           onClick={(e) => e.stopPropagation()}
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+          className="w-4 h-4 text-primary bg-background border-input rounded focus:ring-ring focus:ring-2 focus:ring-offset-2"
         />
       ),
       cell: ({ row }) => (
@@ -88,7 +88,7 @@ export function DataTable<TData>({
             row.toggleSelected(e.target.checked);
           }}
           onClick={(e) => e.stopPropagation()} // Evitar propagación en el click también
-          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+          className="w-4 h-4 text-primary bg-background border-input rounded focus:ring-ring focus:ring-2 focus:ring-offset-2"
         />
       ),
       enableSorting: false,
@@ -266,16 +266,16 @@ export function DataTable<TData>({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full max-w-full overflow-hidden">
       {/* Bulk Actions Bar */}
       {selectedRowsCount > 0 && (
-        <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-blue-900">
+            <span className="text-sm font-medium text-primary">
               {selectedRowsCount} evento{selectedRowsCount !== 1 ? 's' : ''} seleccionado{selectedRowsCount !== 1 ? 's' : ''}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {onBulkAddParticipants && (
               <Button
                 variant="default"
@@ -284,7 +284,7 @@ export function DataTable<TData>({
                   const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
                   onBulkAddParticipants(selectedData);
                 }}
-                className="text-xs bg-green-600 hover:bg-green-700"
+                className="text-xs bg-card-foreground text-card hover:bg-card-foreground/90"
               >
                 <UserPlusIcon className="mr-1 h-3 w-3" />
                 Agregar Participantes
@@ -297,7 +297,7 @@ export function DataTable<TData>({
                 onClick={() => {
                   onBulkGenerateMeetLinks(selectedEventsWithoutMeet);
                 }}
-                className="text-xs bg-blue-600 hover:bg-blue-700"
+                className="text-xs bg-primary hover:bg-primary/90 text-primary-foreground"
                 title={`Generar enlaces de Google Meet para ${selectedEventsWithoutMeet.length} evento${selectedEventsWithoutMeet.length !== 1 ? 's' : ''} sin Meet`}
               >
                 <VideoIcon className="mr-1 h-3 w-3" />
@@ -312,7 +312,7 @@ export function DataTable<TData>({
                   const selectedData = table.getFilteredSelectedRowModel().rows.map(row => row.original);
                   onBulkGenerateDescriptions(selectedData);
                 }}
-                className="text-xs bg-purple-600 hover:bg-purple-700"
+                className="text-xs bg-secondary hover:bg-secondary/90 text-secondary-foreground"
                 title={`Generar descripciones automáticas para ${selectedRowsCount} evento${selectedRowsCount !== 1 ? 's' : ''}`}
               >
                 <FileTextIcon className="mr-1 h-3 w-3" />
@@ -340,13 +340,13 @@ export function DataTable<TData>({
         </div>
       )}
 
-      <div className="flex items-center justify-between space-x-2">
-        <div className="flex space-x-2 items-center">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between md:space-x-2">
+        <div className="flex space-x-2 items-center w-full md:w-auto">
           <Input
             placeholder="Buscar eventos..."
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(String(event.target.value))}
-            className="max-w-sm"
+            className="w-full md:max-w-sm"
           />
         </div>
 
@@ -356,13 +356,28 @@ export function DataTable<TData>({
         </Button>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
+      <div className="rounded-md border border-border bg-card overflow-hidden">
+        <div className="overflow-x-auto max-w-full">
+        <Table className="min-w-full w-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead 
+                    key={header.id}
+                    className={`${
+                      header.column.id === 'select' ? 'w-12' :
+                      header.column.id === 'actions' ? 'w-32' :
+                      header.column.id === 'summary' ? 'min-w-48' :
+                      header.column.id === 'attendees' ? 'min-w-80' :
+                      header.column.id === 'location' ? 'min-w-48' :
+                      header.column.id === 'description' ? 'min-w-64' :
+                      header.column.id === 'organizer' ? 'min-w-48' :
+                      header.column.id === 'creator' ? 'min-w-48' :
+                      header.column.id === 'conferenceData' ? 'min-w-80' :
+                      'min-w-36'
+                    } whitespace-nowrap`}
+                  >
                     {header.isPlaceholder ? null : (
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
@@ -399,7 +414,7 @@ export function DataTable<TData>({
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     onClick={() => onRowClick?.(row.original)}
-                    className={onRowClick ? "cursor-pointer hover:bg-gray-50" : ""}
+                    className={onRowClick ? "cursor-pointer hover:bg-accent/50" : ""}
                     style={{
                       borderLeft: `4px solid ${calendarColor.backgroundColor}`,
                     }}
@@ -407,6 +422,18 @@ export function DataTable<TData>({
                     {row.getVisibleCells().map((cell) => (
                     <TableCell 
                       key={cell.id}
+                      className={`${
+                        cell.column.id === 'select' ? 'w-12' :
+                        cell.column.id === 'actions' ? 'w-32' :
+                        cell.column.id === 'summary' ? 'min-w-48' :
+                        cell.column.id === 'attendees' ? 'min-w-80' :
+                        cell.column.id === 'location' ? 'min-w-48' :
+                        cell.column.id === 'description' ? 'min-w-64' :
+                        cell.column.id === 'organizer' ? 'min-w-48' :
+                        cell.column.id === 'creator' ? 'min-w-48' :
+                        cell.column.id === 'conferenceData' ? 'min-w-80' :
+                        'min-w-36'
+                      } align-top`}
                       onClick={(e) => {
                         // Evitar que el click en acciones y select dispare el modal
                         if (cell.column.id === 'actions' || cell.column.id === 'select') {
@@ -435,14 +462,15 @@ export function DataTable<TData>({
             )}
           </TableBody>
         </Table>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between px-2">
+        <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} evento(s) seleccionado(s).
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
+        <div className="flex flex-wrap items-center gap-2 md:space-x-6 lg:space-x-8">
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">Filas por página</p>
             <select

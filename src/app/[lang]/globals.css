@@ -165,5 +165,72 @@
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
   }
+
+  /* Custom scrollbar styles */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(from var(--primary) h s l) hsl(from var(--primary-foreground) h s l);
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: hsl(from var(--primary-foreground) h s l);
+    border-radius: var(--radius);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: hsl(from var(--primary) h s l);
+    border-radius: var(--radius);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: hsl(from var(--primary) h s l / 0.8);
+  }
+
+  /* Alternative approach for better browser support */
+  html {
+    --scrollbar-thumb: var(--primary);
+    --scrollbar-track: var(--primary-foreground);
+  }
+
+  /* Apply to all scrollable elements */
+  *,
+  *::before,
+  *::after {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+
+  /* Webkit specific with fallback colors */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: var(--scrollbar-track);
+    border-radius: var(--radius);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: var(--radius);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    opacity: 0.8;
+  }
+
+  /* Dark mode scrollbar colors */
+  .dark {
+    --scrollbar-thumb: var(--primary);
+    --scrollbar-track: var(--primary-foreground);
+  }
 }
 

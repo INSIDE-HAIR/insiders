@@ -28,7 +28,10 @@ import {
   Upload,
   UploadCloud,
   Settings,
-  CalendarDays
+  CalendarDays,
+  Shield,
+  UserX,
+  Layers
 } from 'lucide-react'
 
 // Mapeo de iconos string a componentes
@@ -56,6 +59,9 @@ const iconMap = {
   UploadCloud,
   Settings,
   CalendarDays,
+  Shield,
+  UserX,
+  Layers,
   // Compatibility with existing icons
   HomeIcon: Icons.HomeIcon,
   PackageIcon: Icons.PackageIcon,

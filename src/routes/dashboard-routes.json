@@ -8,7 +8,7 @@
         "es": "Equipo de Gestión"
       },
       "plan": "Enterprise",
-      "routes": ["admin", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap"]
+      "routes": ["admin", "products", "users", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
     },
     "creativos": {
       "name": {
@@ -265,33 +265,6 @@
           },
           "href": "/admin/drive/routes/docs",
           "icon": "Book"
-        },
-        {
-          "id": "drive-test-upload",
-          "label": {
-            "en": "Test Upload",
-            "es": "Prueba de Subida"
-          },
-          "href": "/admin/drive/test-upload",
-          "icon": "Upload"
-        },
-        {
-          "id": "drive-direct-upload",
-          "label": {
-            "en": "Direct Upload Demo",
-            "es": "Demo Subida Directa"
-          },
-          "href": "/admin/drive/direct-upload-demo",
-          "icon": "Upload"
-        },
-        {
-          "id": "drive-enhanced-upload",
-          "label": {
-            "en": "Enhanced Upload Demo",
-            "es": "Demo Subida Mejorada"
-          },
-          "href": "/admin/drive/enhanced-upload-demo",
-          "icon": "UploadCloud"
         }
       ]
     },
@@ -368,6 +341,58 @@
         "teams": ["gestion"],
         "domains": ["@insidesalons.com"]
       }
+    },
+    {
+      "id": "access-control",
+      "label": {
+        "en": "Access Control",
+        "es": "Control de Acceso"
+      },
+      "href": "/admin/access-control",
+      "icon": "Shield",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion"]
+      },
+      "subItems": [
+        {
+          "id": "access-control-basic",
+          "label": {
+            "en": "Basic Control",
+            "es": "Control Básico"
+          },
+          "href": "/admin/access-control",
+          "icon": "Settings"
+        },
+        {
+          "id": "user-exceptions",
+          "label": {
+            "en": "User Exceptions",
+            "es": "Excepciones de Usuario"
+          },
+          "href": "/admin/user-exceptions",
+          "icon": "UserX"
+        },
+        {
+          "id": "complex-access-control",
+          "label": {
+            "en": "Complex Rules",
+            "es": "Reglas Complejas"
+          },
+          "href": "/admin/complex-access-control",
+          "icon": "Layers"
+        },
+        {
+          "id": "complex-access-metrics",
+          "label": {
+            "en": "Access Metrics",
+            "es": "Métricas de Acceso"
+          },
+          "href": "/admin/complex-access-control/metrics",
+          "icon": "BarChart3"
+        }
+      ]
     }
   ],
   "directLinkRoutes": ["admin", "analytics", "sitemap"],

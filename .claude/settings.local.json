@@ -4,7 +4,20 @@
     "allow": [
       "Bash(npx tsc:*)",
       "Bash(npm install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "Bash(rm:*)",
+      "Bash(npx next build:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run postinstall:*)",
+      "Bash(mkdir:*)",
+      "Bash(node:*)",
+      "Bash(mv:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(npx next lint:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }

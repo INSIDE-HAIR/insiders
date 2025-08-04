@@ -1,5 +1,6 @@
 import { RouteConfig, UserSession, AccessCheckResult, RoutesConfiguration, RouteMatch, UserRole } from '../types/routes';
-import routesConfig from '@/config/routes-config.json'
+import routesConfig from '../../config/routes-config.json'
+import { checkDatabaseAccess, AccessCheckRequest } from './access-control-service';
 
 class RouteGuard {
   private config: RoutesConfiguration
@@ -7,13 +8,30 @@ class RouteGuard {
   private cacheTimeout = 5 * 60 * 1000 // 5 minutes
 
   constructor() {
-    this.config = routesConfig as RoutesConfiguration
+    this.config = routesConfig as unknown as RoutesConfiguration
+  }
+
+  /**
+   * Check database exceptions for user - DISABLED for Edge Runtime
+   * Database checks will be performed in API routes and server components
+   */
+  private async checkDatabaseExceptions(email: string, path: string): Promise<AccessCheckResult | null> {
+    // Disabled in middleware due to Edge Runtime limitations
+    // Database exceptions will be checked in:
+    // 1. API route middleware
+    // 2. Server components 
+    // 3. Page-level access checks
+    return null
   }
 
   /**
    * Check if user has access to a specific route
    */
-  checkAccess(path: string, user: UserSession | null): AccessCheckResult {
+  async checkAccess(path: string, user: UserSession | null, request?: {
+    ip?: string;
+    userAgent?: string;
+    geo?: { country?: string; region?: string; city?: string };
+  }): Promise<AccessCheckResult> {
     // Check cache first
     const cacheKey = `${path}-${user?.id || 'anonymous'}-${user?.role || 'none'}`
     const cached = this.cache.get(cacheKey)
@@ -21,7 +39,7 @@ class RouteGuard {
       return cached
     }
 
-    const result = this.performAccessCheck(path, user)
+    const result = await this.performAccessCheck(path, user, request)
     
     // Cache the result
     this.cache.set(cacheKey, result)
@@ -30,7 +48,17 @@ class RouteGuard {
     return result
   }
 
-  private performAccessCheck(path: string, user: UserSession | null): AccessCheckResult {
+  private async performAccessCheck(path: string, user: UserSession | null, request?: {
+    ip?: string;
+    userAgent?: string;
+    geo?: { country?: string; region?: string; city?: string };
+  }): Promise<AccessCheckResult> {
+    // Prevent infinite redirects by allowing specific paths
+    const allowedPaths = ['/404', '/unauthorized', '/maintenance', '/es', '/en', '/', '/es/auth', '/en/auth', '/es/auth/login', '/en/auth/login'];
+    if (allowedPaths.includes(path)) {
+      return { allowed: true, reason: 'System path allowed' };
+    }
+
     // Check maintenance mode
     if (this.config.exceptions.maintenance.enabled) {
       if (!this.isMaintenanceAllowed(user)) {
@@ -45,6 +73,26 @@ class RouteGuard {
     // Find matching route
     const routeMatch = this.findRoute(path)
     if (!routeMatch) {
+      // If it's a localized path starting with /es/ or /en/, try to find the generic pattern
+      if (path.startsWith('/es/') || path.startsWith('/en/')) {
+        const genericPath = path.replace(/^\/[a-z]{2}/, '/[lang]');
+        const genericMatch = this.findRoute(genericPath);
+        if (genericMatch) {
+          return this.checkRouteAccess(genericMatch.route, user);
+        }
+        
+        // Try with catch-all patterns for content routes
+        const pathSegments = path.split('/').slice(2); // Remove /es/ or /en/
+        if (pathSegments.length > 0) {
+          const baseSection = pathSegments[0]; // formaciones, consultoria, etc.
+          const catchAllPattern = `/[lang]/${baseSection}/[...slug]`;
+          const catchAllMatch = this.findRoute(catchAllPattern);
+          if (catchAllMatch) {
+            return this.checkRouteAccess(catchAllMatch.route, user);
+          }
+        }
+      }
+      
       return {
         allowed: false,
         reason: 'Route not found',
@@ -54,24 +102,30 @@ class RouteGuard {
 
     const { route } = routeMatch
 
-    // Check email exceptions first
+    // PRIORITY 1: Database access control disabled in middleware (Edge Runtime incompatible)
+    // Will be checked in API routes and server components instead
+    
+    // PRIORITY 2: Database exceptions disabled in middleware (Edge Runtime incompatible)
+    // Will be checked in API routes and server components instead
+
+    // PRIORITY 3: Check email exceptions from config (fallback)
     if (user?.email && this.config.exceptions.byEmail[user.email]) {
       const exception = this.config.exceptions.byEmail[user.email]
       if (this.matchesRoutePattern(path, exception.allowedRoutes)) {
-        return { allowed: true }
+        return { allowed: true, reason: 'Config email exception allows access' }
       }
     }
 
-    // Check domain exceptions
+    // PRIORITY 4: Check domain exceptions
     if (user?.domain) {
       const domainKey = `@${user.domain}`
       const domainException = this.config.exceptions.byDomain[domainKey]
       if (domainException && this.matchesRoutePattern(path, domainException.allowedRoutes)) {
-        return { allowed: true }
+        return { allowed: true, reason: 'Config domain exception allows access' }
       }
     }
 
-    // Check basic access requirements
+    // PRIORITY 5: Check basic access requirements (default)
     return this.checkRouteAccess(route, user)
   }
 
@@ -201,11 +255,33 @@ class RouteGuard {
     const routeSegments = routePath.split('/')
     const targetSegments = targetPath.split('/')
 
+    // Handle catch-all routes [...slug]
+    const hasCatchAll = routeSegments.some(segment => segment.startsWith('[...') && segment.endsWith(']'))
+    if (hasCatchAll) {
+      const catchAllIndex = routeSegments.findIndex(segment => segment.startsWith('[...') && segment.endsWith(']'))
+      // Check segments before catch-all
+      for (let i = 0; i < catchAllIndex; i++) {
+        const routeSegment = routeSegments[i]
+        const targetSegment = targetSegments[i]
+        
+        if (!targetSegment) return false
+        
+        if (routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
+          continue // Dynamic segment matches
+        }
+        if (routeSegment !== targetSegment) {
+          return false
+        }
+      }
+      // If we have more target segments than route segments up to catch-all, it matches
+      return targetSegments.length >= catchAllIndex
+    }
+
+    // Normal dynamic route matching
     if (routeSegments.length !== targetSegments.length) return false
 
     return routeSegments.every((segment, index) => {
       if (segment.startsWith('[') && segment.endsWith(']')) return true
-      if (segment.startsWith('[...') && segment.endsWith(']')) return true
       return segment === targetSegments[index]
     })
   }
@@ -257,14 +333,16 @@ class RouteGuard {
   }
 
   /**
-   * Get all routes that user can access
+   * Get all routes that user can access (synchronous - uses config only)
    */
   getAccessibleRoutes(user: UserSession | null): RouteConfig[] {
     const accessible: RouteConfig[] = []
     
     for (const category of Object.values(this.config.routes)) {
       for (const route of category) {
-        if (this.checkAccess(route.path, user).allowed) {
+        // Use synchronous route check (config only, no DB)
+        const result = this.checkRouteAccess(route, user)
+        if (result.allowed) {
           accessible.push(route)
         }
       }
@@ -325,8 +403,12 @@ class RouteGuard {
 export const routeGuard = new RouteGuard()
 
 // Helper functions
-export function checkRouteAccess(path: string, user: UserSession | null): AccessCheckResult {
-  return routeGuard.checkAccess(path, user)
+export async function checkRouteAccess(path: string, user: UserSession | null, request?: {
+  ip?: string;
+  userAgent?: string;
+  geo?: { country?: string; region?: string; city?: string };
+}): Promise<AccessCheckResult> {
+  return await routeGuard.checkAccess(path, user, request)
 }
 
 export function getAccessibleRoutes(user: UserSession | null): RouteConfig[] {

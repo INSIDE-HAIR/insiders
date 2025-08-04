@@ -343,14 +343,14 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
       </Button>
 
       {isOpen && (
-        <div className="absolute z-50 right-0 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <div className="absolute z-50 right-0 mt-2 w-96 bg-background border border-border rounded-lg shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="p-4 border-b bg-gray-50 rounded-t-lg">
+          <div className="sticky top-0 bg-background border-b border-border p-3">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-medium text-gray-900">Gestionar Columnas</h3>
+              <h3 className="font-medium text-foreground">Gestionar Columnas</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <XMarkIcon className="h-4 w-4" />
               </button>
@@ -362,7 +362,7 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
               placeholder="Buscar columnas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
             />
             
             {/* Filtros de categoría */}
@@ -371,10 +371,10 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-2 py-1 text-xs rounded ${
+                  className={`px-2 py-1 text-xs rounded transition-colors ${
                     selectedCategory === category
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-primary/10 text-primary border border-primary/20'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
                   {category === "all" ? "Todas" : category}
@@ -384,29 +384,29 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
           </div>
 
           {/* Acciones rápidas */}
-          <div className="p-3 border-b bg-gray-50">
+          <div className="sticky top-[120px] bg-muted border-b border-border p-2">
             <div className="flex gap-2">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={handleShowDefaults}
-                className="text-xs h-7"
+                className="h-6 px-2 text-xs"
               >
                 Por Defecto
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={handleShowAll}
-                className="text-xs h-7"
+                className="h-6 px-2 text-xs"
               >
                 Mostrar Todas
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
                 onClick={handleHideAll}
-                className="text-xs h-7"
+                className="h-6 px-2 text-xs"
               >
                 Ocultar Todas
               </Button>
@@ -414,34 +414,34 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
           </div>
 
           {/* Lista de columnas */}
-          <div className="max-h-96 overflow-y-auto">
+          <div className="p-1 max-h-48 overflow-y-auto">
             {filteredColumns.length === 0 ? (
-              <div className="p-4 text-center text-sm text-gray-500">
+              <div className="p-4 text-center text-sm text-muted-foreground">
                 No se encontraron columnas
               </div>
             ) : (
-              <div className="p-2">
+              <div className="space-y-1">
                 {filteredColumns.map((column) => {
                   const isVisible = visibleColumns.includes(column.id);
                   
                   return (
                     <div
                       key={column.id}
-                      className="flex items-start gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                      className="flex items-start gap-3 p-2 hover:bg-accent/50 rounded cursor-pointer transition-colors"
                       onClick={() => handleToggleColumn(column.id)}
                     >
                       <div className="flex-shrink-0 mt-0.5">
                         {isVisible ? (
-                          <EyeIcon className="h-4 w-4 text-blue-600" />
+                          <EyeIcon className="h-4 w-4 text-primary" />
                         ) : (
-                          <EyeSlashIcon className="h-4 w-4 text-gray-400" />
+                          <EyeSlashIcon className="h-4 w-4 text-muted-foreground" />
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-medium ${
-                            isVisible ? 'text-gray-900' : 'text-gray-500'
+                            isVisible ? 'text-foreground' : 'text-muted-foreground'
                           }`}>
                             {column.label}
                           </span>
@@ -451,14 +451,14 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
                             </Badge>
                           )}
                         </div>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {column.description}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
                           <Badge variant="secondary" className="text-xs">
                             {column.category}
                           </Badge>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             {column.id}
                           </span>
                         </div>

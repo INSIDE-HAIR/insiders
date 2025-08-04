@@ -68,6 +68,19 @@ import {
   Radio,
   TextIcon as TextArea,
   MessageCircle,
+  // Additional icons for sidebar
+  Shield,
+  Package,
+  BarChart3,
+  Menu,
+  HardDrive,
+  Building,
+  Map,
+  UserX,
+  Layers,
+  Route,
+  Book,
+  UserPlus,
 } from "lucide-react";
 
 import {
@@ -149,6 +162,19 @@ export const Icons = {
   ListOrdered,
   Radio,
   TextArea,
+  // Sidebar Icons
+  Shield,
+  Package,
+  BarChart3,
+  Menu,
+  HardDrive,
+  Building,
+  Map,
+  UserX,
+  Layers,
+  Route,
+  Book,
+  UserPlus,
   // Social Media Icons
   Facebook: FaFacebookF,
   Linkedin: FaLinkedinIn,

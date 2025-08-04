@@ -132,13 +132,12 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
             return (
               <Badge 
                 key={email} 
-                variant="secondary" 
-                className="text-xs flex items-center gap-1"
+                className="bg-card-foreground text-card border-card-foreground/20 font-semibold shadow-sm text-xs flex items-center gap-1"
               >
                 {attendee ? getAttendeeDisplayName(attendee) : email.split('@')[0]}
                 <button
                   onClick={() => handleToggleAttendee(email)}
-                  className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
                 >
                   <XMarkIcon className="h-3 w-3" />
                 </button>
@@ -146,7 +145,7 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
             );
           })}
           {selectedAttendees.length > 3 && (
-            <Badge variant="outline" className="text-xs">
+            <Badge className="bg-muted text-muted-foreground border-border font-semibold shadow-sm text-xs">
               +{selectedAttendees.length - 3} más
             </Badge>
           )}
@@ -155,14 +154,14 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 left-0 mt-2 w-96 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <div className="absolute z-50 left-0 mt-2 w-96 bg-background border border-border rounded-lg shadow-xl">
           {/* Header */}
-          <div className="p-4 border-b bg-gray-50 rounded-t-lg">
+          <div className="p-4 border-b bg-muted border-border rounded-t-lg">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-medium text-gray-900">Filtrar por Invitados</h3>
+              <h3 className="font-medium text-foreground">Filtrar por Invitados</h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <XMarkIcon className="h-4 w-4" />
               </button>
@@ -170,19 +169,19 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
             
             {/* Búsqueda */}
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Buscar invitados..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Acciones rápidas */}
-          <div className="p-3 border-b bg-gray-50">
+          <div className="p-3 border-b bg-muted border-border">
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -206,7 +205,7 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
           {/* Lista de attendees */}
           <div className="max-h-64 overflow-y-auto">
             {filteredAttendees.length === 0 ? (
-              <div className="p-4 text-center text-sm text-gray-500">
+              <div className="p-4 text-center text-sm text-muted-foreground">
                 No se encontraron invitados
               </div>
             ) : (
@@ -217,24 +216,24 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
                   return (
                     <div
                       key={attendee.email}
-                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-2 hover:bg-accent/50 rounded cursor-pointer transition-colors"
                       onClick={() => handleToggleAttendee(attendee.email)}
                     >
                       <input
                         type="checkbox"
                         checked={isSelected}
                         onChange={() => {}} // Manejado por el onClick del div
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                        className="w-4 h-4 text-primary bg-background border-input rounded focus:ring-ring focus:ring-2 focus:ring-offset-2"
                       />
                       
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-gray-900">
+                        <div className="font-medium text-sm text-foreground">
                           {getAttendeeDisplayName(attendee)}
                         </div>
-                        <div className="text-xs text-gray-500 font-mono truncate">
+                        <div className="text-xs text-muted-foreground font-mono truncate">
                           {attendee.email}
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-muted-foreground">
                           {attendee.count} evento{attendee.count !== 1 ? 's' : ''}
                         </div>
                       </div>
@@ -246,7 +245,7 @@ export const AttendeesFilter: React.FC<AttendeesFilterProps> = ({
           </div>
 
           {/* Footer con estadísticas */}
-          <div className="p-3 border-t bg-gray-50 text-xs text-gray-500">
+          <div className="p-3 border-t bg-muted border-border text-xs text-muted-foreground">
             {selectedAttendees.length > 0 ? (
               <>Filtrando por {selectedAttendees.length} de {allAttendees.length} invitados</>
             ) : (

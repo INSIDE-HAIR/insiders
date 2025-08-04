@@ -36,7 +36,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     <ResponsiveModal open={isOpen} onOpenChange={onClose}>
       <ResponsiveModalContent
         side="top"
-        className="max-w-6xl w-full max-h-[95vh] p-0 bg-white border border-gray-200 shadow-2xl"
+        className="max-w-6xl w-full max-h-[95vh] p-0 bg-background border border-border shadow-2xl"
       >
         <EventDetailContent
           event={event}

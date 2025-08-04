@@ -30,6 +30,8 @@ export type ExtendedUser = DefaultSession["user"] & {
   groups: string[];
   tags: string[];
   resources: string[];
+  teams: string[];
+  domain: string;
 };
 
 declare module "next-auth" {

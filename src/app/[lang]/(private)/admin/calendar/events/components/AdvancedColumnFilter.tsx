@@ -87,7 +87,7 @@ export function AdvancedColumnFilter<TData>({
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className={`h-6 w-6 p-0 ${hasActiveFilters ? 'text-blue-600' : 'text-gray-400'}`}
+        className={`h-6 w-6 p-0 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`}
       >
         <FunnelIcon className="h-3 w-3" />
       </Button>
@@ -109,7 +109,7 @@ export function AdvancedColumnFilter<TData>({
                   e.stopPropagation();
                   handleRemoveFilterValue(filter);
                 }}
-                className="ml-1 hover:text-red-600"
+                className="ml-1 hover:text-destructive"
               >
                 <XMarkIcon className="h-2 w-2" />
               </button>
@@ -124,54 +124,57 @@ export function AdvancedColumnFilter<TData>({
       )}
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-64 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
+        <div className="absolute z-50 mt-1 w-64 bg-background border border-border rounded-lg shadow-xl max-h-80 overflow-hidden">
           {/* Search */}
-          <div className="p-2 border-b">
+          <div className="sticky top-0 bg-background border-b border-border p-3">
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-2 top-2 h-3 w-3 text-gray-400" />
-              <Input
+              <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+              <input
+                type="text"
                 placeholder="Buscar..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-7 h-7 text-xs"
+                className="w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               />
             </div>
           </div>
 
           {/* Options */}
-          <div className="max-h-48 overflow-y-auto">
+          <div className="p-1 max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
-              <div className="p-3 text-center text-xs text-gray-500">
+              <div className="p-4 text-center text-sm text-muted-foreground">
                 No se encontraron opciones
               </div>
             ) : (
-              filteredOptions.map((option, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-2 p-2 hover:bg-gray-50 cursor-pointer text-xs"
-                  onClick={() => handleToggleValue(option)}
-                >
-                  <div className={`w-3 h-3 border rounded flex items-center justify-center ${
-                    selectedValues.has(option) 
-                      ? 'bg-blue-500 border-blue-500' 
-                      : 'border-gray-300'
-                  }`}>
-                    {selectedValues.has(option) && (
-                      <CheckIcon className="w-2 h-2 text-white" />
-                    )}
+              <div className="space-y-1">
+                {filteredOptions.map((option, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-2 hover:bg-accent/50 rounded cursor-pointer transition-colors"
+                    onClick={() => handleToggleValue(option)}
+                  >
+                    <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
+                      selectedValues.has(option) 
+                        ? 'bg-primary border-primary' 
+                        : 'border-input'
+                    }`}>
+                      {selectedValues.has(option) && (
+                        <CheckIcon className="w-3 h-3 text-primary-foreground" />
+                      )}
+                    </div>
+                    <span className="flex-1 truncate text-sm text-foreground" title={String(option)}>
+                      {String(option)}
+                    </span>
                   </div>
-                  <span className="flex-1 truncate" title={String(option)}>
-                    {String(option)}
-                  </span>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
 
           {/* Actions */}
-          <div className="border-t p-2 flex gap-2">
+          <div className="sticky bottom-0 bg-muted border-t border-border p-2 flex gap-2">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={handleClearFilter}
               className="h-6 px-2 text-xs flex-1"

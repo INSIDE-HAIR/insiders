@@ -29,11 +29,19 @@ function Dashboard({
   const [currentTeam, setCurrentTeam] = React.useState(initialTeam);
   const { data: session } = useSession();
 
+  // Map session role to dashboard role format
+  const mappedRole = React.useMemo(() => {
+    if (session?.user?.role) {
+      return session.user.role.toLowerCase();
+    }
+    return userRole;
+  }, [session?.user?.role, userRole]);
+
   // Use centralized dashboard routes - this will update when currentTeam changes
   const sidebarData = useSidebarData({
     team: currentTeam,
     locale,
-    userRole,
+    userRole: mappedRole,
   });
 
   // Add logos to teams
@@ -82,7 +90,7 @@ function Dashboard({
       />
 
       <SidebarInset>
-        <div className='flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 w-full'>
+        <div className='z-10 flex sticky top-0 bg-background h-16 shrink-0 items-center gap-2 border-b px-4 w-full'>
           <SidebarTrigger className='-ml-1' />
           <div className='w-full col-start-1 col-end-full '>
             <Header
@@ -93,7 +101,7 @@ function Dashboard({
             />
           </div>
         </div>
-        <div className='flex flex-1 flex-col gap-4 bg-muted-foreground'>
+        <div className='flex flex-1 flex-col gap-4'>
           {children}
         </div>
       </SidebarInset>

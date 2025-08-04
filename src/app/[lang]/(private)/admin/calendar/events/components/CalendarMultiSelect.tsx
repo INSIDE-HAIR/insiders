@@ -109,7 +109,7 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
               : `${selectedCount} calendario${selectedCount > 1 ? "s" : ""}`}
           </span>
           {selectedCount > 0 && selectedCount < totalCount && (
-            <Badge variant='secondary' className='text-xs'>
+            <Badge className='bg-card-foreground text-card border-card-foreground/20 font-semibold shadow-sm text-xs'>
               {selectedCount}
             </Badge>
           )}
@@ -122,24 +122,24 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
       </Button>
 
       {isOpen && (
-        <div className='absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden'>
+        <div className='absolute z-50 w-full mt-1 bg-background border border-border rounded-lg shadow-xl max-h-80 overflow-hidden'>
           {/* Search bar */}
-          <div className='sticky top-0 bg-white border-b border-gray-200 p-3'>
+          <div className='sticky top-0 bg-background border-b border-border p-3'>
             <div className='relative'>
-              <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-gray-400' />
+              <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
               <input
                 ref={searchInputRef}
                 type='text'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder='Buscar calendarios...'
-                className='w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                className='w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
               />
             </div>
           </div>
 
           {/* Header with select all/none */}
-          <div className='sticky top-[65px] bg-gray-50 border-b border-gray-200 p-2'>
+          <div className='sticky top-[65px] bg-muted border-b border-border p-2'>
             <div className='flex gap-2'>
               <Button
                 variant='ghost'
@@ -162,7 +162,7 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
                   variant='ghost'
                   size='sm'
                   onClick={handleSelectFiltered}
-                  className='h-6 px-2 text-xs text-blue-600'
+                  className='h-6 px-2 text-xs text-primary'
                 >
                   Filtrados
                 </Button>
@@ -178,33 +178,33 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
               return (
                 <div
                   key={calendar.id}
-                  className='flex items-center gap-3 p-2 hover:bg-gray-50 rounded cursor-pointer transition-colors'
+                  className='flex items-center gap-3 p-2 hover:bg-accent/50 rounded cursor-pointer transition-colors'
                   onClick={() => handleToggleCalendar(calendar.id)}
                 >
                   <div
                     className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
                       isSelected
-                        ? "bg-blue-500 border-blue-500"
-                        : "border-gray-300"
+                        ? "bg-primary border-primary"
+                        : "border-input"
                     }`}
                   >
-                    {isSelected && <CheckIcon className='w-3 h-3 text-white' />}
+                    {isSelected && <CheckIcon className='w-3 h-3 text-primary-foreground' />}
                   </div>
 
                   {/* Calendar Color */}
                   <div
-                    className='w-4 h-4 rounded-full border border-gray-300 flex-shrink-0'
+                    className='w-4 h-4 rounded-full border border-border flex-shrink-0'
                     style={{
-                      backgroundColor: calendar.backgroundColor || "#4285f4",
+                      backgroundColor: calendar.backgroundColor || "hsl(var(--primary))",
                       border: `2px solid ${
-                        calendar.foregroundColor || "#ffffff"
+                        calendar.foregroundColor || "hsl(var(--primary-foreground))"
                       }`,
                     }}
                     title={`Color: ${calendar.colorId || "default"}`}
                   />
 
                   <div className='flex-1 text-sm'>
-                    <div className='font-medium text-gray-900'>
+                    <div className='font-medium text-foreground'>
                       {calendar.summary}
                     </div>
                   </div>
@@ -215,14 +215,14 @@ export const CalendarMultiSelect: React.FC<CalendarMultiSelectProps> = ({
 
           {/* No results message */}
           {filteredCalendars.length === 0 && searchTerm && (
-            <div className='p-4 text-center text-gray-500 text-sm'>
+            <div className='p-4 text-center text-muted-foreground text-sm'>
               No se encontraron calendarios que coincidan con &quot;{searchTerm}
               &quot;
             </div>
           )}
 
           {calendars.length === 0 && (
-            <div className='p-4 text-center text-gray-500 text-sm'>
+            <div className='p-4 text-center text-muted-foreground text-sm'>
               No hay calendarios disponibles
             </div>
           )}

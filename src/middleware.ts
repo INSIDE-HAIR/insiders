@@ -1,12 +1,19 @@
 import { chain } from "@/src/middleware/chain";
 import { withI18nMiddleware } from "@/src/middleware/withI18nMiddleware";
-import { withAuthMiddleware } from "@/src/middleware/withAuthMiddleware";
+import { routeGuardMiddleware } from "@/src/middleware/route-guard-middleware";
 
-export default chain([withI18nMiddleware, withAuthMiddleware]);
+export default chain([withI18nMiddleware, routeGuardMiddleware]);
 
 export const config = {
   matcher: [
-    // Excluir archivos estáticos y rutas de API
-    "/((?!api|_next/static|_next/image|favicon.ico|images).*)",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api/auth (NextAuth.js)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!api/auth|_next/static|_next/image|favicon.ico|public/).*)',
   ],
 };

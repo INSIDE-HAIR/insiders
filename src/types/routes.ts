@@ -114,6 +114,9 @@ export interface UserSession {
   permissions: Permission[]
   isAuthenticated: boolean
   domain?: string
+  teams?: string[]
+  groups?: string[]
+  tags?: string[]
 }
 
 // Route guard configuration

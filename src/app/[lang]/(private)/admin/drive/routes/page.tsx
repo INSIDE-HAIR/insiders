@@ -531,15 +531,15 @@ export default function DriveRoutesPage() {
   };
 
   return (
-    <div className='container py-10'>
-      <div className='flex justify-between items-center mb-6'>
+    <div className='container py-4 md:py-10 px-4'>
+      <div className='flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4'>
         <div>
-          <h1 className='text-3xl font-bold'>Rutas de Drive</h1>
-          <p className='text-muted-foreground'>
+          <h1 className='text-2xl md:text-3xl font-bold'>Rutas de Drive</h1>
+          <p className='text-muted-foreground text-sm md:text-base'>
             Administra tus rutas de integración con Google Drive
           </p>
         </div>
-        <div className='flex space-x-2'>
+        <div className='flex flex-wrap gap-2 md:space-x-2'>
           <Button
             variant='outline'
             onClick={() => setLegendModalOpen(true)}
@@ -574,26 +574,27 @@ export default function DriveRoutesPage() {
             Gestiona las rutas de acceso a contenido de Google Drive
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {isLoading ? (
             <div className='flex justify-center py-10'>
               <RefreshCw className='h-10 w-10 animate-spin text-muted-foreground' />
             </div>
           ) : (
-            <Table>
-              <TableCaption>
-                Lista de rutas configuradas para Drive
-              </TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Estado</TableHead>
-                  <TableHead>Título</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Estado Actualización</TableHead>
-                  <TableHead>Última Actualización</TableHead>
-                  <TableHead className='text-right'>Acciones</TableHead>
-                </TableRow>
-              </TableHeader>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableCaption>
+                  Lista de rutas configuradas para Drive
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[60px]">Estado</TableHead>
+                    <TableHead className="min-w-[120px]">Título</TableHead>
+                    <TableHead className="min-w-[100px]">Slug</TableHead>
+                    <TableHead className="min-w-[140px]">Estado Actualización</TableHead>
+                    <TableHead className="min-w-[120px]">Última Actualización</TableHead>
+                    <TableHead className="text-right min-w-[200px]">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
               <TableBody>
                 {routes.length === 0 ? (
                   <TableRow>
@@ -627,10 +628,16 @@ export default function DriveRoutesPage() {
                             aria-label='Toggle route status'
                           />
                         </TableCell>
-                        <TableCell className='font-medium'>
-                          {route.title || "Sin título"}
+                        <TableCell className='font-medium max-w-[150px] truncate'>
+                          <div className="truncate" title={route.title || "Sin título"}>
+                            {route.title || "Sin título"}
+                          </div>
                         </TableCell>
-                        <TableCell>{route.slug}</TableCell>
+                        <TableCell className='font-mono text-sm max-w-[120px] truncate'>
+                          <div className="truncate" title={route.slug}>
+                            {route.slug}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <TooltipProvider>
                             <Tooltip>
@@ -651,23 +658,32 @@ export default function DriveRoutesPage() {
                             </Tooltip>
                           </TooltipProvider>
                         </TableCell>
-                        <TableCell>
-                          {format(
-                            new Date(route.lastUpdated),
-                            "dd/MM/yyyy HH:mm"
-                          )}
+                        <TableCell className='text-sm whitespace-nowrap'>
+                          <div className="hidden md:block">
+                            {format(
+                              new Date(route.lastUpdated),
+                              "dd/MM/yyyy HH:mm"
+                            )}
+                          </div>
+                          <div className="md:hidden">
+                            {format(
+                              new Date(route.lastUpdated),
+                              "dd/MM HH:mm"
+                            )}
+                          </div>
                         </TableCell>
-                        <TableCell className='text-right space-x-2'>
+                        <TableCell className='text-right'>
                           <TooltipProvider>
-                            <div className='flex items-center justify-end gap-2'>
+                            <div className='flex items-center justify-end gap-1 flex-nowrap'>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='outline'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() => handleEditRoute(route)}
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <Pencil className='h-4 w-4' />
+                                    <Pencil className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -679,10 +695,11 @@ export default function DriveRoutesPage() {
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='outline'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() => syncRoute(route.id)}
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <RefreshCw className='h-4 w-4' />
+                                    <RefreshCw className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -694,10 +711,11 @@ export default function DriveRoutesPage() {
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='outline'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() => viewJson(route)}
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <FileJson className='h-4 w-4' />
+                                    <FileJson className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -709,12 +727,13 @@ export default function DriveRoutesPage() {
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='outline'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() =>
                                       window.open(`/${route.slug}`, "_blank")
                                     }
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <ExternalLink className='h-4 w-4' />
+                                    <ExternalLink className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -726,10 +745,11 @@ export default function DriveRoutesPage() {
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='outline'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() => duplicateRoute(route)}
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <Copy className='h-4 w-4' />
+                                    <Copy className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -741,10 +761,11 @@ export default function DriveRoutesPage() {
                                 <TooltipTrigger asChild>
                                   <Button
                                     variant='destructive'
-                                    size='icon'
+                                    size='sm'
                                     onClick={() => handleDeleteRoute(route.id)}
+                                    className="h-8 w-8 p-0"
                                   >
-                                    <Trash2 className='h-4 w-4' />
+                                    <Trash2 className='h-3 w-3' />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -760,6 +781,7 @@ export default function DriveRoutesPage() {
                 )}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>

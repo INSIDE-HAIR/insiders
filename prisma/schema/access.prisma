@@ -21,12 +21,42 @@ enum SubjectType {
   TAG
 }
 
+// Nuevos enums para lógica compleja
+enum LogicOperator {
+  AND
+  OR
+}
+
+enum EvaluationStrategy {
+  SIMPLE    // Sistema actual (compatibilidad)
+  COMPLEX   // Nuevo sistema OR/AND
+}
+
+enum ConditionOperator {
+  EQUALS
+  CONTAINS
+  STARTS_WITH
+  ENDS_WITH
+  IN
+  NOT_IN
+  BETWEEN
+  WITHIN_LAST
+  GREATER_THAN
+  LESS_THAN
+  NOT_EQUALS
+  NOT_CONTAINS
+}
+
 model AccessControl {
   id           String       @id @default(auto()) @map("_id") @db.ObjectId
   resourceType ResourceType
   resourceId   String       @db.ObjectId // ID del recurso (página, folder, etc.)
   isEnabled    Boolean      @default(true)
 
+  // Nuevos campos para lógica compleja
+  evaluationStrategy   EvaluationStrategy @default(SIMPLE)
+  mainLogicOperator    LogicOperator      @default(OR)
+  
   // Límites de acceso
   maxConcurrentUsers Int? @default(0) // 0 => ilimitado
   maxAccessCount     Int? @default(0) // 0 => ilimitado
@@ -41,11 +71,14 @@ model AccessControl {
   // Métodos de autenticación requeridos
   requiredAuthMethods String[] @default([]) // ej. ["PASSWORD", "2FA", "SSO"]
 
-  // Relaciones
+  // Relaciones (existentes)
   rules              AccessRule[]
   ipRestrictions     IPRestriction[]
   geoRestrictions    GeoRestriction[]
   deviceRestrictions DeviceRestriction[]
+  
+  // Nuevas relaciones para sistema complejo
+  ruleGroups         RuleGroup[]
 
   // Relaciones inversas
   folders      Folder[]
@@ -122,4 +155,149 @@ model DeviceRestriction {
   updatedAt DateTime @updatedAt
 
   @@index([accessControlId])
+}
+
+// Nuevos modelos para sistema de reglas complejas OR/AND
+model RuleGroup {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  accessControlId String        @db.ObjectId
+  accessControl   AccessControl @relation(fields: [accessControlId], references: [id], onDelete: Cascade)
+
+  name            String // "Acceso por Edición", "Acceso por Servicio"
+  description     String? // Descripción detallada del grupo
+  logicOperator   LogicOperator @default(AND)
+  priority        Int           @default(0) // Orden de evaluación
+  isEnabled       Boolean       @default(true)
+
+  // Relaciones
+  rules           ComplexRule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([accessControlId])
+  @@index([priority])
+}
+
+model ComplexRule {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  ruleGroupId String    @db.ObjectId
+  ruleGroup   RuleGroup @relation(fields: [ruleGroupId], references: [id], onDelete: Cascade)
+
+  name              String // "Edición Enero Activa", "Cliente Premium Vigente"
+  description       String? // Descripción detallada de la regla
+  logicOperator     LogicOperator @default(AND)
+  accessLevel       AccessLevel   @default(READ)
+  priority          Int           @default(0)
+  isEnabled         Boolean       @default(true)
+
+  // TimeRange individual para esta regla específica
+  individualStartDate DateTime?
+  individualEndDate   DateTime?
+  individualStartTime String? // "09:00"
+  individualEndTime   String? // "17:00"
+  individualDaysOfWeek String[] @default([])
+
+  // Relaciones
+  conditions        RuleCondition[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ruleGroupId])
+  @@index([priority])
+}
+
+model RuleCondition {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  ruleId   String      @db.ObjectId
+  rule     ComplexRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+
+  fieldPath   String            // "user.groups", "user.status", "current_date"
+  operator    ConditionOperator // EQUALS, CONTAINS, BETWEEN, etc.
+  value       Json              // Valor o array de valores (flexible)
+  isNegated   Boolean           @default(false) // Para condiciones "NOT"
+  priority    Int               @default(0) // Orden de evaluación dentro de la regla
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ruleId])
+  @@index([fieldPath])
+}
+
+// Sistema de excepciones dinámicas
+model UserException {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  email   String @unique
+  
+  // Configuración de acceso
+  accessLevel        ExceptionAccessLevel @default(CUSTOM)
+  bypassDomainCheck  Boolean              @default(false)
+  allowedRoutes      String[]             @default([]) // ["*"] para todo, ["/admin/*"] para admin, etc.
+  
+  // Configuración de tiempo
+  startDate  DateTime?
+  endDate    DateTime?
+  startTime  String? // ej. "09:00"
+  endTime    String? // ej. "17:00"
+  daysOfWeek String[] @default([]) // ej. ["Monday", "Tuesday", ...]
+  
+  // Configuración de equipos y roles temporales
+  temporaryTeams String[] @default([]) // Equipos adicionales temporales
+  temporaryRole  UserRole? // Rol temporal que sobrescribe el rol actual
+  
+  // Metadatos
+  reason      String? // Razón de la excepción
+  createdBy   String? // Email del admin que creó la excepción
+  description String? // Descripción detallada
+  
+  // Control de activación
+  isActive    Boolean @default(true)
+  isTemporary Boolean @default(false) // true si tiene fecha de expiración
+  
+  // Auditoría
+  lastUsed  DateTime?
+  useCount  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([isActive])
+  @@index([endDate])
+}
+
+enum ExceptionAccessLevel {
+  READONLY    // Solo lectura
+  EDITOR      // Lectura y escritura
+  ADMIN       // Acceso administrativo
+  SUPER_ADMIN // Acceso completo
+  CUSTOM      // Usa allowedRoutes específicas
+}
+
+// Sistema de excepciones por dominio
+model DomainException {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  domain String @unique // ej. "insidesalons.com"
+  
+  // Configuración de acceso
+  defaultRole       ExceptionAccessLevel @default(EDITOR)
+  allowedRoutes     String[]             @default(["*"])
+  autoCreateUsers   Boolean              @default(false) // Crear usuarios automáticamente
+  requireApproval   Boolean              @default(true)  // Requiere aprobación admin
+  
+  // Configuración de equipos por defecto
+  defaultTeams String[] @default([])
+  
+  // Control de activación
+  isActive Boolean @default(true)
+  
+  // Metadatos
+  description String?
+  createdBy   String?
+  
+  // Auditoría
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([isActive])
 }

@@ -43,12 +43,19 @@ export default {
           const passwordsMatch = await bcrypt.compare(password, user.password);
 
           if (passwordsMatch) {
+            const { getUserTeams, extractDomainFromEmail } = await import("../../lib/team-mapper");
+            const domain = extractDomainFromEmail(user.email);
+            const groups = user.groups.map((g: Group) => g.name);
+            const teams = getUserTeams(groups, domain, user.role);
+            
             return {
               ...user,
               isOAuth: false,
-              groups: user.groups.map((g: Group) => g.name),
+              groups,
               tags: user.tags.map((t: Tag) => t.name),
               resources: user.resources.map((r: Resource) => r.name),
+              teams,
+              domain,
             };
           }
         }

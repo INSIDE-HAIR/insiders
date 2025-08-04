@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { adminApiRoute } from "@/src/middleware/api-access-control";
+import prisma from "@/src/lib/prisma";
 export const dynamic = "force-dynamic";
 
 /**
  * GET: Obtener usuarios por rol
  */
-export async function GET(request: NextRequest) {
+export const GET = adminApiRoute(async (request: NextRequest, user) => {
   try {
+    console.log(`✅ Admin ${user.email} requesting users by role`);
+    
     const url = new URL(request.url);
     const role = url.searchParams.get("role") || undefined;
     const rolesParam = url.searchParams.get("roles") || undefined;
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    console.log(`📊 Retrieved ${users.length} users by role for admin ${user.email}`);
     return NextResponse.json({ users });
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
@@ -52,4 +54,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});

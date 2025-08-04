@@ -347,6 +347,14 @@ export const {
       token.tags = userWithRelations?.tags.map((t) => t.name) || [];
       token.resources = userWithRelations?.resources.map((sr) => sr.name) || [];
 
+      // Agregar teams y domain
+      const { getUserTeams, extractDomainFromEmail } = await import("../../lib/team-mapper");
+      const domain = extractDomainFromEmail(existingUser.email);
+      const teams = getUserTeams(token.groups as string[], domain, existingUser.role);
+      
+      token.teams = teams;
+      token.domain = domain;
+
       return token;
     },
     //@ts-expect-error
@@ -364,6 +372,8 @@ export const {
         session.user.groups = token.groups as string[];
         session.user.tags = token.tags as string[];
         session.user.resources = token.resources as string[];
+        session.user.teams = token.teams as string[];
+        session.user.domain = token.domain as string;
         session.user.accessToken = token.accessToken as string;
       }
 

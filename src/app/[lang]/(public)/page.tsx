@@ -1,10 +1,10 @@
-import HeroSection from "@/src/app/[lang]/(private)/_components/hero-section"
-import ProblemSection from "@/src/app/[lang]/(private)/_components/problem-section"
-import SolutionSection from "@/src/app/[lang]/(private)/_components/solution-section"
-import AssessmentSection from "@/src/app/[lang]/(private)/_components/assessment-section"
-import MarketingStrategyGenerator from "@/src/app/[lang]/(private)/_components/marketing-strategy-generator"
-import TestimonialsSection from "@/src/app/[lang]/(private)/_components/testimonials-section"
-import CtaSection from "@/src/app/[lang]/(private)/_components/cta-section"
+import HeroSection from "@/src/app/[lang]/_components/hero-section"
+import ProblemSection from "@/src/app/[lang]/_components/problem-section"
+import SolutionSection from "@/src/app/[lang]/_components/solution-section"
+import AssessmentSection from "@/src/app/[lang]/_components/assessment-section"
+import MarketingStrategyGenerator from "@/src/app/[lang]/_components/marketing-strategy-generator"
+import TestimonialsSection from "@/src/app/[lang]/_components/testimonials-section"
+import CtaSection from "@/src/app/[lang]/_components/cta-section"
 import SubNavbar from "@/src/app/[lang]/(public)/_components/sub-navbar" // Import SubNavbar
 
 // Define IDs for sections that SubNavbar will link to

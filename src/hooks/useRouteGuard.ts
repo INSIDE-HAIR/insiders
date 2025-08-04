@@ -17,7 +17,7 @@ interface UseRouteGuardReturn {
   accessResult: AccessCheckResult | null
   user: UserSession | null
   effectiveRole: UserRole
-  canAccess: (path: string) => boolean
+  canAccess: (path: string) => Promise<boolean>
   getAccessibleRoutes: () => RouteConfig[]
   redirectToAuthorized: () => void
 }
@@ -49,19 +49,21 @@ export function useRouteGuard(): UseRouteGuardReturn {
       return
     }
 
-    const result = checkRouteAccess(pathname, user)
-    setAccessResult(result)
-    setIsLoading(false)
+    checkRouteAccess(pathname, user).then(result => {
+      setAccessResult(result)
+      setIsLoading(false)
 
-    // Auto-redirect if access denied and redirect is specified
-    if (!result.allowed && result.redirect) {
-      router.push(result.redirect)
-    }
+      // Auto-redirect if access denied and redirect is specified
+      if (!result.allowed && result.redirect) {
+        router.push(result.redirect)
+      }
+    })
   }, [pathname, user, status, router])
 
-  // Function to check access to any path
-  const canAccess = useCallback((path: string): boolean => {
-    return checkRouteAccess(path, user).allowed
+  // Function to check access to any path (async version)
+  const canAccess = useCallback(async (path: string): Promise<boolean> => {
+    const result = await checkRouteAccess(path, user)
+    return result.allowed
   }, [user])
 
   // Function to get all accessible routes

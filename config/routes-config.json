@@ -1,0 +1,432 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-01-03T00:00:00Z",
+  "settings": {
+    "defaultRole": "CLIENT",
+    "allowedDomains": ["@insidesalons.com", "*"],
+    "roles": {
+      "CLIENT": {
+        "name": "Client",
+        "description": "Regular client access",
+        "permissions": ["read"]
+      },
+      "EMPLOYEE": {
+        "name": "Employee", 
+        "description": "Employee access",
+        "permissions": ["read", "write"]
+      },
+      "ADMIN": {
+        "name": "Administrator",
+        "description": "Full administrative access",
+        "permissions": ["read", "write", "manage", "configure"]
+      }
+    }
+  },
+  "routes": {
+    "admin": [
+      {
+        "path": "/[lang]/admin",
+        "label": "Admin Home",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/dashboard",
+        "label": "Admin Dashboard",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive",
+        "label": "Drive Management",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/users",
+        "label": "User Management",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/calendar",
+        "label": "Calendar Management",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/holded",
+        "label": "Holded Integration",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/analytics",
+        "label": "Analytics Dashboard",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "consultoria", "crecimiento"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/sitemap",
+        "label": "Site Map",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "domains": ["@insidesalons.com"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/access-control",
+        "label": "Access Control",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/user-exceptions",
+        "label": "User Exceptions",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/complex-access-control",
+        "label": "Complex Access Control",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/complex-access-control/metrics",
+        "label": "Access Control Metrics",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/codes",
+        "label": "Drive Codes",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/routes",
+        "label": "Drive Routes",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/routes/docs",
+        "label": "Drive Documentation",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/routes/docs/[...slug]",
+        "label": "Drive Documentation Pages",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/test-upload",
+        "label": "Drive Test Upload",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/direct-upload-demo",
+        "label": "Drive Direct Upload Demo",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/enhanced-upload-demo",
+        "label": "Drive Enhanced Upload Demo",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/drive/errors",
+        "label": "Drive Errors",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "teams": ["gestion", "creativos"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/admin/[...slug]",
+        "label": "Admin Pages Catch-All",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN"],
+          "requireAuth": true
+        }
+      }
+    ],
+    "profile": [
+      {
+        "path": "/[lang]/profile",
+        "label": "User Profile",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN", "CLIENT", "EMPLOYEE"],
+          "requireAuth": true
+        }
+      }
+    ],
+    "public": [
+      {
+        "path": "/",
+        "label": "Home",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/es",
+        "label": "Spanish Home",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/en",
+        "label": "English Home", 
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]",
+        "label": "Localized Home",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/consultoria",
+        "label": "Consulting",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/consultoria/[...slug]",
+        "label": "Consulting Services",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/formaciones",
+        "label": "Training",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/formaciones/[...slug]",
+        "label": "Training Content",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/contacto",
+        "label": "Contact",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/404",
+        "label": "Not Found",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/404",
+        "label": "Localized Not Found",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/unauthorized",
+        "label": "Unauthorized",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      },
+      {
+        "path": "/[lang]/unauthorized",
+        "label": "Localized Unauthorized",
+        "access": {
+          "type": "public",
+          "requireAuth": false
+        }
+      }
+    ],
+    "auth": [
+      {
+        "path": "/[lang]/auth",
+        "label": "Auth Home",
+        "access": {
+          "type": "auth",
+          "requireAuth": false,
+          "redirectIfAuthenticated": "/[lang]/admin"
+        }
+      },
+      {
+        "path": "/[lang]/auth/login",
+        "label": "Login",
+        "access": {
+          "type": "auth",
+          "requireAuth": false,
+          "redirectIfAuthenticated": "/[lang]/admin"
+        }
+      },
+      {
+        "path": "/[lang]/auth/register",
+        "label": "Register",
+        "access": {
+          "type": "auth",
+          "requireAuth": false,
+          "redirectIfAuthenticated": "/[lang]/admin"
+        }
+      }
+    ],
+    "protected": [
+      {
+        "path": "/[lang]/training",
+        "label": "Training Modules",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN", "CLIENT", "EMPLOYEE"],
+          "requireAuth": true
+        }
+      },
+      {
+        "path": "/[lang]/marketing-salon",
+        "label": "Marketing Salon",
+        "access": {
+          "type": "protected",
+          "roles": ["ADMIN", "CLIENT", "EMPLOYEE"],
+          "requireAuth": true
+        }
+      }
+    ],
+    "api": [],
+    "marketing": []
+  },
+  "redirects": {
+    "unauthorized": "/es/auth/login",
+    "forbidden": "/es/unauthorized",
+    "notFound": "/404",
+    "maintenance": "/es/maintenance"
+  },
+  "exceptions": {
+    "maintenance": {
+      "enabled": false,
+      "allowedRoles": ["ADMIN"],
+      "allowedEmails": ["admin@insidesalons.com"],
+      "maintenancePage": "/maintenance"
+    },
+    "byEmail": {
+      "admin@insidesalons.com": {
+        "accessLevel": "ADMIN",
+        "bypassDomainCheck": true,
+        "allowedRoutes": ["*"]
+      }
+    },
+    "byDomain": {
+      "@insidesalons.com": {
+        "defaultRole": "ADMIN",
+        "allowedRoutes": ["*"]
+      }
+    }
+  }
+}

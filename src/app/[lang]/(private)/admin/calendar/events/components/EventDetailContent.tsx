@@ -125,18 +125,18 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
   );
 
   return (
-    <div className="flex flex-col md:flex-row h-full min-h-screen bg-white">
+    <div className="flex flex-col md:flex-row h-full min-h-screen bg-background">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-white w-full md:w-auto">
+      <div className="flex-1 flex flex-col bg-background w-full md:w-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
           <div className="flex items-center gap-4 flex-1">
             {showCloseButton && onClose && (
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/80 rounded-full transition-all duration-200 shadow-sm"
+                className="p-2 hover:bg-background/80 rounded-full transition-all duration-200 shadow-sm"
               >
-                <XMarkIcon className="h-5 w-5 text-gray-600" />
+                <XMarkIcon className="h-5 w-5 text-muted-foreground" />
               </button>
             )}
             <div className="flex-1">
@@ -150,11 +150,11 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                       summary: e.target.value,
                     })
                   }
-                  className="text-xl font-semibold w-full border-none outline-none bg-transparent placeholder-gray-400 text-gray-800"
+                  className="text-xl font-semibold w-full border-none outline-none bg-transparent placeholder-muted-foreground text-foreground"
                   placeholder="Agregar título del evento"
                 />
               ) : (
-                <h1 className="text-2xl font-bold text-gray-800 truncate">
+                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
                   {event.summary}
                 </h1>
               )}
@@ -162,7 +162,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
           </div>
           <div className="flex items-center gap-3">
             <Button
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 px-6"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 px-4 md:px-6"
               onClick={isEditing ? handleSave : () => setIsEditing(true)}
             >
               {isEditing ? "Guardar" : "Editar"}
@@ -171,20 +171,20 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
               <Button
                 variant="outline"
                 onClick={() => setShowMoreActions(!showMoreActions)}
-                className="flex items-center gap-1 border-gray-300 hover:border-gray-400 hover:bg-white/80 transition-all duration-200"
+                className="flex items-center gap-1 border-input hover:border-border hover:bg-accent/50 transition-all duration-200"
               >
                 Más acciones
                 <ChevronDownIcon className="h-4 w-4" />
               </Button>
               {showMoreActions && (
-                <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 min-w-48 py-2">
-                  <button className="w-full text-left px-4 py-2 hover:bg-gray-50 flex items-center gap-3 text-gray-700 transition-colors">
+                <div className="absolute right-0 top-full mt-2 bg-background border border-border rounded-lg shadow-xl z-10 min-w-48 py-2">
+                  <button className="w-full text-left px-4 py-2 hover:bg-accent/50 flex items-center gap-3 text-foreground transition-colors">
                     <DocumentDuplicateIcon className="h-4 w-4" />
                     Duplicar evento
                   </button>
-                  <div className="border-t border-gray-100 my-1"></div>
+                  <div className="border-t border-border my-1"></div>
                   <button
-                    className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 flex items-center gap-3 transition-colors"
+                    className="w-full text-left px-4 py-2 hover:bg-destructive/10 text-destructive flex items-center gap-3 transition-colors"
                     onClick={onDelete}
                   >
                     <XMarkIcon className="h-4 w-4" />
@@ -199,24 +199,24 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
         {/* Date and Time Section */}
         <div className="p-6 border-b border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-3 mb-4 flex-wrap">
-            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-2 bg-background border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
               <CalendarIcon className="h-4 w-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">
                 {formatDateTime(event.start)}
               </span>
             </div>
             <span className="text-sm text-gray-400 font-medium">a</span>
-            <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-2 bg-background border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
               <span className="text-sm font-medium text-gray-700">
                 {formatDateTime(event.end)}
               </span>
             </div>
             <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2">
-              <span className="text-xs text-blue-700 font-medium">
+              <span className="text-xs text-primary font-medium">
                 (GMT+02:00) Europa central - Madrid
               </span>
             </div>
-            <button className="text-blue-600 text-sm hover:text-blue-700 font-medium hover:underline transition-colors">
+            <button className="text-primary text-sm hover:text-primary font-medium hover:underline transition-colors">
               Zona horaria
             </button>
           </div>
@@ -232,7 +232,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
               </span>
             </label>
             <Select defaultValue="no-repeat">
-              <SelectTrigger className="w-40 border-gray-200 hover:border-gray-300 transition-colors">
+              <SelectTrigger className="w-40 border-gray-200 hover:border-border transition-colors">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -251,8 +251,8 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             <button
               className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
                 activeTab === "details"
-                  ? "text-blue-600 border-blue-600 bg-white shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-white/50"
+                  ? "text-primary border-primary bg-background shadow-sm"
+                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
               }`}
               onClick={() => setActiveTab("details")}
             >
@@ -264,8 +264,8 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             <button
               className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
                 activeTab === "find-time"
-                  ? "text-blue-600 border-blue-600 bg-white shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-white/50"
+                  ? "text-primary border-primary bg-background shadow-sm"
+                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
               }`}
               onClick={() => setActiveTab("find-time")}
             >
@@ -277,8 +277,8 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
             <button
               className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
                 activeTab === "guests"
-                  ? "text-blue-600 border-blue-600 bg-white shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-white/50"
+                  ? "text-primary border-primary bg-background shadow-sm"
+                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
               }`}
               onClick={() => setActiveTab("guests")}
             >
@@ -297,7 +297,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
               {/* Google Meet Section */}
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 flex items-center justify-center">
-                  <div className="w-4 h-4 bg-green-500 rounded"></div>
+                  <div className="w-4 h-4 bg-card-foreground rounded"></div>
                 </div>
                 <div className="flex-1">
                   {editedEvent.hangoutLink || event.hangoutLink ? (
@@ -314,10 +314,10 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                         </button>
                       </div>
 
-                      <div className="bg-blue-50 rounded-lg p-4 mb-3">
+                      <div className="bg-card rounded-lg p-4 mb-3">
                         <div className="flex items-center justify-between mb-2">
                           <Button
-                            className="bg-blue-600 hover:bg-blue-700 text-white"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground"
                             onClick={() =>
                               window.open(
                                 editedEvent.hangoutLink ||
@@ -330,7 +330,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                           </Button>
                           <div className="flex items-center gap-2">
                             <button
-                              className="p-1 hover:bg-blue-100 rounded"
+                              className="p-1 hover:bg-card rounded"
                               onClick={() =>
                                 navigator.clipboard.writeText(
                                   editedEvent.hangoutLink ||
@@ -342,7 +342,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                             >
                               <DocumentDuplicateIcon className="h-4 w-4" />
                             </button>
-                            <button className="p-1 hover:bg-blue-100 rounded">
+                            <button className="p-1 hover:bg-card rounded">
                               <Cog6ToothIcon className="h-4 w-4" />
                             </button>
                             <ChevronDownIcon className="h-4 w-4" />
@@ -376,7 +376,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                       <Button
                         variant="outline"
                         onClick={handleAddGoogleMeet}
-                        className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                        className="text-primary border-primary hover:bg-card"
                       >
                         Agregar Google Meet
                       </Button>
@@ -490,7 +490,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
                   <SpeakerXMarkIcon className="h-4 w-4" />
-                  <button className="text-blue-600 hover:underline border border-dashed border-gray-300 px-2 py-1 rounded">
+                  <button className="text-primary hover:underline border border-dashed border-border px-2 py-1 rounded">
                     Crear notas de la reunión con IA
                   </button>
                 </div>
@@ -535,11 +535,11 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
                           description: value,
                         })
                       }
-                      className="bg-white"
+                      className="bg-background"
                     />
                   ) : (
                     <div
-                      className="prose prose-sm max-w-none"
+                      className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium"
                       dangerouslySetInnerHTML={{
                         __html: event.description || "",
                       }}
@@ -570,7 +570,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
 
       {/* Right Sidebar - Guests */}
       <div className="w-full md:w-80 border-l bg-gray-50">
-        <div className="p-4 border-b bg-white">
+        <div className="p-4 border-b bg-background">
           <h3 className="font-medium mb-3">Invitados</h3>
 
           <div className="relative mb-3">
@@ -616,7 +616,7 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
         </div>
 
         <div className="p-4 border-t">
-          <button className="text-blue-600 text-sm hover:underline">
+          <button className="text-primary text-sm hover:underline">
             Sugerencias de horas
           </button>
         </div>

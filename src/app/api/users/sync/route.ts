@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { adminApiRoute } from "@/src/middleware/api-access-control";
+import prisma from "@/src/lib/prisma";
 import { updateUserHoldedData } from "@/src/lib/actions/auth/user/settings/user-holded-data-update";
-
-const prisma = new PrismaClient();
 const HOLDED_API_BASE_URL = "https://api.holded.com/api/invoicing/v1/contacts";
 
-export async function POST(request: NextRequest) {
+export const POST = adminApiRoute(async (request: NextRequest, user) => {
   try {
+    console.log(`✅ Admin ${user.email} starting user sync with Holded`);
+    
     // Get all existing users with holdedId
     const existingUsers = await prisma.user.findMany({
       where: {
@@ -79,6 +80,7 @@ export async function POST(request: NextRequest) {
     console.log("Failed updates:", updateResults.failed);
     console.log(`Total updated users: ${updatedUsersCount}`);
     console.log(`Total users with errors: ${errorUsersCount}`);
+    console.log(`✅ Admin ${user.email} completed user sync - ${updatedUsersCount} updated, ${errorUsersCount} errors`);
 
     return NextResponse.json(
       {
@@ -96,4 +98,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+});
