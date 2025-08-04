@@ -12,7 +12,7 @@ import {
   CardTitle,
   CardContent,
 } from "@/src/components/ui/card";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import UpdateUserForm from "../forms/update-user-form";
 
 type Props = {

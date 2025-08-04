@@ -60,7 +60,7 @@ export function TrueDirectUploadZone({
   // Get file type icon
   const getFileIcon = (file: File) => {
     const type = file.type;
-    if (type.startsWith("image/")) return <Image className='w-4 h-4' />;
+    if (type.startsWith("image/")) return <Image className='w-4 h-4' alt='Image file' />;
     if (type.startsWith("video/")) return <Video className='w-4 h-4' />;
     if (type.startsWith("audio/")) return <Music className='w-4 h-4' />;
     if (
@@ -154,7 +154,7 @@ export function TrueDirectUploadZone({
   };
 
   // Step 2: Upload file in chunks via server proxy
-  const uploadFileInChunks = async (
+  const uploadFileInChunks = useCallback(async (
     file: File,
     resumableURI: string,
     fileId: string,
@@ -246,10 +246,10 @@ export function TrueDirectUploadZone({
     }
 
     throw new Error("Upload completed but no final response received");
-  };
+  }, []);
 
   // Upload single file using true direct upload
-  const uploadSingleFile = async (
+  const uploadSingleFile = useCallback(async (
     fileItem: ExtendedUploadFileItem,
     signal: AbortSignal
   ): Promise<void> => {
@@ -324,7 +324,7 @@ export function TrueDirectUploadZone({
 
       throw error;
     }
-  };
+  }, [folderId, folderName, uploadFileInChunks, initializeUploadSession]);
 
   // Add files to upload queue
   const addFiles = useCallback((newFiles: FileList | File[]) => {

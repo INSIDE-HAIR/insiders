@@ -23,7 +23,7 @@ import { CheckCircleIcon, XCircleIcon } from "lucide-react";
 import ModalResetPassword from "@/src/components/custom/auth/modals/modal-reset-password";
 import ModalHoldedSync from "../holded-sync/modal-holded-sync";
 import { useHolded } from "@/src/context/providers/HoldedProvider";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import ModalDeleteUser from "../delete-user/modal-delete-user";
 import ModalDeleteUserHoldedData from "../delete-user-holded-data/modal-delete-user-holded-data";
 

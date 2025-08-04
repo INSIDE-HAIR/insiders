@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/src/config/auth/auth';
 import prisma from '@/prisma/database';
-import { ExceptionAccessLevel, UserRole } from '@prisma/client';
+import type { ExceptionAccessLevel, UserRole } from '@prisma/client';
 
 // GET - Obtener todas las excepciones de usuario
 export async function GET(request: NextRequest) {

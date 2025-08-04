@@ -4,7 +4,7 @@ import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 import { auth, signOut } from "@/src/config/auth/auth";
 import { redirect } from "next/navigation";
 import { HoldedProvider } from "@/src/context/providers/HoldedProvider";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 import TabsUserSettings from "./_components/tabs/tabs-user-setttings";
 
 export default async function Page({

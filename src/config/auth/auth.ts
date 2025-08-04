@@ -9,7 +9,7 @@ import authConfig from "./auth.config"; // Importa la configuración de autentic
 import prisma from "../../../prisma/database"; // Importa la instancia de Prisma para la base de datos
 
 import { CredentialSigninSchema } from "../../types/zod-schemas"; // Importa el esquema de validación para el inicio de sesión
-import { UserRole } from "@prisma/client"; // Importa el tipo UserRole de Prisma
+import type { UserRole } from "@prisma/client"; // Importa el tipo UserRole de Prisma
 
 // Funciones para plantillas de correo electrónico
 function html({

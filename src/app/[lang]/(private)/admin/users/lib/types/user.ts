@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import type { UserRole } from "@prisma/client";
 
 // Interfaz genérica para los campos personalizados
 export interface Field {
