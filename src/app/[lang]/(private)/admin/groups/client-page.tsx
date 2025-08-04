@@ -49,6 +49,7 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { Checkbox } from "@/src/components/ui/checkbox";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface User {
   id: string;
@@ -340,10 +341,18 @@ export default function GroupsClient() {
 
   const openManageUsersDialog = (group: Group) => {
     setSelectedGroup(group);
-    setIsManageUsersDialogOpen(true);
     setUserSearchTerm("");
     setUserRoleFilter("");
     fetchAvailableUsers(group.id);
+    setIsManageUsersDialogOpen(true);
+  };
+
+  const closeManageUsersDialog = () => {
+    setIsManageUsersDialogOpen(false);
+    setSelectedGroup(null);
+    setSelectedUsers([]);
+    setUserSearchTerm("");
+    setUserRoleFilter("");
   };
 
   const filteredGroups = groups.filter(group =>
@@ -594,10 +603,17 @@ export default function GroupsClient() {
       </Dialog>
 
       {/* Manage Users Dialog */}
-      <Dialog open={isManageUsersDialogOpen} onOpenChange={setIsManageUsersDialogOpen}>
+      <Dialog open={isManageUsersDialogOpen && !!selectedGroup} onOpenChange={(open) => {
+        if (!open) closeManageUsersDialog();
+      }}>
         <DialogContent className="max-w-4xl max-h-[80vh]">
           <DialogHeader>
-            <DialogTitle>Gestionar Usuarios - {selectedGroup?.name}</DialogTitle>
+            <DialogTitle>
+              {selectedGroup?.name 
+                ? `Gestionar Usuarios - ${selectedGroup.name}` 
+                : "Gestionar Usuarios"
+              }
+            </DialogTitle>
             <DialogDescription>
               Añade o quita usuarios del grupo
             </DialogDescription>
@@ -718,12 +734,7 @@ export default function GroupsClient() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setIsManageUsersDialogOpen(false);
-              setSelectedUsers([]);
-              setUserSearchTerm("");
-              setUserRoleFilter("");
-            }}>
+            <Button variant="outline" onClick={closeManageUsersDialog}>
               Cerrar
             </Button>
           </DialogFooter>
