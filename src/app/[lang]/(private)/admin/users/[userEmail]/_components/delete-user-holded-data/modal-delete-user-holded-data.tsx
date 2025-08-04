@@ -6,7 +6,7 @@ import {
   ModalHeader,
   useDisclosure,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import DeleteHoldedDataUserForm from "./_components/DeleteHoldedDataUserForm";
 
 export default function ModalDeleteUserHoldedData({

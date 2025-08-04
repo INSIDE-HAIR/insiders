@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import CustomCards from "../cards/custom-cards";
 import { filesCodes } from "@/db/constants";
 import { Toaster, toast } from "sonner";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 const langCodes = {
   "01": "ES",

@@ -7,7 +7,7 @@ import {
   ModalHeader,
   useDisclosure,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 function ModalResetPassword({ email }: { email: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();

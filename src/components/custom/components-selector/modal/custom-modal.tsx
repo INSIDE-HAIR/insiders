@@ -6,7 +6,7 @@ import {
   ModalHeader,
   useDisclosure,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { ComponentsProps } from "@/src/types/components-schemas";
 import ComponentsSelector from "../components-selector";
 

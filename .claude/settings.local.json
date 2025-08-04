@@ -21,7 +21,8 @@
       "Bash(npx npm-check-updates:*)",
       "Bash(tasklist)",
       "Bash(cmd /c \"rmdir /s /q node_modules\")",
-      "Bash(del package-lock.json)"
+      "Bash(del package-lock.json)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": []
   }

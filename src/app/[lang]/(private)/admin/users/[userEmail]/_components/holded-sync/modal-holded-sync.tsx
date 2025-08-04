@@ -6,7 +6,7 @@ import {
   ModalHeader,
   useDisclosure,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import HoldedSyncForm from "./_components/HoldedSyncForm";
 
 export default function ModalHoldedSync({

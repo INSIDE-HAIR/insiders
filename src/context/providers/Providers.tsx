@@ -2,7 +2,7 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { ThemeContextProvider } from "./ThemeContextProvider";
 import { NextAuthSessionProvider } from "./AuthContextProvider";
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 
 type Props = {
   children: ReactNode;
@@ -25,9 +25,9 @@ const Providers = ({ children }: Props) => {
       enableSystem
       disableTransitionOnChange
     >
-      <NextUIProvider>
+      <HeroUIProvider>
         <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
-      </NextUIProvider>
+      </HeroUIProvider>
     </ThemeContextProvider>
   );
 };

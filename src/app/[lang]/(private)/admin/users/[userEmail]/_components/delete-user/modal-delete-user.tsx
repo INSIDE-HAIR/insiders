@@ -6,7 +6,7 @@ import {
   ModalHeader,
   useDisclosure,
   Button,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import DeleteUserForm from "./_components/DeleteUserForm";
 
 export default function ModalDeleteUser({

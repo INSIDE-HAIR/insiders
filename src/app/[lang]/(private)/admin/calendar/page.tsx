@@ -38,7 +38,7 @@ import {
 } from "@/src/components/ui/accordion";
 import { DEFAULT_CALENDAR_ID } from "@/src/features/calendar/constants/calendar.constants";
 import FunctionalWorkloadWidget from "./components/FunctionalWorkloadWidget";
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 
 interface CalendarStats {
   totalCalendars: number;
