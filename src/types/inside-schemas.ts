@@ -1,5 +1,5 @@
-// import type { UserRole } from "@prisma/client";
-import type { UserRole } from "@prisma/client";
+// import { UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import * as z from "zod";
 
 export const LoginSchema = z.object({

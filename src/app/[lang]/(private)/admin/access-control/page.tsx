@@ -239,7 +239,10 @@ export default function AccessControlPage() {
   const getResourceTypeBadge = (type: ResourceType) => {
     const colors = {
       [ResourceType.PAGE]: 'bg-blue-100 text-blue-800',
+      [ResourceType.API]: 'bg-yellow-100 text-yellow-800',
+      [ResourceType.FILE]: 'bg-orange-100 text-orange-800',
       [ResourceType.FOLDER]: 'bg-green-100 text-green-800',
+      [ResourceType.SERVICE]: 'bg-indigo-100 text-indigo-800',
       [ResourceType.MEDIA]: 'bg-purple-100 text-purple-800',
       [ResourceType.OTHER]: 'bg-gray-100 text-gray-800',
     };
