@@ -218,7 +218,7 @@
         "access": {
           "type": "auth",
           "requireAuth": false,
-          "redirectIfAuthenticated": "/admin"
+          "redirectIfAuthenticated": "/admin/dashboard"
         },
         "metadata": {
           "title": "Login - Inside Salons",
@@ -231,7 +231,7 @@
         "access": {
           "type": "auth",
           "requireAuth": false,
-          "redirectIfAuthenticated": "/admin"
+          "redirectIfAuthenticated": "/admin/dashboard"
         }
       },
       {
@@ -280,6 +280,15 @@
           "roles": ["admin", "super-admin"]
         },
         "children": [
+          {
+            "path": "/admin/dashboard",
+            "label": "Dashboard",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["admin", "super-admin"]
+            }
+          },
           {
             "path": "/admin/analytics",
             "label": "Analytics",
