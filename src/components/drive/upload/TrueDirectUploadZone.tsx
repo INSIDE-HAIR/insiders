@@ -60,7 +60,7 @@ export function TrueDirectUploadZone({
   // Get file type icon
   const getFileIcon = (file: File) => {
     const type = file.type;
-    if (type.startsWith("image/")) return <Image className='w-4 h-4' alt='Image file' />;
+    if (type.startsWith("image/")) return <Image className='w-4 h-4' />;
     if (type.startsWith("video/")) return <Video className='w-4 h-4' />;
     if (type.startsWith("audio/")) return <Music className='w-4 h-4' />;
     if (
