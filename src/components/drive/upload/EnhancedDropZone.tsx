@@ -50,7 +50,8 @@ interface EnhancedDropZoneProps {
 }
 
 const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-const WARN_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const WARN_FILE_SIZE = 2 * 1024 * 1024; // 2MB - advertencia para archivos grandes
+const RESUMABLE_THRESHOLD = 5 * 1024 * 1024; // 5MB - límite oficial de Google Drive API para simple upload
 
 // Utility functions
 function formatFileSize(bytes: number): string {
@@ -265,6 +266,104 @@ export function EnhancedDropZone({
     );
   }, []);
 
+  const uploadFileResumable = async (
+    fileItem: UploadFileItem,
+    signal: AbortSignal
+  ): Promise<void> => {
+    try {
+      updateProgress(fileItem.id, 5);
+
+      // Step 1: Initialize resumable upload session
+      const initResponse = await fetch("/api/drive/upload/init-resumable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: fileItem.newName.trim(),
+          fileSize: fileItem.file.size,
+          mimeType: fileItem.file.type || "application/octet-stream",
+          folderId: folderId,
+        }),
+        signal,
+      });
+
+      if (!initResponse.ok) {
+        throw new Error(`Failed to initialize resumable upload: ${initResponse.statusText}`);
+      }
+
+      const { resumableURI } = await initResponse.json();
+      updateProgress(fileItem.id, 10);
+
+      // Step 2: Upload file in chunks
+      const CHUNK_SIZE = 1024 * 1024; // 1MB chunks
+      const totalChunks = Math.ceil(fileItem.file.size / CHUNK_SIZE);
+      let uploadedBytes = 0;
+
+      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        if (signal.aborted) throw new Error("Upload cancelled");
+
+        const start = chunkIndex * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, fileItem.file.size);
+        const chunk = fileItem.file.slice(start, end);
+
+        const chunkResponse = await fetch(
+          `/api/drive/upload/resumable-chunk?resumableURI=${encodeURIComponent(resumableURI)}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/octet-stream",
+              "Content-Range": `bytes ${start}-${end - 1}/${fileItem.file.size}`,
+            },
+            body: chunk,
+            signal,
+          }
+        );
+
+        if (!chunkResponse.ok && chunkResponse.status !== 308) {
+          throw new Error(`Chunk upload failed: ${chunkResponse.statusText}`);
+        }
+
+        uploadedBytes += chunk.size;
+        const progress = 10 + Math.floor((uploadedBytes / fileItem.file.size) * 85);
+        updateProgress(fileItem.id, progress);
+
+        // Check if upload is complete (status 200/201) vs incomplete (308)
+        if (chunkResponse.status !== 308) {
+          // Upload completed
+          break;
+        }
+      }
+
+      updateProgress(fileItem.id, 100);
+
+      // Update file status to completed
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileItem.id
+            ? { ...f, status: "completed" as UploadStatus, progress: 100 }
+            : f
+        )
+      );
+
+      console.log(`✅ Resumable upload completed: ${fileItem.newName}`);
+    } catch (error) {
+      console.error(`❌ Resumable upload failed for ${fileItem.newName}:`, error);
+      
+      // Update file status to error
+      setFiles((prev) =>
+        prev.map((f) =>
+          f.id === fileItem.id
+            ? { 
+                ...f, 
+                status: "error" as UploadStatus, 
+                error: error instanceof Error ? error.message : "Upload failed" 
+              }
+            : f
+        )
+      );
+      throw error;
+    }
+  };
+
   const uploadSingleFile = async (
     fileItem: UploadFileItem,
     signal: AbortSignal
@@ -284,8 +383,15 @@ export function EnhancedDropZone({
       if (signal.aborted) throw new Error("Upload cancelled");
 
       const isLargeFile = fileItem.file.size > WARN_FILE_SIZE;
+      const shouldUseResumable = fileItem.file.size > RESUMABLE_THRESHOLD;
 
-      // Convert to base64
+      // Use resumable upload for very large files
+      if (shouldUseResumable) {
+        await uploadFileResumable(fileItem, signal);
+        return;
+      }
+
+      // Convert to base64 for regular uploads
       updateProgress(fileItem.id, 20);
       const base64Data = await fileToBase64(fileItem.file);
       updateProgress(fileItem.id, isLargeFile ? 40 : 60);
@@ -547,6 +653,9 @@ export function EnhancedDropZone({
                   <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block mr-2'>
                     📁 Máximo 100MB por archivo
                   </div>
+                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block mr-2'>
+                    🚀 Archivos &gt;5MB usan subida resumible
+                  </div>
                   <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block'>
                     🎯 Todos los formatos soportados
                   </div>
@@ -703,7 +812,15 @@ export function EnhancedDropZone({
                           <span className='text-sm font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded'>
                             {formatFileSize(file.file.size)}
                           </span>
-                          {file.file.size > WARN_FILE_SIZE && (
+                          {file.file.size > RESUMABLE_THRESHOLD && (
+                            <Badge
+                              variant='outline'
+                              className='text-blue-700 border-blue-400 bg-blue-100 font-medium'
+                            >
+                              🚀 Resumible
+                            </Badge>
+                          )}
+                          {file.file.size > WARN_FILE_SIZE && file.file.size <= RESUMABLE_THRESHOLD && (
                             <Badge
                               variant='outline'
                               className='text-amber-700 border-amber-400 bg-amber-100 font-medium'

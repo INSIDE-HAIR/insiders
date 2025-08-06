@@ -7,6 +7,8 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 // Configurar para manejar payloads grandes via streaming
 export const preferredRegion = "auto";
+// Optimal for streaming data - siguiendo mejores prácticas de Vercel
+export const runtime = "nodejs";
 
 export async function PUT(request: NextRequest) {
   console.log("=== RESUMABLE CHUNK PROXY START ===");

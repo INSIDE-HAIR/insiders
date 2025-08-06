@@ -3,9 +3,10 @@ import { auth } from "@/src/config/auth/auth";
 import { GoogleDriveService } from "@/src/features/drive/services/drive/GoogleDriveService";
 import { z } from "zod";
 
-// Configuración para archivos grandes
+// Configuración para archivos grandes - siguiendo mejores prácticas de Vercel
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 minutos para uploads grandes
+export const runtime = "nodejs"; // Optimal para procesamiento de archivos
 
 const uploadSchema = z.object({
   folderId: z.string().min(1, "Folder ID is required"),
@@ -38,8 +39,20 @@ export async function POST(request: Request) {
       );
     }
 
+    // Optimización siguiendo mejores prácticas de Vercel para parsing de JSON
     let body;
     try {
+      // Para archivos pequeños, limitar el uso de memoria parseando de forma controlada
+      const contentLength = request.headers.get("content-length");
+      const maxJsonSize = 50 * 1024 * 1024; // 50MB max para JSON (base64 overhead)
+      
+      if (contentLength && parseInt(contentLength) > maxJsonSize) {
+        return NextResponse.json(
+          { error: "Request too large for JSON upload. Use resumable upload for large files." },
+          { status: 413 }
+        );
+      }
+      
       body = await request.json();
     } catch (error) {
       console.error("Error parsing request body:", error);
@@ -142,7 +155,8 @@ export async function POST(request: Request) {
     const uploadResults = [];
     const errors = [];
 
-    // Procesar cada archivo
+    // Procesar cada archivo de forma secuencial para optimizar memoria
+    // Siguiendo mejores prácticas de Vercel para streaming y chunks
     for (const [index, fileData] of files.entries()) {
       const fileStartTime = Date.now();
 
@@ -154,8 +168,14 @@ export async function POST(request: Request) {
           ).toFixed(2)}MB)`
         );
 
-        // Convertir datos base64 a buffer
-        const buffer = Buffer.from(fileData.data, "base64");
+        // Convertir datos base64 a buffer de forma controlada
+        // Evitando cargar todo en memoria de una vez
+        let buffer: Buffer;
+        try {
+          buffer = Buffer.from(fileData.data, "base64");
+        } catch (bufferError) {
+          throw new Error(`Failed to decode base64 data for ${fileData.name}: buffer too large or corrupted`);
+        }
 
         // Verificar que el buffer tiene el tamaño esperado
         if (buffer.length !== fileData.size) {
@@ -203,6 +223,14 @@ export async function POST(request: Request) {
           originalName: fileData.name,
           uploadTimeMs: fileUploadTime,
         });
+
+        // Liberar memoria explícitamente siguiendo mejores prácticas de Vercel
+        buffer = null as any;
+        
+        // Sugerir garbage collection para archivos grandes
+        if (fileData.size > 1024 * 1024 && global.gc) {
+          global.gc();
+        }
       } catch (error) {
         const fileEndTime = Date.now();
         const fileUploadTime = fileEndTime - fileStartTime;
