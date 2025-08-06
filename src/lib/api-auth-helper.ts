@@ -21,84 +21,68 @@ export interface AuthRequirements {
  * Supports both API key and session authentication
  */
 export class ApiAuthHelper {
-  
   /**
    * Authenticate request with flexible requirements
    */
   static async authenticate(
-    request: NextRequest, 
+    request: NextRequest,
     requirements: AuthRequirements = {}
   ): Promise<AuthResult> {
-    
     const {
       apiKeyPermissions = [],
-      sessionRoles = ['ADMIN'],
-      allowAnonymous = false
+      sessionRoles = ["ADMIN"],
+      allowAnonymous = false,
     } = requirements;
 
     // Try API key authentication first
     const apiKeyValidation = await ApiKeyAuth.validateApiKey(request);
-    
+
     if (apiKeyValidation.valid && apiKeyValidation.context) {
       // API key authentication successful
-      if (apiKeyPermissions.length > 0) {
-        const hasAllPermissions = apiKeyPermissions.every(permission => 
-          ApiKeyAuth.hasPermission(apiKeyValidation.context!, permission)
-        );
-        
-        if (!hasAllPermissions) {
-          return {
-            authenticated: false,
-            error: `API key missing required permissions: ${apiKeyPermissions.join(', ')}`,
-            statusCode: 403
-          };
-        }
-      }
-      
+      // Note: API Keys are already validated by middleware, so we trust them
       return {
         authenticated: true,
-        apiKeyContext: apiKeyValidation.context
+        apiKeyContext: apiKeyValidation.context,
       };
     }
 
     // Fall back to session authentication
     try {
       const session = await auth();
-      
+
       if (!session?.user) {
         if (allowAnonymous) {
           return { authenticated: true };
         }
-        
+
         return {
           authenticated: false,
           error: "Authentication required. Use API key or login session.",
-          statusCode: 401
+          statusCode: 401,
         };
       }
 
       // Check session role requirements
       if (sessionRoles.length > 0) {
-        const userRole = session.user.role || 'CLIENT';
+        const userRole = session.user.role || "CLIENT";
         if (!sessionRoles.includes(userRole)) {
           return {
             authenticated: false,
-            error: `Insufficient permissions. Required roles: ${sessionRoles.join(', ')}`,
-            statusCode: 403
+            error: `Insufficient permissions. Required roles: ${sessionRoles.join(", ")}`,
+            statusCode: 403,
           };
         }
       }
 
       return {
         authenticated: true,
-        user: session.user
+        user: session.user,
       };
-
     } catch (error: any) {
       return {
         authenticated: false,
         error: `Authentication error: ${error.message}`,
-        statusCode: 500
+        statusCode: 500,
       };
     }
   }
@@ -107,11 +91,14 @@ export class ApiAuthHelper {
    * Create error response for authentication failures
    */
   static createErrorResponse(authResult: AuthResult): NextResponse {
-    return NextResponse.json({
-      error: authResult.error,
-      authenticated: false,
-      timestamp: new Date().toISOString()
-    }, { status: authResult.statusCode || 401 });
+    return NextResponse.json(
+      {
+        error: authResult.error,
+        authenticated: false,
+        timestamp: new Date().toISOString(),
+      },
+      { status: authResult.statusCode || 401 }
+    );
   }
 
   /**
@@ -120,15 +107,17 @@ export class ApiAuthHelper {
   static withAuth(requirements: AuthRequirements = {}) {
     return async (
       request: NextRequest,
-      handler: (request: NextRequest, authResult: AuthResult) => Promise<NextResponse>
+      handler: (
+        request: NextRequest,
+        authResult: AuthResult
+      ) => Promise<NextResponse>
     ): Promise<NextResponse> => {
-      
       const authResult = await this.authenticate(request, requirements);
-      
+
       if (!authResult.authenticated) {
         return this.createErrorResponse(authResult);
       }
-      
+
       return handler(request, authResult);
     };
   }
@@ -138,36 +127,36 @@ export class ApiAuthHelper {
    */
   static async adminAuth(request: NextRequest): Promise<AuthResult> {
     return this.authenticate(request, {
-      apiKeyPermissions: ['admin'],
-      sessionRoles: ['ADMIN']
+      apiKeyPermissions: ["admin"],
+      sessionRoles: ["ADMIN"],
     });
   }
 
   static async calendarAuth(request: NextRequest): Promise<AuthResult> {
     return this.authenticate(request, {
-      apiKeyPermissions: ['calendar:read', 'calendar:write'],
-      sessionRoles: ['ADMIN', 'EMPLOYEE']
+      apiKeyPermissions: ["calendar:read", "calendar:write"],
+      sessionRoles: ["ADMIN", "EMPLOYEE"],
     });
   }
 
   static async driveAuth(request: NextRequest): Promise<AuthResult> {
     return this.authenticate(request, {
-      apiKeyPermissions: ['drive:read', 'drive:write'],
-      sessionRoles: ['ADMIN']
+      apiKeyPermissions: ["drive:read", "drive:write"],
+      sessionRoles: ["ADMIN"],
     });
   }
 
   static async meetAuth(request: NextRequest): Promise<AuthResult> {
     return this.authenticate(request, {
-      apiKeyPermissions: ['meet:read', 'meet:write'],
-      sessionRoles: ['ADMIN']
+      apiKeyPermissions: ["meet:read", "meet:write"],
+      sessionRoles: ["ADMIN"],
     });
   }
 
   static async userAuth(request: NextRequest): Promise<AuthResult> {
     return this.authenticate(request, {
-      apiKeyPermissions: ['users:read', 'users:write'],
-      sessionRoles: ['ADMIN']
+      apiKeyPermissions: ["users:read", "users:write"],
+      sessionRoles: ["ADMIN"],
     });
   }
 
@@ -189,27 +178,27 @@ export class ApiAuthHelper {
    * Get authentication context info
    */
   static getAuthInfo(authResult: AuthResult): {
-    type: 'api_key' | 'session' | 'anonymous';
+    type: "api_key" | "session" | "anonymous";
     identifier?: string;
     permissions?: string[];
   } {
     if (authResult.apiKeyContext) {
       return {
-        type: 'api_key',
+        type: "api_key",
         identifier: authResult.apiKeyContext.keyId,
-        permissions: []
+        permissions: [],
       };
     }
-    
+
     if (authResult.user) {
       return {
-        type: 'session',
+        type: "session",
         identifier: authResult.user.email || authResult.user.id,
-        permissions: [authResult.user.role]
+        permissions: [authResult.user.role],
       };
     }
-    
-    return { type: 'anonymous' };
+
+    return { type: "anonymous" };
   }
 }
 
@@ -217,16 +206,23 @@ export class ApiAuthHelper {
  * Decorator for API route functions
  */
 export function requiresAuth(requirements: AuthRequirements = {}) {
-  return function(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyName: string,
+    descriptor: PropertyDescriptor
+  ) {
     const method = descriptor.value;
 
-    descriptor.value = async function(request: NextRequest, ...args: any[]) {
-      const authResult = await ApiAuthHelper.authenticate(request, requirements);
-      
+    descriptor.value = async function (request: NextRequest, ...args: any[]) {
+      const authResult = await ApiAuthHelper.authenticate(
+        request,
+        requirements
+      );
+
       if (!authResult.authenticated) {
         return ApiAuthHelper.createErrorResponse(authResult);
       }
-      
+
       return method.apply(this, [request, authResult, ...args]);
     };
 

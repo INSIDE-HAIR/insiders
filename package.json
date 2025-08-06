@@ -11,7 +11,12 @@
     "type-check": "tsc -p tsconfig.json --noEmit",
     "postinstall": "prisma generate",
     "seed": "prisma db seed",
-    "test": "vitest run"
+    "test": "vitest run",
+    "generate-api-key": "ts-node src/lib/generate-test-api-key.ts",
+    "list-api-keys": "ts-node src/lib/generate-test-api-key.ts list",
+    "revoke-api-key": "ts-node src/lib/generate-test-api-key.ts revoke",
+    "test-api-key": "node test-api-keys.js",
+    "setup-api-keys": "node setup-api-keys.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
