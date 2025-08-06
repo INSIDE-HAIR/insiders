@@ -18,13 +18,19 @@ import {
   Trash2,
   RotateCcw,
   Loader2,
+  Folder,
+  Package,
+  Target,
+  UploadCloud,
+  Rocket,
+  XCircle,
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Progress } from "@/src/components/ui/progress";
 import { Badge } from "@/src/components/ui/badge";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { cn } from "@/src/lib/utils";
 
 // Types
@@ -49,7 +55,7 @@ interface EnhancedDropZoneProps {
   onUploadComplete?: (files: UploadFileItem[]) => void;
 }
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024; // 1GB
 const WARN_FILE_SIZE = 2 * 1024 * 1024; // 2MB - advertencia para archivos grandes
 const RESUMABLE_THRESHOLD = 5 * 1024 * 1024; // 5MB - límite oficial de Google Drive API para simple upload
 
@@ -78,7 +84,7 @@ function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
     reader.onload = () => {
       const result = reader.result as string;
-      const base64 = result.split(",")[1] || '';
+      const base64 = result.split(",")[1] || "";
       resolve(base64);
     };
     reader.onerror = (error) => reject(error);
@@ -111,7 +117,7 @@ export function EnhancedDropZone({
         errors.push(
           `${file.name} es demasiado grande (${formatFileSize(
             file.size
-          )}). Máximo: 100MB.`
+          )}). Máximo: 1GB.`
         );
       } else {
         validFiles.push(file);
@@ -287,7 +293,9 @@ export function EnhancedDropZone({
       });
 
       if (!initResponse.ok) {
-        throw new Error(`Failed to initialize resumable upload: ${initResponse.statusText}`);
+        throw new Error(
+          `Failed to initialize resumable upload: ${initResponse.statusText}`
+        );
       }
 
       const { resumableURI } = await initResponse.json();
@@ -323,7 +331,8 @@ export function EnhancedDropZone({
         }
 
         uploadedBytes += chunk.size;
-        const progress = 10 + Math.floor((uploadedBytes / fileItem.file.size) * 85);
+        const progress =
+          10 + Math.floor((uploadedBytes / fileItem.file.size) * 85);
         updateProgress(fileItem.id, progress);
 
         // Check if upload is complete (status 200/201) vs incomplete (308)
@@ -346,16 +355,19 @@ export function EnhancedDropZone({
 
       console.log(`✅ Resumable upload completed: ${fileItem.newName}`);
     } catch (error) {
-      console.error(`❌ Resumable upload failed for ${fileItem.newName}:`, error);
-      
+      console.error(
+        `❌ Resumable upload failed for ${fileItem.newName}:`,
+        error
+      );
+
       // Update file status to error
       setFiles((prev) =>
         prev.map((f) =>
           f.id === fileItem.id
-            ? { 
-                ...f, 
-                status: "error" as UploadStatus, 
-                error: error instanceof Error ? error.message : "Upload failed" 
+            ? {
+                ...f,
+                status: "error" as UploadStatus,
+                error: error instanceof Error ? error.message : "Upload failed",
               }
             : f
         )
@@ -552,23 +564,31 @@ export function EnhancedDropZone({
   const getStatusBadge = (status: UploadStatus) => {
     switch (status) {
       case "pending":
-        return <Badge variant='secondary'>Pendiente</Badge>;
+        return (
+          <Badge className='bg-muted text-muted-foreground hover:text-background'>
+            Pendiente
+          </Badge>
+        );
       case "uploading":
         return (
-          <Badge variant='default' className='bg-blue-500'>
+          <Badge className='bg-primary text-primary-foreground'>
             <Loader2 className='w-3 h-3 mr-1 animate-spin' />
             Subiendo
           </Badge>
         );
       case "completed":
         return (
-          <Badge variant='default' className='bg-green-500'>
+          <Badge className='bg-success text-success-foreground'>
             <Check className='w-3 h-3 mr-1' />
             Completado
           </Badge>
         );
       case "error":
-        return <Badge variant='destructive'>Error</Badge>;
+        return (
+          <Badge className='bg-destructive text-destructive-foreground'>
+            Error
+          </Badge>
+        );
       default:
         return null;
     }
@@ -590,7 +610,7 @@ export function EnhancedDropZone({
   // Check authorization
   if (!session?.user || session.user.role !== "ADMIN") {
     return (
-      <div className='border-2 border-dashed border-gray-300 rounded-lg p-8 text-center text-gray-500'>
+      <div className='border-2 border-dashed border-primary rounded-lg p-8 text-center'>
         <Upload className='h-12 w-12 mx-auto mb-4' />
         <p>Solo los administradores pueden subir archivos</p>
       </div>
@@ -604,12 +624,12 @@ export function EnhancedDropZone({
         className={cn(
           "border-2 border-dashed rounded-lg transition-all duration-300",
           isDragOver
-            ? "border-inside bg-inside/10 shadow-lg"
+            ? "border-primary bg-primary/10 shadow-lg"
             : files.length > 0
-            ? "border-zinc-300 bg-zinc-50"
-            : "border-zinc-300 hover:border-inside/50 hover:bg-inside/5 cursor-pointer",
+              ? "border-zinc-300 bg-background"
+              : "border-zinc-300 hover:border-primary/50 hover:bg-primary/5 cursor-pointer",
           disabled && "opacity-50 cursor-not-allowed",
-          isUploading && "border-inside/50 bg-inside/5"
+          isUploading && "border-background bg-background/95"
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
@@ -618,132 +638,136 @@ export function EnhancedDropZone({
         onClick={files.length === 0 ? handleClick : undefined}
       >
         {files.length === 0 ? (
-          // Empty state
-          <div className='p-16 text-center bg-white'>
+          // Empty state - Responsive
+          <div className='p-4 sm:p-8 lg:p-16 text-center bg-background hover:bg-background/95 transition-colors duration-300'>
             {isDragOver ? (
-              <div className='text-zinc-900'>
-                <div className='p-6 rounded-full bg-inside mx-auto mb-6 w-fit shadow-lg scale-110 transition-all duration-300'>
-                  <Upload className='h-10 w-10 text-black' />
+              <div className='text-foreground'>
+                <div className='p-4 sm:p-6 rounded-full bg-primary mx-auto mb-4 sm:mb-6 w-fit shadow-lg scale-110 transition-all duration-300'>
+                  <Upload className='h-8 w-8 sm:h-10 sm:w-10 text-primary-foreground' />
                 </div>
-                <h4 className='text-xl font-bold mb-3'>
+                <h4 className='text-lg sm:text-xl font-bold mb-3'>
                   ¡Suelta los archivos aquí!
                 </h4>
-                <p className='text-base font-medium text-zinc-700'>
+                <p className='text-sm sm:text-base font-medium text-muted-foreground'>
                   Listo para recibir tus archivos en: {folderName}
                 </p>
               </div>
             ) : (
-              <div className='text-zinc-600'>
-                <div className='p-6 rounded-full bg-zinc-800 mx-auto mb-6 w-fit hover:bg-zinc-700 transition-colors duration-300'>
-                  <Plus className='h-10 w-10 text-white' />
+              <div className='text-muted-foreground'>
+                <div className='p-4 sm:p-6 rounded-full bg-muted mx-auto mb-4 sm:mb-6 w-fit hover:bg-muted/80 transition-colors duration-300'>
+                  <Plus className='h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground' />
                 </div>
-                <h4 className='text-xl font-bold mb-3 text-zinc-900'>
+                <h4 className='text-lg sm:text-xl font-bold mb-3 text-foreground'>
                   Subir Archivos
                 </h4>
-                <p className='text-base font-medium text-zinc-700 mb-4 leading-relaxed'>
+                <p className='text-sm sm:text-base font-medium text-muted-foreground mb-4 leading-relaxed px-4'>
                   Arrastra archivos aquí o haz clic para seleccionar
                 </p>
-                <div className='bg-zinc-100 rounded-lg px-4 py-2 mb-3 inline-block'>
-                  <p className='text-sm font-semibold text-zinc-800'>
-                    📁 Destino:{" "}
-                    <span className='text-black font-bold'>{folderName}</span>
+                <div className='bg-muted rounded-lg px-3 py-2 mb-3 inline-block max-w-full'>
+                  <p className='text-xs sm:text-sm font-semibold text-muted-foreground flex items-center gap-2'>
+                    <Folder className='h-3 w-3 sm:h-4 sm:w-4' />
+                    Destino:{" "}
+                    <span className='text-foreground font-bold break-words'>
+                      {folderName}
+                    </span>
                   </p>
                 </div>
-                <div className='text-sm font-medium text-zinc-600 space-y-1'>
-                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block mr-2'>
-                    📁 Máximo 100MB por archivo
-                  </div>
-                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block mr-2'>
-                    🚀 Archivos &gt;5MB usan subida resumible
-                  </div>
-                  <div className='bg-inside/10 px-3 py-1 rounded text-zinc-800 inline-block'>
-                    🎯 Todos los formatos soportados
+                <div className='text-xs sm:text-sm font-medium text-muted-foreground space-y-2'>
+                  <div className='flex flex-wrap gap-2 justify-center'>
+                    <div className='bg-primary/10 px-2 py-1 rounded text-primary flex items-center gap-2'>
+                      <Folder className='h-3 w-3' />
+                      Máximo 1GB por archivo
+                    </div>
+                    <div className='bg-primary/10 px-2 py-1 rounded text-primary flex items-center gap-2'>
+                      <Rocket className='h-3 w-3' />
+                      Archivos &gt;5MB usan subida resumible
+                    </div>
+                    <div className='bg-primary/10 px-2 py-1 rounded text-primary flex items-center gap-2'>
+                      <Target className='h-3 w-3' />
+                      Todos los formatos soportados
+                    </div>
                   </div>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          // Files present state
-          <div className='p-6'>
-            <div className='flex items-center justify-between mb-6'>
+          // Files present state - Responsive
+          <div className='p-3 sm:p-6'>
+            <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6'>
               <div className='flex items-center gap-3'>
-                <div className='p-3 rounded-lg bg-inside/10'>
-                  <Upload className='h-5 w-5 text-zinc-800' />
+                <div className='p-2 sm:p-3 rounded-lg bg-primary/10'>
+                  <Upload className='h-4 w-4 sm:h-5 sm:w-5 text-primary' />
                 </div>
-                <h3 className='text-lg font-bold text-zinc-900'>
+                <h3 className='text-base sm:text-lg font-bold text-foreground'>
                   Archivos para Subir ({totalFiles})
                 </h3>
               </div>
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center gap-2 sm:gap-3 w-full sm:w-auto'>
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={handleClick}
                   disabled={isUploading}
-                  className='border-inside text-inside hover:bg-inside hover:text-black transition-colors font-medium'
+                  className='flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors font-medium'
                 >
                   <Plus className='h-4 w-4 mr-2' />
-                  Añadir Más
+                  <span className='hidden sm:inline'>Añadir Más</span>
+                  <span className='sm:hidden'>Más</span>
                 </Button>
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={clearAllFiles}
                   disabled={isUploading}
-                  className='text-zinc-700 border-zinc-400 hover:bg-zinc-100 font-medium'
+                  className='flex-1 sm:flex-none text-muted-foreground border-border hover:bg-muted font-medium'
                 >
                   <Trash2 className='h-4 w-4 mr-2' />
-                  Limpiar Todo
+                  <span className='hidden sm:inline'>Limpiar Todo</span>
+                  <span className='sm:hidden'>Limpiar</span>
                 </Button>
               </div>
             </div>
 
-            {/* Summary info */}
-            <div className='flex items-center justify-between text-sm font-medium text-zinc-700 mb-6 p-4 bg-linear-to-r from-zinc-50 to-zinc-100 rounded-lg border border-zinc-300'>
-              <div className='flex items-center gap-6'>
-                <span className='bg-white px-3 py-1 rounded-md border font-semibold'>
-                  <strong className='text-zinc-900'>Total:</strong>{" "}
-                  {formatFileSize(totalSize)}
-                </span>
-                <span className='bg-white px-3 py-1 rounded-md border font-semibold'>
-                  <strong className='text-zinc-900'>Destino:</strong>{" "}
-                  {folderName}
-                </span>
-              </div>
-              <div className='flex items-center gap-2'>
-                {pendingFiles > 0 && (
-                  <Badge
-                    variant='secondary'
-                    className='bg-zinc-200 text-zinc-800 font-medium'
-                  >
-                    {pendingFiles} pendientes
-                  </Badge>
-                )}
-                {uploadingFiles > 0 && (
-                  <Badge className='bg-inside text-black font-medium'>
-                    {uploadingFiles} subiendo
-                  </Badge>
-                )}
-                {completedFiles > 0 && (
-                  <Badge className='bg-green-600 text-white font-medium'>
-                    {completedFiles} completados
-                  </Badge>
-                )}
-                {errorFiles > 0 && (
-                  <Badge variant='destructive' className='font-medium'>
-                    {errorFiles} con error
-                  </Badge>
-                )}
+            {/* Summary info - Responsive */}
+            <div className='text-sm font-medium text-muted-foreground mb-6 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border'>
+              <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3'>
+                <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 w-full sm:w-auto'>
+                  <span className='bg-background px-3 py-1 rounded-md border border-border font-semibold text-foreground'>
+                    <strong>Total:</strong> {formatFileSize(totalSize)}
+                  </span>
+                  <span className='bg-background px-3 py-1 rounded-md border border-border font-semibold text-foreground truncate max-w-full sm:max-w-none'>
+                    <strong>Destino:</strong>{" "}
+                    <span className='break-words'>{folderName}</span>
+                  </span>
+                </div>
+                <div className='flex flex-wrap items-center gap-2'>
+                  {pendingFiles > 0 && (
+                    <Badge variant='secondary'>{pendingFiles} pendientes</Badge>
+                  )}
+                  {uploadingFiles > 0 && (
+                    <Badge variant='secondary'>{uploadingFiles} subiendo</Badge>
+                  )}
+                  {completedFiles > 0 && (
+                    <Badge className='bg-success text-success-foreground font-medium'>
+                      {completedFiles} completados
+                    </Badge>
+                  )}
+                  {errorFiles > 0 && (
+                    <Badge className='bg-destructive text-destructive-foreground font-medium'>
+                      {errorFiles} con error
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Warnings */}
             {hasLargeFiles && (
-              <Alert className='mb-4 border-amber-300 bg-amber-50'>
-                <AlertTriangle className='h-5 w-5 text-amber-600' />
-                <AlertDescription className='text-amber-800 font-medium'>
-                  <strong>⚠️ Archivos grandes detectados.</strong> Pueden tardar
+              <Alert className='mb-4 border-warning bg-warning/10 text-warning'>
+                <AlertTriangle className='h-5 w-5 stroke-warning  ' />
+                <AlertDescription className='text-warning font-medium'>
+                  <strong>Archivos grandes detectados.</strong> Pueden tardar
                   más tiempo en subirse. Considera usar el modo directo para
                   mejor rendimiento.
                 </AlertDescription>
@@ -753,22 +777,26 @@ export function EnhancedDropZone({
             {hasErrors && (
               <Alert
                 variant='destructive'
-                className='mb-4 border-red-300 bg-red-50'
+                className='mb-4 border-destructive bg-destructive/10 text-destructive'
               >
-                <AlertTriangle className='h-5 w-5 text-red-600' />
-                <AlertDescription className='text-red-800 font-medium'>
-                  <strong>❌ {errorFiles} archivo(s) fallaron.</strong> Puedes
-                  reintentar o eliminarlos de la lista.
+                <AlertTriangle className='h-5 w-5 stroke-destructive' />
+                <AlertDescription className='text-destructive font-medium'>
+                  <strong className='flex items-center gap-2'>
+                    <XCircle className='h-4 w-4' />
+                    {errorFiles} archivo(s) fallaron.
+                  </strong>{" "}
+                  Puedes reintentar o eliminarlos de la lista.
                 </AlertDescription>
               </Alert>
             )}
 
             {isCompleted && !hasErrors && (
-              <Alert className='mb-4 border-green-300 bg-green-50'>
-                <Check className='h-5 w-5 text-green-600' />
-                <AlertDescription className='text-green-800 font-medium'>
-                  <strong>
-                    ✅ ¡Todos los archivos se subieron correctamente!
+              <Alert className='mb-4 border-success bg-success/10 text-success'>
+                <Check className='h-5 w-5 stroke-success' />
+                <AlertDescription className='text-success font-medium'>
+                  <strong className='flex items-center gap-2'>
+                    <CheckCircle className='h-4 w-4' />
+                    ¡Todos los archivos se subieron correctamente!
                   </strong>
                 </AlertDescription>
               </Alert>
@@ -779,98 +807,113 @@ export function EnhancedDropZone({
 
       {/* File List */}
       {files.length > 0 && (
-        <div className='space-y-4'>
-          <ScrollArea className='max-h-96'>
+        <div className='space-y-4 w-full'>
+          <div
+            className='h-96 w-full border border-border rounded-lg p-2 bg-background overflow-y-auto overflow-x-hidden'
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "var(--primary) var(--primary-foreground)",
+            }}
+          >
             <div className='space-y-3'>
               {files.map((file) => (
                 <div
                   key={file.id}
                   className={cn(
-                    "border rounded-xl p-5 transition-all duration-200 shadow-sm",
-                    file.status === "error" && "border-red-300 bg-red-50",
+                    "border rounded-xl p-3 sm:p-5 transition-all duration-200 shadow-sm",
+                    file.status === "error" &&
+                      "border-destructive bg-destructive/10",
                     file.status === "completed" &&
-                      "border-green-300 bg-green-50",
+                      "border-success bg-success/10",
                     file.status === "uploading" &&
-                      "border-inside/40 bg-inside/8",
+                      "border-warning/40 bg-warning/8",
                     file.status === "pending" &&
-                      "border-zinc-300 bg-white hover:border-inside/40 hover:bg-inside/5 hover:shadow-md"
+                      "border-border bg-background hover:border-background/90 hover:bg-background/90 hover:shadow-md"
                   )}
                 >
-                  {/* File header */}
-                  <div className='flex items-center justify-between mb-4'>
-                    <div className='flex items-center gap-3 flex-1 min-w-0'>
-                      <div className='p-2 rounded-lg bg-zinc-100'>
-                        <div className='text-zinc-700'>
+                  {/* File header - Improved Responsive */}
+                  <div className='flex flex-col gap-3 mb-4'>
+                    {/* Main file info row */}
+                    <div className='flex items-start gap-3 min-w-0'>
+                      <div className='p-2 bg-primary/10 flex-shrink-0'>
+                        <div className='text-primary stroke-primary'>
                           {getFileIcon(file.file)}
                         </div>
                       </div>
-                      <div className='flex-1 min-w-0'>
-                        <span className='font-semibold text-base truncate text-zinc-900 block'>
+                      <div className='flex-1 min-w-0 overflow-hidden'>
+                        <div className='font-semibold text-sm sm:text-base text-foreground mb-1 break-all line-clamp-2'>
                           {file.originalName}
-                        </span>
-                        <div className='flex items-center gap-3 mt-1'>
-                          <span className='text-sm font-medium text-zinc-600 bg-zinc-100 px-2 py-1 rounded'>
+                        </div>
+                        <div className='flex flex-wrap items-center gap-2 mt-1'>
+                          <span className='text-xs sm:text-sm font-medium text-muted-foreground bg-muted px-2 py-1 rounded whitespace-nowrap'>
                             {formatFileSize(file.file.size)}
                           </span>
                           {file.file.size > RESUMABLE_THRESHOLD && (
                             <Badge
-                              variant='outline'
-                              className='text-blue-700 border-blue-400 bg-blue-100 font-medium'
+                              variant='secondary'
+                              className='flex items-center gap-1 text-xs whitespace-nowrap'
                             >
-                              🚀 Resumible
+                              <Rocket className='h-3 w-3' />
+                              Resumible
                             </Badge>
                           )}
-                          {file.file.size > WARN_FILE_SIZE && file.file.size <= RESUMABLE_THRESHOLD && (
-                            <Badge
-                              variant='outline'
-                              className='text-amber-700 border-amber-400 bg-amber-100 font-medium'
-                            >
-                              📦 Grande
-                            </Badge>
-                          )}
+                          {file.file.size > WARN_FILE_SIZE &&
+                            file.file.size <= RESUMABLE_THRESHOLD && (
+                              <Badge className='bg-warning text-warning-foreground font-medium flex items-center gap-1 text-xs whitespace-nowrap'>
+                                <Package className='h-3 w-3' />
+                                Grande
+                              </Badge>
+                            )}
                         </div>
                       </div>
                     </div>
-                    <div className='flex items-center gap-3'>
-                      {getStatusBadge(file.status)}
-                      {file.status === "error" && (
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          onClick={() => retryFile(file.id)}
-                          className='text-inside border-inside hover:bg-inside hover:text-black font-medium'
-                        >
-                          <RotateCcw className='h-4 w-4 mr-1' />
-                          Reintentar
-                        </Button>
-                      )}
-                      {(file.status === "pending" ||
-                        file.status === "error") && (
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          onClick={() => removeFile(file.id)}
-                          className='text-red-600 border-red-300 hover:bg-red-50 hover:border-red-400 font-medium'
-                        >
-                          <X className='h-4 w-4 mr-1' />
-                          Eliminar
-                        </Button>
-                      )}
+                    {/* Action buttons row */}
+                    <div className='flex items-center justify-between flex-wrap gap-2'>
+                      <div className='flex items-center gap-2'>
+                        {getStatusBadge(file.status)}
+                      </div>
+                      <div className='flex items-center gap-2 flex-wrap'>
+                        {file.status === "error" && (
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            onClick={() => retryFile(file.id)}
+                            className='text-primary border-primary hover:bg-primary hover:text-black font-medium text-xs sm:text-sm'
+                          >
+                            <RotateCcw className='h-3 w-3 sm:h-4 sm:w-4 mr-1' />
+                            <span className='hidden sm:inline'>Reintentar</span>
+                            <span className='sm:hidden'>Retry</span>
+                          </Button>
+                        )}
+                        {(file.status === "pending" ||
+                          file.status === "error") && (
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            onClick={() => removeFile(file.id)}
+                            className='text-destructive border-destructive hover:text-background hover:bg-destructive/90 transition-colors duration-300 hover:border-destructive font-medium text-xs sm:text-sm'
+                          >
+                            <X className='h-3 w-3 sm:h-4 sm:w-4 mr-1' />
+                            <span className='hidden sm:inline'>Eliminar</span>
+                            <span className='sm:hidden'>Del</span>
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
 
                   {/* Name editing */}
                   {(file.status === "pending" || file.status === "error") && (
                     <div className='mb-4'>
-                      <label className='text-sm font-semibold text-zinc-800 block mb-2'>
-                        📝 Nombre en Google Drive:
+                      <label className='text-sm font-semibold text-foreground block mb-2'>
+                        Nombre en Google Drive:
                       </label>
                       {editingFileId === file.id ? (
                         <div className='flex gap-2'>
                           <Input
                             value={tempName}
                             onChange={(e) => setTempName(e.target.value)}
-                            className='text-sm border-inside focus:border-inside focus:ring-inside/20 font-medium'
+                            className='text-sm border-primary focus:border-primary focus:ring-inside/20 font-medium'
                             placeholder='Nombre del archivo'
                             onKeyDown={(e) => {
                               if (e.key === "Enter") saveEdit();
@@ -882,7 +925,7 @@ export function EnhancedDropZone({
                             size='sm'
                             onClick={saveEdit}
                             disabled={!tempName.trim()}
-                            className='bg-inside text-black hover:bg-inside/90 font-medium'
+                            className='bg-primary text-black hover:bg-primary/90 font-medium'
                           >
                             <Save className='w-4 h-4 mr-1' />
                             Guardar
@@ -907,7 +950,7 @@ export function EnhancedDropZone({
                             size='sm'
                             variant='outline'
                             onClick={() => startEditing(file)}
-                            className='border-inside text-inside hover:bg-inside hover:text-black font-medium'
+                            className='border-primary text-primary hover:bg-primary hover:text-black font-medium'
                           >
                             <Edit2 className='w-4 h-4 mr-1' />
                             Editar
@@ -921,10 +964,11 @@ export function EnhancedDropZone({
                   {file.status === "uploading" && (
                     <div className='mb-4'>
                       <div className='flex justify-between text-sm mb-2'>
-                        <span className='font-semibold text-zinc-800'>
-                          📤 Subiendo archivo...
+                        <span className='font-semibold text-foreground flex items-center gap-2'>
+                          <UploadCloud className='h-4 w-4' />
+                          Subiendo archivo...
                         </span>
-                        <span className='font-bold text-inside'>
+                        <span className='font-bold text-primary'>
                           {file.progress}%
                         </span>
                       </div>
@@ -939,20 +983,22 @@ export function EnhancedDropZone({
                   {file.status === "error" && file.error && (
                     <Alert
                       variant='destructive'
-                      className='mb-2 border-red-300 bg-red-100'
+                      className='mb-2 border-destructive bg-destructive/20'
                     >
-                      <AlertTriangle className='h-4 w-4 text-red-600' />
-                      <AlertDescription className='text-sm font-medium text-red-800'>
-                        ❌ <strong>Error:</strong> {file.error}
+                      <AlertTriangle className='h-4 w-4 text-destructive' />
+                      <AlertDescription className='text-sm font-medium text-destructive-foreground flex items-center gap-2'>
+                        <XCircle className='h-4 w-4' />
+                        <strong>Error:</strong> {file.error}
                       </AlertDescription>
                     </Alert>
                   )}
 
                   {/* Success info */}
                   {file.status === "completed" && file.driveFileId && (
-                    <div className='text-sm font-medium text-green-800 bg-green-100 p-3 rounded-lg border border-green-300'>
-                      ✅ <strong>Subido exitosamente</strong> • ID:{" "}
-                      <code className='bg-green-200 px-1 rounded'>
+                    <div className='text-sm font-medium text-success-foreground bg-success/20 p-3 rounded-lg border border-success flex items-center gap-2'>
+                      <CheckCircle className='h-4 w-4' />
+                      <strong>Subido exitosamente</strong> • ID:{" "}
+                      <code className='bg-success/30 px-1 rounded'>
                         {file.driveFileId}
                       </code>
                     </div>
@@ -960,24 +1006,24 @@ export function EnhancedDropZone({
                 </div>
               ))}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Action buttons */}
-          <div className='flex justify-between items-center pt-6 border-t border-zinc-300 bg-linear-to-r from-zinc-50 to-zinc-100 px-6 py-4 rounded-xl'>
-            <div className='text-base font-medium text-zinc-700'>
+          <div className='flex bg-background justify-between items-center pt-6 border-t px-6 py-4 rounded-xl'>
+            <div className='text-base font-medium text-zinc-700 '>
               {isUploading ? (
                 <span className='flex items-center gap-3 font-semibold'>
-                  <Loader2 className='h-5 w-5 animate-spin text-inside' />
-                  <span className='text-zinc-900'>Subiendo archivos...</span>
+                  <Loader2 className='h-5 w-5 animate-spin text-primary' />
+                  <span className='text-foreground'>Subiendo archivos...</span>
                 </span>
               ) : isCompleted ? (
-                <span className='text-green-700 font-bold flex items-center gap-2'>
+                <span className='text-foreground font-bold flex items-center gap-2'>
                   <Check className='h-5 w-5' />
                   ¡Carga completada exitosamente!
                 </span>
               ) : (
-                <span className='text-zinc-800'>
-                  <strong className='text-inside'>{pendingFiles}</strong>{" "}
+                <span className='text-primary'>
+                  <strong className='text-primary'>{pendingFiles}</strong>{" "}
                   archivo{pendingFiles !== 1 ? "s" : ""} listo
                   {pendingFiles !== 1 ? "s" : ""} para subir
                 </span>
@@ -988,7 +1034,7 @@ export function EnhancedDropZone({
                 <Button
                   variant='destructive'
                   onClick={cancelUpload}
-                  className='bg-red-600 hover:bg-red-700 text-white font-semibold'
+                  className='bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold'
                 >
                   <X className='h-4 w-4 mr-2' />
                   Cancelar Subida
@@ -997,7 +1043,7 @@ export function EnhancedDropZone({
               {canUpload && (
                 <Button
                   onClick={startUpload}
-                  className='bg-inside text-black hover:bg-inside/90 border-inside font-semibold shadow-md'
+                  className='bg-primary text-black hover:bg-primary/90 border-primary font-semibold shadow-md'
                 >
                   <Upload className='h-4 w-4 mr-2' />
                   Subir {pendingFiles} Archivo{pendingFiles !== 1 ? "s" : ""}

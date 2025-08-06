@@ -85,10 +85,7 @@ export function Combobox({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className={cn(
-            "p-0 bg-zinc-900 border-zinc-700 z-100",
-            popoverClass
-          )}
+          className={cn("p-0 bg-zinc-900 border-zinc-700 z-100", popoverClass)}
           align='start'
           side='bottom'
         >
@@ -111,14 +108,14 @@ export function Combobox({
                       onChange(option.value === value ? "" : option.value);
                       setOpen(false);
                     }}
-                    className='text-white data-[selected=true]:bg-zinc-800 data-[selected=true]:text-inside hover:bg-zinc-800'
+                    className='text-white data-[selected=true]:bg-zinc-800 data-[selected=true]:text-primary hover:bg-zinc-800'
                   >
                     {option.label}
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
                         value === option.value
-                          ? "opacity-100 text-inside"
+                          ? "opacity-100 text-primary"
                           : "opacity-0"
                       )}
                     />

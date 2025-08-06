@@ -14,6 +14,7 @@ import { SectionNavigation } from "@/src/components/drive/navigation/section-nav
 import { ContentGrid } from "@/src/components/drive/content/content-grid";
 import { ComponentSelector } from "@/src/components/drive/selectors/component-selector";
 import { DirectFileUploadManager } from "@/src/components/drive/upload/DirectFileUploadManager";
+import { Folder } from "lucide-react";
 
 interface RecursiveContentRendererProps {
   level: number;
@@ -271,11 +272,12 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
               />
             </div>
 
-            {/* Drop zone dentro del tab seleccionado (solo para administradores) */}
+            {/* Drop zone dentro del tab seleccionado - Responsive */}
             {isAdmin && (
-              <div className='w-full mt-4 mb-2 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
-                <div className='text-center font-bold text-black mb-2 tracking-wide'>
-                  📁 ZONA DE CARGA •{" "}
+              <div className='w-full mt-4 mb-2 border border-border rounded-lg shadow-lg p-3 sm:p-5 bg-muted/30'>
+                <div className='text-center font-bold text-background mb-3 tracking-wide text-sm sm:text-base flex items-center justify-center gap-2'>
+                  <Folder className='h-4 w-4 sm:h-5 sm:w-5' />
+                  ZONA DE CARGA •{" "}
                   {getItemById(currentPathItem.id)?.displayName?.toUpperCase()}
                 </div>
                 <DirectFileUploadManager
@@ -283,7 +285,7 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
                   folderName={
                     getItemById(currentPathItem.id)?.displayName || "Tab"
                   }
-                  className='max-w-lg mx-auto'
+                  className='max-w-full sm:max-w-lg mx-auto'
                 />
               </div>
             )}
@@ -340,16 +342,17 @@ export const RecursiveContentRenderer = memo(function RecursiveContentRenderer({
         </div>
       )}
 
-      {/* Drop zone SOLO para sidemenu (nivel 1) */}
+      {/* Drop zone SOLO para sidemenu (nivel 1) - Responsive */}
       {isAdmin && level === 1 && parentType === "sidebar" && sidebarItem && (
-        <div className='w-full mt-8 mb-4 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
-          <div className='text-center font-bold text-black mb-2 tracking-wide'>
-            📁 ZONA DE CARGA • {sidebarItem.displayName.toUpperCase()}
+        <div className='w-full mt-6 sm:mt-8 mb-4 border border-border rounded-lg shadow-lg p-3 sm:p-5 bg-muted/30'>
+          <div className='text-center font-bold text-background mb-3 tracking-wide text-sm sm:text-base flex items-center justify-center gap-2'>
+            <Folder className='h-4 w-4 sm:h-5 sm:w-5' />
+            ZONA DE CARGA • {sidebarItem.displayName.toUpperCase()}
           </div>
           <DirectFileUploadManager
             folderId={sidebarItem.id}
             folderName={sidebarItem.displayName}
-            className='max-w-lg mx-auto'
+            className='max-w-full sm:max-w-lg mx-auto'
           />
         </div>
       )}

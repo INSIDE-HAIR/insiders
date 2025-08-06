@@ -55,7 +55,11 @@ export const TabNavigation = memo(function TabNavigation({
 
   // Seleccionar automáticamente el primer tab si no hay ninguno seleccionado
   useEffect(() => {
-    if (!currentId && activeAndOrderedTabs.length > 0 && activeAndOrderedTabs[0]) {
+    if (
+      !currentId &&
+      activeAndOrderedTabs.length > 0 &&
+      activeAndOrderedTabs[0]
+    ) {
       handleTabInteraction(activeAndOrderedTabs[0]);
     }
   }, [currentId, activeAndOrderedTabs, handleTabInteraction]);
@@ -74,7 +78,7 @@ export const TabNavigation = memo(function TabNavigation({
             className={cn(
               "py-3 px-4 text-sm font-medium transition-colors relative whitespace-nowrap rounded-none cursor-pointer touch-manipulation",
               currentId === item.id
-                ? "bg-inside text-zinc-900 font-semibold"
+                ? "bg-primary text-zinc-900 font-semibold"
                 : "bg-zinc-700 text-white hover:bg-zinc-600 active:bg-zinc-600"
             )}
             role='tab'

@@ -324,13 +324,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
         img.src = imageUrl;
       }
     }
-  }, [
-    isOpen,
-    hasEmbed,
-    currentModalPreview,
-    currentModalPreviewIndex,
-    item,
-  ]);
+  }, [isOpen, hasEmbed, currentModalPreview, currentModalPreviewIndex, item]);
 
   // Sincronizar índices de previsualización al abrir el modal
   useEffect(() => {
@@ -543,7 +537,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                         key={index}
                         className={`h-1.5 w-1.5 rounded-full ${
                           index === currentCardPreviewIndex
-                            ? "bg-inside"
+                            ? "bg-primary"
                             : "bg-white/50"
                         }`}
                       />
@@ -568,10 +562,10 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                   downloadStatus === "downloading"
                     ? "bg-orange-500 hover:bg-orange-600 text-white animate-pulse"
                     : downloadStatus === "success"
-                    ? "bg-green-500 hover:bg-green-600 text-white"
-                    : downloadStatus === "error"
-                    ? "bg-red-500 hover:bg-red-600 text-white"
-                    : "bg-inside hover:bg-[#bfef33] text-zinc-900"
+                      ? "bg-green-500 hover:bg-green-600 text-white"
+                      : downloadStatus === "error"
+                        ? "bg-red-500 hover:bg-red-600 text-white"
+                        : "bg-primary hover:bg-[#bfef33] text-zinc-900"
                 }`}
                 onClick={() => {
                   const downloadUrl = getDownloadUrl(item);
@@ -795,7 +789,7 @@ export function GenericRenderer({ item, contentType }: GenericRendererProps) {
                                 key={index}
                                 className={`h-2 w-2 rounded-full ${
                                   index === currentModalPreviewIndex
-                                    ? "bg-inside"
+                                    ? "bg-primary"
                                     : "bg-white/50"
                                 }`}
                               />

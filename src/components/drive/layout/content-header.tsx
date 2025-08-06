@@ -113,7 +113,7 @@ export function ContentHeader({
       </div>
 
       {/* Green title bar */}
-      <div className='bg-inside py-2 flex items-center justify-center'>
+      <div className='bg-primary py-2 flex items-center justify-center'>
         <h1 className='text-zinc-900 font-bold text-center'>
           {displaySubtitle}
         </h1>

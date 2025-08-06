@@ -29,7 +29,8 @@
       "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")",
       "Bash(rg:*)",
       "Bash(awk:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npx shadcn@latest add:*)"
     ],
     "deny": []
   }

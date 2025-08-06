@@ -48,7 +48,7 @@ export function SidebarToggle() {
 
   return (
     <div
-      className="fixed-mobile-container"
+      className='fixed-mobile-container'
       style={{
         position: "fixed",
         bottom: `${bottomPosition}px`,
@@ -59,12 +59,12 @@ export function SidebarToggle() {
       }}
     >
       <Button
-        variant="ghost"
-        size="icon"
+        variant='ghost'
+        size='icon'
         onClick={toggleSidebar}
-        className="bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full flex items-center justify-center md:hidden"
-        title="Mostrar panel lateral"
-        data-sidebar-regular-toggle="true"
+        className='bg-primary hover:bg-[#bfef33] text-zinc-900 shadow-lg rounded-full flex items-center justify-center md:hidden'
+        title='Mostrar panel lateral'
+        data-sidebar-regular-toggle='true'
         style={{
           width: "100%",
           height: "100%",
@@ -74,7 +74,7 @@ export function SidebarToggle() {
           animation: "pulse 2s infinite",
         }}
       >
-        <PanelLeft className="h-6 w-6" />
+        <PanelLeft className='h-6 w-6' />
       </Button>
     </div>
   );

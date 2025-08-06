@@ -94,7 +94,7 @@ export default function CustomTabsCardsList({
     : [];
 
   return (
-    <div className="flex w-full flex-col items-center justify-center content-center *:w-full ">
+    <div className='flex w-full flex-col items-center justify-center content-center *:w-full '>
       {languageEntries.length === 1
         ? languageEntries.map(([language, categories]) =>
             Object.entries(categories as { [key: string]: any }).map(
@@ -103,10 +103,10 @@ export default function CustomTabsCardsList({
                 return (
                   <div
                     key={categoryCode}
-                    className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0 "
+                    className='gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0 '
                   >
                     {item.title !== null && (
-                      <h3 className="text-center w-full font-bold text-2xl -mb-3">
+                      <h3 className='text-center w-full font-bold text-2xl -mb-3'>
                         {item.title ||
                           filesCodes[categoryCode as keyof typeof filesCodes] ||
                           categoryCode}
@@ -117,17 +117,17 @@ export default function CustomTabsCardsList({
                         key={groupTitle}
                         style={{
                           order:
-                            parseInt((groupTitle.split("-")[0] || '0')) === 0
-                              ? (groupTitle.split(" ")[1] || '0')
-                              : (groupTitle.split("-")[0] || '0'),
+                            parseInt(groupTitle.split("-")[0] || "0") === 0
+                              ? groupTitle.split(" ")[1] || "0"
+                              : groupTitle.split("-")[0] || "0",
                         }}
                       >
                         {groupTitle !== "Sin Grupo de Familia" && (
-                          <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                            {(groupTitle.split("-")[1] || '').replace(/_/g, "")}
+                          <h4 className='text-center w-full font-bold text-xl  mt-6 first:mt-0 '>
+                            {(groupTitle.split("-")[1] || "").replace(/_/g, "")}
                           </h4>
                         )}
-                        <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
+                        <div className='gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full '>
                           {groupItems.map((groupItem) => (
                             <CustomCards
                               item={groupItem}
@@ -146,9 +146,9 @@ export default function CustomTabsCardsList({
         : defaultValue && (
             <Tabs
               defaultValue={defaultValue}
-              className="max-w-full *:flex-wrap md:*:flex-nowrap items-center justify-center content-center reverse "
+              className='max-w-full *:flex-wrap md:*:flex-nowrap items-center justify-center content-center reverse '
             >
-              <TabsList className=" *:data-[state=active]:bg-inside *:data-[state=active]:font-semibold rounded-none flex flex-wrap h-full  bg-transparent  text-white border-none">
+              <TabsList className=' *:data-[state=active]:bg-primary *:data-[state=active]:font-semibold rounded-none flex flex-wrap h-full  bg-transparent  text-white border-none'>
                 {languageEntries
                   .sort(([a], [b]) => {
                     if (a === "ES") return -1;
@@ -159,7 +159,7 @@ export default function CustomTabsCardsList({
                     <TabsTrigger
                       key={language}
                       value={language}
-                      className="rounded-none bg-zinc-700 text-white border-none"
+                      className='rounded-none bg-zinc-700 text-white border-none'
                     >
                       {langCodes[language as keyof typeof langCodes] ||
                         language}
@@ -174,11 +174,11 @@ export default function CustomTabsCardsList({
                       <TabsContent
                         key={categoryCode}
                         value={language}
-                        className="w-full "
+                        className='w-full '
                       >
-                        <div className="gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0   ">
+                        <div className='gap-x-6 gap-y-4 flex flex-col flex-wrap items-center justify-center text-center mt-6 first:mt-0   '>
                           {item.title !== null && (
-                            <h3 className="text-center w-full font-bold text-2xl -mb-3">
+                            <h3 className='text-center w-full font-bold text-2xl -mb-3'>
                               {filesCodes[
                                 categoryCode as keyof typeof filesCodes
                               ] || categoryCode}
@@ -189,17 +189,21 @@ export default function CustomTabsCardsList({
                               key={groupTitle}
                               style={{
                                 order:
-                                  parseInt((groupTitle.split("-")[0] || '0')) === 0
-                                    ? (groupTitle.split(" ")[1] || '0')
-                                    : (groupTitle.split("-")[0] || '0'),
+                                  parseInt(groupTitle.split("-")[0] || "0") ===
+                                  0
+                                    ? groupTitle.split(" ")[1] || "0"
+                                    : groupTitle.split("-")[0] || "0",
                               }}
                             >
                               {groupTitle !== "Sin Grupo de Familia" && (
-                                <h4 className="text-center w-full font-bold text-xl  mt-6 first:mt-0 ">
-                                  {(groupTitle.split("-")[1] || '').replace(/_/g, "")}
+                                <h4 className='text-center w-full font-bold text-xl  mt-6 first:mt-0 '>
+                                  {(groupTitle.split("-")[1] || "").replace(
+                                    /_/g,
+                                    ""
+                                  )}
                                 </h4>
                               )}
-                              <div className="gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full ">
+                              <div className='gap-x-6 gap-y-4 flex flex-row flex-wrap items-start justify-center text-center mt-6 first:mt-2 w-full '>
                                 {groupItems.map((groupItem) => (
                                   <CustomCards
                                     item={groupItem}
@@ -249,11 +253,11 @@ const RenderButtons = (item: any) => {
         <>
           {item.buttons.map((button: any, index: number) => (
             <Button
-              className={`text-tiny text-zinc-900 font-bold bg-inside m-1`}
-              variant="flat"
-              color="default"
-              radius="none"
-              size="sm"
+              className={`text-tiny text-zinc-900 font-bold bg-primary m-1`}
+              variant='flat'
+              color='default'
+              radius='none'
+              size='sm'
               key={index}
               onClick={() => {
                 window.open(button.url, "_blank");
@@ -265,12 +269,12 @@ const RenderButtons = (item: any) => {
         </>
       ) : (
         <Button
-          className={`text-tiny text-zinc-900 font-bold bg-inside m-1`}
-          variant="flat"
+          className={`text-tiny text-zinc-900 font-bold bg-primary m-1`}
+          variant='flat'
           key={item.id}
-          color="default"
-          radius="none"
-          size="sm"
+          color='default'
+          radius='none'
+          size='sm'
           onClick={() => {
             window.open(item.transformedUrl.download, "_blank");
           }}
@@ -282,11 +286,11 @@ const RenderButtons = (item: any) => {
       {item.copy && (
         <>
           <Button
-            className={`text-tiny text-inside bg-zinc-900 m-1 rounded-none`}
-            variant="flat"
-            color="default"
-            radius="lg"
-            size="sm"
+            className={`text-tiny text-primary bg-zinc-900 m-1 rounded-none`}
+            variant='flat'
+            color='default'
+            radius='lg'
+            size='sm'
             id={"button" + item.name}
             onClick={handleCopyText}
           >
@@ -298,7 +302,7 @@ const RenderButtons = (item: any) => {
             disabled
             id={"copy" + item.name}
             rows={30}
-            className="max-w-full flex border-2 rounded-sm mt-2 bg-zinc-900 text-zinc-50 p-2"
+            className='max-w-full flex border-2 rounded-sm mt-2 bg-zinc-900 text-zinc-50 p-2'
           />
         </>
       )}
