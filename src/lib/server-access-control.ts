@@ -61,8 +61,8 @@ export async function validatePageAccess(
 
       const dbAccessResult = await checkDatabaseAccess(dbAccessRequest)
       
-      if (!dbAccessResult?.allowed) {
-        console.log(`❌ DB Access denied for ${user.email} to ${path}: ${dbAccessResult?.reason}`)
+      if (dbAccessResult && !dbAccessResult.allowed) {
+        console.log(`❌ DB Access denied for ${user.email} to ${path}: ${dbAccessResult.reason}`)
         redirect('/es/unauthorized')
       }
 

@@ -63,7 +63,7 @@ enum ConditionOperator {
 model AccessControl {
   id           String       @id @default(auto()) @map("_id") @db.ObjectId
   resourceType ResourceType
-  resourceId   String       @db.ObjectId // ID del recurso (página, folder, etc.)
+  resourceId   String       // ID del recurso (página, folder, etc.)
   isEnabled    Boolean      @default(true)
 
   // Nuevos campos para lógica compleja
