@@ -490,6 +490,24 @@
               "requireAuth": true,
               "roles": ["ADMIN"]
             }
+          },
+          {
+            "path": "/admin/settings",
+            "label": "Settings",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
+          },
+          {
+            "path": "/admin/settings/api-keys",
+            "label": "API Keys Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
           }
         ]
       }

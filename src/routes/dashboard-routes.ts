@@ -10,7 +10,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         "es": "Equipo de Gestión"
       },
       "plan": "Enterprise",
-      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control"]
+      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control", "settings"]
     },
     "creativos": {
       "name": {
@@ -425,6 +425,40 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           "href": "/admin/access-control/docs",
           "icon": "BookOpen"
+        }
+      ]
+    },
+    {
+      "id": "settings",
+      "label": {
+        "en": "Settings",
+        "es": "Configuración"
+      },
+      "href": "/admin/settings",
+      "icon": "Settings",
+      "type": "accordion",
+      "access": {
+        "roles": ["admin", "super-admin"],
+        "teams": ["gestion"]
+      },
+      "subItems": [
+        {
+          "id": "settings-general",
+          "label": {
+            "en": "General Settings",
+            "es": "Configuración General"
+          },
+          "href": "/admin/settings",
+          "icon": "Settings"
+        },
+        {
+          "id": "api-keys",
+          "label": {
+            "en": "API Keys",
+            "es": "Claves API"
+          },
+          "href": "/admin/settings/api-keys",
+          "icon": "Lock"
         }
       ]
     }
