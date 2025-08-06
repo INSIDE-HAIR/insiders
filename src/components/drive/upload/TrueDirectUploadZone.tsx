@@ -549,7 +549,7 @@ export function TrueDirectUploadZone({
         }`}
       >
         <CardContent
-          className='flex flex-col items-center justify-center py-16 cursor-pointer'
+          className='flex flex-col items-center justify-center py-16 cursor-pointer bg-primary/90'
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
