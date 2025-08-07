@@ -372,13 +372,13 @@ function SettingsPageContent() {
       </Card>
 
       {/* Help Section */}
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-primarys bg-primary/10">
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-blue-700">
+          <CardTitle className="flex items-center space-x-2 text-primary">
             <Activity className="h-5 w-5" />
             <span>¿Necesitas ayuda?</span>
           </CardTitle>
-          <CardDescription className="text-blue-600">
+          <CardDescription className="text-primary">
             Si tienes dudas sobre alguna configuración, consulta la documentación
           </CardDescription>
         </CardHeader>

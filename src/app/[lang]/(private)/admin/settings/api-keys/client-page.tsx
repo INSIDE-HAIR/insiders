@@ -156,9 +156,9 @@ export default function ApiKeysClientPage({ children }: ClientPageProps) {
       {/* Debug info in development */}
       {process.env.NODE_ENV === "development" && (
         <div className="container mx-auto px-6 pt-2">
-          <Alert className="mb-4 border-blue-200 bg-blue-50">
-            <Key className="h-4 w-4" />
-            <AlertDescription className="text-blue-800">
+          <Alert className="mb-4 border-primarys bg-primary/10 text-primary">
+            <Key className="h-6 w-6 p-1 stroke-primary bg-primary/20 " />
+            <AlertDescription className="text-primary ml-2">
               <strong>API Keys Access:</strong> Usuario autorizado para gestionar API Keys
               <div className="text-xs mt-1">
                 Usuario: {session.user?.email} | Rol: {session.user?.role}

@@ -119,9 +119,9 @@ export default function SettingsClientPage({ children }: ClientPageProps) {
       {/* Debug info in development */}
       {process.env.NODE_ENV === "development" && (
         <div className='container mx-auto px-6 pt-2'>
-          <Alert className='mb-4 border-blue-200 bg-blue-50'>
+          <Alert className='mb-4 border-primarys bg-primary/10'>
             <Settings className='h-4 w-4' />
-            <AlertDescription className='text-blue-800'>
+            <AlertDescription className='text-primary'>
               <strong>Debug Info:</strong> Usuario autenticado correctamente
               <div className='text-xs mt-1'>
                 Usuario: {session.user?.email} | Rol: {session.user?.role} | ID:{" "}
