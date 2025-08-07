@@ -50,11 +50,20 @@ export async function GET(request: NextRequest) {
     // Obtener calendarios
     const calendars = await calendarService.getCalendars();
 
-    logger.info(`Found ${calendars.length} calendars`);
+    // Filtrar calendarios por permisos si es necesario
+    const editableCalendars = calendars.filter(
+      (cal) => cal.accessRole === "owner" || cal.accessRole === "writer"
+    );
+
+    logger.info(
+      `Found ${calendars.length} calendars (${editableCalendars.length} editable)`
+    );
 
     return NextResponse.json({
       calendars,
+      editableCalendars,
       total: calendars.length,
+      editableCount: editableCalendars.length,
       auth: {
         method: authMethod,
         userId: userId,

@@ -14,11 +14,11 @@ import { Input } from "@/src/components/ui/input";
 import { Badge } from "@/src/components/ui/badge";
 import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
-import { 
-  UserPlusIcon, 
-  XMarkIcon, 
+import {
+  UserPlusIcon,
+  XMarkIcon,
   CheckIcon,
-  ExclamationTriangleIcon 
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { toast } from "@/src/components/ui/use-toast";
@@ -35,12 +35,9 @@ interface Participant {
   id: string;
 }
 
-export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> = ({
-  isOpen,
-  onClose,
-  selectedEvents,
-  onConfirm,
-}) => {
+export const BulkAddParticipantsModal: React.FC<
+  BulkAddParticipantsModalProps
+> = ({ isOpen, onClose, selectedEvents, onConfirm }) => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [emailInput, setEmailInput] = useState("");
   const [message, setMessage] = useState("");
@@ -48,9 +45,9 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
   const addParticipant = () => {
     const email = emailInput.trim().toLowerCase();
-    
+
     if (!email) return;
-    
+
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -64,11 +61,11 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
     }
 
     // Verificar si ya existe
-    if (participants.some(p => p.email === email)) {
+    if (participants.some((p) => p.email === email)) {
       toast({
         title: "Participante duplicado",
         description: "Este email ya está en la lista",
-        variant: "destructive", 
+        variant: "destructive",
         duration: 3000,
       });
       return;
@@ -79,12 +76,12 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
       id: `${Date.now()}-${Math.random()}`,
     };
 
-    setParticipants(prev => [...prev, newParticipant]);
+    setParticipants((prev) => [...prev, newParticipant]);
     setEmailInput("");
   };
 
   const removeParticipant = (id: string) => {
-    setParticipants(prev => prev.filter(p => p.id !== id));
+    setParticipants((prev) => prev.filter((p) => p.id !== id));
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -107,18 +104,18 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
     setIsLoading(true);
     try {
-      const emails = participants.map(p => p.email);
+      const emails = participants.map((p) => p.email);
       await onConfirm(emails, message.trim() || undefined);
-      
+
       // Reset form
       setParticipants([]);
       setEmailInput("");
       setMessage("");
       onClose();
-      
+
       toast({
         title: "Participantes agregados",
-        description: `Se agregaron participantes a ${selectedEvents.length} evento${selectedEvents.length !== 1 ? 's' : ''}`,
+        description: `Se agregaron participantes a ${selectedEvents.length} evento${selectedEvents.length !== 1 ? "s" : ""}`,
         duration: 3000,
       });
     } catch (error: any) {
@@ -144,30 +141,38 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <UserPlusIcon className="h-5 w-5 text-green-600" />
+          <DialogTitle className='flex items-center gap-2'>
+            <UserPlusIcon className='h-5 w-5 text-primary' />
             Agregar Participantes a Eventos
           </DialogTitle>
           <DialogDescription>
-            Agrega uno o varios participantes a {selectedEvents.length} evento{selectedEvents.length !== 1 ? 's' : ''} seleccionado{selectedEvents.length !== 1 ? 's' : ''}.
+            Agrega uno o varios participantes a {selectedEvents.length} evento
+            {selectedEvents.length !== 1 ? "s" : ""} seleccionado
+            {selectedEvents.length !== 1 ? "s" : ""}.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className='space-y-4'>
           {/* Lista de eventos seleccionados */}
           <div>
-            <Label className="text-sm font-medium">Eventos seleccionados:</Label>
-            <div className="mt-2 space-y-1 max-h-24 overflow-y-auto">
+            <Label className='text-sm font-medium'>
+              Eventos seleccionados:
+            </Label>
+            <div className='mt-2 space-y-1 max-h-24 overflow-y-auto'>
               {selectedEvents.slice(0, 3).map((event, index) => (
-                <div key={event.id} className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                  • {event.summary || 'Sin título'}
+                <div
+                  key={`${event.id}-${(event as any).calendarId || "default"}`}
+                  className='text-sm text-muted-foreground bg-primary/5 p-2 rounded border border-primary/20'
+                >
+                  • {event.summary || "Sin título"}
                 </div>
               ))}
               {selectedEvents.length > 3 && (
-                <div className="text-sm text-gray-500 italic">
-                  +{selectedEvents.length - 3} evento{selectedEvents.length - 3 !== 1 ? 's' : ''} más...
+                <div className='text-sm text-muted-foreground italic'>
+                  +{selectedEvents.length - 3} evento
+                  {selectedEvents.length - 3 !== 1 ? "s" : ""} más...
                 </div>
               )}
             </div>
@@ -175,27 +180,27 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
           {/* Input para agregar participantes */}
           <div>
-            <Label htmlFor="email" className="text-sm font-medium">
+            <Label htmlFor='email' className='text-sm font-medium'>
               Agregar participante por email:
             </Label>
-            <div className="mt-1 flex gap-2">
+            <div className='mt-1 flex gap-2'>
               <Input
-                id="email"
-                type="email"
+                id='email'
+                type='email'
                 value={emailInput}
                 onChange={(e) => setEmailInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="usuario@ejemplo.com"
-                className="flex-1"
+                placeholder='usuario@ejemplo.com'
+                className='flex-1'
                 disabled={isLoading}
               />
               <Button
-                type="button"
+                type='button'
                 onClick={addParticipant}
                 disabled={!emailInput.trim() || isLoading}
-                size="sm"
+                size='sm'
               >
-                <UserPlusIcon className="h-4 w-4" />
+                <UserPlusIcon className='h-4 w-4' />
               </Button>
             </div>
           </div>
@@ -203,26 +208,26 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
           {/* Lista de participantes agregados */}
           {participants.length > 0 && (
             <div>
-              <Label className="text-sm font-medium">
+              <Label className='text-sm font-medium'>
                 Participantes a agregar ({participants.length}):
               </Label>
-              <div className="mt-2 flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+              <div className='mt-2 flex flex-wrap gap-2 max-h-32 overflow-y-auto'>
                 {participants.map((participant) => (
                   <Badge
                     key={participant.id}
-                    variant="secondary"
-                    className="flex items-center gap-1 pr-1"
+                    variant='secondary'
+                    className='flex items-center gap-1 pr-1 bg-primary/10 text-primary border border-primary/20'
                   >
-                    <span className="text-xs">{participant.email}</span>
+                    <span className='text-xs'>{participant.email}</span>
                     <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
+                      type='button'
+                      variant='ghost'
+                      size='sm'
                       onClick={() => removeParticipant(participant.id)}
-                      className="h-4 w-4 p-0 hover:bg-red-100"
+                      className='h-4 w-4 p-0 hover:bg-destructive/10 hover:text-destructive'
                       disabled={isLoading}
                     >
-                      <XMarkIcon className="h-3 w-3" />
+                      <XMarkIcon className='h-3 w-3' />
                     </Button>
                   </Badge>
                 ))}
@@ -232,53 +237,57 @@ export const BulkAddParticipantsModal: React.FC<BulkAddParticipantsModalProps> =
 
           {/* Mensaje opcional */}
           <div>
-            <Label htmlFor="message" className="text-sm font-medium">
+            <Label htmlFor='message' className='text-sm font-medium'>
               Mensaje opcional para la invitación:
             </Label>
             <Textarea
-              id="message"
+              id='message'
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Mensaje opcional que se enviará con la invitación..."
-              className="mt-1 min-h-[60px]"
+              placeholder='Mensaje opcional que se enviará con la invitación...'
+              className='mt-1 min-h-[60px]'
               disabled={isLoading}
             />
           </div>
 
           {/* Advertencia */}
-          <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-yellow-800">
-              <p className="font-medium">Importante:</p>
-              <p>Los participantes recibirán invitaciones para todos los eventos seleccionados.</p>
+          <div className='flex items-start gap-2 p-3 bg-warning/10 border border-warning rounded-md'>
+            <ExclamationTriangleIcon className='h-5 w-5 text-warning flex-shrink-0 mt-0.5 stroke-warning' />
+            <div className='text-sm text-warning'>
+              <p className='font-medium'>Importante:</p>
+              <p>
+                Los participantes recibirán invitaciones para todos los eventos
+                seleccionados.
+              </p>
             </div>
           </div>
         </div>
 
-        <DialogFooter className="flex gap-2">
+        <DialogFooter className='flex gap-2'>
           <Button
-            type="button"
-            variant="outline"
+            type='button'
+            variant='outline'
             onClick={handleClose}
             disabled={isLoading}
           >
             Cancelar
           </Button>
           <Button
-            type="button"
+            type='button'
             onClick={handleConfirm}
             disabled={participants.length === 0 || isLoading}
-            className="bg-green-600 hover:bg-green-700"
+            className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
           >
             {isLoading ? (
               <>
-                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
                 Agregando...
               </>
             ) : (
               <>
-                <CheckIcon className="mr-2 h-4 w-4" />
-                Agregar a {selectedEvents.length} Evento{selectedEvents.length !== 1 ? 's' : ''}
+                <CheckIcon className='mr-2 h-4 w-4' />
+                Agregar a {selectedEvents.length} Evento
+                {selectedEvents.length !== 1 ? "s" : ""}
               </>
             )}
           </Button>

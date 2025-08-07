@@ -3,18 +3,20 @@ import { persist } from "zustand/middleware";
 
 interface CalendarFiltersState {
   activeCalendars: string[];
-  timeRange: 'upcoming' | 'today' | 'week' | 'month' | 'all';
+  timeRange: "upcoming" | "today" | "week" | "month" | "all";
   search: string;
-  viewMode: 'table' | 'list' | 'json';
+  viewMode: "table" | "list" | "json";
   visibleColumns: string[];
   attendeesFilter: string[];
-  
+
   // Actions
   setActiveCalendars: (calendars: string[]) => void;
   toggleCalendar: (calendarId: string) => void;
-  setTimeRange: (range: 'upcoming' | 'today' | 'week' | 'month' | 'all') => void;
+  setTimeRange: (
+    range: "upcoming" | "today" | "week" | "month" | "all"
+  ) => void;
   setSearch: (search: string) => void;
-  setViewMode: (mode: 'table' | 'list' | 'json') => void;
+  setViewMode: (mode: "table" | "list" | "json") => void;
   initializeCalendars: (allCalendars: string[]) => void;
   setColumnVisibility: (columnId: string, visible: boolean) => void;
   setAttendeesFilter: (attendees: string[]) => void;
@@ -26,42 +28,73 @@ export const useCalendarFiltersStore = create<CalendarFiltersState>()(
     (set, get) => ({
       // Initial state
       activeCalendars: [],
-      timeRange: 'all',
-      search: '',
-      viewMode: 'table',
-      visibleColumns: ['summary', 'start', 'status', 'calendar', 'location', 'attendees', 'hangoutLink', 'conferenceData', 'description'], // Default visible columns with Meet data
+      timeRange: "all",
+      search: "",
+      viewMode: "table",
+      visibleColumns: [
+        "summary",
+        "start",
+        "end",
+        "status",
+        "calendar",
+        "location",
+        "attendees",
+        "description",
+        "created",
+        "updated",
+        "creator",
+        "organizer",
+        "visibility",
+        "transparency",
+        "sequence",
+        "recurringEventId",
+        "recurrence",
+        "originalStartTime",
+        "iCalUID",
+        "htmlLink",
+        "hangoutLink",
+        "conferenceData",
+        "meetingId",
+        "meetingCode",
+        "meetingPhone",
+        "meetingNotes",
+        "anyoneCanAddSelf",
+        "guestsCanInviteOthers",
+        "guestsCanModify",
+        "guestsCanSeeOtherGuests",
+        "privateCopy",
+        "locked",
+        "source",
+        "colorId",
+        "eventType",
+      ], // All available columns by default
       attendeesFilter: [],
 
       // Actions
-      setActiveCalendars: (calendars) => 
-        set({ activeCalendars: calendars }),
+      setActiveCalendars: (calendars) => set({ activeCalendars: calendars }),
 
-      toggleCalendar: (calendarId) => 
+      toggleCalendar: (calendarId) =>
         set((state) => ({
           activeCalendars: state.activeCalendars.includes(calendarId)
-            ? state.activeCalendars.filter(id => id !== calendarId)
-            : [...state.activeCalendars, calendarId]
+            ? state.activeCalendars.filter((id) => id !== calendarId)
+            : [...state.activeCalendars, calendarId],
         })),
 
-      setTimeRange: (range) => 
-        set({ timeRange: range }),
+      setTimeRange: (range) => set({ timeRange: range }),
 
-      setSearch: (search) => 
-        set({ search }),
+      setSearch: (search) => set({ search }),
 
-      setViewMode: (mode) => 
-        set({ viewMode: mode }),
+      setViewMode: (mode) => set({ viewMode: mode }),
 
       setColumnVisibility: (columnId, visible) => {
         set((state) => ({
           visibleColumns: visible
             ? [...state.visibleColumns, columnId]
-            : state.visibleColumns.filter(id => id !== columnId)
+            : state.visibleColumns.filter((id) => id !== columnId),
         }));
       },
 
-      setAttendeesFilter: (attendees) => 
-        set({ attendeesFilter: attendees }),
+      setAttendeesFilter: (attendees) => set({ attendeesFilter: attendees }),
 
       initializeCalendars: (allCalendars) => {
         const currentActive = get().activeCalendars;
@@ -70,7 +103,7 @@ export const useCalendarFiltersStore = create<CalendarFiltersState>()(
           set({ activeCalendars: allCalendars });
         } else {
           // Mantener solo los calendarios que aún existen
-          const validCalendars = currentActive.filter(id => 
+          const validCalendars = currentActive.filter((id) =>
             allCalendars.includes(id)
           );
           // Si todos los calendarios guardados ya no existen, activar todos
@@ -84,19 +117,55 @@ export const useCalendarFiltersStore = create<CalendarFiltersState>()(
 
       resetFilters: () => {
         // Limpiar localStorage para forzar valores por defecto
-        localStorage.removeItem('calendar-filters-storage');
+        localStorage.removeItem("calendar-filters-storage");
         set({
           activeCalendars: [],
-          timeRange: 'all',
-          search: '',
-          viewMode: 'table',
-          visibleColumns: ['summary', 'start', 'status', 'calendar', 'location', 'attendees', 'hangoutLink', 'conferenceData', 'description'],
-          attendeesFilter: []
+          timeRange: "all",
+          search: "",
+          viewMode: "table",
+          visibleColumns: [
+            "summary",
+            "start",
+            "end",
+            "status",
+            "calendar",
+            "location",
+            "attendees",
+            "description",
+            "created",
+            "updated",
+            "creator",
+            "organizer",
+            "visibility",
+            "transparency",
+            "sequence",
+            "recurringEventId",
+            "recurrence",
+            "originalStartTime",
+            "iCalUID",
+            "htmlLink",
+            "hangoutLink",
+            "conferenceData",
+            "meetingId",
+            "meetingCode",
+            "meetingPhone",
+            "meetingNotes",
+            "anyoneCanAddSelf",
+            "guestsCanInviteOthers",
+            "guestsCanModify",
+            "guestsCanSeeOtherGuests",
+            "privateCopy",
+            "locked",
+            "source",
+            "colorId",
+            "eventType",
+          ],
+          attendeesFilter: [],
         });
       },
     }),
     {
-      name: 'calendar-filters-storage',
+      name: "calendar-filters-storage",
       partialize: (state) => ({
         activeCalendars: state.activeCalendars,
         timeRange: state.timeRange,

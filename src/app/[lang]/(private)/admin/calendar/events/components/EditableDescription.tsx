@@ -3,22 +3,21 @@
 import React, { useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Pencil, Check, X } from "lucide-react";
-import dynamic from "next/dynamic";
 
 // Import CSS files
-import "react-quill/dist/quill.snow.css";
 import "./quill-custom.css";
-
-const ReactQuill = dynamic(() => import("react-quill"), {
-  ssr: false,
-  loading: () => <div className="h-32 bg-muted animate-pulse rounded" />
-});
+import { ReactQuillWrapper } from "@/src/components/ui/ReactQuillWrapper";
+import { processDescription } from "@/src/lib/description-utils";
 
 interface EditableDescriptionProps {
   description?: string;
   eventId: string;
   calendarId: string;
-  onUpdate: (eventId: string, calendarId: string, description: string) => Promise<void>;
+  onUpdate: (
+    eventId: string,
+    calendarId: string,
+    description: string
+  ) => Promise<void>;
 }
 
 export const EditableDescription: React.FC<EditableDescriptionProps> = ({
@@ -57,33 +56,33 @@ export const EditableDescription: React.FC<EditableDescriptionProps> = ({
 
   if (isEditing) {
     return (
-      <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
-        <div className="[&_.ql-editor_a]:text-primary [&_.ql-editor_a]:underline [&_.ql-editor_a:hover]:text-primary/80 [&_.ql-editor_a]:font-medium [&_.ql-toolbar_.ql-link]:text-primary">
-          <ReactQuill
+      <div className='space-y-2' onClick={(e) => e.stopPropagation()}>
+        <div className='[&_.ql-editor_a]:text-primary [&_.ql-editor_a]:underline [&_.ql-editor_a:hover]:text-primary/80 [&_.ql-editor_a]:font-medium [&_.ql-toolbar_.ql-link]:text-primary'>
+          <ReactQuillWrapper
             value={editedDescription}
             onChange={setEditedDescription}
-            className="bg-background"
-            theme="snow"
+            className='bg-background'
+            theme='snow'
           />
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
-            size="sm"
+            size='sm'
             onClick={handleSave}
             disabled={isLoading}
-            className="h-7 px-2"
+            className='h-7 px-2'
           >
-            <Check className="h-3 w-3 mr-1" />
+            <Check className='h-3 w-3 mr-1' />
             Guardar
           </Button>
           <Button
-            size="sm"
-            variant="outline"
+            size='sm'
+            variant='outline'
             onClick={handleCancel}
             disabled={isLoading}
-            className="h-7 px-2"
+            className='h-7 px-2'
           >
-            <X className="h-3 w-3 mr-1" />
+            <X className='h-3 w-3 mr-1' />
             Cancelar
           </Button>
         </div>
@@ -92,27 +91,27 @@ export const EditableDescription: React.FC<EditableDescriptionProps> = ({
   }
 
   return (
-    <div 
-      className="group relative cursor-pointer hover:bg-accent/20 p-2 rounded transition-colors"
+    <div
+      className='group relative cursor-pointer hover:bg-accent/20 p-2 rounded transition-colors'
       onClick={handleEdit}
     >
       {description ? (
         <div
-          className="prose prose-sm max-w-none text-sm [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium"
-          dangerouslySetInnerHTML={{ __html: description }}
+          className='prose prose-sm max-w-none text-sm event-description'
+          dangerouslySetInnerHTML={{ __html: processDescription(description) }}
         />
       ) : (
-        <span className="text-muted-foreground text-sm italic">
+        <span className='text-muted-foreground text-sm italic'>
           Hacer clic para añadir descripción
         </span>
       )}
       <Button
-        size="sm"
-        variant="ghost"
-        className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0"
+        size='sm'
+        variant='ghost'
+        className='absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0'
         onClick={handleEdit}
       >
-        <Pencil className="h-3 w-3" />
+        <Pencil className='h-3 w-3' />
       </Button>
     </div>
   );
