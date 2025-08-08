@@ -34,7 +34,11 @@
       "Bash(touch:*)",
       "Bash(npm run lint:*)",
       "Bash(curl:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:developers.zoom.us)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:developer.vimeo.com)",
+      "WebFetch(domain:vimeo.github.io)"
     ],
     "deny": []
   }
