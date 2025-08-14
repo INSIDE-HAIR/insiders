@@ -48,6 +48,15 @@ export const AVAILABLE_COLUMNS = {
     label: "Ubicación",
     description: "Ubicación física o virtual del evento",
     category: "Básico",
+    defaultVisible: false
+  },
+  
+  // Participantes del Meeting
+  meetMembers: {
+    id: "meetMembers",
+    label: "Participantes",
+    description: "Participantes del meeting (invitados del calendario)",
+    category: "Meeting",
     defaultVisible: true
   },
   attendees: {

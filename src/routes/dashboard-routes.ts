@@ -10,7 +10,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         "es": "Equipo de Gestión"
       },
       "plan": "Enterprise",
-      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control", "settings"]
+      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "meet", "sitemap", "access-control", "settings"]
     },
     "creativos": {
       "name": {
@@ -18,7 +18,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         "es": "Equipo Creativo"
       },
       "plan": "Pro",
-      "routes": ["pages", "menu", "drive", "calendar"]
+      "routes": ["pages", "menu", "drive", "calendar", "meet"]
     },
     "consultoria": {
       "name": {
@@ -349,6 +349,15 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           "href": "/admin/calendar/events",
           "icon": "CalendarDays"
+        },
+        {
+          "id": "meet-rooms",
+          "label": {
+            "en": "Meet Rooms",
+            "es": "Salas de Meet"
+          },
+          "href": "/admin/meet/rooms",
+          "icon": "Video"
         }
       ]
     },

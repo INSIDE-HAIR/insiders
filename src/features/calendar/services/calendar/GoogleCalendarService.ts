@@ -29,6 +29,7 @@ export class GoogleCalendarService {
   private calendar: any;
   private authProvider: GoogleCalendarAuthProvider;
   private initialized: boolean = false;
+  public auth: any; // Exponemos auth para que otros servicios lo puedan usar
 
   constructor(authProvider?: GoogleCalendarAuthProvider) {
     this.authProvider = authProvider || new GoogleCalendarAuthProvider();
@@ -42,14 +43,35 @@ export class GoogleCalendarService {
       logger.info("Initializing Google Calendar service...");
 
       const auth = await this.authProvider.getOAuth2Client();
+      this.auth = auth; // Guardamos la referencia de auth
       this.calendar = google.calendar({ version: 'v3', auth });
       
       this.initialized = true;
       logger.info("Google Calendar service initialized successfully");
+      
+      // Log configuración por defecto
+      if (process.env.NODE_ENV === 'development') {
+        logger.info(`Default Calendar ID: ${this.getDefaultCalendarId()}`);
+        logger.info(`Default Timezone: ${this.getDefaultTimezone()}`);
+      }
     } catch (error) {
       logger.error("Failed to initialize Google Calendar service", error);
       throw new Error("Failed to initialize Google Calendar service");
     }
+  }
+
+  /**
+   * Obtiene el calendar ID por defecto
+   */
+  public getDefaultCalendarId(): string {
+    return this.authProvider.getDefaultCalendarId();
+  }
+
+  /**
+   * Obtiene la timezone por defecto
+   */
+  public getDefaultTimezone(): string {
+    return this.authProvider.getDefaultTimezone();
   }
 
   /**
