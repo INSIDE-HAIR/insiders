@@ -24,6 +24,7 @@ import { Badge } from "@/src/components/ui/badge";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
 import {
@@ -103,12 +104,14 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
     transcripts: [],
     participantsHistory: [],
     participantStats: [],
-    participantsSessions: []
+    participantsSessions: [],
+    smartNotes: []
   });
   const [activityLoading, setActivityLoading] = useState(false);
   const [participantsReport, setParticipantsReport] = useState<any>(null);
   const [showParticipantsReport, setShowParticipantsReport] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
+  const [activitySubTab, setActivitySubTab] = useState("vista-general");
   const { toast } = useToast();
 
   // States para agregar miembros
@@ -182,20 +185,22 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
       setActivityLoading(true);
       
       // Fetch all activity data in parallel
-      const [recordsRes, recordingsRes, transcriptsRes, participantsRes, sessionsRes] = await Promise.all([
+      const [recordsRes, recordingsRes, transcriptsRes, participantsRes, sessionsRes, smartNotesRes] = await Promise.all([
         fetch(`/api/meet/rooms/${spaceId}/conference-records`),
         fetch(`/api/meet/rooms/${spaceId}/recordings`),
         fetch(`/api/meet/rooms/${spaceId}/transcripts`),
         fetch(`/api/meet/rooms/${spaceId}/participants`),
-        fetch(`/api/meet/rooms/${spaceId}/participants-by-session`)
+        fetch(`/api/meet/rooms/${spaceId}/participants-by-session`),
+        fetch(`/api/meet/rooms/${spaceId}/smart-notes`)
       ]);
 
-      const [recordsData, recordingsData, transcriptsData, participantsData, sessionsData] = await Promise.all([
+      const [recordsData, recordingsData, transcriptsData, participantsData, sessionsData, smartNotesData] = await Promise.all([
         recordsRes.ok ? recordsRes.json() : { conferenceRecords: [] },
         recordingsRes.ok ? recordingsRes.json() : { recordings: [] },
         transcriptsRes.ok ? transcriptsRes.json() : { transcripts: [] },
         participantsRes.ok ? participantsRes.json() : { participantsHistory: [], participantStats: [] },
-        sessionsRes.ok ? sessionsRes.json() : { sessions: [] }
+        sessionsRes.ok ? sessionsRes.json() : { sessions: [] },
+        smartNotesRes.ok ? smartNotesRes.json() : { smartNotes: [] }
       ]);
 
       setActivityData({
@@ -204,7 +209,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         transcripts: transcriptsData.transcripts || [],
         participantsHistory: participantsData.participantsHistory || [],
         participantStats: participantsData.participantStats || [],
-        participantsSessions: sessionsData.sessions || []
+        participantsSessions: sessionsData.sessions || [],
+        smartNotes: smartNotesData.smartNotes || []
       });
       
     } catch (error) {
@@ -457,7 +463,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <VideoCameraIcon className="h-5 w-5 text-primary" />
@@ -468,15 +474,17 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 flex-1 flex flex-col">
+          <TabsList className="grid w-full grid-cols-4 flex-shrink-0">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="members">Miembros</TabsTrigger>
             <TabsTrigger value="settings">Configuración</TabsTrigger>
             <TabsTrigger value="activity">Actividad</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general" className="space-y-4 mt-4">
+          <TabsContent value="general" className="flex-1 mt-4">
+            <ScrollArea className="h-full max-h-[60vh]">
+              <div className="space-y-4 pr-4">
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
                 <CardHeader>
@@ -590,15 +598,19 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
               </Card>
             </div>
 
-            <Alert>
-              <ExclamationTriangleIcon className="h-4 w-4" />
-              <AlertDescription>
-                Los cambios en la configuración pueden tardar unos minutos en aplicarse
-              </AlertDescription>
-            </Alert>
+                <Alert>
+                  <ExclamationTriangleIcon className="h-4 w-4" />
+                  <AlertDescription>
+                    Los cambios en la configuración pueden tardar unos minutos en aplicarse
+                  </AlertDescription>
+                </Alert>
+              </div>
+            </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="members" className="space-y-4 mt-4">
+          <TabsContent value="members" className="flex-1 mt-4">
+            <ScrollArea className="h-full max-h-[60vh]">
+              <div className="space-y-4 pr-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -700,10 +712,14 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                 )}
               </CardContent>
             </Card>
+              </div>
+            </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-4 mt-4">
-            <div className="grid gap-4">
+          <TabsContent value="settings" className="flex-1 mt-4">
+            <ScrollArea className="h-full max-h-[60vh]">
+              <div className="space-y-4 pr-4">
+                <div className="grid gap-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -790,296 +806,592 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   </div>
                 </CardContent>
               </Card>
-            </div>
+                </div>
+              </div>
+            </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="activity" className="space-y-4 mt-4">
-            {/* Active Conference Controls */}
-            {room.activeConference?.conferenceRecord && (
-              <Alert>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="animate-pulse text-green-500">●</span>
-                    <span>Hay una conferencia activa en curso</span>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleEndConference}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <Icons.SpinnerIcon className="h-4 w-4 animate-spin mr-2" />
-                    ) : (
-                      <XMarkIcon className="h-4 w-4 mr-2" />
-                    )}
-                    Terminar Conferencia
-                  </Button>
-                </div>
-              </Alert>
-            )}
+          <TabsContent value="activity" className="flex-1 mt-4">
+            <ScrollArea className="h-full max-h-[60vh]">
+              <div className="space-y-4 pr-4">
+                {/* Active Conference Controls */}
+                {room.activeConference?.conferenceRecord && (
+                  <Alert>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="animate-pulse text-green-500">●</span>
+                        <span>Hay una conferencia activa en curso</span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleEndConference}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <Icons.SpinnerIcon className="h-4 w-4 animate-spin mr-2" />
+                        ) : (
+                          <XMarkIcon className="h-4 w-4 mr-2" />
+                        )}
+                        Terminar Conferencia
+                      </Button>
+                    </div>
+                  </Alert>
+                )}
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {/* Conference Records */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <CalendarDaysIcon className="h-5 w-5 text-primary" />
-                      Historial de Reuniones
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={fetchActivityData}
-                      disabled={activityLoading}
-                    >
-                      <ArrowPathIcon className={`h-4 w-4 ${activityLoading ? 'animate-spin' : ''}`} />
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {activityLoading ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
-                    </div>
-                  ) : activityData.conferenceRecords.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-4 text-sm">
-                      No se encontraron reuniones
-                    </p>
-                  ) : (
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {activityData.conferenceRecords.slice(0, 5).map((record: any, index: number) => (
-                        <div key={index} className="p-2 bg-muted rounded text-sm">
-                          <div className="font-medium">
-                            {new Date(record.startTime).toLocaleDateString('es-ES', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: '2-digit',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </div>
-                          {record.duration && (
-                            <div className="text-muted-foreground">
-                              Duración: {record.duration} min
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                {/* Activity Sub-tabs */}
+                <Tabs value={activitySubTab} onValueChange={setActivitySubTab} className="flex-1 flex flex-col">
+                  <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
+                    <TabsTrigger value="vista-general">Vista General</TabsTrigger>
+                    <TabsTrigger value="por-sesion">Por Sesión</TabsTrigger>
+                  </TabsList>
 
-              {/* Recordings */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CameraIcon className="h-5 w-5 text-primary" />
-                    Grabaciones
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {activityLoading ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
-                    </div>
-                  ) : activityData.recordings.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-4 text-sm">
-                      No se encontraron grabaciones
-                    </p>
-                  ) : (
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {activityData.recordings.slice(0, 3).map((recording: any, index: number) => (
-                        <div key={index} className="p-2 bg-muted rounded text-sm">
-                          <div className="font-medium">
-                            {new Date(recording.startTime || recording.conferenceStartTime).toLocaleDateString('es-ES', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: '2-digit'
-                            })}
-                          </div>
-                          <div className="text-muted-foreground">
-                            Estado: {recording.state === 'FILE_GENERATED' ? 'Disponible' : 'Procesando'}
-                          </div>
-                          {recording.driveDestination?.exportUri && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="mt-1 h-6 text-xs"
-                              onClick={() => window.open(recording.driveDestination.exportUri, '_blank')}
-                            >
-                              Ver grabación
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Transcripts */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DocumentTextIcon className="h-5 w-5 text-primary" />
-                    Transcripciones
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {activityLoading ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
-                    </div>
-                  ) : activityData.transcripts.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-4 text-sm">
-                      No se encontraron transcripciones
-                    </p>
-                  ) : (
-                    <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {activityData.transcripts.slice(0, 3).map((transcript: any, index: number) => (
-                        <div key={index} className="p-2 bg-muted rounded text-sm">
-                          <div className="font-medium">
-                            {new Date(transcript.startTime || transcript.conferenceStartTime).toLocaleDateString('es-ES', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: '2-digit'
-                            })}
-                          </div>
-                          <div className="text-muted-foreground">
-                            Estado: {transcript.state === 'FILE_GENERATED' ? 'Disponible' : 'Procesando'}
-                          </div>
-                          {transcript.entriesPreview?.length > 0 && (
-                            <div className="mt-1 text-xs text-muted-foreground">
-                              "{transcript.entriesPreview[0].text}"
-                            </div>
-                          )}
-                          {transcript.docsDestination?.exportUri && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="mt-1 h-6 text-xs"
-                              onClick={() => window.open(transcript.docsDestination.exportUri, '_blank')}
-                            >
-                              Ver transcripción
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Participants by Session */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <UsersIcon className="h-5 w-5 text-primary" />
-                      Participantes por Sesión
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={fetchParticipantsReport}
-                      disabled={reportLoading}
-                    >
-                      {reportLoading ? (
-                        <Icons.SpinnerIcon className="h-4 w-4 animate-spin mr-2" />
-                      ) : (
-                        <DocumentTextIcon className="h-4 w-4 mr-2" />
-                      )}
-                      Reporte Detallado
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {activityLoading ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
-                    </div>
-                  ) : activityData.participantsSessions.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-4 text-sm">
-                      No se encontraron sesiones con participantes
-                    </p>
-                  ) : (
-                    <div className="space-y-3 max-h-48 overflow-y-auto">
-                      {activityData.participantsSessions.slice(0, 3).map((session: any, sessionIndex: number) => (
-                        <div key={sessionIndex} className="p-3 bg-muted rounded text-sm">
-                          {/* Header de la sesión */}
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="font-medium">
-                              {session.sessionDateTime}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="text-xs">
-                                {session.participantCount} participantes
-                              </Badge>
-                              {session.isActive && (
-                                <Badge className="text-xs">
-                                  <span className="animate-pulse mr-1">●</span>
-                                  Activa
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="text-muted-foreground text-xs mb-2">
-                            Duración: {session.duration} min • Participación total: {session.totalParticipationMinutes} min
-                          </div>
-                          
-                          {/* Lista de participantes */}
-                          <div className="space-y-1">
-                            {session.participants.slice(0, 4).map((participant: any, partIndex: number) => (
-                              <div key={partIndex} className="flex items-center justify-between text-xs">
-                                <div className="flex items-center gap-2">
-                                  <div className="h-4 w-4 bg-primary/20 rounded-full flex items-center justify-center">
-                                    <span className="text-xs font-medium text-primary">
-                                      {participant.userInfo.displayName.charAt(0).toUpperCase()}
-                                    </span>
-                                  </div>
-                                  <span className="font-medium">
-                                    {participant.userInfo.displayName.length > 15 ? 
-                                      participant.userInfo.displayName.substring(0, 15) + '...' : 
-                                      participant.userInfo.displayName}
-                                  </span>
-                                  {participant.isStillActive && (
-                                    <span className="text-green-500">●</span>
-                                  )}
-                                </div>
-                                <div className="text-muted-foreground">
-                                  {participant.totalDurationMinutes} min
-                                </div>
-                              </div>
-                            ))}
-                            
-                            {session.participants.length > 4 && (
-                              <div className="text-xs text-muted-foreground text-center mt-1">
-                                +{session.participants.length - 4} participantes más
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                      
-                      {activityData.participantsSessions.length > 3 && (
+                  {/* Vista General Tab - Current view */}
+                  <TabsContent value="vista-general" className="flex-1 mt-4">
+                    <ScrollArea className="h-full max-h-[50vh]">
+                      <div className="space-y-4 pr-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                  {/* Conference Records */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <CalendarDaysIcon className="h-5 w-5 text-primary" />
+                          Historial de Reuniones
+                        </span>
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="w-full mt-2 text-xs"
-                          onClick={fetchParticipantsReport}
+                          onClick={fetchActivityData}
+                          disabled={activityLoading}
                         >
-                          Ver todas las {activityData.participantsSessions.length} sesiones
+                          <ArrowPathIcon className={`h-4 w-4 ${activityLoading ? 'animate-spin' : ''}`} />
                         </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activityLoading ? (
+                        <div className="flex items-center justify-center py-4">
+                          <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                      ) : activityData.conferenceRecords.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          No se encontraron reuniones
+                        </p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {activityData.conferenceRecords.slice(0, 5).map((record: any, index: number) => (
+                            <div key={index} className="p-2 bg-muted rounded text-sm">
+                              <div className="font-medium">
+                                {new Date(record.startTime).toLocaleDateString('es-ES', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </div>
+                              {record.duration && (
+                                <div className="text-muted-foreground">
+                                  Duración: {record.duration} min
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Recordings */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <CameraIcon className="h-5 w-5 text-primary" />
+                        Grabaciones
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activityLoading ? (
+                        <div className="flex items-center justify-center py-4">
+                          <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                      ) : activityData.recordings.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          No se encontraron grabaciones
+                        </p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {activityData.recordings.slice(0, 3).map((recording: any, index: number) => (
+                            <div key={index} className="p-2 bg-muted rounded text-sm">
+                              <div className="font-medium">
+                                {new Date(recording.startTime || recording.conferenceStartTime).toLocaleDateString('es-ES', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit'
+                                })}
+                              </div>
+                              <div className="text-muted-foreground">
+                                Estado: {recording.state === 'FILE_GENERATED' ? 'Disponible' : 'Procesando'}
+                              </div>
+                              {recording.driveDestination?.exportUri && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="mt-1 h-6 text-xs"
+                                  onClick={() => window.open(recording.driveDestination.exportUri, '_blank')}
+                                >
+                                  Ver grabación
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Transcripts */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <DocumentTextIcon className="h-5 w-5 text-primary" />
+                        Transcripciones
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activityLoading ? (
+                        <div className="flex items-center justify-center py-4">
+                          <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                      ) : activityData.transcripts.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          No se encontraron transcripciones
+                        </p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {activityData.transcripts.slice(0, 3).map((transcript: any, index: number) => (
+                            <div key={index} className="p-2 bg-muted rounded text-sm">
+                              <div className="font-medium">
+                                {new Date(transcript.startTime || transcript.conferenceStartTime).toLocaleDateString('es-ES', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit'
+                                })}
+                              </div>
+                              <div className="text-muted-foreground">
+                                Estado: {transcript.state === 'FILE_GENERATED' ? 'Disponible' : 'Procesando'}
+                              </div>
+                              {transcript.entriesPreview?.length > 0 && (
+                                <div className="mt-1 text-xs text-muted-foreground">
+                                  &quot;{transcript.entriesPreview[0].text}&quot;
+                                </div>
+                              )}
+                              {transcript.docsDestination?.exportUri && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="mt-1 h-6 text-xs"
+                                  onClick={() => window.open(transcript.docsDestination.exportUri, '_blank')}
+                                >
+                                  Ver transcripción
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Top Participants (renamed from Participants by Session) */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                          <UsersIcon className="h-5 w-5 text-primary" />
+                          Top Participantes
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={fetchParticipantsReport}
+                          disabled={reportLoading}
+                        >
+                          {reportLoading ? (
+                            <Icons.SpinnerIcon className="h-4 w-4 animate-spin mr-2" />
+                          ) : (
+                            <DocumentTextIcon className="h-4 w-4 mr-2" />
+                          )}
+                          Reporte Detallado
+                        </Button>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activityLoading ? (
+                        <div className="flex items-center justify-center py-4">
+                          <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                      ) : activityData.participantsSessions.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          No se encontraron participantes
+                        </p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {/* Show top participants by total minutes */}
+                          {activityData.participantsSessions
+                            .flatMap((session: any) => session.participants)
+                            .reduce((acc: any[], participant: any) => {
+                              const existing = acc.find(p => p.userInfo.displayName === participant.userInfo.displayName);
+                              if (existing) {
+                                existing.totalMinutes += participant.totalDurationMinutes;
+                                existing.sessions += 1;
+                              } else {
+                                acc.push({
+                                  userInfo: participant.userInfo,
+                                  totalMinutes: participant.totalDurationMinutes,
+                                  sessions: 1,
+                                  type: participant.userInfo.type
+                                });
+                              }
+                              return acc;
+                            }, [])
+                            .sort((a: any, b: any) => b.totalMinutes - a.totalMinutes)
+                            .slice(0, 5)
+                            .map((participant: any, index: number) => (
+                              <div key={index} className="p-2 bg-muted rounded text-sm">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <div className="h-6 w-6 bg-primary/20 rounded-full flex items-center justify-center">
+                                      <span className="text-xs font-medium text-primary">
+                                        {participant.userInfo.displayName.charAt(0).toUpperCase()}
+                                      </span>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        {participant.userInfo.displayName.length > 15 ? 
+                                          participant.userInfo.displayName.substring(0, 15) + '...' : 
+                                          participant.userInfo.displayName}
+                                      </div>
+                                      <div className="text-xs text-muted-foreground">
+                                        {participant.sessions} reuniones • {participant.totalMinutes} min total
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="text-xs">
+                                    <Badge variant={participant.type === 'signed_in' ? 'default' : 'secondary'}>
+                                      {participant.type === 'signed_in' ? 'Autenticado' : 
+                                       participant.type === 'anonymous' ? 'Anónimo' : 'Teléfono'}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                        </div>
+                      </div>
+                    </ScrollArea>
+                  </TabsContent>
+
+                  {/* Por Sesión Tab - Comprehensive session view */}
+                  <TabsContent value="por-sesion" className="flex-1 mt-4">
+                    <ScrollArea className="h-full max-h-[50vh]">
+                      <div className="space-y-4 pr-4">
+                        {activityLoading ? (
+                          <div className="flex items-center justify-center py-8">
+                            <Icons.SpinnerIcon className="h-8 w-8 animate-spin" />
+                          </div>
+                        ) : activityData.participantsSessions.length === 0 ? (
+                          <div className="text-center py-8">
+                            <p className="text-muted-foreground mb-4">No se encontraron sesiones</p>
+                            <Button
+                              variant="outline"
+                              onClick={fetchActivityData}
+                              disabled={activityLoading}
+                            >
+                              <ArrowPathIcon className="h-4 w-4 mr-2" />
+                              Actualizar datos
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="space-y-6">
+                            {activityData.participantsSessions.map((session: any, sessionIndex: number) => {
+                              // Find corresponding recordings, transcripts, and smart notes for this session
+                              const sessionRecordings = activityData.recordings.filter((recording: any) => 
+                                recording.conferenceRecordId === session.conferenceRecordId
+                              );
+                              const sessionTranscripts = activityData.transcripts.filter((transcript: any) => 
+                                transcript.conferenceRecordId === session.conferenceRecordId
+                              );
+                              const sessionSmartNotes = activityData.smartNotes.filter((note: any) => 
+                                note.conferenceRecordId === session.conferenceRecordId
+                              );
+                              
+                              return (
+                        <Card key={sessionIndex} className="overflow-hidden">
+                          <CardHeader className="bg-muted/50">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <CardTitle className="text-lg flex items-center gap-2">
+                                  <CalendarDaysIcon className="h-5 w-5 text-primary" />
+                                  Sesión {session.sessionDateTime}
+                                </CardTitle>
+                                <div className="text-sm text-muted-foreground mt-1">
+                                  Duración: {session.duration} min • {session.participantCount} participantes • ID: {session.conferenceRecordId}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {session.isActive && (
+                                  <Badge className="animate-pulse">
+                                    <span className="mr-1">●</span>
+                                    Activa
+                                  </Badge>
+                                )}
+                                <Badge variant="outline">
+                                  {session.totalParticipationMinutes} min participación
+                                </Badge>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="p-6">
+                            <div className="grid gap-6 md:grid-cols-2">
+                              {/* Grabaciones */}
+                              <div className="space-y-3">
+                                <h4 className="font-medium flex items-center gap-2">
+                                  <CameraIcon className="h-4 w-4 text-primary" />
+                                  Grabaciones ({sessionRecordings.length})
+                                </h4>
+                                {sessionRecordings.length === 0 ? (
+                                  <p className="text-sm text-muted-foreground">No hay grabaciones disponibles</p>
+                                ) : (
+                                  <div className="space-y-2">
+                                    {sessionRecordings.map((recording: any, recIndex: number) => (
+                                      <div key={recIndex} className="p-3 bg-background border rounded-lg">
+                                        <div className="flex items-center justify-between">
+                                          <div>
+                                            <div className="text-sm font-medium">
+                                              Estado: {recording.state === 'FILE_GENERATED' ? '✅ Disponible' : '⏳ Procesando'}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                              {recording.startTime && new Date(recording.startTime).toLocaleTimeString('es-ES')}
+                                            </div>
+                                          </div>
+                                          {recording.driveDestination?.exportUri && (
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() => window.open(recording.driveDestination.exportUri, '_blank')}
+                                            >
+                                              <Icons.ExternalLink className="h-3 w-3 mr-1" />
+                                              Ver
+                                            </Button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Transcripciones */}
+                              <div className="space-y-3">
+                                <h4 className="font-medium flex items-center gap-2">
+                                  <DocumentTextIcon className="h-4 w-4 text-primary" />
+                                  Transcripciones ({sessionTranscripts.length})
+                                </h4>
+                                {sessionTranscripts.length === 0 ? (
+                                  <p className="text-sm text-muted-foreground">No hay transcripciones disponibles</p>
+                                ) : (
+                                  <div className="space-y-2">
+                                    {sessionTranscripts.map((transcript: any, transIndex: number) => (
+                                      <div key={transIndex} className="p-3 bg-background border rounded-lg">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <div>
+                                            <div className="text-sm font-medium">
+                                              Estado: {transcript.state === 'FILE_GENERATED' ? '✅ Disponible' : '⏳ Procesando'}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                              {transcript.startTime && new Date(transcript.startTime).toLocaleTimeString('es-ES')}
+                                            </div>
+                                          </div>
+                                          {transcript.docsDestination?.exportUri && (
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() => window.open(transcript.docsDestination.exportUri, '_blank')}
+                                            >
+                                              <Icons.ExternalLink className="h-3 w-3 mr-1" />
+                                              Ver
+                                            </Button>
+                                          )}
+                                        </div>
+                                        {transcript.entriesPreview?.length > 0 && (
+                                          <div className="text-xs text-muted-foreground italic border-l-2 border-muted pl-2">
+                                            &quot;{transcript.entriesPreview[0].text.substring(0, 80)}...&quot;
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Participantes */}
+                              <div className="space-y-3">
+                                <h4 className="font-medium flex items-center gap-2">
+                                  <UsersIcon className="h-4 w-4 text-primary" />
+                                  Participantes ({session.participantCount})
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      // Generate CSV for this session's participants
+                                      const csvData = session.participants.map((p: any) => ({
+                                        'Nombre': p.userInfo.displayName,
+                                        'Tipo': p.userInfo.type === 'signed_in' ? 'Autenticado' : 
+                                               p.userInfo.type === 'anonymous' ? 'Anónimo' : 'Teléfono',
+                                        'Tiempo Participación (min)': p.totalDurationMinutes,
+                                        'Hora Entrada': p.joinTime,
+                                        'Hora Salida': p.leaveTime,
+                                        'Sesiones': p.sessionsCount,
+                                        'Aún Activo': p.isStillActive ? 'Sí' : 'No'
+                                      }));
+                                      
+                                      const csv = [
+                                        Object.keys(csvData[0]).join(','),
+                                        ...csvData.map(row => Object.values(row).join(','))
+                                      ].join('\n');
+                                      
+                                      const blob = new Blob([csv], { type: 'text/csv' });
+                                      const url = window.URL.createObjectURL(blob);
+                                      const a = document.createElement('a');
+                                      a.href = url;
+                                      a.download = `participantes_${session.conferenceRecordId}.csv`;
+                                      a.click();
+                                      window.URL.revokeObjectURL(url);
+                                    }}
+                                  >
+                                    <Icons.Download className="h-3 w-3 mr-1" />
+                                    CSV
+                                  </Button>
+                                </h4>
+                                <div className="space-y-2 max-h-48 overflow-y-auto">
+                                  {session.participants.map((participant: any, partIndex: number) => (
+                                    <div key={partIndex} className="p-2 bg-background border rounded-lg">
+                                      <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <div className="h-6 w-6 bg-primary/20 rounded-full flex items-center justify-center">
+                                            <span className="text-xs font-medium text-primary">
+                                              {participant.userInfo.displayName.charAt(0).toUpperCase()}
+                                            </span>
+                                          </div>
+                                          <div>
+                                            <div className="text-sm font-medium">
+                                              {participant.userInfo.displayName}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                              {participant.userInfo.type === 'signed_in' ? 'Autenticado' : 
+                                               participant.userInfo.type === 'anonymous' ? 'Anónimo' : 'Teléfono'}
+                                              {participant.isStillActive && (
+                                                <span className="ml-2 text-green-600">● Conectado</span>
+                                              )}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="text-right">
+                                          <div className="text-sm font-medium">
+                                            {participant.totalDurationMinutes} min
+                                          </div>
+                                          <div className="text-xs text-muted-foreground">
+                                            {participant.joinTime} - {participant.leaveTime}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Notas Inteligentes */}
+                              <div className="space-y-3">
+                                <h4 className="font-medium flex items-center gap-2">
+                                  <Icons.Sparkles className="h-4 w-4 text-primary" />
+                                  Notas Inteligentes ({sessionSmartNotes.length})
+                                </h4>
+                                {sessionSmartNotes.length === 0 ? (
+                                  <p className="text-sm text-muted-foreground">No hay notas inteligentes disponibles</p>
+                                ) : (
+                                  <div className="space-y-2">
+                                    {sessionSmartNotes.map((note: any, noteIndex: number) => (
+                                      <div key={noteIndex} className="p-3 bg-background border rounded-lg">
+                                        <div className="flex items-center justify-between mb-2">
+                                          <div>
+                                            <div className="text-sm font-medium">
+                                              Estado: {note.status === 'Completado' ? '✅ Disponible' : '⏳ Procesando'}
+                                            </div>
+                                            <div className="text-xs text-muted-foreground">
+                                              Confianza: {note.confidence}% • {note.keyTopics?.length || 0} temas
+                                            </div>
+                                          </div>
+                                          <div className="flex gap-1">
+                                            {note.downloadLinks?.summary && (
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => window.open(note.downloadLinks.summary, '_blank')}
+                                              >
+                                                <Icons.Download className="h-3 w-3 mr-1" />
+                                                PDF
+                                              </Button>
+                                            )}
+                                            {note.downloadLinks?.actionItems && (
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => window.open(note.downloadLinks.actionItems, '_blank')}
+                                              >
+                                                <Icons.Download className="h-3 w-3 mr-1" />
+                                                CSV
+                                              </Button>
+                                            )}
+                                          </div>
+                                        </div>
+                                        {note.summary && (
+                                          <div className="text-xs text-muted-foreground border-l-2 border-muted pl-2">
+                                            {note.summary.substring(0, 120)}...
+                                          </div>
+                                        )}
+                                        {note.actionItems && note.actionItems.length > 0 && (
+                                          <div className="mt-2">
+                                            <div className="text-xs font-medium mb-1">Acciones identificadas:</div>
+                                            <div className="text-xs text-muted-foreground">
+                                              • {note.actionItems[0].action}
+                                              {note.actionItems.length > 1 && ` (+${note.actionItems.length - 1} más)`}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                                </Card>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </ScrollArea>
           </TabsContent>
         </Tabs>
 
@@ -1106,7 +1418,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
     {/* Modal de Reporte Detallado de Participantes */}
     {showParticipantsReport && participantsReport && (
       <Dialog open={showParticipantsReport} onOpenChange={setShowParticipantsReport}>
-        <DialogContent className="sm:max-w-6xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-6xl max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <DocumentTextIcon className="h-5 w-5 text-primary" />
@@ -1117,16 +1429,18 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs defaultValue="summary" className="mt-4">
-            <TabsList className="grid w-full grid-cols-3">
+          <Tabs defaultValue="summary" className="mt-4 flex-1 flex flex-col">
+            <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
               <TabsTrigger value="summary">Resumen</TabsTrigger>
               <TabsTrigger value="participants">Participantes</TabsTrigger>
               <TabsTrigger value="sessions">Sesiones</TabsTrigger>
             </TabsList>
 
             {/* Tab Resumen */}
-            <TabsContent value="summary" className="space-y-4 mt-4">
-              <div className="grid gap-4 md:grid-cols-3">
+            <TabsContent value="summary" className="flex-1 mt-4">
+              <ScrollArea className="h-full max-h-[65vh]">
+                <div className="space-y-4 pr-4">
+                  <div className="grid gap-4 md:grid-cols-3">
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg">Estadísticas Generales</CardTitle>
@@ -1172,12 +1486,16 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     </div>
                   </CardContent>
                 </Card>
-              </div>
+                  </div>
+                </div>
+              </ScrollArea>
             </TabsContent>
 
             {/* Tab Participantes - Enfoque en participantes únicos */}
-            <TabsContent value="participants" className="space-y-4 mt-4">
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+            <TabsContent value="participants" className="flex-1 mt-4">
+              <ScrollArea className="h-full max-h-[65vh]">
+                <div className="space-y-4 pr-4">
+                  <div className="space-y-3">
                 {participantsReport.participantsSummary.map((participant: any, index: number) => (
                   <Card key={index} className="p-4">
                     <div className="flex items-start justify-between mb-3">
@@ -1269,12 +1587,16 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     </div>
                   </Card>
                 ))}
-              </div>
+                  </div>
+                </div>
+              </ScrollArea>
             </TabsContent>
 
             {/* Tab Sesiones - Enfoque en sesiones con sus participantes */}
-            <TabsContent value="sessions" className="space-y-4 mt-4">
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+            <TabsContent value="sessions" className="flex-1 mt-4">
+              <ScrollArea className="h-full max-h-[65vh]">
+                <div className="space-y-4 pr-4">
+                  <div className="space-y-4">
                 {/* Usar datos de participantsSessions si están disponibles, sino usar datos agrupados */}
                 {(participantsReport.participantsSessions || 
                   // Crear sesiones agrupadas desde participants si no hay participantsSessions
@@ -1395,7 +1717,9 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+                  </div>
+                </div>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
 
