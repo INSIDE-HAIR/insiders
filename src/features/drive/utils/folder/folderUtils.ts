@@ -38,7 +38,7 @@ export function getFolderName(path: string): string {
   // Tomar el último segmento no vacío
   for (let i = parts.length - 1; i >= 0; i--) {
     if (parts[i]) {
-      return parts[i];
+      return parts[i] || '';
     }
   }
 

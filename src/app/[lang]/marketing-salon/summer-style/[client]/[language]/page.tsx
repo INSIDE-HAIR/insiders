@@ -88,12 +88,12 @@ export default function DynamicJulyPage() {
       if (dailyContent[day]) {
         setCurrentContent(dailyContent[day]);
         setBgColor(
-          clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length]
+          clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length] || ''
         );
         setTextColor(
           clientData.textColors[
             (parseInt(day) - 1) % clientData.textColors.length
-          ]
+          ] || ''
         );
       } else {
         console.warn(
@@ -116,6 +116,9 @@ export default function DynamicJulyPage() {
 
   const getRandomColor = () => {
     const clientData = summerSyle2024DataTyped.clients[client];
+    if (!clientData || !clientData.bgColors || clientData.bgColors.length === 0) {
+      return "#000000"; // Default black color
+    }
     return clientData.bgColors[
       Math.floor(Math.random() * clientData.bgColors.length)
     ];

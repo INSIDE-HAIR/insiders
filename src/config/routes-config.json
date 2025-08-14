@@ -2,28 +2,23 @@
   "version": "1.0.0",
   "lastUpdated": "2025-01-01T00:00:00Z",
   "settings": {
-    "defaultRole": "user",
+    "defaultRole": "CLIENT",
     "allowedDomains": ["@insidesalons.com"],
     "roles": {
-      "user": {
-        "name": "User",
-        "description": "Standard user with basic access",
+      "CLIENT": {
+        "name": "Client",
+        "description": "Standard client with basic access",
         "permissions": ["read"]
       },
-      "editor": {
-        "name": "Editor",
-        "description": "Content editor with additional permissions",
+      "EMPLOYEE": {
+        "name": "Employee",
+        "description": "Employee with additional permissions",
         "permissions": ["read", "write"]
       },
-      "admin": {
+      "ADMIN": {
         "name": "Administrator",
         "description": "Administrator with extended access",
         "permissions": ["read", "write", "manage"]
-      },
-      "super-admin": {
-        "name": "Super Administrator",
-        "description": "Full system access",
-        "permissions": ["read", "write", "manage", "configure"]
       }
     }
   },
@@ -218,7 +213,7 @@
         "access": {
           "type": "auth",
           "requireAuth": false,
-          "redirectIfAuthenticated": "/admin"
+          "redirectIfAuthenticated": "/admin/dashboard"
         },
         "metadata": {
           "title": "Login - Inside Salons",
@@ -231,7 +226,7 @@
         "access": {
           "type": "auth",
           "requireAuth": false,
-          "redirectIfAuthenticated": "/admin"
+          "redirectIfAuthenticated": "/admin/dashboard"
         }
       },
       {
@@ -266,7 +261,7 @@
         "access": {
           "type": "private",
           "requireAuth": true,
-          "roles": ["user", "editor", "admin", "super-admin"]
+          "roles": ["user", "editor", "ADMIN"]
         }
       }
     ],
@@ -277,16 +272,25 @@
         "access": {
           "type": "admin",
           "requireAuth": true,
-          "roles": ["admin", "super-admin"]
+          "roles": ["ADMIN"]
         },
         "children": [
+          {
+            "path": "/admin/dashboard",
+            "label": "Dashboard",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
+          },
           {
             "path": "/admin/analytics",
             "label": "Analytics",
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             }
           },
           {
@@ -295,7 +299,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             },
             "children": [
               {
@@ -304,10 +308,19 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               }
             ]
+          },
+          {
+            "path": "/admin/groups",
+            "label": "Groups Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
           },
           {
             "path": "/admin/calendar",
@@ -315,7 +328,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             },
             "children": [
               {
@@ -324,7 +337,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               }
             ]
@@ -335,7 +348,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             },
             "children": [
               {
@@ -344,7 +357,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -353,7 +366,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -362,7 +375,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -371,7 +384,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -380,7 +393,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -389,7 +402,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               },
               {
@@ -398,7 +411,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin"]
+                  "roles": ["ADMIN"]
                 }
               }
             ]
@@ -409,7 +422,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             }
           },
           {
@@ -418,7 +431,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin", "editor"]
+              "roles": ["ADMIN", "editor"]
             },
             "children": [
               {
@@ -427,7 +440,7 @@
                 "access": {
                   "type": "admin",
                   "requireAuth": true,
-                  "roles": ["admin", "super-admin", "editor"]
+                  "roles": ["ADMIN", "editor"]
                 }
               }
             ]
@@ -438,7 +451,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             }
           },
           {
@@ -447,7 +460,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin"]
+              "roles": ["ADMIN"]
             }
           },
           {
@@ -456,7 +469,7 @@
             "access": {
               "type": "admin",
               "requireAuth": true,
-              "roles": ["admin", "super-admin", "editor"]
+              "roles": ["ADMIN", "editor"]
             }
           },
           {
@@ -467,6 +480,33 @@
               "requireAuth": true,
               "roles": ["super-admin"],
               "domains": ["@insidesalons.com"]
+            }
+          },
+          {
+            "path": "/admin/access-control/docs",
+            "label": "Authentication Documentation",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
+          },
+          {
+            "path": "/admin/settings",
+            "label": "Settings",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            }
+          },
+          {
+            "path": "/admin/settings/api-keys",
+            "label": "API Keys Management",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
             }
           }
         ]
@@ -487,7 +527,7 @@
         "access": {
           "type": "api",
           "requireAuth": true,
-          "roles": ["admin", "super-admin"]
+          "roles": ["ADMIN"]
         }
       },
       {
@@ -496,7 +536,7 @@
         "access": {
           "type": "api",
           "requireAuth": true,
-          "roles": ["admin", "super-admin"]
+          "roles": ["ADMIN"]
         }
       },
       {
@@ -505,7 +545,7 @@
         "access": {
           "type": "api",
           "requireAuth": true,
-          "roles": ["admin", "super-admin"]
+          "roles": ["ADMIN"]
         }
       }
     ],
@@ -545,7 +585,7 @@
     },
     "byDomain": {
       "@insidesalons.com": {
-        "defaultRole": "editor",
+        "defaultRole": "ADMIN",  
         "allowedRoutes": ["/admin/*", "/profile", "/dashboard/*"]
       }
     },
@@ -557,7 +597,7 @@
     }
   },
   "redirects": {
-    "unauthorized": "/auth/login",
+    "unauthorized": "/unauthorized",
     "forbidden": "/403",
     "notFound": "/404",
     "maintenance": "/maintenance"

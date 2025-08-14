@@ -35,7 +35,7 @@ export const ContentRenderer = memo(function ContentRenderer({
   }
 
   // Obtener el elemento de la barra lateral seleccionado
-  const sidebarItem = getItemById(navigationPath[0].id);
+  const sidebarItem = getItemById(navigationPath[0]?.id || '');
   if (!sidebarItem) {
     return (
       <div className='flex h-full items-center justify-center'>
@@ -68,7 +68,7 @@ export const ContentRenderer = memo(function ContentRenderer({
         >
           <RecursiveContentRenderer
             level={1}
-            parentId={navigationPath[0].id}
+            parentId={navigationPath?.[0]?.id || ''}
             parentType='sidebar'
             isInIframe={isInIframe}
           />

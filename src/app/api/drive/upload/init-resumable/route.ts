@@ -3,6 +3,11 @@ import { auth } from "@/src/config/auth/auth";
 import { GoogleDriveService } from "@/src/features/drive/services/drive/GoogleDriveService";
 import { google } from "googleapis";
 
+// Configuración siguiendo mejores prácticas de Vercel
+export const dynamic = "force-dynamic";
+export const maxDuration = 30; // Inicialización rápida
+export const runtime = "nodejs"; // Optimal para Google APIs
+
 export async function POST(request: NextRequest) {
   console.log("=== INIT RESUMABLE UPLOAD START ===");
 

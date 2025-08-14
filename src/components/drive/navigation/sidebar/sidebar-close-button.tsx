@@ -24,17 +24,17 @@ export function SidebarCloseButton() {
 
   // Determinar la clase según si estamos en un iframe o no
   const buttonClassName = isInIframe
-    ? "absolute top-4 right-4 bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-md rounded-full flex items-center justify-center z-50 sidebar-close-button-iframe"
-    : "absolute top-4 right-4 bg-inside hover:bg-[#bfef33] text-zinc-900 shadow-md rounded-full flex items-center justify-center z-50";
+    ? "absolute top-4 right-4 bg-primary hover:bg-[#bfef33] text-zinc-900 shadow-md rounded-full flex items-center justify-center z-50 sidebar-close-button-iframe"
+    : "absolute top-4 right-4 bg-primary hover:bg-[#bfef33] text-zinc-900 shadow-md rounded-full flex items-center justify-center z-50";
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      variant='ghost'
+      size='icon'
       onClick={toggleSidebar}
       className={buttonClassName}
-      title="Cerrar panel lateral"
-      data-sidebar-close-button="true"
+      title='Cerrar panel lateral'
+      data-sidebar-close-button='true'
       style={{
         width: "32px",
         height: "32px",
@@ -42,7 +42,7 @@ export function SidebarCloseButton() {
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.25)",
       }}
     >
-      <X className="h-5 w-5" />
+      <X className='h-5 w-5' />
     </Button>
   );
 }

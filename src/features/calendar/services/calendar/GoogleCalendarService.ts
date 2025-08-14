@@ -292,6 +292,7 @@ export class GoogleCalendarService {
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
+      if (!event) continue;
       try {
         const createdEvent = await this.createEvent(event, calendarId);
         successful.push(createdEvent);

@@ -163,7 +163,7 @@ export function DataTable<TData>({
     (columnId: string, filterValue: any) => {
       setAppliedFilters((prev) => {
         const newFilters = { ...prev };
-        newFilters[columnId] = newFilters[columnId].filter(
+        newFilters[columnId] = (newFilters[columnId] || []).filter(
           (v) => v !== filterValue
         );
         if (newFilters[columnId].length === 0) {

@@ -87,8 +87,8 @@ export default function ClientView({
               onClick={() => setViewMode("content")}
               className={
                 viewMode === "content"
-                  ? "bg-inside text-zinc-900 hover:bg-inside/90"
-                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
+                  ? "bg-primary text-zinc-900 hover:bg-primary/90"
+                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-primary/90"
               }
             >
               Ver Contenido
@@ -98,8 +98,8 @@ export default function ClientView({
               onClick={() => setViewMode("json")}
               className={
                 viewMode === "json"
-                  ? "bg-inside text-zinc-900 hover:bg-inside/90"
-                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-inside/90"
+                  ? "bg-primary text-zinc-900 hover:bg-primary/90"
+                  : "bg-zinc-900 hover:bg-zinc-800 text-zinc-100 border-zinc-100 border hover:border-zinc-800 hover:text-zinc-800 hover:bg-primary/90"
               }
             >
               Ver JSON
@@ -150,7 +150,7 @@ export default function ClientView({
 
       {/* Pie de página con fecha de actualización - visible solo para administradores */}
       {isAdmin && (
-        <footer className='text-center text-sm text-zinc-800 py-2 bg-inside'>
+        <footer className='text-center text-sm text-zinc-800 py-2 bg-primary'>
           Última actualización: {lastUpdated.toLocaleString()}
         </footer>
       )}

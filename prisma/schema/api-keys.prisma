@@ -1,0 +1,42 @@
+// API Keys Management Schema - Simplified & Extensible Version
+
+enum ApiKeyStatus {
+  ACTIVE
+  INACTIVE
+  REVOKED
+}
+
+model ApiKey {
+  id          String     @id @default(cuid()) @map("_id")
+  name        String     // Nombre descriptivo (ej: "Mobile App - iOS")
+  description String?    // Descripción opcional del propósito
+  
+  // La clave API (hasheada en BD por seguridad)
+  keyHash     String     @unique // Hash de la clave real
+  keyPrefix   String     // Primeros caracteres para mostrar (ej: "ak_prod_abc1...")
+  
+  // Estado
+  status      ApiKeyStatus @default(ACTIVE)
+  
+  // Expiración opcional
+  expiresAt   DateTime?  // null = nunca expira
+  
+  // Propietario
+  userId      String     // Usuario que creó/posee la clave
+  
+  // Métricas básicas de uso (simplificadas)
+  totalRequests    Int @default(0)
+  lastUsedAt       DateTime?
+  
+  // Timestamps
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  @@map("api_keys")
+}
+
+// Extensiones futuras comentadas - se pueden agregar cuando se necesiten:
+// - ApiKeyUsage (estadísticas detalladas por período)
+// - ApiKeyAuditLog (logs completos de cada request)
+// - RateLimitConfig (configuración de rate limiting)
+// - ApiKeyPermissions (permisos granulares por scope)

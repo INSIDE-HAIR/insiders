@@ -696,7 +696,7 @@ export default function PageCreator({}) {
   const renderSelectOptions = (
     pages: Page[],
     level: number = 0
-  ): JSX.Element[] => {
+  ): React.ReactElement[] => {
     const options = [
       level === 0 ? (
         <SelectItem key='root' value='root'>
@@ -714,7 +714,7 @@ export default function PageCreator({}) {
       )),
     ].flat();
 
-    return options.filter((option): option is JSX.Element => option !== null);
+    return options.filter((option): option is React.ReactElement => option !== null);
   };
 
   const handleParentChange = (parentId: string) => {

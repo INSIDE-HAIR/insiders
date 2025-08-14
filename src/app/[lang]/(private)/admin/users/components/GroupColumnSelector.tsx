@@ -46,9 +46,9 @@ export function GroupColumnSelector<TData>({
         | undefined;
       if (meta?.categoryId && meta?.subCategoryId) {
         if (!cats[meta.categoryId]) cats[meta.categoryId] = {};
-        if (!cats[meta.categoryId][meta.subCategoryId])
-          cats[meta.categoryId][meta.subCategoryId] = [];
-        cats[meta.categoryId][meta.subCategoryId].push(column);
+        if (!cats[meta.categoryId]![meta.subCategoryId])
+          cats[meta.categoryId]![meta.subCategoryId] = [];
+        cats[meta.categoryId]![meta.subCategoryId]!.push(column);
       }
     });
 

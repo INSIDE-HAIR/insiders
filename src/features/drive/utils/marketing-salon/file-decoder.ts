@@ -71,8 +71,8 @@ export async function decodeFileNameAsync(
       ]);
 
     // Extraer año y mes del código
-    const yearCode = yearMonthCode.substring(0, 2);
-    const monthCode = yearMonthCode.substring(2, 4);
+    const yearCode = (yearMonthCode || '').substring(0, 2);
+    const monthCode = (yearMonthCode || '').substring(2, 4);
     const year = `20${yearCode}`;
 
     // Obtener nombre del mes
@@ -86,55 +86,55 @@ export async function decodeFileNameAsync(
 
     // Registrar si un valor se encuentra en la BD o se usa fallback
     let clientName: string;
-    if (clientCode in clientCodes) {
-      clientName = clientCodes[clientCode];
+    if (clientCode && clientCode in clientCodes) {
+      clientName = clientCodes[clientCode] || clientCode || 'unknown';
       console.log(`✅ Cliente encontrado en BD: ${clientCode} = ${clientName}`);
     } else {
       clientName =
-        (DEFAULT_CLIENT_CODES as Record<string, string>)[clientCode] ||
-        clientCode;
+        (clientCode && (DEFAULT_CLIENT_CODES as Record<string, string>)[clientCode]) ||
+        clientCode || 'unknown';
       console.log(
         `⚠️ FALLBACK de cliente (no encontrado en BD): ${clientCode} = ${clientName}`
       );
     }
 
     let campaignName: string;
-    if (campaignCode in campaignCodes) {
-      campaignName = campaignCodes[campaignCode];
+    if (campaignCode && campaignCode in campaignCodes) {
+      campaignName = campaignCodes[campaignCode] || campaignCode || 'unknown';
       console.log(
         `✅ Campaña encontrada en BD: ${campaignCode} = ${campaignName}`
       );
     } else {
       campaignName =
-        (DEFAULT_CAMPAIGN_CODES as Record<string, string>)[campaignCode] ||
-        campaignCode;
+        (campaignCode && (DEFAULT_CAMPAIGN_CODES as Record<string, string>)[campaignCode]) ||
+        campaignCode || 'unknown';
       console.log(
         `⚠️ FALLBACK de campaña (no encontrada en BD): ${campaignCode} = ${campaignName}`
       );
     }
 
     let categoryName: string;
-    if (categoryCode in fileCodes) {
-      categoryName = fileCodes[categoryCode];
+    if (categoryCode && categoryCode in fileCodes) {
+      categoryName = fileCodes[categoryCode] || categoryCode || 'unknown';
       console.log(
         `✅ Categoría encontrada en BD: ${categoryCode} = ${categoryName}`
       );
     } else {
       categoryName =
-        (DEFAULT_FILE_CODES as Record<string, string>)[categoryCode] ||
-        categoryCode;
+        (categoryCode && (DEFAULT_FILE_CODES as Record<string, string>)[categoryCode]) ||
+        categoryCode || 'unknown';
       console.log(
         `⚠️ FALLBACK de categoría (no encontrada en BD): ${categoryCode} = ${categoryName}`
       );
     }
 
     let langName: string;
-    if (langCode in langCodes) {
-      langName = langCodes[langCode];
+    if (langCode && langCode in langCodes) {
+      langName = langCodes[langCode] || langCode || 'unknown';
       console.log(`✅ Idioma encontrado en BD: ${langCode} = ${langName}`);
     } else {
       langName =
-        (DEFAULT_LANG_CODES as Record<string, string>)[langCode] || langCode;
+        (langCode && (DEFAULT_LANG_CODES as Record<string, string>)[langCode]) || langCode || 'unknown';
       console.log(
         `⚠️ FALLBACK de idioma (no encontrado en BD): ${langCode} = ${langName}`
       );
@@ -167,16 +167,16 @@ export async function decodeFileNameAsync(
 
     // Armar información decodificada
     const result: DecodedFile = {
-      client: clientName,
-      campaign: campaignName,
-      category: categoryName,
-      lang: langName,
-      version: versionCode,
+      client: clientName || '',
+      campaign: campaignName || '',
+      category: categoryName || '',
+      lang: langName || '',
+      version: versionCode || '',
       fullName: `${clientName}-${campaignName}-${year}-${monthName}-${categoryName}-${langName}-v${versionCode}${
         extension ? "." + extension : ""
       }`,
       year,
-      month: monthName,
+      month: monthName || '',
     };
 
     console.log(`✅ Decodificación exitosa (ASYNC):`, result);
@@ -244,8 +244,8 @@ export function decodeFileName(fileName: string): DecodedFile | null {
       langCode;
 
     // Extraer año y mes del código
-    const year = "20" + yearMonthCode.substring(0, 2);
-    const month = yearMonthCode.substring(2, 4);
+    const year = "20" + (yearMonthCode || '').substring(0, 2);
+    const month = (yearMonthCode || '').substring(2, 4);
 
     // Obtener nombre del mes
     const monthName = MONTH_NAMES[month as keyof typeof MONTH_NAMES] || month;
@@ -259,14 +259,14 @@ export function decodeFileName(fileName: string): DecodedFile | null {
     }`;
 
     return {
-      client,
-      campaign,
-      category,
-      lang,
-      version: versionCode,
+      client: client || '',
+      campaign: campaign || '',
+      category: category || '',
+      lang: lang || '',
+      version: versionCode || '',
       fullName: downloadName,
       year,
-      month: monthName,
+      month: monthName || '',
     };
   } catch (error) {
     console.error("Error en decodificación sincrónica:", error);

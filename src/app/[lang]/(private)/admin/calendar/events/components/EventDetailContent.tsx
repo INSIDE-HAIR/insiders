@@ -6,19 +6,20 @@ import {
   XMarkIcon,
   ChevronDownIcon,
   DocumentDuplicateIcon,
-  Cog6ToothIcon,
   MapPinIcon,
   BellIcon,
   CalendarIcon,
   EyeIcon,
-  BoldIcon,
-  ItalicIcon,
-  UnderlineIcon,
-  ListBulletIcon,
-  NumberedListIcon,
-  LinkIcon,
-  SpeakerXMarkIcon,
   PlusIcon,
+  ClockIcon,
+  UsersIcon,
+  VideoCameraIcon,
+  PencilIcon,
+  TrashIcon,
+  CheckIcon,
+  UserPlusIcon,
+  UserMinusIcon,
+  XMarkIcon as XIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@/src/components/ui/button";
 import { Checkbox } from "@/src/components/ui/checkbox";
@@ -29,9 +30,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import { invitedUsers } from "./constants";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { Badge } from "@/src/components/ui/badge";
+import { Separator } from "@/src/components/ui/separator";
+import { toast } from "@/src/components/ui/use-toast";
+import { ReactQuillWrapper } from "@/src/components/ui/ReactQuillWrapper";
+import { processDescription } from "@/src/lib/description-utils";
+
+interface Attendee {
+  email?: string;
+  displayName?: string;
+  responseStatus?: string;
+}
 
 interface EventDetailContentProps {
   event: GoogleCalendarEvent;
@@ -55,10 +66,13 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
   showCloseButton = false,
   onClose,
 }) => {
-  const [editedEvent, setEditedEvent] = useState<Partial<GoogleCalendarEvent>>(event);
+  const [editedEvent, setEditedEvent] =
+    useState<Partial<GoogleCalendarEvent>>(event);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"details" | "find-time" | "guests">("details");
-  const [showMoreActions, setShowMoreActions] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState<"details" | "guests">("details");
+  const [newAttendeeEmail, setNewAttendeeEmail] = useState("");
+  const [isAddingAttendee, setIsAddingAttendee] = useState(false);
 
   useEffect(() => {
     setEditedEvent(event);
@@ -76,12 +90,74 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
     });
   };
 
+  const formatTime = (dateTime: any) => {
+    if (!dateTime) return "";
+    const date = new Date(dateTime.dateTime || dateTime.date);
+    return date.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getStatusIcon = (status?: string) => {
+    switch (status) {
+      case "accepted":
+        return <CheckIcon className='h-3 w-3 text-primary' />;
+      case "declined":
+        return <XMarkIcon className='h-3 w-3 text-destructive' />;
+      case "tentative":
+        return <ClockIcon className='h-3 w-3 text-accent-foreground' />;
+      default:
+        return <ClockIcon className='h-3 w-3 text-muted-foreground' />;
+    }
+  };
+
+  const getStatusColor = (status?: string) => {
+    switch (status) {
+      case "accepted":
+        return "bg-primary/10 text-primary border-primary/30";
+      case "declined":
+        return "bg-destructive/10 text-destructive border-destructive/30";
+      case "tentative":
+        return "bg-accent/10 text-accent-foreground border-accent/30";
+      default:
+        return "bg-muted text-muted-foreground border-muted";
+    }
+  };
+
+  const getStatusLabel = (status?: string) => {
+    switch (status) {
+      case "accepted":
+        return "Confirmado";
+      case "declined":
+        return "Rechazado";
+      case "tentative":
+        return "Tentativo";
+      default:
+        return "Pendiente";
+    }
+  };
+
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       await onSave(editedEvent);
       setIsEditing(false);
+      toast({
+        title: "Evento actualizado",
+        description: "Los cambios se han guardado correctamente",
+        duration: 3000,
+      });
     } catch (error) {
       console.error("Error saving event:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo guardar el evento",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -96,10 +172,22 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
 
       if (!response.ok) throw new Error("Error adding Google Meet");
 
-      const result = await response.json();
-      setEditedEvent({ ...editedEvent, hangoutLink: result.meetLink });
+      const data = await response.json();
+      setEditedEvent({ ...editedEvent, hangoutLink: data.hangoutLink });
+
+      toast({
+        title: "Google Meet agregado",
+        description: "Se ha agregado el enlace de Google Meet al evento",
+        duration: 3000,
+      });
     } catch (error) {
       console.error("Error adding Google Meet:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo agregar Google Meet",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -115,8 +203,135 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
       if (!response.ok) throw new Error("Error removing Google Meet");
 
       setEditedEvent({ ...editedEvent, hangoutLink: undefined });
+
+      toast({
+        title: "Google Meet removido",
+        description: "Se ha removido el enlace de Google Meet del evento",
+        duration: 3000,
+      });
     } catch (error) {
       console.error("Error removing Google Meet:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo remover Google Meet",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (confirm("¿Estás seguro de que quieres eliminar este evento?")) {
+      try {
+        await onDelete();
+        toast({
+          title: "Evento eliminado",
+          description: "El evento se ha eliminado correctamente",
+          duration: 3000,
+        });
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        toast({
+          title: "Error",
+          description: "No se pudo eliminar el evento",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    }
+  };
+
+  const handleAddAttendee = async () => {
+    if (!newAttendeeEmail.trim()) return;
+
+    const email = newAttendeeEmail.trim();
+    const attendees = event.attendees || [];
+
+    // Verificar si el invitado ya existe
+    if (attendees.some((a) => a.email?.toLowerCase() === email.toLowerCase())) {
+      toast({
+        title: "Invitado ya existe",
+        description: "Este email ya está en la lista de invitados",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setIsAddingAttendee(true);
+    try {
+      const newAttendees = [
+        ...attendees,
+        { email, responseStatus: "needsAction" as any },
+      ];
+
+      const response = await fetch(
+        `/api/calendar/events/${event.id}/attendees?calendarId=${
+          (event as any).calendarId || "primary"
+        }`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attendees: newAttendees }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error adding attendee");
+
+      setEditedEvent({ ...editedEvent, attendees: newAttendees });
+      setNewAttendeeEmail("");
+
+      toast({
+        title: "Invitado agregado",
+        description: "Se ha agregado el invitado al evento",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error adding attendee:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo agregar el invitado",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsAddingAttendee(false);
+    }
+  };
+
+  const handleRemoveAttendee = async (emailToRemove: string) => {
+    const attendees = event.attendees || [];
+    const newAttendees = attendees.filter((a) => a.email !== emailToRemove);
+
+    try {
+      const response = await fetch(
+        `/api/calendar/events/${event.id}/attendees?calendarId=${
+          (event as any).calendarId || "primary"
+        }`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attendees: newAttendees }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Error removing attendee");
+
+      setEditedEvent({ ...editedEvent, attendees: newAttendees });
+
+      toast({
+        title: "Invitado removido",
+        description: "Se ha removido el invitado del evento",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error("Error removing attendee:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo remover el invitado",
+        variant: "destructive",
+        duration: 3000,
+      });
     }
   };
 
@@ -124,520 +339,472 @@ export const EventDetailContent: React.FC<EventDetailContentProps> = ({
     (cal) => cal.id === (event as any).calendarId
   );
 
+  const attendees = event.attendees || [];
+  const acceptedCount = attendees.filter(
+    (a) => a.responseStatus === "accepted"
+  ).length;
+  const declinedCount = attendees.filter(
+    (a) => a.responseStatus === "declined"
+  ).length;
+  const tentativeCount = attendees.filter(
+    (a) => a.responseStatus === "tentative"
+  ).length;
+  const pendingCount = attendees.filter(
+    (a) => !a.responseStatus || a.responseStatus === "needsAction"
+  ).length;
+
   return (
-    <div className="flex flex-col md:flex-row h-full min-h-screen bg-background">
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col bg-background w-full md:w-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 md:p-6 border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
-          <div className="flex items-center gap-4 flex-1">
-            {showCloseButton && onClose && (
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-background/80 rounded-full transition-all duration-200 shadow-sm"
-              >
-                <XMarkIcon className="h-5 w-5 text-muted-foreground" />
-              </button>
-            )}
-            <div className="flex-1">
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={editedEvent.summary || ""}
-                  onChange={(e) =>
-                    setEditedEvent({
-                      ...editedEvent,
-                      summary: e.target.value,
-                    })
-                  }
-                  className="text-xl font-semibold w-full border-none outline-none bg-transparent placeholder-muted-foreground text-foreground"
-                  placeholder="Agregar título del evento"
-                />
-              ) : (
-                <h1 className="text-xl md:text-2xl font-bold text-foreground truncate">
-                  {event.summary}
-                </h1>
-              )}
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
+    <div className='flex flex-col h-full bg-background'>
+      {/* Header */}
+      <div className='flex items-center justify-between p-4 border-b border-border bg-card'>
+        <div className='flex items-center gap-3 flex-1'>
+          {showCloseButton && onClose && (
             <Button
-              className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 px-4 md:px-6"
-              onClick={isEditing ? handleSave : () => setIsEditing(true)}
+              variant='ghost'
+              size='sm'
+              onClick={onClose}
+              className='h-8 w-8 p-0'
             >
-              {isEditing ? "Guardar" : "Editar"}
+              <XMarkIcon className='h-4 w-4' />
             </Button>
-            <div className="relative">
-              <Button
-                variant="outline"
-                onClick={() => setShowMoreActions(!showMoreActions)}
-                className="flex items-center gap-1 border-input hover:border-border hover:bg-accent/50 transition-all duration-200"
-              >
-                Más acciones
-                <ChevronDownIcon className="h-4 w-4" />
-              </Button>
-              {showMoreActions && (
-                <div className="absolute right-0 top-full mt-2 bg-background border border-border rounded-lg shadow-xl z-10 min-w-48 py-2">
-                  <button className="w-full text-left px-4 py-2 hover:bg-accent/50 flex items-center gap-3 text-foreground transition-colors">
-                    <DocumentDuplicateIcon className="h-4 w-4" />
-                    Duplicar evento
-                  </button>
-                  <div className="border-t border-border my-1"></div>
-                  <button
-                    className="w-full text-left px-4 py-2 hover:bg-destructive/10 text-destructive flex items-center gap-3 transition-colors"
-                    onClick={onDelete}
-                  >
-                    <XMarkIcon className="h-4 w-4" />
-                    Eliminar evento
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Date and Time Section */}
-        <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-          <div className="flex items-center gap-3 mb-4 flex-wrap">
-            <div className="flex items-center gap-2 bg-background border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
-              <CalendarIcon className="h-4 w-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">
-                {formatDateTime(event.start)}
-              </span>
-            </div>
-            <span className="text-sm text-gray-400 font-medium">a</span>
-            <div className="flex items-center gap-2 bg-background border border-gray-200 rounded-lg px-4 py-2 shadow-sm hover:shadow-md transition-shadow">
-              <span className="text-sm font-medium text-gray-700">
-                {formatDateTime(event.end)}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg px-3 py-2">
-              <span className="text-xs text-primary font-medium">
-                (GMT+02:00) Europa central - Madrid
-              </span>
-            </div>
-            <button className="text-primary text-sm hover:text-primary font-medium hover:underline transition-colors">
-              Zona horaria
-            </button>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 cursor-pointer group">
-              <Checkbox
-                checked={!!event.start?.date}
-                className="group-hover:border-blue-500 transition-colors"
+          )}
+          <div className='flex-1'>
+            {isEditing ? (
+              <Input
+                value={editedEvent.summary || ""}
+                onChange={(e) =>
+                  setEditedEvent({
+                    ...editedEvent,
+                    summary: e.target.value,
+                  })
+                }
+                className='text-lg font-semibold border-none p-0 h-auto'
+                placeholder='Título del evento'
               />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
-                Todo el día
-              </span>
-            </label>
-            <Select defaultValue="no-repeat">
-              <SelectTrigger className="w-40 border-gray-200 hover:border-border transition-colors">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="no-repeat">No se repite</SelectItem>
-                <SelectItem value="daily">Diariamente</SelectItem>
-                <SelectItem value="weekly">Semanalmente</SelectItem>
-                <SelectItem value="monthly">Mensualmente</SelectItem>
-              </SelectContent>
-            </Select>
+            ) : (
+              <h1 className='text-lg font-semibold text-foreground truncate'>
+                {event.summary}
+              </h1>
+            )}
           </div>
         </div>
-
-        {/* Tabs */}
-        <div className="border-b border-gray-200 bg-gray-50/30">
-          <nav className="flex">
-            <button
-              className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
-                activeTab === "details"
-                  ? "text-primary border-primary bg-background shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
-              }`}
-              onClick={() => setActiveTab("details")}
-            >
-              Detalles del evento
-              {activeTab === "details" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-              )}
-            </button>
-            <button
-              className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
-                activeTab === "find-time"
-                  ? "text-primary border-primary bg-background shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
-              }`}
-              onClick={() => setActiveTab("find-time")}
-            >
-              Encontrar un hueco
-              {activeTab === "find-time" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-              )}
-            </button>
-            <button
-              className={`px-6 py-4 text-sm font-semibold border-b-2 transition-all duration-200 relative ${
-                activeTab === "guests"
-                  ? "text-primary border-primary bg-background shadow-sm"
-                  : "text-gray-600 border-transparent hover:text-gray-800 hover:bg-background/50"
-              }`}
-              onClick={() => setActiveTab("guests")}
-            >
-              Invitados
-              {activeTab === "guests" && (
-                <div className="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500"></div>
-              )}
-            </button>
-          </nav>
-        </div>
-
-        {/* Tab Content */}
-        <div className="flex-1 overflow-auto">
-          {activeTab === "details" && (
-            <div className="p-6 space-y-6">
-              {/* Google Meet Section */}
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 flex items-center justify-center">
-                  <div className="w-4 h-4 bg-card-foreground rounded"></div>
-                </div>
-                <div className="flex-1">
-                  {editedEvent.hangoutLink || event.hangoutLink ? (
-                    <>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-medium">Google Meet</span>
-                        <ChevronDownIcon className="h-4 w-4" />
-                        <button
-                          className="ml-auto hover:bg-gray-100 p-1 rounded"
-                          onClick={handleRemoveGoogleMeet}
-                          title="Eliminar Google Meet"
-                        >
-                          <XMarkIcon className="h-4 w-4 text-gray-400" />
-                        </button>
-                      </div>
-
-                      <div className="bg-card rounded-lg p-4 mb-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <Button
-                            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                            onClick={() =>
-                              window.open(
-                                editedEvent.hangoutLink ||
-                                  event.hangoutLink,
-                                "_blank"
-                              )
-                            }
-                          >
-                            Unirse con Google Meet
-                          </Button>
-                          <div className="flex items-center gap-2">
-                            <button
-                              className="p-1 hover:bg-card rounded"
-                              onClick={() =>
-                                navigator.clipboard.writeText(
-                                  editedEvent.hangoutLink ||
-                                    event.hangoutLink ||
-                                    ""
-                                )
-                              }
-                              title="Copiar enlace"
-                            >
-                              <DocumentDuplicateIcon className="h-4 w-4" />
-                            </button>
-                            <button className="p-1 hover:bg-card rounded">
-                              <Cog6ToothIcon className="h-4 w-4" />
-                            </button>
-                            <ChevronDownIcon className="h-4 w-4" />
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <span className="truncate">
-                            {editedEvent.hangoutLink || event.hangoutLink}
-                          </span>
-                          <button
-                            onClick={() =>
-                              navigator.clipboard.writeText(
-                                editedEvent.hangoutLink ||
-                                  event.hangoutLink ||
-                                  ""
-                              )
-                            }
-                            title="Copiar enlace"
-                          >
-                            <DocumentDuplicateIcon className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="font-medium">Google Meet</span>
-                        <ChevronDownIcon className="h-4 w-4" />
-                      </div>
-                      <Button
-                        variant="outline"
-                        onClick={handleAddGoogleMeet}
-                        className="text-primary border-primary hover:bg-card"
-                      >
-                        Agregar Google Meet
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Location Section */}
-              <div className="flex items-center gap-3">
-                <MapPinIcon className="h-6 w-6 text-gray-400" />
-                <div className="flex-1">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={editedEvent.location || ""}
-                      onChange={(e) =>
-                        setEditedEvent({
-                          ...editedEvent,
-                          location: e.target.value,
-                        })
-                      }
-                      className="w-full border-none outline-none text-gray-400"
-                      placeholder="Añade una ubicación"
-                    />
-                  ) : (
-                    <span className="text-gray-400">
-                      {event.location || "Añade una ubicación"}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Notification Section */}
-              <div className="flex items-center gap-3">
-                <BellIcon className="h-6 w-6 text-gray-400" />
-                <div className="flex-1">
-                  <button className="text-gray-400 hover:text-gray-600">
-                    Añadir una notificación
-                  </button>
-                </div>
-              </div>
-
-              {/* Calendar Section */}
-              <div className="flex items-center gap-3">
-                <CalendarIcon className="h-6 w-6 text-gray-400" />
-                <div className="flex-1 flex items-center gap-3">
-                  <Select defaultValue={currentCalendar?.id}>
-                    <SelectTrigger className="w-64">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {calendars.map((calendar) => (
-                        <SelectItem key={calendar.id} value={calendar.id}>
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-3 h-3 rounded-full"
-                              style={{
-                                backgroundColor: calendar.backgroundColor,
-                              }}
-                            />
-                            {calendar.summary}
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Visibility Section */}
-              <div className="flex items-center gap-3">
-                <EyeIcon className="h-6 w-6 text-gray-400" />
-                <div className="flex-1 flex items-center gap-3">
-                  <Select defaultValue={event.visibility || "default"}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">
-                        Disponibilidad por defecto
-                      </SelectItem>
-                      <SelectItem value="busy">Ocupado</SelectItem>
-                      <SelectItem value="free">Libre</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Select defaultValue="predetermined">
-                    <SelectTrigger className="w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="predetermined">
-                        Visibilidad predeterminada
-                      </SelectItem>
-                      <SelectItem value="public">Público</SelectItem>
-                      <SelectItem value="private">Privado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="text-xs text-gray-500">
-                La disponibilidad podría mostrarse en otras aplicaciones de
-                Google
-              </div>
-
-              {/* Description Editor */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm">
-                  <SpeakerXMarkIcon className="h-4 w-4" />
-                  <button className="text-primary hover:underline border border-dashed border-border px-2 py-1 rounded">
-                    Crear notas de la reunión con IA
-                  </button>
-                </div>
-
-                {/* Rich Text Editor Toolbar */}
-                <div className="border-t border-b py-2">
-                  <div className="flex items-center gap-2">
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <BoldIcon className="h-4 w-4" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <ItalicIcon className="h-4 w-4" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <UnderlineIcon className="h-4 w-4" />
-                    </button>
-                    <div className="w-px h-4 bg-gray-300 mx-1"></div>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <ListBulletIcon className="h-4 w-4" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <NumberedListIcon className="h-4 w-4" />
-                    </button>
-                    <div className="w-px h-4 bg-gray-300 mx-1"></div>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <LinkIcon className="h-4 w-4" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <SpeakerXMarkIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Description Text Area */}
-                <div className="bg-gray-50 rounded p-4 min-h-32">
-                  {isEditing ? (
-                    <ReactQuill
-                      value={editedEvent.description || ""}
-                      onChange={(value) =>
-                        setEditedEvent({
-                          ...editedEvent,
-                          description: value,
-                        })
-                      }
-                      className="bg-background"
-                    />
-                  ) : (
-                    <div
-                      className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium"
-                      dangerouslySetInnerHTML={{
-                        __html: event.description || "",
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "find-time" && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                Funcionalidad de búsqueda de horarios disponibles
-              </div>
-            </div>
-          )}
-
-          {activeTab === "guests" && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                Vista de gestión de invitados
-              </div>
-            </div>
-          )}
+        <div className='flex items-center gap-2'>
+          <Button
+            variant={isEditing ? "default" : "outline"}
+            size='sm'
+            onClick={isEditing ? handleSave : () => setIsEditing(true)}
+            disabled={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                Guardando...
+              </>
+            ) : isEditing ? (
+              <>
+                <PencilIcon className='mr-2 h-4 w-4' />
+                Guardar
+              </>
+            ) : (
+              <>
+                <PencilIcon className='mr-2 h-4 w-4' />
+                Editar
+              </>
+            )}
+          </Button>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={handleDelete}
+            className='text-destructive hover:text-destructive hover:bg-destructive/20 border-destructive'
+          >
+            <TrashIcon className='h-4 w-4' />
+          </Button>
         </div>
       </div>
 
-      {/* Right Sidebar - Guests */}
-      <div className="w-full md:w-80 border-l bg-gray-50">
-        <div className="p-4 border-b bg-background">
-          <h3 className="font-medium mb-3">Invitados</h3>
-
-          <div className="relative mb-3">
-            <input
-              type="text"
-              placeholder="Añadir invitados"
-              className="w-full pl-3 pr-10 py-2 border rounded-md text-sm"
-            />
-            <PlusIcon className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
-          </div>
-
-          <div className="flex items-center justify-between text-sm text-gray-600">
-            <span>{invitedUsers.length} invitados</span>
-            <div className="flex items-center gap-2">
-              <span>
-                {invitedUsers.filter((a) => a.responseStatus === "accepted").length} sí
-              </span>
-              <span>
-                {invitedUsers.filter((a) => a.responseStatus === "declined").length} no
-              </span>
-              <span>
-                {invitedUsers.filter((a) => a.responseStatus === "needsAction").length} en espera
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="p-4 space-y-3">
-          {invitedUsers.map((attendee, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium">
-                  {attendee.email?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <div className="flex-1">
-                <div className="text-sm font-medium">
-                  {attendee.email}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="p-4 border-t">
-          <button className="text-primary text-sm hover:underline">
-            Sugerencias de horas
+      {/* Tabs */}
+      <div className='border-b border-border bg-card'>
+        <div className='flex'>
+          <button
+            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "details"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setActiveTab("details")}
+          >
+            Detalles del evento
+          </button>
+          <button
+            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === "guests"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+            onClick={() => setActiveTab("guests")}
+          >
+            Invitados ({attendees.length})
           </button>
         </div>
+      </div>
 
-        <div className="p-4 border-t">
-          <h4 className="font-medium mb-3">Permisos de invitados</h4>
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox defaultChecked />
-              Editar el evento
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox defaultChecked />
-              Invitar a otros
-            </label>
-            <label className="flex items-center gap-2 text-sm">
-              <Checkbox defaultChecked />
-              Ver la lista de invitados
-            </label>
+      {/* Content */}
+      <div className='flex-1 overflow-auto'>
+        {activeTab === "details" && (
+          <div className='p-6 space-y-6'>
+            {/* Date and Time */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium flex items-center gap-2'>
+                <ClockIcon className='h-4 w-4' />
+                Fecha y hora
+              </Label>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div className='space-y-2'>
+                  <Label className='text-xs text-muted-foreground'>
+                    Inicio
+                  </Label>
+                  <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-md'>
+                    <CalendarIcon className='h-4 w-4 text-muted-foreground' />
+                    <span className='text-sm'>
+                      {formatDateTime(event.start)}
+                    </span>
+                  </div>
+                </div>
+                <div className='space-y-2'>
+                  <Label className='text-xs text-muted-foreground'>Fin</Label>
+                  <div className='flex items-center gap-2 p-3 bg-muted/50 rounded-md'>
+                    <CalendarIcon className='h-4 w-4 text-muted-foreground' />
+                    <span className='text-sm'>{formatDateTime(event.end)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className='flex items-center gap-2 text-xs text-muted-foreground'>
+                <span>Zona horaria: Europe/Madrid</span>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Google Meet */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium flex items-center gap-2'>
+                <VideoCameraIcon className='h-4 w-4' />
+                Google Meet
+              </Label>
+              {editedEvent.hangoutLink || event.hangoutLink ? (
+                <div className='space-y-3'>
+                  <div className='flex items-center justify-between'>
+                    <Badge
+                      variant='secondary'
+                      className='bg-primary/10 text-primary'
+                    >
+                      Enlace disponible
+                    </Badge>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      onClick={handleRemoveGoogleMeet}
+                      className='text-destructive hover:text-destructive hover:bg-destructive/20 border-destructive'
+                    >
+                      Remover
+                    </Button>
+                  </div>
+                  <div className='p-3 bg-muted/50 rounded-md'>
+                    <div className='flex items-center justify-between'>
+                      <span className='text-sm font-mono truncate'>
+                        {editedEvent.hangoutLink || event.hangoutLink}
+                      </span>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            editedEvent.hangoutLink || event.hangoutLink || ""
+                          )
+                        }
+                      >
+                        <DocumentDuplicateIcon className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  </div>
+                  <Button
+                    className='w-full bg-primary hover:bg-primary/90 text-primary-foreground'
+                    onClick={() =>
+                      window.open(
+                        editedEvent.hangoutLink || event.hangoutLink,
+                        "_blank"
+                      )
+                    }
+                  >
+                    Unirse con Google Meet
+                  </Button>
+                </div>
+              ) : (
+                <div className='space-y-3'>
+                  <p className='text-sm text-muted-foreground'>
+                    No hay enlace de Google Meet para este evento
+                  </p>
+                  <Button
+                    variant='outline'
+                    onClick={handleAddGoogleMeet}
+                    className='w-full'
+                  >
+                    <VideoCameraIcon className='mr-2 h-4 w-4' />
+                    Agregar Google Meet
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            {/* Location */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium flex items-center gap-2'>
+                <MapPinIcon className='h-4 w-4' />
+                Ubicación
+              </Label>
+              {isEditing ? (
+                <Input
+                  value={editedEvent.location || ""}
+                  onChange={(e) =>
+                    setEditedEvent({
+                      ...editedEvent,
+                      location: e.target.value,
+                    })
+                  }
+                  placeholder='Agregar ubicación'
+                  className='w-full'
+                />
+              ) : (
+                <div className='p-3 bg-muted/50 rounded-md'>
+                  <span className='text-sm'>
+                    {event.location || "No hay ubicación especificada"}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            {/* Calendar */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium flex items-center gap-2'>
+                <CalendarIcon className='h-4 w-4' />
+                Calendario
+              </Label>
+              <Select
+                value={currentCalendar?.id || "primary"}
+                onValueChange={(value) =>
+                  setEditedEvent({
+                    ...editedEvent,
+                    // @ts-ignore - calendarId is added dynamically
+                    calendarId: value,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {calendars.map((calendar) => (
+                    <SelectItem key={calendar.id} value={calendar.id}>
+                      <div className='flex items-center gap-2'>
+                        <div
+                          className='w-3 h-3 rounded-full'
+                          style={{
+                            backgroundColor: calendar.backgroundColor,
+                          }}
+                        />
+                        <span>{calendar.summary}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Separator />
+
+            {/* Description */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium'>Descripción</Label>
+              {isEditing ? (
+                <div className='border rounded-md'>
+                  <ReactQuillWrapper
+                    value={editedEvent.description || ""}
+                    onChange={(value) =>
+                      setEditedEvent({
+                        ...editedEvent,
+                        description: value,
+                      })
+                    }
+                    className='bg-background'
+                    theme='snow'
+                    placeholder='Agregar descripción del evento...'
+                  />
+                </div>
+              ) : (
+                <div className='p-4 bg-muted/50 rounded-md min-h-[100px]'>
+                  {event.description ? (
+                    <div
+                      className='prose prose-sm max-w-none event-description'
+                      dangerouslySetInnerHTML={{
+                        __html: processDescription(event.description),
+                      }}
+                    />
+                  ) : (
+                    <span className='text-sm text-muted-foreground'>
+                      No hay descripción para este evento
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {activeTab === "guests" && (
+          <div className='p-6 space-y-6'>
+            {/* Add Guests */}
+            <div className='space-y-4'>
+              <Label className='text-sm font-medium flex items-center gap-2'>
+                <UsersIcon className='h-4 w-4' />
+                Agregar invitado
+              </Label>
+              <div className='flex gap-2'>
+                <Input
+                  placeholder='email@ejemplo.com'
+                  value={newAttendeeEmail}
+                  onChange={(e) => setNewAttendeeEmail(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddAttendee();
+                    }
+                  }}
+                  className='flex-1'
+                />
+                <Button
+                  size='sm'
+                  onClick={handleAddAttendee}
+                  disabled={!newAttendeeEmail.trim() || isAddingAttendee}
+                >
+                  {isAddingAttendee ? (
+                    <>
+                      <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent' />
+                      Agregando...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlusIcon className='mr-2 h-4 w-4' />
+                      Agregar
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Guest Statistics */}
+            {attendees.length > 0 && (
+              <div className='space-y-4'>
+                <Label className='text-sm font-medium'>
+                  Resumen de invitados
+                </Label>
+                <div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+                  <div className='p-3 bg-primary/5 rounded-md border border-primary/20'>
+                    <div className='text-2xl font-bold text-primary'>
+                      {acceptedCount}
+                    </div>
+                    <div className='text-xs text-primary'>Confirmados</div>
+                  </div>
+                  <div className='p-3 bg-destructive/5 rounded-md border border-destructive/20'>
+                    <div className='text-2xl font-bold text-destructive'>
+                      {declinedCount}
+                    </div>
+                    <div className='text-xs text-destructive'>Rechazados</div>
+                  </div>
+                  <div className='p-3 bg-accent/5 rounded-md border border-accent/20'>
+                    <div className='text-2xl font-bold text-accent-foreground'>
+                      {tentativeCount}
+                    </div>
+                    <div className='text-xs text-accent-foreground'>
+                      Tentativos
+                    </div>
+                  </div>
+                  <div className='p-3 bg-muted/5 rounded-md border border-muted/20'>
+                    <div className='text-2xl font-bold text-muted-foreground'>
+                      {pendingCount}
+                    </div>
+                    <div className='text-xs text-muted-foreground'>
+                      Pendientes
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Separator />
+
+            {/* Guest List */}
+            <div className='space-y-4'>
+              <div className='flex items-center justify-between'>
+                <Label className='text-sm font-medium'>
+                  Lista de invitados
+                </Label>
+                <Badge variant='secondary'>{attendees.length} invitados</Badge>
+              </div>
+
+              {attendees.length === 0 ? (
+                <div className='text-center py-8 text-muted-foreground'>
+                  <UsersIcon className='h-12 w-12 mx-auto mb-2 opacity-50' />
+                  <p className='text-sm'>No hay invitados en este evento</p>
+                  <p className='text-xs'>
+                    Agrega invitados usando el campo de arriba
+                  </p>
+                </div>
+              ) : (
+                <div className='space-y-2'>
+                  {attendees.map((attendee, index) => (
+                    <div
+                      key={attendee.email || index}
+                      className='flex items-center justify-between p-3 bg-muted/30 rounded-md border border-border'
+                    >
+                      <div className='flex items-center gap-3 flex-1 min-w-0'>
+                        {getStatusIcon(attendee.responseStatus)}
+                        <div className='flex-1 min-w-0'>
+                          <div className='text-sm font-medium truncate'>
+                            {attendee.displayName ||
+                              attendee.email?.split("@")[0]}
+                          </div>
+                          <div className='text-xs text-muted-foreground font-mono truncate'>
+                            {attendee.email}
+                          </div>
+                        </div>
+                        <Badge
+                          className={`${getStatusColor(attendee.responseStatus)} text-xs`}
+                        >
+                          {getStatusLabel(attendee.responseStatus)}
+                        </Badge>
+                      </div>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => handleRemoveAttendee(attendee.email!)}
+                        className='h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10'
+                      >
+                        <UserMinusIcon className='h-3 w-3' />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

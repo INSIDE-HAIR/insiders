@@ -240,7 +240,7 @@ export class MetadataProcessor {
             const match = line.match(/^\s*([^:]+):\s*(.*)$/);
             if (match) {
               const [_, key, value] = match;
-              metadata[key.trim()] = value.trim();
+              metadata[(key || '').trim()] = (value || '').trim();
             }
           }
           return metadata;
@@ -254,7 +254,7 @@ export class MetadataProcessor {
             const match = line.match(/^\s*([^:]+):\s*(.*)$/);
             if (match) {
               const [_, key, value] = match;
-              textMetadata[key.trim()] = value.trim();
+              textMetadata[(key || '').trim()] = (value || '').trim();
             }
           }
           // Si no hay pares clave-valor, usar como descripción

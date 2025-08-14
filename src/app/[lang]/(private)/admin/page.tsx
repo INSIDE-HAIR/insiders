@@ -1,4 +1,5 @@
 import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
+import Link from "next/link";
 import React from "react";
 
 function page() {
@@ -23,12 +24,12 @@ function page() {
                 <p>
                   El widget de Carga Horaria por Consultor está disponible en:
                 </p>
-                <a
+                <Link
                   href='/admin/calendar'
                   className='text-blue-600 hover:underline font-medium'
                 >
                   Dashboard de Calendar
-                </a>
+                </Link>
               </div>
             </div>
           </div>

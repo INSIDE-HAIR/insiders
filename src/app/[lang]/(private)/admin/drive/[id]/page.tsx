@@ -22,7 +22,7 @@ export default function FolderDetailsPage() {
   const notificationsRef = useRef<{
     addNotification: (typeof useNotifications)["prototype"]["addNotification"];
     updateNotification: (typeof useNotifications)["prototype"]["updateNotification"];
-  }>();
+  } | null>(null);
 
   const [folderDetails, setFolderDetails] = useState<FolderDetails | null>(
     null

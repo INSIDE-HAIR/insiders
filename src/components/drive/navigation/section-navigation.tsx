@@ -2,11 +2,11 @@
 
 import React, { memo } from "react";
 import { useSession } from "next-auth/react";
+import { Folder } from "lucide-react";
 import type { HierarchyItem } from "@/src/features/drive/types/index";
 import { RecursiveContentRenderer } from "@/src/components/drive/content/recursive-content-renderer";
 import { ContentGrid } from "@/src/components/drive/content/content-grid";
 import { DirectFileUploadManager } from "@/src/components/drive/upload/DirectFileUploadManager";
-import { TrueDirectUploadZone } from "@/src/components/drive/upload/TrueDirectUploadZone";
 
 import { hasPrefix } from "@/src/features/drive/utils/marketing-salon/hierarchy-helpers";
 
@@ -118,16 +118,17 @@ const SectionWithContent = memo(function SectionWithContent({
         )}
       </div>
 
-      {/* Drop zone debajo de cada section (solo para administradores) */}
+      {/* Drop zone debajo de cada section - Responsive */}
       {isAdmin && (
-        <div className='w-full mt-4 mb-2 border border-zinc-500 rounded-lg shadow-lg py-5 px-5 bg-zinc-100'>
-          <div className='text-center font-bold text-black mb-2 tracking-wide'>
-            📁 ZONA DE CARGA • {section.displayName.toUpperCase()}
+        <div className='w-full mt-4 mb-2 border border-border rounded-lg shadow-lg p-3 sm:p-5 bg-muted/30'>
+          <div className='text-center font-bold text-background mb-3 tracking-wide text-sm sm:text-base flex items-center justify-center gap-2'>
+            <Folder className='h-4 w-4 sm:h-5 sm:w-5' />
+            ZONA DE CARGA • {section.displayName.toUpperCase()}
           </div>
           <DirectFileUploadManager
             folderId={section.id}
             folderName={section.displayName}
-            className='max-w-lg mx-auto'
+            className='max-w-full sm:max-w-lg mx-auto'
           />
         </div>
       )}

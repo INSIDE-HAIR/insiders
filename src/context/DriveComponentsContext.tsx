@@ -125,7 +125,7 @@ export const ContentProvider: React.FC<{
     // Asumimos que los elementos de la barra lateral están en el primer nivel
     // y tienen el prefijo 'sidebar'
     const clientFolder = contentData[0]; // Asumimos que el primer elemento es la carpeta del cliente
-    return clientFolder.children
+    return (clientFolder?.children || [])
       .filter((item) => hasPrefix(item, "sidebar"))
       .filter((item) => hasContent(item)) // Filtrar elementos sin contenido
       .sort((a, b) => a.order - b.order);
@@ -197,13 +197,13 @@ export const ContentProvider: React.FC<{
 
       if (nonEmptyTabs.length > 0) {
         addToNavigationPath({
-          id: nonEmptyTabs[0].id,
+          id: nonEmptyTabs[0]?.id || '',
           type: "tab",
           level: level,
         });
 
         // Recursivamente seleccionar el primer tab del tab seleccionado
-        selectFirstTab(nonEmptyTabs[0].id, level + 1);
+        selectFirstTab(nonEmptyTabs[0]?.id || '', level + 1);
       }
     },
     [getChildrenByType, addToNavigationPath]
@@ -233,7 +233,7 @@ export const ContentProvider: React.FC<{
       if (sidebarItems.length > 0) {
         setNavigationPath([
           {
-            id: sidebarItems[0].id,
+            id: sidebarItems[0]?.id || '',
             type: "sidebar",
             level: 0,
           },
@@ -241,7 +241,7 @@ export const ContentProvider: React.FC<{
 
         // Only initialize tabs once
         setTimeout(() => {
-          selectFirstTab(sidebarItems[0].id, 1);
+          selectFirstTab(sidebarItems[0]?.id || '', 1);
           setIsInitialized(true);
         }, 0);
       }

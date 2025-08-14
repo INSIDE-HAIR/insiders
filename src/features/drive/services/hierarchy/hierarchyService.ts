@@ -464,7 +464,7 @@ export class HierarchyService {
     // Seguir subiendo por los padres hasta llegar a la raíz
     while (currentItem.parents && currentItem.parents.length > 0) {
       const parentId = currentItem.parents[0];
-      const parent = itemsMap.get(parentId);
+      const parent = itemsMap.get(parentId || '');
 
       if (!parent) break;
 
@@ -583,16 +583,18 @@ export class HierarchyService {
             otherFiles.sort((a, b) => a.order - b.order);
 
             // Asignar como previewItems
-            firstFile.previewItems = otherFiles;
+            if (firstFile) {
+              firstFile.previewItems = otherFiles;
 
-            // Marcar los otros archivos como previews
-            otherFiles.forEach((preview) => {
-              preview.isPreviewOf = firstFile.id;
-            });
+              // Marcar los otros archivos como previews
+              otherFiles.forEach((preview) => {
+                preview.isPreviewOf = firstFile.id;
+              });
 
-            this.logger.info(
-              `No se encontró archivo principal para ${baseNameWithoutExt}, usando ${firstFile.name} como principal`
-            );
+              this.logger.info(
+                `No se encontró archivo principal para ${baseNameWithoutExt}, usando ${firstFile.name} como principal`
+              );
+            }
           }
         }
       });

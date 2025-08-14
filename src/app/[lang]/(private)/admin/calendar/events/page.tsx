@@ -7,7 +7,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -116,21 +116,7 @@ const CalendarEventsPage: React.FC = () => {
     }
   }, [status, session, router]);
 
-  // Cargar datos iniciales
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadInitialData();
-    }
-  }, [status, session]);
-
-  // Recargar eventos cuando cambien los filtros
-  useEffect(() => {
-    if (state.calendars.length > 0) {
-      loadEvents();
-    }
-  }, [activeCalendars, timeRange, search]);
-
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -158,9 +144,9 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, []);
 
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
@@ -270,7 +256,21 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  };
+  }, [activeCalendars, timeRange, search]);
+
+  // Cargar datos iniciales
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadInitialData();
+    }
+  }, [status, session, loadInitialData]);
+
+  // Recargar eventos cuando cambien los filtros
+  useEffect(() => {
+    if (state.calendars.length > 0) {
+      loadEvents();
+    }
+  }, [loadEvents, state.calendars.length]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
@@ -578,35 +578,83 @@ const CalendarEventsPage: React.FC = () => {
       // Recargar eventos para mostrar los cambios
       await loadEvents();
 
-      // Mostrar notificación de éxito
-      toast({
-        title: "Descripciones generadas",
-        description: `Se generaron descripciones para ${result.successful} de ${result.processed} eventos`,
-        duration: 3000,
-      });
-
-      // Si hubo errores, mostrar detalles
-      if (result.failed > 0) {
-        console.error("Errores en generación de descripciones:", result.errors);
-        const errorDetails = result.errors
-          .slice(0, 3)
-          .map((err: any) => `• ${err.title || err.eventId}: ${err.error}`)
-          .join("\n");
-
+      // Verificar si al menos algunos eventos se procesaron correctamente
+      if (result.successful > 0) {
+        // Mostrar notificación de éxito
         toast({
-          title: "Algunos eventos tuvieron errores",
-          description: `${
-            result.failed
-          } eventos no pudieron procesarse:\n${errorDetails}${
-            result.errors.length > 3 ? "\n...y más" : ""
-          }`,
-          variant: "destructive",
-          duration: 8000,
+          title: "Descripciones generadas",
+          description: `Se generaron descripciones para ${result.successful} de ${result.processed} eventos`,
+          duration: 3000,
         });
       }
+
+      // Si hubo errores, mostrar detalles
+      if (result.failed > 0 && result.errors && result.errors.length > 0) {
+        // Solo log en desarrollo para debugging, no como error crítico
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            "Algunos eventos tuvieron errores durante la generación:",
+            result.errors
+          );
+        }
+
+        // Crear un mensaje de error más detallado
+        const errorMessages = result.errors
+          .slice(0, 3)
+          .map((err: any) => {
+            const eventTitle = err.title || err.eventId || "Evento desconocido";
+            const errorMsg = err.error || "Error desconocido";
+            return `• ${eventTitle}: ${errorMsg}`;
+          })
+          .join("\n");
+
+        const errorSummary = `${result.failed} de ${result.processed} eventos no pudieron procesarse`;
+        const fullMessage = `${errorSummary}\n\n${errorMessages}${
+          result.errors.length > 3 ? "\n\n...y más errores" : ""
+        }`;
+
+        // Solo mostrar toast de error si no se procesó ningún evento correctamente
+        if (result.successful === 0) {
+          toast({
+            title: "Error al generar descripciones",
+            description: fullMessage,
+            variant: "destructive",
+            duration: 10000,
+          });
+        } else {
+          // Si algunos eventos se procesaron correctamente, mostrar como advertencia
+          toast({
+            title: "Algunos eventos tuvieron errores",
+            description: fullMessage,
+            variant: "destructive",
+            duration: 10000,
+          });
+        }
+      }
     } catch (error: any) {
-      console.error("Error generating descriptions:", error);
-      throw error; // Re-throw para que el modal pueda manejar el error
+      // Log detallado para debugging
+      console.error("Error crítico en generación de descripciones:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        error: error,
+      });
+
+      // Crear un mensaje de error más informativo
+      let errorMessage = "Error al generar descripciones";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error.error) {
+        errorMessage = error.error;
+      }
+
+      // Lanzar un error más estructurado
+      const structuredError = new Error(errorMessage);
+      structuredError.name = "BulkDescriptionError";
+      throw structuredError;
     }
   };
 
@@ -694,8 +742,8 @@ const CalendarEventsPage: React.FC = () => {
 
   if (status === "loading") {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" />
+      <div className='flex justify-center items-center h-screen'>
+        <Spinner size='lg' />
       </div>
     );
   }
@@ -705,47 +753,47 @@ const CalendarEventsPage: React.FC = () => {
   }
 
   return (
-    <TailwindGrid fullSize padding="" className="z-0">
-      <div className="z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full">
-        <div className="flex-1 p-6">
+    <TailwindGrid fullSize padding='' className='z-0'>
+      <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
+        <div className='flex-1 p-6'>
           {/* Header */}
-          <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6 md:mb-8">
+          <div className='flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6 md:mb-8'>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+              <h1 className='text-2xl md:text-3xl font-bold text-foreground mb-2'>
                 Eventos de Calendar
               </h1>
-              <p className="text-muted-foreground">
+              <p className='text-muted-foreground'>
                 Gestiona y visualiza eventos de Google Calendar
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-2 md:gap-3">
+            <div className='flex flex-wrap items-center gap-2 md:gap-3'>
               {/* View Toggle */}
-              <div className="flex items-center border border-border rounded-lg p-1 bg-background">
+              <div className='flex items-center border border-border rounded-lg p-1 bg-background'>
                 <Button
                   variant={viewMode === "table" ? "default" : "ghost"}
-                  size="sm"
+                  size='sm'
                   onClick={() => setViewMode("table")}
-                  className="h-8 px-2 text-xs md:text-sm"
+                  className='h-8 px-2 text-xs md:text-sm'
                 >
-                  <TableCellsIcon className="h-4 w-4 mr-1" />
+                  <TableCellsIcon className='h-4 w-4 mr-1' />
                   Tabla
                 </Button>
                 <Button
                   variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
+                  size='sm'
                   onClick={() => setViewMode("list")}
-                  className="h-8 px-2 text-xs md:text-sm"
+                  className='h-8 px-2 text-xs md:text-sm'
                 >
-                  <ListBulletIcon className="h-4 w-4 mr-1" />
+                  <ListBulletIcon className='h-4 w-4 mr-1' />
                   Lista
                 </Button>
                 <Button
                   variant={viewMode === "json" ? "default" : "ghost"}
-                  size="sm"
+                  size='sm'
                   onClick={() => setViewMode("json")}
-                  className="h-8 px-2 text-xs md:text-sm"
+                  className='h-8 px-2 text-xs md:text-sm'
                 >
-                  <CodeBracketIcon className="h-4 w-4 mr-1" />
+                  <CodeBracketIcon className='h-4 w-4 mr-1' />
                   JSON
                 </Button>
               </div>
@@ -758,15 +806,15 @@ const CalendarEventsPage: React.FC = () => {
                     onColumnVisibilityChange={setColumnVisibility}
                   />
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={() => {
                       resetFilters();
                       // Recargar después de resetear para aplicar los cambios
                       setTimeout(() => window.location.reload(), 100);
                     }}
-                    className="text-xs"
-                    title="Restaurar columnas por defecto incluyendo invitados"
+                    className='text-xs'
+                    title='Restaurar columnas por defecto incluyendo invitados'
                   >
                     Restaurar Columnas
                   </Button>
@@ -775,23 +823,23 @@ const CalendarEventsPage: React.FC = () => {
 
               <Button
                 onClick={() => router.push("/admin/calendar/events/create")}
-                className="flex items-center gap-2"
+                className='flex items-center gap-2'
               >
-                <PlusIcon className="h-4 w-4" />
+                <PlusIcon className='h-4 w-4' />
                 Crear Evento
               </Button>
             </div>
           </div>
 
           {/* Filters */}
-          <Card className="mb-6">
-            <CardContent className="p-4 md:p-6">
-              <div className="space-y-4">
+          <Card className='mb-6'>
+            <CardContent className='p-4 md:p-6'>
+              <div className='space-y-4'>
                 {/* Primera fila: Calendarios, Período, Invitados */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                   {/* Calendar Multi-Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className='block text-sm font-medium text-foreground mb-2'>
                       Calendarios
                     </label>
                     <CalendarMultiSelect calendars={state.calendars} />
@@ -799,29 +847,29 @@ const CalendarEventsPage: React.FC = () => {
 
                   {/* Time Range */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className='block text-sm font-medium text-foreground mb-2'>
                       Período
                     </label>
                     <Select
                       value={timeRange}
                       onValueChange={(value) => setTimeRange(value as any)}
                     >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar período" />
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Seleccionar período' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Todos</SelectItem>
-                        <SelectItem value="upcoming">Próximos</SelectItem>
-                        <SelectItem value="today">Hoy</SelectItem>
-                        <SelectItem value="week">Esta semana</SelectItem>
-                        <SelectItem value="month">Este mes</SelectItem>
+                        <SelectItem value='all'>Todos</SelectItem>
+                        <SelectItem value='upcoming'>Próximos</SelectItem>
+                        <SelectItem value='today'>Hoy</SelectItem>
+                        <SelectItem value='week'>Esta semana</SelectItem>
+                        <SelectItem value='month'>Este mes</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Attendees Filter */}
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
+                    <label className='block text-sm font-medium text-foreground mb-2'>
                       Filtrar por Invitados
                     </label>
                     <AttendeesFilter
@@ -834,17 +882,17 @@ const CalendarEventsPage: React.FC = () => {
 
                 {/* Segunda fila: Búsqueda */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
+                  <label className='block text-sm font-medium text-foreground mb-2'>
                     Buscar eventos
                   </label>
-                  <div className="relative">
-                    <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <div className='relative'>
+                    <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
                     <input
-                      type="text"
+                      type='text'
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Buscar por título, descripción..."
-                      className="w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                      placeholder='Buscar por título, descripción...'
+                      className='w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
                     />
                   </div>
                 </div>
@@ -854,19 +902,19 @@ const CalendarEventsPage: React.FC = () => {
 
           {/* Error Alert */}
           {state.error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+            <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6'>
               {state.error}
             </div>
           )}
 
           {/* Events Display */}
           {state.isLoading ? (
-            <div className="flex justify-center py-8">
-              <Spinner size="lg" />
+            <div className='flex justify-center py-8'>
+              <Spinner size='lg' />
             </div>
           ) : filteredEvents.length === 0 ? (
-            <Card className="border-border bg-card">
-              <CardContent className="text-center py-8 text-muted-foreground">
+            <Card className='border-border bg-card'>
+              <CardContent className='text-center py-8 text-muted-foreground'>
                 {state.events.length === 0
                   ? "No se encontraron eventos con los filtros aplicados"
                   : `No se encontraron eventos para los ${attendeesFilter.length} invitados seleccionados`}
@@ -887,53 +935,53 @@ const CalendarEventsPage: React.FC = () => {
               ) : viewMode === "json" ? (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CodeBracketIcon className="h-5 w-5" />
+                    <CardTitle className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-5 w-5' />
                       JSON View - Eventos ({filteredEvents.length})
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="relative">
+                    <div className='relative'>
                       <Button
-                        variant="outline"
-                        size="sm"
+                        variant='outline'
+                        size='sm'
                         onClick={() => {
                           navigator.clipboard.writeText(
                             JSON.stringify(filteredEvents, null, 2)
                           );
                         }}
-                        className="absolute top-2 right-2 z-10"
+                        className='absolute top-2 right-2 z-10'
                       >
                         Copiar JSON
                       </Button>
-                      <pre className="bg-card text-card-foreground p-4 rounded-lg overflow-auto max-h-96 text-xs font-mono border border-border">
+                      <pre className='bg-card text-card-foreground p-4 rounded-lg overflow-auto max-h-96 text-xs font-mono border border-border'>
                         {JSON.stringify(filteredEvents, null, 2)}
                       </pre>
                     </div>
                   </CardContent>
                 </Card>
               ) : (
-                <Card className="border-border bg-card">
+                <Card className='border-border bg-card'>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-foreground">
-                      <CalendarIcon className="h-5 w-5" />
+                    <CardTitle className='flex items-center gap-2 text-foreground'>
+                      <CalendarIcon className='h-5 w-5' />
                       Eventos ({filteredEvents.length})
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4 md:p-6">
-                    <div className="space-y-4">
+                  <CardContent className='p-4 md:p-6'>
+                    <div className='space-y-4'>
                       {filteredEvents.map((event) => {
                         const eventStatus = getEventStatus(event);
 
                         return (
                           <div
-                            key={event.id}
-                            className="border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card"
+                            key={`${event.id}-${(event as any).calendarId || "default"}`}
+                            className='border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card'
                           >
-                            <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <h3 className="font-semibold text-foreground">
+                            <div className='flex justify-between items-start'>
+                              <div className='flex-1'>
+                                <div className='flex items-center gap-3 mb-2'>
+                                  <h3 className='font-semibold text-foreground'>
                                     {event.summary}
                                   </h3>
                                   <Badge
@@ -941,25 +989,25 @@ const CalendarEventsPage: React.FC = () => {
                                       eventStatus.color === "blue"
                                         ? "default"
                                         : eventStatus.color === "green"
-                                        ? "default"
-                                        : "secondary"
+                                          ? "default"
+                                          : "secondary"
                                     }
                                   >
                                     {eventStatus.status === "upcoming"
                                       ? "Próximo"
                                       : eventStatus.status === "ongoing"
-                                      ? "En curso"
-                                      : "Pasado"}
+                                        ? "En curso"
+                                        : "Pasado"}
                                   </Badge>
                                 </div>
 
-                                <p className="text-sm text-muted-foreground mb-2">
+                                <p className='text-sm text-muted-foreground mb-2'>
                                   {formatEventDate(event)}
                                 </p>
 
                                 {event.description && (
                                   <div
-                                    className="text-sm text-muted-foreground mb-2 line-clamp-2 [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium"
+                                    className='text-sm text-muted-foreground mb-2 line-clamp-2 [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium'
                                     dangerouslySetInnerHTML={{
                                       __html: event.description,
                                     }}
@@ -967,16 +1015,16 @@ const CalendarEventsPage: React.FC = () => {
                                 )}
 
                                 {event.location && (
-                                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                                    <MapPin className="h-3.5 w-3.5" />
+                                  <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+                                    <MapPin className='h-3.5 w-3.5' />
                                     <span>{event.location}</span>
                                   </div>
                                 )}
 
                                 {event.attendees &&
                                   event.attendees.length > 0 && (
-                                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                                      <Users className="h-3.5 w-3.5" />
+                                    <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+                                      <Users className='h-3.5 w-3.5' />
                                       <span>
                                         {event.attendees.length} invitados
                                       </span>
@@ -984,22 +1032,22 @@ const CalendarEventsPage: React.FC = () => {
                                   )}
                               </div>
 
-                              <div className="flex items-center gap-2 ml-4">
+                              <div className='flex items-center gap-2 ml-4'>
                                 {event.htmlLink && (
                                   <Button
-                                    variant="outline"
-                                    size="sm"
+                                    variant='outline'
+                                    size='sm'
                                     onClick={() =>
                                       window.open(event.htmlLink, "_blank")
                                     }
                                   >
-                                    <EyeIcon className="h-4 w-4" />
+                                    <EyeIcon className='h-4 w-4' />
                                   </Button>
                                 )}
 
                                 <Button
-                                  variant="outline"
-                                  size="sm"
+                                  variant='outline'
+                                  size='sm'
                                   onClick={() =>
                                     router.push(
                                       `/admin/calendar/events/${
@@ -1011,12 +1059,12 @@ const CalendarEventsPage: React.FC = () => {
                                     )
                                   }
                                 >
-                                  <PencilIcon className="h-4 w-4" />
+                                  <PencilIcon className='h-4 w-4' />
                                 </Button>
 
                                 <Button
-                                  variant="outline"
-                                  size="sm"
+                                  variant='outline'
+                                  size='sm'
                                   onClick={() =>
                                     handleDeleteEvent(
                                       event.id!,
@@ -1024,9 +1072,9 @@ const CalendarEventsPage: React.FC = () => {
                                         activeCalendars[0]
                                     )
                                   }
-                                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  className='text-destructive hover:text-destructive hover:bg-destructive/10'
                                 >
-                                  <TrashIcon className="h-4 w-4" />
+                                  <TrashIcon className='h-4 w-4' />
                                 </Button>
                               </div>
                             </div>

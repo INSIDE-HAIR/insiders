@@ -215,19 +215,19 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
               downloadStatus === "downloading"
                 ? "bg-orange-500 text-white animate-pulse"
                 : downloadStatus === "success"
-                ? "bg-green-500 text-white"
-                : downloadStatus === "error"
-                ? "bg-red-500 text-white"
-                : "bg-black bg-opacity-70 text-white hover:bg-opacity-90"
+                  ? "bg-green-500 text-white"
+                  : downloadStatus === "error"
+                    ? "bg-red-500 text-white"
+                    : "bg-black bg-opacity-70 text-white hover:bg-opacity-90"
             }`}
             title={
               downloadStatus === "downloading"
                 ? "Descargando..."
                 : downloadStatus === "success"
-                ? "¡Descarga completada!"
-                : downloadStatus === "error"
-                ? "Error en descarga"
-                : "Descargar archivo"
+                  ? "¡Descarga completada!"
+                  : downloadStatus === "error"
+                    ? "Error en descarga"
+                    : "Descargar archivo"
             }
             disabled={isDecodingInfo || isDownloading}
           >
@@ -256,10 +256,10 @@ export function DirectImageRenderer({ item }: DirectImageRendererProps) {
                 downloadStatus === "downloading"
                   ? "bg-orange-500 hover:bg-orange-600 text-white animate-pulse"
                   : downloadStatus === "success"
-                  ? "bg-green-500 hover:bg-green-600 text-white"
-                  : downloadStatus === "error"
-                  ? "bg-red-500 hover:bg-red-600 text-white"
-                  : "bg-inside hover:bg-[#bfef33] text-zinc-900"
+                    ? "bg-green-500 hover:bg-green-600 text-white"
+                    : downloadStatus === "error"
+                      ? "bg-red-500 hover:bg-red-600 text-white"
+                      : "bg-primary hover:bg-[#bfef33] text-zinc-900"
               }`}
               onClick={() => {
                 if (downloadUrl && decodedInfo) {

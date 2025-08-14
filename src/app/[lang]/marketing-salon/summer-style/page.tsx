@@ -75,8 +75,8 @@ export default function DynamicJulyPage() {
 
     if (dailyContent[day]) {
       setCurrentContent(dailyContent[day]);
-      setBgColor(clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length]);
-      setTextColor(clientData.textColors[(parseInt(day) - 1) % clientData.textColors.length]);
+      setBgColor(clientData.bgColors[(parseInt(day) - 1) % clientData.bgColors.length] || '#000000');
+      setTextColor(clientData.textColors[(parseInt(day) - 1) % clientData.textColors.length] || '#ffffff');
     } else {
       console.warn(
         `No content found for day ${day} for client ${client} in language ${lang}.`
@@ -96,7 +96,7 @@ export default function DynamicJulyPage() {
   const isEvenDay = parseInt(day) % 2 === 0;
 
   const clientData = summerSyle2024DataTyped.clients[client];
-  const clientImages = clientData.images[lang];
+  const clientImages = clientData?.images?.[lang];
 
   const isCaSelected = lang === "ca";
 
@@ -160,7 +160,7 @@ export default function DynamicJulyPage() {
             onChange={(e) => setLang(e.target.value)}
             className="mb-4 p-2 rounded text-black"
           >
-            {clientData.languages.map((language) => (
+            {clientData?.languages?.map((language) => (
               <option className="text-black" key={language} value={language}>
                 {language === "es" ? "Español" : "Catalán"}
               </option>
@@ -170,13 +170,15 @@ export default function DynamicJulyPage() {
       </div>
       <div className="flex flex-col md:flex-row items-center p-6 uppercase">
         <div className="w-full flex justify-center mb-4 md:mb-0 max-w-(--breakpoint-sm)">
-          <Image
-            src={isEvenDay ? clientImages.even : clientImages.odd}
-            alt="Client Image"
-            width={600}
-            height={600}
-            className="rounded w-full h-full object-cover md:max-w-full aspect-square max-w-[720px]"
-          />
+          {clientImages && (
+            <Image
+              src={isEvenDay ? clientImages.even : clientImages.odd}
+              alt="Client Image"
+              width={600}
+              height={600}
+              className="rounded w-full h-full object-cover md:max-w-full aspect-square max-w-[720px]"
+            />
+          )}
         </div>
         <div className="w-full max-w-200 text-center">
           <h1 className="text-3xl font-bold mb-4" style={{ color: textColor }}>

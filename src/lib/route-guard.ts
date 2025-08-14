@@ -53,9 +53,27 @@ class RouteGuard {
     userAgent?: string;
     geo?: { country?: string; region?: string; city?: string };
   }): Promise<AccessCheckResult> {
+    // Debug logging for route guard
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`\n======= ROUTE ACCESS CHECK =======`);
+      console.log(`Checking access for path: ${path}`);
+      console.log(`User:`, user ? {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        domain: user.domain,
+        permissions: user.permissions,
+        isAuthenticated: user.isAuthenticated
+      } : 'null');
+    }
+
     // Prevent infinite redirects by allowing specific paths
     const allowedPaths = ['/404', '/unauthorized', '/maintenance', '/es', '/en', '/', '/es/auth', '/en/auth', '/es/auth/login', '/en/auth/login'];
     if (allowedPaths.includes(path)) {
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`Path ${path} is in allowed system paths`);
+        console.log(`=================================\n`);
+      }
       return { allowed: true, reason: 'System path allowed' };
     }
 
@@ -93,10 +111,15 @@ class RouteGuard {
         }
       }
       
+      // CAMBIO: Por defecto, las rutas no encontradas son públicas
+      // Solo restringimos las rutas que están explícitamente definidas como privadas
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`Route ${path} not found in config - allowing as public by default`);
+        console.log(`=================================\n`);
+      }
       return {
-        allowed: false,
-        reason: 'Route not found',
-        redirect: this.config.redirects.notFound
+        allowed: true,
+        reason: 'Route not in config - public by default'
       }
     }
 
@@ -111,7 +134,7 @@ class RouteGuard {
     // PRIORITY 3: Check email exceptions from config (fallback)
     if (user?.email && this.config.exceptions.byEmail[user.email]) {
       const exception = this.config.exceptions.byEmail[user.email]
-      if (this.matchesRoutePattern(path, exception.allowedRoutes)) {
+      if (exception && this.matchesRoutePattern(path, exception.allowedRoutes)) {
         return { allowed: true, reason: 'Config email exception allows access' }
       }
     }
@@ -132,14 +155,34 @@ class RouteGuard {
   private checkRouteAccess(route: RouteConfig, user: UserSession | null): AccessCheckResult {
     const { access } = route
 
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`\n======= ROUTE CONFIG CHECK =======`);
+      console.log(`Route path: ${route.path}`);
+      console.log(`Route access type: ${access.type}`);
+      console.log(`Route required roles:`, access.roles);
+      console.log(`Route required emails:`, access.emails);
+      console.log(`Route required domains:`, access.domains);
+      console.log(`User role: ${user?.role}`);
+      console.log(`User email: ${user?.email}`);
+      console.log(`User domain: ${user?.domain}`);
+    }
+
     // Public routes - always accessible
     if (access.type === 'public' && !access.requireAuth) {
       // Check if authenticated user should be redirected
       if (user?.isAuthenticated && access.redirectIfAuthenticated) {
+        if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+          console.log(`Public route with redirect for authenticated users to: ${access.redirectIfAuthenticated}`);
+          console.log(`=================================\n`);
+        }
         return {
           allowed: true,
           redirect: access.redirectIfAuthenticated
         }
+      }
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`Public route - access granted`);
+        console.log(`=================================\n`);
       }
       return { allowed: true }
     }
@@ -166,10 +209,18 @@ class RouteGuard {
 
     // Check role requirements
     if (access.roles && access.roles.length > 0) {
-      if (!access.roles.includes(user.role)) {
+      const hasRole = access.roles.includes(user.role);
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`Role check - Required: ${JSON.stringify(access.roles)}, User has: "${user.role}", Match: ${hasRole}`);
+      }
+      if (!hasRole) {
+        if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+          console.log(`Access denied - insufficient role privileges`);
+          console.log(`=================================\n`);
+        }
         return {
           allowed: false,
-          reason: 'Insufficient role privileges',
+          reason: `Insufficient role privileges. Required: ${access.roles.join(', ')}, User has: ${user.role}`,
           redirect: this.config.redirects.forbidden,
           requiredRole: access.roles[0]
         }
@@ -190,7 +241,7 @@ class RouteGuard {
 
     // Check domain requirements
     if (access.domains && access.domains.length > 0) {
-      const userDomain = user.email.split('@')[1]
+      const userDomain = user.email.split('@')[1] || ''
       const allowedDomains = access.domains.map(d => d.replace('@', ''))
       
       if (!allowedDomains.includes(userDomain)) {
@@ -208,7 +259,7 @@ class RouteGuard {
 
   private findRoute(path: string): RouteMatch | null {
     // Remove query parameters and hash
-    const cleanPath = path.split('?')[0].split('#')[0]
+    const cleanPath = (path.split('?')[0] || '').split('#')[0] || ''
     
     // Check all route categories
     for (const category of Object.values(this.config.routes)) {
@@ -266,7 +317,7 @@ class RouteGuard {
         
         if (!targetSegment) return false
         
-        if (routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
+        if (routeSegment && routeSegment.startsWith('[') && routeSegment.endsWith(']')) {
           continue // Dynamic segment matches
         }
         if (routeSegment !== targetSegment) {
@@ -299,7 +350,7 @@ class RouteGuard {
           const catchAllName = paramName.slice(3)
           params[catchAllName] = targetSegments.slice(index).join('/')
         } else {
-          params[paramName] = targetSegments[index]
+          params[paramName] = targetSegments[index] || ''
         }
       }
     })
@@ -359,7 +410,7 @@ class RouteGuard {
 
     // Check email exceptions
     if (this.config.exceptions.byEmail[user.email]) {
-      return this.config.exceptions.byEmail[user.email].accessLevel
+      return this.config.exceptions.byEmail[user.email]?.accessLevel || this.config.settings.defaultRole
     }
 
     // Check domain exceptions

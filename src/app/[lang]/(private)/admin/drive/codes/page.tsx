@@ -239,13 +239,13 @@ export default function CodesAdminPage() {
     const [client, campaign, date, fileType, language, version, number] = parts;
 
     const decoded: Record<string, string> = {
-      Cliente: findCodeName("client", client) || client,
-      Campaña: findCodeName("campaign", campaign) || campaign,
-      Fecha: `${date.slice(0, 2)}/${date.slice(2, 4)}`,
-      "Tipo de archivo": findCodeName("file", fileType) || fileType,
-      Idioma: findCodeName("lang", language) || language,
-      Versión: version,
-      Número: number,
+      Cliente: findCodeName("client", client || "") || client || "",
+      Campaña: findCodeName("campaign", campaign || "") || campaign || "",
+      Fecha: `${(date || "").slice(0, 2)}/${(date || "").slice(2, 4)}`,
+      "Tipo de archivo": findCodeName("file", fileType || "") || fileType || "",
+      Idioma: findCodeName("lang", language || "") || language || "",
+      Versión: version || "",
+      Número: number || "",
     };
 
     setDecodedParts(decoded);
@@ -435,7 +435,7 @@ export default function CodesAdminPage() {
 
         <Button
           onClick={handleOpenAddDialog}
-          className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
+          className='bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
         >
           <Plus size={18} className='mr-2' />
           Nuevo código
@@ -465,7 +465,7 @@ export default function CodesAdminPage() {
           variant={showPreview ? "default" : "outline"}
           className={
             showPreview
-              ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+              ? "bg-primary text-zinc-900 hover:bg-[#bfef33] border-none"
               : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
           }
         >
@@ -486,7 +486,7 @@ export default function CodesAdminPage() {
               variant={previewMode === "generate" ? "default" : "outline"}
               className={
                 previewMode === "generate"
-                  ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+                  ? "bg-primary text-zinc-900 hover:bg-[#bfef33] border-none"
                   : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
               }
             >
@@ -497,7 +497,7 @@ export default function CodesAdminPage() {
               variant={previewMode === "decode" ? "default" : "outline"}
               className={
                 previewMode === "decode"
-                  ? "bg-inside text-zinc-900 hover:bg-[#bfef33] border-none"
+                  ? "bg-primary text-zinc-900 hover:bg-[#bfef33] border-none"
                   : "bg-zinc-300 text-zinc-800 hover:bg-zinc-400 border-none"
               }
             >
@@ -521,7 +521,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin cliente" },
-                      ...codesByType.client.map((code) => ({
+                      ...(codesByType.client || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -542,7 +542,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin campaña" },
-                      ...codesByType.campaign.map((code) => ({
+                      ...(codesByType.campaign || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -582,7 +582,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin tipo" },
-                      ...codesByType.file.map((code) => ({
+                      ...(codesByType.file || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -605,7 +605,7 @@ export default function CodesAdminPage() {
                   <Combobox
                     options={[
                       { value: "none", label: "Sin idioma" },
-                      ...codesByType.lang.map((code) => ({
+                      ...(codesByType.lang || []).map((code) => ({
                         value: code.code,
                         label: code.name,
                       })),
@@ -664,7 +664,7 @@ export default function CodesAdminPage() {
                   Nombre Generado:
                 </label>
                 <div className='p-2 bg-black rounded flex items-center justify-between'>
-                  <code className='text-inside'>{generateFileName()}</code>
+                  <code className='text-primary'>{generateFileName()}</code>
                   <Button
                     variant='ghost'
                     size='sm'
@@ -672,7 +672,7 @@ export default function CodesAdminPage() {
                       navigator.clipboard.writeText(generateFileName());
                       toast.success("Nombre copiado al portapapeles");
                     }}
-                    className='ml-2 hover:bg-zinc-800 hover:text-inside'
+                    className='ml-2 hover:bg-zinc-800 hover:text-primary'
                   >
                     <span className='sr-only'>Copiar</span>
                     <svg
@@ -716,7 +716,7 @@ export default function CodesAdminPage() {
                 />
                 <Button
                   onClick={() => decodeFileName(fileCodeInput)}
-                  className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
+                  className='bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
                 >
                   Decodificar
                 </Button>
@@ -731,7 +731,7 @@ export default function CodesAdminPage() {
                     {Object.entries(decodedParts).map(([key, value]) => (
                       <div key={key} className='grid grid-cols-3 gap-2'>
                         <div className='text-zinc-400'>{key}:</div>
-                        <div className='col-span-2 text-inside'>{value}</div>
+                        <div className='col-span-2 text-primary'>{value}</div>
                       </div>
                     ))}
                   </div>
@@ -771,13 +771,13 @@ export default function CodesAdminPage() {
             ) : (
               codes.map((code) => (
                 <TableRow key={code.id} className='hover:bg-zinc-900 group'>
-                  <TableCell className='font-medium group-hover:text-inside'>
+                  <TableCell className='font-medium group-hover:text-primary'>
                     {code.code}
                   </TableCell>
-                  <TableCell className='group-hover:text-inside'>
+                  <TableCell className='group-hover:text-primary'>
                     {code.name}
                   </TableCell>
-                  <TableCell className='text-sm text-zinc-400 group-hover:text-inside'>
+                  <TableCell className='text-sm text-zinc-400 group-hover:text-primary'>
                     {code.description || "-"}
                   </TableCell>
                   <TableCell className='text-right'>
@@ -786,7 +786,7 @@ export default function CodesAdminPage() {
                         onClick={() => handleOpenEditDialog(code)}
                         variant='ghost'
                         size='icon'
-                        className='h-8 w-8 text-zinc-400 hover:text-inside hover:bg-zinc-800'
+                        className='h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800'
                         title='Editar'
                       >
                         <Pencil size={16} />
@@ -831,7 +831,7 @@ export default function CodesAdminPage() {
                     <SelectItem
                       key={type.value}
                       value={type.value}
-                      className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
+                      className='text-white hover:bg-zinc-800 hover:text-primary focus:bg-zinc-800 focus:text-primary'
                     >
                       {type.label}
                     </SelectItem>
@@ -891,7 +891,7 @@ export default function CodesAdminPage() {
               type='button'
               onClick={handleAddCode}
               disabled={isSubmitting}
-              className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
+              className='bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
             >
               {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
@@ -921,7 +921,7 @@ export default function CodesAdminPage() {
                     <SelectItem
                       key={type.value}
                       value={type.value}
-                      className='text-white hover:bg-zinc-800 hover:text-inside focus:bg-zinc-800 focus:text-inside'
+                      className='text-white hover:bg-zinc-800 hover:text-primary focus:bg-zinc-800 focus:text-primary'
                     >
                       {type.label}
                     </SelectItem>
@@ -981,7 +981,7 @@ export default function CodesAdminPage() {
               type='button'
               onClick={handleUpdateCode}
               disabled={isSubmitting}
-              className='bg-inside hover:bg-[#bfef33] text-zinc-900 border-none'
+              className='bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
             >
               {isSubmitting ? "Guardando..." : "Actualizar"}
             </Button>

@@ -85,20 +85,20 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
       version,
     ] = obj.title.split(/[-_]/);
     const client =
-      clientsCodes[clientsCode.substring(0, 4) as keyof typeof clientsCodes] ||
+      clientsCodes[(clientsCode || '').substring(0, 4) as keyof typeof clientsCodes] ||
       "Desconocido";
     const campaign =
       campaignCodes[campaignCode as keyof typeof campaignCodes] ||
       "Desconocido";
     const category =
-      filesCodes[fileCode.substring(0, 4) as keyof typeof filesCodes] ||
+      filesCodes[(fileCode || '').substring(0, 4) as keyof typeof filesCodes] ||
       "Desconocido";
-    const lang = langCodes[langCode as keyof typeof langCodes] || "Desconocido";
+    const lang = langCodes[(langCode || '') as keyof typeof langCodes] || "Desconocido";
     const downloadName = `${category}-${lang}-${version}`;
 
-    if (!grouped[baseId]) {
-      grouped[baseId] = {
-        id: baseId,
+    if (!grouped[baseId || '']) {
+      grouped[baseId || ''] = {
+        id: baseId || '',
         order: Number(version?.substring(0, 2)) || Number(version),
         title: `${category}: ${lang}-${version?.substring(0, 2)}`,
         url: obj.url,
@@ -120,7 +120,7 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
     }
 
     if (obj.title.includes("-P")) {
-      const orderMatch = obj.title.split("-P")[1].match(/\d+/);
+      const orderMatch = obj.title.split("-P")[1]?.match(/\d+/);
       const order = orderMatch ? Number(orderMatch[0]) : 0;
 
       let previewItem: PreviewItem = {
@@ -131,11 +131,12 @@ function createMarketingCardsList(objects: BaseObject[]): TransformedObject[] {
         transformedUrl: transformedUrl,
       };
 
-      if (grouped[baseId]) {
-        grouped[baseId].preview.push(previewItem);
+      const groupKey = baseId || '';
+      if (grouped[groupKey] && grouped[groupKey].preview) {
+        grouped[groupKey].preview.push(previewItem);
       } else {
-        grouped[baseId] = {
-          id: baseId,
+        grouped[baseId || ''] = {
+          id: baseId || '',
           order: Number(version?.substring(0, 2)) || Number(version),
           title: `${category}: ${lang}-${version?.substring(0, 2)}`,
           url: obj.url,

@@ -176,8 +176,8 @@ export default function AccessControlPage() {
       isEnabled: control.isEnabled,
       maxConcurrentUsers: control.maxConcurrentUsers || 0,
       maxAccessCount: control.maxAccessCount || 0,
-      startDate: control.startDate ? new Date(control.startDate).toISOString().split('T')[0] : '',
-      endDate: control.endDate ? new Date(control.endDate).toISOString().split('T')[0] : '',
+      startDate: control.startDate ? new Date(control.startDate).toISOString().split('T')[0] || '' : '',
+      endDate: control.endDate ? new Date(control.endDate).toISOString().split('T')[0] || '' : '',
       startTime: control.startTime || '',
       endTime: control.endTime || '',
       daysOfWeek: control.daysOfWeek,
@@ -225,7 +225,7 @@ export default function AccessControlPage() {
 
   const updateRule = (index: number, field: keyof AccessRule, value: any) => {
     const newRules = [...formData.rules];
-    newRules[index] = { ...newRules[index], [field]: value };
+    newRules[index] = { ...newRules[index], [field]: value } as AccessRule;
     setFormData({ ...formData, rules: newRules });
   };
 

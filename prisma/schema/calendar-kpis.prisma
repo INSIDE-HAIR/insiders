@@ -1,0 +1,89 @@
+// Calendar KPIs Schema
+// Stores calculated KPIs for calendar analytics
+
+model CalendarKPI {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Timestamp information
+  calculatedAt         DateTime @default(now())
+  lastUpdatedAt        DateTime @updatedAt
+  
+  // Date range for the KPI calculation
+  periodStart          DateTime
+  periodEnd            DateTime
+  
+  // KPI metrics
+  totalEvents          Int      @default(0)
+  upcomingEvents       Int      @default(0)
+  completedEvents      Int      @default(0)
+  cancelledEvents      Int      @default(0)
+  
+  // Attendees metrics
+  totalUniqueAttendees Int      @default(0)
+  averageAttendeesPerEvent Float @default(0)
+  
+  // Time-based metrics
+  totalEventHours      Float    @default(0)
+  averageEventDuration Float    @default(0)
+  
+  // Calendar distribution
+  calendarBreakdown    Json     // { "calendarId": { name: string, eventCount: number } }
+  
+  // Event status distribution
+  eventStatusStats     Json     // { accepted: number, declined: number, tentative: number, needsAction: number }
+  
+  // Meeting types
+  meetingTypeStats     Json     // { withMeetLink: number, withoutMeetLink: number, inPerson: number }
+  
+  // Daily/Weekly patterns
+  dailyEventStats      Json     // { "monday": number, "tuesday": number, ... }
+  hourlyDistribution   Json     // { "09": number, "10": number, ... }
+  
+  // Response rates
+  responseRateStats    Json     // { totalInvited: number, responded: number, responseRate: percentage }
+  
+  // Advanced attendee analytics
+  attendeeAnalytics    Json?    // { mostEngagedAttendees, attendeeFrequency, domainBreakdown, responseTimeStats, invitationStats }
+  
+  // Version for data migration
+  version              Int      @default(1)
+  
+  // Metadata
+  generatedBy                String?  // User ID who triggered the calculation
+  includeCompanyCalendars    Boolean? @default(false) // Whether company calendars (@insidesalons.com) were included
+  
+  // Relations
+  updateLogs           CalendarKPIUpdateLog[]
+  
+  @@map("calendarKpis")
+  @@index([calculatedAt])
+  @@index([periodStart, periodEnd])
+}
+
+// Model for tracking KPI update history
+model CalendarKPIUpdateLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  kpiId       String   @db.ObjectId
+  updatedAt   DateTime @default(now())
+  updatedBy   String?  // User ID
+  
+  // What was updated
+  updateType  String   // "manual", "scheduled", "auto"
+  
+  // Performance metrics
+  processingTimeMs  Int?
+  eventsProcessed   Int?
+  
+  // Status
+  status      String   // "success", "error", "partial"
+  errorMessage String?
+  
+  // Reference to the KPI record
+  kpi         CalendarKPI @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+  
+  @@map("calendarKpiUpdateLogs")
+  @@index([updatedAt])
+  @@index([kpiId])
+}
+

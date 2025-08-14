@@ -27,7 +27,16 @@
       "WebFetch(domain:www.prisma.io)",
       "Bash(npm run type-check:*)",
       "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(rg:*)",
+      "Bash(awk:*)",
+      "Bash(find:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(touch:*)",
+      "Bash(npm run lint:*)",
+      "Bash(curl:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

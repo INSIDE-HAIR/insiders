@@ -63,11 +63,35 @@ async function routeGuardHandler(request: NextRequest) {
   }
 
   try {
-    // Get user session from token
+    // Get user session from token with more robust configuration
     const token = (await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
+      cookieName: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token' 
+        : 'next-auth.session-token',
     })) as AuthToken | null;
+
+    // Debug logging for production
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`\n======= AUTH TOKEN DEBUG =======`);
+      console.log(`Path: ${pathname}`);
+      console.log(`Token exists: ${!!token}`);
+      console.log(`NEXTAUTH_SECRET exists: ${!!process.env.NEXTAUTH_SECRET}`);
+      console.log(`Cookies available:`, Object.keys(request.cookies.getAll().reduce((acc, cookie) => {
+        acc[cookie.name] = cookie.value.substring(0, 20) + '...';
+        return acc;
+      }, {} as Record<string, string>)));
+      if (token) {
+        console.log(`Token data:`, {
+          sub: token.sub,
+          email: token.email,
+          role: token.role,
+          name: token.name
+        });
+      }
+      console.log(`===============================\n`);
+    }
 
     const user = token ? await createUserSession(token) : null;
 
@@ -92,6 +116,28 @@ async function routeGuardHandler(request: NextRequest) {
       userAgent,
       geo,
     });
+
+    // Enhanced debug logging
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`\n======= ROUTE GUARD DEBUG =======`);
+      console.log(`Path: ${pathname}`);
+      console.log(`User authenticated: ${user?.isAuthenticated}`);
+      console.log(`User ID: ${user?.id}`);
+      console.log(`User email: ${user?.email}`);
+      console.log(`User role (raw): "${user?.role}"`);
+      console.log(`User role (type): ${typeof user?.role}`);
+      console.log(`User domain: ${user?.domain}`);
+      console.log(`User permissions: ${JSON.stringify(user?.permissions)}`);
+      console.log(`Access allowed: ${accessResult.allowed}`);
+      console.log(`Access reason: ${accessResult.reason}`);
+      if (accessResult.redirect) {
+        console.log(`Redirect to: ${accessResult.redirect}`);
+      }
+      if (accessResult.requiredRole) {
+        console.log(`Required role: ${accessResult.requiredRole}`);
+      }
+      console.log(`================================\n`);
+    }
 
     // Handle access result
     if (!accessResult.allowed) {
@@ -121,7 +167,19 @@ async function routeGuardHandler(request: NextRequest) {
 
     // Handle redirects for authenticated users
     if (accessResult.redirect && user?.isAuthenticated) {
-      return NextResponse.redirect(new URL(accessResult.redirect, request.url));
+      // Extract current language from URL path for proper redirect
+      const pathname = request.nextUrl.pathname;
+      const currentLang = pathname.startsWith('/es/') ? 'es' : 
+                         pathname.startsWith('/en/') ? 'en' : 'es';
+      
+      // If redirect doesn't have language prefix, add it
+      let redirectUrl = accessResult.redirect;
+      if (!redirectUrl.startsWith('/es/') && !redirectUrl.startsWith('/en/')) {
+        redirectUrl = `/${currentLang}${redirectUrl}`;
+      }
+      
+      console.log(`[ROUTE-GUARD] Redirecting authenticated user from ${pathname} to ${redirectUrl}`);
+      return NextResponse.redirect(new URL(redirectUrl, request.url));
     }
 
     // Add user info to headers for use in pages
@@ -153,15 +211,31 @@ async function createUserSession(
   if (!token.sub || !token.email) return null;
 
   const domain = token.email.split("@")[1];
+  
+  // Use role directly from Prisma (already in correct format)
+  const userRole = (token.role || "CLIENT") as UserRole;
 
-  return {
+  const userSession = {
     id: token.sub,
     email: token.email,
-    role: token.role || "user",
-    permissions: getPermissionsForRole(token.role || "user"),
+    role: userRole,
+    permissions: getPermissionsForRole(userRole),
     isAuthenticated: true,
     domain,
   };
+
+  // Debug user session creation
+  if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+    console.log(`\n======= USER SESSION DEBUG =======`);
+    console.log(`Original token role: "${token.role}"`);
+    console.log(`Final user role: "${userRole}"`);
+    console.log(`Domain: "${domain}"`);
+    console.log(`Permissions:`, userSession.permissions);
+    console.log(`Full session:`, userSession);
+    console.log(`=================================\n`);
+  }
+
+  return userSession;
 }
 
 function getPermissionsForRole(role: UserRole): Permission[] {
@@ -197,7 +271,8 @@ function isPublicPath(pathname: string): boolean {
 
 // Enhanced middleware with domain validation
 export async function enhancedRouteGuardMiddleware(request: NextRequest) {
-  const response = await routeGuardMiddleware(request, {} as NextFetchEvent);
+  const dummyNext: NextMiddleware = async () => NextResponse.next();
+  const response = await routeGuardMiddleware(dummyNext)(request, {} as NextFetchEvent);
 
   // Add additional security headers
   if (response instanceof NextResponse) {

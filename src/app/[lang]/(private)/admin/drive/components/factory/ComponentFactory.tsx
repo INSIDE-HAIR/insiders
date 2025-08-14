@@ -24,7 +24,6 @@ import {
   AccordionTrigger,
 } from "@ui/accordion";
 import { Button } from "@ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@ui/dialog";
 import { ExplorerElement, FileElement, FolderElement } from "../elements";
 
 // Propiedades para el ComponentFactory
@@ -123,7 +122,7 @@ const TabsComponent: React.FC<ComponentFactoryProps> = ({
   }
 
   return (
-    <Tabs defaultValue={tabs[0].id} className="w-full">
+    <Tabs defaultValue={tabs[0]?.id} className="w-full">
       <TabsList>
         {tabs.map((tab) => (
           <TabsTrigger key={tab.id} value={tab.id}>

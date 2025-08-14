@@ -30,7 +30,7 @@ export default function ViewModeSelector({
           <ToggleGroupItem
             value='admin'
             aria-label='Modo administrador'
-            className='data-[state=on]:bg-zinc-700 text-white data-[state=on]:text-inside hover:bg-zinc-700 hover:text-inside'
+            className='data-[state=on]:bg-zinc-700 text-white data-[state=on]:text-primary hover:bg-zinc-700 hover:text-primary'
           >
             <Crown className='h-4 w-4 mr-2' />
             <span>Administrador</span>
@@ -38,7 +38,7 @@ export default function ViewModeSelector({
           <ToggleGroupItem
             value='client'
             aria-label='Modo cliente'
-            className='data-[state=on]:bg-zinc-700 text-white data-[state=on]:text-inside hover:bg-zinc-700 hover:text-inside'
+            className='data-[state=on]:bg-zinc-700 text-white data-[state=on]:text-primary hover:bg-zinc-700 hover:text-primary'
           >
             <User className='h-4 w-4 mr-2' />
             <span>Cliente</span>
@@ -46,12 +46,11 @@ export default function ViewModeSelector({
         </ToggleGroup>
       </div>
 
-
-        <div className='flex items-center'>
-          <span className='bg-inside text-zinc-800 text-xs font-medium px-2.5 py-0.5  border border-zinc-700 '>
-            {mode === "admin" ? "Vista de administrador" : "Vista de cliente"}
-          </span>
-        </div>
+      <div className='flex items-center'>
+        <span className='bg-primary text-zinc-800 text-xs font-medium px-2.5 py-0.5  border border-zinc-700 '>
+          {mode === "admin" ? "Vista de administrador" : "Vista de cliente"}
+        </span>
+      </div>
     </div>
   );
 }

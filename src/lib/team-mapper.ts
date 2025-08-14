@@ -114,7 +114,7 @@ export function getUserTeams(
  */
 export function extractDomainFromEmail(email: string): string {
   const parts = email.split('@');
-  return parts.length > 1 ? parts[1] : '';
+  return parts.length > 1 ? parts[1] || '' : '';
 }
 
 /**

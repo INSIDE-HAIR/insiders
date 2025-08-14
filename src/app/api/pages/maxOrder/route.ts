@@ -23,7 +23,7 @@ export async function GET(request: Request) {
       take: 1,
     });
 
-    const maxOrder = siblings.length > 0 ? siblings[0].order : -1;
+    const maxOrder = siblings.length > 0 ? siblings[0]?.order || -1 : -1;
     return NextResponse.json({ maxOrder });
   } catch (error) {
     console.error("Error getting max order:", error);

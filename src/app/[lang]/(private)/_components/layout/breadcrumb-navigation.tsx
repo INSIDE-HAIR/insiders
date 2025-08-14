@@ -72,7 +72,7 @@ export default function BreadcrumbNavigation({
         : `Ir a ${homeLabel}`;
     }
     return pathSegments.length > 2
-      ? `Ir a ${getTranslation(pathSegments[pathSegments.length - 2], "es")}`
+      ? `Ir a ${getTranslation(pathSegments[pathSegments.length - 2] || "", "es")}`
       : homeLabel;
   };
 
@@ -106,7 +106,7 @@ export default function BreadcrumbNavigation({
           )}
           <BreadcrumbItem className='hover:underline  pointer-events-none [&>*]:text-tiny '>
             <BreadcrumbPage className='text-primary capitalize'>
-              {getTranslation(pathSegments[pathSegments.length - 1], "es")}
+              {getTranslation(pathSegments[pathSegments.length - 1] || "", "es")}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

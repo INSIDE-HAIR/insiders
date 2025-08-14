@@ -90,7 +90,7 @@ export const DriveExplorerClient: React.FC<DriveExplorerClientProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, []); // Eliminamos notifications de las dependencias
+  }, []);
 
   // Efecto que carga la jerarquía (ya tenemos usuario autenticado)
   useEffect(() => {

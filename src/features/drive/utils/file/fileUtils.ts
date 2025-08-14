@@ -15,7 +15,7 @@ export function getFileExtension(filename: string): string {
   // Si no tiene extensión o el nombre comienza con punto (archivo oculto)
   if (parts.length <= 1) return "";
 
-  return parts[parts.length - 1].toLowerCase();
+  return (parts[parts.length - 1] || '').toLowerCase();
 }
 
 /**

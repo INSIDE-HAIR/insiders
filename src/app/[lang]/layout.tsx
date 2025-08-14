@@ -16,7 +16,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang='es' suppressHydrationWarning>
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className='bg-background'>
         <TranslationsProvider
           initialLocale='es'
           initialTranslations={defaultTranslations}
@@ -24,16 +24,16 @@ export default async function RootLayout({
           <Providers>
             <main
               className={cn(
-                "h-full bg-background font-sans antialiased max-w-full min-w-[360px] w-full flex flex-col items-center justify-center overflow-x-hidden",
+                "h-full bg-background font-sans antialiased max-w-full min-w-[360px] w-full flex flex-col items-center justify-center overflow-x-hidden ",
                 inter.className
               )}
             >
-                <ReactQueryProvider>
-                  {children}
-                  <Toaster />
-                </ReactQueryProvider>
-                <Analytics />
-                <SpeedInsights />
+              <ReactQueryProvider>
+                {children}
+                <Toaster />
+              </ReactQueryProvider>
+              <Analytics />
+              <SpeedInsights />
             </main>
           </Providers>
         </TranslationsProvider>

@@ -9,6 +9,11 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
     const { pathname, search } = request.nextUrl;
     let currentLocale = request.cookies.get(COOKIE_NAME)?.value || DEFAULT_LOCALE;
 
+    // Debug logging
+    if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+      console.log(`[I18N DEBUG] Path: ${pathname}, Locale: ${currentLocale}`);
+    }
+
     // Si es una ruta de API o archivos estáticos, continuar
     if (pathname.match(/^\/(?:api|_next|.*\..*)/) || pathname === "/not-found") {
       return next(request, event);
@@ -29,6 +34,11 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
       }
       response = result as NextResponse;
       currentLocale = pathLocale;
+      
+      // Debug: check if next middleware returned a redirect
+      if (process.env.NODE_ENV === 'production' || process.env.DEBUG_AUTH) {
+        console.log(`[I18N DEBUG] Next middleware response status: ${response.status}`);
+      }
     }
     // Manejar rutas sin prefijo de idioma
     else if (!pathLocale && pathname !== "/") {
@@ -53,5 +63,5 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
 
 function getLocaleFromPath(pathname: string): string | null {
   const firstSegment = pathname.split("/")[1];
-  return SUPPORTED_LOCALES.includes(firstSegment) ? firstSegment : null;
+  return SUPPORTED_LOCALES.includes(firstSegment || '') ? firstSegment || null : null;
 } 

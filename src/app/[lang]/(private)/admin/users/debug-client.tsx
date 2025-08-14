@@ -33,7 +33,7 @@ export function DebugUsersClient({ user }: DebugUsersClientProps) {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
 
       if (!response.ok) {
@@ -57,14 +57,14 @@ export function DebugUsersClient({ user }: DebugUsersClientProps) {
   }, [fetchUsers]);
 
   return (
-    <div className="p-6">
-      <div className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40">
-        <div className="flex flex-1 items-center justify-between">
-          <h1 className="text-2xl font-bold">Users Management</h1>
+    <div className='p-6'>
+      <div className='flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40'>
+        <div className='flex flex-1 items-center justify-between'>
+          <h1 className='text-2xl font-bold'>Users Management</h1>
           <Button onClick={fetchUsers} disabled={isLoading}>
             {isLoading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                 Loading...
               </>
             ) : (
@@ -74,45 +74,58 @@ export function DebugUsersClient({ user }: DebugUsersClientProps) {
         </div>
       </div>
 
-      <div className="p-6">
-        <div className="mb-4 p-4 bg-green-100 rounded">
-          <h2 className="font-semibold text-green-800">✅ Access Control Working</h2>
-          <p>Welcome, {user.email} (Role: {user.role})</p>
+      <div className='p-6'>
+        <div className='mb-4 p-4 bg-green-100 rounded'>
+          <h2 className='font-semibold text-green-800'>
+            ✅ Access Control Working
+          </h2>
+          <p>
+            Welcome, {user.email} (Role: {user.role})
+          </p>
           <p>Server-side validation successful!</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-300 rounded">
-            <h3 className="font-semibold text-red-800">API Error:</h3>
-            <p className="text-red-600">{error}</p>
+          <div className='mb-4 p-4 bg-red-100 border border-red-300 rounded'>
+            <h3 className='font-semibold text-red-800'>API Error:</h3>
+            <p className='text-red-600'>{error}</p>
           </div>
         )}
 
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin" />
-            <span className="ml-2">Testing API connection...</span>
+          <div className='flex justify-center items-center h-64'>
+            <Loader2 className='h-8 w-8 animate-spin' />
+            <span className='ml-2'>Testing API connection...</span>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="p-4 bg-blue-100 rounded">
-              <h3 className="font-semibold text-blue-800">API Test Results:</h3>
+          <div className='space-y-4'>
+            <div className='p-4 bg-blue-100 rounded'>
+              <h3 className='font-semibold text-blue-800'>API Test Results:</h3>
               <p>Check the console for detailed API response.</p>
               {debugInfo && (
-                <pre className="mt-2 text-sm bg-white p-2 rounded overflow-auto">
+                <pre className='mt-2 text-sm bg-white p-2 rounded overflow-auto'>
                   {JSON.stringify(debugInfo, null, 2)}
                 </pre>
               )}
             </div>
-            
-            <div className="flex gap-2 flex-wrap">
-              <Button onClick={() => window.open('/api/debug', '_blank')} variant="outline">
+
+            <div className='flex gap-2 flex-wrap'>
+              <Button
+                onClick={() => window.open("/api/v1/health/debug", "_blank")}
+                variant='outline'
+              >
                 Test Debug API
               </Button>
-              <Button onClick={() => window.open('/api/users/test', '_blank')} variant="outline">
+              <Button
+                onClick={() => window.open("/api/v1/users/test", "_blank")}
+                variant='outline'
+              >
                 Test Users API
               </Button>
-              <Button onClick={() => window.open('/api/users', '_blank')} variant="outline">
+              <Button
+                onClick={() => window.open("/api/users", "_blank")}
+                variant='outline'
+              >
                 Test Main Users API
               </Button>
             </div>

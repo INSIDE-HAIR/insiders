@@ -12,7 +12,17 @@ import {
   ShareIcon,
   CodeBracketIcon,
 } from "@heroicons/react/24/outline";
-import { MapPin, Users, Video, Check, X, Clock, Calendar, Phone, FileText } from "lucide-react";
+import {
+  MapPin,
+  Users,
+  Video,
+  Check,
+  X,
+  Clock,
+  Calendar,
+  Phone,
+  FileText,
+} from "lucide-react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { useRouter } from "next/navigation";
 import { AVAILABLE_COLUMNS } from "./components/ColumnController";
@@ -41,7 +51,8 @@ export const useEventsColumns = (
     const calendar = calendars.find((cal) => cal.id === calendarId);
     return {
       backgroundColor: calendar?.backgroundColor || "hsl(var(--primary))",
-      foregroundColor: calendar?.foregroundColor || "hsl(var(--primary-foreground))",
+      foregroundColor:
+        calendar?.foregroundColor || "hsl(var(--primary-foreground))",
       colorId: calendar?.colorId || "default",
       summary: calendar?.summary || "Unknown Calendar",
     };
@@ -77,7 +88,8 @@ export const useEventsColumns = (
 
     if (now < start)
       return { status: "upcoming", color: "primary", label: "Próximo" };
-    if (now > end) return { status: "past", color: "secondary", label: "Pasado" };
+    if (now > end)
+      return { status: "past", color: "secondary", label: "Pasado" };
     return { status: "ongoing", color: "success", label: "En curso" };
   };
 
@@ -105,7 +117,11 @@ export const useEventsColumns = (
   };
 
   // Function to update event description
-  const handleUpdateDescription = async (eventId: string, calendarId: string, description: string) => {
+  const handleUpdateDescription = async (
+    eventId: string,
+    calendarId: string,
+    description: string
+  ) => {
     try {
       const response = await fetch(
         `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
@@ -119,8 +135,19 @@ export const useEventsColumns = (
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Error al actualizar la descripción");
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (jsonError) {
+          const errorText = await response.text();
+          console.error("Response text:", errorText);
+          throw new Error(
+            `Error del servidor: ${response.status} ${response.statusText}`
+          );
+        }
+        throw new Error(
+          errorData.error || "Error al actualizar la descripción"
+        );
       }
 
       toast({
@@ -143,7 +170,11 @@ export const useEventsColumns = (
   };
 
   // Function to update event attendees
-  const handleUpdateAttendees = async (eventId: string, calendarId: string, attendees: any[]) => {
+  const handleUpdateAttendees = async (
+    eventId: string,
+    calendarId: string,
+    attendees: any[]
+  ) => {
     try {
       const response = await fetch(
         `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
@@ -157,7 +188,29 @@ export const useEventsColumns = (
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (jsonError) {
+          // Si no se puede parsear JSON, usar el texto de la respuesta
+          const errorText = await response.text();
+          console.error("Response text:", errorText);
+          throw new Error(
+            `Error del servidor: ${response.status} ${response.statusText}`
+          );
+        }
+
+        // Manejar errores específicos
+        if (response.status === 403) {
+          if (errorData.details) {
+            throw new Error(`${errorData.error} ${errorData.details}`);
+          } else {
+            throw new Error(
+              errorData.error || "No tienes permisos para modificar este evento"
+            );
+          }
+        }
+
         throw new Error(errorData.error || "Error al actualizar los invitados");
       }
 
@@ -181,33 +234,45 @@ export const useEventsColumns = (
   };
 
   // Function to move event to different calendar
-  const handleMoveEventToCalendar = async (eventId: string, oldCalendarId: string, newCalendarId: string) => {
+  const handleMoveEventToCalendar = async (
+    eventId: string,
+    oldCalendarId: string,
+    newCalendarId: string
+  ) => {
     try {
       // First, get the event from the old calendar
-      const getResponse = await fetch(`/api/calendar/events/${eventId}?calendarId=${oldCalendarId}`);
+      const getResponse = await fetch(
+        `/api/calendar/events/${eventId}?calendarId=${oldCalendarId}`
+      );
       if (!getResponse.ok) {
         throw new Error("Error obteniendo el evento");
       }
-      
+
       const eventData = await getResponse.json();
-      
+
       // Move the event using the Google Calendar API move operation
-      const moveResponse = await fetch(
-        `/api/calendar/events/bulk-move`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventIds: [{ eventId, calendarId: oldCalendarId }],
-            targetCalendarId: newCalendarId,
-          }),
-        }
-      );
+      const moveResponse = await fetch(`/api/calendar/events/bulk-move`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventIds: [{ eventId, calendarId: oldCalendarId }],
+          targetCalendarId: newCalendarId,
+        }),
+      });
 
       if (!moveResponse.ok) {
-        const errorData = await moveResponse.json();
+        let errorData;
+        try {
+          errorData = await moveResponse.json();
+        } catch (jsonError) {
+          const errorText = await moveResponse.text();
+          console.error("Response text:", errorText);
+          throw new Error(
+            `Error del servidor: ${moveResponse.status} ${moveResponse.statusText}`
+          );
+        }
         throw new Error(errorData.error || "Error al mover el evento");
       }
 
@@ -232,9 +297,9 @@ export const useEventsColumns = (
 
   // Function to update event date/time with duration preservation
   const handleUpdateDateTime = async (
-    eventId: string, 
-    calendarId: string, 
-    field: "start" | "end", 
+    eventId: string,
+    calendarId: string,
+    field: "start" | "end",
     value: { dateTime?: string; date?: string },
     currentEvent?: GoogleCalendarEvent
   ) => {
@@ -243,42 +308,50 @@ export const useEventsColumns = (
 
       // If updating start date, we need to preserve the duration and update end date accordingly
       if (field === "start" && currentEvent) {
-        const currentStart = new Date(currentEvent.start?.dateTime || currentEvent.start?.date || "");
-        const currentEnd = new Date(currentEvent.end?.dateTime || currentEvent.end?.date || "");
+        const currentStart = new Date(
+          currentEvent.start?.dateTime || currentEvent.start?.date || ""
+        );
+        const currentEnd = new Date(
+          currentEvent.end?.dateTime || currentEvent.end?.date || ""
+        );
         const newStart = new Date(value.dateTime || value.date || "");
-        
+
         // Calculate the duration of the session
         const durationMs = currentEnd.getTime() - currentStart.getTime();
-        
+
         // Ensure minimum duration of 15 minutes for timed events
         const minDuration = value.dateTime ? 15 * 60 * 1000 : 0; // 15 minutes in ms for timed events
         const adjustedDuration = Math.max(durationMs, minDuration);
-        
+
         // Calculate new end date by adding the duration to the new start date
         const newEnd = new Date(newStart.getTime() + adjustedDuration);
-        
+
         // Set both start and end in the update
         updateData = {
           start: value,
-          end: value.dateTime ? 
-            { dateTime: newEnd.toISOString() } : 
-            { date: newEnd.toISOString().split('T')[0] }
+          end: value.dateTime
+            ? { dateTime: newEnd.toISOString() }
+            : { date: newEnd.toISOString().split("T")[0] },
         };
       } else if (field === "end" && currentEvent) {
         // For end date updates, validate that it's after the start date
-        const currentStart = new Date(currentEvent.start?.dateTime || currentEvent.start?.date || "");
+        const currentStart = new Date(
+          currentEvent.start?.dateTime || currentEvent.start?.date || ""
+        );
         const newEnd = new Date(value.dateTime || value.date || "");
-        
+
         if (newEnd <= currentStart) {
-          throw new Error("La fecha de fin debe ser posterior a la fecha de inicio");
+          throw new Error(
+            "La fecha de fin debe ser posterior a la fecha de inicio"
+          );
         }
-        
+
         updateData = { [field]: value };
       } else {
         // Fallback for other cases
         updateData = { [field]: value };
       }
-      
+
       const response = await fetch(
         `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
         {
@@ -291,16 +364,29 @@ export const useEventsColumns = (
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Error al actualizar ${field === "start" ? "fecha de inicio" : "fecha de fin"}`);
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (jsonError) {
+          const errorText = await response.text();
+          console.error("Response text:", errorText);
+          throw new Error(
+            `Error del servidor: ${response.status} ${response.statusText}`
+          );
+        }
+        throw new Error(
+          errorData.error ||
+            `Error al actualizar ${field === "start" ? "fecha de inicio" : "fecha de fin"}`
+        );
       }
 
       const responseData = await response.json();
-      
+
       if (field === "start") {
         toast({
           title: "Fecha y hora actualizadas",
-          description: "Se actualizó la fecha de inicio y se mantuvo la duración de la sesión",
+          description:
+            "Se actualizó la fecha de inicio y se mantuvo la duración de la sesión",
           duration: 3000,
         });
       } else {
@@ -316,7 +402,9 @@ export const useEventsColumns = (
       console.error(`Error updating ${field}:`, error);
       toast({
         title: "Error",
-        description: error.message || `Error al actualizar ${field === "start" ? "fecha de inicio" : "fecha de fin"}`,
+        description:
+          error.message ||
+          `Error al actualizar ${field === "start" ? "fecha de inicio" : "fecha de fin"}`,
         variant: "destructive",
         duration: 5000,
       });
@@ -334,9 +422,9 @@ export const useEventsColumns = (
           accessorKey: "summary",
           header: "Título",
           cell: ({ row }) => (
-            <div className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <span className="font-medium truncate" title={event(row).summary}>
+            <div className='flex items-center gap-2'>
+              <CalendarIcon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+              <span className='font-medium truncate' title={event(row).summary}>
                 {event(row).summary || "Sin título"}
               </span>
             </div>
@@ -350,15 +438,16 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const eventData = event(row);
             const eventId = eventData.id!;
-            const calendarId = (eventData as any).calendarId || defaultCalendarId;
+            const calendarId =
+              (eventData as any).calendarId || defaultCalendarId;
 
             return (
               <EditableDateTime
                 dateTimeValue={eventData.start}
                 eventId={eventId}
                 calendarId={calendarId}
-                field="start"
-                label="Fecha de inicio"
+                field='start'
+                label='Fecha de inicio'
                 currentEvent={eventData}
                 onUpdate={handleUpdateDateTime}
               />
@@ -373,15 +462,16 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const eventData = event(row);
             const eventId = eventData.id!;
-            const calendarId = (eventData as any).calendarId || defaultCalendarId;
+            const calendarId =
+              (eventData as any).calendarId || defaultCalendarId;
 
             return (
               <EditableDateTime
                 dateTimeValue={eventData.end}
                 eventId={eventId}
                 calendarId={calendarId}
-                field="end"
-                label="Fecha de fin"
+                field='end'
+                label='Fecha de fin'
                 currentEvent={eventData}
                 onUpdate={handleUpdateDateTime}
               />
@@ -396,9 +486,7 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const eventStatus = getEventStatus(event(row));
             return (
-              <Badge
-                className="bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors"
-              >
+              <Badge className='bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors'>
                 {eventStatus.label}
               </Badge>
             );
@@ -415,16 +503,18 @@ export const useEventsColumns = (
           header: "Ubicación",
           cell: ({ row }) => (
             <div
-              className="text-sm text-foreground truncate max-w-[200px]"
+              className='text-sm text-foreground truncate max-w-[200px]'
               title={event(row).location}
             >
               {event(row).location ? (
-                <div className="flex items-center gap-1.5 text-foreground">
-                  <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="truncate max-w-32">{event(row).location}</span>
+                <div className='flex items-center gap-1.5 text-foreground'>
+                  <MapPin className='h-3.5 w-3.5 text-muted-foreground' />
+                  <span className='truncate max-w-32'>
+                    {event(row).location}
+                  </span>
                 </div>
               ) : (
-                <span className="text-muted-foreground">-</span>
+                <span className='text-muted-foreground'>-</span>
               )}
             </div>
           ),
@@ -437,7 +527,8 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const eventData = event(row);
             const eventId = eventData.id!;
-            const calendarId = (eventData as any).calendarId || defaultCalendarId;
+            const calendarId =
+              (eventData as any).calendarId || defaultCalendarId;
             const attendees = eventData.attendees || [];
 
             return (
@@ -473,7 +564,8 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const eventData = event(row);
             const eventId = eventData.id!;
-            const calendarId = (eventData as any).calendarId || defaultCalendarId;
+            const calendarId =
+              (eventData as any).calendarId || defaultCalendarId;
             const description = eventData.description || "";
 
             return (
@@ -493,9 +585,10 @@ export const useEventsColumns = (
           header: "Fecha Creación",
           cell: ({ row }) => {
             const created = event(row).created;
-            if (!created) return <span className="text-muted-foreground">-</span>;
+            if (!created)
+              return <span className='text-muted-foreground'>-</span>;
             return (
-              <div className="text-sm">
+              <div className='text-sm'>
                 {new Date(created).toLocaleDateString("es-ES", {
                   year: "numeric",
                   month: "short",
@@ -514,9 +607,10 @@ export const useEventsColumns = (
           header: "Última Modificación",
           cell: ({ row }) => {
             const updated = event(row).updated;
-            if (!updated) return <span className="text-muted-foreground">-</span>;
+            if (!updated)
+              return <span className='text-muted-foreground'>-</span>;
             return (
-              <div className="text-sm">
+              <div className='text-sm'>
                 {new Date(updated).toLocaleDateString("es-ES", {
                   year: "numeric",
                   month: "short",
@@ -535,7 +629,8 @@ export const useEventsColumns = (
           header: "Creador",
           cell: ({ row }) => {
             const creator = event(row).creator;
-            if (!creator) return <span className="text-muted-foreground">-</span>;
+            if (!creator)
+              return <span className='text-muted-foreground'>-</span>;
 
             // Buscar si el email del creador coincide con algún calendario
             const creatorCalendar = calendars.find(
@@ -543,18 +638,21 @@ export const useEventsColumns = (
             );
             const calendarColor = creatorCalendar
               ? {
-                  backgroundColor: creatorCalendar.backgroundColor || "hsl(var(--primary))",
-                  foregroundColor: creatorCalendar.foregroundColor || "hsl(var(--primary-foreground))",
+                  backgroundColor:
+                    creatorCalendar.backgroundColor || "hsl(var(--primary))",
+                  foregroundColor:
+                    creatorCalendar.foregroundColor ||
+                    "hsl(var(--primary-foreground))",
                   colorId: creatorCalendar.colorId || "default",
                 }
               : null;
 
             return (
-              <div className="flex items-center gap-2 text-sm">
+              <div className='flex items-center gap-2 text-sm'>
                 {/* Círculo de color si es un calendario */}
                 {calendarColor && (
                   <div
-                    className="w-3 h-3 rounded-full border border-border flex-shrink-0"
+                    className='w-3 h-3 rounded-full border border-border flex-shrink-0'
                     style={{
                       backgroundColor: calendarColor.backgroundColor,
                       border: `1px solid ${calendarColor.foregroundColor}`,
@@ -563,18 +661,18 @@ export const useEventsColumns = (
                   />
                 )}
 
-                <div className="flex-1">
-                  <div className="font-medium text-foreground">
+                <div className='flex-1'>
+                  <div className='font-medium text-foreground'>
                     {creator.displayName ||
                       creator.email?.split("@")[0] ||
                       "Sin nombre"}
                   </div>
-                  <div className="text-xs text-muted-foreground font-mono">
+                  <div className='text-xs text-muted-foreground font-mono'>
                     {creator.email}
                   </div>
                   {calendarColor && (
-                    <div className="text-xs text-primary flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5" />
+                    <div className='text-xs text-primary flex items-center gap-1.5'>
+                      <Calendar className='h-3.5 w-3.5' />
                       Calendario
                     </div>
                   )}
@@ -590,7 +688,8 @@ export const useEventsColumns = (
           header: "Organizador",
           cell: ({ row }) => {
             const organizer = event(row).organizer;
-            if (!organizer) return <span className="text-muted-foreground">-</span>;
+            if (!organizer)
+              return <span className='text-muted-foreground'>-</span>;
 
             // Buscar si el email del organizador coincide con algún calendario
             const organizerCalendar = calendars.find(
@@ -601,7 +700,8 @@ export const useEventsColumns = (
                   backgroundColor:
                     organizerCalendar.backgroundColor || "hsl(var(--primary))",
                   foregroundColor:
-                    organizerCalendar.foregroundColor || "hsl(var(--primary-foreground))",
+                    organizerCalendar.foregroundColor ||
+                    "hsl(var(--primary-foreground))",
                   colorId: organizerCalendar.colorId || "default",
                 }
               : null;
@@ -648,11 +748,11 @@ export const useEventsColumns = (
             };
 
             return (
-              <div className="flex items-center gap-2 text-sm">
+              <div className='flex items-center gap-2 text-sm'>
                 {/* Círculo de color si es un calendario */}
                 {calendarColor && (
                   <div
-                    className="w-3 h-3 rounded-full border border-border flex-shrink-0"
+                    className='w-3 h-3 rounded-full border border-border flex-shrink-0'
                     style={{
                       backgroundColor: calendarColor.backgroundColor,
                       border: `1px solid ${calendarColor.foregroundColor}`,
@@ -661,67 +761,67 @@ export const useEventsColumns = (
                   />
                 )}
 
-                <div className="flex-1">
-                  <div className="font-medium text-foreground">
+                <div className='flex-1'>
+                  <div className='font-medium text-foreground'>
                     {organizer.displayName ||
                       organizer.email?.split("@")[0] ||
                       "Sin nombre"}
                   </div>
                   {calendarColor && (
-                    <div className="text-xs text-primary flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5" />
+                    <div className='text-xs text-primary flex items-center gap-1.5'>
+                      <Calendar className='h-3.5 w-3.5' />
                       Calendario
                     </div>
                   )}
                 </div>
 
                 {/* Copy buttons container */}
-                <div className="flex items-center gap-1">
+                <div className='flex items-center gap-1'>
                   {/* Copy ID button */}
                   <Button
-                    variant="ghost"
-                    size="sm"
+                    variant='ghost'
+                    size='sm'
                     onClick={(e) => {
                       e.stopPropagation();
                       copyOrganizerId();
                     }}
-                    className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+                    className='h-6 w-6 p-0 text-muted-foreground hover:text-foreground'
                     title={`Copiar ID del organizador: ${
                       organizer.email || "N/A"
                     }`}
                   >
-                    <DocumentDuplicateIcon className="h-3 w-3" />
+                    <DocumentDuplicateIcon className='h-3 w-3' />
                   </Button>
 
                   {/* Copy share link button */}
                   {organizer.email && (
                     <Button
-                      variant="ghost"
-                      size="sm"
+                      variant='ghost'
+                      size='sm'
                       onClick={(e) => {
                         e.stopPropagation();
                         copyShareLink();
                       }}
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-primary"
-                      title="Copiar enlace para compartir calendario de Google Calendar"
+                      className='h-6 w-6 p-0 text-muted-foreground hover:text-primary'
+                      title='Copiar enlace para compartir calendario de Google Calendar'
                     >
-                      <ShareIcon className="h-3 w-3" />
+                      <ShareIcon className='h-3 w-3' />
                     </Button>
                   )}
 
                   {/* Copy iframe embed button */}
                   {organizer.email && (
                     <Button
-                      variant="ghost"
-                      size="sm"
+                      variant='ghost'
+                      size='sm'
                       onClick={(e) => {
                         e.stopPropagation();
                         copyIframeEmbed();
                       }}
-                      className="h-6 w-6 p-0 text-muted-foreground hover:text-card-foreground"
-                      title="Copiar código iframe para embeber calendario en web"
+                      className='h-6 w-6 p-0 text-muted-foreground hover:text-card-foreground'
+                      title='Copiar código iframe para embeber calendario en web'
                     >
-                      <CodeBracketIcon className="h-3 w-3" />
+                      <CodeBracketIcon className='h-3 w-3' />
                     </Button>
                   )}
                 </div>
@@ -737,10 +837,14 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const visibility = event(row).visibility || "default";
             const colors = {
-              default: "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
-              public: "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
-              private: "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
-              confidential: "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
+              default:
+                "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
+              public:
+                "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
+              private:
+                "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
+              confidential:
+                "bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors",
             };
             return (
               <Badge
@@ -761,9 +865,7 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const transparency = event(row).transparency || "opaque";
             return (
-              <Badge
-                className="bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors"
-              >
+              <Badge className='bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors'>
                 {transparency === "transparent" ? "Libre" : "Ocupado"}
               </Badge>
             );
@@ -776,13 +878,14 @@ export const useEventsColumns = (
           header: "Enlace Web",
           cell: ({ row }) => {
             const htmlLink = event(row).htmlLink;
-            if (!htmlLink) return <span className="text-muted-foreground">-</span>;
+            if (!htmlLink)
+              return <span className='text-muted-foreground'>-</span>;
             return (
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => window.open(htmlLink, "_blank")}
-                className="text-primary p-0 h-auto"
+                className='text-primary p-0 h-auto'
               >
                 Ver en Google Calendar
               </Button>
@@ -799,25 +902,25 @@ export const useEventsColumns = (
             const conferenceData = event(row).conferenceData;
 
             if (!hangoutLink && !conferenceData) {
-              return <span className="text-muted-foreground">Sin Meet</span>;
+              return <span className='text-muted-foreground'>Sin Meet</span>;
             }
 
             return (
-              <div className="space-y-1">
+              <div className='space-y-1'>
                 {hangoutLink && (
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={() => window.open(hangoutLink, "_blank")}
-                    className="bg-primary text-primary-foreground border-primary hover:bg-primary-foreground hover:text-primary h-7 px-2 text-xs w-full flex items-center gap-1.5 transition-colors"
+                    className='bg-primary text-primary-foreground border-primary hover:bg-primary-foreground hover:text-primary h-7 px-2 text-xs w-full flex items-center gap-1.5 transition-colors'
                   >
-                    <Video className="h-3.5 w-3.5" />
+                    <Video className='h-3.5 w-3.5' />
                     Unirse a Meet
                   </Button>
                 )}
 
                 {conferenceData?.conferenceId && (
-                  <div className="text-xs text-foreground font-mono bg-muted/50 p-1 rounded">
+                  <div className='text-xs text-foreground font-mono bg-muted/50 p-1 rounded'>
                     ID: {conferenceData.conferenceId}
                   </div>
                 )}
@@ -825,8 +928,8 @@ export const useEventsColumns = (
                 {conferenceData?.entryPoints?.some(
                   (ep: any) => ep.entryPointType === "video"
                 ) && (
-                  <div className="flex items-center gap-1 text-xs text-card-foreground">
-                    <span className="w-2 h-2 bg-primary rounded-full"></span>
+                  <div className='flex items-center gap-1 text-xs text-card-foreground'>
+                    <span className='w-2 h-2 bg-primary rounded-full'></span>
                     Video activo
                   </div>
                 )}
@@ -844,19 +947,21 @@ export const useEventsColumns = (
             const hangoutLink = event(row).hangoutLink;
 
             if (!conferenceData && !hangoutLink) {
-              return <span className="text-muted-foreground">Sin conferencia</span>;
+              return (
+                <span className='text-muted-foreground'>Sin conferencia</span>
+              );
             }
 
             return (
-              <div className="text-sm max-w-[300px] space-y-2">
+              <div className='text-sm max-w-[300px] space-y-2'>
                 {/* Conference Solution */}
                 {conferenceData?.conferenceSolution && (
-                  <div className="flex items-center gap-2 p-3 bg-muted rounded-lg border border-border">
-                    <div className="w-6 h-6 bg-primary/15 rounded flex items-center justify-center">
-                      <Video className="h-3.5 w-3.5 text-primary" />
+                  <div className='flex items-center gap-2 p-3 bg-muted rounded-lg border border-border'>
+                    <div className='w-6 h-6 bg-primary/15 rounded flex items-center justify-center'>
+                      <Video className='h-3.5 w-3.5 text-primary' />
                     </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-foreground text-xs">
+                    <div className='flex-1'>
+                      <div className='font-medium text-foreground text-xs'>
                         {conferenceData.conferenceSolution.name ||
                           "Google Meet"}
                       </div>
@@ -871,11 +976,11 @@ export const useEventsColumns = (
 
                 {/* Conference ID */}
                 {conferenceData?.conferenceId && (
-                  <div className="p-3 bg-muted/50 rounded">
-                    <div className="text-xs text-muted-foreground mb-1">
+                  <div className='p-3 bg-muted/50 rounded'>
+                    <div className='text-xs text-muted-foreground mb-1'>
                       ID de Conferencia:
                     </div>
-                    <div className="font-mono text-xs text-foreground break-all">
+                    <div className='font-mono text-xs text-foreground break-all'>
                       {conferenceData.conferenceId}
                     </div>
                   </div>
@@ -884,26 +989,32 @@ export const useEventsColumns = (
                 {/* Entry Points */}
                 {conferenceData?.entryPoints &&
                   conferenceData.entryPoints.length > 0 && (
-                    <div className="space-y-1">
-                      <div className="text-xs text-muted-foreground font-medium">
+                    <div className='space-y-1'>
+                      <div className='text-xs text-muted-foreground font-medium'>
                         Puntos de Acceso:
                       </div>
                       {conferenceData.entryPoints.map(
                         (entry: any, index: number) => (
                           <div
                             key={index}
-                            className="flex items-center gap-2 p-1 bg-muted/50 rounded text-xs"
+                            className='flex items-center gap-2 p-1 bg-muted/50 rounded text-xs'
                           >
-                            <div className="flex-shrink-0">
-                              {entry.entryPointType === "video" && <Video className="h-3.5 w-3.5 text-primary" />}
-                              {entry.entryPointType === "phone" && <div className="text-muted-foreground">Tel</div>}
-                              {entry.entryPointType === "sip" && <div className="text-muted-foreground">SIP</div>}
+                            <div className='flex-shrink-0'>
+                              {entry.entryPointType === "video" && (
+                                <Video className='h-3.5 w-3.5 text-primary' />
+                              )}
+                              {entry.entryPointType === "phone" && (
+                                <div className='text-muted-foreground'>Tel</div>
+                              )}
+                              {entry.entryPointType === "sip" && (
+                                <div className='text-muted-foreground'>SIP</div>
+                              )}
                               {entry.entryPointType === "more" && "⚙️"}
                             </div>
-                            <div className="flex-1 min-w-0">
+                            <div className='flex-1 min-w-0'>
                               {entry.entryPointType === "video" && (
                                 <div>
-                                  <div className="font-medium text-card-foreground">
+                                  <div className='font-medium text-card-foreground'>
                                     Video
                                   </div>
                                   {entry.uri && (
@@ -911,7 +1022,7 @@ export const useEventsColumns = (
                                       onClick={() =>
                                         window.open(entry.uri, "_blank")
                                       }
-                                      className="text-primary underline hover:no-underline truncate block"
+                                      className='text-primary underline hover:no-underline truncate block'
                                     >
                                       Unirse por video
                                     </button>
@@ -920,15 +1031,15 @@ export const useEventsColumns = (
                               )}
                               {entry.entryPointType === "phone" && (
                                 <div>
-                                  <div className="font-medium text-foreground">
+                                  <div className='font-medium text-foreground'>
                                     Teléfono
                                   </div>
-                                  <div className="font-mono text-foreground">
+                                  <div className='font-mono text-foreground'>
                                     {entry.uri?.replace("tel:", "") ||
                                       "No disponible"}
                                   </div>
                                   {entry.pin && (
-                                    <div className="text-muted-foreground">
+                                    <div className='text-muted-foreground'>
                                       PIN: {entry.pin}
                                     </div>
                                   )}
@@ -936,35 +1047,35 @@ export const useEventsColumns = (
                               )}
                               {entry.entryPointType === "sip" && (
                                 <div>
-                                  <div className="font-medium text-foreground">
+                                  <div className='font-medium text-foreground'>
                                     SIP
                                   </div>
-                                  <div className="text-foreground truncate">
+                                  <div className='text-foreground truncate'>
                                     {entry.uri || entry.label || "Disponible"}
                                   </div>
                                 </div>
                               )}
                               {entry.entryPointType === "more" && (
                                 <div>
-                                  <div className="font-medium text-foreground">
+                                  <div className='font-medium text-foreground'>
                                     Más opciones
                                   </div>
-                                  <div className="text-muted-foreground text-xs">
+                                  <div className='text-muted-foreground text-xs'>
                                     {entry.uri && (
                                       <button
                                         onClick={() =>
                                           window.open(entry.uri, "_blank")
                                         }
-                                        className="text-primary underline hover:no-underline"
+                                        className='text-primary underline hover:no-underline'
                                       >
                                         Acceso telefónico web
                                       </button>
                                     )}
                                   </div>
                                   {entry.pin && (
-                                    <div className="text-xs text-foreground bg-muted px-1 rounded mt-1">
+                                    <div className='text-xs text-foreground bg-muted px-1 rounded mt-1'>
                                       PIN:{" "}
-                                      <span className="font-mono font-bold">
+                                      <span className='font-mono font-bold'>
                                         {entry.pin}
                                       </span>
                                     </div>
@@ -980,8 +1091,8 @@ export const useEventsColumns = (
 
                 {/* Signature */}
                 {conferenceData?.signature && (
-                  <div className="p-1 bg-muted rounded-lg border border-border">
-                    <div className="text-xs text-foreground">
+                  <div className='p-1 bg-muted rounded-lg border border-border'>
+                    <div className='text-xs text-foreground'>
                       🔐 Firma: {conferenceData.signature.substring(0, 20)}...
                     </div>
                   </div>
@@ -989,10 +1100,10 @@ export const useEventsColumns = (
 
                 {/* Notes */}
                 {conferenceData?.notes && (
-                  <div className="p-3 bg-muted rounded-lg border border-border">
-                    <div className="text-xs text-foreground">
-                      <div className="flex items-center gap-1.5">
-                        <FileText className="h-3.5 w-3.5" />
+                  <div className='p-3 bg-muted rounded-lg border border-border'>
+                    <div className='text-xs text-foreground'>
+                      <div className='flex items-center gap-1.5'>
+                        <FileText className='h-3.5 w-3.5' />
                         {conferenceData.notes}
                       </div>
                     </div>
@@ -1001,13 +1112,13 @@ export const useEventsColumns = (
 
                 {/* Fallback for hangoutLink only */}
                 {!conferenceData && hangoutLink && (
-                  <div className="p-3 bg-muted rounded-lg border border-border">
-                    <div className="text-xs text-card-foreground mb-1">
+                  <div className='p-3 bg-muted rounded-lg border border-border'>
+                    <div className='text-xs text-card-foreground mb-1'>
                       Google Meet (Legacy)
                     </div>
                     <button
                       onClick={() => window.open(hangoutLink, "_blank")}
-                      className="text-primary underline hover:no-underline text-xs"
+                      className='text-primary underline hover:no-underline text-xs'
                     >
                       Enlace directo disponible
                     </button>
@@ -1026,16 +1137,17 @@ export const useEventsColumns = (
             const conferenceData = event(row).conferenceData;
             const meetingId = conferenceData?.conferenceId;
 
-            if (!meetingId) return <span className="text-muted-foreground">-</span>;
+            if (!meetingId)
+              return <span className='text-muted-foreground'>-</span>;
 
             return (
-              <div className="text-sm">
-                <div className="font-mono text-xs bg-muted p-1 rounded">
+              <div className='text-sm'>
+                <div className='font-mono text-xs bg-muted p-1 rounded'>
                   {meetingId}
                 </div>
                 <button
                   onClick={() => navigator.clipboard.writeText(meetingId)}
-                  className="text-xs text-primary hover:underline mt-1"
+                  className='text-xs text-primary hover:underline mt-1'
                 >
                   Copiar ID
                 </button>
@@ -1056,21 +1168,22 @@ export const useEventsColumns = (
             let meetingCode: string | null = null;
             if (hangoutLink) {
               const match = hangoutLink.match(/meet\.google\.com\/([a-z-]+)/);
-              meetingCode = match ? match[1] : null;
+              meetingCode = match ? match[1] || null : null;
             }
 
-            if (!meetingCode) return <span className="text-muted-foreground">-</span>;
+            if (!meetingCode)
+              return <span className='text-muted-foreground'>-</span>;
 
             return (
-              <div className="text-sm">
-                <div className="font-mono text-sm font-medium text-card-foreground">
+              <div className='text-sm'>
+                <div className='font-mono text-sm font-medium text-card-foreground'>
                   {meetingCode}
                 </div>
                 <button
                   onClick={() =>
                     meetingCode && navigator.clipboard.writeText(meetingCode)
                   }
-                  className="text-xs text-primary hover:underline"
+                  className='text-xs text-primary hover:underline'
                 >
                   Copiar código
                 </button>
@@ -1092,42 +1205,49 @@ export const useEventsColumns = (
 
             if (phoneEntries.length === 0) {
               return (
-                <span className="text-muted-foreground">Sin acceso telefónico</span>
+                <span className='text-muted-foreground'>
+                  Sin acceso telefónico
+                </span>
               );
             }
 
             return (
-              <div className="text-sm space-y-1">
+              <div className='text-sm space-y-1'>
                 {phoneEntries.map((phone: any, index: number) => (
-                  <div key={index} className="p-3 bg-muted rounded-lg border border-border">
-                    <div className="flex items-center gap-2">
-                      <span><Phone className="h-4 w-4" /></span>
-                      <div className="flex-1">
-                        <div className="font-mono text-sm text-foreground">
+                  <div
+                    key={index}
+                    className='p-3 bg-muted rounded-lg border border-border'
+                  >
+                    <div className='flex items-center gap-2'>
+                      <span>
+                        <Phone className='h-4 w-4' />
+                      </span>
+                      <div className='flex-1'>
+                        <div className='font-mono text-sm text-foreground'>
                           {phone.label ||
                             phone.uri?.replace("tel:", "") ||
                             "No disponible"}
                         </div>
                         {phone.pin && (
-                          <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded mt-1">
+                          <div className='text-xs text-muted-foreground bg-muted px-2 py-1 rounded mt-1'>
                             PIN:{" "}
-                            <span className="font-mono font-bold">
+                            <span className='font-mono font-bold'>
                               {phone.pin}
                             </span>
                           </div>
                         )}
                         {phone.regionCode && (
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className='text-xs text-muted-foreground mt-1'>
                             {phone.regionCode}
                           </div>
                         )}
                       </div>
                       <button
                         onClick={() => window.open(phone.uri, "_self")}
-                        className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90"
-                        title="Llamar"
+                        className='text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90'
+                        title='Llamar'
                       >
-                        <Phone className="h-4 w-4" /> Llamar
+                        <Phone className='h-4 w-4' /> Llamar
                       </button>
                     </div>
                   </div>
@@ -1145,13 +1265,14 @@ export const useEventsColumns = (
             const conferenceData = event(row).conferenceData;
             const notes = conferenceData?.notes;
 
-            if (!notes) return <span className="text-muted-foreground">Sin notas</span>;
+            if (!notes)
+              return <span className='text-muted-foreground'>Sin notas</span>;
 
             return (
-              <div className="text-sm max-w-[200px]">
-                <div className="p-3 bg-muted rounded-lg border border-border">
-                  <div className="text-foreground text-xs flex items-center gap-1.5">
-                    <FileText className="h-3.5 w-3.5" />
+              <div className='text-sm max-w-[200px]'>
+                <div className='p-3 bg-muted rounded-lg border border-border'>
+                  <div className='text-foreground text-xs flex items-center gap-1.5'>
+                    <FileText className='h-3.5 w-3.5' />
                     {notes}
                   </div>
                 </div>
@@ -1167,8 +1288,12 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const recurrence = event(row).recurrence;
             if (!recurrence || recurrence.length === 0)
-              return <span className="text-muted-foreground">-</span>;
-            return <Badge className="bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors">Recurrente</Badge>;
+              return <span className='text-muted-foreground'>-</span>;
+            return (
+              <Badge className='bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors'>
+                Recurrente
+              </Badge>
+            );
           },
         };
 
@@ -1178,11 +1303,12 @@ export const useEventsColumns = (
           header: "Color",
           cell: ({ row }) => {
             const colorId = event(row).colorId;
-            if (!colorId) return <span className="text-muted-foreground">-</span>;
+            if (!colorId)
+              return <span className='text-muted-foreground'>-</span>;
             return (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-muted-foreground"></div>
-                <span className="text-sm">Color {colorId}</span>
+              <div className='flex items-center gap-2'>
+                <div className='w-4 h-4 rounded-full bg-muted-foreground'></div>
+                <span className='text-sm'>Color {colorId}</span>
               </div>
             );
           },
@@ -1197,7 +1323,8 @@ export const useEventsColumns = (
             const calendarId = (eventData as any).calendarId;
             const eventId = eventData.id!;
 
-            if (!calendarId) return <span className="text-muted-foreground">-</span>;
+            if (!calendarId)
+              return <span className='text-muted-foreground'>-</span>;
 
             return (
               <EditableCalendar
@@ -1220,22 +1347,22 @@ export const useEventsColumns = (
           id: "actions",
           header: "Acciones",
           cell: ({ row }) => (
-            <div className="flex items-center gap-1">
+            <div className='flex items-center gap-1'>
               {event(row).htmlLink && (
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => window.open(event(row).htmlLink, "_blank")}
-                  className="h-8 w-8 p-0"
-                  title="Ver en Google Calendar"
+                  className='h-8 w-8 p-0'
+                  title='Ver en Google Calendar'
                 >
-                  <EyeIcon className="h-4 w-4" />
+                  <EyeIcon className='h-4 w-4' />
                 </Button>
               )}
 
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() =>
                   router.push(
                     `/admin/calendar/events/${event(row).id}?calendarId=${
@@ -1243,25 +1370,25 @@ export const useEventsColumns = (
                     }`
                   )
                 }
-                className="h-8 w-8 p-0"
-                title="Editar evento"
+                className='h-8 w-8 p-0'
+                title='Editar evento'
               >
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className='h-4 w-4' />
               </Button>
 
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() =>
                   handleDeleteEvent(
                     event(row).id!,
                     (event(row) as any).calendarId || defaultCalendarId
                   )
                 }
-                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                title="Eliminar evento"
+                className='h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10'
+                title='Eliminar evento'
               >
-                <TrashIcon className="h-4 w-4" />
+                <TrashIcon className='h-4 w-4' />
               </Button>
             </div>
           ),
@@ -1277,23 +1404,23 @@ export const useEventsColumns = (
           cell: ({ row }) => {
             const value = (event(row) as any)[columnId];
             if (value === undefined || value === null)
-              return <span className="text-muted-foreground">-</span>;
+              return <span className='text-muted-foreground'>-</span>;
 
             if (typeof value === "boolean") {
               return (
-                <Badge className="bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors">
+                <Badge className='bg-muted-foreground text-card border-card-foreground/20 font-semibold shadow-sm hover:bg-muted-foreground/90 transition-colors'>
                   {value ? "Sí" : "No"}
                 </Badge>
               );
             }
 
             if (typeof value === "object") {
-              return <span className="text-sm text-foreground">Objeto</span>;
+              return <span className='text-sm text-foreground'>Objeto</span>;
             }
 
             return (
               <div
-                className="text-sm truncate max-w-[200px]"
+                className='text-sm truncate max-w-[200px]'
                 title={String(value)}
               >
                 {String(value)}

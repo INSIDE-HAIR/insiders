@@ -59,7 +59,7 @@ export default function Page() {
 
         const menuItems = generateSideMenu(newDataStructure);
         setSideMenu({ list: menuItems });
-        setTab(menuItems[0].id);
+        setTab(menuItems[0]?.id || "");
       } catch (err) {
         setError(err instanceof Error ? err : new Error("An error occurred"));
       } finally {
@@ -90,7 +90,7 @@ export default function Page() {
         <strong className='font-bold py-2 bg-zinc-700  text-zinc-50  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13'>
           Marketing Salon
         </strong>
-        <strong className='font-bold py-2 bg-inside  text-zinc-900  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13'>
+        <strong className='font-bold py-2 bg-primary  text-zinc-900  text-center col-start-1 lg:col-start-3 col-end-5 md:col-end-9 lg:col-end-13'>
           {year}
         </strong>
       </TailwindGrid>
@@ -116,9 +116,9 @@ export default function Page() {
                     item.active && (
                       <li
                         key={index + item.id}
-                        className={`relative border-b cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-inside hover:border-inside  w-full ${
+                        className={`relative border-b cursor-pointer py-2 first:mt-0 flex items-center justify-center mx-auto text-center  hover:text-primary hover:border-primary  w-full ${
                           item.id === tab
-                            ? " text-inside border-inside"
+                            ? " text-primary border-primary"
                             : "text-zinc-50"
                         }`}
                         style={{ order: item.order }}
@@ -157,9 +157,9 @@ export default function Page() {
                       item.active && (
                         <li
                           key={index + item.id}
-                          className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:text-inside hover:border-inside  w-full ${
+                          className={`relative cursor-pointer  py-2   first:mt-0 flex items-center justify-center mx-auto text-center hover:text-primary hover:border-primary  w-full ${
                             item.id === tab
-                              ? " text-inside border-inside"
+                              ? " text-primary border-primary"
                               : "text-zinc-50"
                           }`}
                           style={{ order: item.order }}
