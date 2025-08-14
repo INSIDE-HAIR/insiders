@@ -850,7 +850,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   <TabsContent value="vista-general" className="flex-1 mt-4">
                     <ScrollArea className="h-full max-h-[50vh]">
                       <div className="space-y-4 pr-4">
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
                   {/* Conference Records */}
                   <Card>
                     <CardHeader>
@@ -1088,6 +1088,64 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                               </div>
                             ))
                           }
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Smart Notes */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Icons.Sparkles className="h-5 w-5 text-primary" />
+                        Notas Inteligentes
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {activityLoading ? (
+                        <div className="flex items-center justify-center py-4">
+                          <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                        </div>
+                      ) : activityData.smartNotes.length === 0 ? (
+                        <p className="text-muted-foreground text-center py-4 text-sm">
+                          No hay notas inteligentes disponibles
+                        </p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {activityData.smartNotes.slice(0, 3).map((note: any, index: number) => (
+                            <div key={index} className="p-2 bg-muted rounded text-sm">
+                              <div className="font-medium">
+                                {new Date(note.startTime || note.conferenceStartTime).toLocaleDateString('es-ES', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: '2-digit'
+                                })}
+                              </div>
+                              <div className="text-muted-foreground">
+                                Estado: {note.status === 'Completado' ? 'Disponible' : 'Procesando'}
+                              </div>
+                              {note.confidence && (
+                                <div className="text-xs text-muted-foreground">
+                                  Confianza: {note.confidence}%
+                                </div>
+                              )}
+                              {note.summary && (
+                                <div className="mt-1 text-xs text-muted-foreground">
+                                  {note.summary.substring(0, 80)}...
+                                </div>
+                              )}
+                              {note.downloadLinks?.summary && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="mt-1 h-6 text-xs"
+                                  onClick={() => window.open(note.downloadLinks.summary, '_blank')}
+                                >
+                                  Ver resumen
+                                </Button>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       )}
                     </CardContent>
