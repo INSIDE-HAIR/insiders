@@ -11,7 +11,7 @@ export interface StoredMeetSpace {
 }
 
 export class MeetStorageService {
-  private prisma: PrismaClient;
+  public prisma: PrismaClient;
 
   constructor() {
     this.prisma = new PrismaClient();
@@ -196,6 +196,247 @@ export class MeetStorageService {
       createdBy: space.createdBy,
       lastSyncAt: space.lastSyncAt,
     };
+  }
+
+  /**
+   * TAGS MANAGEMENT
+   */
+  
+  /**
+   * Crea un nuevo tag con jerarquía
+   */
+  async createTag(data: {
+    name: string;
+    slug: string;
+    description?: string;
+    color?: string;
+    icon?: string;
+    parentId?: string;
+    createdBy?: string;
+  }): Promise<any> {
+    try {
+      // Calcular path y level basado en parent
+      let path = `/${data.slug}`;
+      let level = 0;
+      
+      if (data.parentId) {
+        const parent = await this.prisma.meetTag.findUnique({
+          where: { id: data.parentId }
+        });
+        if (parent) {
+          path = `${parent.path}/${data.slug}`;
+          level = parent.level + 1;
+        }
+      }
+      
+      const tag = await this.prisma.meetTag.create({
+        data: {
+          ...data,
+          parentId: data.parentId || null, // Ensure empty string becomes null
+          path,
+          level
+        }
+      });
+      
+      console.log(`🏷️ Tag created: ${tag.name} (${tag.path})`);
+      return tag;
+    } catch (error) {
+      console.error('Error creating tag:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * GROUPS MANAGEMENT
+   */
+  
+  /**
+   * Obtiene tags con filtros opcionales
+   */
+  async getTags(where?: any, include?: any, orderBy?: any): Promise<any[]> {
+    try {
+      const tags = await this.prisma.meetTag.findMany({
+        where,
+        include,
+        orderBy
+      });
+      return tags;
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene un tag por slug
+   */
+  async getTagBySlug(slug: string): Promise<any> {
+    try {
+      const tag = await this.prisma.meetTag.findUnique({
+        where: { slug }
+      });
+      return tag;
+    } catch (error) {
+      console.error('Error fetching tag by slug:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene grupos con filtros opcionales
+   */
+  async getGroups(where?: any, include?: any, orderBy?: any): Promise<any[]> {
+    try {
+      const groups = await this.prisma.meetGroup.findMany({
+        where,
+        include,
+        orderBy
+      });
+      return groups;
+    } catch (error) {
+      console.error('Error fetching groups:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene un grupo por slug
+   */
+  async getGroupBySlug(slug: string): Promise<any> {
+    try {
+      const group = await this.prisma.meetGroup.findUnique({
+        where: { slug }
+      });
+      return group;
+    } catch (error) {
+      console.error('Error fetching group by slug:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Crea un nuevo grupo con jerarquía
+   */
+  async createGroup(data: {
+    name: string;
+    slug: string;
+    description?: string;
+    color?: string;
+    parentId?: string;
+    createdBy?: string;
+  }): Promise<any> {
+    try {
+      // Calcular path y level basado en parent
+      let path = `/${data.slug}`;
+      let level = 0;
+      
+      if (data.parentId) {
+        const parent = await this.prisma.meetGroup.findUnique({
+          where: { id: data.parentId }
+        });
+        if (parent) {
+          path = `${parent.path}/${data.slug}`;
+          level = parent.level + 1;
+        }
+      }
+      
+      const group = await this.prisma.meetGroup.create({
+        data: {
+          ...data,
+          parentId: data.parentId || null, // Ensure empty string becomes null
+          path,
+          level
+        }
+      });
+      
+      console.log(`📁 Group created: ${group.name} (${group.path})`);
+      return group;
+    } catch (error) {
+      console.error('Error creating group:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * SPACE-TAG-GROUP ASSIGNMENT
+   */
+  
+  /**
+   * Asigna tags a un space
+   */
+  async assignTagsToSpace(spaceId: string, tagIds: string[], assignedBy?: string): Promise<void> {
+    try {
+      const space = await this.prisma.meetSpace.findFirst({
+        where: { spaceId }
+      });
+      
+      if (!space) {
+        throw new Error(`Space ${spaceId} not found`);
+      }
+      
+      // Crear asignaciones
+      await this.prisma.meetSpaceTag.createMany({
+        data: tagIds.map(tagId => ({
+          spaceId: space.id,
+          tagId,
+          createdBy: assignedBy
+        }))
+      });
+      
+      console.log(`🏷️ Assigned ${tagIds.length} tags to space ${spaceId}`);
+    } catch (error) {
+      console.error('Error assigning tags:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Asigna grupos a un space
+   */
+  async assignGroupsToSpace(spaceId: string, groupIds: string[], assignedBy?: string): Promise<void> {
+    try {
+      const space = await this.prisma.meetSpace.findFirst({
+        where: { spaceId }
+      });
+      
+      if (!space) {
+        throw new Error(`Space ${spaceId} not found`);
+      }
+      
+      // Crear asignaciones
+      await this.prisma.meetSpaceGroup.createMany({
+        data: groupIds.map(groupId => ({
+          spaceId: space.id,
+          groupId,
+          createdBy: assignedBy
+        }))
+      });
+      
+      // Aplicar tags por defecto del grupo
+      for (const groupId of groupIds) {
+        const defaultTags = await this.prisma.meetGroupDefaultTag.findMany({
+          where: { groupId }
+        });
+        
+        if (defaultTags.length > 0) {
+          await this.prisma.meetSpaceTag.createMany({
+            data: defaultTags.map(dt => ({
+              spaceId: space.id,
+              tagId: dt.tagId,
+              createdBy: assignedBy,
+              isAutoAssigned: true
+            }))
+          });
+          
+          console.log(`🏷️ Auto-assigned ${defaultTags.length} default tags from group`);
+        }
+      }
+      
+      console.log(`📁 Assigned ${groupIds.length} groups to space ${spaceId}`);
+    } catch (error) {
+      console.error('Error assigning groups:', error);
+      throw error;
+    }
   }
 
   async disconnect(): Promise<void> {

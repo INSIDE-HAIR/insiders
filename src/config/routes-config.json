@@ -510,6 +510,44 @@
             }
           },
           {
+            "path": "/admin/meet",
+            "label": "Meet",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            },
+            "children": [
+              {
+                "path": "/admin/meet/rooms",
+                "label": "Meet Rooms",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              },
+              {
+                "path": "/admin/meet/analytics",
+                "label": "Meet Analytics",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              },
+              {
+                "path": "/admin/meet/settings",
+                "label": "Meet Settings",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              }
+            ]
+          },
+          {
             "path": "/admin/video-conferencing",
             "label": "Video Conferencing",
             "access": {

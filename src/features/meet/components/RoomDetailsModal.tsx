@@ -42,6 +42,11 @@ import {
   DocumentTextIcon,
   MicrophoneIcon,
   CameraIcon,
+  CheckCircleIcon,
+  FolderIcon,
+  InformationCircleIcon,
+  TagIcon,
+  PencilIcon,
 } from "@heroicons/react/24/outline";
 
 interface MeetRoom {
@@ -67,7 +72,7 @@ interface MeetRoom {
 interface RoomDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  room: MeetRoom;
+  room: MeetRoom & { _metadata?: { localId?: string; displayName?: string; createdAt?: Date; createdBy?: string; lastSyncAt?: Date; source?: string; } };
   onUpdate: () => void;
   onDelete: () => void;
 }
@@ -112,6 +117,13 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   const [showParticipantsReport, setShowParticipantsReport] = useState(false);
   const [reportLoading, setReportLoading] = useState(false);
   const [activitySubTab, setActivitySubTab] = useState("vista-general");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [availableTags, setAvailableTags] = useState<any[]>([]);
+  const [availableGroups, setAvailableGroups] = useState<any[]>([]);
+  const [assignedTags, setAssignedTags] = useState<any[]>([]);
+  const [assignedGroups, setAssignedGroups] = useState<any[]>([]);
+  const [organizationLoading, setOrganizationLoading] = useState(false);
   const { toast } = useToast();
 
   // States para agregar miembros
@@ -122,6 +134,14 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   const spaceId = room.name?.split('/').pop() || '';
 
   useEffect(() => {
+    // Initialize edit name with current display name
+    setEditName(room._metadata?.displayName || spaceId);
+  }, [room._metadata?.displayName, spaceId]);
+
+  useEffect(() => {
+    if (isOpen && activeTab === "organization") {
+      fetchOrganizationData();
+    }
     if (isOpen && activeTab === "members") {
       fetchMembers();
     }
@@ -398,6 +418,209 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
     }
   };
 
+  const fetchOrganizationData = async () => {
+    try {
+      setOrganizationLoading(true);
+      
+      // Fetch available tags and groups
+      const [tagsResponse, groupsResponse] = await Promise.all([
+        fetch("/api/meet/tags?parentId=all"),
+        fetch("/api/meet/groups?parentId=all")
+      ]);
+
+      if (tagsResponse.ok) {
+        const tagsData = await tagsResponse.json();
+        setAvailableTags(tagsData.tags || []);
+      }
+
+      if (groupsResponse.ok) {
+        const groupsData = await groupsResponse.json();
+        setAvailableGroups(groupsData.groups || []);
+      }
+
+      // Fetch current assignments for this space
+      const assignmentsResponse = await fetch(`/api/meet/spaces/${spaceId}/assignments`);
+      if (assignmentsResponse.ok) {
+        const assignmentsData = await assignmentsResponse.json();
+        setAssignedTags(assignmentsData.assignedTags || []);
+        setAssignedGroups(assignmentsData.assignedGroups || []);
+      } else {
+        // Space might not exist in DB yet, which is fine
+        setAssignedTags([]);
+        setAssignedGroups([]);
+      }
+
+    } catch (error) {
+      console.error("Error fetching organization data:", error);
+      toast({
+        title: "Error al cargar datos de organización",
+        description: "No se pudieron cargar los tags y grupos",
+        variant: "destructive",
+      });
+    } finally {
+      setOrganizationLoading(false);
+    }
+  };
+
+  const handleAssignTag = async (tagId: string) => {
+    try {
+      const response = await fetch(`/api/meet/spaces/${spaceId}/assign-tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tagIds: [tagId] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al asignar tag");
+      }
+
+      const tag = availableTags.find(t => t.id === tagId);
+      if (tag) {
+        setAssignedTags(prev => [...prev, tag]);
+        toast({
+          title: "Tag asignado",
+          description: `Tag "${tag.name}" asignado a la sala`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error al asignar tag",
+        description: error.message || "No se pudo asignar el tag",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUnassignTag = async (tagId: string) => {
+    try {
+      const response = await fetch(`/api/meet/spaces/${spaceId}/unassign-tags`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tagIds: [tagId] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al desasignar tag");
+      }
+
+      const tag = assignedTags.find(t => t.id === tagId);
+      setAssignedTags(prev => prev.filter(t => t.id !== tagId));
+      
+      if (tag) {
+        toast({
+          title: "Tag desasignado",
+          description: `Tag "${tag.name}" removido de la sala`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error al desasignar tag",
+        description: error.message || "No se pudo desasignar el tag",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAssignGroup = async (groupId: string) => {
+    try {
+      const response = await fetch(`/api/meet/spaces/${spaceId}/assign-groups`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ groupIds: [groupId] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al asignar grupo");
+      }
+
+      const group = availableGroups.find(g => g.id === groupId);
+      if (group) {
+        setAssignedGroups(prev => [...prev, group]);
+        toast({
+          title: "Grupo asignado",
+          description: `Grupo "${group.name}" asignado a la sala`,
+        });
+        
+        // Refresh tags as groups might have auto-assigned some
+        fetchOrganizationData();
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error al asignar grupo",
+        description: error.message || "No se pudo asignar el grupo",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUnassignGroup = async (groupId: string) => {
+    try {
+      const response = await fetch(`/api/meet/spaces/${spaceId}/unassign-groups`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ groupIds: [groupId] }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al desasignar grupo");
+      }
+
+      const group = assignedGroups.find(g => g.id === groupId);
+      setAssignedGroups(prev => prev.filter(g => g.id !== groupId));
+      
+      if (group) {
+        toast({
+          title: "Grupo desasignado",
+          description: `Grupo "${group.name}" removido de la sala`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error al desasignar grupo",
+        description: error.message || "No se pudo desasignar el grupo",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditRoomName = async () => {
+    if (!editName.trim() || editName === (room._metadata?.displayName || spaceId)) {
+      setIsEditingName(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/meet/rooms/${spaceId}/edit-name`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: editName.trim() }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al actualizar nombre");
+      }
+
+      toast({
+        title: "Nombre actualizado",
+        description: `Sala renombrada a "${editName.trim()}"`,
+      });
+
+      setIsEditingName(false);
+      onUpdate(); // Refresh the room data in parent component
+    } catch (error: any) {
+      console.error("Error editing room name:", error);
+      toast({
+        title: "Error al actualizar nombre",
+        description: error.message || "No se pudo actualizar el nombre",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDeleteRoom = async () => {
     if (!confirm("¿Estás seguro de que deseas eliminar esta sala?")) {
       return;
@@ -467,7 +690,55 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <VideoCameraIcon className="h-5 w-5 text-primary" />
-            Detalles de la Sala - {spaceId}
+            {isEditingName ? (
+              <div className="flex items-center gap-2 flex-1">
+                <Input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') handleEditRoomName();
+                    if (e.key === 'Escape') {
+                      setIsEditingName(false);
+                      setEditName(room._metadata?.displayName || spaceId);
+                    }
+                  }}
+                  className="text-base font-semibold"
+                  autoFocus
+                />
+                <Button
+                  size="sm"
+                  onClick={handleEditRoomName}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Icons.SpinnerIcon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <CheckCircleIcon className="h-4 w-4" />
+                  )}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    setIsEditingName(false);
+                    setEditName(room._metadata?.displayName || spaceId);
+                  }}
+                >
+                  <XMarkIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 flex-1">
+                <span>Detalles de la Sala - {room._metadata?.displayName || spaceId}</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setIsEditingName(true)}
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </DialogTitle>
           <DialogDescription>
             Gestiona la configuración, miembros y actividad de la sala
@@ -475,8 +746,9 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4 flex-1 flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 flex-shrink-0">
+          <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
             <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="organization">Organización</TabsTrigger>
             <TabsTrigger value="members">Miembros</TabsTrigger>
             <TabsTrigger value="settings">Configuración</TabsTrigger>
             <TabsTrigger value="activity">Actividad</TabsTrigger>
@@ -604,6 +876,199 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                     Los cambios en la configuración pueden tardar unos minutos en aplicarse
                   </AlertDescription>
                 </Alert>
+              </div>
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="organization" className="flex-1 mt-4">
+            <ScrollArea className="h-full max-h-[60vh]">
+              <div className="space-y-6 pr-4">
+                {organizationLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Icons.SpinnerIcon className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  <>
+                    {/* Tags Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          <TagIcon className="h-5 w-5 text-primary" />
+                          Tags
+                        </h3>
+                        <Badge variant="outline">
+                          {assignedTags.length} asignados
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        {/* Assigned Tags */}
+                        {assignedTags.length > 0 && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Tags Asignados</Label>
+                            <div className="flex flex-wrap gap-2">
+                              {assignedTags.map((tag) => (
+                                <div
+                                  key={`assigned-tag-${tag.id}`}
+                                  className="flex items-center gap-2 px-3 py-1 bg-muted rounded-full text-sm"
+                                >
+                                  <div
+                                    className="h-3 w-3 rounded-full"
+                                    style={{ backgroundColor: tag.color }}
+                                  />
+                                  <span>{tag.name}</span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                                    onClick={() => handleUnassignTag(tag.id)}
+                                  >
+                                    <XMarkIcon className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Available Tags */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Tags Disponibles</Label>
+                          <div className="max-h-32 overflow-y-auto space-y-1 border rounded-md p-2">
+                            {availableTags
+                              .filter(tag => !assignedTags.some(at => at.id === tag.id))
+                              .map((tag) => (
+                                <div
+                                  key={`available-tag-${tag.id}`}
+                                  className="flex items-center justify-between p-2 hover:bg-muted rounded cursor-pointer"
+                                  onClick={() => handleAssignTag(tag.id)}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <div
+                                      className="h-3 w-3 rounded-full"
+                                      style={{ backgroundColor: tag.color }}
+                                    />
+                                    <span className="text-sm" style={{ paddingLeft: `${tag.level * 12}px` }}>
+                                      {tag.name}
+                                    </span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {tag.slug}
+                                    </Badge>
+                                  </div>
+                                  <PlusIcon className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              ))}
+                            {availableTags.filter(tag => !assignedTags.some(at => at.id === tag.id)).length === 0 && (
+                              <p className="text-sm text-muted-foreground text-center py-4">
+                                Todos los tags disponibles ya están asignados
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Groups Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          <FolderIcon className="h-5 w-5 text-primary" />
+                          Grupos
+                        </h3>
+                        <Badge variant="outline">
+                          {assignedGroups.length} asignados
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        {/* Assigned Groups */}
+                        {assignedGroups.length > 0 && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Grupos Asignados</Label>
+                            <div className="space-y-2">
+                              {assignedGroups.map((group) => (
+                                <div
+                                  key={`assigned-group-${group.id}`}
+                                  className="flex items-center justify-between p-3 border rounded-lg"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className="h-4 w-4 rounded"
+                                      style={{ backgroundColor: group.color }}
+                                    />
+                                    <div>
+                                      <p className="font-medium">{group.name}</p>
+                                      {group.path && (
+                                        <p className="text-xs text-muted-foreground">{group.path}</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-destructive hover:text-destructive"
+                                    onClick={() => handleUnassignGroup(group.id)}
+                                  >
+                                    <TrashIcon className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Available Groups */}
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Grupos Disponibles</Label>
+                          <div className="max-h-32 overflow-y-auto space-y-1 border rounded-md p-2">
+                            {availableGroups
+                              .filter(group => !assignedGroups.some(ag => ag.id === group.id))
+                              .map((group) => (
+                                <div
+                                  key={`available-group-${group.id}`}
+                                  className="flex items-center justify-between p-2 hover:bg-muted rounded cursor-pointer"
+                                  onClick={() => handleAssignGroup(group.id)}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <div
+                                      className="h-3 w-3 rounded"
+                                      style={{ backgroundColor: group.color }}
+                                    />
+                                    <span className="text-sm" style={{ paddingLeft: `${group.level * 12}px` }}>
+                                      {group.name}
+                                    </span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {group.slug}
+                                    </Badge>
+                                  </div>
+                                  <PlusIcon className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                              ))}
+                            {availableGroups.filter(group => !assignedGroups.some(ag => ag.id === group.id)).length === 0 && (
+                              <p className="text-sm text-muted-foreground text-center py-4">
+                                Todos los grupos disponibles ya están asignados
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Info Panel */}
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <InformationCircleIcon className="h-5 w-5 text-primary mt-0.5" />
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium">Organización Automática</p>
+                          <p className="text-xs text-muted-foreground">
+                            Los grupos pueden asignar automáticamente ciertos tags a la sala. 
+                            Los tags asignados automáticamente aparecerán con un indicador especial.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </ScrollArea>
           </TabsContent>

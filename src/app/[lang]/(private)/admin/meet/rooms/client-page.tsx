@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Label } from "@/src/components/ui/label";
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Badge } from "@/src/components/ui/badge";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
@@ -20,9 +21,11 @@ import {
   ArrowPathIcon,
   ExclamationTriangleIcon,
   TrashIcon,
-  PencilIcon,
-  CheckCircleIcon,
-  XMarkIcon
+  FunnelIcon,
+  TagIcon,
+  FolderIcon,
+  XMarkIcon,
+  CheckCircleIcon
 } from "@heroicons/react/24/outline";
 import { CreateRoomModal } from "@/src/features/meet/components/CreateRoomModal";
 import { RoomDetailsModal } from "@/src/features/meet/components/RoomDetailsModal";
@@ -66,15 +69,40 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
-  const [isEditingRoom, setIsEditingRoom] = useState<string | null>(null);
-  const [editName, setEditName] = useState("");
   const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [availableTags, setAvailableTags] = useState<any[]>([]);
+  const [availableGroups, setAvailableGroups] = useState<any[]>([]);
+  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set());
+  const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
+  const [showFilters, setShowFilters] = useState(false);
   const { toast } = useToast();
 
   // Cargar salas al montar el componente
   useEffect(() => {
     fetchRooms();
+    fetchFiltersData();
   }, []);
+
+  const fetchFiltersData = async () => {
+    try {
+      const [tagsResponse, groupsResponse] = await Promise.all([
+        fetch("/api/meet/tags?parentId=all"),
+        fetch("/api/meet/groups?parentId=all")
+      ]);
+
+      if (tagsResponse.ok) {
+        const tagsData = await tagsResponse.json();
+        setAvailableTags(tagsData.tags || []);
+      }
+
+      if (groupsResponse.ok) {
+        const groupsData = await groupsResponse.json();
+        setAvailableGroups(groupsData.groups || []);
+      }
+    } catch (error) {
+      console.error("Error fetching filters data:", error);
+    }
+  };
 
   const fetchRooms = async () => {
     try {
@@ -186,52 +214,6 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     setSelectedRoom(null);
   };
 
-  // Función para editar nombre de sala
-  const handleEditRoomName = async (spaceId: string, newName: string) => {
-    try {
-      const response = await fetch(`/api/meet/rooms/${spaceId}/edit-name`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: newName }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Error al actualizar nombre");
-      }
-
-      // Actualizar estado local
-      setRooms(prev => prev.map(room => {
-        const roomSpaceId = room.name?.split('/').pop();
-        if (roomSpaceId === spaceId) {
-          return {
-            ...room,
-            _metadata: {
-              ...room._metadata,
-              displayName: newName
-            }
-          };
-        }
-        return room;
-      }));
-
-      toast({
-        title: "Nombre actualizado",
-        description: `Sala renombrada a "${newName}"`,
-      });
-
-      setIsEditingRoom(null);
-      setEditName("");
-
-    } catch (error: any) {
-      console.error("Error editing room name:", error);
-      toast({
-        title: "Error al actualizar nombre",
-        description: error.message || "No se pudo actualizar el nombre",
-        variant: "destructive",
-      });
-    }
-  };
 
   // Función para eliminar sala de BD
   const handleDeleteRoomFromDB = async (spaceId: string) => {
@@ -331,6 +313,36 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     });
   };
 
+  // Funciones para manejar filtros
+  const toggleTagFilter = (tagId: string) => {
+    setSelectedTags(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(tagId)) {
+        newSet.delete(tagId);
+      } else {
+        newSet.add(tagId);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleGroupFilter = (groupId: string) => {
+    setSelectedGroups(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(groupId)) {
+        newSet.delete(groupId);
+      } else {
+        newSet.add(groupId);
+      }
+      return newSet;
+    });
+  };
+
+  const clearAllFilters = () => {
+    setSelectedTags(new Set());
+    setSelectedGroups(new Set());
+  };
+
   const handleSelectAll = () => {
     if (selectedRooms.size === filteredRooms.length) {
       setSelectedRooms(new Set());
@@ -340,29 +352,47 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     }
   };
 
-  const startEditingRoom = (spaceId: string, currentName: string) => {
-    setIsEditingRoom(spaceId);
-    setEditName(currentName);
-  };
 
-  const cancelEditingRoom = () => {
-    setIsEditingRoom(null);
-    setEditName("");
-  };
-
-  // Filtrar salas por búsqueda
+  // Filtrar salas por búsqueda, tags y grupos
   const filteredRooms = rooms.filter(room => {
     const searchLower = searchTerm.toLowerCase();
     const spaceId = room.name?.split('/').pop() || '';
     const displayName = room._metadata?.displayName || '';
     const memberEmails = room.members?.map(m => m.email.toLowerCase()).join(' ') || '';
     
-    return (
+    // Filtro por búsqueda
+    const matchesSearch = (
       spaceId.toLowerCase().includes(searchLower) ||
       displayName.toLowerCase().includes(searchLower) ||
       room.meetingCode?.toLowerCase().includes(searchLower) ||
       memberEmails.includes(searchLower)
     );
+    
+    if (!matchesSearch) return false;
+    
+    // Filtro por tags (si hay tags seleccionados)
+    if (selectedTags.size > 0) {
+      // Por ahora retornamos true ya que no tenemos las asignaciones cargadas
+      // TODO: Implementar carga de asignaciones desde la API
+      // const roomTags = getRoomTags(spaceId);
+      // const hasSelectedTag = Array.from(selectedTags).some(tagId => 
+      //   roomTags.some(tag => tag.id === tagId)
+      // );
+      // if (!hasSelectedTag) return false;
+    }
+    
+    // Filtro por grupos (si hay grupos seleccionados)  
+    if (selectedGroups.size > 0) {
+      // Por ahora retornamos true ya que no tenemos las asignaciones cargadas
+      // TODO: Implementar carga de asignaciones desde la API
+      // const roomGroups = getRoomGroups(spaceId);
+      // const hasSelectedGroup = Array.from(selectedGroups).some(groupId => 
+      //   roomGroups.some(group => group.id === groupId)
+      // );
+      // if (!hasSelectedGroup) return false;
+    }
+    
+    return true;
   });
 
   const getAccessTypeIcon = (accessType?: string) => {
@@ -425,14 +455,177 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       {/* Search Bar */}
       <Card>
         <CardContent className="pt-6">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar por nombre, ID, código de reunión o participantes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="space-y-4">
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar por nombre, ID, código de reunión o participantes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            {/* Filters Toggle */}
+            <div className="flex items-center justify-between">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2"
+              >
+                <FunnelIcon className="h-4 w-4" />
+                Filtros
+                {(selectedTags.size > 0 || selectedGroups.size > 0) && (
+                  <Badge variant="secondary" className="ml-1">
+                    {selectedTags.size + selectedGroups.size}
+                  </Badge>
+                )}
+              </Button>
+              
+              {(selectedTags.size > 0 || selectedGroups.size > 0) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="text-muted-foreground"
+                >
+                  Limpiar filtros
+                </Button>
+              )}
+            </div>
+
+            {/* Filters Panel */}
+            {showFilters && (
+              <div className="border rounded-lg p-4 bg-muted/50 space-y-4">
+                {/* Tags Filter */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium flex items-center gap-2">
+                    <TagIcon className="h-4 w-4" />
+                    Filtrar por Tags
+                  </Label>
+                  {availableTags.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                      {availableTags.map((tag) => (
+                        <div
+                          key={tag.id}
+                          className={cn(
+                            "flex items-center gap-2 p-2 rounded cursor-pointer transition-colors",
+                            selectedTags.has(tag.id)
+                              ? "bg-primary/10 border border-primary"
+                              : "bg-background border border-muted hover:border-muted-foreground"
+                          )}
+                          onClick={() => toggleTagFilter(tag.id)}
+                        >
+                          <div
+                            className="h-3 w-3 rounded-full"
+                            style={{ backgroundColor: tag.color }}
+                          />
+                          <span className="text-sm truncate" style={{ paddingLeft: `${tag.level * 8}px` }}>
+                            {tag.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No hay tags disponibles</p>
+                  )}
+                </div>
+
+                {/* Groups Filter */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium flex items-center gap-2">
+                    <FolderIcon className="h-4 w-4" />
+                    Filtrar por Grupos
+                  </Label>
+                  {availableGroups.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                      {availableGroups.map((group) => (
+                        <div
+                          key={group.id}
+                          className={cn(
+                            "flex items-center gap-2 p-2 rounded cursor-pointer transition-colors",
+                            selectedGroups.has(group.id)
+                              ? "bg-primary/10 border border-primary"
+                              : "bg-background border border-muted hover:border-muted-foreground"
+                          )}
+                          onClick={() => toggleGroupFilter(group.id)}
+                        >
+                          <div
+                            className="h-3 w-3 rounded"
+                            style={{ backgroundColor: group.color }}
+                          />
+                          <span className="text-sm truncate" style={{ paddingLeft: `${group.level * 8}px` }}>
+                            {group.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No hay grupos disponibles</p>
+                  )}
+                </div>
+
+                {/* Active Filters Display */}
+                {(selectedTags.size > 0 || selectedGroups.size > 0) && (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Filtros Activos</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.from(selectedTags).map((tagId) => {
+                        const tag = availableTags.find(t => t.id === tagId);
+                        if (!tag) return null;
+                        return (
+                          <Badge
+                            key={`tag-${tagId}`}
+                            variant="secondary"
+                            className="flex items-center gap-1"
+                          >
+                            <div
+                              className="h-2 w-2 rounded-full"
+                              style={{ backgroundColor: tag.color }}
+                            />
+                            {tag.name}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground"
+                              onClick={() => toggleTagFilter(tagId)}
+                            >
+                              <XMarkIcon className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        );
+                      })}
+                      {Array.from(selectedGroups).map((groupId) => {
+                        const group = availableGroups.find(g => g.id === groupId);
+                        if (!group) return null;
+                        return (
+                          <Badge
+                            key={`group-${groupId}`}
+                            variant="outline"
+                            className="flex items-center gap-1"
+                          >
+                            <div
+                              className="h-2 w-2 rounded"
+                              style={{ backgroundColor: group.color }}
+                            />
+                            {group.name}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground"
+                              onClick={() => toggleGroupFilter(groupId)}
+                            >
+                              <XMarkIcon className="h-3 w-3" />
+                            </Button>
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -585,7 +778,6 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
             const spaceId = room.name?.split('/').pop() || 'Unknown';
             const isActive = !!room.activeConference?.conferenceRecord;
             const isSelected = selectedRooms.has(spaceId);
-            const isEditingThis = isEditingRoom === spaceId;
             const displayName = room._metadata?.displayName || spaceId;
             
             return (
@@ -594,10 +786,9 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                 className={cn(
                   "transition-all duration-200",
                   isSelected && "ring-2 ring-primary",
-                  !isEditingThis && "cursor-pointer hover:shadow-lg"
+                  "cursor-pointer hover:shadow-lg"
                 )}
                 onClick={(e) => {
-                  if (isEditingThis) return;
                   e.stopPropagation();
                   handleRoomClick(room);
                 }}

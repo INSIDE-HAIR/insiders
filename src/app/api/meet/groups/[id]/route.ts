@@ -1,0 +1,428 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/src/config/auth/auth";
+import { MeetStorageService } from "@/src/features/meet/services/MeetStorageService";
+import { z } from "zod";
+
+// Schema para actualizar grupo
+const updateGroupSchema = z.object({
+  name: z.string().min(1, "Name is required").max(50).optional(),
+  slug: z.string().min(1, "Slug is required").max(50).regex(/^[a-z0-9-]+$/, "Slug must be lowercase with hyphens only").optional(),
+  internalDescription: z.string().optional(),
+  publicDescription: z.string().optional(),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Must be valid hex color").optional(),
+  parentId: z.string().nullable().optional(),
+  isActive: z.boolean().optional(),
+  customId: z.string().optional(),
+  order: z.number().int().optional(),
+  defaultTagIds: z.array(z.string()).optional(), // Para actualizar tags por defecto
+});
+
+/**
+ * GET /api/meet/groups/[id]
+ * Obtiene un grupo específico con toda su información
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  let storageService: MeetStorageService | null = null;
+  
+  try {
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    const resolvedParams = await params;
+    const groupId = resolvedParams.id;
+    
+    storageService = new MeetStorageService();
+    
+    const group = await storageService.prisma.meetGroup.findUnique({
+      where: { id: groupId },
+      include: {
+        parent: true,
+        children: {
+          orderBy: [{ order: 'asc' }, { name: 'asc' }]
+        },
+        defaultTags: {
+          include: {
+            tag: true
+          }
+        },
+        spaceGroups: {
+          include: {
+            space: true
+          }
+        },
+        _count: {
+          select: {
+            children: true,
+            spaceGroups: true,
+            defaultTags: true
+          }
+        }
+      }
+    });
+    
+    if (!group) {
+      return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+    
+    return NextResponse.json(group);
+
+  } catch (error: any) {
+    console.error("Failed to get group:", error);
+    
+    return NextResponse.json({
+      error: "Error getting group",
+      details: error.message
+    }, { status: 500 });
+  } finally {
+    if (storageService) {
+      await storageService.disconnect();
+    }
+  }
+}
+
+/**
+ * PUT /api/meet/groups/[id]
+ * Actualiza un grupo existente
+ */
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  let storageService: MeetStorageService | null = null;
+  
+  try {
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+    }
+
+    const resolvedParams = await params;
+    const groupId = resolvedParams.id;
+    
+    // Parsear y validar body
+    const body = await request.json();
+    const validation = updateGroupSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return NextResponse.json(
+        { 
+          error: "Invalid group data", 
+          details: validation.error.errors 
+        },
+        { status: 400 }
+      );
+    }
+
+    const { defaultTagIds, ...updateData } = validation.data;
+    storageService = new MeetStorageService();
+    
+    // Verificar que el grupo existe
+    const existingGroup = await storageService.prisma.meetGroup.findUnique({
+      where: { id: groupId }
+    });
+    
+    if (!existingGroup) {
+      return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+    
+    // Verificar slug único si se está cambiando
+    if (updateData.slug && updateData.slug !== existingGroup.slug) {
+      const duplicateSlug = await storageService.prisma.meetGroup.findUnique({
+        where: { slug: updateData.slug }
+      });
+      
+      if (duplicateSlug) {
+        return NextResponse.json(
+          { error: "Group with this slug already exists" },
+          { status: 409 }
+        );
+      }
+    }
+    
+    // Si se cambia el parent, recalcular path y level
+    let pathUpdateData: any = {};
+    if (updateData.parentId !== undefined && updateData.parentId !== existingGroup.parentId) {
+      let newPath = `/${updateData.slug || existingGroup.slug}`;
+      let newLevel = 0;
+      
+      if (updateData.parentId) {
+        const newParent = await storageService.prisma.meetGroup.findUnique({
+          where: { id: updateData.parentId }
+        });
+        
+        if (!newParent) {
+          return NextResponse.json(
+            { error: "Parent group not found" },
+            { status: 400 }
+          );
+        }
+        
+        // Prevenir loops de jerarquía
+        if (await isDescendant(groupId, updateData.parentId, storageService)) {
+          return NextResponse.json(
+            { error: "Cannot set descendant as parent (would create loop)" },
+            { status: 400 }
+          );
+        }
+        
+        newPath = `${newParent.path}/${updateData.slug || existingGroup.slug}`;
+        newLevel = newParent.level + 1;
+      }
+      
+      pathUpdateData = { path: newPath, level: newLevel };
+      
+      // También actualizar paths de todos los descendientes
+      await updateDescendantPaths(groupId, newPath, newLevel, storageService);
+    }
+    
+    // Actualizar grupo
+    const updatedGroup = await storageService.prisma.meetGroup.update({
+      where: { id: groupId },
+      data: {
+        ...updateData,
+        ...pathUpdateData
+      }
+    });
+    
+    // Actualizar tags por defecto si se proporcionaron
+    if (defaultTagIds !== undefined) {
+      // Eliminar tags por defecto actuales
+      await storageService.prisma.meetGroupDefaultTag.deleteMany({
+        where: { groupId }
+      });
+      
+      // Agregar nuevos tags por defecto
+      if (defaultTagIds.length > 0) {
+        // Verificar que todos los tags existen
+        const existingTags = await storageService.prisma.meetTag.findMany({
+          where: {
+            id: { in: defaultTagIds }
+          }
+        });
+        
+        if (existingTags.length > 0) {
+          await storageService.prisma.meetGroupDefaultTag.createMany({
+            data: existingTags.map(tag => ({
+              groupId: groupId,
+              tagId: tag.id,
+              createdBy: session.user.id
+            }))
+          });
+          
+          console.log(`🏷️ Updated ${existingTags.length} default tags for group ${updatedGroup.name}`);
+        }
+      }
+    }
+    
+    // Obtener el grupo actualizado con relaciones
+    const groupWithRelations = await storageService.prisma.meetGroup.findUnique({
+      where: { id: groupId },
+      include: {
+        parent: true,
+        children: true,
+        defaultTags: {
+          include: {
+            tag: true
+          }
+        },
+        _count: {
+          select: {
+            children: true,
+            spaceGroups: true,
+            defaultTags: true
+          }
+        }
+      }
+    });
+    
+    // Log de operación
+    await storageService.logOperation(
+      'update_group',
+      groupId,
+      true,
+      200,
+      null,
+      session.user.id
+    );
+    
+    return NextResponse.json(groupWithRelations);
+
+  } catch (error: any) {
+    console.error("Failed to update group:", error);
+    
+    return NextResponse.json(
+      { 
+        error: error.message || "Error updating group",
+        details: error.stack 
+      },
+      { status: 500 }
+    );
+  } finally {
+    if (storageService) {
+      await storageService.disconnect();
+    }
+  }
+}
+
+/**
+ * DELETE /api/meet/groups/[id]
+ * Elimina un grupo
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  let storageService: MeetStorageService | null = null;
+  
+  try {
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+    }
+
+    const resolvedParams = await params;
+    const groupId = resolvedParams.id;
+    
+    storageService = new MeetStorageService();
+    
+    // Verificar que el grupo existe
+    const group = await storageService.prisma.meetGroup.findUnique({
+      where: { id: groupId },
+      include: {
+        children: true,
+        spaceGroups: true,
+        defaultTags: true
+      }
+    });
+    
+    if (!group) {
+      return NextResponse.json({ error: "Group not found" }, { status: 404 });
+    }
+    
+    // Si tiene hijos, preguntar qué hacer
+    if (group.children.length > 0) {
+      return NextResponse.json(
+        { 
+          error: "Group has children",
+          details: "Please reassign or delete children first",
+          childrenCount: group.children.length
+        },
+        { status: 409 }
+      );
+    }
+    
+    // Si está asignado a spaces, desasignar primero
+    if (group.spaceGroups.length > 0) {
+      await storageService.prisma.meetSpaceGroup.deleteMany({
+        where: { groupId }
+      });
+      console.log(`📁 Unassigned group from ${group.spaceGroups.length} spaces`);
+    }
+    
+    // Eliminar tags por defecto del grupo
+    if (group.defaultTags.length > 0) {
+      await storageService.prisma.meetGroupDefaultTag.deleteMany({
+        where: { groupId }
+      });
+      console.log(`🏷️ Removed ${group.defaultTags.length} default tags from group`);
+    }
+    
+    // Eliminar grupo
+    await storageService.prisma.meetGroup.delete({
+      where: { id: groupId }
+    });
+    
+    // Log de operación
+    await storageService.logOperation(
+      'delete_group',
+      groupId,
+      true,
+      200,
+      null,
+      session.user.id
+    );
+    
+    console.log(`🗑️ Group deleted: ${group.name}`);
+    
+    return NextResponse.json({ 
+      success: true,
+      message: `Group "${group.name}" deleted successfully`
+    });
+
+  } catch (error: any) {
+    console.error("Failed to delete group:", error);
+    
+    return NextResponse.json(
+      { 
+        error: error.message || "Error deleting group",
+        details: error.stack 
+      },
+      { status: 500 }
+    );
+  } finally {
+    if (storageService) {
+      await storageService.disconnect();
+    }
+  }
+}
+
+// Helper: verificar si un grupo es descendiente de otro
+async function isDescendant(groupId: string, potentialParentId: string, storageService: MeetStorageService): Promise<boolean> {
+  const descendants = await getAllDescendants(potentialParentId, storageService);
+  return descendants.includes(groupId);
+}
+
+// Helper: obtener todos los descendientes de un grupo
+async function getAllDescendants(groupId: string, storageService: MeetStorageService): Promise<string[]> {
+  const children = await storageService.prisma.meetGroup.findMany({
+    where: { parentId: groupId },
+    select: { id: true }
+  });
+  
+  let descendants = children.map(c => c.id);
+  
+  for (const child of children) {
+    const childDescendants = await getAllDescendants(child.id, storageService);
+    descendants = [...descendants, ...childDescendants];
+  }
+  
+  return descendants;
+}
+
+// Helper: actualizar paths de descendientes
+async function updateDescendantPaths(groupId: string, newParentPath: string, newParentLevel: number, storageService: MeetStorageService): Promise<void> {
+  const children = await storageService.prisma.meetGroup.findMany({
+    where: { parentId: groupId }
+  });
+  
+  for (const child of children) {
+    const newPath = `${newParentPath}/${child.slug}`;
+    const newLevel = newParentLevel + 1;
+    
+    await storageService.prisma.meetGroup.update({
+      where: { id: child.id },
+      data: { path: newPath, level: newLevel }
+    });
+    
+    // Recursivamente actualizar descendientes
+    await updateDescendantPaths(child.id, newPath, newLevel, storageService);
+  }
+}

@@ -1,6 +1,6 @@
-// Meet API Models - ARQUITECTURA SIMPLIFICADA
-// Solo almacena IDs para resolver limitación de listado API
-// Todos los datos vienen frescos de Google Meet API
+// Meet API Models - ARQUITECTURA EXPANDIDA
+// Almacena IDs de spaces + sistema de Tags y Groups jerárquicos
+// Datos de Meet API vienen frescos, organización via tags/groups
 
 model MeetSpace {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -10,8 +10,149 @@ model MeetSpace {
   createdBy   String?   // Usuario que creó el space
   lastSyncAt  DateTime? // Última consulta a API (para referencia)
   
+  // Relaciones con tags (múltiples)
+  spaceTags   MeetSpaceTag[]
+  
+  // Relaciones con groups (múltiples)
+  spaceGroups MeetSpaceGroup[]
+  
   @@index([createdBy])
   @@index([createdAt])
+}
+
+// MeetTag - Etiquetas jerárquicas para clasificación y filtrado rápido
+model MeetTag {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   // "Webinar", "Training", "Cliente A", "Marketing > Campañas"
+  slug        String   @unique // "webinar", "training", "cliente-a", "marketing-campanas"
+  internalDescription String?  // Descripción interna para el equipo
+  publicDescription String?    // Descripción pública para clientes
+  color       String   @default("#3B82F6") // Color hex para badges en UI
+  icon        String?  // Nombre de heroicon opcional (ej: "VideoCameraIcon")
+  
+  // Jerarquía auto-referencial (sin límite de niveles)
+  parentId    String?  @db.ObjectId
+  parent      MeetTag? @relation("TagHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    MeetTag[] @relation("TagHierarchy")
+  
+  // Path completo para navegación eficiente
+  path        String   // "/marketing/campanas/q1" para jerarquía
+  level       Int      @default(0) // Nivel en jerarquía (0=root, 1=child, etc.)
+  
+  // Organización y orden
+  customId    String?  // ID personalizado para identificación externa
+  order       Int      @default(0) // Orden de visualización dentro del mismo nivel
+  
+  // Metadata
+  createdAt   DateTime @default(now())
+  createdBy   String?  // Usuario que creó el tag
+  isActive    Boolean  @default(true)
+  
+  // Auto-assignment a grupos (tags que se asignan automáticamente)
+  assignedToGroups MeetGroupDefaultTag[]
+  
+  // Relaciones con spaces
+  spaceTags   MeetSpaceTag[]
+  
+  @@index([parentId])
+  @@index([path])
+  @@index([level])
+}
+
+// MeetGroup - Grupos jerárquicos para organización estructural
+model MeetGroup {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  name        String     // "Marketing", "Ventas", "Campañas Q1", "Departamento > Área"
+  slug        String     @unique // "marketing", "ventas", "campanas-q1", "departamento-area"
+  internalDescription String?    // Descripción interna para el equipo
+  publicDescription String?      // Descripción pública para clientes
+  color       String     @default("#6B7280") // Color para breadcrumbs/navegación
+  
+  // Jerarquía auto-referencial (sin límite de niveles)
+  parentId    String?    @db.ObjectId
+  parent      MeetGroup? @relation("GroupHierarchy", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children    MeetGroup[] @relation("GroupHierarchy")
+  
+  // Path completo para URLs amigables y queries eficientes
+  path        String     // "/marketing/campanas/q1" para URLs como /meet/groups/marketing/campanas/q1
+  level       Int        @default(0) // Nivel en jerarquía (0=root)
+  
+  // Organización y orden
+  customId    String?    // ID personalizado para identificación externa
+  order       Int        @default(0) // Orden de visualización dentro del mismo nivel
+  
+  // Tags por defecto que se asignan automáticamente a spaces en este grupo
+  defaultTags MeetGroupDefaultTag[]
+  
+  // Metadata
+  createdAt   DateTime   @default(now())
+  createdBy   String?    // Usuario que creó el grupo
+  isActive    Boolean    @default(true)
+  
+  // Relaciones con spaces (múltiples)
+  spaceGroups MeetSpaceGroup[]
+  
+  @@index([parentId])
+  @@index([path])
+  @@index([level])
+}
+
+// Tabla pivot: MeetSpace ↔ MeetTag (many-to-many)
+model MeetSpaceTag {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  
+  spaceId   String    @db.ObjectId
+  space     MeetSpace @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  
+  tagId     String    @db.ObjectId
+  tag       MeetTag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  // Metadata sobre la asignación
+  createdAt DateTime  @default(now())
+  createdBy String?   // Usuario que asignó el tag
+  isAutoAssigned Boolean @default(false) // Si fue asignado automáticamente por grupo
+  
+  @@unique([spaceId, tagId])
+  @@index([spaceId])
+  @@index([tagId])
+}
+
+// Tabla pivot: MeetSpace ↔ MeetGroup (many-to-many)
+model MeetSpaceGroup {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  
+  spaceId   String     @db.ObjectId
+  space     MeetSpace  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  
+  groupId   String     @db.ObjectId
+  group     MeetGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  // Metadata sobre la asignación
+  createdAt DateTime   @default(now())
+  createdBy String?    // Usuario que asignó al grupo
+  
+  @@unique([spaceId, groupId])
+  @@index([spaceId])
+  @@index([groupId])
+}
+
+// Tabla: Tags por defecto que se asignan automáticamente a spaces de un grupo
+model MeetGroupDefaultTag {
+  id      String     @id @default(auto()) @map("_id") @db.ObjectId
+  
+  groupId String     @db.ObjectId
+  group   MeetGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  tagId   String     @db.ObjectId
+  tag     MeetTag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  
+  // Metadata
+  createdAt DateTime @default(now())
+  createdBy String?  // Usuario que configuró el auto-assignment
+  
+  @@unique([groupId, tagId])
+  @@index([groupId])
+  @@index([tagId])
 }
 
 // Logs simplificados de operaciones para auditoría

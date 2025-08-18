@@ -1,5 +1,11 @@
 import { DashboardRoutes } from "@/src/types/dashboard-routes";
 
+/**
+ * NOTA IMPORTANTE: Los roles deben usar minúsculas ("admin", "super-admin") 
+ * para mantener consistencia con el sistema de autenticación.
+ * NO usar mayúsculas como "ADMIN" - esto causará problemas de acceso.
+ */
+
 export const dashboardRoutesData: DashboardRoutes = {
   version: "1.0.0",
   lastUpdated: "2025-01-01T00:00:00Z",
@@ -367,14 +373,66 @@ export const dashboardRoutesData: DashboardRoutes = {
           href: "/admin/calendar/events",
           icon: "CalendarDays",
         },
+      ],
+    },
+    {
+      id: "meet",
+      label: {
+        en: "Meet",
+        es: "Meet",
+      },
+      href: "/admin/meet",
+      icon: "Video",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
+      },
+      subItems: [
         {
           id: "meet-rooms",
           label: {
-            en: "Meet Rooms",
-            es: "Salas de Meet",
+            en: "Rooms",
+            es: "Salas",
           },
           href: "/admin/meet/rooms",
           icon: "Video",
+        },
+        {
+          id: "meet-tags",
+          label: {
+            en: "Tags",
+            es: "Tags",
+          },
+          href: "/admin/meet/tags",
+          icon: "TagIcon",
+        },
+        {
+          id: "meet-groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
+          },
+          href: "/admin/meet/groups",
+          icon: "FolderIcon",
+        },
+        {
+          id: "meet-analytics",
+          label: {
+            en: "Analytics",
+            es: "Analíticas",
+          },
+          href: "/admin/meet/analytics",
+          icon: "BarChart3",
+        },
+        {
+          id: "meet-settings",
+          label: {
+            en: "Settings",
+            es: "Configuración",
+          },
+          href: "/admin/meet/settings",
+          icon: "Settings",
         },
       ],
     },

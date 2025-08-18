@@ -31,7 +31,9 @@ import {
   CalendarDays,
   Shield,
   UserX,
-  Layers
+  Layers,
+  Video,
+  Tag,
 } from 'lucide-react'
 
 // Mapeo de iconos string a componentes
@@ -62,7 +64,11 @@ const iconMap = {
   Shield,
   UserX,
   Layers,
+  Video,
+  Tag,
   // Compatibility with existing icons
+  TagIcon: Tag,
+  FolderIcon: Folder,
   HomeIcon: Icons.HomeIcon,
   PackageIcon: Icons.PackageIcon,
   UsersIcon: Icons.UsersIcon,
@@ -71,7 +77,6 @@ const iconMap = {
   FilesIcon: Icons.FilesIcon,
   WorkflowIcon: Icons.WorkflowIcon,
   DatabaseIcon: Icons.DatabaseIcon,
-  FolderIcon: Folder,
   RouteIcon: Route,
   FileTextIcon: FileText,
   CalendarIcon: Calendar,
