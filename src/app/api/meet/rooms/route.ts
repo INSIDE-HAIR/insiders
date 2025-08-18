@@ -56,12 +56,13 @@ export async function GET(request: NextRequest) {
           const freshSpace = await spaceConfigService.getSpace(registered.spaceId);
           
           // Actualizar tiempo de sync
-          await storageService.updateSyncTime(registered.spaceId);
+          await storageService?.updateSyncTime(registered.spaceId);
           
           return {
             ...freshSpace,
             _metadata: {
               localId: registered.id,
+              displayName: registered.displayName,
               createdAt: registered.createdAt,
               createdBy: registered.createdBy,
               lastSyncAt: new Date(),
@@ -192,11 +193,11 @@ export async function POST(request: NextRequest) {
     
     if (isTemplate) {
       createdSpace = await spaceConfigService.createSpaceFromTemplate(
-        spaceData._template,
+        (spaceData as any)._template,
         spaceData.displayName,
-        spaceData.customConfig
+        (spaceData as any).customConfig
       );
-      console.log(`✅ Space created from template ${spaceData._template}:`, createdSpace.name);
+      console.log(`✅ Space created from template ${(spaceData as any)._template}:`, createdSpace.name);
     } else {
       createdSpace = await spaceConfigService.createSpace({
         displayName: spaceData.displayName,
@@ -251,7 +252,8 @@ export async function POST(request: NextRequest) {
       ...createdSpace,
       _metadata: {
         spaceId,
-        template: spaceData._template || null,
+        displayName: spaceData.displayName,
+        template: (spaceData as any)._template || null,
         registeredLocally: true,
         membersAdded: membersResult?.successes.length || 0,
         membersFailed: membersResult?.failures.length || 0,

@@ -18,7 +18,11 @@ import {
   ClockIcon,
   Cog6ToothIcon,
   ArrowPathIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  TrashIcon,
+  PencilIcon,
+  CheckCircleIcon,
+  XMarkIcon
 } from "@heroicons/react/24/outline";
 import { CreateRoomModal } from "@/src/features/meet/components/CreateRoomModal";
 import { RoomDetailsModal } from "@/src/features/meet/components/RoomDetailsModal";
@@ -39,6 +43,14 @@ interface MeetRoom {
   activeConference?: {
     conferenceRecord?: string;
   };
+  _metadata?: {
+    localId?: string;
+    displayName?: string;
+    createdAt?: Date;
+    createdBy?: string;
+    lastSyncAt?: Date;
+    source?: string;
+  };
 }
 
 interface MeetRoomsClientProps {
@@ -53,6 +65,10 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
+  const [isEditingRoom, setIsEditingRoom] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [bulkDeleting, setBulkDeleting] = useState(false);
   const { toast } = useToast();
 
   // Cargar salas al montar el componente
@@ -170,14 +186,180 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     setSelectedRoom(null);
   };
 
+  // Función para editar nombre de sala
+  const handleEditRoomName = async (spaceId: string, newName: string) => {
+    try {
+      const response = await fetch(`/api/meet/rooms/${spaceId}/edit-name`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: newName }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al actualizar nombre");
+      }
+
+      // Actualizar estado local
+      setRooms(prev => prev.map(room => {
+        const roomSpaceId = room.name?.split('/').pop();
+        if (roomSpaceId === spaceId) {
+          return {
+            ...room,
+            _metadata: {
+              ...room._metadata,
+              displayName: newName
+            }
+          };
+        }
+        return room;
+      }));
+
+      toast({
+        title: "Nombre actualizado",
+        description: `Sala renombrada a "${newName}"`,
+      });
+
+      setIsEditingRoom(null);
+      setEditName("");
+
+    } catch (error: any) {
+      console.error("Error editing room name:", error);
+      toast({
+        title: "Error al actualizar nombre",
+        description: error.message || "No se pudo actualizar el nombre",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Función para eliminar sala de BD
+  const handleDeleteRoomFromDB = async (spaceId: string) => {
+    try {
+      const response = await fetch(`/api/meet/rooms/${spaceId}/delete-from-db`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Error al eliminar sala");
+      }
+
+      // Remover de estado local
+      setRooms(prev => prev.filter(room => {
+        const roomSpaceId = room.name?.split('/').pop();
+        return roomSpaceId !== spaceId;
+      }));
+
+      toast({
+        title: "Sala eliminada",
+        description: "La sala fue removida de la base de datos",
+      });
+
+    } catch (error: any) {
+      console.error("Error deleting room:", error);
+      toast({
+        title: "Error al eliminar sala",
+        description: error.message || "No se pudo eliminar la sala",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Función para bulk delete
+  const handleBulkDelete = async () => {
+    if (selectedRooms.size === 0) return;
+
+    try {
+      setBulkDeleting(true);
+      const spaceIds = Array.from(selectedRooms);
+      
+      const response = await fetch("/api/meet/rooms/bulk-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ spaceIds }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Remover salas exitosas del estado local
+        setRooms(prev => prev.filter(room => {
+          const roomSpaceId = room.name?.split('/').pop();
+          return !result.results.success.includes(roomSpaceId);
+        }));
+
+        toast({
+          title: "Eliminación masiva completada",
+          description: `${result.results.success.length} salas eliminadas, ${result.results.failed.length} fallaron`,
+        });
+
+        // Mostrar errores si los hay
+        if (result.results.failed.length > 0) {
+          result.results.failed.forEach((failure: any) => {
+            console.error(`Failed to delete ${failure.spaceId}: ${failure.error}`);
+          });
+        }
+      } else {
+        throw new Error("Error en eliminación masiva");
+      }
+
+      setSelectedRooms(new Set());
+
+    } catch (error: any) {
+      console.error("Error bulk deleting rooms:", error);
+      toast({
+        title: "Error en eliminación masiva",
+        description: error.message || "No se pudieron eliminar las salas",
+        variant: "destructive",
+      });
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  // Funciones para selección múltiple
+  const handleRoomSelect = (spaceId: string, selected: boolean) => {
+    setSelectedRooms(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(spaceId);
+      } else {
+        newSet.delete(spaceId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedRooms.size === filteredRooms.length) {
+      setSelectedRooms(new Set());
+    } else {
+      const allSpaceIds = filteredRooms.map(room => room.name?.split('/').pop()).filter(Boolean) as string[];
+      setSelectedRooms(new Set(allSpaceIds));
+    }
+  };
+
+  const startEditingRoom = (spaceId: string, currentName: string) => {
+    setIsEditingRoom(spaceId);
+    setEditName(currentName);
+  };
+
+  const cancelEditingRoom = () => {
+    setIsEditingRoom(null);
+    setEditName("");
+  };
+
   // Filtrar salas por búsqueda
   const filteredRooms = rooms.filter(room => {
     const searchLower = searchTerm.toLowerCase();
     const spaceId = room.name?.split('/').pop() || '';
+    const displayName = room._metadata?.displayName || '';
     const memberEmails = room.members?.map(m => m.email.toLowerCase()).join(' ') || '';
     
     return (
       spaceId.toLowerCase().includes(searchLower) ||
+      displayName.toLowerCase().includes(searchLower) ||
       room.meetingCode?.toLowerCase().includes(searchLower) ||
       memberEmails.includes(searchLower)
     );
@@ -246,7 +428,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
           <div className="relative">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Buscar por ID, código de reunión o participantes..."
+              placeholder="Buscar por nombre, ID, código de reunión o participantes..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -254,6 +436,46 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Bulk Actions Bar */}
+      {selectedRooms.size > 0 && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CheckCircleIcon className="h-5 w-5 text-blue-600" />
+                <span className="font-medium text-blue-800">
+                  {selectedRooms.size} sala{selectedRooms.size !== 1 ? 's' : ''} seleccionada{selectedRooms.size !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedRooms(new Set())}
+                >
+                  <XMarkIcon className="h-4 w-4 mr-1" />
+                  Desseleccionar
+                </Button>
+                {/* TODO: Bulk Configuration Actions - Implement after reviewing all configurations */}
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleBulkDelete}
+                  disabled={bulkDeleting}
+                >
+                  {bulkDeleting ? (
+                    <Icons.SpinnerIcon className="h-4 w-4 mr-1 animate-spin" />
+                  ) : (
+                    <TrashIcon className="h-4 w-4 mr-1" />
+                  )}
+                  Eliminar de BD
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Sistema API Info */}
       <Alert className="border-blue-200 bg-blue-50">
@@ -277,7 +499,17 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
             <VideoCameraIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{rooms.length}</div>
+            <div className="flex items-center justify-between">
+              <div className="text-2xl font-bold">{rooms.length}</div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSelectAll}
+                className="text-xs"
+              >
+                {selectedRooms.size === filteredRooms.length && filteredRooms.length > 0 ? "Deseleccionar" : "Seleccionar"} Todo
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -352,25 +584,74 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
           {filteredRooms.map((room) => {
             const spaceId = room.name?.split('/').pop() || 'Unknown';
             const isActive = !!room.activeConference?.conferenceRecord;
+            const isSelected = selectedRooms.has(spaceId);
+            const isEditingThis = isEditingRoom === spaceId;
+            const displayName = room._metadata?.displayName || spaceId;
             
             return (
               <Card
                 key={room.name}
-                className="cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => handleRoomClick(room)}
+                className={cn(
+                  "transition-all duration-200",
+                  isSelected && "ring-2 ring-primary",
+                  !isEditingThis && "cursor-pointer hover:shadow-lg"
+                )}
+                onClick={(e) => {
+                  if (isEditingThis) return;
+                  e.stopPropagation();
+                  handleRoomClick(room);
+                }}
               >
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <VideoCameraIcon className="h-5 w-5 text-primary" />
-                        <span className="truncate">{spaceId}</span>
-                      </CardTitle>
+                    <div className="flex items-start gap-3 flex-1">
+                      {/* Checkbox */}
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          handleRoomSelect(spaceId, e.target.checked);
+                        }}
+                        className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                      />
+                      
+                      <div className="space-y-1 flex-1">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <VideoCameraIcon className="h-5 w-5 text-primary" />
+                          {isEditingThis ? (
+                            <Input
+                              value={editName}
+                              onChange={(e) => setEditName(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleEditRoomName(spaceId, editName);
+                                }
+                                if (e.key === 'Escape') {
+                                  cancelEditingRoom();
+                                }
+                              }}
+                              onBlur={() => {
+                                if (editName.trim() && editName !== displayName) {
+                                  handleEditRoomName(spaceId, editName);
+                                } else {
+                                  cancelEditingRoom();
+                                }
+                              }}
+                              className="text-lg font-semibold"
+                              autoFocus
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                          ) : (
+                            <span className="truncate">{displayName}</span>
+                          )}
+                        </CardTitle>
                       {room.meetingCode && (
                         <p className="text-sm text-muted-foreground">
                           Código: {room.meetingCode}
                         </p>
                       )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       {isActive && (
@@ -419,11 +700,38 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 mt-4">
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {/* Row 1: Edit and Delete */}
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEditingRoom(spaceId, displayName);
+                      }}
+                      disabled={isEditingThis}
+                    >
+                      <PencilIcon className="h-4 w-4 mr-1" />
+                      Editar
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (confirm(`¿Eliminar "${displayName}" de la base de datos?`)) {
+                          handleDeleteRoomFromDB(spaceId);
+                        }
+                      }}
+                    >
+                      <TrashIcon className="h-4 w-4 mr-1" />
+                      Eliminar
+                    </Button>
+                    
+                    {/* Row 2: Manage and Join */}
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRoomClick(room);
@@ -432,11 +740,10 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                       <Cog6ToothIcon className="h-4 w-4 mr-1" />
                       Gestionar
                     </Button>
-                    {room.meetingUri && (
+                    {room.meetingUri ? (
                       <Button
                         variant="default"
                         size="sm"
-                        className="flex-1"
                         onClick={(e) => {
                           e.stopPropagation();
                           window.open(room.meetingUri, '_blank');
@@ -444,6 +751,14 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                       >
                         <Icons.ExternalLink className="h-4 w-4 mr-1" />
                         Unirse
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        disabled
+                      >
+                        Sin URL
                       </Button>
                     )}
                   </div>

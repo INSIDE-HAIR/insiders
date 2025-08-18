@@ -154,7 +154,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
       if (!validation.success) {
         toast({
           title: "Error de validación",
-          description: validation.error.errors[0].message,
+          description: validation.error.errors[0]?.message || "Error de validación",
           variant: "destructive",
         });
         return;

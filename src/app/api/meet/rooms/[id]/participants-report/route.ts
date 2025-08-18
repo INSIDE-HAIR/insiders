@@ -163,7 +163,7 @@ export async function GET(
               }
 
               // Calcular métricas del participante
-              const totalDuration = sessionDetails.reduce((sum, session) => sum + (session.duration || 0), 0);
+              const totalDuration = sessionDetails.reduce((sum: number, session: any) => sum + (session.duration || 0), 0);
               const avgSessionDuration = sessionDetails.length > 0 ? Math.round(totalDuration / sessionDetails.length) : 0;
               
               // Calcular duración total de la conferencia

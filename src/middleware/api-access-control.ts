@@ -113,7 +113,10 @@ function getPermissionsForRole(role: UserRole): Permission[] {
   const permissions: Record<UserRole, Permission[]> = {
     CLIENT: ['read'],
     EMPLOYEE: ['read', 'write'],
-    ADMIN: ['read', 'write', 'manage', 'configure']
+    ADMIN: ['read', 'write', 'manage', 'configure'],
+    DEBTOR: ['read'],
+    PROVIDER: ['read', 'write'],
+    LEAD: ['read', 'write', 'manage']
   }
   
   return permissions[role] || permissions['CLIENT']

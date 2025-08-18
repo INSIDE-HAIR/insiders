@@ -309,7 +309,7 @@ export async function GET(
     return NextResponse.json({
       sessions: sessionParticipants,
       totalSessions: sessionParticipants.length,
-      totalUniqueParticipants: [...new Set(sessionParticipants.flatMap(s => s.participants.map(p => p.userInfo.displayName)))].length,
+      totalUniqueParticipants: [...new Set(sessionParticipants.flatMap(s => s.participants.map((p: any) => p.userInfo.displayName)))].length,
       spaceId: spaceId,
       generatedAt: new Date().toISOString()
     });

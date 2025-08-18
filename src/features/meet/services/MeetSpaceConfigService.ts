@@ -423,7 +423,7 @@ export class MeetSpaceConfigService {
    */
   extractSpaceId(resourceName: string): string | null {
     const match = resourceName.match(/spaces\/([^\/]+)$/);
-    return match ? match[1] : null;
+    return match?.[1] || null;
   }
 
   /**

@@ -74,7 +74,7 @@ export const zoomTokenRequestSchema = z.object({
 export const meetingTypeSchema = z.enum(['1', '2', '3', '8']).transform(Number);
 
 export const meetingRecurrenceSchema = z.object({
-  type: z.enum([1, 2, 3]).describe('1=Daily, 2=Weekly, 3=Monthly'),
+  type: z.union([z.literal(1), z.literal(2), z.literal(3)]).describe('1=Daily, 2=Weekly, 3=Monthly'),
   repeat_interval: z.number().min(1).max(90),
   weekly_days: z.string().regex(/^[1-7](,[1-7])*$/).optional(),
   monthly_day: z.number().min(1).max(31).optional(),
@@ -94,12 +94,12 @@ export const meetingSettingsSchema = z.object({
   cn_meeting: z.boolean().optional().default(false),
   in_meeting: z.boolean().optional().default(false),
   join_before_host: z.boolean().optional().default(false),
-  jbh_time: z.enum([0, 5, 10]).optional().default(0),
+  jbh_time: z.union([z.literal(0), z.literal(5), z.literal(10)]).optional().default(0),
   mute_upon_entry: z.boolean().optional().default(false),
   watermark: z.boolean().optional().default(false),
   use_pmi: z.boolean().optional().default(false),
-  approval_type: z.enum([0, 1, 2]).optional().default(2),
-  registration_type: z.enum([1, 2, 3]).optional().default(1),
+  approval_type: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional().default(2),
+  registration_type: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional().default(1),
   audio: z.enum(['both', 'telephony', 'voip']).optional().default('both'),
   auto_recording: z.enum(['local', 'cloud', 'none']).optional().default('none'),
   enforce_login: z.boolean().optional().default(false),
@@ -136,7 +136,7 @@ export const meetingSettingsSchema = z.object({
 
 export const createMeetingSchema = z.object({
   topic: z.string().min(1).max(200, 'Topic must be between 1 and 200 characters'),
-  type: meetingTypeSchema.optional().default(2),
+  type: meetingTypeSchema.optional().default('2'),
   start_time: z.string().datetime().optional(),
   duration: z.number().min(1).max(1440).optional().default(60),
   schedule_for: z.string().email().optional(),
@@ -183,8 +183,8 @@ export const webinarSettingsSchema = z.object({
   practice_session: z.boolean().optional().default(false),
   hd_video: z.boolean().optional().default(false),
   hd_video_for_attendees: z.boolean().optional().default(false),
-  approval_type: z.enum([0, 1, 2]).optional().default(2),
-  registration_type: z.enum([1, 2, 3]).optional().default(1),
+  approval_type: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional().default(2),
+  registration_type: z.union([z.literal(1), z.literal(2), z.literal(3)]).optional().default(1),
   audio: z.enum(['both', 'telephony', 'voip']).optional().default('both'),
   auto_recording: z.enum(['local', 'cloud', 'none']).optional().default('none'),
   enforce_login: z.boolean().optional().default(false),
@@ -221,7 +221,7 @@ export const webinarSettingsSchema = z.object({
 
 export const createWebinarSchema = z.object({
   topic: z.string().min(1).max(200),
-  type: webinarTypeSchema.optional().default(5),
+  type: webinarTypeSchema.optional().default('5'),
   start_time: z.string().datetime().optional(),
   duration: z.number().min(1).max(1440).optional().default(60),
   timezone: timezoneSchema.optional().default('UTC'),
@@ -289,7 +289,7 @@ export const recordingSettingsSchema = z.object({
   viewer_download: z.boolean().optional(),
   password: z.string().min(1).max(10).optional(),
   on_demand: z.boolean().optional(),
-  approval_type: z.enum([0, 1, 2]).optional(),
+  approval_type: z.union([z.literal(0), z.literal(1), z.literal(2)]).optional(),
   send_email_to_host: z.boolean().optional(),
   show_social_share_buttons: z.boolean().optional(),
   topic: z.string().max(200).optional(),
@@ -377,7 +377,7 @@ export const registrantListQuerySchema = z.object({
 // User Management Validation Schemas
 // =============================================================================
 
-export const userTypeSchema = z.enum([1, 2, 3]).describe('1=Basic, 2=Licensed, 3=On-prem');
+export const userTypeSchema = z.union([z.literal(1), z.literal(2), z.literal(3)]).describe('1=Basic, 2=Licensed, 3=On-prem');
 
 export const createUserSchema = z.object({
   action: z.enum(['create', 'autoCreate', 'custCreate', 'ssoCreate']),
@@ -490,11 +490,15 @@ export const reportTypeSchema = z.enum([
   'monthly'
 ]);
 
-export const dailyReportQuerySchema = zoomDateRangeSchema.extend({
+export const dailyReportQuerySchema = z.object({
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format'),
   type: reportTypeSchema.optional().default('daily'),
   page_size: z.number().min(1).max(300).optional().default(30),
   next_page_token: z.string().optional(),
   group_id: z.string().optional()
+}).refine(data => new Date(data.from) <= new Date(data.to), {
+  message: 'From date must be before or equal to To date'
 });
 
 export const meetingReportQuerySchema = z.object({

@@ -133,24 +133,25 @@ export async function GET(
       members: enrichedMembers,
       totalMembers: enrichedMembers.length,
       nextPageToken: membersResponse.nextPageToken,
-      source: membersResponse._limitation ? "developer-preview-required" : "fresh-meet-api-v2beta",
-      note: membersResponse._limitation || "Datos frescos directos de Google Meet API v2beta",
-      limitation: membersResponse._limitation,
-      previewLink: membersResponse._link,
+      source: (membersResponse as any)._limitation ? "developer-preview-required" : "fresh-meet-api-v2beta",
+      note: (membersResponse as any)._limitation || "Datos frescos directos de Google Meet API v2beta",
+      limitation: (membersResponse as any)._limitation,
+      previewLink: (membersResponse as any)._link,
       _metadata: {
         apiSuccess: true,
         localFallback: false,
         lastFetched: new Date().toISOString(),
-        previewRequired: !!membersResponse._limitation
+        previewRequired: !!(membersResponse as any)._limitation
       }
     });
 
   } catch (error: any) {
     console.error("Failed to list Meet space members:", error);
     
+    const resolvedParams = await params;
     // Si falla la API, devolver error limpio (no fallback local)
     return NextResponse.json({
-      spaceId: params.id,
+      spaceId: resolvedParams.id,
       members: [],
       error: "Error fetching members from Meet API",
       details: error.message,
@@ -220,7 +221,7 @@ export async function POST(
     }
 
     // Preparar lista de miembros a agregar
-    const membersToAdd = isBulkAdd ? validationResult.data.members : [validationResult.data];
+    const membersToAdd = isBulkAdd ? (validationResult.data as any).members : [validationResult.data];
 
     // Verificar que el space esté registrado localmente (solo para validación)
     storageService = new MeetStorageService();

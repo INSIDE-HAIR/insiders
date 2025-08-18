@@ -40,7 +40,7 @@ const updateSpaceSchema = z.object({
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación
@@ -54,7 +54,8 @@ export async function GET(
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
 
-    const spaceId = params.id;
+    const resolvedParams = await params;
+    const spaceId = resolvedParams.id;
     if (!spaceId) {
       return NextResponse.json({ error: "Space ID is required" }, { status: 400 });
     }
@@ -122,7 +123,7 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación
@@ -136,7 +137,8 @@ export async function PATCH(
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
 
-    const spaceId = params.id;
+    const resolvedParams = await params;
+    const spaceId = resolvedParams.id;
     if (!spaceId) {
       return NextResponse.json({ error: "Space ID is required" }, { status: 400 });
     }
@@ -226,7 +228,7 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación
@@ -240,7 +242,8 @@ export async function DELETE(
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
 
-    const spaceId = params.id;
+    const resolvedParams = await params;
+    const spaceId = resolvedParams.id;
     if (!spaceId) {
       return NextResponse.json({ error: "Space ID is required" }, { status: 400 });
     }

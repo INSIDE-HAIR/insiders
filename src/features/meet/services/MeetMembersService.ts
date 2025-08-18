@@ -99,7 +99,7 @@ export class MeetMembersService {
                 _limitation: 'Members endpoints not available. v2: not found, v2beta: requires Developer Preview access',
                 _link: 'https://developers.google.com/workspace/preview',
                 _apiVersionTried: 'v2+v2beta'
-              };
+              } as any;
             }
             
             if (response.status === 404) {
@@ -123,7 +123,7 @@ export class MeetMembersService {
             members: data.members || [],
             nextPageToken: data.nextPageToken,
             _apiVersion: version
-          };
+          } as any;
 
         } catch (error) {
           lastError = error;
@@ -470,7 +470,7 @@ export class MeetMembersService {
    */
   extractMemberId(resourceName: string): string | null {
     const match = resourceName.match(/members\/([^\/]+)$/);
-    return match ? match[1] : null;
+    return match?.[1] || null;
   }
 
   /**
@@ -479,6 +479,6 @@ export class MeetMembersService {
    */
   extractSpaceId(resourceName: string): string | null {
     const match = resourceName.match(/spaces\/([^\/]+)\/members/);
-    return match ? match[1] : null;
+    return match?.[1] || null;
   }
 }

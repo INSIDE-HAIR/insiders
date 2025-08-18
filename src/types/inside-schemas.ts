@@ -179,7 +179,7 @@ export const UserSchema = z.object({
   newPassword: z.optional(z.string().min(6)),
   contactNumber: z.optional(z.string().nullable()),
   terms: z.optional(z.boolean()),
-  role: z.enum([UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT]),
+  role: z.enum([UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT, UserRole.DEBTOR, UserRole.PROVIDER, UserRole.LEAD]),
   holdedId: z.optional(z.string().nullable()),
   createdAt: z.optional(z.date()),
   updatedAt: z.optional(z.date()),
@@ -189,7 +189,7 @@ export const UserSchema = z.object({
 export const SettingsSchema = z.object({
   name: z.optional(z.string()),
   isTwoFactorEnabled: z.optional(z.boolean()),
-  role: z.enum([UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT]),
+  role: z.enum([UserRole.ADMIN, UserRole.EMPLOYEE, UserRole.CLIENT, UserRole.DEBTOR, UserRole.PROVIDER, UserRole.LEAD]),
   email: z.optional(z.string().email()),
   password: z.optional(z.string().min(6)),
   newPassword: z.optional(z.string().min(6)),

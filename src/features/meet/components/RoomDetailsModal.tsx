@@ -1321,7 +1321,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                                       
                                       const csv = [
                                         Object.keys(csvData[0]).join(','),
-                                        ...csvData.map(row => Object.values(row).join(','))
+                                        ...csvData.map((row: any) => Object.values(row).join(','))
                                       ].join('\n');
                                       
                                       const blob = new Blob([csv], { type: 'text/csv' });

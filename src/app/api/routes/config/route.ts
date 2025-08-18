@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Return the routes configuration
-    const config: RoutesConfiguration = routesConfig as RoutesConfiguration;
+    const config = routesConfig as any;
 
     return NextResponse.json(config);
   } catch (error) {

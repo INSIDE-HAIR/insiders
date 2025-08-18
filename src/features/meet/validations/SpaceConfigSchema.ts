@@ -129,6 +129,7 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
     case "OPEN_MEETING":
       return {
         accessType: "OPEN",
+        entryPointAccess: "ALL",
         moderation: "OFF",
         moderationRestrictions: {
           chatRestriction: "NO_RESTRICTION",
@@ -141,6 +142,7 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
     case "RESTRICTED_MEETING":
       return {
         accessType: "RESTRICTED",
+        entryPointAccess: "CREATOR_APP_ONLY",
         moderation: "ON",
         moderationRestrictions: {
           chatRestriction: "HOSTS_ONLY",
@@ -153,6 +155,7 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
     case "TRAINING_SESSION":
       return {
         accessType: "TRUSTED",
+        entryPointAccess: "ALL",
         moderation: "ON",
         moderationRestrictions: {
           presentRestriction: "HOSTS_ONLY",
@@ -170,6 +173,7 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
     case "PRESENTATION":
       return {
         accessType: "TRUSTED",
+        entryPointAccess: "ALL",
         moderation: "ON",
         moderationRestrictions: {
           chatRestriction: "HOSTS_ONLY",
@@ -178,12 +182,14 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
         },
         artifactConfig: {
           recordingConfig: { autoRecordingGeneration: "ON" }
-        }
+        },
+        attendanceReportGenerationType: "GENERATE_REPORT"
       };
       
     case "INTERVIEW":
       return {
         accessType: "RESTRICTED",
+        entryPointAccess: "CREATOR_APP_ONLY",
         moderation: "ON",
         moderationRestrictions: {
           chatRestriction: "NO_RESTRICTION",
@@ -196,6 +202,7 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
     case "WEBINAR":
       return {
         accessType: "OPEN",
+        entryPointAccess: "ALL",
         moderation: "ON",
         moderationRestrictions: {
           chatRestriction: "HOSTS_ONLY",
@@ -205,23 +212,27 @@ export const generateTemplateConfig = (template: z.infer<typeof MeetingTemplateE
         artifactConfig: {
           recordingConfig: { autoRecordingGeneration: "ON" },
           smartNotesConfig: { autoSmartNotesGeneration: "ON" }
-        }
+        },
+        attendanceReportGenerationType: "GENERATE_REPORT"
       };
       
     case "TEAM_STANDUP":
       return {
         accessType: "TRUSTED",
+        entryPointAccess: "ALL",
         moderation: "OFF",
         moderationRestrictions: {
           chatRestriction: "NO_RESTRICTION",
           presentRestriction: "NO_RESTRICTION",
           defaultJoinAsViewerType: "OFF"
-        }
+        },
+        attendanceReportGenerationType: "DO_NOT_GENERATE"
       };
       
     default:
       return {
         accessType: "TRUSTED",
+        entryPointAccess: "ALL",
         moderation: "OFF",
         attendanceReportGenerationType: "DO_NOT_GENERATE"
       };

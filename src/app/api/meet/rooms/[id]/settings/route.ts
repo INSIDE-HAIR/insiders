@@ -231,7 +231,7 @@ export async function PATCH(
     
     if (isQuickSettings) {
       // Aplicar configuraciones predefinidas según template
-      settingsToApply = applyQuickSettingsTemplate(validationResult.data.template, validationResult.data.customSettings);
+      settingsToApply = applyQuickSettingsTemplate((validationResult.data as any).template, (validationResult.data as any).customSettings);
     } else {
       settingsToApply = validationResult.data;
     }
@@ -283,7 +283,7 @@ export async function PATCH(
     return NextResponse.json({
       spaceId: spaceId,
       settings: updatedSettings,
-      appliedTemplate: isQuickSettings ? validationResult.data.template : null,
+      appliedTemplate: isQuickSettings ? (validationResult.data as any).template : null,
       lastUpdated: new Date().toISOString(),
       updateMask: updateMask
     });
