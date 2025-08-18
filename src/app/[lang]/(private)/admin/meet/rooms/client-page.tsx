@@ -606,45 +606,25 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3 flex-1">
                       {/* Checkbox */}
-                      <input
-                        type="checkbox"
-                        checked={isSelected}
-                        onChange={(e) => {
-                          e.stopPropagation();
-                          handleRoomSelect(spaceId, e.target.checked);
-                        }}
-                        className="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-                      />
+                      <div 
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-1"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleRoomSelect(spaceId, e.target.checked);
+                          }}
+                          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                        />
+                      </div>
                       
                       <div className="space-y-1 flex-1">
                         <CardTitle className="text-lg flex items-center gap-2">
                           <VideoCameraIcon className="h-5 w-5 text-primary" />
-                          {isEditingThis ? (
-                            <Input
-                              value={editName}
-                              onChange={(e) => setEditName(e.target.value)}
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleEditRoomName(spaceId, editName);
-                                }
-                                if (e.key === 'Escape') {
-                                  cancelEditingRoom();
-                                }
-                              }}
-                              onBlur={() => {
-                                if (editName.trim() && editName !== displayName) {
-                                  handleEditRoomName(spaceId, editName);
-                                } else {
-                                  cancelEditingRoom();
-                                }
-                              }}
-                              className="text-lg font-semibold"
-                              autoFocus
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          ) : (
-                            <span className="truncate">{displayName}</span>
-                          )}
+                          <span className="truncate">{displayName}</span>
                         </CardTitle>
                       {room.meetingCode && (
                         <p className="text-sm text-muted-foreground">
@@ -701,19 +681,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
                   {/* Actions */}
                   <div className="grid grid-cols-2 gap-2 mt-4">
-                    {/* Row 1: Edit and Delete */}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        startEditingRoom(spaceId, displayName);
-                      }}
-                      disabled={isEditingThis}
-                    >
-                      <PencilIcon className="h-4 w-4 mr-1" />
-                      Editar
-                    </Button>
+                    {/* Row 1: Delete and Manage */}
                     <Button
                       variant="destructive"
                       size="sm"
@@ -727,8 +695,6 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                       <TrashIcon className="h-4 w-4 mr-1" />
                       Eliminar
                     </Button>
-                    
-                    {/* Row 2: Manage and Join */}
                     <Button
                       variant="outline"
                       size="sm"
@@ -740,25 +706,29 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                       <Cog6ToothIcon className="h-4 w-4 mr-1" />
                       Gestionar
                     </Button>
+                    
+                    {/* Row 2: Join (spans both columns) */}
                     {room.meetingUri ? (
                       <Button
                         variant="default"
                         size="sm"
+                        className="col-span-2"
                         onClick={(e) => {
                           e.stopPropagation();
                           window.open(room.meetingUri, '_blank');
                         }}
                       >
                         <Icons.ExternalLink className="h-4 w-4 mr-1" />
-                        Unirse
+                        Unirse a la Reunión
                       </Button>
                     ) : (
                       <Button
                         variant="ghost"
                         size="sm"
+                        className="col-span-2"
                         disabled
                       >
-                        Sin URL
+                        Sin URL de Reunión
                       </Button>
                     )}
                   </div>
