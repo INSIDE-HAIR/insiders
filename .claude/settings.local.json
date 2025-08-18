@@ -38,7 +38,8 @@
       "WebFetch(domain:developers.zoom.us)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:developer.vimeo.com)",
-      "WebFetch(domain:vimeo.github.io)"
+      "WebFetch(domain:vimeo.github.io)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

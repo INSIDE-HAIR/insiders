@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Formulario Video Conferencing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #f9f9f9;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 10px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .result {
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 4px;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    pre {
+      background: #f8f9fa;
+      padding: 10px;
+      overflow-x: auto;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .integration-info {
+      background: #e7f3ff;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎥 Test Formulario Video Conferencing</h1>
+    <p>Esta página simula el formulario de creación de espacios de video para probar las APIs.</p>
+
+    <form id="videoSpaceForm">
+      <div class="grid">
+        <div class="form-group">
+          <label for="title">Título *</label>
+          <input type="text" id="title" name="title" required placeholder="Nombre del espacio de video">
+        </div>
+
+        <div class="form-group">
+          <label for="alias">Alias (opcional)</label>
+          <input type="text" id="alias" name="alias" placeholder="alias-personalizado">
+        </div>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="description">Descripción</label>
+        <textarea id="description" name="description"
+          placeholder="Describe el propósito de este espacio de video"></textarea>
+      </div>
+
+      <div class="grid">
+        <div class="form-group">
+          <label for="provider">Proveedor *</label>
+          <select id="provider" name="provider" required onchange="loadIntegrationAccounts()">
+            <option value="">Selecciona un proveedor</option>
+            <option value="GOOGLE_MEET">Google Meet</option>
+            <option value="ZOOM">Zoom</option>
+            <option value="VIMEO">Vimeo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="integrationAccountId">Cuenta de Integración *</label>
+          <select id="integrationAccountId" name="integrationAccountId" required disabled>
+            <option value="">Selecciona una cuenta</option>
+          </select>
+          <div id="integration-info" class="integration-info" style="display: none;"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="form-group">
+          <label for="scheduledStartTime">Fecha y Hora de Inicio *</label>
+          <input type="datetime-local" id="scheduledStartTime" name="scheduledStartTime" required>
+        </div>
+
+        <div class="form-group">
+          <label for="scheduledEndTime">Fecha y Hora de Fin *</label>
+          <input type="datetime-local" id="scheduledEndTime" name="scheduledEndTime" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="maxParticipants">Máximo de Participantes</label>
+        <input type="number" id="maxParticipants" name="maxParticipants" min="1" max="1000" placeholder="100">
+        <small>Deja vacío para ilimitados (sujeto a límites del proveedor)</small>
+      </div>
+
+      <h3>Configuración de Funcionalidades</h3>
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="requiresAuth" name="requiresAuth">
+          <label for="requiresAuth">Requiere Autenticación</label>
+        </div>
+
+        <div class="checkbox-item">
+          <input type="checkbox" id="recordingEnabled" name="recordingEnabled">
+          <label for="recordingEnabled">Grabación Habilitada</label>
+        </div>
+
+        <div class="checkbox-item">
+          <input type="checkbox" id="chatEnabled" name="chatEnabled" checked>
+          <label for="chatEnabled">Chat Habilitado</label>
+        </div>
+
+        <div class="checkbox-item">
+          <input type="checkbox" id="screenShareEnabled" name="screenShareEnabled" checked>
+          <label for="screenShareEnabled">Compartir Pantalla</label>
+        </div>
+
+        <div class="checkbox-item">
+          <input type="checkbox" id="waitingRoomEnabled" name="waitingRoomEnabled">
+          <label for="waitingRoomEnabled">Sala de Espera</label>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">
+        <span id="submitText">Crear Espacio</span>
+        <span id="loadingText" style="display: none;">Creando...</span>
+      </button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    let integrationAccounts = [];
+
+    // Cargar cuentas de integración al cargar la página
+    window.addEventListener( 'load', async () => {
+      await loadAllIntegrationAccounts();
+
+      // Establecer fecha mínima como ahora
+      const now = new Date();
+      now.setMinutes( now.getMinutes() - now.getTimezoneOffset() );
+      document.getElementById( 'scheduledStartTime' ).min = now.toISOString().slice( 0, 16 );
+      document.getElementById( 'scheduledEndTime' ).min = now.toISOString().slice( 0, 16 );
+    } );
+
+    async function loadAllIntegrationAccounts () {
+      try {
+        const response = await fetch( '/api/video-conferencing/integration-accounts', {
+          headers: {
+            'Authorization': 'Bearer ak_dev_2b2f6c9222a192964b903b05f0bb7788'
+          }
+        } );
+
+        if ( response.ok ) {
+          integrationAccounts = await response.json();
+          console.log( 'Cuentas de integración cargadas:', integrationAccounts );
+        } else {
+          console.error( 'Error cargando cuentas de integración' );
+        }
+      } catch ( error ) {
+        console.error( 'Error:', error );
+      }
+    }
+
+    function loadIntegrationAccounts () {
+      const provider = document.getElementById( 'provider' ).value;
+      const select = document.getElementById( 'integrationAccountId' );
+      const infoDiv = document.getElementById( 'integration-info' );
+
+      // Limpiar opciones
+      select.innerHTML = '<option value="">Selecciona una cuenta</option>';
+
+      if ( !provider ) {
+        select.disabled = true;
+        infoDiv.style.display = 'none';
+        return;
+      }
+
+      // Filtrar cuentas por proveedor
+      const availableAccounts = integrationAccounts.filter( account =>
+        account.provider === provider && account.status === 'ACTIVE'
+      );
+
+      if ( availableAccounts.length === 0 ) {
+        select.disabled = true;
+        infoDiv.innerHTML = `No hay cuentas activas para ${ provider }. <a href="/admin/video-conferencing/integrations">Configura una integración</a>`;
+        infoDiv.style.display = 'block';
+        return;
+      }
+
+      // Agregar opciones
+      availableAccounts.forEach( account => {
+        const option = document.createElement( 'option' );
+        option.value = account.id;
+        option.textContent = `${ account.accountName } (${ account.accountEmail })`;
+        select.appendChild( option );
+      } );
+
+      select.disabled = false;
+      infoDiv.style.display = 'none';
+    }
+
+    // Validar fechas
+    document.getElementById( 'scheduledStartTime' ).addEventListener( 'change', function () {
+      const startTime = this.value;
+      const endTimeInput = document.getElementById( 'scheduledEndTime' );
+
+      if ( startTime ) {
+        endTimeInput.min = startTime;
+
+        // Si la fecha de fin es anterior a la de inicio, limpiarla
+        if ( endTimeInput.value && endTimeInput.value <= startTime ) {
+          endTimeInput.value = '';
+        }
+      }
+    } );
+
+    document.getElementById( 'videoSpaceForm' ).addEventListener( 'submit', async function ( e ) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById( 'submitBtn' );
+      const submitText = document.getElementById( 'submitText' );
+      const loadingText = document.getElementById( 'loadingText' );
+      const resultDiv = document.getElementById( 'result' );
+
+      // Mostrar estado de carga
+      submitBtn.disabled = true;
+      submitText.style.display = 'none';
+      loadingText.style.display = 'inline';
+
+      // Recopilar datos del formulario
+      const formData = new FormData( this );
+      const data = {
+        title: formData.get( 'title' ),
+        description: formData.get( 'description' ) || undefined,
+        provider: formData.get( 'provider' ),
+        alias: formData.get( 'alias' ) || undefined,
+        maxParticipants: formData.get( 'maxParticipants' ) ? parseInt( formData.get( 'maxParticipants' ) ) : undefined,
+        scheduledStartTime: formData.get( 'scheduledStartTime' ),
+        scheduledEndTime: formData.get( 'scheduledEndTime' ),
+        requiresAuth: formData.has( 'requiresAuth' ),
+        recordingEnabled: formData.has( 'recordingEnabled' ),
+        chatEnabled: formData.has( 'chatEnabled' ),
+        screenShareEnabled: formData.has( 'screenShareEnabled' ),
+        waitingRoomEnabled: formData.has( 'waitingRoomEnabled' ),
+        integrationAccountId: formData.get( 'integrationAccountId' )
+      };
+
+      // Mapear proveedor para la API
+      const providerMapping = {
+        'GOOGLE_MEET': 'MEET',
+        'ZOOM': 'ZOOM',
+        'VIMEO': 'VIMEO'
+      };
+      data.provider = providerMapping[ data.provider ];
+
+      try {
+        const response = await fetch( '/api/video-conferencing/spaces', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ak_dev_2b2f6c9222a192964b903b05f0bb7788'
+          },
+          body: JSON.stringify( data )
+        } );
+
+        const result = await response.json();
+
+        if ( response.ok ) {
+          resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ ¡Espacio creado exitosamente!</h3>
+                            <p><strong>ID:</strong> ${ result.id }</p>
+                            <p><strong>Nombre:</strong> ${ result.name }</p>
+                            <p><strong>Proveedor:</strong> ${ result.provider }</p>
+                            <p><strong>URL de acceso:</strong> <a href="${ result.providerJoinUri }" target="_blank">${ result.providerJoinUri }</a></p>
+                            <details>
+                                <summary>Ver detalles completos</summary>
+                                <pre>${ JSON.stringify( result, null, 2 ) }</pre>
+                            </details>
+                        </div>
+                    `;
+
+          // Limpiar formulario
+          this.reset();
+          document.getElementById( 'integrationAccountId' ).disabled = true;
+
+        } else {
+          resultDiv.innerHTML = `
+                        <div class="result error">
+                            <h3>❌ Error al crear el espacio</h3>
+                            <p>${ result.error || result.message || 'Error desconocido' }</p>
+                            <details>
+                                <summary>Ver detalles del error</summary>
+                                <pre>${ JSON.stringify( result, null, 2 ) }</pre>
+                            </details>
+                        </div>
+                    `;
+        }
+      } catch ( error ) {
+        resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ Error de conexión</h3>
+                        <p>${ error.message }</p>
+                    </div>
+                `;
+      } finally {
+        // Restaurar estado del botón
+        submitBtn.disabled = false;
+        submitText.style.display = 'inline';
+        loadingText.style.display = 'none';
+      }
+    } );
+  </script>
+</body>
+
+</html>

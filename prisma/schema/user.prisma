@@ -12,7 +12,7 @@ model User {
   isTwoFactorEnabled           Boolean                       @default(false)
   twoFactorConfirmation        TwoFactorConfirmation?
   accounts                     Account[]
-  holdedId                     String?                       @unique
+  holdedId                     String?
   createdHoldedSyncAt          DateTime?
   lastHoldedSyncAt             DateTime?
   docs                         Document[]
@@ -34,6 +34,11 @@ model User {
   resources                    Resource[]                    @relation(fields: [resourceIds], references: [id])
   resourceIds                  String[]                      @db.ObjectId
   folders                      Folder[]
+  
+  // Video Conferencing Relations
+  videoSpaces                  VideoSpace[]
+  integrationAccounts          IntegrationAccount[]
+  videoConferencingKpis        VideoConferencingKPI[]
 }
 
 enum UserRole {

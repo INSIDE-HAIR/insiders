@@ -1,5 +1,5 @@
 {
   "WillLuke.nextjs.addTypesOnSave": true,
   "WillLuke.nextjs.hasPrompted": true,
-  "kiroAgent.configureMCP": "Disabled"
+  "kiroAgent.configureMCP": "Enabled"
 }

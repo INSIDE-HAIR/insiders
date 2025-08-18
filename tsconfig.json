@@ -38,6 +38,18 @@
       "@drive-components/*": [
         "./src/app/[lang]/(marketing)/drive/components/*"
       ],
+      "@video-conferencing/*": [
+        "./src/features/video-conferencing/*"
+      ],
+      "@meet/*": [
+        "./src/features/video-conferencing/meet/*"
+      ],
+      "@zoom/*": [
+        "./src/features/video-conferencing/zoom/*"
+      ],
+      "@vimeo/*": [
+        "./src/features/video-conferencing/vimeo/*"
+      ],
       "@ui/*": [
         "./src/components/ui/*"
       ],

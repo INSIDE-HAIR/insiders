@@ -1,0 +1,545 @@
+// Video Conferencing Schema
+// Models for managing video conference rooms, meetings, participants, and analytics
+
+// =============================================================================
+// Enums
+// =============================================================================
+
+enum VideoProvider {
+  MEET
+  ZOOM
+  VIMEO
+}
+
+enum VideoSpaceStatus {
+  ACTIVE
+  INACTIVE
+  DISABLED
+  EXPIRED
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+enum IntegrationStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+  ERROR
+}
+
+enum ParticipantRole {
+  HOST
+  CO_HOST
+  PANELIST
+  ATTENDEE
+}
+
+enum RecordingType {
+  VIDEO
+  AUDIO_ONLY
+  SCREEN_SHARE
+  CHAT
+  TRANSCRIPT
+}
+
+// =============================================================================
+// Core Models
+// =============================================================================
+
+model VideoSpace {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Basic Information
+  name                  String
+  description           String?
+  provider              VideoProvider
+  status                VideoSpaceStatus      @default(ACTIVE)
+  
+  // Provider Integration
+  providerRoomId        String                // External room ID from provider
+  providerJoinUri       String                // Join URL from provider
+  providerData          Json?                 // Provider-specific data
+  
+  // Configuration
+  settings              Json?                 // VideoSpaceSettings as JSON
+  maxParticipants       Int?
+  requiresAuth          Boolean               @default(false)
+  recordingEnabled      Boolean               @default(false)
+  chatEnabled           Boolean               @default(true)
+  screenShareEnabled    Boolean               @default(true)
+  waitingRoomEnabled    Boolean               @default(false)
+  alias                 String?
+  
+  // Scheduling
+  scheduledStartTime    DateTime?
+  scheduledEndTime      DateTime?
+  
+  // Ownership and Access
+  ownerId               String                @db.ObjectId
+  owner                 User                  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  cohort                String?               // For grouping sessions
+  tags                  String[]              // Searchable tags
+  
+  // Calendar Integration
+  addedToCalendar       Boolean               @default(false)
+  calendarEventId       String?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  lastActiveAt          DateTime?
+  
+  // Relations
+  aliases               LinkAlias[]
+  meetingRecords        MeetingRecord[]
+  integrationAccount    IntegrationAccount    @relation(fields: [integrationAccountId], references: [id], onDelete: Cascade)
+  integrationAccountId  String                @db.ObjectId
+  
+  @@map("videoSpaces")
+  @@index([provider, status])
+  @@index([ownerId])
+  @@index([cohort])
+  @@index([providerRoomId, provider])
+  @@index([createdAt])
+  @@index([lastActiveAt])
+}
+
+model MeetingRecord {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Basic Information
+  videoSpaceId          String                @db.ObjectId
+  videoSpace            VideoSpace            @relation(fields: [videoSpaceId], references: [id], onDelete: Cascade)
+  
+  // Meeting Details
+  providerMeetingId     String                // External meeting ID from provider
+  title                 String?
+  startTime             DateTime
+  endTime               DateTime?
+  duration              Int?                  // Duration in minutes
+  status                MeetingStatus         @default(SCHEDULED)
+  
+  // Participant Summary
+  totalParticipants     Int                   @default(0)
+  maxConcurrentUsers    Int                   @default(0)
+  
+  // Provider Data
+  providerData          Json?                 // Raw provider data
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  // Relations
+  participants          MeetingParticipant[]
+  transcriptEntries     MeetingTranscriptEntry[]
+  chatMessages          MeetingChatMessage[]
+  recordingFiles        MeetingRecordingFile[]
+  
+  @@map("meetingRecords")
+  @@index([videoSpaceId])
+  @@index([startTime])
+  @@index([status])
+  @@index([providerMeetingId])
+  @@index([createdAt])
+  @@unique([providerMeetingId, videoSpaceId])
+}
+
+model MeetingParticipant {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Meeting Reference
+  meetingRecordId       String                @db.ObjectId
+  meetingRecord         MeetingRecord         @relation(fields: [meetingRecordId], references: [id], onDelete: Cascade)
+  
+  // Participant Information
+  providerParticipantId String                // External participant ID from provider
+  name                  String
+  email                 String?
+  role                  ParticipantRole       @default(ATTENDEE)
+  
+  // Session Information
+  joinTime              DateTime
+  leaveTime             DateTime?
+  duration              Int                   @default(0) // Duration in minutes
+  connectionCount       Int                   @default(1) // Number of times joined/left
+  
+  // Provider Data
+  providerData          Json?                 // Provider-specific participant data
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  // Relations
+  sessions              ParticipantSession[]
+  
+  @@map("meetingParticipants")
+  @@index([meetingRecordId])
+  @@index([email])
+  @@index([joinTime])
+  @@index([providerParticipantId])
+}
+
+model ParticipantSession {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Participant Reference
+  participantId         String                @db.ObjectId
+  participant           MeetingParticipant    @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  
+  // Session Details
+  sessionStart          DateTime
+  sessionEnd            DateTime?
+  duration              Int?                  // Duration in minutes
+  deviceType            String?               // DESKTOP, MOBILE, TABLET, PHONE
+  connectionQuality     String?               // GOOD, FAIR, POOR
+  
+  // Feature Usage
+  audioEnabled          Boolean               @default(true)
+  videoEnabled          Boolean               @default(true)
+  screenSharingUsed     Boolean               @default(false)
+  
+  // Provider Data
+  providerData          Json?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  
+  @@map("participantSessions")
+  @@index([participantId])
+  @@index([sessionStart])
+}
+
+model MeetingTranscriptEntry {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Meeting Reference
+  meetingRecordId       String                @db.ObjectId
+  meetingRecord         MeetingRecord         @relation(fields: [meetingRecordId], references: [id], onDelete: Cascade)
+  
+  // Participant Reference (optional)
+  participantId         String?               @db.ObjectId
+  speakerName           String?
+  
+  // Transcript Content
+  text                  String
+  timestamp             DateTime
+  startTime             Int                   // Seconds from meeting start
+  endTime               Int                   // Seconds from meeting start
+  
+  // Metadata
+  language              String?               @default("en-US")
+  confidence            Float?                // Confidence score 0-1
+  
+  // Provider Data
+  providerData          Json?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  
+  @@map("meetingTranscriptEntries")
+  @@index([meetingRecordId])
+  @@index([timestamp])
+  @@index([startTime])
+  @@index([speakerName])
+}
+
+model MeetingChatMessage {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Meeting Reference
+  meetingRecordId       String                @db.ObjectId
+  meetingRecord         MeetingRecord         @relation(fields: [meetingRecordId], references: [id], onDelete: Cascade)
+  
+  // Participant Reference (optional)
+  participantId         String?               @db.ObjectId
+  senderName            String
+  senderEmail           String?
+  
+  // Message Content
+  message               String
+  timestamp             DateTime
+  messageType           String                @default("TEXT") // TEXT, FILE, SYSTEM
+  
+  // Provider Data
+  providerData          Json?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  
+  @@map("meetingChatMessages")
+  @@index([meetingRecordId])
+  @@index([timestamp])
+  @@index([senderEmail])
+}
+
+model MeetingRecordingFile {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Meeting Reference
+  meetingRecordId       String                @db.ObjectId
+  meetingRecord         MeetingRecord         @relation(fields: [meetingRecordId], references: [id], onDelete: Cascade)
+  
+  // File Information
+  fileName              String
+  fileType              RecordingType
+  fileSize              Int                   @default(0) // Size in bytes
+  duration              Int?                  // Duration in seconds
+  
+  // Access Information
+  downloadUrl           String
+  expiresAt             DateTime?
+  providerFileId        String                // External file ID from provider
+  
+  // Provider Data
+  providerData          Json?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  @@map("meetingRecordingFiles")
+  @@index([meetingRecordId])
+  @@index([fileType])
+  @@index([providerFileId])
+  @@index([expiresAt])
+}
+
+// =============================================================================
+// Integration and Authentication Models
+// =============================================================================
+
+model IntegrationAccount {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Account Information
+  provider              VideoProvider
+  accountName           String                // Display name
+  accountEmail          String?               // Associated email
+  
+  // Authentication (encrypted)
+  accessToken           String                // Encrypted access token
+  refreshToken          String?               // Encrypted refresh token
+  tokenExpiry           DateTime?
+  scopes                String[]              // Granted permissions
+  
+  // Account Status
+  status                IntegrationStatus     @default(ACTIVE)
+  lastSyncAt            DateTime?
+  
+  // Ownership
+  userId                String                @db.ObjectId
+  user                  User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Configuration
+  webhookConfig         Json?                 // ProviderWebhookConfig as JSON
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  // Relations
+  videoSpaces           VideoSpace[]
+  
+  @@map("integrationAccounts")
+  @@unique([provider, accountEmail])
+  @@index([userId])
+  @@index([provider, status])
+  @@index([status])
+}
+
+// =============================================================================
+// Alias and Link Management
+// =============================================================================
+
+model LinkAlias {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Alias Information
+  alias                 String                @unique // The short alias (e.g., "team-standup")
+  videoSpaceId          String                @db.ObjectId
+  videoSpace            VideoSpace            @relation(fields: [videoSpaceId], references: [id], onDelete: Cascade)
+  
+  // Status
+  isActive              Boolean               @default(true)
+  
+  // Usage Tracking
+  accessCount           Int                   @default(0)
+  lastAccessedAt        DateTime?
+  
+  // Timestamps
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  
+  @@map("linkAliases")
+  @@index([videoSpaceId])
+  @@index([isActive])
+  @@index([lastAccessedAt])
+}
+
+// =============================================================================
+// Analytics and KPI Models
+// =============================================================================
+
+model VideoConferencingKPI {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Timestamp information
+  calculatedAt          DateTime              @default(now())
+  lastUpdatedAt         DateTime              @updatedAt
+  
+  // Date range for the KPI calculation
+  periodStart           DateTime
+  periodEnd             DateTime
+  
+  // Provider filter (optional - null means all providers)
+  provider              VideoProvider?
+  
+  // Owner filter (optional - null means all users)
+  ownerId               String?               @db.ObjectId
+  owner                 User?                 @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  // Cohort filter (optional)
+  cohort                String?
+  
+  // Meeting metrics
+  totalMeetings         Int                   @default(0)
+  activeMeetings        Int                   @default(0)
+  completedMeetings     Int                   @default(0)
+  cancelledMeetings     Int                   @default(0)
+  
+  // Participant metrics
+  totalUniqueParticipants Int                 @default(0)
+  averageParticipantsPerMeeting Float         @default(0)
+  totalParticipantMinutes Int                 @default(0)
+  
+  // Time-based metrics
+  totalMeetingHours     Float                 @default(0)
+  averageMeetingDuration Float                @default(0)
+  
+  // Provider distribution
+  providerBreakdown     Json                  // { "MEET": { meetingCount: number, participantCount: number }, ... }
+  
+  // Meeting status distribution
+  statusStats           Json                  // { "COMPLETED": number, "CANCELLED": number, ... }
+  
+  // Engagement metrics
+  engagementStats       Json                  // { averageEngagement: number, dropOffRate: number, ... }
+  
+  // Daily/Weekly patterns
+  dailyMeetingStats     Json                  // { "monday": number, "tuesday": number, ... }
+  hourlyDistribution    Json                  // { "09": number, "10": number, ... }
+  
+  // Feature usage
+  featureUsageStats     Json                  // { recording: number, transcription: number, ... }
+  
+  // Quality metrics
+  qualityMetrics        Json?                 // { averageConnectionQuality: number, technicalIssues: number, ... }
+  
+  // Version for data migration
+  version               Int                   @default(1)
+  
+  // Metadata
+  generatedBy           String?               // User ID who triggered the calculation
+  includeAllProviders   Boolean?              @default(true)
+  
+  // Relations
+  updateLogs            VideoConferencingKPIUpdateLog[]
+  
+  @@map("videoConferencingKpis")
+  @@index([calculatedAt])
+  @@index([periodStart, periodEnd])
+  @@index([provider])
+  @@index([ownerId])
+  @@index([cohort])
+}
+
+model VideoConferencingKPIUpdateLog {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  kpiId                 String                @db.ObjectId
+  updatedAt             DateTime              @default(now())
+  updatedBy             String?               // User ID
+  
+  // What was updated
+  updateType            String                // "manual", "scheduled", "auto"
+  
+  // Performance metrics
+  processingTimeMs      Int?
+  meetingsProcessed     Int?
+  participantsProcessed Int?
+  
+  // Status
+  status                String                // "success", "error", "partial"
+  errorMessage          String?
+  
+  // Reference to the KPI record
+  kpi                   VideoConferencingKPI  @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+  
+  @@map("videoConferencingKpiUpdateLogs")
+  @@index([updatedAt])
+  @@index([kpiId])
+  @@index([status])
+}
+
+// =============================================================================
+// Webhook and Event Models
+// =============================================================================
+
+model WebhookEvent {
+  id                    String                @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Event Information
+  provider              VideoProvider
+  eventType             String                // meeting.started, meeting.ended, etc.
+  eventId               String                // Provider's event ID
+  
+  // Payload
+  payload               Json                  // Raw webhook payload
+  signature             String?               // Webhook signature for validation
+  
+  // Processing Status
+  processed             Boolean               @default(false)
+  processedAt           DateTime?
+  processingAttempts    Int                   @default(0)
+  lastProcessingError   String?
+  
+  // Related Records
+  videoSpaceId          String?               @db.ObjectId
+  meetingRecordId       String?               @db.ObjectId
+  
+  // Timestamps
+  receivedAt            DateTime              @default(now())
+  eventTimestamp        DateTime?             // Timestamp from provider
+  
+  @@map("webhookEvents")
+  @@index([provider, eventType])
+  @@index([processed])
+  @@index([receivedAt])
+  @@index([videoSpaceId])
+  @@index([meetingRecordId])
+  @@unique([provider, eventId])
+}
+
+// =============================================================================
+// Extend existing User model
+// =============================================================================
+
+// Note: This extends the existing User model from user.prisma
+// The actual extension would be added to the existing User model
+// For reference, these are the fields that would be added:
+
+// model User {
+//   // ... existing fields ...
+//   
+//   // Video Conferencing Relations
+//   videoSpaces           VideoSpace[]
+//   integrationAccounts   IntegrationAccount[]
+//   videoConferencingKpis VideoConferencingKPI[]
+// }
