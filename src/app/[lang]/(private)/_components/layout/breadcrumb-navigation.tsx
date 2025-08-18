@@ -52,9 +52,7 @@ export default function BreadcrumbNavigation({
         key={index}
         className='capitalize text-tiny focus:bg-primary '
       >
-        <Link
-          href={`/${pathSegments.slice(0, index + 2).join("/")}`}
-        >
+        <Link href={`/${pathSegments.slice(0, index + 2).join("/")}`}>
           {getTranslation(segment, "es")}
         </Link>
       </DropdownMenuItem>
@@ -106,7 +104,10 @@ export default function BreadcrumbNavigation({
           )}
           <BreadcrumbItem className='hover:underline  pointer-events-none [&>*]:text-tiny '>
             <BreadcrumbPage className='text-primary capitalize'>
-              {getTranslation(pathSegments[pathSegments.length - 1] || "", "es")}
+              {getTranslation(
+                pathSegments[pathSegments.length - 1] || "",
+                "es"
+              )}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

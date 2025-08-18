@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   ResponsiveModal,
   ResponsiveModalContent,
@@ -27,6 +28,7 @@ import {
   User,
   TrendingUp,
   AlertCircle,
+  EyeOff,
 } from "lucide-react";
 import { ApiKey, ApiKeyStatus } from "../../types";
 import { useToast } from "@/src/hooks/use-toast";
@@ -44,6 +46,7 @@ export function ViewApiKeyModal({
   apiKey,
 }: ViewApiKeyModalProps) {
   const { toast } = useToast();
+  const [keyVisible, setKeyVisible] = useState(false);
 
   const getStatusColor = (status: keyof typeof ApiKeyStatus) => {
     switch (status) {
@@ -130,26 +133,43 @@ export function ViewApiKeyModal({
             <CardHeader className='pb-3'>
               <CardTitle className='text-sm font-medium flex items-center'>
                 <Key className='h-4 w-4 mr-2' />
-                Clave API (prefijo)
+                Clave API
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className='flex items-center justify-between p-3 bg-muted rounded-lg'>
-                <code className='text-sm font-mono'>{apiKey.keyPrefix}</code>
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() =>
-                    copyToClipboard(apiKey.keyPrefix, "Prefijo de la clave")
-                  }
-                  className='h-8 w-8 p-0'
-                >
-                  <Copy className='h-4 w-4' />
-                </Button>
+                <code className='text-sm font-mono'>
+                  {keyVisible
+                    ? apiKey.key
+                    : "•".repeat(apiKey.key?.length || 0)}
+                </code>
+                <div className='flex items-center space-x-1'>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    onClick={() => setKeyVisible(!keyVisible)}
+                    className='h-8 w-8 p-0'
+                  >
+                    {keyVisible ? (
+                      <EyeOff className='h-4 w-4' />
+                    ) : (
+                      <Eye className='h-4 w-4' />
+                    )}
+                  </Button>
+                  <Button
+                    variant='ghost'
+                    size='sm'
+                    onClick={() =>
+                      copyToClipboard(apiKey.key || '', "Clave API")
+                    }
+                    className='h-8 w-8 p-0'
+                  >
+                    <Copy className='h-4 w-4' />
+                  </Button>
+                </div>
               </div>
               <p className='text-xs text-muted-foreground mt-2'>
-                Por seguridad, solo se muestra el prefijo de la clave. La clave
-                completa solo se mostró al crearla.
+                Copia esta clave y guárdala en un lugar seguro.
               </p>
             </CardContent>
           </Card>

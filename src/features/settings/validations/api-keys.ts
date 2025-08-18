@@ -22,6 +22,7 @@ export const ApiKeyBaseSchema = z.object({
     .optional()
     .nullable()
     .transform(val => val || undefined),
+  key: z.string().optional(),
   keyPrefix: z.string()
     .min(12, "Key prefix too short")
     .regex(/^ak_[a-z]+_[a-zA-Z0-9]{3}\.\.\./, "Invalid key prefix format"),

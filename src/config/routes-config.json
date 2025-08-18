@@ -508,6 +508,53 @@
               "requireAuth": true,
               "roles": ["ADMIN"]
             }
+          },
+          {
+            "path": "/admin/video-conferencing",
+            "label": "Video Conferencing",
+            "access": {
+              "type": "admin",
+              "requireAuth": true,
+              "roles": ["ADMIN"]
+            },
+            "children": [
+              {
+                "path": "/admin/video-conferencing/spaces",
+                "label": "Video Spaces",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              },
+              {
+                "path": "/admin/video-conferencing/analytics",
+                "label": "Meeting Analytics",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              },
+              {
+                "path": "/admin/video-conferencing/integrations",
+                "label": "Provider Integrations",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              },
+              {
+                "path": "/admin/video-conferencing/settings",
+                "label": "Video Settings",
+                "access": {
+                  "type": "admin",
+                  "requireAuth": true,
+                  "roles": ["ADMIN"]
+                }
+              }
+            ]
           }
         ]
       }
@@ -542,6 +589,15 @@
       {
         "path": "/api/drive",
         "label": "Drive API",
+        "access": {
+          "type": "api",
+          "requireAuth": true,
+          "roles": ["ADMIN"]
+        }
+      },
+      {
+        "path": "/api/video-conferencing",
+        "label": "Video Conferencing API",
         "access": {
           "type": "api",
           "requireAuth": true,
@@ -585,7 +641,7 @@
     },
     "byDomain": {
       "@insidesalons.com": {
-        "defaultRole": "ADMIN",  
+        "defaultRole": "ADMIN",
         "allowedRoutes": ["/admin/*", "/profile", "/dashboard/*"]
       }
     },

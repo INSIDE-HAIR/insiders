@@ -45,6 +45,8 @@ import {
 import { cn } from "@/src/lib/utils";
 import { useToast } from "@/src/hooks/use-toast";
 
+import { EyeOff } from "lucide-react";
+
 interface ApiKeyCardProps {
   apiKey: ApiKey;
   onEdit: (apiKey: ApiKey) => void;
@@ -67,6 +69,7 @@ export function ApiKeyCard({
   const [showRevokeDialog, setShowRevokeDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showReactivateDialog, setShowReactivateDialog] = useState(false);
+  const [keyVisible, setKeyVisible] = useState(false);
   const { toast } = useToast();
 
   const getStatusColor = (status: keyof typeof ApiKeyStatus) => {
@@ -92,7 +95,7 @@ export function ApiKeyCard({
       await navigator.clipboard.writeText(text);
       toast({
         title: "Copiado",
-        description: "Prefijo de la clave copiado al portapapeles",
+        description: "API Key copiada al portapapeles",
       });
     } catch (error) {
       toast({
@@ -203,20 +206,36 @@ export function ApiKeyCard({
         </CardHeader>
 
         <CardContent className='space-y-4'>
-          {/* Key Prefix */}
+          {/* Key */}
           <div className='flex items-center justify-between p-3 bg-muted rounded-lg'>
             <div className='flex items-center space-x-2'>
               <Key className='h-4 w-4 text-muted-foreground' />
-              <code className='text-sm font-mono'>{apiKey.keyPrefix}</code>
+              <code className='text-sm font-mono'>
+                {keyVisible ? apiKey.key : "•".repeat(apiKey.key?.length || 0)}
+              </code>
             </div>
-            <Button
-              variant='ghost'
-              size='sm'
-              onClick={() => copyToClipboard(apiKey.keyPrefix)}
-              className='h-8 w-8 p-0'
-            >
-              <Copy className='h-4 w-4' />
-            </Button>
+            <div className='flex items-center space-x-1'>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => setKeyVisible(!keyVisible)}
+                className='h-8 w-8 p-0'
+              >
+                {keyVisible ? (
+                  <EyeOff className='h-4 w-4' />
+                ) : (
+                  <Eye className='h-4 w-4' />
+                )}
+              </Button>
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => copyToClipboard(apiKey.key || "")}
+                className='h-8 w-8 p-0'
+              >
+                <Copy className='h-4 w-4' />
+              </Button>
+            </div>
           </div>
 
           {/* Stats - Simplified */}

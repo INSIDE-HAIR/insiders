@@ -186,9 +186,18 @@ function ApiKeysPageContent() {
     setShowEditModal(true);
   };
 
-  const handleViewApiKey = (apiKey: ApiKey) => {
-    setSelectedApiKey(apiKey);
-    setShowViewModal(true);
+  const handleViewApiKey = async (apiKey: ApiKey) => {
+    try {
+      const fullApiKey = await apiKeyService.getApiKeyDetails(apiKey.id);
+      setSelectedApiKey(fullApiKey);
+      setShowViewModal(true);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Error al cargar los detalles de la API Key",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleUpdateApiKey = async (

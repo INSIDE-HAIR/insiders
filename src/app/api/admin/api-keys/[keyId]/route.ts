@@ -50,6 +50,7 @@ export async function GET(
         name: true,
         description: true,
         status: true,
+        key: true, // Devolver la clave completa
         keyPrefix: true,
         expiresAt: true,
         userId: true,

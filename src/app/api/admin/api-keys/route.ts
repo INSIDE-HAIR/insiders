@@ -95,6 +95,7 @@ export async function GET(request: NextRequest) {
           name: true,
           description: true,
           status: true,
+          key: true, // Devolver la clave completa
           keyPrefix: true,
           expiresAt: true,
           userId: true,
@@ -239,6 +240,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: data.name,
         description: data.description || undefined,
+        key: apiKey, // Almacenar la clave completa
         keyHash,
         keyPrefix,
         status: 'ACTIVE',

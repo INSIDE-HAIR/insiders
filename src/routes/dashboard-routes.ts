@@ -1,472 +1,541 @@
-import { DashboardRoutes } from '@/src/types/dashboard-routes'
+import { DashboardRoutes } from "@/src/types/dashboard-routes";
 
 export const dashboardRoutesData: DashboardRoutes = {
-  "version": "1.0.0",
-  "lastUpdated": "2025-01-01T00:00:00Z",
-  "teams": {
-    "gestion": {
-      "name": {
-        "en": "Management Team",
-        "es": "Equipo de Gestión"
+  version: "1.0.0",
+  lastUpdated: "2025-01-01T00:00:00Z",
+  teams: {
+    gestion: {
+      name: {
+        en: "Management Team",
+        es: "Equipo de Gestión",
       },
-      "plan": "Enterprise",
-      "routes": ["admin", "dashboard", "products", "users", "groups", "analytics", "messages", "pages", "menu", "drive", "holded", "calendar", "sitemap", "access-control", "settings"]
+      plan: "Enterprise",
+      routes: [
+        "admin",
+        "dashboard",
+        "products",
+        "users",
+        "groups",
+        "analytics",
+        "messages",
+        "pages",
+        "menu",
+        "drive",
+        "holded",
+        "calendar",
+        "video-conferencing",
+        "sitemap",
+        "access-control",
+        "settings",
+      ],
     },
-    "creativos": {
-      "name": {
-        "en": "Creative Team", 
-        "es": "Equipo Creativo"
+    creativos: {
+      name: {
+        en: "Creative Team",
+        es: "Equipo Creativo",
       },
-      "plan": "Pro",
-      "routes": ["pages", "menu", "drive", "calendar"]
+      plan: "Pro",
+      routes: ["pages", "menu", "drive", "calendar", "video-conferencing"],
     },
-    "consultoria": {
-      "name": {
-        "en": "Consulting Team",
-        "es": "Equipo de Consultoría"
+    consultoria: {
+      name: {
+        en: "Consulting Team",
+        es: "Equipo de Consultoría",
       },
-      "plan": "Pro", 
-      "routes": ["analytics", "users", "admin", "dashboard", "messages"]
+      plan: "Pro",
+      routes: ["analytics", "users", "admin", "dashboard", "messages"],
     },
-    "crecimiento": {
-      "name": {
-        "en": "Growth Team",
-        "es": "Equipo de Crecimiento"
+    crecimiento: {
+      name: {
+        en: "Growth Team",
+        es: "Equipo de Crecimiento",
       },
-      "plan": "Pro",
-      "routes": ["analytics", "products", "admin", "dashboard", "messages"]
-    }
+      plan: "Pro",
+      routes: ["analytics", "products", "admin", "dashboard", "messages"],
+    },
   },
-  "routes": [
+  routes: [
     {
-      "id": "admin",
-      "label": {
-        "en": "Home",
-        "es": "Inicio"
+      id: "admin",
+      label: {
+        en: "Home",
+        es: "Inicio",
       },
-      "href": "/admin",
-      "icon": "Home",
-      "type": "direct",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "consultoria", "crecimiento"]
-      }
+      href: "/admin",
+      icon: "Home",
+      type: "direct",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria", "crecimiento"],
+      },
     },
     {
-      "id": "dashboard",
-      "label": {
-        "en": "Dashboard",
-        "es": "Dashboard"
+      id: "dashboard",
+      label: {
+        en: "Dashboard",
+        es: "Dashboard",
       },
-      "href": "/admin/dashboard",
-      "icon": "BarChart3",
-      "type": "direct",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "consultoria", "crecimiento"]
-      }
+      href: "/admin/dashboard",
+      icon: "BarChart3",
+      type: "direct",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria", "crecimiento"],
+      },
     },
     {
-      "id": "products",
-      "label": {
-        "en": "Products",
-        "es": "Productos"
+      id: "products",
+      label: {
+        en: "Products",
+        es: "Productos",
       },
-      "href": "/admin/products",
-      "icon": "Package",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin", "editor"],
-        "teams": ["gestion", "crecimiento"]
+      href: "/admin/products",
+      icon: "Package",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin", "editor"],
+        teams: ["gestion", "crecimiento"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "products-list",
-          "label": {
-            "en": "Product List",
-            "es": "Lista de Productos"
+          id: "products-list",
+          label: {
+            en: "Product List",
+            es: "Lista de Productos",
           },
-          "href": "/admin/products",
-          "icon": "List"
+          href: "/admin/products",
+          icon: "List",
         },
         {
-          "id": "products-create",
-          "label": {
-            "en": "Create Product",
-            "es": "Crear Producto"
+          id: "products-create",
+          label: {
+            en: "Create Product",
+            es: "Crear Producto",
           },
-          "href": "/admin/products/create",
-          "icon": "Plus"
-        }
-      ]
+          href: "/admin/products/create",
+          icon: "Plus",
+        },
+      ],
     },
     {
-      "id": "users",
-      "label": {
-        "en": "Users",
-        "es": "Usuarios"
+      id: "users",
+      label: {
+        en: "Users",
+        es: "Usuarios",
       },
-      "href": "/admin/users",
-      "icon": "Users",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "consultoria"]
+      href: "/admin/users",
+      icon: "Users",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "users-list",
-          "label": {
-            "en": "User List",
-            "es": "Lista de Usuarios"
+          id: "users-list",
+          label: {
+            en: "User List",
+            es: "Lista de Usuarios",
           },
-          "href": "/admin/users",
-          "icon": "List"
+          href: "/admin/users",
+          icon: "List",
         },
         {
-          "id": "users-create",
-          "label": {
-            "en": "Create User",
-            "es": "Crear Usuario"
+          id: "users-create",
+          label: {
+            en: "Create User",
+            es: "Crear Usuario",
           },
-          "href": "/admin/users/create",
-          "icon": "UserPlus"
+          href: "/admin/users/create",
+          icon: "UserPlus",
         },
         {
-          "id": "groups",
-          "label": {
-            "en": "Groups",
-            "es": "Grupos"
+          id: "groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
           },
-          "href": "/admin/groups",
-          "icon": "Users"
-        }
-      ]
+          href: "/admin/groups",
+          icon: "Users",
+        },
+      ],
     },
     {
-      "id": "analytics",
-      "label": {
-        "en": "Analytics",
-        "es": "Analíticas"
+      id: "analytics",
+      label: {
+        en: "Analytics",
+        es: "Analíticas",
       },
-      "href": "/admin/analytics",
-      "icon": "BarChart3",
-      "type": "direct",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "consultoria", "crecimiento"]
-      }
+      href: "/admin/analytics",
+      icon: "BarChart3",
+      type: "direct",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria", "crecimiento"],
+      },
     },
     {
-      "id": "messages",
-      "label": {
-        "en": "Messages",
-        "es": "Mensajes"
+      id: "messages",
+      label: {
+        en: "Messages",
+        es: "Mensajes",
       },
-      "href": "/admin/messages",
-      "icon": "Mail",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "consultoria", "crecimiento"]
+      href: "/admin/messages",
+      icon: "Mail",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria", "crecimiento"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "messages-all",
-          "label": {
-            "en": "All Messages",
-            "es": "Todos los Mensajes"
+          id: "messages-all",
+          label: {
+            en: "All Messages",
+            es: "Todos los Mensajes",
           },
-          "href": "/admin/messages",
-          "icon": "Mail"
-        }
-      ]
+          href: "/admin/messages",
+          icon: "Mail",
+        },
+      ],
     },
     {
-      "id": "pages",
-      "label": {
-        "en": "Pages",
-        "es": "Páginas"
+      id: "pages",
+      label: {
+        en: "Pages",
+        es: "Páginas",
       },
-      "href": "/admin/pages",
-      "icon": "FileText",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin", "editor"],
-        "teams": ["gestion", "creativos"]
+      href: "/admin/pages",
+      icon: "FileText",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin", "editor"],
+        teams: ["gestion", "creativos"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "pages-list",
-          "label": {
-            "en": "Page List",
-            "es": "Lista de Páginas"
+          id: "pages-list",
+          label: {
+            en: "Page List",
+            es: "Lista de Páginas",
           },
-          "href": "/admin/pages",
-          "icon": "FileText"
-        }
-      ]
+          href: "/admin/pages",
+          icon: "FileText",
+        },
+      ],
     },
     {
-      "id": "menu",
-      "label": {
-        "en": "Menu",
-        "es": "Menú"
+      id: "menu",
+      label: {
+        en: "Menu",
+        es: "Menú",
       },
-      "href": "/admin/menu",
-      "icon": "Menu",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "creativos"]
+      href: "/admin/menu",
+      icon: "Menu",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "menu-config",
-          "label": {
-            "en": "Menu Configuration",
-            "es": "Configuración de Menú"
+          id: "menu-config",
+          label: {
+            en: "Menu Configuration",
+            es: "Configuración de Menú",
           },
-          "href": "/admin/menu",
-          "icon": "Settings"
-        }
-      ]
+          href: "/admin/menu",
+          icon: "Settings",
+        },
+      ],
     },
     {
-      "id": "drive",
-      "label": {
-        "en": "Drive",
-        "es": "Drive"
+      id: "drive",
+      label: {
+        en: "Drive",
+        es: "Drive",
       },
-      "href": "/admin/drive",
-      "icon": "HardDrive",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "creativos"]
+      href: "/admin/drive",
+      icon: "HardDrive",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "drive-explorer",
-          "label": {
-            "en": "Drive Explorer",
-            "es": "Explorador de Drive"
+          id: "drive-explorer",
+          label: {
+            en: "Drive Explorer",
+            es: "Explorador de Drive",
           },
-          "href": "/admin/drive",
-          "icon": "Folder"
+          href: "/admin/drive",
+          icon: "Folder",
         },
         {
-          "id": "drive-codes",
-          "label": {
-            "en": "Code Manager",
-            "es": "Gestor de Códigos"
+          id: "drive-codes",
+          label: {
+            en: "Code Manager",
+            es: "Gestor de Códigos",
           },
-          "href": "/admin/drive/codes",
-          "icon": "Code"
+          href: "/admin/drive/codes",
+          icon: "Code",
         },
         {
-          "id": "drive-errors",
-          "label": {
-            "en": "Error Reports",
-            "es": "Reportes de Errores"
+          id: "drive-errors",
+          label: {
+            en: "Error Reports",
+            es: "Reportes de Errores",
           },
-          "href": "/admin/drive/errors",
-          "icon": "AlertTriangle"
+          href: "/admin/drive/errors",
+          icon: "AlertTriangle",
         },
         {
-          "id": "drive-routes",
-          "label": {
-            "en": "Drive Routes",
-            "es": "Rutas de Drive"
+          id: "drive-routes",
+          label: {
+            en: "Drive Routes",
+            es: "Rutas de Drive",
           },
-          "href": "/admin/drive/routes",
-          "icon": "Route"
+          href: "/admin/drive/routes",
+          icon: "Route",
         },
         {
-          "id": "drive-docs",
-          "label": {
-            "en": "Documentation",
-            "es": "Documentación"
+          id: "drive-docs",
+          label: {
+            en: "Documentation",
+            es: "Documentación",
           },
-          "href": "/admin/drive/routes/docs",
-          "icon": "Book"
-        }
-      ]
+          href: "/admin/drive/routes/docs",
+          icon: "Book",
+        },
+      ],
     },
     {
-      "id": "holded",
-      "label": {
-        "en": "Holded",
-        "es": "Holded"
+      id: "holded",
+      label: {
+        en: "Holded",
+        es: "Holded",
       },
-      "href": "/admin/holded",
-      "icon": "Building",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion"]
+      href: "/admin/holded",
+      icon: "Building",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "holded-panel",
-          "label": {
-            "en": "Holded Panel",
-            "es": "Panel de Holded"
+          id: "holded-panel",
+          label: {
+            en: "Holded Panel",
+            es: "Panel de Holded",
           },
-          "href": "/admin/holded",
-          "icon": "Building"
-        }
-      ]
+          href: "/admin/holded",
+          icon: "Building",
+        },
+      ],
     },
     {
-      "id": "calendar",
-      "label": {
-        "en": "Calendar",
-        "es": "Calendario"
+      id: "calendar",
+      label: {
+        en: "Calendar",
+        es: "Calendario",
       },
-      "href": "/admin/calendar",
-      "icon": "Calendar",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion", "creativos"]
+      href: "/admin/calendar",
+      icon: "Calendar",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "calendar-dashboard",
-          "label": {
-            "en": "Calendar Dashboard",
-            "es": "Dashboard de Calendario"
+          id: "calendar-dashboard",
+          label: {
+            en: "Calendar Dashboard",
+            es: "Dashboard de Calendario",
           },
-          "href": "/admin/calendar",
-          "icon": "Calendar"
+          href: "/admin/calendar",
+          icon: "Calendar",
         },
         {
-          "id": "calendar-events",
-          "label": {
-            "en": "Event List",
-            "es": "Lista de Eventos"
+          id: "calendar-events",
+          label: {
+            en: "Event List",
+            es: "Lista de Eventos",
           },
-          "href": "/admin/calendar/events",
-          "icon": "CalendarDays"
-        }
-      ]
+          href: "/admin/calendar/events",
+          icon: "CalendarDays",
+        },
+      ],
     },
     {
-      "id": "sitemap",
-      "label": {
-        "en": "Sitemap",
-        "es": "Mapa del Sitio"
+      id: "sitemap",
+      label: {
+        en: "Sitemap",
+        es: "Mapa del Sitio",
       },
-      "href": "/admin/sitemap",
-      "icon": "Map",
-      "type": "direct",
-      "access": {
-        "roles": ["super-admin"],
-        "teams": ["gestion"],
-        "domains": ["@insidesalons.com"]
-      }
+      href: "/admin/sitemap",
+      icon: "Map",
+      type: "direct",
+      access: {
+        roles: ["super-admin"],
+        teams: ["gestion"],
+        domains: ["@insidesalons.com"],
+      },
     },
     {
-      "id": "access-control",
-      "label": {
-        "en": "Access Control",
-        "es": "Control de Acceso"
+      id: "access-control",
+      label: {
+        en: "Access Control",
+        es: "Control de Acceso",
       },
-      "href": "/admin/access-control",
-      "icon": "Shield",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion"]
+      href: "/admin/access-control",
+      icon: "Shield",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "access-control-basic",
-          "label": {
-            "en": "Basic Control",
-            "es": "Control Básico"
+          id: "access-control-basic",
+          label: {
+            en: "Basic Control",
+            es: "Control Básico",
           },
-          "href": "/admin/access-control",
-          "icon": "Settings"
+          href: "/admin/access-control",
+          icon: "Settings",
         },
         {
-          "id": "user-exceptions",
-          "label": {
-            "en": "User Exceptions",
-            "es": "Excepciones de Usuario"
+          id: "user-exceptions",
+          label: {
+            en: "User Exceptions",
+            es: "Excepciones de Usuario",
           },
-          "href": "/admin/user-exceptions",
-          "icon": "UserX"
+          href: "/admin/user-exceptions",
+          icon: "UserX",
         },
         {
-          "id": "complex-access-control",
-          "label": {
-            "en": "Complex Rules",
-            "es": "Reglas Complejas"
+          id: "complex-access-control",
+          label: {
+            en: "Complex Rules",
+            es: "Reglas Complejas",
           },
-          "href": "/admin/complex-access-control",
-          "icon": "Layers"
+          href: "/admin/complex-access-control",
+          icon: "Layers",
         },
         {
-          "id": "complex-access-metrics",
-          "label": {
-            "en": "Access Metrics",
-            "es": "Métricas de Acceso"
+          id: "complex-access-metrics",
+          label: {
+            en: "Access Metrics",
+            es: "Métricas de Acceso",
           },
-          "href": "/admin/complex-access-control/metrics",
-          "icon": "BarChart3"
+          href: "/admin/complex-access-control/metrics",
+          icon: "BarChart3",
         },
         {
-          "id": "access-control-docs",
-          "label": {
-            "en": "Authentication Docs",
-            "es": "Documentación de Auth"
+          id: "access-control-docs",
+          label: {
+            en: "Authentication Docs",
+            es: "Documentación de Auth",
           },
-          "href": "/admin/access-control/docs",
-          "icon": "BookOpen"
-        }
-      ]
+          href: "/admin/access-control/docs",
+          icon: "BookOpen",
+        },
+      ],
     },
     {
-      "id": "settings",
-      "label": {
-        "en": "Settings",
-        "es": "Configuración"
+      id: "settings",
+      label: {
+        en: "Settings",
+        es: "Configuración",
       },
-      "href": "/admin/settings",
-      "icon": "Settings",
-      "type": "accordion",
-      "access": {
-        "roles": ["admin", "super-admin"],
-        "teams": ["gestion"]
+      href: "/admin/settings",
+      icon: "Settings",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion"],
       },
-      "subItems": [
+      subItems: [
         {
-          "id": "settings-general",
-          "label": {
-            "en": "General Settings",
-            "es": "Configuración General"
+          id: "settings-general",
+          label: {
+            en: "General Settings",
+            es: "Configuración General",
           },
-          "href": "/admin/settings",
-          "icon": "Settings"
+          href: "/admin/settings",
+          icon: "Settings",
         },
         {
-          "id": "api-keys",
-          "label": {
-            "en": "API Keys",
-            "es": "Claves API"
+          id: "api-keys",
+          label: {
+            en: "API Keys",
+            es: "Claves API",
           },
-          "href": "/admin/settings/api-keys",
-          "icon": "Lock"
-        }
-      ]
-    }
+          href: "/admin/settings/api-keys",
+          icon: "Lock",
+        },
+      ],
+    },
+    {
+      id: "video-conferencing",
+      label: {
+        en: "Video Conferencing",
+        es: "Videoconferencias",
+      },
+      href: "/admin/video-conferencing",
+      icon: "Video",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
+      },
+      subItems: [
+        {
+          id: "video-spaces",
+          label: {
+            en: "Video Spaces",
+            es: "Espacios de Video",
+          },
+          href: "/admin/video-conferencing/spaces",
+          icon: "Monitor",
+        },
+        {
+          id: "meeting-analytics",
+          label: {
+            en: "Meeting Analytics",
+            es: "Analíticas de Reuniones",
+          },
+          href: "/admin/video-conferencing/analytics",
+          icon: "BarChart3",
+        },
+        {
+          id: "provider-integrations",
+          label: {
+            en: "Provider Integrations",
+            es: "Integraciones de Proveedores",
+          },
+          href: "/admin/video-conferencing/integrations",
+          icon: "Plug",
+        },
+        {
+          id: "video-settings",
+          label: {
+            en: "Video Settings",
+            es: "Configuración de Video",
+          },
+          href: "/admin/video-conferencing/settings",
+          icon: "Settings",
+        },
+      ],
+    },
   ],
-  "directLinkRoutes": ["admin", "analytics", "sitemap"],
-  "settings": {
-    "defaultTeam": "gestion",
-    "enableTeamSwitching": true,
-    "showTeamIndicator": true
-  }
-}
+  directLinkRoutes: ["admin", "analytics", "sitemap"],
+  settings: {
+    defaultTeam: "gestion",
+    enableTeamSwitching: true,
+    showTeamIndicator: true,
+  },
+};

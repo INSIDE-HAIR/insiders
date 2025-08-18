@@ -12,6 +12,7 @@ model ApiKey {
   description String?    // Descripción opcional del propósito
   
   // La clave API (hasheada en BD por seguridad)
+  key         String?    // La clave completa, almacenada en texto plano (NO RECOMENDADO)
   keyHash     String     @unique // Hash de la clave real
   keyPrefix   String     // Primeros caracteres para mostrar (ej: "ak_prod_abc1...")
   
