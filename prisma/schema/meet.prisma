@@ -1,0 +1,33 @@
+// Meet API Models - ARQUITECTURA SIMPLIFICADA
+// Solo almacena IDs para resolver limitación de listado API
+// Todos los datos vienen frescos de Google Meet API
+
+model MeetSpace {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  spaceId     String    @unique // ID del space en Google Meet (ej: "JOsxkyPchrEB")
+  displayName String?   // Solo para UX en listado (opcional)
+  createdAt   DateTime  @default(now())
+  createdBy   String?   // Usuario que creó el space
+  lastSyncAt  DateTime? // Última consulta a API (para referencia)
+  
+  @@index([createdBy])
+  @@index([createdAt])
+}
+
+// Logs simplificados de operaciones para auditoría
+model MeetApiLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  operation   String   // "create_space", "get_space", "add_member", etc.
+  spaceId     String?  // Space ID involucrado (si aplica)
+  success     Boolean  // Si la operación fue exitosa
+  statusCode  Int?     // Status code HTTP
+  errorMsg    String?  // Mensaje de error (si hubo)
+  apiVersion  String   @default("v2") // v2, v2beta
+  createdAt   DateTime @default(now())
+  userId      String?  // Usuario que realizó la operación
+  
+  @@index([operation])
+  @@index([spaceId])
+  @@index([createdAt])
+}
+

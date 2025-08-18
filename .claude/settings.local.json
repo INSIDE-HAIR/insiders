@@ -27,6 +27,7 @@
       "WebFetch(domain:www.prisma.io)",
       "Bash(npm run type-check:*)",
       "Bash(copy \"public/favicon.ico\" \"src/app/favicon.ico\")",
+      "Bash(taskkill:*)",
       "Bash(rg:*)",
       "Bash(awk:*)",
       "Bash(find:*)",
@@ -35,11 +36,12 @@
       "Bash(npm run lint:*)",
       "Bash(curl:*)",
       "Bash(git checkout:*)",
-      "WebFetch(domain:developers.zoom.us)",
-      "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:developer.vimeo.com)",
-      "WebFetch(domain:vimeo.github.io)"
+      "Bash(git add:*)",
+      "WebFetch(domain:developers.google.com)",
+      "WebFetch(domain:github.com)",
+      "WebSearch"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

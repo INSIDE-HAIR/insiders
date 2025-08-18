@@ -197,6 +197,13 @@ export interface GoogleCalendarEvent {
   
   // Estados
   guestsCanInviteOthers?: boolean;
+  
+  // Miembros de Google Meet (custom field)
+  meetMembers?: {
+    name: string;
+    email: string;
+    role: 'ROLE_UNSPECIFIED' | 'COHOST';
+  }[];
   guestsCanModify?: boolean;
   guestsCanSeeOtherGuests?: boolean;
   privateCopy?: boolean;

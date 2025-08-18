@@ -243,6 +243,9 @@ function getPermissionsForRole(role: UserRole): Permission[] {
     CLIENT: ["read"],
     EMPLOYEE: ["read", "write"],
     ADMIN: ["read", "write", "manage", "configure"],
+    DEBTOR: ["read"],
+    PROVIDER: ["read", "write"],
+    LEAD: ["read"],
   };
 
   return permissions[role] || permissions["CLIENT"];

@@ -23,7 +23,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         "drive",
         "holded",
         "calendar",
-        "video-conferencing",
+        "meet",
         "sitemap",
         "access-control",
         "settings",
@@ -35,7 +35,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo Creativo",
       },
       plan: "Pro",
-      routes: ["pages", "menu", "drive", "calendar", "video-conferencing"],
+      routes: ["pages", "menu", "drive", "calendar", "meet"],
     },
     consultoria: {
       name: {
@@ -367,6 +367,15 @@ export const dashboardRoutesData: DashboardRoutes = {
           href: "/admin/calendar/events",
           icon: "CalendarDays",
         },
+        {
+          id: "meet-rooms",
+          label: {
+            en: "Meet Rooms",
+            es: "Salas de Meet",
+          },
+          href: "/admin/meet/rooms",
+          icon: "Video",
+        },
       ],
     },
     {
@@ -476,58 +485,6 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           href: "/admin/settings/api-keys",
           icon: "Lock",
-        },
-      ],
-    },
-    {
-      id: "video-conferencing",
-      label: {
-        en: "Video Conferencing",
-        es: "Videoconferencias",
-      },
-      href: "/admin/video-conferencing",
-      icon: "Video",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "creativos"],
-      },
-      subItems: [
-        {
-          id: "video-spaces",
-          label: {
-            en: "Video Spaces",
-            es: "Espacios de Video",
-          },
-          href: "/admin/video-conferencing/spaces",
-          icon: "Monitor",
-        },
-        {
-          id: "meeting-analytics",
-          label: {
-            en: "Meeting Analytics",
-            es: "Analíticas de Reuniones",
-          },
-          href: "/admin/video-conferencing/analytics",
-          icon: "BarChart3",
-        },
-        {
-          id: "provider-integrations",
-          label: {
-            en: "Provider Integrations",
-            es: "Integraciones de Proveedores",
-          },
-          href: "/admin/video-conferencing/integrations",
-          icon: "Plug",
-        },
-        {
-          id: "video-settings",
-          label: {
-            en: "Video Settings",
-            es: "Configuración de Video",
-          },
-          href: "/admin/video-conferencing/settings",
-          icon: "Settings",
         },
       ],
     },

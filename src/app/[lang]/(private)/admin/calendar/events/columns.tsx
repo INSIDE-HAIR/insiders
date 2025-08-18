@@ -938,6 +938,53 @@ export const useEventsColumns = (
           },
         };
 
+      case "meetMembers":
+        return {
+          accessorKey: "meetMembers",
+          header: "Participantes",
+          cell: ({ row }) => {
+            const members = event(row).meetMembers || [];
+            const meetUrl = event(row).conferenceData?.entryPoints?.find(
+              ep => ep.entryPointType === 'video'
+            )?.uri;
+            
+            if (members.length === 0) {
+              return (
+                <div className='flex items-center gap-1'>
+                  {meetUrl ? (
+                    <span className='text-muted-foreground text-xs'>📅 Meeting privado</span>
+                  ) : (
+                    <span className='text-muted-foreground text-xs'>Sin Meet</span>
+                  )}
+                </div>
+              );
+            }
+            
+            return (
+              <div className='space-y-1'>
+                {members.slice(0, 3).map((member, idx) => (
+                  <div key={idx} className='flex items-center gap-2'>
+                    <Badge 
+                      variant={member.role === 'COHOST' ? 'default' : 'secondary'}
+                      className='text-xs px-1.5 py-0.5'
+                    >
+                      {member.role === 'COHOST' ? 'Organizador' : 'Invitado'}
+                    </Badge>
+                    <span className='text-xs text-foreground truncate max-w-[120px]' title={member.email}>
+                      {member.name || member.email.split('@')[0]}
+                    </span>
+                  </div>
+                ))}
+                {members.length > 3 && (
+                  <span className='text-xs text-muted-foreground'>
+                    +{members.length - 3} más
+                  </span>
+                )}
+              </div>
+            );
+          },
+        };
+
       case "conferenceData":
         return {
           accessorKey: "conferenceData",

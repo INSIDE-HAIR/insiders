@@ -7,6 +7,7 @@
 
 import { google } from "googleapis";
 import { Logger } from "../../utils/logger";
+import { getGoogleCalendarConfig, validateGoogleCalendarConfig, logGoogleCalendarConfig, type GoogleCalendarConfig } from "@/src/config/google-calendar.config";
 
 const logger = new Logger("GoogleCalendarAuthProvider");
 
@@ -20,16 +21,26 @@ export interface CalendarAuthConfig {
 export class GoogleCalendarAuthProvider {
   private oauth2Client: any;
   private config: CalendarAuthConfig;
+  private fullConfig: GoogleCalendarConfig;
   private accessToken: string | null = null;
   private tokenExpiryTime: number | null = null;
 
   constructor(config?: Partial<CalendarAuthConfig>) {
+    // Usar configuración centralizada como base
+    this.fullConfig = getGoogleCalendarConfig();
+    
+    // Override con configuración específica si se proporciona
     this.config = {
-      clientId: config?.clientId || process.env.GOOGLE_CALENDAR_CLIENT_ID || "",
-      clientSecret: config?.clientSecret || process.env.GOOGLE_CALENDAR_CLIENT_SECRET || "",
-      refreshToken: config?.refreshToken || process.env.GOOGLE_CALENDAR_REFRESH_TOKEN || "",
-      redirectUri: config?.redirectUri || process.env.GOOGLE_CALENDAR_REDIRECT_URI || ""
+      clientId: config?.clientId || this.fullConfig.clientId,
+      clientSecret: config?.clientSecret || this.fullConfig.clientSecret,
+      refreshToken: config?.refreshToken || this.fullConfig.refreshToken || "",
+      redirectUri: config?.redirectUri || this.fullConfig.redirectUri
     };
+
+    // Log de configuración para debugging
+    if (process.env.NODE_ENV === 'development') {
+      logGoogleCalendarConfig();
+    }
 
     this.validateConfig();
     this.initializeOAuth2Client();
@@ -39,11 +50,17 @@ export class GoogleCalendarAuthProvider {
    * Valida que todas las configuraciones necesarias estén presentes
    */
   private validateConfig(): void {
-    const requiredFields = ['clientId', 'clientSecret', 'refreshToken', 'redirectUri'];
-    const missingFields = requiredFields.filter(field => !this.config[field as keyof CalendarAuthConfig]);
+    // Usar validación centralizada
+    const validation = validateGoogleCalendarConfig(this.fullConfig);
+    
+    if (!validation.isValid) {
+      logger.error("Missing required Calendar auth configuration:", validation.missingFields);
+      throw new Error(`Missing required Calendar auth configuration: ${validation.missingFields.join(', ')}`);
+    }
 
-    if (missingFields.length > 0) {
-      throw new Error(`Missing required Calendar auth configuration: ${missingFields.join(', ')}`);
+    // Advertencias no bloquean pero se registran
+    if (validation.warnings.length > 0) {
+      validation.warnings.forEach(warning => logger.warn(warning));
     }
 
     logger.info("Calendar auth configuration validated successfully");
@@ -149,10 +166,13 @@ export class GoogleCalendarAuthProvider {
    * Obtiene la URL de autorización para el flujo OAuth2
    * (útil para configuración inicial)
    */
-  public getAuthUrl(scopes: string[] = ['https://www.googleapis.com/auth/calendar']): string {
+  public getAuthUrl(scopes?: string[]): string {
+    // Usar scopes de la configuración por defecto si no se proporcionan
+    const authScopes = scopes || this.fullConfig.scopes;
+    
     return this.oauth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: scopes,
+      scope: authScopes,
       prompt: 'consent'
     });
   }
@@ -169,6 +189,34 @@ export class GoogleCalendarAuthProvider {
       logger.error("Failed to exchange code for tokens", error);
       throw error;
     }
+  }
+
+  /**
+   * Obtiene el calendar ID por defecto de la configuración
+   */
+  public getDefaultCalendarId(): string {
+    return this.fullConfig.defaultCalendarId;
+  }
+
+  /**
+   * Obtiene la timezone por defecto de la configuración
+   */
+  public getDefaultTimezone(): string {
+    return this.fullConfig.defaultTimezone;
+  }
+
+  /**
+   * Obtiene todos los scopes configurados
+   */
+  public getConfiguredScopes(): string[] {
+    return [...this.fullConfig.scopes];
+  }
+
+  /**
+   * Obtiene la configuración completa (para debugging)
+   */
+  public getFullConfig(): GoogleCalendarConfig {
+    return { ...this.fullConfig };
   }
 
   /**

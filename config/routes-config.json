@@ -19,6 +19,21 @@
         "name": "Administrator",
         "description": "Full administrative access",
         "permissions": ["read", "write", "manage", "configure"]
+      },
+      "DEBTOR": {
+        "name": "Debtor",
+        "description": "User with outstanding debts",
+        "permissions": ["read"]
+      },
+      "PROVIDER": {
+        "name": "Provider",
+        "description": "Service or product provider",
+        "permissions": ["read", "write"]
+      },
+      "LEAD": {
+        "name": "Lead",
+        "description": "Potential client or prospect",
+        "permissions": ["read"]
       }
     }
   },
