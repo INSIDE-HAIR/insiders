@@ -1,17 +1,28 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Label } from "@/src/components/ui/label";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
-import { 
-  VideoCameraIcon, 
-  PlusIcon, 
+import {
+  VideoCameraIcon,
+  PlusIcon,
   MagnifyingGlassIcon,
   UsersIcon,
   LockClosedIcon,
@@ -28,8 +39,8 @@ import {
   CheckCircleIcon,
   ChartBarIcon,
   UserGroupIcon,
-  UserIcon,
-  CalendarIcon
+  CalendarIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { CreateRoomModal } from "@/src/features/meet/components/CreateRoomModal";
 import { RoomDetailsModal } from "@/src/features/meet/components/RoomDetailsModal";
@@ -42,14 +53,14 @@ interface RoomAnalytics {
     regularMembers: number;
   };
   participants: {
-    invited: number;        // Asistentes invitados (miembros que asistieron)
-    uninvited: number;      // Asistentes no invitados (externos que asistieron) 
-    unique: number;         // Total asistentes únicos
+    invited: number; // Asistentes invitados (miembros que asistieron)
+    uninvited: number; // Asistentes no invitados (externos que asistieron)
+    unique: number; // Total asistentes únicos
   };
   sessions: {
     total: number;
-    totalDurationMinutes: number;
-    averageDurationMinutes: number;
+    totalDurationSeconds: number;
+    averageDurationSeconds: number;
     averageParticipantsPerSession: number;
   };
   recentActivity?: {
@@ -64,7 +75,7 @@ interface MeetRoom {
   meetingUri?: string;
   meetingCode?: string;
   config?: {
-    accessType?: 'OPEN' | 'TRUSTED' | 'RESTRICTED';
+    accessType?: "OPEN" | "TRUSTED" | "RESTRICTED";
   };
   members?: Array<{
     name: string;
@@ -89,13 +100,12 @@ interface MeetRoomsClientProps {
   lang: string;
 }
 
-// Función auxiliar para formatear duración
-const formatDuration = (minutes: number): string => {
-  if (minutes < 60) {
-    return `${minutes}m`;
-  }
-  const hours = Math.round(minutes / 60 * 10) / 10; // 1 decimal
-  return `${hours}h`;
+// Función auxiliar para formatear duración en HH:MM:SS
+const formatDuration = (totalSeconds: number): string => {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 };
 
 // Función auxiliar para formatear días desde la última reunión
@@ -104,8 +114,8 @@ const formatDaysAgo = (days: number | null): string => {
   if (days === 0) return "Hoy";
   if (days === 1) return "Ayer";
   if (days < 7) return `Hace ${days} días`;
-  if (days < 30) return `Hace ${Math.round(days/7)} semanas`;
-  return `Hace ${Math.round(days/30)} meses`;
+  if (days < 30) return `Hace ${Math.round(days / 7)} semanas`;
+  return `Hace ${Math.round(days / 30)} meses`;
 };
 
 export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
@@ -135,7 +145,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     try {
       const [tagsResponse, groupsResponse] = await Promise.all([
         fetch("/api/meet/tags?parentId=all"),
-        fetch("/api/meet/groups?parentId=all")
+        fetch("/api/meet/groups?parentId=all"),
       ]);
 
       if (tagsResponse.ok) {
@@ -156,9 +166,9 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     try {
       setLoading(true);
       const response = await fetch("/api/meet/rooms?pageSize=50");
-      
+
       const data = await response.json();
-      
+
       // Manejo de respuesta API fresca
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -166,17 +176,19 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
       // Respuesta exitosa - datos siempre frescos
       const roomsData = data.spaces || [];
-      
+
       // Enriquecer con analytics si hay rooms
       if (roomsData.length > 0) {
-        console.log('📊 Fetching analytics for room cards...');
+        console.log("📊 Fetching analytics for room cards...");
         const enrichedRooms = await Promise.all(
           roomsData.map(async (room: MeetRoom) => {
-            const spaceId = room.name?.split('/').pop();
+            const spaceId = room.name?.split("/").pop();
             if (!spaceId) return room;
-            
+
             try {
-              const analyticsResponse = await fetch(`/api/meet/rooms/${spaceId}/analytics`);
+              const analyticsResponse = await fetch(
+                `/api/meet/rooms/${spaceId}/analytics`
+              );
               if (analyticsResponse.ok) {
                 const analytics = await analyticsResponse.json();
                 return {
@@ -185,26 +197,31 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                     permanentMembers: analytics.permanentMembers,
                     participants: analytics.participants,
                     sessions: analytics.sessions,
-                    recentActivity: analytics.recentActivity
-                  }
+                    recentActivity: analytics.recentActivity,
+                  },
                 };
               }
             } catch (analyticsError) {
-              console.warn(`⚠️ Failed to get analytics for room ${spaceId}:`, analyticsError);
+              console.warn(
+                `⚠️ Failed to get analytics for room ${spaceId}:`,
+                analyticsError
+              );
             }
             return room;
           })
         );
-        
+
         setRooms(enrichedRooms);
-        const analyticsCount = enrichedRooms.filter(r => r._analytics).length;
-        console.log(`📈 Loaded analytics for ${analyticsCount}/${enrichedRooms.length} rooms`);
+        const analyticsCount = enrichedRooms.filter((r) => r._analytics).length;
+        console.log(
+          `📈 Loaded analytics for ${analyticsCount}/${enrichedRooms.length} rooms`
+        );
       } else {
         setRooms(roomsData);
       }
-      
+
       setIsDemoMode(false);
-      
+
       // Mostrar información sobre datos frescos
       if (data.source === "fresh-api-hybrid") {
         toast({
@@ -212,7 +229,6 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
           description: `${roomsData.length || 0} espacios con datos frescos de Google Meet API`,
         });
       }
-      
     } catch (error) {
       console.error("Error fetching rooms:", error);
       toast({
@@ -241,25 +257,25 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       }
 
       const newRoom = await response.json();
-      
+
       // Transformar para el frontend
       const frontendRoom = {
         name: newRoom.name || `spaces/${newRoom.spaceId}`,
-        spaceId: newRoom.name?.split('/').pop() || newRoom.spaceId,
+        spaceId: newRoom.name?.split("/").pop() || newRoom.spaceId,
         meetingUri: newRoom.meetingUri,
         meetingCode: newRoom.meetingCode,
         config: newRoom.config,
         members: newRoom.members || [],
-        _metadata: newRoom._metadata
+        _metadata: newRoom._metadata,
       };
-      
+
       // Agregar la nueva sala a la lista local
-      setRooms(prev => [frontendRoom, ...prev]);
-      
+      setRooms((prev) => [frontendRoom, ...prev]);
+
       // Mensaje de éxito con datos frescos
       const memberCount = newRoom._metadata?.membersAdded || 0;
       const hasConfigWarnings = newRoom._metadata?.configurationWarning;
-      
+
       let description = `Sala creada: ${newRoom.meetingCode}`;
       if (memberCount > 0) {
         description += ` con ${memberCount} miembro(s) agregado(s)`;
@@ -267,18 +283,19 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       if (hasConfigWarnings) {
         description += `. Algunas funcionalidades no están disponibles para tu cuenta.`;
       }
-      
+
       toast({
-        title: hasConfigWarnings ? "⚠️ Sala creada con limitaciones" : "✅ Sala creada exitosamente",
+        title: hasConfigWarnings
+          ? "⚠️ Sala creada con limitaciones"
+          : "✅ Sala creada exitosamente",
         description: description,
-        variant: hasConfigWarnings ? "destructive" : "default"
+        variant: hasConfigWarnings ? "destructive" : "default",
       });
 
       setIsCreateModalOpen(false);
-      
     } catch (error: any) {
       console.error("Error creating room:", error);
-      
+
       toast({
         title: "Error al crear sala",
         description: error.message || "No se pudo crear la sala",
@@ -304,13 +321,15 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     setSelectedRoom(null);
   };
 
-
   // Función para eliminar sala de BD
   const handleDeleteRoomFromDB = async (spaceId: string) => {
     try {
-      const response = await fetch(`/api/meet/rooms/${spaceId}/delete-from-db`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/meet/rooms/${spaceId}/delete-from-db`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -318,16 +337,17 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       }
 
       // Remover de estado local
-      setRooms(prev => prev.filter(room => {
-        const roomSpaceId = room.name?.split('/').pop();
-        return roomSpaceId !== spaceId;
-      }));
+      setRooms((prev) =>
+        prev.filter((room) => {
+          const roomSpaceId = room.name?.split("/").pop();
+          return roomSpaceId !== spaceId;
+        })
+      );
 
       toast({
         title: "Sala eliminada",
         description: "La sala fue removida de la base de datos",
       });
-
     } catch (error: any) {
       console.error("Error deleting room:", error);
       toast({
@@ -345,7 +365,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     try {
       setBulkDeleting(true);
       const spaceIds = Array.from(selectedRooms);
-      
+
       const response = await fetch("/api/meet/rooms/bulk-delete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -353,13 +373,15 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         // Remover salas exitosas del estado local
-        setRooms(prev => prev.filter(room => {
-          const roomSpaceId = room.name?.split('/').pop();
-          return !result.results.success.includes(roomSpaceId);
-        }));
+        setRooms((prev) =>
+          prev.filter((room) => {
+            const roomSpaceId = room.name?.split("/").pop();
+            return !result.results.success.includes(roomSpaceId);
+          })
+        );
 
         toast({
           title: "Eliminación masiva completada",
@@ -369,7 +391,9 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
         // Mostrar errores si los hay
         if (result.results.failed.length > 0) {
           result.results.failed.forEach((failure: any) => {
-            console.error(`Failed to delete ${failure.spaceId}: ${failure.error}`);
+            console.error(
+              `Failed to delete ${failure.spaceId}: ${failure.error}`
+            );
           });
         }
       } else {
@@ -377,7 +401,6 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       }
 
       setSelectedRooms(new Set());
-
     } catch (error: any) {
       console.error("Error bulk deleting rooms:", error);
       toast({
@@ -392,7 +415,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
   // Funciones para selección múltiple
   const handleRoomSelect = (spaceId: string, selected: boolean) => {
-    setSelectedRooms(prev => {
+    setSelectedRooms((prev) => {
       const newSet = new Set(prev);
       if (selected) {
         newSet.add(spaceId);
@@ -405,7 +428,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
   // Funciones para manejar filtros
   const toggleTagFilter = (tagId: string) => {
-    setSelectedTags(prev => {
+    setSelectedTags((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(tagId)) {
         newSet.delete(tagId);
@@ -417,7 +440,7 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   };
 
   const toggleGroupFilter = (groupId: string) => {
-    setSelectedGroups(prev => {
+    setSelectedGroups((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(groupId)) {
         newSet.delete(groupId);
@@ -437,106 +460,121 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
     if (selectedRooms.size === filteredRooms.length) {
       setSelectedRooms(new Set());
     } else {
-      const allSpaceIds = filteredRooms.map(room => room.name?.split('/').pop()).filter(Boolean) as string[];
+      const allSpaceIds = filteredRooms
+        .map((room) => room.name?.split("/").pop())
+        .filter(Boolean) as string[];
       setSelectedRooms(new Set(allSpaceIds));
     }
   };
 
-
   // Filtrar salas por búsqueda, tags y grupos
-  const filteredRooms = rooms.filter(room => {
+  const filteredRooms = rooms.filter((room) => {
     const searchLower = searchTerm.toLowerCase();
-    const spaceId = room.name?.split('/').pop() || '';
-    const displayName = room._metadata?.displayName || '';
-    const memberEmails = room.members?.map(m => m.email.toLowerCase()).join(' ') || '';
-    
+    const spaceId = room.name?.split("/").pop() || "";
+    const displayName = room._metadata?.displayName || "";
+    const memberEmails =
+      room.members?.map((m) => m.email.toLowerCase()).join(" ") || "";
+
     // Filtro por búsqueda
-    const matchesSearch = (
+    const matchesSearch =
       spaceId.toLowerCase().includes(searchLower) ||
       displayName.toLowerCase().includes(searchLower) ||
       room.meetingCode?.toLowerCase().includes(searchLower) ||
-      memberEmails.includes(searchLower)
-    );
-    
+      memberEmails.includes(searchLower);
+
     if (!matchesSearch) return false;
-    
+
     // Filtro por tags (si hay tags seleccionados)
     if (selectedTags.size > 0) {
       // Por ahora retornamos true ya que no tenemos las asignaciones cargadas
       // TODO: Implementar carga de asignaciones desde la API
       // const roomTags = getRoomTags(spaceId);
-      // const hasSelectedTag = Array.from(selectedTags).some(tagId => 
+      // const hasSelectedTag = Array.from(selectedTags).some(tagId =>
       //   roomTags.some(tag => tag.id === tagId)
       // );
       // if (!hasSelectedTag) return false;
     }
-    
-    // Filtro por grupos (si hay grupos seleccionados)  
+
+    // Filtro por grupos (si hay grupos seleccionados)
     if (selectedGroups.size > 0) {
       // Por ahora retornamos true ya que no tenemos las asignaciones cargadas
       // TODO: Implementar carga de asignaciones desde la API
       // const roomGroups = getRoomGroups(spaceId);
-      // const hasSelectedGroup = Array.from(selectedGroups).some(groupId => 
+      // const hasSelectedGroup = Array.from(selectedGroups).some(groupId =>
       //   roomGroups.some(group => group.id === groupId)
       // );
       // if (!hasSelectedGroup) return false;
     }
-    
+
     return true;
   });
 
   const getAccessTypeIcon = (accessType?: string) => {
     switch (accessType) {
-      case 'OPEN':
-        return <LockOpenIcon className="h-4 w-4 text-green-500" />;
-      case 'RESTRICTED':
-        return <LockClosedIcon className="h-4 w-4 text-red-500" />;
-      case 'TRUSTED':
+      case "OPEN":
+        return <LockOpenIcon className='h-4 w-4 text-green-500' />;
+      case "RESTRICTED":
+        return <LockClosedIcon className='h-4 w-4 text-red-500' />;
+      case "TRUSTED":
       default:
-        return <LockClosedIcon className="h-4 w-4 text-yellow-500" />;
+        return <LockClosedIcon className='h-4 w-4 text-yellow-500' />;
     }
   };
 
   const getAccessTypeBadge = (accessType?: string) => {
     switch (accessType) {
-      case 'OPEN':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-200">Libre</Badge>;
-      case 'RESTRICTED':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-200">Solo Invitados</Badge>;
-      case 'TRUSTED':
+      case "OPEN":
+        return (
+          <Badge className='bg-green-100 text-green-700 hover:bg-green-200'>
+            Libre
+          </Badge>
+        );
+      case "RESTRICTED":
+        return (
+          <Badge className='bg-red-100 text-red-700 hover:bg-red-200'>
+            Solo Invitados
+          </Badge>
+        );
+      case "TRUSTED":
       default:
-        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200">Organizacional</Badge>;
+        return (
+          <Badge className='bg-yellow-100 text-yellow-700 hover:bg-yellow-200'>
+            Organizacional
+          </Badge>
+        );
     }
   };
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div className='container mx-auto py-6 space-y-6'>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <VideoCameraIcon className="h-8 w-8 text-primary" />
+          <h1 className='text-3xl font-bold flex items-center gap-2'>
+            <VideoCameraIcon className='h-8 w-8 text-primary' />
             Salas de Google Meet
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className='text-muted-foreground mt-1'>
             Gestiona tus espacios y salas de reuniones virtuales
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
             onClick={() => fetchRooms()}
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             disabled={loading}
           >
-            <ArrowPathIcon className={cn("h-4 w-4 mr-2", loading && "animate-spin")} />
+            <ArrowPathIcon
+              className={cn("h-4 w-4 mr-2", loading && "animate-spin")}
+            />
             Sincronizar API
           </Button>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-primary hover:bg-primary/90"
+            className='bg-primary hover:bg-primary/90'
           >
-            <PlusIcon className="h-4 w-4 mr-2" />
+            <PlusIcon className='h-4 w-4 mr-2' />
             Nueva Sala
           </Button>
         </div>
@@ -544,41 +582,41 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
       {/* Search Bar */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="space-y-4">
-            <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <CardContent className='pt-6'>
+          <div className='space-y-4'>
+            <div className='relative'>
+              <MagnifyingGlassIcon className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground' />
               <Input
-                placeholder="Buscar por nombre, ID, código de reunión o participantes..."
+                placeholder='Buscar por nombre, ID, código de reunión o participantes...'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className='pl-10'
               />
             </div>
-            
+
             {/* Filters Toggle */}
-            <div className="flex items-center justify-between">
+            <div className='flex items-center justify-between'>
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2"
+                className='flex items-center gap-2'
               >
-                <FunnelIcon className="h-4 w-4" />
+                <FunnelIcon className='h-4 w-4' />
                 Filtros
                 {(selectedTags.size > 0 || selectedGroups.size > 0) && (
-                  <Badge variant="secondary" className="ml-1">
+                  <Badge variant='secondary' className='ml-1'>
                     {selectedTags.size + selectedGroups.size}
                   </Badge>
                 )}
               </Button>
-              
+
               {(selectedTags.size > 0 || selectedGroups.size > 0) && (
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={clearAllFilters}
-                  className="text-muted-foreground"
+                  className='text-muted-foreground'
                 >
                   Limpiar filtros
                 </Button>
@@ -587,15 +625,15 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
             {/* Filters Panel */}
             {showFilters && (
-              <div className="border rounded-lg p-4 bg-muted/50 space-y-4">
+              <div className='border rounded-lg p-4 bg-muted/50 space-y-4'>
                 {/* Tags Filter */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium flex items-center gap-2">
-                    <TagIcon className="h-4 w-4" />
+                <div className='space-y-2'>
+                  <Label className='text-sm font-medium flex items-center gap-2'>
+                    <TagIcon className='h-4 w-4' />
                     Filtrar por Tags
                   </Label>
                   {availableTags.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto'>
                       {availableTags.map((tag) => (
                         <div
                           key={tag.id}
@@ -608,28 +646,33 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                           onClick={() => toggleTagFilter(tag.id)}
                         >
                           <div
-                            className="h-3 w-3 rounded-full"
+                            className='h-3 w-3 rounded-full'
                             style={{ backgroundColor: tag.color }}
                           />
-                          <span className="text-sm truncate" style={{ paddingLeft: `${tag.level * 8}px` }}>
+                          <span
+                            className='text-sm truncate'
+                            style={{ paddingLeft: `${tag.level * 8}px` }}
+                          >
                             {tag.name}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No hay tags disponibles</p>
+                    <p className='text-sm text-muted-foreground'>
+                      No hay tags disponibles
+                    </p>
                   )}
                 </div>
 
                 {/* Groups Filter */}
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium flex items-center gap-2">
-                    <FolderIcon className="h-4 w-4" />
+                <div className='space-y-2'>
+                  <Label className='text-sm font-medium flex items-center gap-2'>
+                    <FolderIcon className='h-4 w-4' />
                     Filtrar por Grupos
                   </Label>
                   {availableGroups.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto">
+                    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-32 overflow-y-auto'>
                       {availableGroups.map((group) => (
                         <div
                           key={group.id}
@@ -642,71 +685,80 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                           onClick={() => toggleGroupFilter(group.id)}
                         >
                           <div
-                            className="h-3 w-3 rounded"
+                            className='h-3 w-3 rounded'
                             style={{ backgroundColor: group.color }}
                           />
-                          <span className="text-sm truncate" style={{ paddingLeft: `${group.level * 8}px` }}>
+                          <span
+                            className='text-sm truncate'
+                            style={{ paddingLeft: `${group.level * 8}px` }}
+                          >
                             {group.name}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">No hay grupos disponibles</p>
+                    <p className='text-sm text-muted-foreground'>
+                      No hay grupos disponibles
+                    </p>
                   )}
                 </div>
 
                 {/* Active Filters Display */}
                 {(selectedTags.size > 0 || selectedGroups.size > 0) && (
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium">Filtros Activos</Label>
-                    <div className="flex flex-wrap gap-2">
+                  <div className='space-y-2'>
+                    <Label className='text-sm font-medium'>
+                      Filtros Activos
+                    </Label>
+                    <div className='flex flex-wrap gap-2'>
                       {Array.from(selectedTags).map((tagId) => {
-                        const tag = availableTags.find(t => t.id === tagId);
+                        const tag = availableTags.find((t) => t.id === tagId);
                         if (!tag) return null;
                         return (
                           <Badge
                             key={`tag-${tagId}`}
-                            variant="secondary"
-                            className="flex items-center gap-1"
+                            variant='secondary'
+                            className='flex items-center gap-1'
                           >
                             <div
-                              className="h-2 w-2 rounded-full"
+                              className='h-2 w-2 rounded-full'
                               style={{ backgroundColor: tag.color }}
                             />
                             {tag.name}
                             <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground"
+                              variant='ghost'
+                              size='sm'
+                              className='h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground'
                               onClick={() => toggleTagFilter(tagId)}
                             >
-                              <XMarkIcon className="h-3 w-3" />
+                              <XMarkIcon className='h-3 w-3' />
                             </Button>
                           </Badge>
                         );
                       })}
                       {Array.from(selectedGroups).map((groupId) => {
-                        const group = availableGroups.find(g => g.id === groupId);
+                        const group = availableGroups.find(
+                          (g) => g.id === groupId
+                        );
                         if (!group) return null;
                         return (
                           <Badge
                             key={`group-${groupId}`}
-                            variant="outline"
-                            className="flex items-center gap-1"
+                            variant='outline'
+                            className='flex items-center gap-1'
                           >
                             <div
-                              className="h-2 w-2 rounded"
+                              className='h-2 w-2 rounded'
                               style={{ backgroundColor: group.color }}
                             />
                             {group.name}
                             <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground"
+                              variant='ghost'
+                              size='sm'
+                              className='h-4 w-4 p-0 ml-1 hover:bg-destructive hover:text-destructive-foreground'
                               onClick={() => toggleGroupFilter(groupId)}
                             >
-                              <XMarkIcon className="h-3 w-3" />
+                              <XMarkIcon className='h-3 w-3' />
                             </Button>
                           </Badge>
                         );
@@ -722,35 +774,36 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
       {/* Bulk Actions Bar */}
       {selectedRooms.size > 0 && (
-        <Card className="border-blue-200 bg-blue-50">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CheckCircleIcon className="h-5 w-5 text-blue-600" />
-                <span className="font-medium text-blue-800">
-                  {selectedRooms.size} sala{selectedRooms.size !== 1 ? 's' : ''} seleccionada{selectedRooms.size !== 1 ? 's' : ''}
+        <Card className='border-blue-200 bg-blue-50'>
+          <CardContent className='pt-6'>
+            <div className='flex items-center justify-between'>
+              <div className='flex items-center gap-3'>
+                <CheckCircleIcon className='h-5 w-5 text-blue-600' />
+                <span className='font-medium text-blue-800'>
+                  {selectedRooms.size} sala{selectedRooms.size !== 1 ? "s" : ""}{" "}
+                  seleccionada{selectedRooms.size !== 1 ? "s" : ""}
                 </span>
               </div>
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <Button
-                  variant="outline"
-                  size="sm"
+                  variant='outline'
+                  size='sm'
                   onClick={() => setSelectedRooms(new Set())}
                 >
-                  <XMarkIcon className="h-4 w-4 mr-1" />
+                  <XMarkIcon className='h-4 w-4 mr-1' />
                   Desseleccionar
                 </Button>
                 {/* TODO: Bulk Configuration Actions - Implement after reviewing all configurations */}
                 <Button
-                  variant="destructive"
-                  size="sm"
+                  variant='destructive'
+                  size='sm'
                   onClick={handleBulkDelete}
                   disabled={bulkDeleting}
                 >
                   {bulkDeleting ? (
-                    <Icons.SpinnerIcon className="h-4 w-4 mr-1 animate-spin" />
+                    <Icons.SpinnerIcon className='h-4 w-4 mr-1 animate-spin' />
                   ) : (
-                    <TrashIcon className="h-4 w-4 mr-1" />
+                    <TrashIcon className='h-4 w-4 mr-1' />
                   )}
                   Eliminar de BD
                 </Button>
@@ -761,73 +814,94 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       )}
 
       {/* Sistema API Info */}
-      <Alert className="border-blue-200 bg-blue-50">
-        <ExclamationTriangleIcon className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-blue-700">
-          <strong>Sistema API Fresco:</strong> Todos los datos provienen directamente de Google Meet API. 
+      <Alert className='border-blue-200 bg-blue-50'>
+        <ExclamationTriangleIcon className='h-4 w-4 text-blue-600' />
+        <AlertDescription className='text-blue-700'>
+          <strong>Sistema API Fresco:</strong> Todos los datos provienen
+          directamente de Google Meet API.
           <br />
-          <strong>Limitaciones API:</strong> Espacios básicos (sin config). Miembros requieren Developer Preview access.
+          <strong>Limitaciones API:</strong> Espacios básicos (sin config).
+          Miembros requieren Developer Preview access.
           <br />
-          <strong>Ventajas:</strong> Datos siempre actualizados, espacios reales de Google Meet, sin caché obsoleto.
+          <strong>Ventajas:</strong> Datos siempre actualizados, espacios reales
+          de Google Meet, sin caché obsoleto.
           <br />
-          <strong>Preview Access:</strong> <a href="https://developers.google.com/workspace/preview" target="_blank" className="text-blue-800 underline">Aplicar aquí para acceso v2beta</a>
+          <strong>Preview Access:</strong>{" "}
+          <a
+            href='https://developers.google.com/workspace/preview'
+            target='_blank'
+            className='text-blue-800 underline'
+          >
+            Aplicar aquí para acceso v2beta
+          </a>
         </AlertDescription>
       </Alert>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className='grid gap-4 md:grid-cols-4'>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Salas</CardTitle>
-            <VideoCameraIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Salas</CardTitle>
+            <VideoCameraIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between">
-              <div className="text-2xl font-bold">{rooms.length}</div>
+            <div className='flex items-center justify-between'>
+              <div className='text-2xl font-bold'>{rooms.length}</div>
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={handleSelectAll}
-                className="text-xs"
+                className='text-xs'
               >
-                {selectedRooms.size === filteredRooms.length && filteredRooms.length > 0 ? "Deseleccionar" : "Seleccionar"} Todo
+                {selectedRooms.size === filteredRooms.length &&
+                filteredRooms.length > 0
+                  ? "Deseleccionar"
+                  : "Seleccionar"}{" "}
+                Todo
               </Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Salas Activas</CardTitle>
-            <ClockIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Salas Activas</CardTitle>
+            <ClockIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {rooms.filter(r => r.activeConference?.conferenceRecord).length}
+            <div className='text-2xl font-bold'>
+              {rooms.filter((r) => r.activeConference?.conferenceRecord).length}
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Participantes</CardTitle>
-            <UsersIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              Total Participantes
+            </CardTitle>
+            <UsersIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {rooms.reduce((acc, room) => acc + (room.members?.length || 0), 0)}
+            <div className='text-2xl font-bold'>
+              {rooms.reduce(
+                (acc, room) => acc + (room.members?.length || 0),
+                0
+              )}
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Salas Abiertas</CardTitle>
-            <LockOpenIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              Salas Abiertas
+            </CardTitle>
+            <LockOpenIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {rooms.filter(r => r.config?.accessType === 'OPEN').length}
+            <div className='text-2xl font-bold'>
+              {rooms.filter((r) => r.config?.accessType === "OPEN").length}
             </div>
           </CardContent>
         </Card>
@@ -835,18 +909,20 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
 
       {/* Rooms Grid */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="flex flex-col items-center gap-2">
-            <Icons.SpinnerIcon className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground">Cargando salas...</p>
+        <div className='flex items-center justify-center py-12'>
+          <div className='flex flex-col items-center gap-2'>
+            <Icons.SpinnerIcon className='h-8 w-8 animate-spin text-primary' />
+            <p className='text-muted-foreground'>Cargando salas...</p>
           </div>
         </div>
       ) : filteredRooms.length === 0 ? (
         <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <VideoCameraIcon className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-1">No se encontraron salas</h3>
-            <p className="text-muted-foreground text-center max-w-md">
+          <CardContent className='flex flex-col items-center justify-center py-12'>
+            <VideoCameraIcon className='h-12 w-12 text-muted-foreground mb-4' />
+            <h3 className='text-lg font-semibold mb-1'>
+              No se encontraron salas
+            </h3>
+            <p className='text-muted-foreground text-center max-w-md'>
               {searchTerm
                 ? "No hay salas que coincidan con tu búsqueda"
                 : "Aún no has creado ninguna sala. Crea tu primera sala para comenzar."}
@@ -854,22 +930,22 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
             {!searchTerm && (
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="mt-4"
+                className='mt-4'
               >
-                <PlusIcon className="h-4 w-4 mr-2" />
+                <PlusIcon className='h-4 w-4 mr-2' />
                 Crear Primera Sala
               </Button>
             )}
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
           {filteredRooms.map((room) => {
-            const spaceId = room.name?.split('/').pop() || 'Unknown';
+            const spaceId = room.name?.split("/").pop() || "Unknown";
             const isActive = !!room.activeConference?.conferenceRecord;
             const isSelected = selectedRooms.has(spaceId);
             const displayName = room._metadata?.displayName || spaceId;
-            
+
             return (
               <Card
                 key={room.name}
@@ -884,40 +960,40 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                 }}
               >
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start gap-3 flex-1">
+                  <div className='flex items-start justify-between'>
+                    <div className='flex items-start gap-3 flex-1'>
                       {/* Checkbox */}
-                      <div 
+                      <div
                         onClick={(e) => e.stopPropagation()}
-                        className="mt-1"
+                        className='mt-1'
                       >
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={isSelected}
                           onChange={(e) => {
                             e.stopPropagation();
                             handleRoomSelect(spaceId, e.target.checked);
                           }}
-                          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                          className='h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded'
                         />
                       </div>
-                      
-                      <div className="space-y-1 flex-1">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          <VideoCameraIcon className="h-5 w-5 text-primary" />
-                          <span className="truncate">{displayName}</span>
+
+                      <div className='space-y-1 flex-1'>
+                        <CardTitle className='text-lg flex items-center gap-2'>
+                          <VideoCameraIcon className='h-5 w-5 text-primary' />
+                          <span className='truncate'>{displayName}</span>
                         </CardTitle>
-                      {room.meetingCode && (
-                        <p className="text-sm text-muted-foreground">
-                          Código: {room.meetingCode}
-                        </p>
-                      )}
+                        {room.meetingCode && (
+                          <p className='text-sm text-muted-foreground'>
+                            Código: {room.meetingCode}
+                          </p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className='flex items-center gap-2'>
                       {isActive && (
-                        <Badge className="bg-green-100 text-green-700">
-                          <span className="animate-pulse mr-1">●</span>
+                        <Badge className='bg-green-100 text-green-700'>
+                          <span className='animate-pulse mr-1'>●</span>
                           Activa
                         </Badge>
                       )}
@@ -926,51 +1002,82 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className='space-y-3'>
                     {/* Analytics - Solo si están disponibles */}
                     {room._analytics ? (
                       <>
                         {/* Sessions & Duration */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <ChartBarIcon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {room._analytics.sessions.total} sesiones • {formatDuration(room._analytics.sessions.totalDurationMinutes)} total
+                        <div className='flex items-center gap-2 text-sm'>
+                          <ChartBarIcon className='h-4 w-4 text-muted-foreground' />
+                          <span className='text-muted-foreground'>
+                            {room._analytics.sessions.total} sesiones •{" "}
+                            {formatDuration(
+                              room._analytics.sessions.totalDurationSeconds
+                            )}{" "}
+                            total
                           </span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon 
+                                  className='h-4 w-4 text-muted-foreground hover:text-primary cursor-help' 
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-xs">
+                                <div className="space-y-1 text-xs">
+                                  <p className="font-medium">Filtros de calidad aplicados:</p>
+                                  <p>• Sesiones con 2+ participantes</p>
+                                  <p>• Duración mínima: 10 minutos</p>
+                                  <p className="text-muted-foreground mt-1">
+                                    Se excluyen conexiones de prueba y sesiones accidentales
+                                  </p>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
 
                         {/* Participants breakdown */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <UserGroupIcon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {room._analytics.permanentMembers.cohosts} co-hosts • {room._analytics.permanentMembers.regularMembers} participantes
-                          </span>
-                        </div>
-
-                        {/* Attendees */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <UserIcon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {room._analytics.participants.invited} asistentes invitados • {room._analytics.participants.uninvited} asistentes no invitados
+                        <div className='flex items-center gap-2 text-sm'>
+                          <UserGroupIcon className='h-4 w-4 text-muted-foreground' />
+                          <span className='text-muted-foreground'>
+                            {room._analytics.permanentMembers.cohosts} co-hosts
+                            • {room._analytics.permanentMembers.regularMembers}{" "}
+                            participantes
                           </span>
                         </div>
 
                         {/* Average participants per session */}
                         {room._analytics.sessions.total > 0 && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-muted-foreground">
-                              {room._analytics.sessions.averageParticipantsPerSession} participantes promedio
+                          <div className='flex items-center gap-2 text-sm'>
+                            <UsersIcon className='h-4 w-4 text-muted-foreground' />
+                            <span className='text-muted-foreground'>
+                              {
+                                room._analytics.sessions
+                                  .averageParticipantsPerSession
+                              }{" "}
+                              participantes promedio
                             </span>
                           </div>
                         )}
 
                         {/* Recent activity */}
                         {room._analytics.recentActivity?.lastMeetingDate && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-muted-foreground">
-                              Última: {formatDaysAgo(room._analytics.recentActivity.daysSinceLastMeeting)} 
-                              ({room._analytics.recentActivity.lastParticipantCount} participantes)
+                          <div className='flex items-center gap-2 text-sm'>
+                            <CalendarIcon className='h-4 w-4 text-muted-foreground' />
+                            <span className='text-muted-foreground'>
+                              Última:{" "}
+                              {formatDaysAgo(
+                                room._analytics.recentActivity
+                                  .daysSinceLastMeeting
+                              )}{" "}
+                              (
+                              {
+                                room._analytics.recentActivity
+                                  .lastParticipantCount
+                              }{" "}
+                              participantes)
                             </span>
                           </div>
                         )}
@@ -979,22 +1086,23 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                       /* Fallback - datos básicos sin analytics */
                       <>
                         {/* Participants */}
-                        <div className="flex items-center gap-2 text-sm">
-                          <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-muted-foreground">
-                            {room.members?.length || 0} participante{(room.members?.length || 0) !== 1 ? 's' : ''}
+                        <div className='flex items-center gap-2 text-sm'>
+                          <UsersIcon className='h-4 w-4 text-muted-foreground' />
+                          <span className='text-muted-foreground'>
+                            {room.members?.length || 0} participante
+                            {(room.members?.length || 0) !== 1 ? "s" : ""}
                           </span>
                         </div>
 
                         {/* Meeting URL - Solo como enlace compacto */}
                         {room.meetingUri && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Icons.ExternalLink className="h-4 w-4 text-muted-foreground" />
+                          <div className='flex items-center gap-2 text-sm'>
+                            <Icons.ExternalLink className='h-4 w-4 text-muted-foreground' />
                             <a
                               href={room.meetingUri}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:underline truncate"
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              className='text-primary hover:underline truncate'
                               onClick={(e) => e.stopPropagation()}
                             >
                               Unirse a la reunión
@@ -1006,52 +1114,56 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                   </div>
 
                   {/* Actions */}
-                  <div className="grid grid-cols-2 gap-2 mt-4">
+                  <div className='grid grid-cols-2 gap-2 mt-4'>
                     {/* Row 1: Delete and Manage */}
                     <Button
-                      variant="destructive"
-                      size="sm"
+                      variant='destructive'
+                      size='sm'
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm(`¿Eliminar "${displayName}" de la base de datos?`)) {
+                        if (
+                          confirm(
+                            `¿Eliminar "${displayName}" de la base de datos?`
+                          )
+                        ) {
                           handleDeleteRoomFromDB(spaceId);
                         }
                       }}
                     >
-                      <TrashIcon className="h-4 w-4 mr-1" />
+                      <TrashIcon className='h-4 w-4 mr-1' />
                       Eliminar
                     </Button>
                     <Button
-                      variant="outline"
-                      size="sm"
+                      variant='outline'
+                      size='sm'
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRoomClick(room);
                       }}
                     >
-                      <Cog6ToothIcon className="h-4 w-4 mr-1" />
+                      <Cog6ToothIcon className='h-4 w-4 mr-1' />
                       Gestionar
                     </Button>
-                    
+
                     {/* Row 2: Join (spans both columns) */}
                     {room.meetingUri ? (
                       <Button
-                        variant="default"
-                        size="sm"
-                        className="col-span-2"
+                        variant='default'
+                        size='sm'
+                        className='col-span-2'
                         onClick={(e) => {
                           e.stopPropagation();
-                          window.open(room.meetingUri, '_blank');
+                          window.open(room.meetingUri, "_blank");
                         }}
                       >
-                        <Icons.ExternalLink className="h-4 w-4 mr-1" />
+                        <Icons.ExternalLink className='h-4 w-4 mr-1' />
                         Unirse a la Reunión
                       </Button>
                     ) : (
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        className="col-span-2"
+                        variant='ghost'
+                        size='sm'
+                        className='col-span-2'
                         disabled
                       >
                         Sin URL de Reunión

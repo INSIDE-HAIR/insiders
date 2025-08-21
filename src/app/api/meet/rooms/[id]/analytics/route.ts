@@ -92,8 +92,8 @@ export async function GET(
     let participants = { invited: 0, uninvited: 0, unique: 0 };
     let sessions = { 
       total: 0, 
-      totalDurationMinutes: 0, 
-      averageDurationMinutes: 0, 
+      totalDurationSeconds: 0, 
+      averageDurationSeconds: 0, 
       averageParticipantsPerSession: 0 
     };
     let recentActivity = {
@@ -132,7 +132,7 @@ export async function GET(
     }
 
     // 3. Procesar conference records para obtener métricas
-    sessions.total = conferenceRecords.length;
+    let validSessionsCount = 0; // Contador de sesiones válidas (con filtros aplicados)
     let allParticipantCounts: number[] = [];
     
     // Crear un mapa de asistentes únicos con su información
@@ -143,6 +143,12 @@ export async function GET(
       isInvited: boolean;
     }>();
 
+    // Almacenar información de sesiones válidas para actividad reciente
+    let validSessions: Array<{
+      startTime: string;
+      participantCount: number;
+    }> = [];
+
     // Ordenar por fecha para obtener la más reciente
     conferenceRecords.sort((a: any, b: any) => 
       new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
@@ -151,11 +157,10 @@ export async function GET(
     // Procesar cada conferencia
     for (const record of conferenceRecords) {
       try {
-        // Calcular duración de la sesión
+        // Calcular duración de la sesión en segundos
         const startTime = new Date(record.startTime);
         const endTime = record.endTime ? new Date(record.endTime) : new Date();
-        const sessionDuration = Math.round((endTime.getTime() - startTime.getTime()) / (1000 * 60));
-        sessions.totalDurationMinutes += sessionDuration;
+        const sessionDurationSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
 
         // Obtener participantes de esta conferencia
         const participantsUrl = `https://meet.googleapis.com/v2/${record.name}/participants`;
@@ -172,8 +177,34 @@ export async function GET(
           const participantsData = await participantsResponse.json();
           const sessionParticipants = participantsData.participants || [];
           
+          // **FILTROS DE CALIDAD DE SESIÓN**
+          // Excluir sesiones con 0 participantes o duración < 10 minutos (600 segundos)
+          const MIN_DURATION_SECONDS = 600; // 10 minutos
+          const MIN_PARTICIPANTS = 2 // 2 o más participantes
+          
+          if (sessionParticipants.length < MIN_PARTICIPANTS) {
+            console.log(`⚠️ Skipping session with ${sessionParticipants.length} participants (below minimum ${MIN_PARTICIPANTS})`);
+            continue; // Saltar esta sesión
+          }
+          
+          if (sessionDurationSeconds < MIN_DURATION_SECONDS) {
+            console.log(`⚠️ Skipping session with ${sessionDurationSeconds}s duration (below minimum ${MIN_DURATION_SECONDS}s)`);
+            continue; // Saltar esta sesión
+          }
+          
+          // Sesión válida - incluir en métricas
+          console.log(`✅ Processing valid session: ${sessionParticipants.length} participants, ${sessionDurationSeconds}s duration`);
+          validSessionsCount++;
+          sessions.totalDurationSeconds += sessionDurationSeconds;
+          
           // Contar participantes de esta sesión
           allParticipantCounts.push(sessionParticipants.length);
+          
+          // Agregar a lista de sesiones válidas para actividad reciente
+          validSessions.push({
+            startTime: record.startTime,
+            participantCount: sessionParticipants.length
+          });
           
           // Procesar cada participante de la sesión
           for (const participant of sessionParticipants) {
@@ -356,25 +387,39 @@ export async function GET(
       unique: uniqueAttendees.size
     };
     
+    // Usar validSessionsCount en lugar del total original
+    sessions.total = validSessionsCount;
+    
     console.log(`📊 Final count: ${invitedAttendees} invited, ${uninvitedAttendees} uninvited, ${uniqueAttendees.size} total unique`);
+    console.log(`📊 Session filtering: ${validSessionsCount}/${conferenceRecords.length} sessions passed quality filters`);
     console.log(`👥 Attendee breakdown:`, Array.from(uniqueAttendees.entries()).map(([key, info]) => `${key} (${info.type})`));
 
-    sessions.averageDurationMinutes = sessions.total > 0 
-      ? Math.round(sessions.totalDurationMinutes / sessions.total) 
+    sessions.averageDurationSeconds = sessions.total > 0 
+      ? Math.round(sessions.totalDurationSeconds / sessions.total) 
       : 0;
 
     sessions.averageParticipantsPerSession = allParticipantCounts.length > 0
       ? Math.round((allParticipantCounts.reduce((sum, count) => sum + count, 0) / allParticipantCounts.length) * 10) / 10  // 1 decimal
       : 0;
 
-    // 5. Actividad reciente (ya ordenados por fecha descendente)
-    const mostRecentRecord = conferenceRecords[0];
-    if (mostRecentRecord) {
+    // 5. Actividad reciente - solo considerar sesiones válidas
+    if (validSessions.length > 0 && validSessions[0]) {
+      // Las sesiones válidas ya están ordenadas por fecha descendente (más recientes primero)
+      const mostRecentValidSession = validSessions[0];
       recentActivity = {
-        lastMeetingDate: mostRecentRecord.startTime,
-        lastParticipantCount: allParticipantCounts.length > 0 ? allParticipantCounts[0] : 0,
-        daysSinceLastMeeting: Math.floor((Date.now() - new Date(mostRecentRecord.startTime).getTime()) / (1000 * 60 * 60 * 24))
+        lastMeetingDate: mostRecentValidSession.startTime,
+        lastParticipantCount: mostRecentValidSession.participantCount,
+        daysSinceLastMeeting: Math.floor((Date.now() - new Date(mostRecentValidSession.startTime).getTime()) / (1000 * 60 * 60 * 24))
       };
+      console.log(`📅 Most recent valid session: ${mostRecentValidSession.startTime} with ${mostRecentValidSession.participantCount} participants`);
+    } else {
+      // No hay sesiones válidas
+      recentActivity = {
+        lastMeetingDate: null,
+        lastParticipantCount: 0,
+        daysSinceLastMeeting: null
+      };
+      console.log(`📅 No valid sessions found for recent activity`);
     }
 
     console.log(`✅ Analytics calculated for space ${spaceId}:`, {

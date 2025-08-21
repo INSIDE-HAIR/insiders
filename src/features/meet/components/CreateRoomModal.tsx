@@ -218,7 +218,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] min-h-[80dvh] max-w-[95vw] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <VideoCameraIcon className="h-5 w-5 text-primary" />
@@ -508,7 +508,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                               <TooltipContent className="max-w-sm">
                                 <p className="text-sm">
                                   <strong>Control de Reacciones:</strong><br/>
-                                  Determina quién puede enviar reacciones (emojis, "me gusta", etc.) durante la reunión.
+                                  Determina quién puede enviar reacciones (emojis, &ldquo;me gusta&rdquo;, etc.) durante la reunión.
                                 </p>
                               </TooltipContent>
                             </Tooltip>

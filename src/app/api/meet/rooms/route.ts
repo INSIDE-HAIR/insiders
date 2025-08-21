@@ -50,8 +50,8 @@ export async function GET(request: NextRequest) {
     const freshSpaces = await Promise.all(
       registeredSpaces.map(async (registered) => {
         try {
-          // Llamada fresca a Meet API
-          const freshSpace = await spaceConfigService.getSpace(registered.spaceId);
+          // Llamada fresca a Meet API - incluir activeConference
+          const freshSpace = await spaceConfigService.getSpace(registered.spaceId, 'name,meetingUri,meetingCode,config,activeConference');
           
           // Actualizar tiempo de sync
           await storageService?.updateSyncTime(registered.spaceId);
