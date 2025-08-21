@@ -1,2 +1,2 @@
-export { CreateRoomModal } from './CreateRoomModal';
-export { RoomDetailsModal } from './RoomDetailsModal';
+export { CreateRoomModal } from "./CreateRoomModal";
+export { RoomDetailsModal } from "./RoomDetailsModal";

@@ -41,6 +41,17 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/src/components/ui/alert-dialog";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
 import {
@@ -71,6 +82,19 @@ interface MeetRoom {
   meetingCode?: string;
   config?: {
     accessType?: "OPEN" | "TRUSTED" | "RESTRICTED";
+    entryPointAccess?: "ALL" | "CREATOR_APP_ONLY";
+    moderation?: "ON" | "OFF";
+    moderationRestrictions?: {
+      chatRestriction?: "NO_RESTRICTION" | "HOSTS_ONLY";
+      reactionRestriction?: "NO_RESTRICTION" | "HOSTS_ONLY";
+      presentRestriction?: "NO_RESTRICTION" | "HOSTS_ONLY";
+      defaultJoinAsViewerType?: "ON" | "OFF";
+    };
+    artifactConfig?: {
+      recordingConfig?: { autoRecordingGeneration?: "ON" | "OFF" };
+      transcriptionConfig?: { autoTranscriptionGeneration?: "ON" | "OFF" };
+      smartNotesConfig?: { autoSmartNotesGeneration?: "ON" | "OFF" };
+    };
     recordingConfig?: { autoRecordingGeneration?: "ON" | "OFF" };
     transcriptionConfig?: { autoTranscriptionGeneration?: "ON" | "OFF" };
     smartNotesConfig?: { autoSmartNotesGeneration?: "ON" | "OFF" };
@@ -188,6 +212,10 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
     "ALL" | "COHOST" | "ROLE_UNSPECIFIED"
   >("ALL");
   const [addingMember, setAddingMember] = useState(false);
+
+  // Estados para diálogos de confirmación
+  const [showCloseSessionDialog, setShowCloseSessionDialog] = useState(false);
+  const [showDeleteRoomDialog, setShowDeleteRoomDialog] = useState(false);
 
   const spaceId = room.name?.split("/").pop() || "";
 
@@ -347,11 +375,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
       return;
     }
 
-    if (
-      !confirm("¿Estás seguro de que deseas terminar la conferencia activa?")
-    ) {
-      return;
-    }
+    // La confirmación se maneja a través del AlertDialog personalizado
+    // No necesitamos confirm() nativo aquí
 
     try {
       setLoading(true);
@@ -369,6 +394,16 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
           title: "Conferencia terminada",
           description: "La conferencia activa ha sido terminada exitosamente",
         });
+
+        // Actualizar el estado local inmediatamente
+        if (room.activeConference) {
+          room.activeConference.conferenceRecord = undefined;
+        }
+
+        // Cerrar el modal de confirmación
+        setShowCloseSessionDialog(false);
+
+        // Refresh room data y activity data
         onUpdate(); // Refresh room data
         if (activeTab === "activity") {
           fetchActivityData(); // Refresh activity data
@@ -735,10 +770,6 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   };
 
   const handleDeleteRoom = async () => {
-    if (!confirm("¿Estás seguro de que deseas eliminar esta sala?")) {
-      return;
-    }
-
     try {
       setLoading(true);
       const response = await fetch(`/api/meet/rooms/${spaceId}`, {
@@ -1020,8 +1051,16 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                             </Label>
                             <div className='text-2xl font-bold'>
                               {(() => {
-                                const total = room._analytics?.permanentMembers?.total || room.members?.length || 0;
-                                const cohosts = room._analytics?.permanentMembers?.cohosts || room.members?.filter((m) => m.role === "COHOST").length || 0;
+                                const total =
+                                  room._analytics?.permanentMembers?.total ||
+                                  room.members?.length ||
+                                  0;
+                                const cohosts =
+                                  room._analytics?.permanentMembers?.cohosts ||
+                                  room.members?.filter(
+                                    (m) => m.role === "COHOST"
+                                  ).length ||
+                                  0;
                                 return total - cohosts;
                               })()}
                             </div>
@@ -1032,10 +1071,23 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                           <Label className='text-sm font-medium'>Estado</Label>
                           <div className='flex items-center gap-2 mt-1'>
                             {room.activeConference?.conferenceRecord ? (
-                              <Badge className='bg-green-100 text-green-700'>
-                                <span className='animate-pulse mr-1'>●</span>
-                                Conferencia Activa
-                              </Badge>
+                              <>
+                                <Badge className='bg-green-100 text-green-700'>
+                                  <span className='animate-pulse mr-1'>●</span>
+                                  Conferencia Activa
+                                </Badge>
+                                <Button
+                                  size='sm'
+                                  variant='outline'
+                                  onClick={() =>
+                                    setShowCloseSessionDialog(true)
+                                  }
+                                  disabled={loading}
+                                  className=' p-2 h-6 rounded-full text-destructive hover:bg-destructive hover:text-background border-destructive'
+                                >
+                                  {loading ? "Cerrando..." : "Cerrar Sesión"}
+                                </Button>
+                              </>
                             ) : (
                               <Badge variant='secondary'>Inactiva</Badge>
                             )}
@@ -1635,8 +1687,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                                       <strong>Control de Reacciones:</strong>
                                       <br />
                                       Determina quién puede enviar reacciones
-                                      (emojis, &ldquo;me gusta&rdquo;, etc.) durante la
-                                      reunión.
+                                      (emojis, &ldquo;me gusta&rdquo;, etc.)
+                                      durante la reunión.
                                     </p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -2945,7 +2997,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
           <DialogFooter className='flex justify-between'>
             <Button
               variant='destructive'
-              onClick={handleDeleteRoom}
+              onClick={() => setShowDeleteRoomDialog(true)}
               disabled={loading}
             >
               <TrashIcon className='mr-2 h-4 w-4' />
@@ -3450,6 +3502,63 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
           </DialogContent>
         </Dialog>
       )}
+
+      {/* AlertDialog para confirmar cerrar sesión */}
+      <AlertDialog
+        open={showCloseSessionDialog}
+        onOpenChange={setShowCloseSessionDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cerrar Sesión Activa</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que quieres cerrar la conferencia activa? Todos
+              los participantes serán desconectados y la reunión finalizará.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowCloseSessionDialog(false);
+                handleEndConference();
+              }}
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            >
+              Sí, Cerrar Sesión
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* AlertDialog para confirmar eliminar sala */}
+      <AlertDialog
+        open={showDeleteRoomDialog}
+        onOpenChange={setShowDeleteRoomDialog}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar Sala de Reuniones</AlertDialogTitle>
+            <AlertDialogDescription>
+              ¿Estás seguro de que quieres eliminar esta sala permanentemente?
+              Esta acción no se puede deshacer y se perderán todos los datos
+              asociados.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setShowDeleteRoomDialog(false);
+                handleDeleteRoom();
+              }}
+              className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
+            >
+              Sí, Eliminar Sala
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

@@ -28,7 +28,7 @@ export interface GoogleTokens {
 }
 
 export interface AuthUrlOptions {
-  access_type: 'offline' | 'online';
+  access_type: "offline" | "online";
   scope: string[];
   redirect_uri?: string;
 }
@@ -72,7 +72,7 @@ export interface EventListParams {
   maxResults?: number;
   timeMin?: string;
   timeMax?: string;
-  orderBy?: 'startTime' | 'updated';
+  orderBy?: "startTime" | "updated";
   singleEvents?: boolean;
   conferenceDataVersion?: number;
 }
@@ -123,8 +123,8 @@ export interface GoogleCalendarEvent {
   guestsCanSeeOtherGuests?: boolean;
   hangoutLink?: string;
   htmlLink?: string;
-  status?: 'confirmed' | 'tentative' | 'cancelled';
-  visibility?: 'default' | 'public' | 'private' | 'confidential';
+  status?: "confirmed" | "tentative" | "cancelled";
+  visibility?: "default" | "public" | "private" | "confidential";
 }
 
 export interface EventDateTime {
@@ -136,7 +136,7 @@ export interface EventDateTime {
 export interface EventAttendee {
   email: string;
   displayName?: string;
-  responseStatus?: 'needsAction' | 'declined' | 'tentative' | 'accepted';
+  responseStatus?: "needsAction" | "declined" | "tentative" | "accepted";
   optional?: boolean;
 }
 
@@ -144,7 +144,7 @@ export interface ConferenceData {
   createRequest?: {
     requestId: string;
     conferenceSolutionKey: {
-      type: 'hangoutsMeet';
+      type: "hangoutsMeet";
     };
   };
   conferenceId?: string;
@@ -159,7 +159,7 @@ export interface ConferenceData {
 }
 
 export interface ConferenceEntryPoint {
-  entryPointType: 'video' | 'phone' | 'sip' | 'more';
+  entryPointType: "video" | "phone" | "sip" | "more";
   uri: string;
   label?: string;
   pin?: string;
@@ -170,7 +170,7 @@ export interface ConferenceEntryPoint {
 }
 
 // =============================================================================
-// Google Meet API v2 Types  
+// Google Meet API v2 Types
 // =============================================================================
 
 export interface MeetSpace {
@@ -182,29 +182,30 @@ export interface MeetSpace {
 }
 
 export interface SpaceConfig {
-  accessType?: 'OPEN' | 'TRUSTED' | 'RESTRICTED';
-  entryPointAccess?: 'ALL' | 'CREATOR_APP_ONLY';
-  moderation?: 'ON' | 'OFF';
+  accessType?: "OPEN" | "TRUSTED" | "RESTRICTED";
+  entryPointAccess?: "ALL" | "CREATOR_APP_ONLY";
+  moderation?: "ON" | "OFF";
   moderationRestrictions?: ModerationRestrictions;
   artifactConfig?: ArtifactConfig;
-  attendanceReportGenerationType?: 'GENERATE_REPORT' | 'DO_NOT_GENERATE';
+  attendanceReportGenerationType?: "GENERATE_REPORT" | "DO_NOT_GENERATE";
 }
 
 export interface ModerationRestrictions {
-  chatRestriction?: 'HOSTS_ONLY' | 'NO_RESTRICTION';
-  presentRestriction?: 'HOSTS_ONLY' | 'NO_RESTRICTION';
-  defaultJoinAsViewerType?: 'ON' | 'OFF';
+  chatRestriction?: "HOSTS_ONLY" | "NO_RESTRICTION";
+  reactionRestriction?: "HOSTS_ONLY" | "NO_RESTRICTION";
+  presentRestriction?: "HOSTS_ONLY" | "NO_RESTRICTION";
+  defaultJoinAsViewerType?: "ON" | "OFF";
 }
 
 export interface ArtifactConfig {
   recordingConfig?: {
-    autoRecordingGeneration: 'ON' | 'OFF';
+    autoRecordingGeneration: "ON" | "OFF";
   };
   transcriptionConfig?: {
-    autoTranscriptionGeneration: 'ON' | 'OFF';
+    autoTranscriptionGeneration: "ON" | "OFF";
   };
   smartNotesConfig?: {
-    autoSmartNotesGeneration: 'ON' | 'OFF';
+    autoSmartNotesGeneration: "ON" | "OFF";
   };
 }
 
@@ -223,7 +224,7 @@ export interface ConferenceRecord {
 export interface Recording {
   name: string;
   driveDestination?: DriveDestination;
-  state?: 'FILE_GENERATED' | 'GENERATING_FILE' | 'UPLOAD_IN_PROGRESS';
+  state?: "FILE_GENERATED" | "GENERATING_FILE" | "UPLOAD_IN_PROGRESS";
   startTime?: string;
   endTime?: string;
 }
@@ -236,7 +237,7 @@ export interface DriveDestination {
 export interface Transcript {
   name: string;
   docsDestination?: DocsDestination;
-  state?: 'FILE_GENERATED' | 'GENERATING_FILE' | 'UPLOAD_IN_PROGRESS';
+  state?: "FILE_GENERATED" | "GENERATING_FILE" | "UPLOAD_IN_PROGRESS";
   startTime?: string;
   endTime?: string;
 }
@@ -285,35 +286,35 @@ export interface ParticipantSession {
 export interface MeetSpaceAdvancedConfig {
   // Advanced recording settings
   recordingConfig?: {
-    autoRecordingGeneration: 'ON' | 'OFF';
-    recordingStorage: 'GOOGLE_DRIVE' | 'CLOUD_STORAGE';
-    recordingQuality?: 'HD' | 'SD';
-    recordingLayout?: 'SPEAKER_VIEW' | 'GALLERY_VIEW' | 'PRESENTATION';
+    autoRecordingGeneration: "ON" | "OFF";
+    recordingStorage: "GOOGLE_DRIVE" | "CLOUD_STORAGE";
+    recordingQuality?: "HD" | "SD";
+    recordingLayout?: "SPEAKER_VIEW" | "GALLERY_VIEW" | "PRESENTATION";
   };
-  
+
   // Advanced transcription settings
   transcriptionConfig?: {
-    autoTranscriptionGeneration: 'ON' | 'OFF';
+    autoTranscriptionGeneration: "ON" | "OFF";
     transcriptionLanguage?: string;
     translationTargets?: string[];
     speakerIdentification?: boolean;
   };
-  
+
   // Gemini AI features
   smartNotesConfig?: {
-    autoSmartNotesGeneration: 'ON' | 'OFF';
+    autoSmartNotesGeneration: "ON" | "OFF";
     summaryGeneration?: boolean;
     actionItemsExtraction?: boolean;
     keyTopicsIdentification?: boolean;
   };
-  
+
   // Captions and accessibility
   captionsConfig?: {
     autoCaptionsEnabled?: boolean;
     captionLanguage?: string;
     translatedCaptions?: boolean;
   };
-  
+
   // Participation and moderation
   participantConfig?: {
     allParticipantsAsHosts?: boolean;
@@ -322,16 +323,16 @@ export interface MeetSpaceAdvancedConfig {
     requireAuthentication?: boolean;
     allowedDomains?: string[];
   };
-  
+
   // Meeting features
   meetingFeatures?: {
     chatEnabled?: boolean;
-    screenSharingRestriction?: 'ALL_PARTICIPANTS' | 'HOSTS_ONLY';
+    screenSharingRestriction?: "ALL_PARTICIPANTS" | "HOSTS_ONLY";
     pollsEnabled?: boolean;
     whiteboardEnabled?: boolean;
     reactionsCenabled?: boolean;
   };
-  
+
   // Security settings
   securityConfig?: {
     waitingRoom?: boolean;
@@ -381,8 +382,8 @@ export interface ParticipantAnalytics {
   totalDuration?: number;
   joinTime?: string;
   leaveTime?: string;
-  deviceType?: 'DESKTOP' | 'MOBILE' | 'TABLET' | 'PHONE';
-  connectionQuality?: 'GOOD' | 'FAIR' | 'POOR';
+  deviceType?: "DESKTOP" | "MOBILE" | "TABLET" | "PHONE";
+  connectionQuality?: "GOOD" | "FAIR" | "POOR";
   audioEnabled?: boolean;
   videoEnabled?: boolean;
   screenSharingUsed?: boolean;
@@ -414,7 +415,11 @@ export interface MeetingQualityMetrics {
 
 export interface BulkMeetOperationRequest {
   operations: Array<{
-    operationType: 'CREATE_SPACE' | 'UPDATE_SPACE' | 'DELETE_SPACE' | 'END_CONFERENCE';
+    operationType:
+      | "CREATE_SPACE"
+      | "UPDATE_SPACE"
+      | "DELETE_SPACE"
+      | "END_CONFERENCE";
     spaceId?: string;
     config?: MeetSpaceCreateRequest | MeetSpaceUpdateRequest;
   }>;
@@ -480,7 +485,11 @@ export interface GoogleApiError extends Error {
 
 export interface MeetApiError extends GoogleApiError {
   meetErrorCode?: string;
-  meetErrorType?: 'SPACE_NOT_FOUND' | 'CONFERENCE_ENDED' | 'PERMISSION_DENIED' | 'QUOTA_EXCEEDED';
+  meetErrorType?:
+    | "SPACE_NOT_FOUND"
+    | "CONFERENCE_ENDED"
+    | "PERMISSION_DENIED"
+    | "QUOTA_EXCEEDED";
 }
 
 export interface NodeError extends Error {

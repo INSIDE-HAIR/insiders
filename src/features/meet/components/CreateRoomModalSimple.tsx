@@ -24,7 +24,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className='sm:max-w-2xl'>
         <DialogHeader>
           <DialogTitle>Crear Nueva Sala de Meet</DialogTitle>
           <DialogDescription>
@@ -32,17 +32,15 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="p-4">
+        <div className='p-4'>
           <p>Modal simplificado para testing</p>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant='outline' onClick={onClose}>
             Cancelar
           </Button>
-          <Button onClick={() => onConfirm({})}>
-            Crear Sala
-          </Button>
+          <Button onClick={() => onConfirm({})}>Crear Sala</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -22,8 +22,18 @@ import {
 import { Switch } from "@/src/components/ui/switch";
 import { Badge } from "@/src/components/ui/badge";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/src/components/ui/tooltip";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
 import {
@@ -46,7 +56,7 @@ import {
   DefaultJoinAsViewerTypeEnum,
   AutoGenerationTypeEnum,
   AttendanceReportGenerationTypeEnum,
-  MemberRoleEnum
+  MemberRoleEnum,
 } from "@/src/features/meet/validations/SpaceConfigSchema";
 
 interface CreateRoomModalProps {
@@ -67,28 +77,42 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
   // Form state
   const [displayName, setDisplayName] = useState("");
-  const [accessType, setAccessType] = useState<"OPEN" | "TRUSTED" | "RESTRICTED">("TRUSTED");
+  const [accessType, setAccessType] = useState<
+    "OPEN" | "TRUSTED" | "RESTRICTED"
+  >("TRUSTED");
   const [restrictEntryPoints, setRestrictEntryPoints] = useState(false); // false = ALL, true = CREATOR_APP_ONLY
-  const [members, setMembers] = useState<Array<{ email: string; role: "ROLE_UNSPECIFIED" | "COHOST" }>>([]);
+  const [members, setMembers] = useState<
+    Array<{ email: string; role: "ROLE_UNSPECIFIED" | "COHOST" }>
+  >([]);
   const [newMemberEmail, setNewMemberEmail] = useState("");
-  const [newMemberRole, setNewMemberRole] = useState<"ROLE_UNSPECIFIED" | "COHOST">("ROLE_UNSPECIFIED");
-  
+  const [newMemberRole, setNewMemberRole] = useState<
+    "ROLE_UNSPECIFIED" | "COHOST"
+  >("ROLE_UNSPECIFIED");
+
   // Estados para filtros de miembros
   const [memberSearchTerm, setMemberSearchTerm] = useState("");
-  const [memberRoleFilter, setMemberRoleFilter] = useState<"ALL" | "COHOST" | "ROLE_UNSPECIFIED">("ALL");
-  
+  const [memberRoleFilter, setMemberRoleFilter] = useState<
+    "ALL" | "COHOST" | "ROLE_UNSPECIFIED"
+  >("ALL");
+
   // Configuración de moderación
   const [moderation, setModeration] = useState(false);
-  const [chatRestriction, setChatRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
-  const [reactionRestriction, setReactionRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
-  const [presentRestriction, setPresentRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
+  const [chatRestriction, setChatRestriction] = useState<
+    "HOSTS_ONLY" | "NO_RESTRICTION"
+  >("NO_RESTRICTION");
+  const [reactionRestriction, setReactionRestriction] = useState<
+    "HOSTS_ONLY" | "NO_RESTRICTION"
+  >("NO_RESTRICTION");
+  const [presentRestriction, setPresentRestriction] = useState<
+    "HOSTS_ONLY" | "NO_RESTRICTION"
+  >("NO_RESTRICTION");
   const [defaultJoinAsViewer, setDefaultJoinAsViewer] = useState(false);
-  
+
   // Configuración de artefactos automáticos
   const [autoRecording, setAutoRecording] = useState(false);
   const [autoTranscription, setAutoTranscription] = useState(false);
   const [autoSmartNotes, setAutoSmartNotes] = useState(false);
-  
+
   // REPORTES: Comentado hasta tener Google Workspace Enterprise
   // Para habilitar: descomentar esta línea y las secciones relacionadas en el JSX
   // Requiere scope: meetings.space.settings y configuración en Google Admin
@@ -99,12 +123,14 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   // Función para filtrar miembros
   const filteredMembers = members.filter((member) => {
     // Filtro por término de búsqueda (email)
-    const searchMatch = memberSearchTerm === "" || 
+    const searchMatch =
+      memberSearchTerm === "" ||
       member.email.toLowerCase().includes(memberSearchTerm.toLowerCase());
-    
+
     // Filtro por rol
-    const roleMatch = memberRoleFilter === "ALL" || member.role === memberRoleFilter;
-    
+    const roleMatch =
+      memberRoleFilter === "ALL" || member.role === memberRoleFilter;
+
     return searchMatch && roleMatch;
   });
 
@@ -121,7 +147,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
       return;
     }
 
-    if (members.some(m => m.email === newMemberEmail)) {
+    if (members.some((m) => m.email === newMemberEmail)) {
       toast({
         title: "Miembro duplicado",
         description: "Este email ya está en la lista",
@@ -136,7 +162,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   };
 
   const handleRemoveMember = (email: string) => {
-    setMembers(members.filter(m => m.email !== email));
+    setMembers(members.filter((m) => m.email !== email));
   };
 
   const handleSubmit = async () => {
@@ -150,36 +176,45 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           accessType,
           entryPointAccess: restrictEntryPoints ? "CREATOR_APP_ONLY" : "ALL",
           moderation: moderation ? "ON" : "OFF",
-          moderationRestrictions: moderation ? {
-            chatRestriction,
-            reactionRestriction,
-            presentRestriction,
-            defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF"
-          } : undefined,
+          moderationRestrictions: moderation
+            ? {
+                chatRestriction,
+                reactionRestriction,
+                presentRestriction,
+                defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF",
+              }
+            : undefined,
           artifactConfig: {
-            recordingConfig: { autoRecordingGeneration: autoRecording ? "ON" : "OFF" },
-            transcriptionConfig: { autoTranscriptionGeneration: autoTranscription ? "ON" : "OFF" },
-            smartNotesConfig: { autoSmartNotesGeneration: autoSmartNotes ? "ON" : "OFF" }
+            recordingConfig: {
+              autoRecordingGeneration: autoRecording ? "ON" : "OFF",
+            },
+            transcriptionConfig: {
+              autoTranscriptionGeneration: autoTranscription ? "ON" : "OFF",
+            },
+            smartNotesConfig: {
+              autoSmartNotesGeneration: autoSmartNotes ? "ON" : "OFF",
+            },
           },
           // REPORTES: Comentado hasta tener Google Workspace Enterprise
           // Cambiar por: attendanceReport ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
-          attendanceReportGenerationType: "DO_NOT_GENERATE"
+          attendanceReportGenerationType: "DO_NOT_GENERATE",
         },
-        initialMembers: members
+        initialMembers: members,
       };
 
       const validation = CreateSpaceSchema.safeParse(data);
       if (!validation.success) {
         toast({
           title: "Error de validación",
-          description: validation.error.errors[0]?.message || "Error de validación",
+          description:
+            validation.error.errors[0]?.message || "Error de validación",
           variant: "destructive",
         });
         return;
       }
 
       await onConfirm(data);
-      
+
       // Reset form
       setDisplayName("");
       setAccessType("TRUSTED");
@@ -214,14 +249,13 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         return "";
     }
   };
-  
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] min-h-[80dvh] max-w-[95vw] flex flex-col overflow-hidden">
+      <DialogContent className='sm:max-w-2xl max-h-[90vh] min-h-[80dvh] max-w-[95vw] flex flex-col overflow-hidden'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <VideoCameraIcon className="h-5 w-5 text-primary" />
+          <DialogTitle className='flex items-center gap-2'>
+            <VideoCameraIcon className='h-5 w-5 text-primary' />
             Crear Nueva Sala de Meet
           </DialogTitle>
           <DialogDescription>
@@ -229,163 +263,184 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="basic">Configuración</TabsTrigger>
-            <TabsTrigger value="members">Miembros</TabsTrigger>
-            <TabsTrigger value="settings">Avanzado</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className='mt-4'>
+          <TabsList className='grid w-full grid-cols-3'>
+            <TabsTrigger value='basic'>Configuración</TabsTrigger>
+            <TabsTrigger value='members'>Miembros</TabsTrigger>
+            <TabsTrigger value='settings'>Avanzado</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="basic" className="space-y-4 mt-4">
-            <div className="space-y-2">
-              <Label htmlFor="displayName">Nombre de la Sala</Label>
+          <TabsContent value='basic' className='space-y-4 mt-4'>
+            <div className='space-y-2'>
+              <Label htmlFor='displayName'>Nombre de la Sala</Label>
               <Input
-                id="displayName"
+                id='displayName'
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Ej: Reunión de Equipo Semanal"
+                placeholder='Ej: Reunión de Equipo Semanal'
                 maxLength={100}
               />
-              <p className="text-sm text-muted-foreground">
+              <p className='text-sm text-muted-foreground'>
                 {displayName.length}/100 caracteres
               </p>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="accessType">Tipo de Acceso</Label>
+            <div className='space-y-2'>
+              <div className='flex items-center gap-2'>
+                <Label htmlFor='accessType'>Tipo de Acceso</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                      <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
                     </TooltipTrigger>
-                    <TooltipContent className="max-w-sm">
-                      <p className="text-sm">
-                        <strong>Control de Acceso a la Reunión:</strong><br/>
-                        • <strong>Libre:</strong> Cualquiera con el enlace entra directamente<br/>
-                        • <strong>Organizacional:</strong> Tu organización entra directamente, otros piden permiso<br/>
-                        • <strong>Solo Invitados:</strong> Solo invitados específicos entran, otros piden permiso al anfitrión
+                    <TooltipContent className='max-w-sm'>
+                      <p className='text-sm'>
+                        <strong>Control de Acceso a la Reunión:</strong>
+                        <br />• <strong>Libre:</strong> Cualquiera con el enlace
+                        entra directamente
+                        <br />• <strong>Organizacional:</strong> Tu organización
+                        entra directamente, otros piden permiso
+                        <br />• <strong>Solo Invitados:</strong> Solo invitados
+                        específicos entran, otros piden permiso al anfitrión
                       </p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              <Select value={accessType} onValueChange={(value: any) => setAccessType(value)}>
+              <Select
+                value={accessType}
+                onValueChange={(value: any) => setAccessType(value)}
+              >
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecciona el tipo de acceso" />
+                  <SelectValue placeholder='Selecciona el tipo de acceso' />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="OPEN">
-                    <div className="flex items-center gap-2">
-                      <LockOpenIcon className="h-4 w-4 text-green-500" />
+                  <SelectItem value='OPEN'>
+                    <div className='flex items-center gap-2'>
+                      <LockOpenIcon className='h-4 w-4 text-green-500' />
                       <span>Acceso Libre</span>
                     </div>
                   </SelectItem>
-                  <SelectItem value="TRUSTED">
-                    <div className="flex items-center gap-2">
-                      <LockClosedIcon className="h-4 w-4 text-yellow-500" />
+                  <SelectItem value='TRUSTED'>
+                    <div className='flex items-center gap-2'>
+                      <LockClosedIcon className='h-4 w-4 text-yellow-500' />
                       <span>Acceso Organizacional</span>
                     </div>
                   </SelectItem>
-                  <SelectItem value="RESTRICTED">
-                    <div className="flex items-center gap-2">
-                      <LockClosedIcon className="h-4 w-4 text-red-500" />
+                  <SelectItem value='RESTRICTED'>
+                    <div className='flex items-center gap-2'>
+                      <LockClosedIcon className='h-4 w-4 text-red-500' />
                       <span>Solo Invitados</span>
                     </div>
                   </SelectItem>
                 </SelectContent>
               </Select>
-              <p className="text-sm text-muted-foreground">
+              <p className='text-sm text-muted-foreground'>
                 {getAccessTypeDescription(accessType)}
               </p>
             </div>
-
-
           </TabsContent>
 
-          <TabsContent value="members" className="space-y-4 mt-4">
-            <div className="space-y-2">
+          <TabsContent value='members' className='space-y-4 mt-4'>
+            <div className='space-y-2'>
               <Label>Agregar Participantes Iniciales</Label>
-              <div className="flex gap-2">
+              <div className='flex gap-2'>
                 <Input
                   value={newMemberEmail}
                   onChange={(e) => setNewMemberEmail(e.target.value)}
-                  placeholder="email@ejemplo.com"
-                  onKeyPress={(e) => e.key === 'Enter' && handleAddMember()}
+                  placeholder='email@ejemplo.com'
+                  onKeyPress={(e) => e.key === "Enter" && handleAddMember()}
                 />
-                <Select value={newMemberRole} onValueChange={(value: any) => setNewMemberRole(value)}>
-                  <SelectTrigger className="w-40">
+                <Select
+                  value={newMemberRole}
+                  onValueChange={(value: any) => setNewMemberRole(value)}
+                >
+                  <SelectTrigger className='w-40'>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
-                    <SelectItem value="COHOST">Co-anfitrión</SelectItem>
+                    <SelectItem value='ROLE_UNSPECIFIED'>
+                      Participante
+                    </SelectItem>
+                    <SelectItem value='COHOST'>Co-anfitrión</SelectItem>
                   </SelectContent>
                 </Select>
                 <Button
-                  type="button"
+                  type='button'
                   onClick={handleAddMember}
                   disabled={!newMemberEmail}
                 >
-                  <PlusIcon className="h-4 w-4" />
+                  <PlusIcon className='h-4 w-4' />
                 </Button>
               </div>
             </div>
 
             {members.length > 0 && (
-              <div className="space-y-2">
-                <Label>Participantes ({filteredMembers.length} de {members.length})</Label>
-                
+              <div className='space-y-2'>
+                <Label>
+                  Participantes ({filteredMembers.length} de {members.length})
+                </Label>
+
                 {/* Filtros de búsqueda y rol */}
-                <div className="flex gap-2">
-                  <div className="flex-1">
+                <div className='flex gap-2'>
+                  <div className='flex-1'>
                     <Input
-                      placeholder="Buscar por email..."
+                      placeholder='Buscar por email...'
                       value={memberSearchTerm}
                       onChange={(e) => setMemberSearchTerm(e.target.value)}
-                      className="text-sm"
+                      className='text-sm'
                     />
                   </div>
-                  <Select 
-                    value={memberRoleFilter} 
-                    onValueChange={(value: "ALL" | "COHOST" | "ROLE_UNSPECIFIED") => setMemberRoleFilter(value)}
+                  <Select
+                    value={memberRoleFilter}
+                    onValueChange={(
+                      value: "ALL" | "COHOST" | "ROLE_UNSPECIFIED"
+                    ) => setMemberRoleFilter(value)}
                   >
-                    <SelectTrigger className="w-40">
+                    <SelectTrigger className='w-40'>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ALL">Todos</SelectItem>
-                      <SelectItem value="COHOST">Co-anfitrión</SelectItem>
-                      <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
+                      <SelectItem value='ALL'>Todos</SelectItem>
+                      <SelectItem value='COHOST'>Co-anfitrión</SelectItem>
+                      <SelectItem value='ROLE_UNSPECIFIED'>
+                        Participante
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 {filteredMembers.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4 text-sm">
+                  <p className='text-muted-foreground text-center py-4 text-sm'>
                     No se encontraron miembros que coincidan con los filtros
                   </p>
                 ) : (
-                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                  <div className='space-y-2 max-h-48 overflow-y-auto'>
                     {filteredMembers.map((member, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-muted rounded-lg"
-                    >
-                      <div className="flex items-center gap-2">
-                        <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{member.email}</span>
-                        <Badge variant={member.role === "COHOST" ? "default" : "secondary"}>
-                          {member.role === "COHOST" ? "Co-anfitrión" : "Participante"}
-                        </Badge>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveMember(member.email)}
+                      <div
+                        key={index}
+                        className='flex items-center justify-between p-2 bg-muted rounded-lg'
                       >
-                        <XMarkIcon className="h-4 w-4" />
-                      </Button>
+                        <div className='flex items-center gap-2'>
+                          <UsersIcon className='h-4 w-4 text-muted-foreground' />
+                          <span className='text-sm'>{member.email}</span>
+                          <Badge
+                            variant={
+                              member.role === "COHOST" ? "default" : "secondary"
+                            }
+                          >
+                            {member.role === "COHOST"
+                              ? "Co-anfitrión"
+                              : "Participante"}
+                          </Badge>
+                        </div>
+                        <Button
+                          type='button'
+                          variant='ghost'
+                          size='sm'
+                          onClick={() => handleRemoveMember(member.email)}
+                        >
+                          <XMarkIcon className='h-4 w-4' />
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -394,289 +449,355 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
             )}
 
             <Alert>
-              <ExclamationTriangleIcon className="h-4 w-4" />
+              <ExclamationTriangleIcon className='h-4 w-4' />
               <AlertDescription>
-                Los participantes recibirán una invitación por email para unirse a la sala
+                Los participantes recibirán una invitación por email para unirse
+                a la sala
               </AlertDescription>
             </Alert>
           </TabsContent>
 
-          <TabsContent value="settings" className="space-y-4 mt-4">
-            <div className="space-y-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Moderación y Permisos</h4>
-                  
+          <TabsContent value='settings' className='space-y-4 mt-4'>
+            <div className='space-y-4'>
+              <div className='space-y-3'>
+                <h4 className='text-sm font-medium'>Moderación y Permisos</h4>
 
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <Label htmlFor="restrict-entry">Restringir Puntos de Entrada</Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <p className="text-sm">
-                                <strong>Control de Aplicaciones:</strong><br/>
-                                • <strong>Desactivado:</strong> Se puede acceder desde cualquier aplicación (Google Meet, Calendar, etc.)<br/>
-                                • <strong>Activado:</strong> Solo la aplicación que creó la sala puede acceder (más restrictivo)
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Limita el acceso solo a la aplicación que creó la sala
-                      </p>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <div className='flex items-center gap-2'>
+                      <Label htmlFor='restrict-entry'>
+                        Restringir Puntos de Entrada
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                          </TooltipTrigger>
+                          <TooltipContent className='max-w-sm'>
+                            <p className='text-sm'>
+                              <strong>Control de Aplicaciones:</strong>
+                              <br />• <strong>Desactivado:</strong> Se puede
+                              acceder desde cualquier aplicación (Google Meet,
+                              Calendar, etc.)
+                              <br />• <strong>Activado:</strong> Solo la
+                              aplicación que creó la sala puede acceder (más
+                              restrictivo)
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
-                    <Switch
-                      id="restrict-entry"
-                      checked={restrictEntryPoints}
-                      onCheckedChange={setRestrictEntryPoints}
-                    />
+                    <p className='text-sm text-muted-foreground'>
+                      Limita el acceso solo a la aplicación que creó la sala
+                    </p>
                   </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <Label htmlFor="moderation">Activar Moderación</Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <p className="text-sm">
-                                <strong>Control del Anfitrión:</strong><br/>
-                                Permite al anfitrión y co-anfitriones controlar quién puede chatear, presentar, reaccionar y si los nuevos participantes entran como espectadores.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        El organizador controla permisos de los participantes
-                      </p>
-                    </div>
-                    <Switch
-                      id="moderation"
-                      checked={moderation}
-                      onCheckedChange={setModeration}
-                    />
-                  </div>
-
-
-                  {moderation && (
-                    <>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Label>Restricción de Chat</Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-sm">
-                                <p className="text-sm">
-                                  <strong>Control de Chat:</strong><br/>
-                                  Determina quién puede enviar mensajes en el chat durante la reunión.
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <Select value={chatRestriction} onValueChange={(value: any) => setChatRestriction(value)}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="NO_RESTRICTION">Todos pueden chatear</SelectItem>
-                            <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Label>Restricción de Reacciones</Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-sm">
-                                <p className="text-sm">
-                                  <strong>Control de Reacciones:</strong><br/>
-                                  Determina quién puede enviar reacciones (emojis, &ldquo;me gusta&rdquo;, etc.) durante la reunión.
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <Select value={reactionRestriction} onValueChange={(value: any) => setReactionRestriction(value)}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="NO_RESTRICTION">Todos pueden reaccionar</SelectItem>
-                            <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <Label>Restricción de Presentación</Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                              </TooltipTrigger>
-                              <TooltipContent className="max-w-sm">
-                                <p className="text-sm">
-                                  <strong>Control de Pantalla:</strong><br/>
-                                  Determina quién puede compartir pantalla, presentar documentos o mostrar contenido durante la reunión.
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                        <Select value={presentRestriction} onValueChange={(value: any) => setPresentRestriction(value)}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="NO_RESTRICTION">Todos pueden presentar</SelectItem>
-                            <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div className="space-y-0.5">
-                          <div className="flex items-center gap-2">
-                            <Label htmlFor="default-viewer">Unirse como Espectador</Label>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-sm">
-                                  <p className="text-sm">
-                                    <strong>Modo Espectador:</strong><br/>
-                                    Los nuevos participantes entrarán solo con permisos de visualización. El anfitrión puede promocionarlos a participantes activos después.
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Nuevos participantes se unen como espectadores
-                          </p>
-                        </div>
-                        <Switch
-                          id="default-viewer"
-                          checked={defaultJoinAsViewer}
-                          onCheckedChange={setDefaultJoinAsViewer}
-                        />
-                      </div>
-                    </>
-                  )}
+                  <Switch
+                    id='restrict-entry'
+                    checked={restrictEntryPoints}
+                    onCheckedChange={setRestrictEntryPoints}
+                  />
                 </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Artefactos Automáticos</h4>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <Label htmlFor="auto-recording">Grabación Automática</Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <p className="text-sm">
-                                <strong>Grabación Automática:</strong><br/>
-                                La reunión se grabará automáticamente cuando comience. Los archivos se guardan en Google Drive del organizador. Los participantes serán notificados.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Las reuniones se grabarán automáticamente al iniciar
-                      </p>
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <div className='flex items-center gap-2'>
+                      <Label htmlFor='moderation'>Activar Moderación</Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                          </TooltipTrigger>
+                          <TooltipContent className='max-w-sm'>
+                            <p className='text-sm'>
+                              <strong>Control del Anfitrión:</strong>
+                              <br />
+                              Permite al anfitrión y co-anfitriones controlar
+                              quién puede chatear, presentar, reaccionar y si
+                              los nuevos participantes entran como espectadores.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
-                    <Switch
-                      id="auto-recording"
-                      checked={autoRecording}
-                      onCheckedChange={setAutoRecording}
-                    />
+                    <p className='text-sm text-muted-foreground'>
+                      El organizador controla permisos de los participantes
+                    </p>
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <Label htmlFor="auto-transcription">Transcripción Automática</Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <p className="text-sm">
-                                <strong>Transcripción Automática:</strong><br/>
-                                Convierte automáticamente el audio de la reunión en texto. El documento se guarda en Google Drive con marcas de tiempo y identificación de participantes.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Genera transcripciones de las conversaciones
-                      </p>
-                    </div>
-                    <Switch
-                      id="auto-transcription"
-                      checked={autoTranscription}
-                      onCheckedChange={setAutoTranscription}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <Label htmlFor="auto-smart-notes">Notas Inteligentes</Label>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
-                            </TooltipTrigger>
-                            <TooltipContent className="max-w-sm">
-                              <p className="text-sm">
-                                <strong>Notas Inteligentes:</strong><br/>
-                                Genera automáticamente resúmenes, puntos clave, acciones y decisiones de la reunión usando IA. Se guarda como documento de Google Docs.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Genera resúmenes y puntos clave automáticamente
-                      </p>
-                    </div>
-                    <Switch
-                      id="auto-smart-notes"
-                      checked={autoSmartNotes}
-                      onCheckedChange={setAutoSmartNotes}
-                    />
-                  </div>
+                  <Switch
+                    id='moderation'
+                    checked={moderation}
+                    onCheckedChange={setModeration}
+                  />
                 </div>
 
-                {/* 
+                {moderation && (
+                  <>
+                    <div className='space-y-2'>
+                      <div className='flex items-center gap-2'>
+                        <Label>Restricción de Chat</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                            </TooltipTrigger>
+                            <TooltipContent className='max-w-sm'>
+                              <p className='text-sm'>
+                                <strong>Control de Chat:</strong>
+                                <br />
+                                Determina quién puede enviar mensajes en el chat
+                                durante la reunión.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Select
+                        value={chatRestriction}
+                        onValueChange={(value: any) =>
+                          setChatRestriction(value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='NO_RESTRICTION'>
+                            Todos pueden chatear
+                          </SelectItem>
+                          <SelectItem value='HOSTS_ONLY'>
+                            Solo organizadores
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='space-y-2'>
+                      <div className='flex items-center gap-2'>
+                        <Label>Restricción de Reacciones</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                            </TooltipTrigger>
+                            <TooltipContent className='max-w-sm'>
+                              <p className='text-sm'>
+                                <strong>Control de Reacciones:</strong>
+                                <br />
+                                Determina quién puede enviar reacciones (emojis,
+                                &ldquo;me gusta&rdquo;, etc.) durante la
+                                reunión.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Select
+                        value={reactionRestriction}
+                        onValueChange={(value: any) =>
+                          setReactionRestriction(value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='NO_RESTRICTION'>
+                            Todos pueden reaccionar
+                          </SelectItem>
+                          <SelectItem value='HOSTS_ONLY'>
+                            Solo organizadores
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='space-y-2'>
+                      <div className='flex items-center gap-2'>
+                        <Label>Restricción de Presentación</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                            </TooltipTrigger>
+                            <TooltipContent className='max-w-sm'>
+                              <p className='text-sm'>
+                                <strong>Control de Pantalla:</strong>
+                                <br />
+                                Determina quién puede compartir pantalla,
+                                presentar documentos o mostrar contenido durante
+                                la reunión.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Select
+                        value={presentRestriction}
+                        onValueChange={(value: any) =>
+                          setPresentRestriction(value)
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value='NO_RESTRICTION'>
+                            Todos pueden presentar
+                          </SelectItem>
+                          <SelectItem value='HOSTS_ONLY'>
+                            Solo organizadores
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className='flex items-center justify-between'>
+                      <div className='space-y-0.5'>
+                        <div className='flex items-center gap-2'>
+                          <Label htmlFor='default-viewer'>
+                            Unirse como Espectador
+                          </Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                              </TooltipTrigger>
+                              <TooltipContent className='max-w-sm'>
+                                <p className='text-sm'>
+                                  <strong>Modo Espectador:</strong>
+                                  <br />
+                                  Los nuevos participantes entrarán solo con
+                                  permisos de visualización. El anfitrión puede
+                                  promocionarlos a participantes activos
+                                  después.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className='text-sm text-muted-foreground'>
+                          Nuevos participantes se unen como espectadores
+                        </p>
+                      </div>
+                      <Switch
+                        id='default-viewer'
+                        checked={defaultJoinAsViewer}
+                        onCheckedChange={setDefaultJoinAsViewer}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className='space-y-3'>
+                <h4 className='text-sm font-medium'>Artefactos Automáticos</h4>
+
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <div className='flex items-center gap-2'>
+                      <Label htmlFor='auto-recording'>
+                        Grabación Automática
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                          </TooltipTrigger>
+                          <TooltipContent className='max-w-sm'>
+                            <p className='text-sm'>
+                              <strong>Grabación Automática:</strong>
+                              <br />
+                              La reunión se grabará automáticamente cuando
+                              comience. Los archivos se guardan en Google Drive
+                              del organizador. Los participantes serán
+                              notificados.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <p className='text-sm text-muted-foreground'>
+                      Las reuniones se grabarán automáticamente al iniciar
+                    </p>
+                  </div>
+                  <Switch
+                    id='auto-recording'
+                    checked={autoRecording}
+                    onCheckedChange={setAutoRecording}
+                  />
+                </div>
+
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <div className='flex items-center gap-2'>
+                      <Label htmlFor='auto-transcription'>
+                        Transcripción Automática
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                          </TooltipTrigger>
+                          <TooltipContent className='max-w-sm'>
+                            <p className='text-sm'>
+                              <strong>Transcripción Automática:</strong>
+                              <br />
+                              Convierte automáticamente el audio de la reunión
+                              en texto. El documento se guarda en Google Drive
+                              con marcas de tiempo y identificación de
+                              participantes.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <p className='text-sm text-muted-foreground'>
+                      Genera transcripciones de las conversaciones
+                    </p>
+                  </div>
+                  <Switch
+                    id='auto-transcription'
+                    checked={autoTranscription}
+                    onCheckedChange={setAutoTranscription}
+                  />
+                </div>
+
+                <div className='flex items-center justify-between'>
+                  <div className='space-y-0.5'>
+                    <div className='flex items-center gap-2'>
+                      <Label htmlFor='auto-smart-notes'>
+                        Notas Inteligentes
+                      </Label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <InformationCircleIcon className='h-4 w-4 text-primary cursor-help' />
+                          </TooltipTrigger>
+                          <TooltipContent className='max-w-sm'>
+                            <p className='text-sm'>
+                              <strong>Notas Inteligentes:</strong>
+                              <br />
+                              Genera automáticamente resúmenes, puntos clave,
+                              acciones y decisiones de la reunión usando IA. Se
+                              guarda como documento de Google Docs.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <p className='text-sm text-muted-foreground'>
+                      Genera resúmenes y puntos clave automáticamente
+                    </p>
+                  </div>
+                  <Switch
+                    id='auto-smart-notes'
+                    checked={autoSmartNotes}
+                    onCheckedChange={setAutoSmartNotes}
+                  />
+                </div>
+              </div>
+
+              {/* 
                   FUNCIONALIDAD DE REPORTES - COMENTADA TEMPORALMENTE
                   =====================================================
                   Esta sección está comentada porque requiere Google Workspace Enterprise
@@ -692,7 +813,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   API Error que se produce sin el plan correcto:
                   "updateAttendanceReportGenerationType is not available to the user"
                 */}
-                {/*
+              {/*
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <h4 className="text-sm font-medium">Reportes</h4>
@@ -737,26 +858,22 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         </Tabs>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant='outline' onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
           <Button
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-primary hover:bg-primary/90"
+            className='bg-primary hover:bg-primary/90'
           >
             {loading ? (
               <>
-                <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
+                <Icons.SpinnerIcon className='mr-2 h-4 w-4 animate-spin' />
                 Creando Sala...
               </>
             ) : (
               <>
-                <VideoCameraIcon className="mr-2 h-4 w-4" />
+                <VideoCameraIcon className='mr-2 h-4 w-4' />
                 Crear Sala
               </>
             )}

@@ -312,6 +312,21 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   const handleUpdateRoom = async () => {
     // Recargar datos después de actualizar
     await fetchRooms();
+
+    // Actualizar también el selectedRoom si existe
+    if (selectedRoom) {
+      const selectedSpaceId = selectedRoom.name?.split("/").pop();
+
+      // Buscar la sala actualizada en el estado local después de fetchRooms
+      const updatedRoom = rooms.find((room) => {
+        const roomSpaceId = room.name?.split("/").pop();
+        return roomSpaceId === selectedSpaceId;
+      });
+
+      if (updatedRoom) {
+        setSelectedRoom(updatedRoom);
+      }
+    }
   };
 
   const handleDeleteRoom = async () => {
@@ -1019,18 +1034,21 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <InformationCircleIcon 
-                                  className='h-4 w-4 text-muted-foreground hover:text-primary cursor-help' 
+                                <InformationCircleIcon
+                                  className='h-4 w-4 text-muted-foreground hover:text-primary cursor-help'
                                   onClick={(e) => e.stopPropagation()}
                                 />
                               </TooltipTrigger>
-                              <TooltipContent side="top" className="max-w-xs">
-                                <div className="space-y-1 text-xs">
-                                  <p className="font-medium">Filtros de calidad aplicados:</p>
+                              <TooltipContent side='top' className='max-w-xs'>
+                                <div className='space-y-1 text-xs'>
+                                  <p className='font-medium'>
+                                    Filtros de calidad aplicados:
+                                  </p>
                                   <p>• Sesiones con 2+ participantes</p>
                                   <p>• Duración mínima: 10 minutos</p>
-                                  <p className="text-muted-foreground mt-1">
-                                    Se excluyen conexiones de prueba y sesiones accidentales
+                                  <p className='text-muted-foreground mt-1'>
+                                    Se excluyen conexiones de prueba y sesiones
+                                    accidentales
                                   </p>
                                 </div>
                               </TooltipContent>

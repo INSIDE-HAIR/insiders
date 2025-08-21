@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, Fragment } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -16,26 +21,6 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/src/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/src/components/ui/popover";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -44,7 +29,12 @@ import {
 import { Textarea } from "@/src/components/ui/textarea";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
 import {
   Accordion,
   AccordionContent,
@@ -156,23 +146,27 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGroup, setSelectedGroup] = useState<MeetGroup | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
-  const [accordionValue, setAccordionValue] = useState<string | undefined>(undefined);
+  const [accordionValue, setAccordionValue] = useState<string | undefined>(
+    undefined
+  );
   const [showPublicView, setShowPublicView] = useState(false); // Toggle between internal/public view
   const [parentGroupComboboxOpen, setParentGroupComboboxOpen] = useState(false);
   const [tagSearchTerm, setTagSearchTerm] = useState("");
   const [referenceSearchTerm, setReferenceSearchTerm] = useState("");
   const [parentGroupSearchTerm, setParentGroupSearchTerm] = useState("");
-  const [editingReference, setEditingReference] = useState<MeetGroupReference | null>(null);
+  const [editingReference, setEditingReference] =
+    useState<MeetGroupReference | null>(null);
   const [referenceEditForm, setReferenceEditForm] = useState({
     displayName: "",
     description: "",
     order: 0,
   });
   const [referencesModalOpen, setReferencesModalOpen] = useState(false);
-  const [groupWithReferences, setGroupWithReferences] = useState<MeetGroup | null>(null);
-  
+  const [groupWithReferences, setGroupWithReferences] =
+    useState<MeetGroup | null>(null);
+
   // Estado para referencias (ahora usamos flatGroups directamente)
   const [formData, setFormData] = useState({
     name: "",
@@ -210,92 +204,94 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   // Función de búsqueda fuzzy muy permisiva para grupos
   const fuzzySearchGroup = (searchTerm: string, target: string): boolean => {
     if (!searchTerm || !target) return true;
-    
-    const normalizeText = (text: string) => 
-      text.toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") // Remove accents
-          .replace(/[^a-z0-9\s]/g, "") // Keep alphanumeric and spaces
-          .replace(/\s+/g, ""); // Remove all spaces
-    
+
+    const normalizeText = (text: string) =>
+      text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Remove accents
+        .replace(/[^a-z0-9\s]/g, "") // Keep alphanumeric and spaces
+        .replace(/\s+/g, ""); // Remove all spaces
+
     const normalizedSearch = normalizeText(searchTerm);
     const normalizedTarget = normalizeText(target);
-    
+
     // Si está vacío después de normalizar, mostrar todo
     if (!normalizedSearch) return true;
-    
+
     // Método 1: Búsqueda simple de substring (más permisivo)
     if (normalizedTarget.includes(normalizedSearch)) {
       return true;
     }
-    
+
     // Método 2: Búsqueda de todas las palabras por separado
     const searchWords = searchTerm.toLowerCase().split(/\s+/);
     const targetWords = target.toLowerCase().split(/\s+/);
-    
-    const allWordsFound = searchWords.every(searchWord => 
-      targetWords.some(targetWord => 
-        targetWord.includes(searchWord) || searchWord.includes(targetWord)
+
+    const allWordsFound = searchWords.every((searchWord) =>
+      targetWords.some(
+        (targetWord) =>
+          targetWord.includes(searchWord) || searchWord.includes(targetWord)
       )
     );
-    
+
     if (allWordsFound) {
       return true;
     }
-    
+
     // Método 3: Búsqueda por caracteres en orden (más flexible)
     const searchChars = normalizedSearch.split("");
     let targetIndex = 0;
-    
+
     for (let i = 0; i < searchChars.length; i++) {
       const char = searchChars[i];
       if (!char) continue; // Skip if char is undefined
-      
+
       const foundIndex = normalizedTarget.indexOf(char, targetIndex);
-      
+
       if (foundIndex === -1) {
         return false; // Si no encuentra un carácter, no coincide
       }
-      
+
       targetIndex = foundIndex + 1;
     }
-    
+
     return true;
   };
 
   const filteredParentGroups = React.useMemo(() => {
     let groupsToFilter = flatGroups;
-    
+
     if (parentGroupSearchTerm.trim()) {
-      groupsToFilter = flatGroups.filter(group => {
+      groupsToFilter = flatGroups.filter((group) => {
         // Buscar en múltiples campos con búsqueda fuzzy
         const searchFields = [
           group.name,
           group.slug,
           group.customId,
           group.internalDescription,
-          group.publicDescription
+          group.publicDescription,
         ].filter(Boolean); // Remove null/undefined values
-        
+
         // Si cualquier campo coincide con la búsqueda fuzzy, incluir el grupo
-        return searchFields.some(field => 
+        return searchFields.some((field) =>
           fuzzySearchGroup(parentGroupSearchTerm, field as string)
         );
       });
     }
-    
+
     // Construir jerarquía de grupos para mostrar padre-hijo correctamente
     const buildGroupHierarchy = (groupList: MeetGroup[]): MeetGroup[] => {
       const groupMap = new Map<string, MeetGroup>();
       const roots: MeetGroup[] = [];
-      
+
       // First pass: create a map of all groups
-      groupList.forEach(group => {
+      groupList.forEach((group) => {
         groupMap.set(group.id, { ...group, children: [] });
       });
-      
+
       // Second pass: build hierarchy
-      groupList.forEach(group => {
+      groupList.forEach((group) => {
         const groupNode = groupMap.get(group.id)!;
         if (group.parentId) {
           const parent = groupMap.get(group.parentId);
@@ -310,21 +306,25 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           roots.push(groupNode);
         }
       });
-      
+
       // Sort children recursively
       const sortGroupsRecursively = (groups: MeetGroup[]): MeetGroup[] => {
-        return groups.sort((a, b) => {
-          if (a.order !== b.order) return a.order - b.order;
-          return a.name.localeCompare(b.name);
-        }).map(group => ({
-          ...group,
-          children: group.children ? sortGroupsRecursively(group.children) : []
-        }));
+        return groups
+          .sort((a, b) => {
+            if (a.order !== b.order) return a.order - b.order;
+            return a.name.localeCompare(b.name);
+          })
+          .map((group) => ({
+            ...group,
+            children: group.children
+              ? sortGroupsRecursively(group.children)
+              : [],
+          }));
       };
-      
+
       return sortGroupsRecursively(roots);
     };
-    
+
     return buildGroupHierarchy(groupsToFilter);
   }, [flatGroups, parentGroupSearchTerm]);
 
@@ -338,19 +338,18 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     try {
       setLoading(true);
       const response = await fetch("/api/meet/groups");
-      
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
       }
 
       const data = await response.json();
       setGroups(data.groups || []);
-      
+
       // También obtener lista plana para selección de parents
       const flatResponse = await fetch("/api/meet/groups?parentId=all");
       const flatData = await flatResponse.json();
       setFlatGroups(flatData.groups || []);
-      
     } catch (error: any) {
       console.error("Error fetching groups:", error);
       toast({
@@ -366,14 +365,14 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   const buildTagHierarchy = (tagList: MeetTag[]): MeetTag[] => {
     const tagMap = new Map<string, MeetTag>();
     const roots: MeetTag[] = [];
-    
+
     // First pass: create a map of all tags
-    tagList.forEach(tag => {
+    tagList.forEach((tag) => {
       tagMap.set(tag.id, { ...tag, children: [] });
     });
-    
+
     // Second pass: build hierarchy
-    tagList.forEach(tag => {
+    tagList.forEach((tag) => {
       const tagNode = tagMap.get(tag.id)!;
       if (tag.parentId) {
         const parent = tagMap.get(tag.parentId);
@@ -385,39 +384,41 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         roots.push(tagNode);
       }
     });
-    
+
     // Sort children recursively
     const sortTagsRecursively = (tags: MeetTag[]): MeetTag[] => {
-      return tags.sort((a, b) => {
-        if (a.order !== b.order) return a.order - b.order;
-        return a.name.localeCompare(b.name);
-      }).map(tag => ({
-        ...tag,
-        children: tag.children ? sortTagsRecursively(tag.children) : []
-      }));
+      return tags
+        .sort((a, b) => {
+          if (a.order !== b.order) return a.order - b.order;
+          return a.name.localeCompare(b.name);
+        })
+        .map((tag) => ({
+          ...tag,
+          children: tag.children ? sortTagsRecursively(tag.children) : [],
+        }));
     };
-    
+
     return sortTagsRecursively(roots);
   };
 
   const fetchTags = async () => {
     try {
       const response = await fetch("/api/meet/tags?parentId=all");
-      
+
       if (response.ok) {
         const data = await response.json();
         const allTags = data.tags || [];
-        
+
         // Sort flat list for backward compatibility
         const sortedTags = allTags.sort((a: MeetTag, b: MeetTag) => {
           if (a.level !== b.level) return a.level - b.level;
           if (a.order !== b.order) return a.order - b.order;
           return a.name.localeCompare(b.name);
         });
-        
+
         // Build hierarchical structure
         const hierarchical = buildTagHierarchy(allTags);
-        
+
         setTags(sortedTags);
         setHierarchicalTags(hierarchical);
       }
@@ -433,9 +434,10 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
       if (!formData.name.trim()) errors.name = "El nombre es requerido";
       if (!formData.slug.trim()) errors.slug = "El slug es requerido";
       if (!/^[a-z0-9-]+$/.test(formData.slug)) {
-        errors.slug = "El slug debe contener solo letras minúsculas, números y guiones";
+        errors.slug =
+          "El slug debe contener solo letras minúsculas, números y guiones";
       }
-      
+
       setFormErrors(errors);
       if (Object.keys(errors).length > 0) return;
 
@@ -446,10 +448,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         },
         body: JSON.stringify({
           ...formData,
-          parentId: formData.parentId === "" || formData.parentId === "__root__" ? undefined : formData.parentId,
+          parentId:
+            formData.parentId === "" || formData.parentId === "__root__"
+              ? undefined
+              : formData.parentId,
           isActive: formData.isActive,
           allowsReferences: formData.allowsReferences,
-          defaultTagIds: formData.defaultTagIds.length > 0 ? formData.defaultTagIds : undefined,
+          defaultTagIds:
+            formData.defaultTagIds.length > 0
+              ? formData.defaultTagIds
+              : undefined,
         }),
       });
 
@@ -483,9 +491,10 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
       if (!formData.name.trim()) errors.name = "El nombre es requerido";
       if (!formData.slug.trim()) errors.slug = "El slug es requerido";
       if (!/^[a-z0-9-]+$/.test(formData.slug)) {
-        errors.slug = "El slug debe contener solo letras minúsculas, números y guiones";
+        errors.slug =
+          "El slug debe contener solo letras minúsculas, números y guiones";
       }
-      
+
       setFormErrors(errors);
       if (Object.keys(errors).length > 0) return;
 
@@ -496,7 +505,10 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         },
         body: JSON.stringify({
           ...formData,
-          parentId: formData.parentId === "" || formData.parentId === "__root__" ? null : formData.parentId,
+          parentId:
+            formData.parentId === "" || formData.parentId === "__root__"
+              ? null
+              : formData.parentId,
           defaultTagIds: formData.defaultTagIds,
           isActive: formData.isActive,
           allowsReferences: formData.allowsReferences,
@@ -515,7 +527,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       setIsModalOpen(false);
       setSelectedGroup(null);
-      setModalMode('create');
+      setModalMode("create");
       resetForm();
       await fetchGroups();
     } catch (error: any) {
@@ -531,13 +543,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     if (group._count.children > 0) {
       toast({
         title: "No se puede eliminar",
-        description: "El grupo tiene elementos hijos. Muévalos o elimínelos primero.",
+        description:
+          "El grupo tiene elementos hijos. Muévalos o elimínelos primero.",
         variant: "destructive",
       });
       return;
     }
 
-    if (!confirm(`¿Estás seguro de que deseas eliminar el grupo "${group.name}"?`)) {
+    if (
+      !confirm(`¿Estás seguro de que deseas eliminar el grupo "${group.name}"?`)
+    ) {
       return;
     }
 
@@ -548,11 +563,13 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       if (!response.ok) {
         const error = await response.json();
-        
+
         // Manejo específico para diferentes tipos de errores
         if (response.status === 400 && error.message && error.referencedIn) {
           // Error por referencias: el grupo está siendo usado en paquetes
-          const packages = error.referencedIn.map((ref: any) => ref.packageName).join(", ");
+          const packages = error.referencedIn
+            .map((ref: any) => ref.packageName)
+            .join(", ");
           toast({
             title: "No se puede eliminar",
             description: `Este grupo está referenciado en los siguientes paquetes: ${packages}. Elimina las referencias primero.`,
@@ -562,12 +579,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           // Error por hijos (409 Conflict)
           toast({
             title: "No se puede eliminar",
-            description: error.details || "El grupo tiene elementos hijos. Muévalos o elimínelos primero.",
+            description:
+              error.details ||
+              "El grupo tiene elementos hijos. Muévalos o elimínelos primero.",
             variant: "destructive",
           });
         } else {
           // Otros errores
-          throw new Error(error.error || error.message || "Error al eliminar grupo");
+          throw new Error(
+            error.error || error.message || "Error al eliminar grupo"
+          );
         }
         return;
       }
@@ -603,7 +624,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     });
     setFormErrors({});
     setSelectedGroup(null);
-    setModalMode('create');
+    setModalMode("create");
     setParentGroupComboboxOpen(false);
     setTagSearchTerm("");
     setReferenceSearchTerm("");
@@ -616,16 +637,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
   const openCreateModal = (parentGroup?: MeetGroup) => {
     resetForm();
-    setModalMode('create');
+    setModalMode("create");
     if (parentGroup) {
-      setFormData(prev => ({ ...prev, parentId: parentGroup.id }));
+      setFormData((prev) => ({ ...prev, parentId: parentGroup.id }));
     }
     setIsModalOpen(true);
   };
 
   const openEditModal = (group: MeetGroup) => {
     setSelectedGroup(group);
-    setModalMode('edit');
+    setModalMode("edit");
     setFormData({
       name: group.name,
       slug: group.slug,
@@ -635,7 +656,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
       parentId: group.parentId || "",
       customId: group.customId || "",
       order: group.order || 0,
-      defaultTagIds: group.defaultTags.map(dt => dt.tag.id),
+      defaultTagIds: group.defaultTags.map((dt) => dt.tag.id),
       isActive: group.isActive !== undefined ? group.isActive : true,
       allowsReferences: group.allowsReferences || false,
     });
@@ -646,20 +667,26 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   // Referencias ahora se manejan directamente con flatGroups
 
   // Agregar una nueva referencia con contexto mejorado
-  const handleAddReference = async (targetGroupId: string, contextData?: { displayName?: string; description?: string; order?: number }) => {
+  const handleAddReference = async (
+    targetGroupId: string,
+    contextData?: { displayName?: string; description?: string; order?: number }
+  ) => {
     if (!selectedGroup) return;
 
     try {
-      const response = await fetch(`/api/meet/groups/${selectedGroup.id}/references`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          targetGroupId,
-          displayName: contextData?.displayName || "",
-          description: contextData?.description || "",
-          order: contextData?.order || 0
-        }),
-      });
+      const response = await fetch(
+        `/api/meet/groups/${selectedGroup.id}/references`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            targetGroupId,
+            displayName: contextData?.displayName || "",
+            description: contextData?.description || "",
+            order: contextData?.order || 0,
+          }),
+        }
+      );
 
       if (response.ok) {
         toast({
@@ -667,9 +694,11 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           description: "La referencia se agregó exitosamente.",
         });
         await fetchGroups(); // Recargar grupos
-        
+
         // Actualizar selectedGroup con los datos frescos
-        const updatedGroupResponse = await fetch(`/api/meet/groups/${selectedGroup.id}`);
+        const updatedGroupResponse = await fetch(
+          `/api/meet/groups/${selectedGroup.id}`
+        );
         if (updatedGroupResponse.ok) {
           const updatedGroup = await updatedGroupResponse.json();
           setSelectedGroup(updatedGroup);
@@ -696,30 +725,36 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     if (!selectedGroup || !editingReference) return;
 
     try {
-      const response = await fetch(`/api/meet/groups/${selectedGroup.id}/references/${referenceId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          displayName: referenceEditForm.displayName || undefined,
-          description: referenceEditForm.description || undefined,
-          order: referenceEditForm.order,
-        }),
-      });
+      const response = await fetch(
+        `/api/meet/groups/${selectedGroup.id}/references/${referenceId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            displayName: referenceEditForm.displayName || undefined,
+            description: referenceEditForm.description || undefined,
+            order: referenceEditForm.order,
+          }),
+        }
+      );
 
       if (response.ok) {
         toast({
           title: "Referencia actualizada",
-          description: "El contexto de la referencia se actualizó exitosamente.",
+          description:
+            "El contexto de la referencia se actualizó exitosamente.",
         });
-        
+
         // Resetear estado de edición
         setEditingReference(null);
         setReferenceEditForm({ displayName: "", description: "", order: 0 });
-        
+
         await fetchGroups(); // Recargar grupos
-        
+
         // Actualizar selectedGroup con los datos frescos
-        const updatedGroupResponse = await fetch(`/api/meet/groups/${selectedGroup.id}`);
+        const updatedGroupResponse = await fetch(
+          `/api/meet/groups/${selectedGroup.id}`
+        );
         if (updatedGroupResponse.ok) {
           const updatedGroup = await updatedGroupResponse.json();
           setSelectedGroup(updatedGroup);
@@ -786,24 +821,29 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   const handleDeleteOrphanReference = async (referenceId: string) => {
     if (!groupWithReferences) return;
 
-    if (!confirm("¿Estás seguro de que deseas eliminar esta referencia huérfana?")) {
+    if (
+      !confirm("¿Estás seguro de que deseas eliminar esta referencia huérfana?")
+    ) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/meet/groups/${groupWithReferences.id}/references/${referenceId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/meet/groups/${groupWithReferences.id}/references/${referenceId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         toast({
           title: "Referencia eliminada",
           description: "La referencia huérfana se eliminó exitosamente",
         });
-        
+
         // Actualizar la vista de referencias
         await handleViewReferences(groupWithReferences);
-        
+
         // Recargar grupos principales
         await fetchGroups();
       } else {
@@ -828,9 +868,12 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     if (!selectedGroup) return;
 
     try {
-      const response = await fetch(`/api/meet/groups/${selectedGroup.id}/references/${referenceId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/meet/groups/${selectedGroup.id}/references/${referenceId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         toast({
@@ -838,9 +881,11 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           description: "La referencia se eliminó exitosamente.",
         });
         await fetchGroups(); // Recargar grupos
-        
+
         // Actualizar selectedGroup con los datos frescos
-        const updatedGroupResponse = await fetch(`/api/meet/groups/${selectedGroup.id}`);
+        const updatedGroupResponse = await fetch(
+          `/api/meet/groups/${selectedGroup.id}`
+        );
         if (updatedGroupResponse.ok) {
           const updatedGroup = await updatedGroupResponse.json();
           setSelectedGroup(updatedGroup);
@@ -863,7 +908,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   };
 
   const toggleExpand = (groupId: string) => {
-    setExpandedGroups(prev => {
+    setExpandedGroups((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(groupId)) {
         newSet.delete(groupId);
@@ -885,9 +930,9 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         return acc;
       }, []);
     };
-    
+
     setExpandedGroups(new Set(getAllGroupIds(filteredGroups)));
-    
+
     // Expand accordion if there are orphan groups
     if (orphanGroups.length > 0) {
       setAccordionValue("orphan-groups");
@@ -908,16 +953,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-")
       .trim();
-    
-    setFormData(prev => ({ ...prev, slug }));
+
+    setFormData((prev) => ({ ...prev, slug }));
   };
 
   const toggleDefaultTag = (tagId: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       defaultTagIds: prev.defaultTagIds.includes(tagId)
-        ? prev.defaultTagIds.filter(id => id !== tagId)
-        : [...prev.defaultTagIds, tagId]
+        ? prev.defaultTagIds.filter((id) => id !== tagId)
+        : [...prev.defaultTagIds, tagId],
     }));
   };
 
@@ -925,11 +970,11 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   const renderGroupContent = (group: MeetGroup) => {
     // Verificar si es una referencia (detectar por propiedades específicas)
     const isReference = group.isReference || false;
-    
+
     return (
-      <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className='flex items-center gap-2 flex-1 min-w-0'>
         {/* Group Icon/Color con indicador de referencia */}
-        <div className="flex items-center gap-1">
+        <div className='flex items-center gap-1'>
           <div
             className={cn(
               "h-3 w-3 rounded border",
@@ -938,73 +983,84 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
             style={{ backgroundColor: group.color }}
           />
           {isReference && (
-            <LinkIcon className="h-3 w-3 text-primary opacity-60" />
+            <LinkIcon className='h-3 w-3 text-primary opacity-60' />
           )}
         </div>
-        
+
         {/* Group Info */}
         <div className={cn("flex-1 min-w-0", isReference && "opacity-60")}>
-          <div className="flex items-center gap-2">
-            <span className="font-medium truncate">
+          <div className='flex items-center gap-2'>
+            <span className='font-medium truncate'>
               {isReference ? `${group.name} (Ref)` : group.name}
             </span>
-            <Badge variant="outline" className="text-xs">
+            <Badge variant='outline' className='text-xs'>
               {group.slug}
             </Badge>
             {group.customId && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant='secondary' className='text-xs'>
                 {group.customId}
               </Badge>
             )}
             {isReference && (
-              <Badge variant="outline" className="text-xs text-primary border-primary/30 bg-primary/5">
+              <Badge
+                variant='outline'
+                className='text-xs text-primary border-primary/30 bg-primary/5'
+              >
                 REF
               </Badge>
             )}
             {group._count?.spaceGroups > 0 && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant='secondary' className='text-xs'>
                 {group._count.spaceGroups} salas
               </Badge>
             )}
             {group._count?.defaultTags > 0 && (
-              <Badge variant="default" className="text-xs">
+              <Badge variant='default' className='text-xs'>
                 {group._count.defaultTags} tags
               </Badge>
             )}
           </div>
           {(() => {
-            const description = showPublicView ? group.publicDescription : group.internalDescription;
-            return description && (
-              <p className="text-sm text-muted-foreground truncate">
-                {description}
-              </p>
+            const description = showPublicView
+              ? group.publicDescription
+              : group.internalDescription;
+            return (
+              description && (
+                <p className='text-sm text-muted-foreground truncate'>
+                  {description}
+                </p>
+              )
             );
           })()}
           {/* Default tags preview */}
           {group.defaultTags && group.defaultTags.length > 0 && (
-            <div className="flex gap-1 mt-1 flex-wrap">
+            <div className='flex gap-1 mt-1 flex-wrap'>
               {group.defaultTags.slice(0, 10).map((dt) => (
                 <TooltipProvider key={dt.tag.id}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <div
-                        className="flex items-center gap-1 px-2 py-1 bg-muted rounded text-xs cursor-help"
-                      >
+                      <div className='flex items-center gap-1 px-2 py-1 bg-muted rounded text-xs cursor-help'>
                         <div
-                          className="h-2 w-2 rounded-full"
+                          className='h-2 w-2 rounded-full'
                           style={{ backgroundColor: dt.tag.color }}
                         />
                         <span>#{dt.tag.customId || dt.tag.name}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="space-y-1">
-                        <div className="font-semibold">#{dt.tag.customId || dt.tag.name}</div>
+                      <div className='space-y-1'>
+                        <div className='font-semibold'>
+                          #{dt.tag.customId || dt.tag.name}
+                        </div>
                         {dt.tag.customId && (
-                          <div className="text-xs text-muted-foreground">Nombre: {dt.tag.name}</div>
+                          <div className='text-xs text-muted-foreground'>
+                            Nombre: {dt.tag.name}
+                          </div>
                         )}
                         {dt.tag.slug && (
-                          <div className="text-xs text-muted-foreground">Slug: {dt.tag.slug}</div>
+                          <div className='text-xs text-muted-foreground'>
+                            Slug: {dt.tag.slug}
+                          </div>
                         )}
                       </div>
                     </TooltipContent>
@@ -1015,22 +1071,31 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="outline" className="text-xs cursor-help">
+                      <Badge variant='outline' className='text-xs cursor-help'>
                         +{group.defaultTags.length - 10}
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="space-y-2 max-w-xs max-h-64 overflow-y-auto">
-                        <div className="font-semibold text-sm">Tags adicionales:</div>
+                      <div className='space-y-2 max-w-xs max-h-64 overflow-y-auto'>
+                        <div className='font-semibold text-sm'>
+                          Tags adicionales:
+                        </div>
                         {group.defaultTags.slice(10).map((dt) => (
-                          <div key={dt.tag.id} className="flex items-center gap-2 text-xs">
+                          <div
+                            key={dt.tag.id}
+                            className='flex items-center gap-2 text-xs'
+                          >
                             <div
-                              className="h-2 w-2 rounded-full"
+                              className='h-2 w-2 rounded-full'
                               style={{ backgroundColor: dt.tag.color }}
                             />
-                            <span className="font-medium">#{dt.tag.customId || dt.tag.name}</span>
+                            <span className='font-medium'>
+                              #{dt.tag.customId || dt.tag.name}
+                            </span>
                             {dt.tag.customId && (
-                              <span className="text-muted-foreground">({dt.tag.name})</span>
+                              <span className='text-muted-foreground'>
+                                ({dt.tag.name})
+                              </span>
                             )}
                           </div>
                         ))}
@@ -1051,23 +1116,25 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     // Si es una referencia, solo permitir navegación al grupo original
     if (group.isReference) {
       return (
-        <div className="flex items-center gap-1">
+        <div className='flex items-center gap-1'>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => {
                     // Encontrar el grupo original y editarlo
-                    const originalGroup = flatGroups.find(g => g.id === group.originalGroupId);
+                    const originalGroup = flatGroups.find(
+                      (g) => g.id === group.originalGroupId
+                    );
                     if (originalGroup) {
                       openEditModal(originalGroup);
                     }
                   }}
-                  className="text-primary hover:text-primary opacity-60"
+                  className='text-primary hover:text-primary opacity-60'
                 >
-                  <LinkIcon className="h-4 w-4" />
+                  <LinkIcon className='h-4 w-4' />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
@@ -1080,14 +1147,18 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     }
 
     // Verificar si el grupo puede ser eliminado y construir tooltip detallado
-    const canDelete = group._count.children === 0 && (!group.referenceCount || group.referenceCount === 0);
-    
+    const canDelete =
+      group._count.children === 0 &&
+      (!group.referenceCount || group.referenceCount === 0);
+
     const getDeleteTooltipContent = () => {
       if (canDelete) {
         return (
-          <div className="space-y-1">
-            <p className="font-medium">Eliminar grupo &ldquo;{group.name}&rdquo;</p>
-            <p className="text-xs text-muted-foreground">
+          <div className='space-y-1'>
+            <p className='font-medium'>
+              Eliminar grupo &ldquo;{group.name}&rdquo;
+            </p>
+            <p className='text-xs text-muted-foreground'>
               Este grupo puede eliminarse de forma segura
             </p>
           </div>
@@ -1096,61 +1167,71 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       const reasons = [];
       if (group._count.children > 0) {
-        reasons.push(`Tiene ${group._count.children} sub-grupo${group._count.children !== 1 ? 's' : ''}`);
+        reasons.push(
+          `Tiene ${group._count.children} sub-grupo${group._count.children !== 1 ? "s" : ""}`
+        );
       }
       if (group.referenceCount && group.referenceCount > 0) {
-        reasons.push(`Referenciado en ${group.referenceCount} paquete${group.referenceCount !== 1 ? 's' : ''}`);
+        reasons.push(
+          `Referenciado en ${group.referenceCount} paquete${group.referenceCount !== 1 ? "s" : ""}`
+        );
       }
 
       return (
-        <div className="space-y-2 max-w-sm">
-          <p className="font-medium text-orange-400">⚠️ No se puede eliminar</p>
-          <div className="space-y-1">
+        <div className='space-y-2 max-w-sm'>
+          <p className='font-medium text-orange-400'>⚠️ No se puede eliminar</p>
+          <div className='space-y-1'>
             {reasons.map((reason, index) => (
-              <p key={index} className="text-xs text-muted-foreground flex items-start gap-1">
-                <span className="text-orange-400">•</span>
+              <p
+                key={index}
+                className='text-xs text-muted-foreground flex items-start gap-1'
+              >
+                <span className='text-orange-400'>•</span>
                 {reason}
               </p>
             ))}
           </div>
-          
+
           {/* Mostrar paquetes específicos si hay referencias */}
           {group.referencedBy && group.referencedBy.length > 0 && (
-            <div className="pt-1 border-t border-muted">
-              <p className="text-xs font-medium text-muted-foreground mb-1">
+            <div className='pt-1 border-t border-muted'>
+              <p className='text-xs font-medium text-muted-foreground mb-1'>
                 📦 Paquetes que lo referencian:
               </p>
-              <div className="space-y-1 max-h-20 overflow-y-auto">
+              <div className='space-y-1 max-h-20 overflow-y-auto'>
                 {group.referencedBy.map((ref, index) => (
-                  <div key={index} className="text-xs text-muted-foreground flex items-center gap-1">
-                    <span className="text-blue-400">•</span>
+                  <div
+                    key={index}
+                    className='text-xs text-muted-foreground flex items-center gap-1'
+                  >
+                    <span className='text-blue-400'>•</span>
                     <span>Referencia desde paquete {ref.sourceGroupId}</span>
                   </div>
                 ))}
               </div>
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleViewReferences(group);
                 }}
-                className="text-xs text-blue-400 hover:text-blue-300 underline mt-1"
+                className='text-xs text-blue-400 hover:text-blue-300 underline mt-1'
               >
                 Ver y gestionar referencias →
               </button>
             </div>
           )}
 
-          <div className="pt-1 border-t border-muted">
-            <p className="text-xs text-muted-foreground">
+          <div className='pt-1 border-t border-muted'>
+            <p className='text-xs text-muted-foreground'>
               💡 Para eliminar este grupo:
             </p>
             {group._count.children > 0 && (
-              <p className="text-xs text-muted-foreground">
+              <p className='text-xs text-muted-foreground'>
                 • Mueve o elimina sus sub-grupos primero
               </p>
             )}
             {group.referenceCount && group.referenceCount > 0 && (
-              <p className="text-xs text-muted-foreground">
+              <p className='text-xs text-muted-foreground'>
                 • Elimina las referencias desde los paquetes que lo usan
               </p>
             )}
@@ -1162,16 +1243,16 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     // Acciones normales para grupos no-referencia
     return (
       <TooltipProvider>
-        <div className="flex items-center gap-1">
+        <div className='flex items-center gap-1'>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => openCreateModal(group)}
-                className="text-primary hover:text-primary"
+                className='text-primary hover:text-primary'
               >
-                <PlusIcon className="h-4 w-4" />
+                <PlusIcon className='h-4 w-4' />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -1182,12 +1263,12 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={() => openEditModal(group)}
-                className="text-muted-foreground hover:text-foreground"
+                className='text-muted-foreground hover:text-foreground'
               >
-                <PencilIcon className="h-4 w-4" />
+                <PencilIcon className='h-4 w-4' />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -1197,33 +1278,31 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <span 
+              <span
                 className={cn(
                   "inline-flex",
                   !canDelete && "cursor-not-allowed"
                 )}
-                style={{ pointerEvents: !canDelete ? 'auto' : undefined }}
+                style={{ pointerEvents: !canDelete ? "auto" : undefined }}
               >
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant='ghost'
+                  size='sm'
                   onClick={() => canDelete && handleDeleteGroup(group)}
                   className={cn(
-                    canDelete 
-                      ? "text-destructive hover:text-destructive" 
+                    canDelete
+                      ? "text-destructive hover:text-destructive"
                       : "text-muted-foreground/50 pointer-events-none"
                   )}
                   disabled={!canDelete}
-                  style={{ pointerEvents: !canDelete ? 'none' : undefined }}
+                  style={{ pointerEvents: !canDelete ? "none" : undefined }}
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon className='h-4 w-4' />
                 </Button>
               </span>
             </TooltipTrigger>
-            <TooltipContent className="p-0">
-              <div className="p-3">
-                {getDeleteTooltipContent()}
-              </div>
+            <TooltipContent className='p-0'>
+              <div className='p-3'>{getDeleteTooltipContent()}</div>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -1232,9 +1311,12 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   };
 
   // Legacy function kept for backward compatibility
-  const renderGroupTree = (groupList: MeetGroup[], level: number = 0): React.ReactNode => {
+  const renderGroupTree = (
+    groupList: MeetGroup[],
+    level: number = 0
+  ): React.ReactNode => {
     return groupList.map((group) => (
-      <div key={group.id} className="select-none">
+      <div key={group.id} className='select-none'>
         <div
           className={cn(
             "flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors",
@@ -1244,34 +1326,34 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           {/* Expand/Collapse button */}
           {group.children.length > 0 && (
             <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 w-6 p-0"
+              variant='ghost'
+              size='sm'
+              className='h-6 w-6 p-0'
               onClick={() => toggleExpand(group.id)}
             >
               {expandedGroups.has(group.id) ? (
-                <ChevronDownIcon className="h-4 w-4" />
+                <ChevronDownIcon className='h-4 w-4' />
               ) : (
-                <ChevronRightIcon className="h-4 w-4" />
+                <ChevronRightIcon className='h-4 w-4' />
               )}
             </Button>
           )}
-          
+
           {/* Group Icon/Color */}
           <div
-            className="h-4 w-4 rounded border"
+            className='h-4 w-4 rounded border'
             style={{ backgroundColor: group.color }}
           />
-          
+
           {/* Group Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-medium truncate">{group.name}</span>
-              <Badge variant="outline" className="text-xs">
+          <div className='flex-1 min-w-0'>
+            <div className='flex items-center gap-2'>
+              <span className='font-medium truncate'>{group.name}</span>
+              <Badge variant='outline' className='text-xs'>
                 {group.slug}
               </Badge>
               {group._count.spaceGroups > 0 && (
-                <Badge variant="secondary" className="text-xs">
+                <Badge variant='secondary' className='text-xs'>
                   {group._count.spaceGroups} salas
                 </Badge>
               )}
@@ -1279,22 +1361,31 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge variant="default" className="text-xs cursor-help">
+                      <Badge variant='default' className='text-xs cursor-help'>
                         {group._count.defaultTags} tags
                       </Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <div className="space-y-2 max-w-xs max-h-64 overflow-y-auto">
-                        <div className="font-semibold text-sm">Tags automáticos del grupo:</div>
+                      <div className='space-y-2 max-w-xs max-h-64 overflow-y-auto'>
+                        <div className='font-semibold text-sm'>
+                          Tags automáticos del grupo:
+                        </div>
                         {group.defaultTags.map((dt) => (
-                          <div key={dt.tag.id} className="flex items-center gap-2 text-xs">
+                          <div
+                            key={dt.tag.id}
+                            className='flex items-center gap-2 text-xs'
+                          >
                             <div
-                              className="h-2 w-2 rounded-full"
+                              className='h-2 w-2 rounded-full'
                               style={{ backgroundColor: dt.tag.color }}
                             />
-                            <span className="font-medium">#{dt.tag.customId || dt.tag.name}</span>
+                            <span className='font-medium'>
+                              #{dt.tag.customId || dt.tag.name}
+                            </span>
                             {dt.tag.customId && (
-                              <span className="text-muted-foreground">({dt.tag.name})</span>
+                              <span className='text-muted-foreground'>
+                                ({dt.tag.name})
+                              </span>
                             )}
                           </div>
                         ))}
@@ -1305,38 +1396,46 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
               )}
             </div>
             {(() => {
-              const description = showPublicView ? group.publicDescription : group.internalDescription;
-              return description && (
-                <p className="text-sm text-muted-foreground truncate">
-                  {description}
-                </p>
+              const description = showPublicView
+                ? group.publicDescription
+                : group.internalDescription;
+              return (
+                description && (
+                  <p className='text-sm text-muted-foreground truncate'>
+                    {description}
+                  </p>
+                )
               );
             })()}
             {/* Default tags preview */}
             {group.defaultTags.length > 0 && (
-              <div className="flex gap-1 mt-1 flex-wrap">
+              <div className='flex gap-1 mt-1 flex-wrap'>
                 {group.defaultTags.slice(0, 10).map((dt) => (
                   <TooltipProvider key={dt.tag.id}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <div
-                          className="flex items-center gap-1 px-2 py-1 bg-muted rounded text-xs cursor-help"
-                        >
+                        <div className='flex items-center gap-1 px-2 py-1 bg-muted rounded text-xs cursor-help'>
                           <div
-                            className="h-2 w-2 rounded-full"
+                            className='h-2 w-2 rounded-full'
                             style={{ backgroundColor: dt.tag.color }}
                           />
                           <span>#{dt.tag.customId || dt.tag.name}</span>
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <div className="space-y-1">
-                          <div className="font-semibold">#{dt.tag.customId || dt.tag.name}</div>
+                        <div className='space-y-1'>
+                          <div className='font-semibold'>
+                            #{dt.tag.customId || dt.tag.name}
+                          </div>
                           {dt.tag.customId && (
-                            <div className="text-xs text-muted-foreground">Nombre: {dt.tag.name}</div>
+                            <div className='text-xs text-muted-foreground'>
+                              Nombre: {dt.tag.name}
+                            </div>
                           )}
                           {dt.tag.slug && (
-                            <div className="text-xs text-muted-foreground">Slug: {dt.tag.slug}</div>
+                            <div className='text-xs text-muted-foreground'>
+                              Slug: {dt.tag.slug}
+                            </div>
                           )}
                         </div>
                       </TooltipContent>
@@ -1347,22 +1446,34 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Badge variant="outline" className="text-xs cursor-help">
+                        <Badge
+                          variant='outline'
+                          className='text-xs cursor-help'
+                        >
                           +{group.defaultTags.length - 10}
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <div className="space-y-2 max-w-xs max-h-64 overflow-y-auto">
-                          <div className="font-semibold text-sm">Tags adicionales:</div>
+                        <div className='space-y-2 max-w-xs max-h-64 overflow-y-auto'>
+                          <div className='font-semibold text-sm'>
+                            Tags adicionales:
+                          </div>
                           {group.defaultTags.slice(10).map((dt) => (
-                            <div key={dt.tag.id} className="flex items-center gap-2 text-xs">
+                            <div
+                              key={dt.tag.id}
+                              className='flex items-center gap-2 text-xs'
+                            >
                               <div
-                                className="h-2 w-2 rounded-full"
+                                className='h-2 w-2 rounded-full'
                                 style={{ backgroundColor: dt.tag.color }}
                               />
-                              <span className="font-medium">#{dt.tag.customId || dt.tag.name}</span>
+                              <span className='font-medium'>
+                                #{dt.tag.customId || dt.tag.name}
+                              </span>
                               {dt.tag.customId && (
-                                <span className="text-muted-foreground">({dt.tag.name})</span>
+                                <span className='text-muted-foreground'>
+                                  ({dt.tag.name})
+                                </span>
                               )}
                             </div>
                           ))}
@@ -1376,28 +1487,28 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-1">
+          <div className='flex items-center gap-1'>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               onClick={() => openEditModal(group)}
             >
-              <PencilIcon className="h-4 w-4" />
+              <PencilIcon className='h-4 w-4' />
             </Button>
             <Button
-              variant="ghost"
-              size="sm"
+              variant='ghost'
+              size='sm'
               onClick={() => handleDeleteGroup(group)}
-              className="text-destructive hover:text-destructive"
+              className='text-destructive hover:text-destructive'
             >
-              <TrashIcon className="h-4 w-4" />
+              <TrashIcon className='h-4 w-4' />
             </Button>
           </div>
         </div>
 
         {/* Render children if expanded */}
         {expandedGroups.has(group.id) && group.children.length > 0 && (
-          <div className="mt-1">
+          <div className='mt-1'>
             {renderGroupTree(group.children, level + 1)}
           </div>
         )}
@@ -1408,9 +1519,9 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   // Filtrar grupos por búsqueda
   // Helper function to add references as children to groups
   const addReferencesToGroups = (groupList: MeetGroup[]): MeetGroup[] => {
-    return groupList.map(group => {
+    return groupList.map((group) => {
       const groupWithRefs = { ...group };
-      
+
       // Si el grupo tiene referencias, agregamos como hijos
       if (group.references && group.references.length > 0) {
         const referenceChildren = group.references.map((ref, index) => ({
@@ -1422,7 +1533,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           path: `${group.path}.ref-${ref.id}`,
           parentId: group.id,
           children: [], // Las referencias no tienen hijos por ahora
-          order: ref.order || (1000 + index), // Referencias al final
+          order: ref.order || 1000 + index, // Referencias al final
           _count: {
             children: 0,
             spaceGroups: 0, // Las referencias no tienen salas propias
@@ -1437,7 +1548,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         // Combinamos hijos normales con referencias
         groupWithRefs.children = [
           ...addReferencesToGroups(group.children), // Recursivo para hijos normales
-          ...referenceChildren
+          ...referenceChildren,
         ].sort((a, b) => {
           // Primero hijos normales, luego referencias
           if (!a.isReference && b.isReference) return -1;
@@ -1455,23 +1566,26 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   };
 
   // Función auxiliar para buscar un grupo en la jerarquía
-  const findGroupInHierarchy = React.useCallback((groupList: MeetGroup[], targetId: string): MeetGroup | null => {
-    for (const group of groupList) {
-      if (group.id === targetId) return group;
-      const found = findGroupInHierarchy(group.children, targetId);
-      if (found) return found;
-    }
-    return null;
-  }, []);
+  const findGroupInHierarchy = React.useCallback(
+    (groupList: MeetGroup[], targetId: string): MeetGroup | null => {
+      for (const group of groupList) {
+        if (group.id === targetId) return group;
+        const found = findGroupInHierarchy(group.children, targetId);
+        if (found) return found;
+      }
+      return null;
+    },
+    []
+  );
 
   const { filteredGroups, orphanGroups } = React.useMemo(() => {
     // Primero agregamos las referencias como hijos
     const groupsWithReferences = addReferencesToGroups(groups);
-    
+
     const filterGroups = (groupList: MeetGroup[]): MeetGroup[] => {
       return groupList.reduce((acc: MeetGroup[], group) => {
         let matchesSearch = !searchTerm.trim();
-        
+
         if (searchTerm.trim()) {
           // Buscar en múltiples campos con búsqueda fuzzy
           const searchFields = [
@@ -1479,10 +1593,10 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
             group.slug,
             group.customId,
             group.internalDescription,
-            group.publicDescription
+            group.publicDescription,
           ].filter(Boolean);
-          
-          matchesSearch = searchFields.some(field => 
+
+          matchesSearch = searchFields.some((field) =>
             fuzzySearchGroup(searchTerm, field as string)
           );
         }
@@ -1501,41 +1615,37 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     };
 
     const filtered = filterGroups(groupsWithReferences);
-    
+
     // Separar grupos huérfanos (aquellos que deberían tener parent pero no lo tienen en la jerarquía actual)
     const findOrphanGroups = (flatGroupsList: MeetGroup[]): MeetGroup[] => {
-      return flatGroupsList.filter(group => {
+      return flatGroupsList.filter((group) => {
         // Un grupo es huérfano si tiene parentId pero su parent no existe en la estructura actual
         if (!group.parentId) return false;
-        
+
         // Verificar si existe el parent en la estructura jerárquica
         const parentExists = findGroupInHierarchy(filtered, group.parentId);
         return !parentExists;
       });
     };
-    
+
     const orphans = findOrphanGroups(flatGroups);
-    
-    return { 
-      filteredGroups: filtered, 
-      orphanGroups: orphans 
+
+    return {
+      filteredGroups: filtered,
+      orphanGroups: orphans,
     };
   }, [groups, flatGroups, searchTerm, findGroupInHierarchy]);
 
   // Filtrar tags por búsqueda
   const filteredTags = React.useMemo(() => {
     if (!tagSearchTerm.trim()) return hierarchicalTags;
-    
+
     const filterTags = (tagList: MeetTag[]): MeetTag[] => {
       return tagList.reduce((acc: MeetTag[], tag) => {
         // Buscar en múltiples campos con búsqueda fuzzy
-        const searchFields = [
-          tag.name,
-          tag.slug,
-          tag.customId
-        ].filter(Boolean);
-        
-        const matchesSearch = searchFields.some(field => 
+        const searchFields = [tag.name, tag.slug, tag.customId].filter(Boolean);
+
+        const matchesSearch = searchFields.some((field) =>
           fuzzySearchGroup(tagSearchTerm, field as string)
         );
 
@@ -1555,19 +1665,29 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     return filterTags(hierarchicalTags);
   }, [hierarchicalTags, tagSearchTerm]);
 
-
   // Crear jerarquía para referencias, similar a como se hace con tags
   const filteredReferencesGroupsHierarchy = React.useMemo(() => {
     if (!referenceSearchTerm) return groups; // usar groups que contiene la jerarquía
-    
+
     const filterGroups = (groupList: MeetGroup[]): MeetGroup[] => {
       return groupList.reduce((acc: MeetGroup[], group) => {
-        const matchesSearch = 
-          group.name.toLowerCase().includes(referenceSearchTerm.toLowerCase()) ||
-          group.slug.toLowerCase().includes(referenceSearchTerm.toLowerCase()) ||
-          (group.customId && group.customId.toLowerCase().includes(referenceSearchTerm.toLowerCase())) ||
-          group.internalDescription?.toLowerCase().includes(referenceSearchTerm.toLowerCase());
-        const filteredChildren = group.children ? filterGroups(group.children) : [];
+        const matchesSearch =
+          group.name
+            .toLowerCase()
+            .includes(referenceSearchTerm.toLowerCase()) ||
+          group.slug
+            .toLowerCase()
+            .includes(referenceSearchTerm.toLowerCase()) ||
+          (group.customId &&
+            group.customId
+              .toLowerCase()
+              .includes(referenceSearchTerm.toLowerCase())) ||
+          group.internalDescription
+            ?.toLowerCase()
+            .includes(referenceSearchTerm.toLowerCase());
+        const filteredChildren = group.children
+          ? filterGroups(group.children)
+          : [];
         if (matchesSearch || filteredChildren.length > 0) {
           acc.push({
             ...group,
@@ -1582,19 +1702,24 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
   // Renderizar lista de tags para selección
   const renderTagList = () => {
-    const renderTagsHierarchical = (tagList: MeetTag[], level: number = 0): React.ReactNode => {
+    const renderTagsHierarchical = (
+      tagList: MeetTag[],
+      level: number = 0
+    ): React.ReactNode => {
       return tagList.map((tag) => (
         <React.Fragment key={tag.id}>
-          <div className={cn(
-            "flex items-center space-x-2 py-1",
-            !tag.isActive && "opacity-50"
-          )}>
+          <div
+            className={cn(
+              "flex items-center space-x-2 py-1",
+              !tag.isActive && "opacity-50"
+            )}
+          >
             <Checkbox
               id={tag.id}
               checked={formData.defaultTagIds.includes(tag.id)}
               onCheckedChange={() => toggleDefaultTag(tag.id)}
               disabled={!tag.isActive}
-              className="h-4 w-4 rounded border-2 border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary"
+              className='h-4 w-4 rounded border-2 border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary'
             />
             <label
               htmlFor={tag.id}
@@ -1612,34 +1737,47 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 )}
                 style={{ backgroundColor: tag.color }}
               />
-              <span className={cn(
-                tag.isActive ? "text-foreground" : "text-muted-foreground",
-                level === 0 && "font-semibold"
-              )}>
+              <span
+                className={cn(
+                  tag.isActive ? "text-foreground" : "text-muted-foreground",
+                  level === 0 && "font-semibold"
+                )}
+              >
                 {tag.name}
               </span>
-              <Badge variant="outline" className={cn(
-                "text-xs",
-                !tag.isActive && "border-muted text-muted-foreground"
-              )}>
+              <Badge
+                variant='outline'
+                className={cn(
+                  "text-xs",
+                  !tag.isActive && "border-muted text-muted-foreground"
+                )}
+              >
                 {tag.slug}
               </Badge>
               {tag.customId && (
-                <Badge variant="secondary" className={cn(
-                  "text-xs",
-                  !tag.isActive && "bg-muted/50 text-muted-foreground"
-                )}>
+                <Badge
+                  variant='secondary'
+                  className={cn(
+                    "text-xs",
+                    !tag.isActive && "bg-muted/50 text-muted-foreground"
+                  )}
+                >
                   {tag.customId}
                 </Badge>
               )}
               {!tag.isActive && (
-                <Badge variant="outline" className="text-xs border-orange-300 text-orange-600">
+                <Badge
+                  variant='outline'
+                  className='text-xs border-orange-300 text-orange-600'
+                >
                   Inactivo
                 </Badge>
               )}
             </label>
           </div>
-          {tag.children && tag.children.length > 0 && renderTagsHierarchical(tag.children, level + 1)}
+          {tag.children &&
+            tag.children.length > 0 &&
+            renderTagsHierarchical(tag.children, level + 1)}
         </React.Fragment>
       ));
     };
@@ -1651,9 +1789,11 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   // Función para alternar referencia (similar a toggleDefaultTag)
   const toggleReference = (groupId: string) => {
     if (!selectedGroup) return;
-    
-    const existingReference = selectedGroup.references?.find(ref => ref.targetGroupId === groupId);
-    
+
+    const existingReference = selectedGroup.references?.find(
+      (ref) => ref.targetGroupId === groupId
+    );
+
     if (existingReference) {
       // Remover referencia
       handleRemoveReference(existingReference.id);
@@ -1664,25 +1804,34 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   };
 
   // Renderizar grupos de referencia con jerarquía, similar a como se hace con tags
-  const renderReferencesHierarchical = (groupList: MeetGroup[], level: number = 0): React.ReactNode => {
+  const renderReferencesHierarchical = (
+    groupList: MeetGroup[],
+    level: number = 0
+  ): React.ReactNode => {
     return groupList
-      .filter(group => group.id !== selectedGroup?.id) // No mostrar el grupo actual
+      .filter((group) => group.id !== selectedGroup?.id) // No mostrar el grupo actual
       .map((group) => {
-        const isReferenced = selectedGroup?.references?.some(ref => ref.targetGroupId === group.id) || false;
-        const canBeReferenced = group.allowsReferences === true && group.isActive;
-        
+        const isReferenced =
+          selectedGroup?.references?.some(
+            (ref) => ref.targetGroupId === group.id
+          ) || false;
+        const canBeReferenced =
+          group.allowsReferences === true && group.isActive;
+
         return (
           <React.Fragment key={group.id}>
-            <div className={cn(
-              "flex items-center space-x-2 py-1",
-              !canBeReferenced && "opacity-50"
-            )}>
+            <div
+              className={cn(
+                "flex items-center space-x-2 py-1",
+                !canBeReferenced && "opacity-50"
+              )}
+            >
               <Checkbox
                 id={`ref-${group.id}`}
                 checked={isReferenced}
                 onCheckedChange={() => toggleReference(group.id)}
                 disabled={!canBeReferenced}
-                className="h-4 w-4 rounded border-2 border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary"
+                className='h-4 w-4 rounded border-2 border-input bg-background ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary'
               />
               <label
                 htmlFor={`ref-${group.id}`}
@@ -1700,40 +1849,58 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                   )}
                   style={{ backgroundColor: group.color }}
                 />
-                <span className={cn(
-                  canBeReferenced ? "text-foreground" : "text-muted-foreground",
-                  level === 0 && "font-semibold"
-                )}>
+                <span
+                  className={cn(
+                    canBeReferenced
+                      ? "text-foreground"
+                      : "text-muted-foreground",
+                    level === 0 && "font-semibold"
+                  )}
+                >
                   {group.name}
                 </span>
-                <Badge variant="outline" className={cn(
-                  "text-xs",
-                  !canBeReferenced && "border-muted text-muted-foreground"
-                )}>
+                <Badge
+                  variant='outline'
+                  className={cn(
+                    "text-xs",
+                    !canBeReferenced && "border-muted text-muted-foreground"
+                  )}
+                >
                   {group.slug}
                 </Badge>
                 {group.customId && (
-                  <Badge variant="secondary" className={cn(
-                    "text-xs",
-                    !canBeReferenced && "bg-muted/50 text-muted-foreground"
-                  )}>
+                  <Badge
+                    variant='secondary'
+                    className={cn(
+                      "text-xs",
+                      !canBeReferenced && "bg-muted/50 text-muted-foreground"
+                    )}
+                  >
                     {group.customId}
                   </Badge>
                 )}
                 {isReferenced && (
-                  <Badge variant="outline" className="text-xs text-primary border-primary/30 bg-primary/5">
+                  <Badge
+                    variant='outline'
+                    className='text-xs text-primary border-primary/30 bg-primary/5'
+                  >
                     REF
                   </Badge>
                 )}
                 {!canBeReferenced && (
-                  <Badge variant="outline" className="text-xs border-orange-300 text-orange-600">
+                  <Badge
+                    variant='outline'
+                    className='text-xs border-orange-300 text-orange-600'
+                  >
                     No disponible
                   </Badge>
                 )}
               </label>
             </div>
             {/* Renderizar hijos si los tiene */}
-            {group.children && group.children.length > 0 && renderReferencesHierarchical(group.children, level + 1)}
+            {group.children &&
+              group.children.length > 0 &&
+              renderReferencesHierarchical(group.children, level + 1)}
           </React.Fragment>
         );
       });
@@ -1746,161 +1913,184 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
   const renderReferenceSelector = () => {
     return (
-      <div className="space-y-4">
-        <div className="space-y-3">
+      <div className='space-y-4'>
+        <div className='space-y-3'>
           <div>
-            <Label className="text-base font-semibold">Referencias</Label>
-            <p className="text-sm text-muted-foreground mt-1">
-              Selecciona los servicios/masters que este paquete debe incluir como referencias.
+            <Label className='text-base font-semibold'>Referencias</Label>
+            <p className='text-sm text-muted-foreground mt-1'>
+              Selecciona los servicios/masters que este paquete debe incluir
+              como referencias.
             </p>
           </div>
-          
+
           {/* Buscador de referencias */}
-          <div className="relative">
+          <div className='relative'>
             <Input
-              placeholder="Buscar grupos por nombre, slug, ID o descripción..."
+              placeholder='Buscar grupos por nombre, slug, ID o descripción...'
               value={referenceSearchTerm}
               onChange={(e) => setReferenceSearchTerm(e.target.value)}
-              className="pl-8"
+              className='pl-8'
             />
-            <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-              <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
+            <div className='absolute left-2 top-1/2 transform -translate-y-1/2'>
+              <MagnifyingGlassIcon className='h-4 w-4 text-muted-foreground' />
             </div>
           </div>
         </div>
-        
-        <ScrollArea className="h-[340px] border rounded-md p-3">
-          <div className="space-y-1">
+
+        <ScrollArea className='h-[340px] border rounded-md p-3'>
+          <div className='space-y-1'>
             {filteredReferencesGroupsHierarchy.length > 0 ? (
               renderReferencesList()
             ) : (
-              <div className="text-center text-sm text-muted-foreground py-4">
-                {referenceSearchTerm ? 'No se encontraron grupos que coincidan con la búsqueda.' : 'Cargando grupos disponibles...'}
+              <div className='text-center text-sm text-muted-foreground py-4'>
+                {referenceSearchTerm
+                  ? "No se encontraron grupos que coincidan con la búsqueda."
+                  : "Cargando grupos disponibles..."}
               </div>
             )}
           </div>
         </ScrollArea>
 
         {/* Contador de referencias */}
-        <div className="text-sm text-muted-foreground font-medium">
-          {selectedGroup?.references ? 
-            `${selectedGroup.references.length} referencia${selectedGroup.references.length !== 1 ? 's' : ''} seleccionada${selectedGroup.references.length !== 1 ? 's' : ''}` :
-            'Sin referencias seleccionadas'
-          }
+        <div className='text-sm text-muted-foreground font-medium'>
+          {selectedGroup?.references
+            ? `${selectedGroup.references.length} referencia${selectedGroup.references.length !== 1 ? "s" : ""} seleccionada${selectedGroup.references.length !== 1 ? "s" : ""}`
+            : "Sin referencias seleccionadas"}
         </div>
 
         {/* Resumen mejorado de referencias seleccionadas */}
         {selectedGroup?.references && selectedGroup.references.length > 0 && (
-          <div className="space-y-3 p-4 bg-primary/5 border border-primary/20 rounded-lg">
-            <div className="flex items-center gap-2">
-              <LinkIcon className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">
+          <div className='space-y-3 p-4 bg-primary/5 border border-primary/20 rounded-lg'>
+            <div className='flex items-center gap-2'>
+              <LinkIcon className='h-4 w-4 text-primary' />
+              <span className='text-sm font-medium text-foreground'>
                 Referencias Activas
               </span>
             </div>
-            <div className="grid gap-2">
+            <div className='grid gap-2'>
               {selectedGroup.references
                 .sort((a, b) => a.order - b.order)
                 .map((reference) => (
-                <div 
-                  key={reference.id} 
-                  className="space-y-3 p-3 bg-card border border-primary/10 rounded-lg"
-                >
-                  {/* Header con información básica */}
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="h-3 w-3 rounded-full flex-shrink-0 border border-border/50"
-                      style={{ backgroundColor: reference.targetGroup.color }}
-                    />
-                    <span className="text-sm font-medium flex-1 text-foreground">
-                      {reference.displayName || reference.targetGroup.name}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      {reference.targetGroup.customId && (
-                        <Badge variant="secondary" className="text-xs">
-                          {reference.targetGroup.customId}
+                  <div
+                    key={reference.id}
+                    className='space-y-3 p-3 bg-card border border-primary/10 rounded-lg'
+                  >
+                    {/* Header con información básica */}
+                    <div className='flex items-center gap-3'>
+                      <div
+                        className='h-3 w-3 rounded-full flex-shrink-0 border border-border/50'
+                        style={{ backgroundColor: reference.targetGroup.color }}
+                      />
+                      <span className='text-sm font-medium flex-1 text-foreground'>
+                        {reference.displayName || reference.targetGroup.name}
+                      </span>
+                      <div className='flex items-center gap-1'>
+                        {reference.targetGroup.customId && (
+                          <Badge variant='secondary' className='text-xs'>
+                            {reference.targetGroup.customId}
+                          </Badge>
+                        )}
+                        {reference.displayName &&
+                          reference.displayName !==
+                            reference.targetGroup.name && (
+                            <Badge variant='outline' className='text-xs'>
+                              Original: {reference.targetGroup.name}
+                            </Badge>
+                          )}
+                        <Badge variant='outline' className='text-xs'>
+                          #{reference.order}
                         </Badge>
-                      )}
-                      {reference.displayName && reference.displayName !== reference.targetGroup.name && (
-                        <Badge variant="outline" className="text-xs">
-                          Original: {reference.targetGroup.name}
-                        </Badge>
-                      )}
-                      <Badge variant="outline" className="text-xs">
-                        #{reference.order}
-                      </Badge>
+                      </div>
+                      <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => startEditReference(reference)}
+                        className='h-7 w-7 p-0'
+                      >
+                        <PencilIcon className='h-3 w-3' />
+                      </Button>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => startEditReference(reference)}
-                      className="h-7 w-7 p-0"
-                    >
-                      <PencilIcon className="h-3 w-3" />
-                    </Button>
+
+                    {/* Descripción personalizada si existe */}
+                    {reference.description && (
+                      <div className='text-xs text-muted-foreground bg-muted/50 p-2 rounded'>
+                        {reference.description}
+                      </div>
+                    )}
+
+                    {/* Formulario de edición */}
+                    {editingReference?.id === reference.id && (
+                      <div className='space-y-3 border-t pt-3'>
+                        <div className='grid gap-3'>
+                          <div className='space-y-2'>
+                            <Label className='text-xs'>
+                              Nombre Personalizado
+                            </Label>
+                            <Input
+                              value={referenceEditForm.displayName}
+                              onChange={(e) =>
+                                setReferenceEditForm((prev) => ({
+                                  ...prev,
+                                  displayName: e.target.value,
+                                }))
+                              }
+                              placeholder={reference.targetGroup.name}
+                              className='h-8 text-sm'
+                            />
+                          </div>
+                          <div className='space-y-2'>
+                            <Label className='text-xs'>
+                              Descripción en el Paquete
+                            </Label>
+                            <Textarea
+                              value={referenceEditForm.description}
+                              onChange={(e) =>
+                                setReferenceEditForm((prev) => ({
+                                  ...prev,
+                                  description: e.target.value,
+                                }))
+                              }
+                              placeholder='Descripción específica para este paquete...'
+                              rows={2}
+                              className='text-sm'
+                            />
+                          </div>
+                          <div className='space-y-2'>
+                            <Label className='text-xs'>Orden</Label>
+                            <Input
+                              type='number'
+                              value={referenceEditForm.order}
+                              onChange={(e) =>
+                                setReferenceEditForm((prev) => ({
+                                  ...prev,
+                                  order: parseInt(e.target.value) || 0,
+                                }))
+                              }
+                              className='h-8 text-sm'
+                            />
+                          </div>
+                        </div>
+                        <div className='flex gap-2'>
+                          <Button
+                            size='sm'
+                            onClick={() => handleEditReference(reference.id)}
+                            className='h-7 text-xs'
+                          >
+                            Guardar
+                          </Button>
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            onClick={cancelEditReference}
+                            className='h-7 text-xs'
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  
-                  {/* Descripción personalizada si existe */}
-                  {reference.description && (
-                    <div className="text-xs text-muted-foreground bg-muted/50 p-2 rounded">
-                      {reference.description}
-                    </div>
-                  )}
-                  
-                  {/* Formulario de edición */}
-                  {editingReference?.id === reference.id && (
-                    <div className="space-y-3 border-t pt-3">
-                      <div className="grid gap-3">
-                        <div className="space-y-2">
-                          <Label className="text-xs">Nombre Personalizado</Label>
-                          <Input
-                            value={referenceEditForm.displayName}
-                            onChange={(e) => setReferenceEditForm(prev => ({ ...prev, displayName: e.target.value }))}
-                            placeholder={reference.targetGroup.name}
-                            className="h-8 text-sm"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-xs">Descripción en el Paquete</Label>
-                          <Textarea
-                            value={referenceEditForm.description}
-                            onChange={(e) => setReferenceEditForm(prev => ({ ...prev, description: e.target.value }))}
-                            placeholder="Descripción específica para este paquete..."
-                            rows={2}
-                            className="text-sm"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-xs">Orden</Label>
-                          <Input
-                            type="number"
-                            value={referenceEditForm.order}
-                            onChange={(e) => setReferenceEditForm(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
-                            className="h-8 text-sm"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          onClick={() => handleEditReference(reference.id)}
-                          className="h-7 text-xs"
-                        >
-                          Guardar
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={cancelEditReference}
-                          className="h-7 text-xs"
-                        >
-                          Cancelar
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         )}
@@ -1909,61 +2099,61 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <FolderIcon className="h-8 w-8 text-primary" />
+          <h1 className='text-3xl font-bold flex items-center gap-2'>
+            <FolderIcon className='h-8 w-8 text-primary' />
             Gestión de Grupos
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className='text-muted-foreground mt-1'>
             Organiza las salas de Meet con grupos jerárquicos y tags automáticos
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           {/* Toggle View */}
-          <div className="flex items-center gap-2 px-3 py-1 border rounded-md bg-background">
-            <BuildingOfficeIcon className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Vista:</span>
+          <div className='flex items-center gap-2 px-3 py-1 border rounded-md bg-background'>
+            <BuildingOfficeIcon className='h-4 w-4 text-muted-foreground' />
+            <span className='text-sm text-muted-foreground'>Vista:</span>
             <Button
               variant={!showPublicView ? "default" : "ghost"}
-              size="sm"
+              size='sm'
               onClick={() => setShowPublicView(false)}
-              className="h-7 px-2 text-xs"
+              className='h-7 px-2 text-xs'
             >
               Interna
             </Button>
             <Button
               variant={showPublicView ? "default" : "ghost"}
-              size="sm"
+              size='sm'
               onClick={() => setShowPublicView(true)}
-              className="h-7 px-2 text-xs"
+              className='h-7 px-2 text-xs'
             >
-              <EyeIcon className="h-3 w-3 mr-1" />
+              <EyeIcon className='h-3 w-3 mr-1' />
               Pública
             </Button>
           </div>
 
           {/* Expand/Collapse Controls */}
           {(filteredGroups.length > 0 || orphanGroups.length > 0) && (
-            <div className="flex items-center gap-1 px-2 py-1 border rounded-md bg-background">
+            <div className='flex items-center gap-1 px-2 py-1 border rounded-md bg-background'>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={expandAll}
-                className="h-7 px-2 text-xs"
+                className='h-7 px-2 text-xs'
               >
-                <ChevronDownIcon className="h-3 w-3 mr-1" />
+                <ChevronDownIcon className='h-3 w-3 mr-1' />
                 Expandir
               </Button>
               <Button
-                variant="ghost"
-                size="sm"
+                variant='ghost'
+                size='sm'
                 onClick={collapseAll}
-                className="h-7 px-2 text-xs"
+                className='h-7 px-2 text-xs'
               >
-                <ChevronRightIcon className="h-3 w-3 mr-1" />
+                <ChevronRightIcon className='h-3 w-3 mr-1' />
                 Contraer
               </Button>
             </div>
@@ -1971,15 +2161,17 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
           <Button
             onClick={fetchGroups}
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             disabled={loading}
           >
-            <ArrowPathIcon className={cn("h-4 w-4 mr-2", loading && "animate-spin")} />
+            <ArrowPathIcon
+              className={cn("h-4 w-4 mr-2", loading && "animate-spin")}
+            />
             Actualizar
           </Button>
           <Button onClick={() => openCreateModal()}>
-            <PlusIcon className="h-4 w-4 mr-2" />
+            <PlusIcon className='h-4 w-4 mr-2' />
             Nuevo Grupo
           </Button>
         </div>
@@ -1987,60 +2179,62 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       {/* Search */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="relative">
+        <CardContent className='pt-6'>
+          <div className='relative'>
             <Input
-              placeholder="Buscar por nombre, slug, descripción interna o pública..."
+              placeholder='Buscar por nombre, slug, descripción interna o pública...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-4"
+              className='pl-4'
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className='grid gap-4 md:grid-cols-4'>
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Grupos</CardTitle>
-            <FolderIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Total Grupos</CardTitle>
+            <FolderIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{flatGroups.length}</div>
+            <div className='text-2xl font-bold'>{flatGroups.length}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Grupos Raíz</CardTitle>
-            <FolderIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>Grupos Raíz</CardTitle>
+            <FolderIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{groups.length}</div>
+            <div className='text-2xl font-bold'>{groups.length}</div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">En Uso</CardTitle>
-            <FolderIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>En Uso</CardTitle>
+            <FolderIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {flatGroups.filter(g => g._count.spaceGroups > 0).length}
+            <div className='text-2xl font-bold'>
+              {flatGroups.filter((g) => g._count.spaceGroups > 0).length}
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Con Tags Automáticos</CardTitle>
-            <TagIcon className="h-4 w-4 text-muted-foreground" />
+          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+            <CardTitle className='text-sm font-medium'>
+              Con Tags Automáticos
+            </CardTitle>
+            <TagIcon className='h-4 w-4 text-muted-foreground' />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {flatGroups.filter(g => g._count.defaultTags > 0).length}
+            <div className='text-2xl font-bold'>
+              {flatGroups.filter((g) => g._count.defaultTags > 0).length}
             </div>
           </CardContent>
         </Card>
@@ -2053,25 +2247,27 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Icons.SpinnerIcon className="h-8 w-8 animate-spin text-primary" />
+            <div className='flex items-center justify-center py-12'>
+              <Icons.SpinnerIcon className='h-8 w-8 animate-spin text-primary' />
             </div>
           ) : filteredGroups.length === 0 && orphanGroups.length === 0 ? (
-            <div className="text-center py-12">
-              <FolderIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-1">No hay grupos</h3>
-              <p className="text-muted-foreground mb-4">
-                {searchTerm ? "No se encontraron grupos que coincidan con tu búsqueda" : "Aún no has creado ningún grupo"}
+            <div className='text-center py-12'>
+              <FolderIcon className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+              <h3 className='text-lg font-semibold mb-1'>No hay grupos</h3>
+              <p className='text-muted-foreground mb-4'>
+                {searchTerm
+                  ? "No se encontraron grupos que coincidan con tu búsqueda"
+                  : "Aún no has creado ningún grupo"}
               </p>
               {!searchTerm && (
                 <Button onClick={() => openCreateModal()}>
-                  <PlusIcon className="h-4 w-4 mr-2" />
+                  <PlusIcon className='h-4 w-4 mr-2' />
                   Crear Primer Grupo
                 </Button>
               )}
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {/* Grupos con jerarquía normal */}
               {filteredGroups.length > 0 && (
                 <HierarchyTree
@@ -2086,25 +2282,25 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                   onToggleExpand={toggleExpand}
                 />
               )}
-              
+
               {/* Accordion para grupos huérfanos (sin parentID válido) */}
               {orphanGroups.length > 0 && (
-                <Accordion 
-                  type="single" 
-                  collapsible 
-                  className="w-full"
+                <Accordion
+                  type='single'
+                  collapsible
+                  className='w-full'
                   value={accordionValue}
                   onValueChange={setAccordionValue}
                 >
-                  <AccordionItem value="orphan-groups">
-                    <AccordionTrigger className="text-orange-600">
-                      <div className="flex items-center gap-2">
-                        <ExclamationTriangleIcon className="h-4 w-4" />
+                  <AccordionItem value='orphan-groups'>
+                    <AccordionTrigger className='text-orange-600'>
+                      <div className='flex items-center gap-2'>
+                        <ExclamationTriangleIcon className='h-4 w-4' />
                         Grupos sin parent identificado ({orphanGroups.length})
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <div className="space-y-2 pl-4">
+                      <div className='space-y-2 pl-4'>
                         {orphanGroups.map((group) => (
                           <div
                             key={group.id}
@@ -2117,8 +2313,11 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                             {renderGroupActions(group)}
                           </div>
                         ))}
-                        <div className="pt-2 text-sm text-muted-foreground">
-                          <p>Estos grupos tienen un parent ID asignado pero el grupo padre no existe en la estructura actual.</p>
+                        <div className='pt-2 text-sm text-muted-foreground'>
+                          <p>
+                            Estos grupos tienen un parent ID asignado pero el
+                            grupo padre no existe en la estructura actual.
+                          </p>
                         </div>
                       </div>
                     </AccordionContent>
@@ -2132,157 +2331,204 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       {/* Unified Create/Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl h-[85vh] flex flex-col">
-          <DialogHeader className="flex-shrink-0">
+        <DialogContent className='max-w-4xl h-[85vh] flex flex-col'>
+          <DialogHeader className='flex-shrink-0'>
             <DialogTitle>
-              {modalMode === 'create' 
-                ? (formData.parentId ? "Crear Sub-Grupo" : "Crear Nuevo Grupo")
-                : "Editar Grupo"
-              }
+              {modalMode === "create"
+                ? formData.parentId
+                  ? "Crear Sub-Grupo"
+                  : "Crear Nuevo Grupo"
+                : "Editar Grupo"}
             </DialogTitle>
             <DialogDescription>
-              {modalMode === 'create'
-                ? (formData.parentId 
-                  ? `Crea un sub-grupo dentro de "${flatGroups.find(g => g.id === formData.parentId)?.name}"`
+              {modalMode === "create"
+                ? formData.parentId
+                  ? `Crea un sub-grupo dentro de "${flatGroups.find((g) => g.id === formData.parentId)?.name}"`
                   : "Crea un grupo para organizar las salas de Meet con tags automáticos"
-                )
-                : "Modifica la información del grupo y sus configuraciones"
-              }
+                : "Modifica la información del grupo y sus configuraciones"}
             </DialogDescription>
           </DialogHeader>
-          
-          <Tabs defaultValue="general" className="flex-1 flex flex-col min-h-0">
-            <TabsList className={cn(
-              "flex-shrink-0",
-              modalMode === 'create' 
-                ? "grid w-full grid-cols-3"  // Solo 3 tabs en create (sin referencias ni metadata)
-                : "grid w-full grid-cols-5"  // 5 tabs en edit
-            )}>
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="organizacion">Organización</TabsTrigger>
-              <TabsTrigger value="tags">Tags</TabsTrigger>
-              {modalMode === 'edit' && (
+
+          <Tabs defaultValue='general' className='flex-1 flex flex-col min-h-0'>
+            <TabsList
+              className={cn(
+                "flex-shrink-0",
+                modalMode === "create"
+                  ? "grid w-full grid-cols-3" // Solo 3 tabs en create (sin referencias ni metadata)
+                  : "grid w-full grid-cols-5" // 5 tabs en edit
+              )}
+            >
+              <TabsTrigger value='general'>General</TabsTrigger>
+              <TabsTrigger value='organizacion'>Organización</TabsTrigger>
+              <TabsTrigger value='tags'>Tags</TabsTrigger>
+              {modalMode === "edit" && (
                 <>
-                  <TabsTrigger value="referencias">Referencias</TabsTrigger>
-                  <TabsTrigger value="metadata">Metadata</TabsTrigger>
+                  <TabsTrigger value='referencias'>Referencias</TabsTrigger>
+                  <TabsTrigger value='metadata'>Metadata</TabsTrigger>
                 </>
               )}
             </TabsList>
-            
-            <div className="flex-1 mt-4 min-h-0">
-              <TabsContent value="general" className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                <ScrollArea className="flex-1">
-                  <div className="space-y-4 pr-4">
-                    {modalMode === 'edit' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-id">ID del Grupo</Label>
+
+            <div className='flex-1 mt-4 min-h-0'>
+              <TabsContent
+                value='general'
+                className='h-full m-0 data-[state=active]:flex data-[state=active]:flex-col'
+              >
+                <ScrollArea className='flex-1'>
+                  <div className='space-y-4 pr-4'>
+                    {modalMode === "edit" && (
+                      <div className='space-y-2'>
+                        <Label htmlFor='edit-id'>ID del Grupo</Label>
                         <Input
-                          id="edit-id"
+                          id='edit-id'
                           value={selectedGroup?.id || ""}
                           disabled
-                          className="bg-muted"
+                          className='bg-muted'
                         />
                       </div>
                     )}
-              <div className="space-y-2">
-                <Label htmlFor="name">Nombre *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => {
-                    setFormData(prev => ({ ...prev, name: e.target.value }));
-                    if (!formData.slug || formData.slug === formData.name.toLowerCase().replace(/\s+/g, '-')) {
-                      generateSlug(e.target.value);
-                    }
-                  }}
-                  placeholder="Nombre del grupo"
-                  className={formErrors.name ? "border-destructive" : ""}
-                />
-                {formErrors.name && (
-                  <p className="text-sm text-destructive">{formErrors.name}</p>
-                )}
-              </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='name'>Nombre *</Label>
+                      <Input
+                        id='name'
+                        value={formData.name}
+                        onChange={(e) => {
+                          setFormData((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }));
+                          if (
+                            !formData.slug ||
+                            formData.slug ===
+                              formData.name.toLowerCase().replace(/\s+/g, "-")
+                          ) {
+                            generateSlug(e.target.value);
+                          }
+                        }}
+                        placeholder='Nombre del grupo'
+                        className={formErrors.name ? "border-destructive" : ""}
+                      />
+                      {formErrors.name && (
+                        <p className='text-sm text-destructive'>
+                          {formErrors.name}
+                        </p>
+                      )}
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="slug">Slug *</Label>
-                <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
-                  placeholder="grupo-slug"
-                  className={formErrors.slug ? "border-destructive" : ""}
-                />
-                {formErrors.slug && (
-                  <p className="text-sm text-destructive">{formErrors.slug}</p>
-                )}
-              </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='slug'>Slug *</Label>
+                      <Input
+                        id='slug'
+                        value={formData.slug}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            slug: e.target.value,
+                          }))
+                        }
+                        placeholder='grupo-slug'
+                        className={formErrors.slug ? "border-destructive" : ""}
+                      />
+                      {formErrors.slug && (
+                        <p className='text-sm text-destructive'>
+                          {formErrors.slug}
+                        </p>
+                      )}
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="internalDescription">Descripción Interna</Label>
-                <Textarea
-                  id="internalDescription"
-                  value={formData.internalDescription}
-                  onChange={(e) => setFormData(prev => ({ ...prev, internalDescription: e.target.value }))}
-                  placeholder="Descripción para uso interno del equipo"
-                  rows={2}
-                />
-              </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='internalDescription'>
+                        Descripción Interna
+                      </Label>
+                      <Textarea
+                        id='internalDescription'
+                        value={formData.internalDescription}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            internalDescription: e.target.value,
+                          }))
+                        }
+                        placeholder='Descripción para uso interno del equipo'
+                        rows={2}
+                      />
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="publicDescription">Descripción Pública</Label>
-                <Textarea
-                  id="publicDescription"
-                  value={formData.publicDescription}
-                  onChange={(e) => setFormData(prev => ({ ...prev, publicDescription: e.target.value }))}
-                  placeholder="Descripción visible para clientes"
-                  rows={2}
-                />
-              </div>
+                    <div className='space-y-2'>
+                      <Label htmlFor='publicDescription'>
+                        Descripción Pública
+                      </Label>
+                      <Textarea
+                        id='publicDescription'
+                        value={formData.publicDescription}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            publicDescription: e.target.value,
+                          }))
+                        }
+                        placeholder='Descripción visible para clientes'
+                        rows={2}
+                      />
+                    </div>
 
-              {/* Active Status Toggle */}
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div>
-                  <label className="text-sm font-medium text-gray-700">
-                    Estado del Grupo
-                  </label>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Los grupos inactivos no aparecen en listados públicos
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) =>
-                      setFormData({ ...formData, isActive: e.target.checked })
-                    }
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                  <span className="ml-3 text-sm font-medium text-gray-700">
-                    {formData.isActive ? "Activo" : "Inactivo"}
-                  </span>
-                </label>
-              </div>
+                    {/* Active Status Toggle */}
+                    <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+                      <div>
+                        <label className='text-sm font-medium text-gray-700'>
+                          Estado del Grupo
+                        </label>
+                        <p className='text-xs text-gray-500 mt-1'>
+                          Los grupos inactivos no aparecen en listados públicos
+                        </p>
+                      </div>
+                      <label className='relative inline-flex items-center cursor-pointer'>
+                        <input
+                          type='checkbox'
+                          checked={formData.isActive}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              isActive: e.target.checked,
+                            })
+                          }
+                          className='sr-only peer'
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        <span className='ml-3 text-sm font-medium text-gray-700'>
+                          {formData.isActive ? "Activo" : "Inactivo"}
+                        </span>
+                      </label>
+                    </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="customId">ID Personalizado</Label>
+                    <div className='grid grid-cols-2 gap-4'>
+                      <div className='space-y-2'>
+                        <Label htmlFor='customId'>ID Personalizado</Label>
                         <Input
-                          id="customId"
+                          id='customId'
                           value={formData.customId}
-                          onChange={(e) => setFormData(prev => ({ ...prev, customId: e.target.value }))}
-                          placeholder="GRP-001"
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              customId: e.target.value,
+                            }))
+                          }
+                          placeholder='GRP-001'
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="order">Orden</Label>
+                      <div className='space-y-2'>
+                        <Label htmlFor='order'>Orden</Label>
                         <Input
-                          id="order"
-                          type="number"
+                          id='order'
+                          type='number'
                           value={formData.order}
-                          onChange={(e) => setFormData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
-                          placeholder="0"
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              order: parseInt(e.target.value) || 0,
+                            }))
+                          }
+                          placeholder='0'
                         />
                       </div>
                     </div>
@@ -2290,53 +2536,70 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="organizacion" className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                <ScrollArea className="flex-1">
-                  <div className="space-y-4 pr-4">
-
-                    <div className="space-y-3">
+              <TabsContent
+                value='organizacion'
+                className='h-full m-0 data-[state=active]:flex data-[state=active]:flex-col'
+              >
+                <ScrollArea className='flex-1'>
+                  <div className='space-y-4 pr-4'>
+                    <div className='space-y-3'>
                       <div>
-                        <Label htmlFor="edit-parent">Grupo Padre</Label>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <Label htmlFor='edit-parent'>Grupo Padre</Label>
+                        <p className='text-sm text-muted-foreground mt-1'>
                           Selecciona el grupo padre para crear una jerarquía
                         </p>
                       </div>
-                      
+
                       {/* Buscador de grupos padre */}
-                      <div className="relative">
+                      <div className='relative'>
                         <Input
-                          placeholder="Buscar grupo padre por nombre, slug o ID..."
+                          placeholder='Buscar grupo padre por nombre, slug o ID...'
                           value={parentGroupSearchTerm}
-                          onChange={(e) => setParentGroupSearchTerm(e.target.value)}
-                          className="pl-8"
+                          onChange={(e) =>
+                            setParentGroupSearchTerm(e.target.value)
+                          }
+                          className='pl-8'
                         />
-                        <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                          <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
+                        <div className='absolute left-2 top-1/2 transform -translate-y-1/2'>
+                          <MagnifyingGlassIcon className='h-4 w-4 text-muted-foreground' />
                         </div>
                       </div>
 
                       {/* Grupo padre seleccionado actualmente */}
                       {formData.parentId && (
-                        <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium text-foreground">Padre seleccionado:</span>
+                        <div className='p-3 bg-primary/5 border border-primary/20 rounded-lg'>
+                          <div className='flex items-center gap-2'>
+                            <span className='text-sm font-medium text-foreground'>
+                              Padre seleccionado:
+                            </span>
                             {(() => {
-                              const selectedParent = flatGroups.find(group => group.id === formData.parentId);
+                              const selectedParent = flatGroups.find(
+                                (group) => group.id === formData.parentId
+                              );
                               return selectedParent ? (
-                                <div className="flex items-center gap-2">
+                                <div className='flex items-center gap-2'>
                                   <div
-                                    className="h-3 w-3 rounded-full flex-shrink-0 border border-border/50"
-                                    style={{ backgroundColor: selectedParent.color }}
+                                    className='h-3 w-3 rounded-full flex-shrink-0 border border-border/50'
+                                    style={{
+                                      backgroundColor: selectedParent.color,
+                                    }}
                                   />
-                                  <span className="text-sm">{selectedParent.name}</span>
+                                  <span className='text-sm'>
+                                    {selectedParent.name}
+                                  </span>
                                   {selectedParent.customId && (
-                                    <Badge variant="secondary" className="text-xs">
+                                    <Badge
+                                      variant='secondary'
+                                      className='text-xs'
+                                    >
                                       {selectedParent.customId}
                                     </Badge>
                                   )}
                                 </div>
                               ) : (
-                                <span className="text-sm text-muted-foreground">Grupo no encontrado</span>
+                                <span className='text-sm text-muted-foreground'>
+                                  Grupo no encontrado
+                                </span>
                               );
                             })()}
                           </div>
@@ -2344,27 +2607,32 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                       )}
 
                       {/* Lista de grupos padre disponibles */}
-                      <ScrollArea className="h-[340px] border rounded-md p-3">
-                        <div className="space-y-1">
+                      <ScrollArea className='h-[340px] border rounded-md p-3'>
+                        <div className='space-y-1'>
                           {/* Opción "Sin padre" - Estilo elegante como tags */}
-                          <div className="flex items-center space-x-2 py-1 px-2">
+                          <div className='flex items-center space-x-2 py-1 px-2'>
                             <input
-                              type="radio"
-                              id="parent-root"
-                              name="parentGroup"
+                              type='radio'
+                              id='parent-root'
+                              name='parentGroup'
                               checked={!formData.parentId}
-                              onChange={() => setFormData(prev => ({ ...prev, parentId: "" }))}
-                              className="h-4 w-4 text-primary border-2 border-input bg-background rounded-full focus:ring-1  focus:ring-offset-0 f accent-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary checked:border-primary"
+                              onChange={() =>
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  parentId: "",
+                                }))
+                              }
+                              className='h-4 w-4 text-primary border-2 border-input bg-background rounded-full focus:ring-1  focus:ring-offset-0 f accent-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary checked:border-primary'
                             />
                             <label
-                              htmlFor="parent-root"
-                              className="flex items-center gap-2 text-sm font-medium leading-none cursor-pointer flex-1"
+                              htmlFor='parent-root'
+                              className='flex items-center gap-2 text-sm font-medium leading-none cursor-pointer flex-1'
                             >
-                              <div className="h-3 w-3 rounded-full bg-muted border border-border flex-shrink-0" />
-                              <span className="font-semibold text-foreground">
+                              <div className='h-3 w-3 rounded-full bg-muted border border-border flex-shrink-0' />
+                              <span className='font-semibold text-foreground'>
                                 Sin padre (grupo raíz)
                               </span>
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant='outline' className='text-xs'>
                                 root
                               </Badge>
                             </label>
@@ -2372,120 +2640,168 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
                           {/* Grupos disponibles con jerarquía - Similar al renderizado de tags */}
                           {(() => {
-                            const renderGroupsHierarchical = (groupList: MeetGroup[], level: number = 0): React.ReactNode => {
+                            const renderGroupsHierarchical = (
+                              groupList: MeetGroup[],
+                              level: number = 0
+                            ): React.ReactNode => {
                               return groupList
-                                .filter(group => group.id !== selectedGroup?.id) // No puede ser padre de sí mismo
+                                .filter(
+                                  (group) => group.id !== selectedGroup?.id
+                                ) // No puede ser padre de sí mismo
                                 .map((group) => (
-                                <React.Fragment key={group.id}>
-                                  <div className="flex items-center space-x-2 py-1 px-2">
-                                    <input
-                                      type="radio"
-                                      id={`parent-${group.id}`}
-                                      name="parentGroup"
-                                      checked={formData.parentId === group.id}
-                                      onChange={() => setFormData(prev => ({ ...prev, parentId: group.id }))}
-                                      className="h-4 w-4 text-primary border-2 border-input bg-background rounded-full focus:ring-1 focus:ring-offset-0 accent-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary checked:border-primary"
-                                    />
-                                    <label
-                                      htmlFor={`parent-${group.id}`}
-                                      className="flex items-center gap-2 text-sm font-medium leading-none cursor-pointer flex-1"
-                                      style={{ paddingLeft: `${level * 20}px` }}
-                                    >
-                                      <div
-                                        className="h-3 w-3 rounded-full flex-shrink-0 border border-border/50"
-                                        style={{ backgroundColor: group.color }}
+                                  <React.Fragment key={group.id}>
+                                    <div className='flex items-center space-x-2 py-1 px-2'>
+                                      <input
+                                        type='radio'
+                                        id={`parent-${group.id}`}
+                                        name='parentGroup'
+                                        checked={formData.parentId === group.id}
+                                        onChange={() =>
+                                          setFormData((prev) => ({
+                                            ...prev,
+                                            parentId: group.id,
+                                          }))
+                                        }
+                                        className='h-4 w-4 text-primary border-2 border-input bg-background rounded-full focus:ring-1 focus:ring-offset-0 accent-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 checked:bg-primary checked:border-primary'
                                       />
-                                      <span className={cn(
-                                        "text-foreground",
-                                        level === 0 && "font-semibold"
-                                      )}>
-                                        {group.name}
-                                      </span>
-                                      <Badge variant="outline" className="text-xs">
-                                        {group.slug}
-                                      </Badge>
-                                      {group.customId && (
-                                        <Badge variant="secondary" className="text-xs">
-                                          {group.customId}
+                                      <label
+                                        htmlFor={`parent-${group.id}`}
+                                        className='flex items-center gap-2 text-sm font-medium leading-none cursor-pointer flex-1'
+                                        style={{
+                                          paddingLeft: `${level * 20}px`,
+                                        }}
+                                      >
+                                        <div
+                                          className='h-3 w-3 rounded-full flex-shrink-0 border border-border/50'
+                                          style={{
+                                            backgroundColor: group.color,
+                                          }}
+                                        />
+                                        <span
+                                          className={cn(
+                                            "text-foreground",
+                                            level === 0 && "font-semibold"
+                                          )}
+                                        >
+                                          {group.name}
+                                        </span>
+                                        <Badge
+                                          variant='outline'
+                                          className='text-xs'
+                                        >
+                                          {group.slug}
                                         </Badge>
+                                        {group.customId && (
+                                          <Badge
+                                            variant='secondary'
+                                            className='text-xs'
+                                          >
+                                            {group.customId}
+                                          </Badge>
+                                        )}
+                                      </label>
+                                    </div>
+                                    {/* Renderizar hijos si los tiene */}
+                                    {group.children &&
+                                      group.children.length > 0 &&
+                                      renderGroupsHierarchical(
+                                        group.children,
+                                        level + 1
                                       )}
-                                    </label>
-                                  </div>
-                                  {/* Renderizar hijos si los tiene */}
-                                  {group.children && group.children.length > 0 && renderGroupsHierarchical(group.children, level + 1)}
-                                </React.Fragment>
-                              ));
+                                  </React.Fragment>
+                                ));
                             };
-                            
-                            return renderGroupsHierarchical(filteredParentGroups);
+
+                            return renderGroupsHierarchical(
+                              filteredParentGroups
+                            );
                           })()}
-                          
-                          {filteredParentGroups.filter(group => group.id !== selectedGroup?.id).length === 0 && (
-                            <div className="text-center text-sm text-muted-foreground py-4">
-                              {parentGroupSearchTerm ? 'No se encontraron grupos que coincidan con la búsqueda.' : 'No hay grupos disponibles como padres.'}
+
+                          {filteredParentGroups.filter(
+                            (group) => group.id !== selectedGroup?.id
+                          ).length === 0 && (
+                            <div className='text-center text-sm text-muted-foreground py-4'>
+                              {parentGroupSearchTerm
+                                ? "No se encontraron grupos que coincidan con la búsqueda."
+                                : "No hay grupos disponibles como padres."}
                             </div>
                           )}
                         </div>
                       </ScrollArea>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="edit-order">Orden</Label>
+                    <div className='space-y-2'>
+                      <Label htmlFor='edit-order'>Orden</Label>
                       <Input
-                        id="edit-order"
-                        type="number"
+                        id='edit-order'
+                        type='number'
                         value={formData.order}
-                        onChange={(e) => setFormData(prev => ({ ...prev, order: parseInt(e.target.value) || 0 }))}
-                        placeholder="0"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            order: parseInt(e.target.value) || 0,
+                          }))
+                        }
+                        placeholder='0'
                       />
-                      <p className="text-sm text-muted-foreground">
+                      <p className='text-sm text-muted-foreground'>
                         Número que determina el orden de aparición del grupo
                       </p>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className='space-y-2'>
                       <Label>Color</Label>
-                      <div className="flex gap-2 flex-wrap">
+                      <div className='flex gap-2 flex-wrap'>
                         {groupColors.map((color) => (
                           <button
                             key={color}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, color }))}
+                            type='button'
+                            onClick={() =>
+                              setFormData((prev) => ({ ...prev, color }))
+                            }
                             className={cn(
                               "h-8 w-8 rounded border-2 transition-all",
-                              formData.color === color ? "border-foreground scale-110" : "border-muted"
+                              formData.color === color
+                                ? "border-foreground scale-110"
+                                : "border-muted"
                             )}
                             style={{ backgroundColor: color }}
                           />
                         ))}
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className='text-sm text-muted-foreground'>
                         Color que identificará este grupo en la interfaz
                       </p>
                     </div>
 
                     {/* Permite Referencias Toggle */}
-                    <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
+                    <div className='flex items-center justify-between p-4 bg-blue-50 rounded-lg'>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className='text-sm font-medium text-gray-700'>
                           Permitir Referencias
                         </label>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Si está habilitado, este grupo puede ser referenciado por paquetes
+                        <p className='text-xs text-gray-500 mt-1'>
+                          Si está habilitado, este grupo puede ser referenciado
+                          por paquetes
                         </p>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
+                      <label className='relative inline-flex items-center cursor-pointer'>
                         <input
-                          type="checkbox"
+                          type='checkbox'
                           checked={formData.allowsReferences}
                           onChange={(e) =>
-                            setFormData({ ...formData, allowsReferences: e.target.checked })
+                            setFormData({
+                              ...formData,
+                              allowsReferences: e.target.checked,
+                            })
                           }
-                          className="sr-only peer"
+                          className='sr-only peer'
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        <span className="ml-3 text-sm font-medium text-gray-700">
-                          {formData.allowsReferences ? "Habilitado" : "Deshabilitado"}
+                        <span className='ml-3 text-sm font-medium text-gray-700'>
+                          {formData.allowsReferences
+                            ? "Habilitado"
+                            : "Deshabilitado"}
                         </span>
                       </label>
                     </div>
@@ -2493,80 +2809,98 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 </ScrollArea>
               </TabsContent>
 
-              <TabsContent value="tags" className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                <div className="space-y-4 h-full overflow-hidden">
-                  <div className="flex-shrink-0 space-y-3">
+              <TabsContent
+                value='tags'
+                className='h-full m-0 data-[state=active]:flex data-[state=active]:flex-col'
+              >
+                <div className='space-y-4 h-full overflow-hidden'>
+                  <div className='flex-shrink-0 space-y-3'>
                     <div>
                       <Label>Tags por Defecto</Label>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Los tags seleccionados se asignarán automáticamente a las salas que se añadan a este grupo
+                      <p className='text-sm text-muted-foreground mt-1'>
+                        Los tags seleccionados se asignarán automáticamente a
+                        las salas que se añadan a este grupo
                       </p>
                     </div>
-                    
+
                     {/* Buscador de tags */}
-                    <div className="relative">
+                    <div className='relative'>
                       <Input
-                        placeholder="Buscar tags por nombre, slug o ID..."
+                        placeholder='Buscar tags por nombre, slug o ID...'
                         value={tagSearchTerm}
                         onChange={(e) => setTagSearchTerm(e.target.value)}
-                        className="pl-8"
+                        className='pl-8'
                       />
-                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                        <MagnifyingGlassIcon className="h-4 w-4 text-muted-foreground" />
+                      <div className='absolute left-2 top-1/2 transform -translate-y-1/2'>
+                        <MagnifyingGlassIcon className='h-4 w-4 text-muted-foreground' />
                       </div>
                     </div>
                   </div>
-                  <ScrollArea className="h-[340px] border rounded-md p-3">
-                    <div className="space-y-1">
+                  <ScrollArea className='h-[340px] border rounded-md p-3'>
+                    <div className='space-y-1'>
                       {filteredTags.length === 0 ? (
-                        <p className="text-sm text-muted-foreground text-center py-4">
-                          {tagSearchTerm ? 'No se encontraron tags que coincidan con la búsqueda.' : 'No hay tags disponibles. Crea algunos tags primero.'}
+                        <p className='text-sm text-muted-foreground text-center py-4'>
+                          {tagSearchTerm
+                            ? "No se encontraron tags que coincidan con la búsqueda."
+                            : "No hay tags disponibles. Crea algunos tags primero."}
                         </p>
                       ) : (
                         renderTagList()
                       )}
                     </div>
                   </ScrollArea>
-                  
+
                   {/* Selected Tags Display */}
                   {formData.defaultTagIds.length > 0 && (
-                    <div className="flex-shrink-0 space-y-2">
-                      <Label className="text-sm font-medium">Tags Seleccionados ({formData.defaultTagIds.length})</Label>
-                      <div className="flex flex-wrap gap-2 p-3 bg-muted/30 border rounded-md min-h-[60px]">
+                    <div className='flex-shrink-0 space-y-2'>
+                      <Label className='text-sm font-medium'>
+                        Tags Seleccionados ({formData.defaultTagIds.length})
+                      </Label>
+                      <div className='flex flex-wrap gap-2 p-3 bg-muted/30 border rounded-md min-h-[60px]'>
                         {formData.defaultTagIds.map((tagId) => {
                           // Buscar el tag en la estructura jerárquica
-                          const findTagById = (tagList: MeetTag[], targetId: string): MeetTag | null => {
+                          const findTagById = (
+                            tagList: MeetTag[],
+                            targetId: string
+                          ): MeetTag | null => {
                             for (const tag of tagList) {
                               if (tag.id === targetId) return tag;
                               if (tag.children) {
-                                const found = findTagById(tag.children, targetId);
+                                const found = findTagById(
+                                  tag.children,
+                                  targetId
+                                );
                                 if (found) return found;
                               }
                             }
                             return null;
                           };
-                          
+
                           const tag = findTagById(hierarchicalTags, tagId);
                           if (!tag) return null;
                           return (
                             <div
                               key={tagId}
-                              className="inline-flex items-center gap-2 px-3 py-1.5 bg-background border rounded-md text-sm"
+                              className='inline-flex items-center gap-2 px-3 py-1.5 bg-background border rounded-md text-sm'
                             >
                               <div
-                                className="h-2 w-2 rounded-full"
+                                className='h-2 w-2 rounded-full'
                                 style={{ backgroundColor: tag.color }}
                               />
-                              <span className="font-medium">#{tag.customId || tag.name}</span>
+                              <span className='font-medium'>
+                                #{tag.customId || tag.name}
+                              </span>
                               <button
-                                type="button"
+                                type='button'
                                 onClick={() => {
-                                  setFormData(prev => ({
+                                  setFormData((prev) => ({
                                     ...prev,
-                                    defaultTagIds: prev.defaultTagIds.filter(id => id !== tagId)
+                                    defaultTagIds: prev.defaultTagIds.filter(
+                                      (id) => id !== tagId
+                                    ),
                                   }));
                                 }}
-                                className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                                className='ml-1 text-muted-foreground hover:text-destructive transition-colors'
                                 title={`Eliminar ${tag.name}`}
                               >
                                 ×
@@ -2580,89 +2914,116 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 </div>
               </TabsContent>
 
-              {modalMode === 'edit' && (
+              {modalMode === "edit" && (
                 <>
-                  <TabsContent value="referencias" className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                    <div className="flex flex-col h-full">
+                  <TabsContent
+                    value='referencias'
+                    className='h-full m-0 data-[state=active]:flex data-[state=active]:flex-col'
+                  >
+                    <div className='flex flex-col h-full'>
                       {selectedGroup && renderReferenceSelector()}
-                      
+
                       {/* Información sobre referencias hacia este grupo */}
-                      {selectedGroup?.referenceCount !== undefined && selectedGroup.referenceCount > 0 && (
-                        <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="font-medium text-orange-800 flex items-center gap-2">
-                                <ExclamationTriangleIcon className="h-4 w-4" />
-                                Referencias Entrantes
-                              </h4>
-                              <p className="text-sm text-orange-700 mt-1">
-                                Este grupo está siendo referenciado en <strong>{selectedGroup.referenceCount}</strong> paquete{selectedGroup.referenceCount !== 1 ? 's' : ''}
-                              </p>
-                              <p className="text-xs text-orange-600 mt-2">
-                                💡 Estas referencias pueden impedir que elimines este grupo. Puedes revisar y gestionar estas dependencias.
-                              </p>
+                      {selectedGroup?.referenceCount !== undefined &&
+                        selectedGroup.referenceCount > 0 && (
+                          <div className='mt-4 p-4 bg-orange-50 border border-orange-200 rounded-lg'>
+                            <div className='flex items-start justify-between'>
+                              <div>
+                                <h4 className='font-medium text-orange-800 flex items-center gap-2'>
+                                  <ExclamationTriangleIcon className='h-4 w-4' />
+                                  Referencias Entrantes
+                                </h4>
+                                <p className='text-sm text-orange-700 mt-1'>
+                                  Este grupo está siendo referenciado en{" "}
+                                  <strong>
+                                    {selectedGroup.referenceCount}
+                                  </strong>{" "}
+                                  paquete
+                                  {selectedGroup.referenceCount !== 1
+                                    ? "s"
+                                    : ""}
+                                </p>
+                                <p className='text-xs text-orange-600 mt-2'>
+                                  💡 Estas referencias pueden impedir que
+                                  elimines este grupo. Puedes revisar y
+                                  gestionar estas dependencias.
+                                </p>
+                              </div>
+                              <Button
+                                variant='outline'
+                                size='sm'
+                                onClick={() =>
+                                  handleViewReferences(selectedGroup)
+                                }
+                                className='text-orange-700 border-orange-300 hover:bg-orange-100'
+                              >
+                                <LinkIcon className='h-3 w-3 mr-1' />
+                                Gestionar
+                              </Button>
                             </div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleViewReferences(selectedGroup)}
-                              className="text-orange-700 border-orange-300 hover:bg-orange-100"
-                            >
-                              <LinkIcon className="h-3 w-3 mr-1" />
-                              Gestionar
-                            </Button>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {/* Contador de referencias salientes */}
-                      <div className="text-sm text-muted-foreground mt-4 p-3 bg-muted rounded-lg">
-                        <strong>Referencias Salientes:</strong> {selectedGroup?.references ? 
-                          `${selectedGroup.references.length} referencia${selectedGroup.references.length !== 1 ? 's' : ''} seleccionada${selectedGroup.references.length !== 1 ? 's' : ''}` :
-                          'Sin referencias seleccionadas'
-                        }
+                      <div className='text-sm text-muted-foreground mt-4 p-3 bg-muted rounded-lg'>
+                        <strong>Referencias Salientes:</strong>{" "}
+                        {selectedGroup?.references
+                          ? `${selectedGroup.references.length} referencia${selectedGroup.references.length !== 1 ? "s" : ""} seleccionada${selectedGroup.references.length !== 1 ? "s" : ""}`
+                          : "Sin referencias seleccionadas"}
                       </div>
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="metadata" className="h-full m-0 data-[state=active]:flex data-[state=active]:flex-col">
-                    <ScrollArea className="flex-1">
-                      <div className="space-y-6 pr-4">
+                  <TabsContent
+                    value='metadata'
+                    className='h-full m-0 data-[state=active]:flex data-[state=active]:flex-col'
+                  >
+                    <ScrollArea className='flex-1'>
+                      <div className='space-y-6 pr-4'>
                         {selectedGroup && (
                           <>
                             {/* Información de Auditoría */}
-                            <div className="space-y-4">
+                            <div className='space-y-4'>
                               <div>
-                                <h3 className="text-lg font-semibold flex items-center gap-2">
-                                  <ClockIcon className="h-5 w-5 text-muted-foreground" />
+                                <h3 className='text-lg font-semibold flex items-center gap-2'>
+                                  <ClockIcon className='h-5 w-5 text-muted-foreground' />
                                   Auditoría
                                 </h3>
-                                <p className="text-sm text-muted-foreground">
-                                  Información de creación y modificación del grupo
+                                <p className='text-sm text-muted-foreground'>
+                                  Información de creación y modificación del
+                                  grupo
                                 </p>
                               </div>
-                              
-                              <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Fecha de Creación</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm">
-                                      {new Date(selectedGroup.createdAt).toLocaleString('es-ES', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
+
+                              <div className='grid gap-4 md:grid-cols-2'>
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Fecha de Creación
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm'>
+                                      {new Date(
+                                        selectedGroup.createdAt
+                                      ).toLocaleString("es-ES", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
                                       })}
                                     </p>
                                   </div>
                                 </div>
-                                
+
                                 {selectedGroup.createdBy && (
-                                  <div className="space-y-2">
-                                    <Label className="text-sm font-medium">Creado Por</Label>
-                                    <div className="p-3 bg-muted rounded-md">
-                                      <p className="text-sm">{selectedGroup.createdBy}</p>
+                                  <div className='space-y-2'>
+                                    <Label className='text-sm font-medium'>
+                                      Creado Por
+                                    </Label>
+                                    <div className='p-3 bg-muted rounded-md'>
+                                      <p className='text-sm'>
+                                        {selectedGroup.createdBy}
+                                      </p>
                                     </div>
                                   </div>
                                 )}
@@ -2670,63 +3031,92 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                             </div>
 
                             {/* Información de Jerarquía */}
-                            <div className="space-y-4">
+                            <div className='space-y-4'>
                               <div>
-                                <h3 className="text-lg font-semibold flex items-center gap-2">
-                                  <FolderIcon className="h-5 w-5 text-muted-foreground" />
+                                <h3 className='text-lg font-semibold flex items-center gap-2'>
+                                  <FolderIcon className='h-5 w-5 text-muted-foreground' />
                                   Jerarquía
                                 </h3>
-                                <p className="text-sm text-muted-foreground">
+                                <p className='text-sm text-muted-foreground'>
                                   Posición del grupo en la estructura jerárquica
                                 </p>
                               </div>
-                              
-                              <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Nivel en la Jerarquía</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm">Nivel {selectedGroup.level}</p>
+
+                              <div className='grid gap-4 md:grid-cols-2'>
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Nivel en la Jerarquía
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm'>
+                                      Nivel {selectedGroup.level}
+                                    </p>
                                   </div>
                                 </div>
-                                
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Ruta Completa</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm font-mono break-all">{selectedGroup.path}</p>
+
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Ruta Completa
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm font-mono break-all'>
+                                      {selectedGroup.path}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
 
                               {selectedGroup.parent && (
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Grupo Padre</Label>
-                                  <div className="p-3 bg-muted rounded-md flex items-center gap-2">
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Grupo Padre
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md flex items-center gap-2'>
                                     <div
-                                      className="h-3 w-3 rounded-full border"
-                                      style={{ backgroundColor: selectedGroup.parent.color }}
+                                      className='h-3 w-3 rounded-full border'
+                                      style={{
+                                        backgroundColor:
+                                          selectedGroup.parent.color,
+                                      }}
                                     />
-                                    <span className="text-sm">{selectedGroup.parent.name}</span>
-                                    <Badge variant="outline" className="text-xs">
+                                    <span className='text-sm'>
+                                      {selectedGroup.parent.name}
+                                    </span>
+                                    <Badge
+                                      variant='outline'
+                                      className='text-xs'
+                                    >
                                       {selectedGroup.parent.slug}
                                     </Badge>
                                   </div>
                                 </div>
                               )}
-                              
+
                               {selectedGroup.children.length > 0 && (
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">
-                                    Grupos Hijos ({selectedGroup.children.length})
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Grupos Hijos (
+                                    {selectedGroup.children.length})
                                   </Label>
-                                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                                    {selectedGroup.children.map(child => (
-                                      <div key={child.id} className="p-2 bg-muted/50 rounded flex items-center gap-2">
+                                  <div className='space-y-2 max-h-32 overflow-y-auto'>
+                                    {selectedGroup.children.map((child) => (
+                                      <div
+                                        key={child.id}
+                                        className='p-2 bg-muted/50 rounded flex items-center gap-2'
+                                      >
                                         <div
-                                          className="h-2 w-2 rounded-full border"
-                                          style={{ backgroundColor: child.color }}
+                                          className='h-2 w-2 rounded-full border'
+                                          style={{
+                                            backgroundColor: child.color,
+                                          }}
                                         />
-                                        <span className="text-sm">{child.name}</span>
-                                        <Badge variant="outline" className="text-xs">
+                                        <span className='text-sm'>
+                                          {child.name}
+                                        </span>
+                                        <Badge
+                                          variant='outline'
+                                          className='text-xs'
+                                        >
                                           {child.slug}
                                         </Badge>
                                       </div>
@@ -2737,96 +3127,134 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                             </div>
 
                             {/* Estadísticas de Uso */}
-                            <div className="space-y-4">
+                            <div className='space-y-4'>
                               <div>
-                                <h3 className="text-lg font-semibold flex items-center gap-2">
-                                  <ChartBarIcon className="h-5 w-5 text-muted-foreground" />
+                                <h3 className='text-lg font-semibold flex items-center gap-2'>
+                                  <ChartBarIcon className='h-5 w-5 text-muted-foreground' />
                                   Estadísticas de Uso
                                 </h3>
-                                <p className="text-sm text-muted-foreground">
+                                <p className='text-sm text-muted-foreground'>
                                   Información sobre el uso actual del grupo
                                 </p>
                               </div>
-                              
-                              <div className="grid gap-4 md:grid-cols-3">
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Salas Asignadas</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm font-semibold">
+
+                              <div className='grid gap-4 md:grid-cols-3'>
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Salas Asignadas
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm font-semibold'>
                                       {selectedGroup._count.spaceGroups}
                                     </p>
                                   </div>
                                 </div>
-                                
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Tags por Defecto</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm font-semibold">
+
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Tags por Defecto
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm font-semibold'>
                                       {selectedGroup._count.defaultTags}
                                     </p>
                                   </div>
                                 </div>
-                                
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Sub-grupos</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <p className="text-sm font-semibold">
+
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Sub-grupos
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <p className='text-sm font-semibold'>
                                       {selectedGroup._count.children}
                                     </p>
                                   </div>
                                 </div>
                               </div>
-                              
-                              {selectedGroup.referenceCount !== undefined && selectedGroup.referenceCount > 0 && (
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Referencias</Label>
-                                  <div className="p-3 bg-primary/5 border border-primary/20 rounded-md">
-                                    <div className="flex items-center justify-between">
-                                      <p className="text-sm">
-                                        Este grupo está siendo referenciado en <strong>{selectedGroup.referenceCount}</strong> paquete{selectedGroup.referenceCount !== 1 ? 's' : ''}
-                                      </p>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => handleViewReferences(selectedGroup)}
-                                        className="text-xs"
-                                      >
-                                        <LinkIcon className="h-3 w-3 mr-1" />
-                                        Ver detalles
-                                      </Button>
+
+                              {selectedGroup.referenceCount !== undefined &&
+                                selectedGroup.referenceCount > 0 && (
+                                  <div className='space-y-2'>
+                                    <Label className='text-sm font-medium'>
+                                      Referencias
+                                    </Label>
+                                    <div className='p-3 bg-primary/5 border border-primary/20 rounded-md'>
+                                      <div className='flex items-center justify-between'>
+                                        <p className='text-sm'>
+                                          Este grupo está siendo referenciado en{" "}
+                                          <strong>
+                                            {selectedGroup.referenceCount}
+                                          </strong>{" "}
+                                          paquete
+                                          {selectedGroup.referenceCount !== 1
+                                            ? "s"
+                                            : ""}
+                                        </p>
+                                        <Button
+                                          variant='outline'
+                                          size='sm'
+                                          onClick={() =>
+                                            handleViewReferences(selectedGroup)
+                                          }
+                                          className='text-xs'
+                                        >
+                                          <LinkIcon className='h-3 w-3 mr-1' />
+                                          Ver detalles
+                                        </Button>
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              )}
+                                )}
                             </div>
 
                             {/* Configuración Avanzada */}
-                            <div className="space-y-4">
+                            <div className='space-y-4'>
                               <div>
-                                <h3 className="text-lg font-semibold flex items-center gap-2">
-                                  <CogIcon className="h-5 w-5 text-muted-foreground" />
+                                <h3 className='text-lg font-semibold flex items-center gap-2'>
+                                  <CogIcon className='h-5 w-5 text-muted-foreground' />
                                   Configuración
                                 </h3>
-                                <p className="text-sm text-muted-foreground">
+                                <p className='text-sm text-muted-foreground'>
                                   Configuraciones especiales del grupo
                                 </p>
                               </div>
-                              
-                              <div className="grid gap-4 md:grid-cols-2">
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Estado</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <Badge variant={selectedGroup.isActive ? "default" : "secondary"}>
-                                      {selectedGroup.isActive ? "Activo" : "Inactivo"}
+
+                              <div className='grid gap-4 md:grid-cols-2'>
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Estado
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <Badge
+                                      variant={
+                                        selectedGroup.isActive
+                                          ? "default"
+                                          : "secondary"
+                                      }
+                                    >
+                                      {selectedGroup.isActive
+                                        ? "Activo"
+                                        : "Inactivo"}
                                     </Badge>
                                   </div>
                                 </div>
-                                
-                                <div className="space-y-2">
-                                  <Label className="text-sm font-medium">Permite Referencias</Label>
-                                  <div className="p-3 bg-muted rounded-md">
-                                    <Badge variant={selectedGroup.allowsReferences ? "default" : "outline"}>
-                                      {selectedGroup.allowsReferences ? "Sí" : "No"}
+
+                                <div className='space-y-2'>
+                                  <Label className='text-sm font-medium'>
+                                    Permite Referencias
+                                  </Label>
+                                  <div className='p-3 bg-muted rounded-md'>
+                                    <Badge
+                                      variant={
+                                        selectedGroup.allowsReferences
+                                          ? "default"
+                                          : "outline"
+                                      }
+                                    >
+                                      {selectedGroup.allowsReferences
+                                        ? "Sí"
+                                        : "No"}
                                     </Badge>
                                   </div>
                                 </div>
@@ -2842,18 +3270,18 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
             </div>
           </Tabs>
 
-          <DialogFooter className={cn(
-            "flex-shrink-0",
-            modalMode === 'edit' && "mt-4"
-          )}>
-            <Button
-              variant="outline"
-              onClick={() => setIsModalOpen(false)}
-            >
+          <DialogFooter
+            className={cn("flex-shrink-0", modalMode === "edit" && "mt-4")}
+          >
+            <Button variant='outline' onClick={() => setIsModalOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={modalMode === 'create' ? handleCreateGroup : handleEditGroup}>
-              {modalMode === 'create' ? 'Crear Grupo' : 'Guardar Cambios'}
+            <Button
+              onClick={
+                modalMode === "create" ? handleCreateGroup : handleEditGroup
+              }
+            >
+              {modalMode === "create" ? "Crear Grupo" : "Guardar Cambios"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2861,78 +3289,100 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
       {/* Modal de gestión de referencias */}
       <Dialog open={referencesModalOpen} onOpenChange={setReferencesModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className='max-w-2xl'>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <LinkIcon className="h-5 w-5" />
+            <DialogTitle className='flex items-center gap-2'>
+              <LinkIcon className='h-5 w-5' />
               Referencias del grupo &ldquo;{groupWithReferences?.name}&rdquo;
             </DialogTitle>
             <DialogDescription>
-              Gestiona las referencias que apuntan a este grupo desde otros paquetes
+              Gestiona las referencias que apuntan a este grupo desde otros
+              paquetes
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
-            {groupWithReferences?.referencedBy && groupWithReferences.referencedBy.length > 0 ? (
+          <div className='space-y-4'>
+            {groupWithReferences?.referencedBy &&
+            groupWithReferences.referencedBy.length > 0 ? (
               <>
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
-                    {groupWithReferences.referencedBy.length} referencia{groupWithReferences.referencedBy.length !== 1 ? 's' : ''} encontrada{groupWithReferences.referencedBy.length !== 1 ? 's' : ''}
+                <div className='flex items-center justify-between'>
+                  <p className='text-sm text-muted-foreground'>
+                    {groupWithReferences.referencedBy.length} referencia
+                    {groupWithReferences.referencedBy.length !== 1 ? "s" : ""}{" "}
+                    encontrada
+                    {groupWithReferences.referencedBy.length !== 1 ? "s" : ""}
                   </p>
                 </div>
 
-                <ScrollArea className="h-[400px] border rounded-md p-4">
-                  <div className="space-y-3">
+                <ScrollArea className='h-[400px] border rounded-md p-4'>
+                  <div className='space-y-3'>
                     {groupWithReferences.referencedBy.map((reference) => {
                       return (
-                        <div 
+                        <div
                           key={reference.id}
-                          className="p-4 border rounded-lg border-border bg-card"
+                          className='p-4 border rounded-lg border-border bg-card'
                         >
-                          <div className="flex items-start justify-between">
-                            <div className="space-y-2 flex-1">
+                          <div className='flex items-start justify-between'>
+                            <div className='space-y-2 flex-1'>
                               {/* Información del paquete */}
-                              <div className="flex items-center gap-2">
-                                    <div
-                                      className="h-3 w-3 rounded-full border"
-                                      style={{ backgroundColor: '#6B7280' }}
-                                    />
-                                    <span className="font-medium">Paquete {reference.sourceGroupId}</span>
-                                    <Badge variant="outline" className="text-xs">
-                                      Referencia
-                                    </Badge>
+                              <div className='flex items-center gap-2'>
+                                <div
+                                  className='h-3 w-3 rounded-full border'
+                                  style={{ backgroundColor: "#6B7280" }}
+                                />
+                                <span className='font-medium'>
+                                  Paquete {reference.sourceGroupId}
+                                </span>
+                                <Badge variant='outline' className='text-xs'>
+                                  Referencia
+                                </Badge>
                               </div>
 
                               {/* Información de la referencia */}
-                              <div className="space-y-1 text-sm text-muted-foreground">
+                              <div className='space-y-1 text-sm text-muted-foreground'>
                                 {reference.displayName && (
-                                  <p><strong>Nombre personalizado:</strong> {reference.displayName}</p>
+                                  <p>
+                                    <strong>Nombre personalizado:</strong>{" "}
+                                    {reference.displayName}
+                                  </p>
                                 )}
                                 {reference.description && (
-                                  <p><strong>Descripción:</strong> {reference.description}</p>
+                                  <p>
+                                    <strong>Descripción:</strong>{" "}
+                                    {reference.description}
+                                  </p>
                                 )}
-                                <p><strong>Orden:</strong> {reference.order}</p>
-                                <p><strong>Creado:</strong> {new Date(reference.createdAt).toLocaleDateString('es-ES')}</p>
+                                <p>
+                                  <strong>Orden:</strong> {reference.order}
+                                </p>
+                                <p>
+                                  <strong>Creado:</strong>{" "}
+                                  {new Date(
+                                    reference.createdAt
+                                  ).toLocaleDateString("es-ES")}
+                                </p>
                               </div>
                             </div>
 
                             {/* Acciones */}
-                            <div className="flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    // Encontrar y abrir el grupo fuente para editar
-                                    const sourceGroup = flatGroups.find(g => g.id === reference.sourceGroupId);
-                                    if (sourceGroup) {
-                                      setReferencesModalOpen(false);
-                                      openEditModal(sourceGroup);
-                                    }
-                                  }}
-                                >
-                                  <PencilIcon className="h-4 w-4 mr-1" />
-                                  Editar paquete
-                                </Button>
+                            <div className='flex gap-2'>
+                              <Button
+                                variant='outline'
+                                size='sm'
+                                onClick={() => {
+                                  // Encontrar y abrir el grupo fuente para editar
+                                  const sourceGroup = flatGroups.find(
+                                    (g) => g.id === reference.sourceGroupId
+                                  );
+                                  if (sourceGroup) {
+                                    setReferencesModalOpen(false);
+                                    openEditModal(sourceGroup);
+                                  }
+                                }}
+                              >
+                                <PencilIcon className='h-4 w-4 mr-1' />
+                                Editar paquete
+                              </Button>
                             </div>
                           </div>
                         </div>
@@ -2940,13 +3390,12 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                     })}
                   </div>
                 </ScrollArea>
-
               </>
             ) : (
-              <div className="text-center py-8">
-                <LinkIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-1">Sin referencias</h3>
-                <p className="text-muted-foreground">
+              <div className='text-center py-8'>
+                <LinkIcon className='h-12 w-12 text-muted-foreground mx-auto mb-4' />
+                <h3 className='text-lg font-semibold mb-1'>Sin referencias</h3>
+                <p className='text-muted-foreground'>
                   Este grupo no está siendo referenciado por ningún paquete
                 </p>
               </div>
@@ -2955,7 +3404,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
           <DialogFooter>
             <Button
-              variant="outline"
+              variant='outline'
               onClick={() => setReferencesModalOpen(false)}
             >
               Cerrar

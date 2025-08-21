@@ -1,16 +1,21 @@
-import { OAuth2Client } from 'google-auth-library';
-import { SpaceConfig, MeetingTemplate, generateTemplateConfig } from '../validations/SpaceConfigSchema';
+import { OAuth2Client } from "google-auth-library";
+import {
+  SpaceConfig,
+  MeetingTemplate,
+  generateTemplateConfig,
+} from "../validations/SpaceConfigSchema";
 
 export interface SpaceResource {
-  name: string;                    // Resource name: spaces/{space}
-  meetingUri?: string;             // Meet URL
-  meetingCode?: string;            // Meeting code
-  config?: SpaceConfig;            // Space configuration
-  activeConference?: {             // Current active conference
+  name: string; // Resource name: spaces/{space}
+  meetingUri?: string; // Meet URL
+  meetingCode?: string; // Meeting code
+  config?: SpaceConfig; // Space configuration
+  activeConference?: {
+    // Current active conference
     conferenceRecord?: string;
   };
-  createTime?: string;             // RFC3339 timestamp
-  updateTime?: string;             // RFC3339 timestamp
+  createTime?: string; // RFC3339 timestamp
+  updateTime?: string; // RFC3339 timestamp
 }
 
 export interface UpdateSpaceRequest {
@@ -25,7 +30,7 @@ export interface CreateSpaceRequest {
 
 export class MeetSpaceConfigService {
   private auth: OAuth2Client;
-  private baseUrl = 'https://meet.googleapis.com/v2beta'; // Using v2beta for advanced configurations
+  private baseUrl = "https://meet.googleapis.com/v2beta"; // Using v2beta for advanced configurations
 
   constructor(auth: OAuth2Client) {
     this.auth = auth;
@@ -40,27 +45,30 @@ export class MeetSpaceConfigService {
     try {
       const token = await this.auth.getAccessToken();
       if (!token.token) {
-        throw new Error('No access token available');
+        throw new Error("No access token available");
       }
 
       const url = `${this.baseUrl}/spaces`;
-      
-      console.log('🏗️ Creating new Meet space with v2beta API');
-      console.log('📋 Request config:', JSON.stringify(request, null, 2));
+
+      console.log("🏗️ Creating new Meet space with v2beta API");
+      console.log("📋 Request config:", JSON.stringify(request, null, 2));
 
       // Intentar crear con configuración completa primero
-      let space = await this.attemptSpaceCreation(url, token.token, request.config);
-      
+      let space = await this.attemptSpaceCreation(
+        url,
+        token.token,
+        request.config
+      );
+
       // Agregar displayName como metadata ya que no es parte del esquema oficial de la API
       if (request.displayName) {
         (space as any)._requestedDisplayName = request.displayName;
-        console.log('📝 DisplayName stored in metadata:', request.displayName);
+        console.log("📝 DisplayName stored in metadata:", request.displayName);
       }
 
       return space;
-
     } catch (error) {
-      console.error('💥 Error creating Meet space:', error);
+      console.error("💥 Error creating Meet space:", error);
       throw error;
     }
   }
@@ -68,7 +76,11 @@ export class MeetSpaceConfigService {
   /**
    * Intenta crear un espacio con fallback progresivo para funcionalidades no disponibles
    */
-  private async attemptSpaceCreation(url: string, token: string, config?: SpaceConfig): Promise<SpaceResource> {
+  private async attemptSpaceCreation(
+    url: string,
+    token: string,
+    config?: SpaceConfig
+  ): Promise<SpaceResource> {
     if (!config) {
       // Si no hay configuración, crear espacio básico
       return this.createBasicSpace(url, token);
@@ -78,47 +90,53 @@ export class MeetSpaceConfigService {
     const fallbackStrategies = [
       // Estrategia 1: Configuración completa
       () => this.createSpaceWithConfig(url, token, config),
-      
+
       // Estrategia 2: Sin attendanceReportGenerationType
       () => {
-        const configWithoutReports = { ...config };
-        delete configWithoutReports.attendanceReportGenerationType;
-        console.log('🔄 Retrying without attendance report generation...');
+        const { attendanceReportGenerationType, ...configWithoutReports } =
+          config;
+        console.log("🔄 Retrying without attendance report generation...");
         return this.createSpaceWithConfig(url, token, configWithoutReports);
       },
-      
+
       // Estrategia 3: Sin artefactos automáticos
       () => {
-        const configWithoutArtifacts = { ...config };
-        delete configWithoutArtifacts.artifactConfig;
-        delete configWithoutArtifacts.attendanceReportGenerationType;
-        console.log('🔄 Retrying without artifact config...');
+        const {
+          artifactConfig,
+          attendanceReportGenerationType,
+          ...configWithoutArtifacts
+        } = config;
+        console.log("🔄 Retrying without artifact config...");
         return this.createSpaceWithConfig(url, token, configWithoutArtifacts);
       },
-      
+
       // Estrategia 4: Solo configuración básica
       () => {
         const basicConfig = {
           accessType: config.accessType,
-          entryPointAccess: config.entryPointAccess
+          entryPointAccess: config.entryPointAccess,
         };
-        console.log('🔄 Retrying with basic config only...');
+        console.log("🔄 Retrying with basic config only...");
         return this.createSpaceWithConfig(url, token, basicConfig);
       },
-      
+
       // Estrategia 5: Espacio completamente básico
       () => {
-        console.log('🔄 Creating basic space without configuration...');
+        console.log("🔄 Creating basic space without configuration...");
         return this.createBasicSpace(url, token);
-      }
+      },
     ];
 
     for (let i = 0; i < fallbackStrategies.length; i++) {
       try {
-        const space = await fallbackStrategies[i]();
+        const strategy = fallbackStrategies[i];
+        if (!strategy) continue;
+
+        const space = await strategy();
         if (i > 0) {
           console.log(`⚠️ Space created with fallback strategy ${i + 1}`);
-          (space as any)._configurationIssues = `Some features unavailable - used fallback strategy ${i + 1}`;
+          (space as any)._configurationIssues =
+            `Some features unavailable - used fallback strategy ${i + 1}`;
         }
         return space;
       } catch (error: any) {
@@ -131,56 +149,67 @@ export class MeetSpaceConfigService {
       }
     }
 
-    throw new Error('All fallback strategies failed');
+    throw new Error("All fallback strategies failed");
   }
 
   /**
    * Crea un espacio con configuración específica
    */
-  private async createSpaceWithConfig(url: string, token: string, config: any): Promise<SpaceResource> {
+  private async createSpaceWithConfig(
+    url: string,
+    token: string,
+    config: any
+  ): Promise<SpaceResource> {
     const body = { config };
-    
+
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to create space with config: ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to create space with config: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     const space = await response.json();
-    console.log('✅ Space created successfully:', space.name);
+    console.log("✅ Space created successfully:", space.name);
     return space;
   }
 
   /**
    * Crea un espacio básico sin configuración
    */
-  private async createBasicSpace(url: string, token: string): Promise<SpaceResource> {
+  private async createBasicSpace(
+    url: string,
+    token: string
+  ): Promise<SpaceResource> {
     const response = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to create basic space: ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to create basic space: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     const space = await response.json();
-    console.log('✅ Basic space created successfully:', space.name);
+    console.log("✅ Basic space created successfully:", space.name);
     return space;
   }
 
@@ -190,35 +219,37 @@ export class MeetSpaceConfigService {
    * Requiere scope: meetings.space.created
    */
   async createSpaceFromTemplate(
-    template: MeetingTemplate, 
+    template: MeetingTemplate,
     displayName?: string,
     customConfig?: Partial<SpaceConfig>
   ): Promise<SpaceResource> {
-    console.log(`📋 Creating space from template: ${template} (template will be ignored by API v2)`);
-    
+    console.log(
+      `📋 Creating space from template: ${template} (template will be ignored by API v2)`
+    );
+
     // Generar configuración desde plantilla (para logging)
     const templateConfig = generateTemplateConfig(template);
-    
+
     // Combinar con configuración personalizada si existe (para logging)
     const finalConfig: SpaceConfig = {
       ...templateConfig,
-      ...customConfig
+      ...customConfig,
     };
 
     const request: CreateSpaceRequest = {
       displayName,
-      config: finalConfig
+      config: finalConfig,
     };
 
     // API v2 ignora toda la configuración pero creamos el space
     const space = await this.createSpace(request);
-    
+
     // Agregar metadata de plantilla al resultado (para referencia)
     (space as any)._template = template;
     (space as any)._requestedConfig = finalConfig;
     (space as any)._requestedDisplayName = displayName;
     (space as any)._templateConfig = templateConfig;
-    
+
     return space;
   }
 
@@ -230,34 +261,35 @@ export class MeetSpaceConfigService {
     try {
       const token = await this.auth.getAccessToken();
       if (!token.token) {
-        throw new Error('No access token available');
+        throw new Error("No access token available");
       }
 
       const searchParams = new URLSearchParams();
-      if (fields) searchParams.set('fields', fields);
+      if (fields) searchParams.set("fields", fields);
 
       const url = `${this.baseUrl}/spaces/${spaceId}?${searchParams.toString()}`;
-      
+
       console.log(`🔍 Getting space ${spaceId}`);
 
       const response = await fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Authorization': `Bearer ${token.token}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+        },
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to get space: ${response.status} ${response.statusText} - ${errorText}`);
+        throw new Error(
+          `Failed to get space: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
 
       const space = await response.json();
       console.log(`✅ Retrieved space ${spaceId}`);
 
       return space;
-
     } catch (error) {
       console.error(`💥 Error getting space ${spaceId}:`, error);
       throw error;
@@ -269,51 +301,54 @@ export class MeetSpaceConfigService {
    * Requiere scope: meetings.space.created o meetings.space.settings (para artefactos)
    */
   async updateSpace(
-    spaceId: string, 
+    spaceId: string,
     updates: UpdateSpaceRequest,
     updateMask?: string[]
   ): Promise<SpaceResource> {
     try {
       const token = await this.auth.getAccessToken();
       if (!token.token) {
-        throw new Error('No access token available');
+        throw new Error("No access token available");
       }
 
       const searchParams = new URLSearchParams();
-      
+
       // Generar update mask automáticamente si no se proporciona
       if (!updateMask) {
         updateMask = this.generateUpdateMask(updates);
       }
-      
+
       if (updateMask.length > 0) {
-        searchParams.set('updateMask', updateMask.join(','));
+        searchParams.set("updateMask", updateMask.join(","));
       }
 
       const url = `${this.baseUrl}/spaces/${spaceId}?${searchParams.toString()}`;
-      
-      console.log(`🔄 Updating space ${spaceId} with mask: [${updateMask.join(', ')}]`);
+
+      console.log(
+        `🔄 Updating space ${spaceId} with mask: [${updateMask.join(", ")}]`
+      );
 
       const response = await fetch(url, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Authorization': `Bearer ${token.token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(updates)
+        body: JSON.stringify(updates),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Failed to update space: ${response.status} ${response.statusText} - ${errorText}`);
+        throw new Error(
+          `Failed to update space: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
 
       const updatedSpace = await response.json();
       console.log(`✅ Updated space ${spaceId}`);
 
       return updatedSpace;
-
     } catch (error) {
       console.error(`💥 Error updating space ${spaceId}:`, error);
       throw error;
@@ -328,34 +363,35 @@ export class MeetSpaceConfigService {
     try {
       const token = await this.auth.getAccessToken();
       if (!token.token) {
-        throw new Error('No access token available');
+        throw new Error("No access token available");
       }
 
       const url = `${this.baseUrl}/spaces/${spaceId}`;
-      
+
       console.log(`🗑️ Deleting space ${spaceId}`);
 
       const response = await fetch(url, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Authorization': `Bearer ${token.token}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${token.token}`,
+          Accept: "application/json",
+        },
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        
+
         if (response.status === 404) {
           console.log(`✅ Space ${spaceId} already deleted or not found`);
           return; // Ya no existe
         }
-        
-        throw new Error(`Failed to delete space: ${response.status} ${response.statusText} - ${errorText}`);
+
+        throw new Error(
+          `Failed to delete space: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
 
       console.log(`✅ Deleted space ${spaceId}`);
-
     } catch (error) {
       console.error(`💥 Error deleting space ${spaceId}:`, error);
       throw error;
@@ -369,14 +405,14 @@ export class MeetSpaceConfigService {
   async applyTemplate(
     spaceId: string,
     template: MeetingTemplate,
-    preserveSettings?: string[]  // Lista de configuraciones que no se deben sobrescribir
+    preserveSettings?: string[] // Lista de configuraciones que no se deben sobrescribir
   ): Promise<SpaceResource> {
     console.log(`📋 Applying template ${template} to space ${spaceId}`);
 
     // Obtener configuración actual si hay configuraciones a preservar
     let currentConfig: SpaceConfig | undefined;
     if (preserveSettings && preserveSettings.length > 0) {
-      const currentSpace = await this.getSpace(spaceId, 'config');
+      const currentSpace = await this.getSpace(spaceId, "config");
       currentConfig = currentSpace.config;
     }
 
@@ -387,8 +423,8 @@ export class MeetSpaceConfigService {
     let finalConfig = templateConfig;
     if (currentConfig && preserveSettings) {
       finalConfig = { ...templateConfig };
-      
-      preserveSettings.forEach(setting => {
+
+      preserveSettings.forEach((setting) => {
         if (setting in currentConfig!) {
           (finalConfig as any)[setting] = (currentConfig as any)[setting];
         }
@@ -397,7 +433,7 @@ export class MeetSpaceConfigService {
 
     // Actualizar el espacio
     const updatedSpace = await this.updateSpace(spaceId, {
-      config: finalConfig
+      config: finalConfig,
     });
 
     // Agregar metadata de plantilla
@@ -425,25 +461,29 @@ export class MeetSpaceConfigService {
 
     if (artifacts.recording !== undefined) {
       artifactConfig.recordingConfig = {
-        autoRecordingGeneration: artifacts.recording ? 'ON' : 'OFF'
+        autoRecordingGeneration: artifacts.recording ? "ON" : "OFF",
       };
     }
 
     if (artifacts.transcription !== undefined) {
       artifactConfig.transcriptionConfig = {
-        autoTranscriptionGeneration: artifacts.transcription ? 'ON' : 'OFF'
+        autoTranscriptionGeneration: artifacts.transcription ? "ON" : "OFF",
       };
     }
 
     if (artifacts.smartNotes !== undefined) {
       artifactConfig.smartNotesConfig = {
-        autoSmartNotesGeneration: artifacts.smartNotes ? 'ON' : 'OFF'
+        autoSmartNotesGeneration: artifacts.smartNotes ? "ON" : "OFF",
       };
     }
 
-    return this.updateSpace(spaceId, {
-      config: { artifactConfig }
-    }, ['config.artifactConfig']);
+    return this.updateSpace(
+      spaceId,
+      {
+        config: { artifactConfig },
+      },
+      ["config.artifactConfig"]
+    );
   }
 
   /**
@@ -454,8 +494,8 @@ export class MeetSpaceConfigService {
     spaceId: string,
     moderation: {
       enabled?: boolean;
-      chatRestriction?: 'HOSTS_ONLY' | 'NO_RESTRICTION';
-      presentRestriction?: 'HOSTS_ONLY' | 'NO_RESTRICTION';
+      chatRestriction?: "HOSTS_ONLY" | "NO_RESTRICTION";
+      presentRestriction?: "HOSTS_ONLY" | "NO_RESTRICTION";
       defaultJoinAsViewer?: boolean;
     }
   ): Promise<SpaceResource> {
@@ -464,7 +504,7 @@ export class MeetSpaceConfigService {
     const config: any = {};
 
     if (moderation.enabled !== undefined) {
-      config.moderation = moderation.enabled ? 'ON' : 'OFF';
+      config.moderation = moderation.enabled ? "ON" : "OFF";
     }
 
     const moderationRestrictions: any = {};
@@ -481,7 +521,8 @@ export class MeetSpaceConfigService {
     }
 
     if (moderation.defaultJoinAsViewer !== undefined) {
-      moderationRestrictions.defaultJoinAsViewerType = moderation.defaultJoinAsViewer ? 'ON' : 'OFF';
+      moderationRestrictions.defaultJoinAsViewerType =
+        moderation.defaultJoinAsViewer ? "ON" : "OFF";
       hasRestrictions = true;
     }
 
@@ -490,8 +531,9 @@ export class MeetSpaceConfigService {
     }
 
     const updateMask = [];
-    if (config.moderation) updateMask.push('config.moderation');
-    if (config.moderationRestrictions) updateMask.push('config.moderationRestrictions');
+    if (config.moderation) updateMask.push("config.moderation");
+    if (config.moderationRestrictions)
+      updateMask.push("config.moderationRestrictions");
 
     return this.updateSpace(spaceId, { config }, updateMask);
   }
@@ -503,22 +545,27 @@ export class MeetSpaceConfigService {
     const mask: string[] = [];
 
     if (updates.displayName !== undefined) {
-      mask.push('displayName');
+      mask.push("displayName");
     }
 
     if (updates.config) {
       const config = updates.config;
-      
-      if (config.accessType) mask.push('config.accessType');
-      if (config.entryPointAccess) mask.push('config.entryPointAccess');
-      if (config.moderation) mask.push('config.moderation');
-      if (config.moderationRestrictions) mask.push('config.moderationRestrictions');
-      if (config.attendanceReportGenerationType) mask.push('config.attendanceReportGenerationType');
-      
+
+      if (config.accessType) mask.push("config.accessType");
+      if (config.entryPointAccess) mask.push("config.entryPointAccess");
+      if (config.moderation) mask.push("config.moderation");
+      if (config.moderationRestrictions)
+        mask.push("config.moderationRestrictions");
+      if (config.attendanceReportGenerationType)
+        mask.push("config.attendanceReportGenerationType");
+
       if (config.artifactConfig) {
-        if (config.artifactConfig.recordingConfig) mask.push('config.artifactConfig.recordingConfig');
-        if (config.artifactConfig.transcriptionConfig) mask.push('config.artifactConfig.transcriptionConfig');
-        if (config.artifactConfig.smartNotesConfig) mask.push('config.artifactConfig.smartNotesConfig');
+        if (config.artifactConfig.recordingConfig)
+          mask.push("config.artifactConfig.recordingConfig");
+        if (config.artifactConfig.transcriptionConfig)
+          mask.push("config.artifactConfig.transcriptionConfig");
+        if (config.artifactConfig.smartNotesConfig)
+          mask.push("config.artifactConfig.smartNotesConfig");
       }
     }
 
@@ -544,20 +591,29 @@ export class MeetSpaceConfigService {
   }[] {
     return [
       {
-        scope: 'https://www.googleapis.com/auth/meetings.space.created',
-        description: 'Espacios creados por esta aplicación',
-        capabilities: ['Crear', 'Leer', 'Actualizar', 'Eliminar', 'Gestionar miembros']
+        scope: "https://www.googleapis.com/auth/meetings.space.created",
+        description: "Espacios creados por esta aplicación",
+        capabilities: [
+          "Crear",
+          "Leer",
+          "Actualizar",
+          "Eliminar",
+          "Gestionar miembros",
+        ],
       },
       {
-        scope: 'https://www.googleapis.com/auth/meetings.space.readonly',
-        description: 'Lectura de espacios y artefactos',
-        capabilities: ['Leer espacios', 'Listar miembros', 'Ver artefactos']
+        scope: "https://www.googleapis.com/auth/meetings.space.readonly",
+        description: "Lectura de espacios y artefactos",
+        capabilities: ["Leer espacios", "Listar miembros", "Ver artefactos"],
       },
       {
-        scope: 'https://www.googleapis.com/auth/meetings.space.settings',
-        description: 'Configuración avanzada de espacios',
-        capabilities: ['Artefactos automáticos', 'Configuración de todos los espacios']
-      }
+        scope: "https://www.googleapis.com/auth/meetings.space.settings",
+        description: "Configuración avanzada de espacios",
+        capabilities: [
+          "Artefactos automáticos",
+          "Configuración de todos los espacios",
+        ],
+      },
     ];
   }
 }

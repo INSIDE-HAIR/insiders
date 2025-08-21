@@ -8,22 +8,22 @@ export interface ParticipantAnalytics {
     cohosts: number;
     regularMembers: number;
   };
-  
+
   // Participantes Históricos (desde Activity)
   participants: {
-    invited: number;           // signedinUser
-    uninvited: number;         // anonymousUser + phoneUser
-    unique: number;            // total únicos
+    invited: number; // signedinUser
+    uninvited: number; // anonymousUser + phoneUser
+    unique: number; // total únicos
   };
-  
+
   // Métricas de Sesiones
   sessions: {
-    total: number;             // número total de sesiones/reuniones
+    total: number; // número total de sesiones/reuniones
     totalDurationMinutes: number; // duración total en minutos
     averageDurationMinutes: number; // duración promedio por sesión
     averageParticipantsPerSession: number; // media de participantes por sesión
   };
-  
+
   // Actividad Reciente
   recentActivity?: {
     lastMeetingDate: string | null;
@@ -43,35 +43,49 @@ export class MeetAnalyticsService {
    */
   async getRoomAnalytics(spaceId: string): Promise<ParticipantAnalytics> {
     try {
-      console.log(`📊 Getting analytics for space ${spaceId} via internal endpoint`);
-      
+      console.log(
+        `📊 Getting analytics for space ${spaceId} via internal endpoint`
+      );
+
       // Hacer llamada al endpoint interno de analytics
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/meet/rooms/${spaceId}/analytics`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/meet/rooms/${spaceId}/analytics`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
 
       if (!response.ok) {
-        console.warn(`⚠️ Analytics endpoint failed for ${spaceId}: ${response.status}`);
+        console.warn(
+          `⚠️ Analytics endpoint failed for ${spaceId}: ${response.status}`
+        );
         return this.getEmptyAnalytics();
       }
 
       const analyticsData = await response.json();
-      
+
       return {
-        permanentMembers: analyticsData.permanentMembers || { total: 0, cohosts: 0, regularMembers: 0 },
-        participants: analyticsData.participants || { invited: 0, uninvited: 0, unique: 0 },
-        sessions: analyticsData.sessions || { 
-          total: 0, 
-          totalDurationMinutes: 0, 
-          averageDurationMinutes: 0, 
-          averageParticipantsPerSession: 0 
+        permanentMembers: analyticsData.permanentMembers || {
+          total: 0,
+          cohosts: 0,
+          regularMembers: 0,
         },
-        recentActivity: analyticsData.recentActivity
+        participants: analyticsData.participants || {
+          invited: 0,
+          uninvited: 0,
+          unique: 0,
+        },
+        sessions: analyticsData.sessions || {
+          total: 0,
+          totalDurationMinutes: 0,
+          averageDurationMinutes: 0,
+          averageParticipantsPerSession: 0,
+        },
+        recentActivity: analyticsData.recentActivity,
       };
-      
     } catch (error) {
       console.error(`❌ Failed to get analytics for space ${spaceId}:`, error);
       return this.getEmptyAnalytics();
@@ -82,27 +96,28 @@ export class MeetAnalyticsService {
     return {
       permanentMembers: { total: 0, cohosts: 0, regularMembers: 0 },
       participants: { invited: 0, uninvited: 0, unique: 0 },
-      sessions: { 
-        total: 0, 
-        totalDurationMinutes: 0, 
-        averageDurationMinutes: 0, 
-        averageParticipantsPerSession: 0 
-      }
+      sessions: {
+        total: 0,
+        totalDurationMinutes: 0,
+        averageDurationMinutes: 0,
+        averageParticipantsPerSession: 0,
+      },
     };
   }
-
 
   /**
    * Obtiene analytics para múltiples salas (batch)
    */
-  async getBatchRoomAnalytics(spaceIds: string[]): Promise<{ [spaceId: string]: ParticipantAnalytics }> {
+  async getBatchRoomAnalytics(
+    spaceIds: string[]
+  ): Promise<{ [spaceId: string]: ParticipantAnalytics }> {
     const results: { [spaceId: string]: ParticipantAnalytics } = {};
 
     // Procesar en paralelo pero con límite para no sobrecargar la API
     const batchSize = 5;
     for (let i = 0; i < spaceIds.length; i += batchSize) {
       const batch = spaceIds.slice(i, i + batchSize);
-      
+
       const batchResults = await Promise.allSettled(
         batch.map(async (spaceId) => {
           const analytics = await this.getRoomAnalytics(spaceId);
@@ -111,14 +126,14 @@ export class MeetAnalyticsService {
       );
 
       for (const result of batchResults) {
-        if (result.status === 'fulfilled') {
+        if (result.status === "fulfilled") {
           results[result.value.spaceId] = result.value.analytics;
         }
       }
 
       // Pequeña pausa entre batches para no sobrecargar la API
       if (i + batchSize < spaceIds.length) {
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise((resolve) => setTimeout(resolve, 200));
       }
     }
 
