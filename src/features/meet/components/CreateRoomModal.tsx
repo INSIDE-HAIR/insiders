@@ -23,23 +23,30 @@ import { Switch } from "@/src/components/ui/switch";
 import { Badge } from "@/src/components/ui/badge";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
 import {
   VideoCameraIcon,
   UsersIcon,
   LockClosedIcon,
+  LockOpenIcon,
   Cog6ToothIcon,
   ExclamationTriangleIcon,
   PlusIcon,
   XMarkIcon,
+  InformationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { z } from "zod";
 import {
   CreateSpaceSchema,
-  MeetingTemplateEnum,
-  generateTemplateConfig,
-  type MeetingTemplate
+  AccessTypeEnum,
+  EntryPointAccessEnum,
+  RestrictionTypeEnum,
+  DefaultJoinAsViewerTypeEnum,
+  AutoGenerationTypeEnum,
+  AttendanceReportGenerationTypeEnum,
+  MemberRoleEnum
 } from "@/src/features/meet/validations/SpaceConfigSchema";
 
 interface CreateRoomModalProps {
@@ -60,24 +67,46 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
   // Form state
   const [displayName, setDisplayName] = useState("");
-  const [useTemplate, setUseTemplate] = useState(false);
-  const [selectedTemplate, setSelectedTemplate] = useState<MeetingTemplate>("TEAM_STANDUP");
   const [accessType, setAccessType] = useState<"OPEN" | "TRUSTED" | "RESTRICTED">("TRUSTED");
+  const [restrictEntryPoints, setRestrictEntryPoints] = useState(false); // false = ALL, true = CREATOR_APP_ONLY
   const [members, setMembers] = useState<Array<{ email: string; role: "ROLE_UNSPECIFIED" | "COHOST" }>>([]);
   const [newMemberEmail, setNewMemberEmail] = useState("");
   const [newMemberRole, setNewMemberRole] = useState<"ROLE_UNSPECIFIED" | "COHOST">("ROLE_UNSPECIFIED");
   
-  // Configuración avanzada
+  // Estados para filtros de miembros
+  const [memberSearchTerm, setMemberSearchTerm] = useState("");
+  const [memberRoleFilter, setMemberRoleFilter] = useState<"ALL" | "COHOST" | "ROLE_UNSPECIFIED">("ALL");
+  
+  // Configuración de moderación
   const [moderation, setModeration] = useState(false);
+  const [chatRestriction, setChatRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
+  const [reactionRestriction, setReactionRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
+  const [presentRestriction, setPresentRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
+  const [defaultJoinAsViewer, setDefaultJoinAsViewer] = useState(false);
+  
+  // Configuración de artefactos automáticos
   const [autoRecording, setAutoRecording] = useState(false);
   const [autoTranscription, setAutoTranscription] = useState(false);
   const [autoSmartNotes, setAutoSmartNotes] = useState(false);
-  const [attendanceReport, setAttendanceReport] = useState(false);
-  const [chatRestriction, setChatRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
-  const [presentRestriction, setPresentRestriction] = useState<"HOSTS_ONLY" | "NO_RESTRICTION">("NO_RESTRICTION");
-  const [defaultJoinAsViewer, setDefaultJoinAsViewer] = useState(false);
+  
+  // REPORTES: Comentado hasta tener Google Workspace Enterprise
+  // Para habilitar: descomentar esta línea y las secciones relacionadas en el JSX
+  // Requiere scope: meetings.space.settings y configuración en Google Admin
+  // const [attendanceReport, setAttendanceReport] = useState(false);
 
   const [activeTab, setActiveTab] = useState("basic");
+
+  // Función para filtrar miembros
+  const filteredMembers = members.filter((member) => {
+    // Filtro por término de búsqueda (email)
+    const searchMatch = memberSearchTerm === "" || 
+      member.email.toLowerCase().includes(memberSearchTerm.toLowerCase());
+    
+    // Filtro por rol
+    const roleMatch = memberRoleFilter === "ALL" || member.role === memberRoleFilter;
+    
+    return searchMatch && roleMatch;
+  });
 
   const handleAddMember = () => {
     if (!newMemberEmail) return;
@@ -114,41 +143,30 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
     try {
       setLoading(true);
 
-      let data: any;
-      
-      if (useTemplate) {
-        // Usar plantilla predefinida
-        data = {
-          displayName,
-          template: selectedTemplate,
-          initialMembers: members,
-          customConfig: {
-            // Permitir override de algunas configuraciones
-            accessType: accessType !== "TRUSTED" ? accessType : undefined
-          }
-        };
-      } else {
-        // Configuración personalizada completa
-        data = {
-          displayName,
-          config: {
-            accessType,
-            moderation: moderation ? "ON" : "OFF",
-            moderationRestrictions: {
-              chatRestriction,
-              presentRestriction,
-              defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF"
-            },
-            artifactConfig: {
-              recordingConfig: { autoRecordingGeneration: autoRecording ? "ON" : "OFF" },
-              transcriptionConfig: { autoTranscriptionGeneration: autoTranscription ? "ON" : "OFF" },
-              smartNotesConfig: { autoSmartNotesGeneration: autoSmartNotes ? "ON" : "OFF" }
-            },
-            attendanceReportGenerationType: attendanceReport ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+      // Configuración completa según Google Meet API v2beta
+      const data = {
+        displayName,
+        config: {
+          accessType,
+          entryPointAccess: restrictEntryPoints ? "CREATOR_APP_ONLY" : "ALL",
+          moderation: moderation ? "ON" : "OFF",
+          moderationRestrictions: moderation ? {
+            chatRestriction,
+            reactionRestriction,
+            presentRestriction,
+            defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF"
+          } : undefined,
+          artifactConfig: {
+            recordingConfig: { autoRecordingGeneration: autoRecording ? "ON" : "OFF" },
+            transcriptionConfig: { autoTranscriptionGeneration: autoTranscription ? "ON" : "OFF" },
+            smartNotesConfig: { autoSmartNotesGeneration: autoSmartNotes ? "ON" : "OFF" }
           },
-          initialMembers: members
-        };
-      }
+          // REPORTES: Comentado hasta tener Google Workspace Enterprise
+          // Cambiar por: attendanceReport ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+          attendanceReportGenerationType: "DO_NOT_GENERATE"
+        },
+        initialMembers: members
+      };
 
       const validation = CreateSpaceSchema.safeParse(data);
       if (!validation.success) {
@@ -164,16 +182,16 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
       
       // Reset form
       setDisplayName("");
-      setUseTemplate(false);
-      setSelectedTemplate("TEAM_STANDUP");
       setAccessType("TRUSTED");
+      setRestrictEntryPoints(false);
       setMembers([]);
       setModeration(false);
       setAutoRecording(false);
       setAutoTranscription(false);
       setAutoSmartNotes(false);
-      setAttendanceReport(false);
+      // setAttendanceReport(false); // REPORTES: Descomentar cuando se habilite la funcionalidad
       setChatRestriction("NO_RESTRICTION");
+      setReactionRestriction("NO_RESTRICTION");
       setPresentRestriction("NO_RESTRICTION");
       setDefaultJoinAsViewer(false);
       setActiveTab("basic");
@@ -187,36 +205,16 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   const getAccessTypeDescription = (type: string) => {
     switch (type) {
       case "OPEN":
-        return "Cualquiera con el enlace puede unirse sin aprobación";
+        return "Cualquiera con el enlace puede unirse directamente sin pedir permiso al anfitrión";
       case "TRUSTED":
-        return "Solo usuarios autenticados de tu organización pueden unirse";
+        return "Miembros de tu organización y invitados por calendario entran directamente. Otros deben pedir permiso al anfitrión";
       case "RESTRICTED":
-        return "Solo usuarios invitados específicamente pueden unirse";
+        return "Solo invitados específicos entran directamente. Todos los demás deben pedir permiso al anfitrión";
       default:
         return "";
     }
   };
   
-  const getTemplateDescription = (template: MeetingTemplate) => {
-    switch (template) {
-      case "TEAM_STANDUP":
-        return "Reunión informal de equipo con permisos abiertos";
-      case "PRESENTATION":
-        return "Presentación formal con grabación y restricciones de presentación";
-      case "TRAINING_SESSION":
-        return "Sesión de entrenamiento con grabación, transcripción y notas automáticas";
-      case "INTERVIEW":
-        return "Entrevista restringida con reporte de asistencia";
-      case "WEBINAR":
-        return "Seminario web abierto con moderación y grabación";
-      case "OPEN_MEETING":
-        return "Reunión completamente abierta sin restricciones";
-      case "RESTRICTED_MEETING":
-        return "Reunión altamente restringida con máxima moderación";
-      default:
-        return "";
-    }
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -232,9 +230,8 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="basic">Básico</TabsTrigger>
-            <TabsTrigger value="template">Plantillas</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="basic">Configuración</TabsTrigger>
             <TabsTrigger value="members">Miembros</TabsTrigger>
             <TabsTrigger value="settings">Avanzado</TabsTrigger>
           </TabsList>
@@ -254,78 +251,56 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
               </p>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="use-template"
-                checked={useTemplate}
-                onCheckedChange={setUseTemplate}
-              />
-              <Label htmlFor="use-template">Usar plantilla predefinida</Label>
-            </div>
-
-            {!useTemplate && (
-              <div className="space-y-2">
-                <Label htmlFor="accessType">Tipo de Acceso</Label>
-                <Select value={accessType} onValueChange={(value: any) => setAccessType(value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecciona el tipo de acceso" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="OPEN">
-                      <div className="flex items-center gap-2">
-                        <LockClosedIcon className="h-4 w-4 text-green-500" />
-                        <span>Abierto</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="TRUSTED">
-                      <div className="flex items-center gap-2">
-                        <LockClosedIcon className="h-4 w-4 text-yellow-500" />
-                        <span>Confiable</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="RESTRICTED">
-                      <div className="flex items-center gap-2">
-                        <LockClosedIcon className="h-4 w-4 text-red-500" />
-                        <span>Restringido</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="text-sm text-muted-foreground">
-                  {getAccessTypeDescription(accessType)}
-                </p>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="template" className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label>Plantillas Predefinidas</Label>
-              <Select value={selectedTemplate} onValueChange={(value: MeetingTemplate) => setSelectedTemplate(value)}>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="accessType">Tipo de Acceso</Label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-sm">
+                      <p className="text-sm">
+                        <strong>Control de Acceso a la Reunión:</strong><br/>
+                        • <strong>Libre:</strong> Cualquiera con el enlace entra directamente<br/>
+                        • <strong>Organizacional:</strong> Tu organización entra directamente, otros piden permiso<br/>
+                        • <strong>Solo Invitados:</strong> Solo invitados específicos entran, otros piden permiso al anfitrión
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <Select value={accessType} onValueChange={(value: any) => setAccessType(value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Selecciona una plantilla" />
+                  <SelectValue placeholder="Selecciona el tipo de acceso" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="TEAM_STANDUP">Reunión de Equipo</SelectItem>
-                  <SelectItem value="PRESENTATION">Presentación</SelectItem>
-                  <SelectItem value="TRAINING_SESSION">Sesión de Entrenamiento</SelectItem>
-                  <SelectItem value="INTERVIEW">Entrevista</SelectItem>
-                  <SelectItem value="WEBINAR">Seminario Web</SelectItem>
-                  <SelectItem value="OPEN_MEETING">Reunión Abierta</SelectItem>
-                  <SelectItem value="RESTRICTED_MEETING">Reunión Restringida</SelectItem>
+                  <SelectItem value="OPEN">
+                    <div className="flex items-center gap-2">
+                      <LockOpenIcon className="h-4 w-4 text-green-500" />
+                      <span>Acceso Libre</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="TRUSTED">
+                    <div className="flex items-center gap-2">
+                      <LockClosedIcon className="h-4 w-4 text-yellow-500" />
+                      <span>Acceso Organizacional</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="RESTRICTED">
+                    <div className="flex items-center gap-2">
+                      <LockClosedIcon className="h-4 w-4 text-red-500" />
+                      <span>Solo Invitados</span>
+                    </div>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
-                {getTemplateDescription(selectedTemplate)}
+                {getAccessTypeDescription(accessType)}
               </p>
             </div>
-            
-            <Alert>
-              <Cog6ToothIcon className="h-4 w-4" />
-              <AlertDescription>
-                Las plantillas configuran automáticamente moderación, permisos, grabación y otras opciones según el tipo de reunión.
-              </AlertDescription>
-            </Alert>
+
+
           </TabsContent>
 
           <TabsContent value="members" className="space-y-4 mt-4">
@@ -359,9 +334,39 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
             {members.length > 0 && (
               <div className="space-y-2">
-                <Label>Participantes ({members.length})</Label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {members.map((member, index) => (
+                <Label>Participantes ({filteredMembers.length} de {members.length})</Label>
+                
+                {/* Filtros de búsqueda y rol */}
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Buscar por email..."
+                      value={memberSearchTerm}
+                      onChange={(e) => setMemberSearchTerm(e.target.value)}
+                      className="text-sm"
+                    />
+                  </div>
+                  <Select 
+                    value={memberRoleFilter} 
+                    onValueChange={(value: "ALL" | "COHOST" | "ROLE_UNSPECIFIED") => setMemberRoleFilter(value)}
+                  >
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="ALL">Todos</SelectItem>
+                      <SelectItem value="COHOST">Co-anfitrión</SelectItem>
+                      <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {filteredMembers.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-4 text-sm">
+                    No se encontraron miembros que coincidan con los filtros
+                  </p>
+                ) : (
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {filteredMembers.map((member, index) => (
                     <div
                       key={index}
                       className="flex items-center justify-between p-2 bg-muted rounded-lg"
@@ -381,9 +386,10 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                       >
                         <XMarkIcon className="h-4 w-4" />
                       </Button>
-                    </div>
-                  ))}
-                </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -396,14 +402,59 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-4 mt-4">
-            {!useTemplate && (
-              <div className="space-y-4">
+            <div className="space-y-4">
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">Moderación y Permisos</h4>
                   
+
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="moderation">Activar Moderación</Label>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="restrict-entry">Restringir Puntos de Entrada</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Control de Aplicaciones:</strong><br/>
+                                • <strong>Desactivado:</strong> Se puede acceder desde cualquier aplicación (Google Meet, Calendar, etc.)<br/>
+                                • <strong>Activado:</strong> Solo la aplicación que creó la sala puede acceder (más restrictivo)
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Limita el acceso solo a la aplicación que creó la sala
+                      </p>
+                    </div>
+                    <Switch
+                      id="restrict-entry"
+                      checked={restrictEntryPoints}
+                      onCheckedChange={setRestrictEntryPoints}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="moderation">Activar Moderación</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Control del Anfitrión:</strong><br/>
+                                Permite al anfitrión y co-anfitriones controlar quién puede chatear, presentar, reaccionar y si los nuevos participantes entran como espectadores.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         El organizador controla permisos de los participantes
                       </p>
@@ -415,10 +466,26 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                     />
                   </div>
 
+
                   {moderation && (
                     <>
                       <div className="space-y-2">
-                        <Label>Restricción de Chat</Label>
+                        <div className="flex items-center gap-2">
+                          <Label>Restricción de Chat</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Control de Chat:</strong><br/>
+                                  Determina quién puede enviar mensajes en el chat durante la reunión.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                         <Select value={chatRestriction} onValueChange={(value: any) => setChatRestriction(value)}>
                           <SelectTrigger>
                             <SelectValue />
@@ -431,7 +498,50 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                       </div>
 
                       <div className="space-y-2">
-                        <Label>Restricción de Presentación</Label>
+                        <div className="flex items-center gap-2">
+                          <Label>Restricción de Reacciones</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Control de Reacciones:</strong><br/>
+                                  Determina quién puede enviar reacciones (emojis, "me gusta", etc.) durante la reunión.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <Select value={reactionRestriction} onValueChange={(value: any) => setReactionRestriction(value)}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="NO_RESTRICTION">Todos pueden reaccionar</SelectItem>
+                            <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Label>Restricción de Presentación</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Control de Pantalla:</strong><br/>
+                                  Determina quién puede compartir pantalla, presentar documentos o mostrar contenido durante la reunión.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                         <Select value={presentRestriction} onValueChange={(value: any) => setPresentRestriction(value)}>
                           <SelectTrigger>
                             <SelectValue />
@@ -445,7 +555,22 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <Label htmlFor="default-viewer">Unirse como Espectador</Label>
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="default-viewer">Unirse como Espectador</Label>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm">
+                                  <p className="text-sm">
+                                    <strong>Modo Espectador:</strong><br/>
+                                    Los nuevos participantes entrarán solo con permisos de visualización. El anfitrión puede promocionarlos a participantes activos después.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             Nuevos participantes se unen como espectadores
                           </p>
@@ -465,7 +590,22 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="auto-recording">Grabación Automática</Label>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="auto-recording">Grabación Automática</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Grabación Automática:</strong><br/>
+                                La reunión se grabará automáticamente cuando comience. Los archivos se guardan en Google Drive del organizador. Los participantes serán notificados.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         Las reuniones se grabarán automáticamente al iniciar
                       </p>
@@ -479,7 +619,22 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="auto-transcription">Transcripción Automática</Label>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="auto-transcription">Transcripción Automática</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Transcripción Automática:</strong><br/>
+                                Convierte automáticamente el audio de la reunión en texto. El documento se guarda en Google Drive con marcas de tiempo y identificación de participantes.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         Genera transcripciones de las conversaciones
                       </p>
@@ -493,7 +648,22 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="auto-smart-notes">Notas Inteligentes</Label>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="auto-smart-notes">Notas Inteligentes</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Notas Inteligentes:</strong><br/>
+                                Genera automáticamente resúmenes, puntos clave, acciones y decisiones de la reunión usando IA. Se guarda como documento de Google Docs.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         Genera resúmenes y puntos clave automáticamente
                       </p>
@@ -506,12 +676,50 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   </div>
                 </div>
 
+                {/* 
+                  FUNCIONALIDAD DE REPORTES - COMENTADA TEMPORALMENTE
+                  =====================================================
+                  Esta sección está comentada porque requiere Google Workspace Enterprise
+                  o una suscripción avanzada que incluya "Meeting attendance reports".
+                  
+                  Para habilitar en el futuro:
+                  1. Descomentar esta sección
+                  2. Descomentar la variable attendanceReport en el estado
+                  3. Descomentar las referencias en handleSubmit y resetForm
+                  4. Verificar que tengas los scopes correctos en Google Cloud Console
+                  5. Configurar "Generate attendance reports" en Google Workspace Admin
+                  
+                  API Error que se produce sin el plan correcto:
+                  "updateAttendanceReportGenerationType is not available to the user"
+                */}
+                {/*
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium">Reportes</h4>
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-medium">Reportes</h4>
+                    <p className="text-xs text-muted-foreground">
+                      Configurar reportes automáticos de asistencia
+                    </p>
+                  </div>
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
-                      <Label htmlFor="attendance-report">Reporte de Asistencia</Label>
+                      <div className="flex items-center gap-2">
+                        <Label htmlFor="attendance-report">Reporte de Asistencia</Label>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-sm">
+                              <p className="text-sm">
+                                <strong>Reporte de Asistencia:</strong><br/>
+                                Genera automáticamente un informe detallado con la lista de participantes, 
+                                horarios de entrada/salida y duración de permanencia en la reunión.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
                       <p className="text-sm text-muted-foreground">
                         Generar reporte automático de participantes
                       </p>
@@ -523,17 +731,8 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                     />
                   </div>
                 </div>
-              </div>
-            )}
-
-            {useTemplate && (
-              <Alert>
-                <Cog6ToothIcon className="h-4 w-4" />
-                <AlertDescription>
-                  La plantilla seleccionada configurará automáticamente todas estas opciones. Puedes modificarlas después de crear la sala.
-                </AlertDescription>
-              </Alert>
-            )}
+                */}
+            </div>
           </TabsContent>
         </Tabs>
 
@@ -553,12 +752,12 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
             {loading ? (
               <>
                 <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin" />
-                {useTemplate ? "Aplicando Plantilla..." : "Creando Sala..."}
+                Creando Sala...
               </>
             ) : (
               <>
                 <VideoCameraIcon className="mr-2 h-4 w-4" />
-                {useTemplate ? `Crear con ${selectedTemplate}` : "Crear Sala"}
+                Crear Sala
               </>
             )}
           </Button>

@@ -1,12 +1,46 @@
 import { OAuth2Client } from 'google-auth-library';
 import { MemberRole } from '../validations/SpaceConfigSchema';
 
+// Utilidad para reintentos automáticos en errores temporales
+async function retryOnServerError<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delayMs: number = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      // Verificar si es un error temporal del servidor (502, 503, 504)
+      const isServerError = error.message?.includes('502') || 
+                           error.message?.includes('503') || 
+                           error.message?.includes('504') ||
+                           error.message?.includes('Bad Gateway') ||
+                           error.message?.includes('Service Unavailable') ||
+                           error.message?.includes('Gateway Timeout');
+      
+      // Si es el último intento o no es un error del servidor, lanzar el error
+      if (attempt === maxRetries || !isServerError) {
+        throw error;
+      }
+      
+      // Esperar antes del siguiente intento (exponential backoff)
+      const delay = delayMs * Math.pow(2, attempt - 1);
+      console.log(`⏱️ Reintentando en ${delay}ms debido a error del servidor (intento ${attempt}/${maxRetries})`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw new Error('Maximum retries exceeded');
+}
+
 export interface MeetMember {
   name: string;          // Full resource name (spaces/{space}/members/{member})
+  email?: string;        // Email address (v2beta API field)
   user?: {
     name?: string;       // User resource name
     displayName?: string;
-    email?: string;
+    email?: string;      // Email in user object (v2 stable fallback)
   };
   anonymousUser?: {
     displayName?: string;
@@ -221,15 +255,26 @@ export class MeetMembersService {
         console.log(`🔗 Trying ${version}: ${url}`);
 
         try {
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token.token}`,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-          });
+          // Envolver la operación fetch en la función de reintento automático
+          const response = await retryOnServerError(async () => {
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${token.token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(requestBody)
+            });
+            
+            // Si es un error 502, 503, o 504, lanzar error para activar el reintento
+            if (res.status === 502 || res.status === 503 || res.status === 504) {
+              const errorText = await res.text().catch(() => 'Unknown server error');
+              throw new Error(`${res.status} ${res.statusText} - ${errorText}`);
+            }
+            
+            return res;
+          }, 3, 2000); // 3 reintentos con 2 segundos base
 
           if (!response.ok) {
             const errorText = await response.text();
@@ -394,17 +439,45 @@ export class MeetMembersService {
     try {
       const response = await this.listMembers(spaceId);
       
-      const member = response.members.find(m => 
-        m.user?.email === email || 
-        m.anonymousUser?.displayName === email ||
-        m.phoneUser?.displayName === email
-      );
+      // 🐛 DEBUG: Logging detallado de la estructura de miembros
+      console.log(`🔍 DEBUG: Buscando email '${email}' entre ${response.members.length} miembros:`);
+      response.members.forEach((m, index) => {
+        console.log(`🔍 DEBUG: Member ${index + 1}:`, {
+          name: m.name,
+          role: m.role,
+          user: m.user,
+          anonymousUser: m.anonymousUser,
+          phoneUser: m.phoneUser,
+          createTime: m.createTime,
+          fullObject: JSON.stringify(m, null, 2)
+        });
+      });
+      
+      // Buscar por email directo (v2beta) o en user.email (fallback v2)
+      const member = response.members.find(m => {
+        // v2beta: email está directamente en el objeto member
+        if ((m as any).email === email) return true;
+        
+        // Fallback para v2 estable o estructuras diferentes
+        if (m.user?.email === email) return true;
+        if (m.anonymousUser?.displayName === email) return true;
+        if (m.phoneUser?.displayName === email) return true;
+        
+        return false;
+      });
 
       if (member) {
         console.log(`🔍 Found member ${email} with ID: ${member.name}`);
         return member;
       } else {
         console.log(`🔍 Member ${email} not found in space ${spaceId}`);
+        console.log(`🔍 DEBUG: Comparaciones realizadas:`);
+        response.members.forEach((m, index) => {
+          console.log(`   Member ${index + 1}: email='${(m as any).email}' === '${email}' ? ${(m as any).email === email}`);
+          console.log(`   Member ${index + 1}: user.email='${m.user?.email}' === '${email}' ? ${m.user?.email === email}`);
+          console.log(`   Member ${index + 1}: anonymousUser.displayName='${m.anonymousUser?.displayName}' === '${email}' ? ${m.anonymousUser?.displayName === email}`);
+          console.log(`   Member ${index + 1}: phoneUser.displayName='${m.phoneUser?.displayName}' === '${email}' ? ${m.phoneUser?.displayName === email}`);
+        });
         return null;
       }
 

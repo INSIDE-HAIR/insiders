@@ -25,16 +25,16 @@ export interface CreateSpaceRequest {
 
 export class MeetSpaceConfigService {
   private auth: OAuth2Client;
-  private baseUrl = 'https://meet.googleapis.com/v2';
+  private baseUrl = 'https://meet.googleapis.com/v2beta'; // Using v2beta for advanced configurations
 
   constructor(auth: OAuth2Client) {
     this.auth = auth;
   }
 
   /**
-   * Crea un nuevo espacio de reunión - API v2 acepta body vacío
+   * Crea un nuevo espacio de reunión con configuración completa - API v2beta
+   * Implementa fallback para funcionalidades no disponibles
    * Requiere scope: meetings.space.created
-   * NOTA: Como de Mayo 2023, la API solo acepta body vacío - no config ni displayName
    */
   async createSpace(request: CreateSpaceRequest): Promise<SpaceResource> {
     try {
@@ -45,28 +45,17 @@ export class MeetSpaceConfigService {
 
       const url = `${this.baseUrl}/spaces`;
       
-      // IMPORTANTE: API v2 solo acepta body vacío por ahora
-      console.log('🏗️ Creating new Meet space (empty body - API v2 limitation)');
-      console.log('📋 Requested config (will be ignored by API):', JSON.stringify(request, null, 2));
+      console.log('🏗️ Creating new Meet space with v2beta API');
+      console.log('📋 Request config:', JSON.stringify(request, null, 2));
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token.token}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({}) // Body vacío - API requirement
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to create space: ${response.status} ${response.statusText} - ${errorText}`);
+      // Intentar crear con configuración completa primero
+      let space = await this.attemptSpaceCreation(url, token.token, request.config);
+      
+      // Agregar displayName como metadata ya que no es parte del esquema oficial de la API
+      if (request.displayName) {
+        (space as any)._requestedDisplayName = request.displayName;
+        console.log('📝 DisplayName stored in metadata:', request.displayName);
       }
-
-      const space = await response.json();
-      console.log('✅ Space created successfully:', space.name);
-      console.log('⚠️ Note: Space config not applied - API v2 limitation');
 
       return space;
 
@@ -74,6 +63,125 @@ export class MeetSpaceConfigService {
       console.error('💥 Error creating Meet space:', error);
       throw error;
     }
+  }
+
+  /**
+   * Intenta crear un espacio con fallback progresivo para funcionalidades no disponibles
+   */
+  private async attemptSpaceCreation(url: string, token: string, config?: SpaceConfig): Promise<SpaceResource> {
+    if (!config) {
+      // Si no hay configuración, crear espacio básico
+      return this.createBasicSpace(url, token);
+    }
+
+    // Lista de funcionalidades que pueden fallar por permisos
+    const fallbackStrategies = [
+      // Estrategia 1: Configuración completa
+      () => this.createSpaceWithConfig(url, token, config),
+      
+      // Estrategia 2: Sin attendanceReportGenerationType
+      () => {
+        const configWithoutReports = { ...config };
+        delete configWithoutReports.attendanceReportGenerationType;
+        console.log('🔄 Retrying without attendance report generation...');
+        return this.createSpaceWithConfig(url, token, configWithoutReports);
+      },
+      
+      // Estrategia 3: Sin artefactos automáticos
+      () => {
+        const configWithoutArtifacts = { ...config };
+        delete configWithoutArtifacts.artifactConfig;
+        delete configWithoutArtifacts.attendanceReportGenerationType;
+        console.log('🔄 Retrying without artifact config...');
+        return this.createSpaceWithConfig(url, token, configWithoutArtifacts);
+      },
+      
+      // Estrategia 4: Solo configuración básica
+      () => {
+        const basicConfig = {
+          accessType: config.accessType,
+          entryPointAccess: config.entryPointAccess
+        };
+        console.log('🔄 Retrying with basic config only...');
+        return this.createSpaceWithConfig(url, token, basicConfig);
+      },
+      
+      // Estrategia 5: Espacio completamente básico
+      () => {
+        console.log('🔄 Creating basic space without configuration...');
+        return this.createBasicSpace(url, token);
+      }
+    ];
+
+    for (let i = 0; i < fallbackStrategies.length; i++) {
+      try {
+        const space = await fallbackStrategies[i]();
+        if (i > 0) {
+          console.log(`⚠️ Space created with fallback strategy ${i + 1}`);
+          (space as any)._configurationIssues = `Some features unavailable - used fallback strategy ${i + 1}`;
+        }
+        return space;
+      } catch (error: any) {
+        console.log(`❌ Strategy ${i + 1} failed:`, error.message);
+        if (i === fallbackStrategies.length - 1) {
+          // Si todas las estrategias fallaron, relanzar el último error
+          throw error;
+        }
+        // Continuar con la siguiente estrategia
+      }
+    }
+
+    throw new Error('All fallback strategies failed');
+  }
+
+  /**
+   * Crea un espacio con configuración específica
+   */
+  private async createSpaceWithConfig(url: string, token: string, config: any): Promise<SpaceResource> {
+    const body = { config };
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create space with config: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+
+    const space = await response.json();
+    console.log('✅ Space created successfully:', space.name);
+    return space;
+  }
+
+  /**
+   * Crea un espacio básico sin configuración
+   */
+  private async createBasicSpace(url: string, token: string): Promise<SpaceResource> {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create basic space: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+
+    const space = await response.json();
+    console.log('✅ Basic space created successfully:', space.name);
+    return space;
   }
 
   /**

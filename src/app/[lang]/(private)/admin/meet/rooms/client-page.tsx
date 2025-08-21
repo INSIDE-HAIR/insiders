@@ -25,11 +25,39 @@ import {
   TagIcon,
   FolderIcon,
   XMarkIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  ChartBarIcon,
+  UserGroupIcon,
+  UserIcon,
+  CalendarIcon
 } from "@heroicons/react/24/outline";
 import { CreateRoomModal } from "@/src/features/meet/components/CreateRoomModal";
 import { RoomDetailsModal } from "@/src/features/meet/components/RoomDetailsModal";
 import { cn } from "@/src/lib/utils";
+
+interface RoomAnalytics {
+  permanentMembers: {
+    total: number;
+    cohosts: number;
+    regularMembers: number;
+  };
+  participants: {
+    invited: number;        // Asistentes invitados (miembros que asistieron)
+    uninvited: number;      // Asistentes no invitados (externos que asistieron) 
+    unique: number;         // Total asistentes únicos
+  };
+  sessions: {
+    total: number;
+    totalDurationMinutes: number;
+    averageDurationMinutes: number;
+    averageParticipantsPerSession: number;
+  };
+  recentActivity?: {
+    lastMeetingDate: string | null;
+    lastParticipantCount: number;
+    daysSinceLastMeeting: number | null;
+  };
+}
 
 interface MeetRoom {
   name: string;
@@ -54,11 +82,31 @@ interface MeetRoom {
     lastSyncAt?: Date;
     source?: string;
   };
+  _analytics?: RoomAnalytics;
 }
 
 interface MeetRoomsClientProps {
   lang: string;
 }
+
+// Función auxiliar para formatear duración
+const formatDuration = (minutes: number): string => {
+  if (minutes < 60) {
+    return `${minutes}m`;
+  }
+  const hours = Math.round(minutes / 60 * 10) / 10; // 1 decimal
+  return `${hours}h`;
+};
+
+// Función auxiliar para formatear días desde la última reunión
+const formatDaysAgo = (days: number | null): string => {
+  if (days === null) return "Nunca";
+  if (days === 0) return "Hoy";
+  if (days === 1) return "Ayer";
+  if (days < 7) return `Hace ${days} días`;
+  if (days < 30) return `Hace ${Math.round(days/7)} semanas`;
+  return `Hace ${Math.round(days/30)} meses`;
+};
 
 export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   const [rooms, setRooms] = useState<MeetRoom[]>([]);
@@ -117,14 +165,51 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       }
 
       // Respuesta exitosa - datos siempre frescos
-      setRooms(data.spaces || []);
+      const roomsData = data.spaces || [];
+      
+      // Enriquecer con analytics si hay rooms
+      if (roomsData.length > 0) {
+        console.log('📊 Fetching analytics for room cards...');
+        const enrichedRooms = await Promise.all(
+          roomsData.map(async (room: MeetRoom) => {
+            const spaceId = room.name?.split('/').pop();
+            if (!spaceId) return room;
+            
+            try {
+              const analyticsResponse = await fetch(`/api/meet/rooms/${spaceId}/analytics`);
+              if (analyticsResponse.ok) {
+                const analytics = await analyticsResponse.json();
+                return {
+                  ...room,
+                  _analytics: {
+                    permanentMembers: analytics.permanentMembers,
+                    participants: analytics.participants,
+                    sessions: analytics.sessions,
+                    recentActivity: analytics.recentActivity
+                  }
+                };
+              }
+            } catch (analyticsError) {
+              console.warn(`⚠️ Failed to get analytics for room ${spaceId}:`, analyticsError);
+            }
+            return room;
+          })
+        );
+        
+        setRooms(enrichedRooms);
+        const analyticsCount = enrichedRooms.filter(r => r._analytics).length;
+        console.log(`📈 Loaded analytics for ${analyticsCount}/${enrichedRooms.length} rooms`);
+      } else {
+        setRooms(roomsData);
+      }
+      
       setIsDemoMode(false);
       
       // Mostrar información sobre datos frescos
       if (data.source === "fresh-api-hybrid") {
         toast({
           title: "Datos actualizados",
-          description: `${data.spaces?.length || 0} espacios con datos frescos de Google Meet API`,
+          description: `${roomsData.length || 0} espacios con datos frescos de Google Meet API`,
         });
       }
       
@@ -173,15 +258,20 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
       
       // Mensaje de éxito con datos frescos
       const memberCount = newRoom._metadata?.membersAdded || 0;
+      const hasConfigWarnings = newRoom._metadata?.configurationWarning;
       
       let description = `Sala creada: ${newRoom.meetingCode}`;
       if (memberCount > 0) {
         description += ` con ${memberCount} miembro(s) agregado(s)`;
       }
+      if (hasConfigWarnings) {
+        description += `. Algunas funcionalidades no están disponibles para tu cuenta.`;
+      }
       
       toast({
-        title: "Sala creada exitosamente",
+        title: hasConfigWarnings ? "⚠️ Sala creada con limitaciones" : "✅ Sala creada exitosamente",
         description: description,
+        variant: hasConfigWarnings ? "destructive" : "default"
       });
 
       setIsCreateModalOpen(false);
@@ -410,12 +500,12 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
   const getAccessTypeBadge = (accessType?: string) => {
     switch (accessType) {
       case 'OPEN':
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-200">Abierto</Badge>;
+        return <Badge className="bg-green-100 text-green-700 hover:bg-green-200">Libre</Badge>;
       case 'RESTRICTED':
-        return <Badge className="bg-red-100 text-red-700 hover:bg-red-200">Restringido</Badge>;
+        return <Badge className="bg-red-100 text-red-700 hover:bg-red-200">Solo Invitados</Badge>;
       case 'TRUSTED':
       default:
-        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200">Confiable</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-200">Organizacional</Badge>;
     }
   };
 
@@ -837,37 +927,82 @@ export const MeetRoomsClient: React.FC<MeetRoomsClientProps> = ({ lang }) => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {/* Members */}
-                    <div className="flex items-center gap-2 text-sm">
-                      <UsersIcon className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">
-                        {room.members?.length || 0} participante{(room.members?.length || 0) !== 1 ? 's' : ''}
-                      </span>
-                    </div>
+                    {/* Analytics - Solo si están disponibles */}
+                    {room._analytics ? (
+                      <>
+                        {/* Sessions & Duration */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <ChartBarIcon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {room._analytics.sessions.total} sesiones • {formatDuration(room._analytics.sessions.totalDurationMinutes)} total
+                          </span>
+                        </div>
 
-                    {/* Meeting URL */}
-                    {room.meetingUri && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Icons.ExternalLink className="h-4 w-4 text-muted-foreground" />
-                        <a
-                          href={room.meetingUri}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline truncate"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Unirse a la reunión
-                        </a>
-                      </div>
+                        {/* Participants breakdown */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <UserGroupIcon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {room._analytics.permanentMembers.cohosts} co-hosts • {room._analytics.permanentMembers.regularMembers} participantes
+                          </span>
+                        </div>
+
+                        {/* Attendees */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <UserIcon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {room._analytics.participants.invited} asistentes invitados • {room._analytics.participants.uninvited} asistentes no invitados
+                          </span>
+                        </div>
+
+                        {/* Average participants per session */}
+                        {room._analytics.sessions.total > 0 && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground">
+                              {room._analytics.sessions.averageParticipantsPerSession} participantes promedio
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Recent activity */}
+                        {room._analytics.recentActivity?.lastMeetingDate && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground">
+                              Última: {formatDaysAgo(room._analytics.recentActivity.daysSinceLastMeeting)} 
+                              ({room._analytics.recentActivity.lastParticipantCount} participantes)
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      /* Fallback - datos básicos sin analytics */
+                      <>
+                        {/* Participants */}
+                        <div className="flex items-center gap-2 text-sm">
+                          <UsersIcon className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">
+                            {room.members?.length || 0} participante{(room.members?.length || 0) !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+
+                        {/* Meeting URL - Solo como enlace compacto */}
+                        {room.meetingUri && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Icons.ExternalLink className="h-4 w-4 text-muted-foreground" />
+                            <a
+                              href={room.meetingUri}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline truncate"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Unirse a la reunión
+                            </a>
+                          </div>
+                        )}
+                      </>
                     )}
-
-                    {/* Access Type */}
-                    <div className="flex items-center gap-2 text-sm">
-                      {getAccessTypeIcon(room.config?.accessType)}
-                      <span className="text-muted-foreground">
-                        Acceso {room.config?.accessType?.toLowerCase() || 'confiable'}
-                      </span>
-                    </div>
                   </div>
 
                   {/* Actions */}

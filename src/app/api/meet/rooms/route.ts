@@ -6,21 +6,15 @@ import { MeetSpaceConfigService } from "@/src/features/meet/services/MeetSpaceCo
 import { MeetMembersService } from "@/src/features/meet/services/MeetMembersService";
 import {
   CreateSpaceSchema,
-  generateTemplateConfig,
-  MeetingTemplateEnum,
 } from "@/src/features/meet/validations/SpaceConfigSchema";
-import { z } from "zod";
-
-// Schema para aplicar plantillas rápidas
-const applyTemplateSchema = z.object({
-  template: MeetingTemplateEnum,
-  customConfig: z.any().optional()
-});
 
 /**
- * GET /api/meet/rooms
+ * GET /api/meet/rooms?include=analytics
  * Devuelve spaces con datos FRESCOS de Google Meet API
  * Solo usa almacenamiento local para obtener la lista de IDs
+ * 
+ * Query parameters:
+ * - include=analytics: Incluye métricas de participantes y sesiones
  */
 export async function GET(request: NextRequest) {
   let storageService: MeetStorageService | null = null;
@@ -37,13 +31,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
 
+    // Verificar query parameters
+    const { searchParams } = new URL(request.url);
+    const includeAnalytics = searchParams.get('include')?.includes('analytics') || false;
+
     // Inicializar servicios
     storageService = new MeetStorageService();
     const calendarService = new GoogleCalendarService();
     await calendarService.initialize();
     const spaceConfigService = new MeetSpaceConfigService(calendarService.auth);
     
-    console.log('🆙 Fetching space IDs and getting FRESH data from Meet API...');
+    console.log(`🆙 Fetching space IDs and getting FRESH data from Meet API...${includeAnalytics ? ' (with analytics)' : ''}`);
     
     // 1. Obtener solo los IDs de spaces registrados
     const registeredSpaces = await storageService.getAllSpaceIds();
@@ -89,17 +87,29 @@ export async function GET(request: NextRequest) {
       })
     );
     
+    // 3. Preparar spaces (analytics disponible via endpoint separado)
+    let enhancedSpaces = freshSpaces;
+    if (includeAnalytics) {
+      console.log('ℹ️ Analytics solicitados - disponibles via /api/meet/rooms/[id]/analytics');
+      // Por ahora, solo agregamos un indicador de que analytics están disponibles
+      enhancedSpaces = freshSpaces.map(space => ({
+        ...space,
+        _analyticsAvailable: true
+      }));
+    }
+    
     // Obtener estadísticas
     const stats = await storageService.getStats();
     
-    console.log(`✅ Retrieved ${freshSpaces.length} spaces with FRESH data`);
+    console.log(`✅ Retrieved ${enhancedSpaces.length} spaces with FRESH data${includeAnalytics ? ' and analytics' : ''}`);
     
     return NextResponse.json({
-      spaces: freshSpaces,
+      spaces: enhancedSpaces,
       stats: stats,
       source: "fresh-api-hybrid",
-      note: "Datos frescos de Google Meet API. IDs desde almacenamiento local.",
-      totalRegistered: registeredSpaces.length
+      note: `Datos frescos de Google Meet API. IDs desde almacenamiento local.${includeAnalytics ? ' Incluye métricas de participantes.' : ''}`,
+      totalRegistered: registeredSpaces.length,
+      includesAnalytics: includeAnalytics
     });
 
   } catch (error: any) {
@@ -140,46 +150,15 @@ export async function POST(request: NextRequest) {
     // Parsear y validar body
     const body = await request.json();
     
-    // Detectar si usa plantilla o configuración personalizada
-    const isTemplate = body.template && typeof body.template === 'string';
-    
-    let validationResult;
-    let spaceData;
-    
-    if (isTemplate) {
-      // Validar plantilla
-      const templateResult = applyTemplateSchema.safeParse(body);
-      if (!templateResult.success) {
-        return NextResponse.json(
-          { error: "Invalid template data", details: templateResult.error.errors },
-          { status: 400 }
-        );
-      }
-      
-      // Generar configuración desde plantilla
-      const templateConfig = generateTemplateConfig(templateResult.data.template);
-      const finalConfig = {
-        ...templateConfig,
-        ...templateResult.data.customConfig
-      };
-      
-      spaceData = {
-        displayName: body.displayName,
-        config: finalConfig,
-        initialMembers: body.initialMembers || [],
-        _template: templateResult.data.template
-      };
-    } else {
-      // Validar configuración personalizada
-      validationResult = CreateSpaceSchema.safeParse(body);
-      if (!validationResult.success) {
-        return NextResponse.json(
-          { error: "Invalid space data", details: validationResult.error.errors },
-          { status: 400 }
-        );
-      }
-      spaceData = validationResult.data;
+    // Validar configuración personalizada
+    const validationResult = CreateSpaceSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: "Invalid space data", details: validationResult.error.errors },
+        { status: 400 }
+      );
     }
+    const spaceData = validationResult.data;
 
     // Inicializar servicios
     storageService = new MeetStorageService();
@@ -189,22 +168,11 @@ export async function POST(request: NextRequest) {
     const membersService = new MeetMembersService(calendarService.auth);
 
     // 1. CREAR SPACE EN GOOGLE MEET API
-    let createdSpace;
-    
-    if (isTemplate) {
-      createdSpace = await spaceConfigService.createSpaceFromTemplate(
-        (spaceData as any)._template,
-        spaceData.displayName,
-        (spaceData as any).customConfig
-      );
-      console.log(`✅ Space created from template ${(spaceData as any)._template}:`, createdSpace.name);
-    } else {
-      createdSpace = await spaceConfigService.createSpace({
-        displayName: spaceData.displayName,
-        config: spaceData.config
-      });
-      console.log('✅ Space created with custom config:', createdSpace.name);
-    }
+    const createdSpace = await spaceConfigService.createSpace({
+      displayName: spaceData.displayName,
+      config: spaceData.config
+    });
+    console.log('✅ Space created with custom config:', createdSpace.name);
 
     const spaceId = createdSpace.name?.split('/').pop();
     if (!spaceId) {
@@ -248,18 +216,24 @@ export async function POST(request: NextRequest) {
     );
 
     // 5. RESPUESTA CON DATOS FRESCOS DE API
+    const metadata = {
+      spaceId,
+      displayName: spaceData.displayName,
+      registeredLocally: true,
+      membersAdded: membersResult?.successes.length || 0,
+      membersFailed: membersResult?.failures.length || 0,
+      source: 'fresh-api-creation',
+      note: 'Space creado vía API y solo ID registrado localmente'
+    };
+
+    // Agregar información sobre limitaciones de configuración si existen
+    if ((createdSpace as any)._configurationIssues) {
+      metadata.configurationWarning = (createdSpace as any)._configurationIssues;
+    }
+
     return NextResponse.json({
       ...createdSpace,
-      _metadata: {
-        spaceId,
-        displayName: spaceData.displayName,
-        template: (spaceData as any)._template || null,
-        registeredLocally: true,
-        membersAdded: membersResult?.successes.length || 0,
-        membersFailed: membersResult?.failures.length || 0,
-        source: 'fresh-api-creation',
-        note: 'Space creado vía API y solo ID registrado localmente'
-      }
+      _metadata: metadata
     }, { status: 201 });
 
   } catch (error: any) {

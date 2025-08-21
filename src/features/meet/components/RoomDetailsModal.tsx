@@ -25,6 +25,7 @@ import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
 import {
@@ -129,9 +130,26 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   // States para agregar miembros
   const [newMemberEmail, setNewMemberEmail] = useState("");
   const [newMemberRole, setNewMemberRole] = useState<"ROLE_UNSPECIFIED" | "COHOST">("ROLE_UNSPECIFIED");
+  
+  // Estados para filtros de miembros
+  const [memberSearchTerm, setMemberSearchTerm] = useState("");
+  const [memberRoleFilter, setMemberRoleFilter] = useState<"ALL" | "COHOST" | "ROLE_UNSPECIFIED">("ALL");
   const [addingMember, setAddingMember] = useState(false);
 
   const spaceId = room.name?.split('/').pop() || '';
+
+  // Función para filtrar miembros
+  const filteredMembers = members.filter((member) => {
+    // Filtro por término de búsqueda (nombre o email)
+    const searchMatch = memberSearchTerm === "" || 
+      (member.displayName && member.displayName.toLowerCase().includes(memberSearchTerm.toLowerCase())) ||
+      (member.email && member.email.toLowerCase().includes(memberSearchTerm.toLowerCase()));
+    
+    // Filtro por rol
+    const roleMatch = memberRoleFilter === "ALL" || member.role === memberRoleFilter;
+    
+    return searchMatch && roleMatch;
+  });
 
   useEffect(() => {
     // Initialize edit name with current display name
@@ -686,7 +704,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] max-w-[95vw] flex flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <VideoCameraIcon className="h-5 w-5 text-primary" />
@@ -750,12 +768,12 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="organization">Organización</TabsTrigger>
             <TabsTrigger value="members">Miembros</TabsTrigger>
-            <TabsTrigger value="settings">Configuración</TabsTrigger>
+            <TabsTrigger value="settings">Avanzado</TabsTrigger>
             <TabsTrigger value="activity">Actividad</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="general" className="flex-1 mt-4">
-            <ScrollArea className="h-full max-h-[60vh]">
+          <TabsContent value="general" className="flex-1 mt-4 overflow-hidden">
+            <ScrollArea className="h-full max-h-[55vh]">
               <div className="space-y-4 pr-4">
             <div className="grid gap-4 md:grid-cols-2">
               <Card>
@@ -880,8 +898,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="organization" className="flex-1 mt-4">
-            <ScrollArea className="h-full max-h-[60vh]">
+          <TabsContent value="organization" className="flex-1 mt-4 overflow-hidden">
+            <ScrollArea className="h-full max-h-[55vh]">
               <div className="space-y-6 pr-4">
                 {organizationLoading ? (
                   <div className="flex items-center justify-center py-12">
@@ -1073,211 +1091,541 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="members" className="flex-1 mt-4">
-            <ScrollArea className="h-full max-h-[60vh]">
-              <div className="space-y-4 pr-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <UsersIcon className="h-5 w-5 text-primary" />
-                    Agregar Miembro
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={fetchMembers}
-                    disabled={loading}
-                  >
-                    <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    value={newMemberEmail}
-                    onChange={(e) => setNewMemberEmail(e.target.value)}
-                    placeholder="email@ejemplo.com"
-                    onKeyPress={(e) => e.key === 'Enter' && handleAddMember()}
-                  />
-                  <Select value={newMemberRole} onValueChange={(value: any) => setNewMemberRole(value)}>
-                    <SelectTrigger className="w-40">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
-                      <SelectItem value="COHOST">Co-anfitrión</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    onClick={handleAddMember}
-                    disabled={!newMemberEmail || addingMember}
-                  >
-                    {addingMember ? (
-                      <Icons.SpinnerIcon className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <PlusIcon className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Miembros Actuales ({members.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+          <TabsContent value="members" className="flex-1 mt-4 overflow-hidden">
+            <div className="h-full max-h-[55vh] overflow-hidden flex flex-col space-y-4">
+              {/* Card para agregar miembro - altura fija */}
+              <Card className="flex-shrink-0">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center justify-between text-base">
+                    <span className="flex items-center gap-2">
+                      <UsersIcon className="h-5 w-5 text-primary" />
+                      Agregar Miembro
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={fetchMembers}
+                      disabled={loading}
+                    >
+                      <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex gap-2">
+                    <Input
+                      value={newMemberEmail}
+                      onChange={(e) => setNewMemberEmail(e.target.value)}
+                      placeholder="email@ejemplo.com"
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddMember()}
+                    />
+                    <Select value={newMemberRole} onValueChange={(value: any) => setNewMemberRole(value)}>
+                      <SelectTrigger className="w-40">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
+                        <SelectItem value="COHOST">Co-anfitrión</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      onClick={handleAddMember}
+                      disabled={!newMemberEmail || addingMember}
+                    >
+                      {addingMember ? (
+                        <Icons.SpinnerIcon className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <PlusIcon className="h-4 w-4" />
+                      )}
+                    </Button>
                   </div>
-                ) : members.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">
-                    No hay miembros en esta sala
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {members.map((member, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-primary">
-                              {(member.email || 'U').charAt(0).toUpperCase()}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {member.displayName || (member.email ? member.email.split('@')[0] : 'Usuario anónimo')}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {member.email || 'Sin email'}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={member.role === "COHOST" ? "default" : "secondary"}>
-                            {member.role === "COHOST" ? "Co-anfitrión" : "Participante"}
-                          </Badge>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemoveMember(member.email || '')}
+                </CardContent>
+              </Card>
+
+              {/* Card para miembros actuales - altura flexible con scroll */}
+              <Card className="flex-1 min-h-0 overflow-hidden">
+                <CardHeader className="pb-3 flex-shrink-0">
+                  <CardTitle className="text-base">Miembros Actuales ({filteredMembers.length} de {members.length})</CardTitle>
+                  
+                  {/* Filtros de búsqueda y rol */}
+                  <div className="flex gap-2 mt-3">
+                    <div className="flex-1">
+                      <Input
+                        placeholder="Buscar por nombre o email..."
+                        value={memberSearchTerm}
+                        onChange={(e) => setMemberSearchTerm(e.target.value)}
+                        className="text-sm"
+                      />
+                    </div>
+                    <Select 
+                      value={memberRoleFilter} 
+                      onValueChange={(value: "ALL" | "COHOST" | "ROLE_UNSPECIFIED") => setMemberRoleFilter(value)}
+                    >
+                      <SelectTrigger className="w-40">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ALL">Todos</SelectItem>
+                        <SelectItem value="COHOST">Co-anfitrión</SelectItem>
+                        <SelectItem value="ROLE_UNSPECIFIED">Participante</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 pb-3">
+                  {loading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Icons.SpinnerIcon className="h-6 w-6 animate-spin" />
+                    </div>
+                  ) : members.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-4">
+                      No hay miembros en esta sala
+                    </p>
+                  ) : filteredMembers.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-4">
+                      No se encontraron miembros que coincidan con los filtros
+                    </p>
+                  ) : (
+                    <ScrollArea className="h-80">
+                      <div className="space-y-2 pr-3">
+                        {filteredMembers.map((member, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 bg-muted rounded-lg"
                           >
-                            <XMarkIcon className="h-4 w-4" />
-                          </Button>
-                        </div>
+                            <div className="flex items-center gap-3">
+                              <div className="h-8 w-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span className="text-sm font-medium text-primary">
+                                  {(member.email || 'U').charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="font-medium truncate">
+                                  {member.displayName || (member.email ? member.email.split('@')[0] : 'Usuario anónimo')}
+                                </div>
+                                <div className="text-sm text-muted-foreground truncate">
+                                  {member.email || 'Sin email'}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <Badge variant={member.role === "COHOST" ? "default" : "secondary"}>
+                                {member.role === "COHOST" ? "Co-anfitrión" : "Participante"}
+                              </Badge>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleRemoveMember(member.email || '')}
+                              >
+                                <XMarkIcon className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-              </div>
-            </ScrollArea>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
-          <TabsContent value="settings" className="flex-1 mt-4">
-            <ScrollArea className="h-full max-h-[60vh]">
+          <TabsContent value="settings" className="flex-1 mt-4 overflow-hidden">
+            <ScrollArea className="h-full max-h-[55vh]">
               <div className="space-y-4 pr-4">
-                <div className="grid gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CameraIcon className="h-5 w-5 text-primary" />
-                    Configuración de Grabación
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Grabación Automática</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Las reuniones se grabarán automáticamente
-                      </p>
+                <div className="space-y-6">
+                  {/* Moderación y Permisos */}
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium">Moderación y Permisos</h4>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="restrict-entry-edit">Restringir Puntos de Entrada</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Control de Aplicaciones:</strong><br/>
+                                  • <strong>Desactivado:</strong> Se puede acceder desde cualquier aplicación (Google Meet, Calendar, etc.)<br/>
+                                  • <strong>Activado:</strong> Solo la aplicación que creó la sala puede acceder (más restrictivo)
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Limita el acceso solo a la aplicación que creó la sala
+                        </p>
+                      </div>
+                      <Switch
+                        id="restrict-entry-edit"
+                        checked={room.config?.entryPointAccess === "CREATOR_APP_ONLY"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            entryPointAccess: checked ? "CREATOR_APP_ONLY" : "ALL"
+                          })
+                        }
+                      />
                     </div>
-                    <Switch
-                      checked={settings.recordingSettings?.autoRecordingEnabled || false}
-                      onCheckedChange={(checked) => 
-                        handleUpdateSettings({
-                          recordingSettings: {
-                            autoRecordingGeneration: checked ? "ON" : "OFF"
-                          }
-                        })
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <MicrophoneIcon className="h-5 w-5 text-primary" />
-                    Configuración de Transcripción
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Transcripción Automática</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Genera transcripciones automáticamente
-                      </p>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="moderation-edit">Activar Moderación</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Control del Anfitrión:</strong><br/>
+                                  Permite al anfitrión y co-anfitriones controlar quién puede chatear, presentar, reaccionar y si los nuevos participantes entran como espectadores.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          El organizador controla permisos de los participantes
+                        </p>
+                      </div>
+                      <Switch
+                        id="moderation-edit"
+                        checked={room.config?.moderation === "ON"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            moderation: checked ? "ON" : "OFF"
+                          })
+                        }
+                      />
                     </div>
-                    <Switch
-                      checked={settings.transcriptionSettings?.autoTranscriptionEnabled || false}
-                      onCheckedChange={(checked) =>
-                        handleUpdateSettings({
-                          transcriptionSettings: {
-                            autoTranscriptionGeneration: checked ? "ON" : "OFF"
-                          }
-                        })
-                      }
-                    />
-                  </div>
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DocumentTextIcon className="h-5 w-5 text-primary" />
-                    Notas Inteligentes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label>Notas Automáticas</Label>
-                      <p className="text-sm text-muted-foreground">
-                        Genera resúmenes y puntos clave
-                      </p>
-                    </div>
-                    <Switch
-                      checked={settings.smartNotesSettings?.autoSmartNotesEnabled || false}
-                      onCheckedChange={(checked) =>
-                        handleUpdateSettings({
-                          smartNotesSettings: {
-                            autoSmartNotesGeneration: checked ? "ON" : "OFF"
-                          }
-                        })
-                      }
-                    />
+                    {room.config?.moderation === "ON" && (
+                      <>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label>Restricción de Chat</Label>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm">
+                                  <p className="text-sm">
+                                    <strong>Control de Chat:</strong><br/>
+                                    Determina quién puede enviar mensajes en el chat durante la reunión.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <Select 
+                            value={room.config?.moderationRestrictions?.chatRestriction || "NO_RESTRICTION"} 
+                            onValueChange={(value: any) => 
+                              handleUpdateSettings({
+                                moderationRestrictions: {
+                                  ...settings.moderationRestrictions,
+                                  chatRestriction: value
+                                }
+                              })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="NO_RESTRICTION">Todos pueden chatear</SelectItem>
+                              <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label>Restricción de Reacciones</Label>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm">
+                                  <p className="text-sm">
+                                    <strong>Control de Reacciones:</strong><br/>
+                                    Determina quién puede enviar reacciones (emojis, "me gusta", etc.) durante la reunión.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <Select 
+                            value={room.config?.moderationRestrictions?.reactionRestriction || "NO_RESTRICTION"} 
+                            onValueChange={(value: any) => 
+                              handleUpdateSettings({
+                                moderationRestrictions: {
+                                  ...settings.moderationRestrictions,
+                                  reactionRestriction: value
+                                }
+                              })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="NO_RESTRICTION">Todos pueden reaccionar</SelectItem>
+                              <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label>Restricción de Presentación</Label>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                                </TooltipTrigger>
+                                <TooltipContent className="max-w-sm">
+                                  <p className="text-sm">
+                                    <strong>Control de Pantalla:</strong><br/>
+                                    Determina quién puede compartir pantalla, presentar documentos o mostrar contenido durante la reunión.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <Select 
+                            value={room.config?.moderationRestrictions?.presentRestriction || "NO_RESTRICTION"} 
+                            onValueChange={(value: any) => 
+                              handleUpdateSettings({
+                                moderationRestrictions: {
+                                  ...settings.moderationRestrictions,
+                                  presentRestriction: value
+                                }
+                              })
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="NO_RESTRICTION">Todos pueden presentar</SelectItem>
+                              <SelectItem value="HOSTS_ONLY">Solo organizadores</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                              <Label htmlFor="default-viewer-edit">Unirse como Espectador</Label>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                                  </TooltipTrigger>
+                                  <TooltipContent className="max-w-sm">
+                                    <p className="text-sm">
+                                      <strong>Modo Espectador:</strong><br/>
+                                      Los nuevos participantes entrarán solo con permisos de visualización. El anfitrión puede promocionarlos a participantes activos después.
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Nuevos participantes se unen como espectadores
+                            </p>
+                          </div>
+                          <Switch
+                            id="default-viewer-edit"
+                            checked={room.config?.moderationRestrictions?.defaultJoinAsViewerType === "ON"}
+                            onCheckedChange={(checked) => 
+                              handleUpdateSettings({
+                                moderationRestrictions: {
+                                  ...settings.moderationRestrictions,
+                                  defaultJoinAsViewerType: checked ? "ON" : "OFF"
+                                }
+                              })
+                            }
+                          />
+                        </div>
+                      </>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+
+                  {/* Artefactos Automáticos */}
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium">Artefactos Automáticos</h4>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="auto-recording-edit">Grabación Automática</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Grabación Automática:</strong><br/>
+                                  La reunión se grabará automáticamente cuando comience. Los archivos se guardan en Google Drive del organizador. Los participantes serán notificados.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Las reuniones se grabarán automáticamente al iniciar
+                        </p>
+                      </div>
+                      <Switch
+                        id="auto-recording-edit"
+                        checked={room.config?.artifactConfig?.recordingConfig?.autoRecordingGeneration === "ON"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            artifactConfig: {
+                              ...settings.artifactConfig,
+                              recordingConfig: { autoRecordingGeneration: checked ? "ON" : "OFF" }
+                            }
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="auto-transcription-edit">Transcripción Automática</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Transcripción Automática:</strong><br/>
+                                  Convierte automáticamente el audio de la reunión en texto. El documento se guarda en Google Drive con marcas de tiempo y identificación de participantes.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Genera transcripciones de las conversaciones
+                        </p>
+                      </div>
+                      <Switch
+                        id="auto-transcription-edit"
+                        checked={room.config?.artifactConfig?.transcriptionConfig?.autoTranscriptionGeneration === "ON"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            artifactConfig: {
+                              ...settings.artifactConfig,
+                              transcriptionConfig: { autoTranscriptionGeneration: checked ? "ON" : "OFF" }
+                            }
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="auto-smart-notes-edit">Notas Inteligentes</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Notas Inteligentes:</strong><br/>
+                                  Genera automáticamente resúmenes, puntos clave, acciones y decisiones de la reunión usando IA. Se guarda como documento de Google Docs.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Genera resúmenes y puntos clave automáticamente
+                        </p>
+                      </div>
+                      <Switch
+                        id="auto-smart-notes-edit"
+                        checked={room.config?.artifactConfig?.smartNotesConfig?.autoSmartNotesGeneration === "ON"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            artifactConfig: {
+                              ...settings.artifactConfig,
+                              smartNotesConfig: { autoSmartNotesGeneration: checked ? "ON" : "OFF" }
+                            }
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  {/* 
+                    FUNCIONALIDAD DE REPORTES - COMENTADA TEMPORALMENTE
+                    =====================================================
+                    Esta sección está comentada porque requiere Google Workspace Enterprise
+                    o una suscripción avanzada que incluya "Meeting attendance reports".
+                    
+                    Para habilitar en el futuro, descomentar la sección siguiente.
+                  */}
+                  {/*
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium">Reportes</h4>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <Label htmlFor="attendance-report-edit">Reporte de Asistencia</Label>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-sm">
+                                <p className="text-sm">
+                                  <strong>Reporte de Asistencia:</strong><br/>
+                                  Genera automáticamente un informe detallado con la lista de participantes, horarios de entrada/salida y duración de permanencia en la reunión.
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Generar reporte automático de participantes
+                        </p>
+                      </div>
+                      <Switch
+                        id="attendance-report-edit"
+                        checked={room.config?.attendanceReportGenerationType === "GENERATE_REPORT"}
+                        onCheckedChange={(checked) => 
+                          handleUpdateSettings({
+                            attendanceReportGenerationType: checked ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  */}
                 </div>
               </div>
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="activity" className="flex-1 mt-4">
-            <ScrollArea className="h-full max-h-[60vh]">
+          <TabsContent value="activity" className="flex-1 mt-4 overflow-hidden">
+            <ScrollArea className="h-full max-h-[55vh]">
               <div className="space-y-4 pr-4">
                 {/* Active Conference Controls */}
                 {room.activeConference?.conferenceRecord && (
@@ -1312,8 +1660,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   </TabsList>
 
                   {/* Vista General Tab - Current view */}
-                  <TabsContent value="vista-general" className="flex-1 mt-4">
-                    <ScrollArea className="h-full max-h-[50vh]">
+                  <TabsContent value="vista-general" className="flex-1 mt-4 overflow-hidden">
+                    <ScrollArea className="h-80 max-h-80">
                       <div className="space-y-4 pr-4">
                         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2">
                   {/* Conference Records */}
@@ -1621,8 +1969,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                   </TabsContent>
 
                   {/* Por Sesión Tab - Comprehensive session view */}
-                  <TabsContent value="por-sesion" className="flex-1 mt-4">
-                    <ScrollArea className="h-full max-h-[50vh]">
+                  <TabsContent value="por-sesion" className="flex-1 mt-4 overflow-hidden">
+                    <ScrollArea className="h-80 max-h-80">
                       <div className="space-y-4 pr-4">
                         {activityLoading ? (
                           <div className="flex items-center justify-center py-8">
@@ -1674,9 +2022,6 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                                     Activa
                                   </Badge>
                                 )}
-                                <Badge variant="outline">
-                                  {session.totalParticipationMinutes} min participación
-                                </Badge>
                               </div>
                             </div>
                           </CardHeader>
@@ -1941,7 +2286,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
     {/* Modal de Reporte Detallado de Participantes */}
     {showParticipantsReport && participantsReport && (
       <Dialog open={showParticipantsReport} onOpenChange={setShowParticipantsReport}>
-        <DialogContent className="sm:max-w-6xl max-h-[90vh] flex flex-col">
+        <DialogContent className="sm:max-w-6xl max-h-[90vh] max-w-[95vw] flex flex-col overflow-hidden">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <DocumentTextIcon className="h-5 w-5 text-primary" />
@@ -1960,8 +2305,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </TabsList>
 
             {/* Tab Resumen */}
-            <TabsContent value="summary" className="flex-1 mt-4">
-              <ScrollArea className="h-full max-h-[65vh]">
+            <TabsContent value="summary" className="flex-1 mt-4 overflow-hidden">
+              <ScrollArea className="h-96 max-h-96">
                 <div className="space-y-4 pr-4">
                   <div className="grid gap-4 md:grid-cols-3">
                 <Card>
@@ -2015,8 +2360,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </TabsContent>
 
             {/* Tab Participantes - Enfoque en participantes únicos */}
-            <TabsContent value="participants" className="flex-1 mt-4">
-              <ScrollArea className="h-full max-h-[65vh]">
+            <TabsContent value="participants" className="flex-1 mt-4 overflow-hidden">
+              <ScrollArea className="h-96 max-h-96">
                 <div className="space-y-4 pr-4">
                   <div className="space-y-3">
                 {participantsReport.participantsSummary.map((participant: any, index: number) => (
@@ -2116,8 +2461,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
             </TabsContent>
 
             {/* Tab Sesiones - Enfoque en sesiones con sus participantes */}
-            <TabsContent value="sessions" className="flex-1 mt-4">
-              <ScrollArea className="h-full max-h-[65vh]">
+            <TabsContent value="sessions" className="flex-1 mt-4 overflow-hidden">
+              <ScrollArea className="h-96 max-h-96">
                 <div className="space-y-4 pr-4">
                   <div className="space-y-4">
                 {/* Usar datos de participantsSessions si están disponibles, sino usar datos agrupados */}
