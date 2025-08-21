@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { MeetStorageService } from "@/src/features/meet/services/MeetStorageService";
+import { withApiKeyAuth } from "@/src/middleware/withApiKeyAuth";
 import { z } from "zod";
 
 // Schema para actualizar tag
@@ -21,7 +22,7 @@ const updateTagSchema = z.object({
  * GET /api/meet/tags/[id]
  * Obtiene un tag específico con toda su información
  */
-export async function GET(
+async function handleGet(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -108,7 +109,7 @@ export async function GET(
  * PUT /api/meet/tags/[id]
  * Actualiza un tag existente
  */
-export async function PUT(
+async function handlePut(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -304,7 +305,7 @@ export async function PUT(
  * DELETE /api/meet/tags/[id]
  * Elimina un tag
  */
-export async function DELETE(
+async function handleDelete(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -457,3 +458,8 @@ async function updateDescendantPaths(tagId: string, newParentPath: string, newPa
   
   console.log(`✅ Finished updating descendants of ${tagId}`);
 }
+
+// Configurar middleware de autenticación para soporte dual
+export const GET = withApiKeyAuth(handleGet);
+export const PUT = withApiKeyAuth(handlePut);
+export const DELETE = withApiKeyAuth(handleDelete);

@@ -92,9 +92,18 @@ model MeetGroup {
   // Relaciones con spaces (múltiples)
   spaceGroups MeetSpaceGroup[]
   
+  // Sistema de Referencias
+  allowsReferences Boolean @default(false)  // Si puede ser referenciado por paquetes
+  referenceCount   Int     @default(0)      // Contador denormalizado para performance
+  
+  // Relaciones de referencias
+  references       MeetGroupReference[] @relation("GroupReferences")   // Referencias que contiene este grupo
+  referencedBy     MeetGroupReference[] @relation("ReferencedBy")      // Referencias que apuntan a este grupo
+  
   @@index([parentId])
   @@index([path])
   @@index([level])
+  @@index([allowsReferences])
 }
 
 // Tabla pivot: MeetSpace ↔ MeetTag (many-to-many)
@@ -170,5 +179,34 @@ model MeetApiLog {
   @@index([operation])
   @@index([spaceId])
   @@index([createdAt])
+}
+
+// Sistema de Referencias entre Grupos (para paquetes que referencian servicios/masters)
+model MeetGroupReference {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Grupo que contiene la referencia (paquete)
+  sourceGroupId String    @db.ObjectId
+  sourceGroup   MeetGroup @relation("GroupReferences", fields: [sourceGroupId], references: [id], onDelete: Cascade)
+  
+  // Grupo referenciado (master/servicio)
+  targetGroupId String    @db.ObjectId
+  targetGroup   MeetGroup @relation("ReferencedBy", fields: [targetGroupId], references: [id], onDelete: Restrict)
+  
+  // Personalización de la referencia en contexto
+  displayName   String?   // Nombre personalizado para mostrar en el paquete
+  description   String?   // Descripción específica en el contexto del paquete
+  order         Int       @default(0) // Orden de visualización dentro del paquete
+  
+  // Metadata
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  createdBy     String?   // Usuario que creó la referencia
+  updatedAt     DateTime  @updatedAt
+  
+  @@unique([sourceGroupId, targetGroupId]) // Un paquete no puede referenciar el mismo servicio dos veces
+  @@index([sourceGroupId])
+  @@index([targetGroupId])
+  @@map("meetgroupreferences")
 }
 

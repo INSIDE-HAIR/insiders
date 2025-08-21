@@ -16,12 +16,31 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/src/components/ui/accordion";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/src/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/src/components/ui/popover";
 import { Textarea } from "@/src/components/ui/textarea";
 import { useToast } from "@/src/hooks/use-toast";
 import { Icons } from "@/src/components/shared/icons";
@@ -38,6 +57,8 @@ import {
   BuildingOfficeIcon,
   CheckCircleIcon,
   XCircleIcon,
+  CheckIcon,
+  ChevronUpDownIcon,
 } from "@heroicons/react/24/outline";
 import { cn } from "@/src/lib/utils";
 import { HierarchyTree } from "@/src/components/ui/hierarchy-tree";
@@ -79,7 +100,10 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [expandedTags, setExpandedTags] = useState<Set<string>>(new Set());
+  const [accordionValue, setAccordionValue] = useState<string | undefined>(undefined);
   const [showPublicView, setShowPublicView] = useState(false); // Toggle between internal/public view
+  const [parentTagComboboxOpen, setParentTagComboboxOpen] = useState(false);
+  const [parentTagSearchValue, setParentTagSearchValue] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -319,6 +343,8 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
       order: 0,
     });
     setFormErrors({});
+    setParentTagComboboxOpen(false);
+    setParentTagSearchValue("");
   };
 
   const openCreateModal = (parentTag?: MeetTag) => {
@@ -343,6 +369,8 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
       order: tag.order || 0,
     });
     setFormErrors({});
+    setParentTagComboboxOpen(false);
+    setParentTagSearchValue("");
     setIsEditModalOpen(true);
   };
 
@@ -358,6 +386,31 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
     });
   };
 
+  const expandAll = () => {
+    // Expand all hierarchy items
+    const getAllTagIds = (tagList: MeetTag[]): string[] => {
+      return tagList.reduce((acc: string[], tag) => {
+        acc.push(tag.id);
+        if (tag.children && tag.children.length > 0) {
+          acc.push(...getAllTagIds(tag.children));
+        }
+        return acc;
+      }, []);
+    };
+    
+    setExpandedTags(new Set(getAllTagIds(filteredTags)));
+    
+    // Expand accordion if there are orphan tags
+    if (orphanTags.length > 0) {
+      setAccordionValue("orphan-tags");
+    }
+  };
+
+  const collapseAll = () => {
+    setExpandedTags(new Set());
+    setAccordionValue(undefined);
+  };
+
   const generateSlug = (name: string) => {
     const slug = name
       .toLowerCase()
@@ -369,6 +422,196 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
       .trim();
     
     setFormData(prev => ({ ...prev, slug }));
+  };
+
+  // Función de búsqueda fuzzy muy permisiva
+  const fuzzySearch = (searchTerm: string, target: string): boolean => {
+    if (!searchTerm || !target) return true;
+    
+    const normalizeText = (text: string) => 
+      text.toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") // Remove accents
+          .replace(/[^a-z0-9\s]/g, "") // Keep alphanumeric and spaces
+          .replace(/\s+/g, ""); // Remove all spaces
+    
+    const normalizedSearch = normalizeText(searchTerm);
+    const normalizedTarget = normalizeText(target);
+    
+    // Si está vacío después de normalizar, mostrar todo
+    if (!normalizedSearch) return true;
+    
+    // Método 1: Búsqueda simple de substring (más permisivo)
+    if (normalizedTarget.includes(normalizedSearch)) {
+      return true;
+    }
+    
+    // Método 2: Búsqueda de todas las palabras por separado
+    const searchWords = searchTerm.toLowerCase().split(/\s+/);
+    const targetWords = target.toLowerCase().split(/\s+/);
+    
+    const allWordsFound = searchWords.every(searchWord => 
+      targetWords.some(targetWord => 
+        targetWord.includes(searchWord) || searchWord.includes(targetWord)
+      )
+    );
+    
+    if (allWordsFound) {
+      return true;
+    }
+    
+    // Método 3: Búsqueda por caracteres en orden (más flexible)
+    const searchChars = normalizedSearch.split("");
+    let targetIndex = 0;
+    
+    for (let i = 0; i < searchChars.length; i++) {
+      const char = searchChars[i];
+      const foundIndex = normalizedTarget.indexOf(char, targetIndex);
+      
+      if (foundIndex === -1) {
+        return false; // Si no encuentra un carácter, no coincide
+      }
+      
+      targetIndex = foundIndex + 1;
+    }
+    
+    return true;
+  };
+
+  // Filtrar tags para el combobox de tag padre con búsqueda fuzzy
+  const getFilteredParentTags = (excludeTagId?: string) => {
+    let tagsToFilter = flatTags;
+    
+    // Excluir el tag actual para evitar ciclos (no puede ser padre de sí mismo)
+    if (excludeTagId) {
+      tagsToFilter = flatTags.filter(tag => tag.id !== excludeTagId);
+    }
+    
+    if (!parentTagSearchValue.trim()) return tagsToFilter;
+    
+    return tagsToFilter.filter(tag => {
+      // Buscar en múltiples campos con búsqueda fuzzy
+      const searchFields = [
+        tag.name,
+        tag.slug,
+        tag.customId,
+        tag.internalDescription,
+        tag.publicDescription
+      ].filter(Boolean); // Remove null/undefined values
+      
+      // Si cualquier campo coincide con la búsqueda fuzzy, incluir el tag
+      return searchFields.some(field => 
+        fuzzySearch(parentTagSearchValue, field as string)
+      );
+    });
+  };
+
+  // Obtener el tag padre seleccionado
+  const getSelectedParentTag = () => {
+    if (!formData.parentId) return null;
+    return flatTags.find(tag => tag.id === formData.parentId) || null;
+  };
+
+  // Renderizar componente ParentTagCombobox
+  const renderParentTagCombobox = (idPrefix: string = "", excludeTagId?: string) => {
+    const selectedParent = getSelectedParentTag();
+    const filteredTags = getFilteredParentTags(excludeTagId);
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={`${idPrefix}parent`}>Tag Padre</Label>
+        <Popover open={parentTagComboboxOpen} onOpenChange={setParentTagComboboxOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={parentTagComboboxOpen}
+              className="w-full justify-between"
+            >
+              {selectedParent ? (
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: selectedParent.color }}
+                  />
+                  <span className="truncate">{selectedParent.name}</span>
+                  {selectedParent.customId && (
+                    <Badge variant="secondary" className="text-xs">
+                      #{selectedParent.customId}
+                    </Badge>
+                  )}
+                </div>
+              ) : (
+                "Sin padre (tag raíz)"
+              )}
+              <ChevronUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-full p-0" align="start">
+            <Command>
+              <CommandInput
+                placeholder="Buscar tag padre..."
+                value={parentTagSearchValue}
+                onValueChange={setParentTagSearchValue}
+              />
+              <CommandList>
+                <CommandEmpty>No se encontraron tags.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    value="__root__"
+                    onSelect={() => {
+                      setFormData(prev => ({ ...prev, parentId: "" }));
+                      setParentTagComboboxOpen(false);
+                      setParentTagSearchValue("");
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded border bg-muted" />
+                      <span>Sin padre (tag raíz)</span>
+                    </div>
+                    {!formData.parentId && (
+                      <CheckIcon className="ml-auto h-4 w-4" />
+                    )}
+                  </CommandItem>
+                  {filteredTags.map((tag) => (
+                    <CommandItem
+                      key={tag.id}
+                      value={tag.id}
+                      onSelect={(currentValue) => {
+                        setFormData(prev => ({ 
+                          ...prev, 
+                          parentId: currentValue === formData.parentId ? "" : currentValue 
+                        }));
+                        setParentTagComboboxOpen(false);
+                        setParentTagSearchValue("");
+                      }}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <div
+                          className="h-3 w-3 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: tag.color }}
+                        />
+                        <span className="truncate" style={{ paddingLeft: `${tag.level * 8}px` }}>
+                          {tag.name}
+                        </span>
+                        {tag.customId && (
+                          <Badge variant="secondary" className="text-xs">
+                            #{tag.customId}
+                          </Badge>
+                        )}
+                      </div>
+                      {formData.parentId === tag.id && (
+                        <CheckIcon className="ml-2 h-4 w-4" />
+                      )}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    );
   };
 
   // Render custom content for tags in hierarchy tree
@@ -397,7 +640,7 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
           </Badge>
           {tag.customId && (
             <Badge variant="secondary" className="text-xs">
-              {tag.customId}
+              #{tag.customId}
             </Badge>
           )}
           {!tag.isActive && (
@@ -559,17 +802,38 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
     ));
   };
 
-  // Filtrar tags por búsqueda
-  const filteredTags = React.useMemo(() => {
-    if (!searchTerm) return tags;
+  // Función auxiliar para buscar un tag en la jerarquía
+  const findTagInHierarchy = React.useCallback((tagList: MeetTag[], targetId: string): MeetTag | null => {
+    for (const tag of tagList) {
+      if (tag.id === targetId) return tag;
+      const found = findTagInHierarchy(tag.children, targetId);
+      if (found) return found;
+    }
+    return null;
+  }, []);
+
+  // Filtrar tags por búsqueda y separar los que no tienen parentID
+  const { filteredTags, orphanTags } = React.useMemo(() => {
+    const allTags = tags;
     
     const filterTags = (tagList: MeetTag[]): MeetTag[] => {
       return tagList.reduce((acc: MeetTag[], tag) => {
-        const matchesSearch = 
-          tag.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          tag.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          tag.internalDescription?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          tag.publicDescription?.toLowerCase().includes(searchTerm.toLowerCase());
+        let matchesSearch = !searchTerm.trim();
+        
+        if (searchTerm.trim()) {
+          // Buscar en múltiples campos con búsqueda fuzzy
+          const searchFields = [
+            tag.name,
+            tag.slug,
+            tag.customId,
+            tag.internalDescription,
+            tag.publicDescription
+          ].filter(Boolean);
+          
+          matchesSearch = searchFields.some(field => 
+            fuzzySearch(searchTerm, field as string)
+          );
+        }
 
         const filteredChildren = filterTags(tag.children);
 
@@ -584,8 +848,28 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
       }, []);
     };
 
-    return filterTags(tags);
-  }, [tags, searchTerm]);
+    const filtered = filterTags(allTags);
+    
+    // Separar tags huérfanos (aquellos que deberían tener parent pero no lo tienen en la jerarquía actual)
+    // Estos serían tags con parentId pero que no están siendo mostrados como hijos de ningún tag
+    const findOrphanTags = (flatTagsList: MeetTag[]): MeetTag[] => {
+      return flatTagsList.filter(tag => {
+        // Un tag es huérfano si tiene parentId pero su parent no existe en la estructura actual
+        if (!tag.parentId) return false;
+        
+        // Verificar si existe el parent en la estructura jerárquica
+        const parentExists = findTagInHierarchy(filtered, tag.parentId);
+        return !parentExists;
+      });
+    };
+    
+    const orphans = findOrphanTags(flatTags);
+    
+    return { 
+      filteredTags: filtered, 
+      orphanTags: orphans 
+    };
+  }, [tags, flatTags, searchTerm, findTagInHierarchy]);
 
   return (
     <div className="space-y-6">
@@ -623,6 +907,30 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
               Pública
             </Button>
           </div>
+
+          {/* Expand/Collapse Controls */}
+          {(filteredTags.length > 0 || orphanTags.length > 0) && (
+            <div className="flex items-center gap-1 px-2 py-1 border rounded-md bg-background">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={expandAll}
+                className="h-7 px-2 text-xs"
+              >
+                <ChevronDownIcon className="h-3 w-3 mr-1" />
+                Expandir
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={collapseAll}
+                className="h-7 px-2 text-xs"
+              >
+                <ChevronRightIcon className="h-3 w-3 mr-1" />
+                Contraer
+              </Button>
+            </div>
+          )}
 
           <Button
             onClick={fetchTags}
@@ -711,7 +1019,7 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
             <div className="flex items-center justify-center py-12">
               <Icons.SpinnerIcon className="h-8 w-8 animate-spin text-primary" />
             </div>
-          ) : filteredTags.length === 0 ? (
+          ) : filteredTags.length === 0 && orphanTags.length === 0 ? (
             <div className="text-center py-12">
               <TagIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-1">No hay tags</h3>
@@ -726,15 +1034,61 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
               )}
             </div>
           ) : (
-            <HierarchyTree
-              items={filteredTags as any[]}
-              onEdit={openEditModal as any}
-              onDelete={handleDeleteTag as any}
-              onAddChild={openCreateModal as any}
-              renderItemContent={renderTagContent as any}
-              renderItemActions={renderTagActions as any}
-              maxInitialLevel={2}
-            />
+            <div className="space-y-4">
+              {/* Tags con jerarquía normal */}
+              {filteredTags.length > 0 && (
+                <HierarchyTree
+                  items={filteredTags as any[]}
+                  onEdit={openEditModal as any}
+                  onDelete={handleDeleteTag as any}
+                  onAddChild={openCreateModal as any}
+                  renderItemContent={renderTagContent as any}
+                  renderItemActions={renderTagActions as any}
+                  maxInitialLevel={0}
+                  expandedItems={expandedTags}
+                  onToggleExpand={toggleExpand}
+                />
+              )}
+              
+              {/* Accordion para tags huérfanos (sin parentID válido) */}
+              {orphanTags.length > 0 && (
+                <Accordion 
+                  type="single" 
+                  collapsible 
+                  className="w-full"
+                  value={accordionValue}
+                  onValueChange={setAccordionValue}
+                >
+                  <AccordionItem value="orphan-tags">
+                    <AccordionTrigger className="text-orange-600">
+                      <div className="flex items-center gap-2">
+                        <ExclamationTriangleIcon className="h-4 w-4" />
+                        Tags sin parent identificado ({orphanTags.length})
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2 pl-4">
+                        {orphanTags.map((tag) => (
+                          <div
+                            key={tag.id}
+                            className={cn(
+                              "flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors border border-orange-200",
+                              !tag.isActive && "opacity-50"
+                            )}
+                          >
+                            {renderTagContent(tag)}
+                            {renderTagActions(tag)}
+                          </div>
+                        ))}
+                        <div className="pt-2 text-sm text-muted-foreground">
+                          <p>Estos tags tienen un parent ID asignado pero el tag padre no existe en la estructura actual.</p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
           )}
         </CardContent>
       </Card>
@@ -832,26 +1186,7 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="parent">Tag Padre</Label>
-              <Select
-                value={formData.parentId || "__root__"}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, parentId: value === "__root__" ? "" : value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sin padre (tag raíz)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__root__">Sin padre (tag raíz)</SelectItem>
-                  {flatTags.map((tag) => (
-                    <SelectItem key={tag.id} value={tag.id}>
-                      {"  ".repeat(tag.level)}
-                      {tag.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {renderParentTagCombobox()}
 
             <div className="space-y-2">
               <Label>Color</Label>
@@ -897,6 +1232,16 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
           </DialogHeader>
           
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-id">ID del Tag</Label>
+              <Input
+                id="edit-id"
+                value={selectedTag?.id || ""}
+                disabled
+                className="bg-muted"
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="edit-name">Nombre *</Label>
               <Input
@@ -969,28 +1314,7 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="edit-parent">Tag Padre</Label>
-              <Select
-                value={formData.parentId || "__root__"}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, parentId: value === "__root__" ? "" : value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Sin padre (tag raíz)" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__root__">Sin padre (tag raíz)</SelectItem>
-                  {flatTags
-                    .filter(tag => tag.id !== selectedTag?.id) // No puede ser padre de sí mismo
-                    .map((tag) => (
-                      <SelectItem key={tag.id} value={tag.id}>
-                        {"  ".repeat(tag.level)}
-                        {tag.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {renderParentTagCombobox("edit-", selectedTag?.id)}
 
             <div className="space-y-2">
               <Label>Color</Label>

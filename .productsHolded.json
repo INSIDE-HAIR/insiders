@@ -1,0 +1,4878 @@
+[
+  {
+    "id": "678025386294b58ade076c10",
+    "kind": "simple",
+    "name": "_ MARKETING SALON AVANZADO",
+    "desc": "Adaptación de plan de Ventas y Marketing anual _inside para salones, que incluye campaña publicitaría de comunicación de salón y digital, con adaptación a la identidad corporativa de la marca, que incluye diferentes opciones y formatos de archivos, sesiones de planificación, y seguimiento individual, y formación comercial con herramientas, guías, manuales, y protocolos de implementación.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 900,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1089,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "ME04",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "membresias",
+      "mktsalonavanzado"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ MSA",
+        "name": "_ MEMBRESÍAS"
+      }
+    ]
+  },
+  {
+    "id": "678025386294b58ade076c08",
+    "kind": "simple",
+    "name": "_ GESTIÓN DIRECTIVA",
+    "desc": "Seguimiento semanal en grupo reducido de varios líderes con objetivo común de 90 min, para la implementación del plan estratégico y sistemas de dirección ventas, gestión, y marketing. Asesoramiento, orientación y guía en las decisiones clave sobre estratégia, equipo, ejecución y efectivo.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 52,
+    "barcode": "",
+    "sku": "ME03",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "gestiondirectiva",
+      "membresias"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ MS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ]
+  },
+  {
+    "id": "678025386294b58ade076c00",
+    "kind": "simple",
+    "name": "_ CONSULTORÍA & MENTORING",
+    "desc": "Seguimiento mensual individual de análisis de los principales indicadores de la actividad de ventas del negocio ( facturación, visitas, servicios, rentabilidad, y ticket medio ), seguimiento del mes en curso, y proyección de objetivos de venta, asesoramiento en sistemas y decisiones de dirección.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 76,
+    "barcode": "",
+    "sku": "ME02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "membresias",
+      "consultoríaymentoring"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ CS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ]
+  },
+  {
+    "id": "678025386294b58ade076bf8",
+    "kind": "simple",
+    "name": "_ MARKETING SALON",
+    "desc": "Plan de Ventas y Marketing anual, que incluye campaña publicitaría de comunicación de salón y digital, con adaptaciones, diferentes opciones y formatos, sesiones de planificación, y mentoría grupal, seguimiento individual, y formación comercial con herramientas, guías, manuales, y protocolos de implementación, junto a un grupo reducido de líderes con objetivos y etapa común.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": -229,
+    "barcode": "",
+    "sku": "ME01",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mktsalón",
+      "membresias"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ MS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c30",
+    "kind": "simple",
+    "name": "_ Master SCALING _ S",
+    "desc": "Programa formativo online de 6 semanas para aprender a crear un plan estratégico llave en mano, e implementar las 4 decisiones clave y su desarrollo en el salón ( la estrategia, el equipo, la ejecución y el efectivo ), incluye videos grabados de cada módulo, asistencia técnica, ejercicios, plantillas y guías, mentoría presencial en Valencia, entrega de plan estratégico a una página, y certificación.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2097.9,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2538.459,
+    "hasStock": true,
+    "stock": 97,
+    "barcode": "",
+    "sku": "FM04",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "formacionmaster",
+      "scaling"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1678.32,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 2997,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d937e513b8da7d130a13a6",
+        "subtotal": 1258.74,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d9383707b77cd4fe066ffa",
+        "subtotal": 1535.66,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c28",
+    "kind": "simple",
+    "name": "_ Master SALON EXPERIENCE",
+    "desc": "Programa formativo online en vivo de 12 semanas, en el que aprenderás a crear e implementar un modelo de salón disruptivo, desarrollar experiencias únicas para el cliente en búsqueda de la excelencia. Incluye clases grabadas de cada módulo, ejercicios, plantillas y guías, mentorías de implementación, trabajo fin de máster, junto a entrega de certificación de conocimientos, y de finalización.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2097,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2537.37,
+    "hasStock": true,
+    "stock": 87,
+    "barcode": "",
+    "sku": "FM03",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "formacionmaster",
+      "salonexperience"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67d937e513b8da7d130a13a6",
+        "subtotal": 1258.74,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1678.32,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d9383707b77cd4fe066ffa",
+        "subtotal": 1535.66,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 2997,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "678025386294b58ade076c20",
+    "kind": "simple",
+    "name": "_ Master STAR CLUB",
+    "desc": "Programa formativo online en vivo de 12 semanas, para crear e implementar un club de fidelización avanzado en el salón, que permite multiplicar las ventas recurrentes, y generar una nueva experiencia de servicio al cliente mediante beneficios exclusivos. Incluye videos grabados, plantillas y manuales, diseño y producción de todos los elementos publicitarios y de comunicación del club, mentorías de implementación y seguimiento.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2097.9,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2538.459,
+    "hasStock": true,
+    "stock": 96,
+    "barcode": "",
+    "sku": "FM02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "formacionmaster",
+      "starclub"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1678.32,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 2997,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d937e513b8da7d130a13a6",
+        "subtotal": 1258.74,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d9383707b77cd4fe066ffa",
+        "subtotal": 1535.66,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "678025386294b58ade076c18",
+    "kind": "simple",
+    "name": "_ Master IBM",
+    "desc": "Programa formativo online en vivo de 12 semanas, para aprender a planificar, controlar, e implementar sistemas y procesos de gestión empresarial especificamente diseñados para peluquerías en sus 5 principales áreas; la actividad, la gestión, el equipo, la productividad, y el marketing. También incluye 12 mentorías de implementación online en vivo con grupo reducido, videos grabados de cada módulo, ejercicios, plantillas y manuales, junto a la entrega de un manual de acción, certificación de conocimientos, y certificación de finalización.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2097.9,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2538.459,
+    "hasStock": true,
+    "stock": 58,
+    "barcode": "",
+    "sku": "FM01",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "formacionmaster",
+      "ibm"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1678.32,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 2997,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d937e513b8da7d130a13a6",
+        "subtotal": 1258.74,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "67d9383707b77cd4fe066ffa",
+        "subtotal": 1535.66,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076cc0",
+    "kind": "simple",
+    "name": "_ Plan Estratégico",
+    "desc": "Análisis de las áreas clave del negocio ( estratégia, equipo, ejecución y efectivo ), creación de objetivos de medio y largo plazo, desarrollo organizativo por fases para el crecimiento de las ventas, la organización, los sistemas y la rentabilidad, creación de indicadores clave de seguimiento y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1997,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2416.37,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CS07",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "planestrategico"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076cb8",
+    "kind": "simple",
+    "name": "_ Plan de Negocio",
+    "desc": "Análisis de idea y estrategia de posicionamiento, estudio de público y potencial en zona, desarrollo de modelo de negocio, fijación de precios, proyección de ingresos y gastos ideal, creación de estrategia de diferenciación y venta de servicios, desarrollo organizativo, creación de objetivos y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1997,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2416.37,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CS06",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "plandenegocio"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076cb0",
+    "kind": "simple",
+    "name": "_ Consultoría 360º",
+    "desc": "Análisis de los principales indicadores de la actividad de ventas, de la explotación, de la productividad, y de los principales medios de captación digitales, proyección ideal en cada una de las áreas clave ( ventas, rentabilidad, productividad y captación ), objetivos y plan de acción",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1997,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2416.37,
+    "hasStock": true,
+    "stock": 98,
+    "barcode": "",
+    "sku": "CS05",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "consultoria360"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076ca8",
+    "kind": "simple",
+    "name": "_ Consultoría Digital",
+    "desc": "Análisis de los principales medios captación de clientes potenciales y sus indicadores clave ( Público, Imágen, Contenido, Interacción y Publicidad en Instagram, Facebook y Google ), proyección ideal de imágen, contenidos y acciones publicitarias, objetivos y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CS04",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "consultoriadigital"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076ca0",
+    "kind": "simple",
+    "name": "_ Consultoría Organizativa",
+    "desc": "Análisis de los principales indicadores de productividad ( ingresos hora, gastos hora, tiempo de servicios, tiempo medio y horarios ), proyección ideal de tiempos y agenda de trabajo, objetivos y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 57,
+    "barcode": "",
+    "sku": "CS03",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "consultoriaorganizativa"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076c98",
+    "kind": "simple",
+    "name": "_ Consultoría de Negocio",
+    "desc": "Análisis de los principales indicadores de la explotación del negocio ( salarios, gastos directos y gastos indirectos, compras a proveedores, gasto medio y rentabilidad ), proyección ideal de gastos y rentabilidad, objetivos y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CS02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "consultorianegocio"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076c90",
+    "kind": "simple",
+    "name": "_ Consultoría de Actividad",
+    "desc": "Análisis de los principales indicadores de ventas del negocio ( facturación, visitas, servicios, ticket medio y precios ), proyección del potencial ideal de actividad de ventas, objetivos y plan de acción.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 98,
+    "barcode": "",
+    "sku": "CS01",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "consultoria",
+      "consultoríaactividad"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Consultoría ",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076c88",
+    "kind": "simple",
+    "name": "_ Bono Master 12",
+    "desc": "12 Sesiones individuales de 1 hora con Consultor Master para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1650,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1996.5,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM09",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoconsultoria12"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 1350,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 12",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076c80",
+    "kind": "simple",
+    "name": "_ Bono Master 6",
+    "desc": "6 Sesiones individuales de 1 hora con Consultor Master para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 975,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1179.75,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM08",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoconsultoria6"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 825,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 6",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "6780253a6294b58ade076c78",
+    "kind": "simple",
+    "name": "_ Bono Master 3",
+    "desc": "3 Sesiones individuales de 1 hora con Consultor Master para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 563,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 681.23,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM07",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonomaster3"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 488,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 3",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c70",
+    "kind": "simple",
+    "name": "_ Bono Especialista 12",
+    "desc": "12 Sesiones individuales de 1 hora con Consultor Especialista para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1188,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1437.48,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM06",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoespecialista12"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 972,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 12",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c68",
+    "kind": "simple",
+    "name": "_ Bono Especialista 6",
+    "desc": "6 Sesiones individuales de 1 hora con Consultor Especialista para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 702,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 849.42,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM05",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoespecialista6"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 594,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 6",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c60",
+    "kind": "simple",
+    "name": "_ Bono Especialista 3",
+    "desc": "3 Sesiones individuales de 1 hora con Consultor Especialista para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 405,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 490.05,
+    "hasStock": true,
+    "stock": 96,
+    "barcode": "",
+    "sku": "CM04",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoespecialista3"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 351,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 3",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c58",
+    "kind": "simple",
+    "name": "_ Bono Consultoría 12",
+    "desc": "12 Sesiones individuales de 1 hora con Consultor para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 792,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 958.32,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM03",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoconsultoria12"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 648,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 12",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c50",
+    "kind": "simple",
+    "name": "_ Bono Consultoría 6",
+    "desc": "6 Sesiones individuales de 1 hora con Consultor para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 468,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 566.28,
+    "hasStock": true,
+    "stock": 100,
+    "barcode": "",
+    "sku": "CM02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoconsultoria6"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 396,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 6",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c48",
+    "kind": "simple",
+    "name": "_ Bono Consultoría 3",
+    "desc": "3 Sesiones individuales de 1 hora con Consultor para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 270,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 326.7,
+    "hasStock": true,
+    "stock": 81,
+    "barcode": "",
+    "sku": "CM01",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual",
+      "bonoconsultoria3"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "67c042582af1bf5add040811",
+        "subtotal": 234,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 3",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c40",
+    "kind": "simple",
+    "name": "_ Salón HIPERVENTAS",
+    "desc": "Formación Intensiva Online de 4 semanas, para conseguir un crecimiento exponencial, aprendiendo a implementar un sistema de ventas, y desarrollar un equipo altamente capacitado para generar oportunidades, y ventas recurrentes.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 999,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1208.79,
+    "hasStock": true,
+    "stock": 94,
+    "barcode": "",
+    "sku": "CA02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "cursointensivo",
+      "hiperventas"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Intensiva",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "678025396294b58ade076c38",
+    "kind": "simple",
+    "name": "_ Peluquerías IMPARABLES _ ON",
+    "desc": "Formación Intensiva Online de 4 semanas, para aprender las bases del marketing estratégico y ser un imán de clientes, aprender el control de los principales indicadores de un negocio de peluquería rentable, y aprender los sistemas clave del crecimiento de un salón de peluquería.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 999,
+    "taxes": [],
+    "total": 999,
+    "hasStock": true,
+    "stock": 162,
+    "barcode": "",
+    "sku": "CI02",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "cursointensivo",
+      "peluqueriasimparables"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "66631d3221f7a19a9c015a7b",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6888278d701a2b50f50f1d48",
+        "subtotal": 297,
+        "taxes": []
+      },
+      {
+        "id": "6888275ca74856b55505f1e2",
+        "subtotal": 149,
+        "taxes": []
+      },
+      {
+        "id": "688828354a219c00300bb184",
+        "subtotal": 499,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Intensiva",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "678033ea38bdb8386b02b542",
+    "kind": "pack",
+    "name": "_ SALON 360º _ START",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 1, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1996,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2415.16,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S301",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "start"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2196,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 2066.1157,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1597,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 4597,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Start ",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "67834c314c22b9f8470e599f",
+    "kind": "pack",
+    "name": "_ SALON 360º _ STEP",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 2, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de mentoría individual para seguimiento y guía de implementación con equipo de consultoría.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2396,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2899.16,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S302",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "step"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2596,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 2476.1,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1917,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 4885,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Step",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c48#678025396294b58ade076c47",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "67834e2bf01ec1e97609b439",
+    "kind": "pack",
+    "name": "_ SALON 360º _ GROW",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 3, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de mentoría individual para seguimiento y guía de implementación con un consultor especialista.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2796,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 3383.16,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S303",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "grow"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2996,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 2903.5,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 2237,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 5029,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Grow",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c60#678025396294b58ade076c5f",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "67835f901e166f5154059b44",
+    "kind": "pack",
+    "name": "_ SALON 360º _ SUCCESS",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 4, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un consultor especialista",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 3196,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 3867.16,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S304",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "success"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 3396,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3331.5,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 2557,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 6229,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Success",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c60#678025396294b58ade076c5f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      }
+    ]
+  },
+  {
+    "id": "67836178f41f6b4a6b09f7cd",
+    "kind": "pack",
+    "name": "_ SALON 360º _ SPEED",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 5, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un consultor master",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 3496,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 4230.16,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S305",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "speed"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 3796,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3661.2,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 2797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 6397,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Speed",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      },
+      {
+        "pid": "6780253a6294b58ade076c78#6780253a6294b58ade076c77",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6783652454911509fa02b3fb",
+    "kind": "pack",
+    "name": "Formación_ SALON 360º _ SCALE",
+    "desc": "Formación específicamente diseñada para salones en etapa 6, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing avanzado de 3 meses para un máximo de 3 salones con adaptación de campaña publicitaria, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un consultor master",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4896,
+    "taxes": [],
+    "total": 4896,
+    "hasStock": true,
+    "stock": 25,
+    "barcode": "",
+    "sku": "FS306",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "scale"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 5396,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5076,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3917,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 9388,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Scale",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      },
+      {
+        "pid": "6780253a6294b58ade076c78#6780253a6294b58ade076c77",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c10#678025386294b58ade076c0f",
+        "u": 3
+      }
+    ]
+  },
+  {
+    "id": "67837f8a6c0aaa86cf08441a",
+    "kind": "pack",
+    "name": "_ Membresía AVANZA _ MC",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 2 mkt salón, y consultoría.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9600,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11616,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "ME05",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzamc"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 7680,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 6531,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5376,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 5760,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Avanza _ MC",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "678382a804403a64b706e48f",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ MSC",
+    "desc": "Este paquete incluye el Máster Scaling, donde aprenderás a diseñar e implementar un plan estratégico llave en mano, centrándote en las cuatro decisiones clave: estrategia, equipo, ejecución y efectivo. Lo acompañarás con Marketing Salón, que te ofrecerá un plan de ventas y marketing anual, campañas publicitarias digitales y de salón, mentoría grupal e individual, planificación estratégica y formación comercial con guías y protocolos de implementación.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE01",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025396294b58ade076c30#678025396294b58ade076c2f",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6784ba699968a9a4e70c85d7",
+    "kind": "pack",
+    "name": "Formación _ SALON 360º _ SUCCESS",
+    "desc": "Formación específicamente diseñada para salones en etapa 4, que incluye sesión organizativa para planificar objetivos, y organizar plan de trabajo, formación de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un formador especialista",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 3196,
+    "taxes": [],
+    "total": 3196,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "FS304",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "success"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 3396,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 4031,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 2557,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 6229,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Success",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c60#678025396294b58ade076c5f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      }
+    ]
+  },
+  {
+    "id": "6784f0ad468179e87a0964f4",
+    "kind": "pack",
+    "name": "Formación_ SALON 360º _ STEP",
+    "desc": "Formación específicamente diseñada para salones en etapa 2, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de mentoría individual para seguimiento y guía de implementación con equipo de consultoría.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2396,
+    "taxes": [],
+    "total": 2396,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "FS302",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "step"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2596,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 2996,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1917,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 4885,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Step",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c48#678025396294b58ade076c47",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6784f5fed06d64f1670fa760",
+    "kind": "pack",
+    "name": "Formación_ SALON 360º _ START",
+    "desc": "Formación específicamente diseñado para salones en etapa 1, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1996,
+    "taxes": [],
+    "total": 1996,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "FS301",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "start"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2196,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 2066.1157,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 1597,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 4597,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Start ",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6784f703c1802529ad0b52d7",
+    "kind": "pack",
+    "name": "Formación_ SALON 360º _ SPEED",
+    "desc": "Formación específicamente diseñado para salones en etapa 5, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un consultor master",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 3496,
+    "taxes": [],
+    "total": 3496,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "FS305",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "speed"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 3396,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3796,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 4430,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 6397,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Speed",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      },
+      {
+        "pid": "6780253a6294b58ade076c78#6780253a6294b58ade076c77",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6784f826504236ceb1050258",
+    "kind": "pack",
+    "name": "Formación_ SALON 360º _ GROW",
+    "desc": "Formación específicamente diseñadoa para salones en etapa 3, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de mentoría individual para seguimiento y guía de implementación con un consultor especialista.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2796,
+    "taxes": [],
+    "total": 2796,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "FS303",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "grow"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 2996,
+        "taxes": []
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3513,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 2237,
+        "taxes": []
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 5029,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Grow",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025396294b58ade076c60#678025396294b58ade076c5f",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6784f932d1cbe2ae3d073fef",
+    "kind": "pack",
+    "name": "_SALON 360º _ SCALE",
+    "desc": "Plan de Crecimiento específicamente diseñada para salones en etapa 6, que incluye consultoría organizativa para planificar objetivos, y organizar plan de trabajo, plan de ventas y marketing avanzado de 3 meses para un máximo de 3 salones con adaptación de campaña publicitaria, y formación master _IBM, especializada en la implementación de sistemas y procesos de gestión empresarial en las 5 áreas clave del negocio.\n\nEste plan incluye también 3 sesiones de consultoría y mentoring individual para seguimiento y guía de implementación con un consultor master",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4896,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 5924.16,
+    "hasStock": true,
+    "stock": 25,
+    "barcode": "",
+    "sku": "S306",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "scale"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 5396,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 4195,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3917,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 9388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Scale",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6780253a6294b58ade076ca0#6780253a6294b58ade076c9f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 3
+      },
+      {
+        "pid": "6780253a6294b58ade076c78#6780253a6294b58ade076c77",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c10#678025386294b58ade076c0f",
+        "u": 3
+      }
+    ]
+  },
+  {
+    "id": "67850567e773f8fa4c0da0bb",
+    "kind": "pack",
+    "name": "_ Membresía AVANZA _ MG",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 2 mkt salón, y gestión directiva.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9600,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11616,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "ME06",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzamg"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 7680,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 6531,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5376,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 5760,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Avanza _ MG ",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "6785077742dcada97b053fc2",
+    "kind": "pack",
+    "name": "_ Membresía AVANZA _ CG",
+    "desc": "Membresía anual combinada especificamente y diseñada para el crecimiento y el control de la gestión. Esto te permitirá realizar un seguimiento en el control de los principales indicadores del negocio y poder analizar y tomar decisiones en la gestión y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 2, consultoría y gestión directiva.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9600,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11616,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "ME07",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzacg"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 7680,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 6531,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5376,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 5760,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Avanza _ CG",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67850defd5ff9db97502741b",
+    "kind": "pack",
+    "name": "_ Membresía AVANZA _ MAG",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual con adaptación personalizada a la identidad corporativa del salón, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 2 mkt salón avanzado, y gestión directiva..",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 15600,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 18876,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "ME08",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzamag"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 12480,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 10371.68,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 8736,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 9360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Avanza _ MAG",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c10#678025386294b58ade076c0f",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "678512d262f534237a0d5248",
+    "kind": "pack",
+    "name": "_ Membresía AVANZA _ MAC",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual con adaptación personalizada a la identidad corporativa del salón, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 2 mkt salón avanzado, y consultoría..",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 15600,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 18876,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "ME09",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzamac"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 12480,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 10371.68,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 8736,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 9360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Avanza _ MAC",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c10#678025386294b58ade076c0f",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "6785310417daa9bdd602a24e",
+    "kind": "pack",
+    "name": "_ Membresía CRECE _ x3",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 3 mkt salón, consultoría y gestión directiva.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 14400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 17424,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "ME10",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "crecex3"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 10080,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 8451,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 7056,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 7560,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Crece _ x3",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "678534e44f2e0ac13409cdce",
+    "kind": "pack",
+    "name": "_ Membresía CRECE _ x3MSA",
+    "desc": "Membresía anual combinada especificamente diseñada para el crecimiento, y el control de la gestión que permite conseguir una venta exponencial mediante un plan de ventas y marketing mensual con adaptación personalizada a la imagen corporativa del salón, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye 3 mkt salón avanzado, consultoría y gestión directiva.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 20400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 24684,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "ME11",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "crecex3msa"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 14280,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 11811,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 10710,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 9996,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Crece _ x3MSA",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c10#678025386294b58ade076c0f",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67860c6d1c43f456f10619a1",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ MSE",
+    "desc": "Este paquete incluye el Máster Salón Experience, donde aprenderás a crear un modelo de salón innovador y desarrollar experiencias únicas para fidelizar clientes, con mentorías, materiales y certificaciones. Lo complementarás con Marketing Salón, que te proporcionará un plan de ventas y marketing anual, campañas publicitarias digitales y de salón, mentoría grupal e individual, planificación estratégica y formación comercial con guías y protocolos de implementación.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE02",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025396294b58ade076c28#678025396294b58ade076c27",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "678610076bb22352040e90b6",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ MST",
+    "desc": "Este paquete incluye el Máster Start Club, donde aprenderás a diseñar e implementar un club de fidelización avanzado para multiplicar las ventas recurrentes y ofrecer experiencias exclusivas a tus clientes. Lo acompañarás con Marketing Salón, que te brindará un plan de ventas y marketing anual, campañas publicitarias digitales y de salón, mentoría grupal e individual, planificación estratégica y formación comercial con herramientas y guías prácticas.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE03",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c20#678025386294b58ade076c1f",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "678758ccbfc8f13bec02c3cb",
+    "kind": "simple",
+    "name": "_ Mentoring individual",
+    "desc": "1 Sesión individual de 1 hora con Consultor para asesoramiento, orientación y guía en el desarrollo e implementación de los sistemas de dirección, ventas, gestión, y marketing en cualquiera de los servicios ofrecidos por _inside",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 120,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 145.2,
+    "hasStock": true,
+    "stock": -4,
+    "barcode": "",
+    "sku": "CM10",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "mentoringindividual"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d841f98a435d200d39a2",
+        "value": "_ Bonos 3",
+        "name": "_ MENTORING INDIVIDUAL"
+      }
+    ]
+  },
+  {
+    "id": "67927d92a1f92df9890cf1a4",
+    "kind": "pack",
+    "name": "_ Membresía IMPULSA _ MS",
+    "desc": "Servicio mensual que incluye un plan de ventas y marketing mensual, junto a un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía incluye el servicio marketing de salón.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4800,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 5808,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "ME12",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "avanzamg"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 0,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 4320,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3843,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3024,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 3240,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ MS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67927f6a23b8ff8f7e04caf0",
+    "kind": "pack",
+    "name": "_ Membresía IMPULSA _ GD",
+    "desc": "Membresía anual diseñada para el crecimiento y el control de la gestión que permite un seguimiento en el control de los principales indicadores del negocio que permite analizar, y tomar decisiones en la gestión, y dirección del negocio, en todas sus áreas clave.\n\nEsta membresía combinada incluye gestión directiva.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4800,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 5808,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "ME13",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "gestiondirectiva",
+      "membresias",
+      "impulsa"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 0,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 4320,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3843,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3024,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ GD",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "679282e3fb83273d2103acfa",
+    "kind": "pack",
+    "name": "_ Membresía IMPULSA _ CS",
+    "desc": "Membresía anual individual de análisis de los principales indicadores de la actividad de ventas del negocio ( facturación, visitas, servicios, rentabilidad, y ticket medio ), seguimiento del mes en curso, y proyección de objetivos de venta, asesoramiento en sistemas y decisiones de dirección.\n\nEsta membresía incluye el servicio de consultoría",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4800,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 5808,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "ME13",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias",
+      "impulsa"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 0,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 4320,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3843,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3024,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ CS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67976d751aac353f050497cf",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ MIB",
+    "desc": "Este paquete incluye nuestra formación Máster IBM, donde aprenderás a planificar, controlar e implementar sistemas de gestión en las cinco áreas clave de tu negocio, con mentorías en grupo, materiales y herramientas implementadles. Lo acompañarás con Marketing Salón, que incluye un plan de ventas y marketing anual, campañas publicitarias para salón y digital, mentoría grupal e individual, planificación estratégica y formación comercial con guías y protocolos de implementación.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE04",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6797852a6e5d0541ce0d572b",
+    "kind": "simple",
+    "name": "_ Formación Máster _ Club INSIDE",
+    "desc": "Programa formativo online en vivo de 12 semanas incluido en tu membresía de CLUB INSIDE",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2997,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 3626.37,
+    "hasStock": true,
+    "stock": 60,
+    "barcode": "",
+    "sku": "FM00",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "formacionmaster",
+      "clubinside"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6591638cd892b44fad09995e",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "679787063c2bd5695307fa45",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB MÁSTER _ MC",
+    "desc": "",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9358,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11323.18,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE05",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "clubmaster"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 12597,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 8148,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Master",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "6797852a6e5d0541ce0d572b#6797852b6e5d0541ce0d572c",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "679787c7fd84cfd2470f3464",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB MÁSTER _ MG",
+    "desc": "",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9358,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11323.18,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE06",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "clubmaster"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 12597,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 8148,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Master",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "6797852a6e5d0541ce0d572b#6797852b6e5d0541ce0d572c",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "679788eb594387c1c101ad8b",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB MÁSTER _ CG",
+    "desc": "",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 9358,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 11323.18,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "CE07",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "clubmaster"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 12597,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 5990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 8148,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Master",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "6797852a6e5d0541ce0d572b#6797852b6e5d0541ce0d572c",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "67978b6a569568e81b0ce2d7",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EMBAJADOR _ MCG",
+    "desc": "",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 11758,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 14227.18,
+    "hasStock": true,
+    "stock": -20,
+    "barcode": "",
+    "sku": "CE08",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "clubinsideembajador"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 17397,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 7890,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 10068,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Embajador",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      },
+      {
+        "pid": "6797852a6e5d0541ce0d572b#6797852b6e5d0541ce0d572c",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "67b30d8fb2606a8a8e0e4cc3",
+    "kind": "simple",
+    "name": "IBM TOOLS",
+    "desc": "IBM TOOLS contiene la producción y mentorización de las herramientas principales de la Formación Máster IBM.\nEste servicio incluye:\n- Producción (no impresión) de las herramientas Menú de Servicios y Libro de Marca\n- Mentorización para la producción personalizada adaptada a tu Salón de Peluquería.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 999,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 1208.79,
+    "hasStock": true,
+    "stock": 3,
+    "barcode": "",
+    "sku": "FMT01",
+    "cost": "",
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df963fce4d14f90c1063",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 799,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 599,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "67bf22fe2a412a495b09d052",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ CIB",
+    "desc": "Este paquete combina el Máster IBM, donde aprenderás a estructurar y optimizar la gestión de tu peluquería en sus cinco áreas principales con mentorías, materiales y herramientas prácticas, con Consultoría y Mentoring, que te proporcionará seguimiento mensual individual, análisis de indicadores clave de ventas y rentabilidad, proyección de objetivos y asesoramiento estratégico personalizado para la toma de decisiones clave en tu negocio.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "CE09",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf233f8dd4d30937036910",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ GIB",
+    "desc": "Este paquete incluye el Máster IBM, donde aprenderás a gestionar y optimizar la actividad, la gestión, el equipo, la productividad y el marketing de tu peluquería con mentorías, materiales y certificaciones. Esta membresía incluye Gestión Directiva, un seguimiento semanal en grupo reducido para implementar sistemas de dirección, ventas y marketing, con asesoramiento experto en estrategia, equipo, ejecución y rentabilidad.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "CE09",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c18#678025386294b58ade076c17",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf2420ab1272b0c1098915",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ CSC",
+    "desc": "Este paquete combina el Máster Scaling, donde aprenderás a estructurar el crecimiento de tu salón con un plan estratégico sólido y certificado, con Consultoría y Mentoring, que te proporcionará seguimiento mensual individual, análisis de indicadores clave, proyección de objetivos estratégicos y asesoramiento personalizado para la toma de decisiones de alto impacto en tu negocio.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "CE10",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025396294b58ade076c30#678025396294b58ade076c2f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf2495831a8f50a5081868",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ GSC",
+    "desc": "Este paquete incluye el Máster Scaling, donde aprenderás a escalar tu negocio con un plan estratégico basado en las cuatro áreas clave del éxito empresarial, con mentorías y certificaciones. Además, contarás con Gestión Directiva, un seguimiento semanal en grupo reducido donde implementarás estrategias de liderazgo, ventas y marketing junto a otros empresarios, con asesoramiento estratégico y acompañamiento en la toma de decisiones.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "CE11",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025396294b58ade076c30#678025396294b58ade076c2f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf30e41fcc2e3eb2067743",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ CSE",
+    "desc": "Este paquete combina el Máster Salón Experience, donde aprenderás a transformar la experiencia de cliente en tu salón con metodologías innovadoras y certificadas, con Consultoría y Mentoring, un seguimiento mensual individual en el que analizaremos indicadores clave de negocio, proyectaremos objetivos estratégicos y recibirás asesoramiento personalizado para optimizar tus decisiones y rentabilidad",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "CE12",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025396294b58ade076c28#678025396294b58ade076c27",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf3114f414f21c4d0479d0",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ GSE",
+    "desc": "Este paquete incluye el Máster Salón Experience, donde aprenderás a diseñar experiencias únicas y un modelo de salón disruptivo con mentorías, materiales y certificaciones. Además, contarás con Gestión Directiva, un seguimiento semanal en grupo reducido donde trabajarás junto a otros líderes en la implementación de sistemas de dirección, ventas y marketing, con asesoramiento estratégico en gestión, equipo y ejecución.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "CE13",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025396294b58ade076c28#678025396294b58ade076c27",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf317cce627ce8160d2dfa",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ CST",
+    "desc": "Este paquete combina el Máster Start Club, donde desarrollarás un sistema de fidelización que aumentará la recurrencia y el ticket medio de tus clientes, con Consultoría y Mentoring, un seguimiento mensual individual en el que analizaremos los principales indicadores de tu negocio, proyectaremos objetivos de crecimiento y recibirás asesoramiento estratégico para optimizar la gestión y rentabilidad de tu club.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 6,
+    "barcode": "",
+    "sku": "CE14",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c20#678025386294b58ade076c1f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c00#678025386294b58ade076bff",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67bf31e35b75a28d070663dc",
+    "kind": "pack",
+    "name": "_  Membresía _ CLUB EXPERTO _ GST",
+    "desc": "Este paquete incluye el Máster Start Club, donde aprenderás a crear un club de fidelización exitoso con mentorías, plantillas y diseño publicitario. Además, contarás con Gestión Directiva, un seguimiento semanal en grupo reducido donde implementarás estrategias de fidelización, marketing y ventas junto a otros líderes, con asesoramiento experto en planificación y rentabilidad.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 5998,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 7257.58,
+    "hasStock": true,
+    "stock": 4,
+    "barcode": "",
+    "sku": "CE15",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "clubinside",
+      "experto"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "65916424be0079fe9503d356",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 7797,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3990,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 5388,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d386983a6091d1002825",
+        "value": "_ Experto ",
+        "name": "_ CLUB INSIDE"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076c20#678025386294b58ade076c1f",
+        "u": 1
+      },
+      {
+        "pid": "678025386294b58ade076c08#678025386294b58ade076c07",
+        "u": 12
+      }
+    ]
+  },
+  {
+    "id": "67d1468e399f074bc602209d",
+    "kind": "simple",
+    "name": "EVENTO PRESENCIAL_ FIN DE MÁSTER",
+    "desc": "Experiencia cierre presencial Fin de Máster. Incluye:\nCocktail de bienvenida\nFormación avanzada con Equipo Inside\nCoffe Break - descanso formación\nComida - descanso formación\nCena de gala - Ceremonial Fin de Máster\nExperiencia final ",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 295,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 356.95,
+    "hasStock": true,
+    "stock": 71,
+    "barcode": "",
+    "sku": "EV01",
+    "cost": "",
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "eventos",
+      "formacionpresencial",
+      "formacionmaster"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "659165648e56d3892902f8cb",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Master ",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "67dbfd5aeddd3e4e7a0a6b03",
+    "kind": "simple",
+    "name": "_ SOCIAL MARKETING",
+    "desc": "Gestión mensual de la comunicación de las principales redes sociales ( IG + FB ), la comunicación en My Business de Google, que incluye la planificación, y la publicación de los contenidos ( post, stories, reels, etc,.. ), la gestión de la publicidad de pago patrocinada de publicaciones, un anuncio de captación de clientes potenciales, atención y soporte, y un informe de resultados.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 400,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 484,
+    "hasStock": true,
+    "stock": 97,
+    "barcode": "",
+    "sku": "ME14",
+    "cost": 0,
+    "purchasePrice": 0,
+    "weight": 0,
+    "tags": [
+      "membresias",
+      "socialmarketing"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "64902d731e3f414ab205731b",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 360,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Marketing",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "67dbfde10b5f574af201f23f",
+    "kind": "pack",
+    "name": "_ Membresía IMPULSA _ SM",
+    "desc": "Servicio mensual de duración anual de gestión de la comunicación de las principales redes sociales ( IG + FB ), la comunicación en My Business de Google, que incluye la planificación, y la publicación de los contenidos ( post, stories, reels, etc,.. ), la gestión de la publicidad de pago patrocinada de publicaciones, un anuncio de captación de clientes potenciales, atención y soporte, y un informe de resultados.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 4800,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 5808,
+    "hasStock": true,
+    "stock": 97,
+    "barcode": "",
+    "sku": "ME15",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "membresias"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df1c56394881d7078dcd",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 0,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 4320,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 3843,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 3024,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "679285c5d857935f2a08e99f",
+        "subtotal": 3240,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d16a95ae1e1fd8012f99",
+        "value": "Impulsa _ MS",
+        "name": "_ MEMBRESÍAS"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "67dbfd5aeddd3e4e7a0a6b03#67dbfd5beddd3e4e7a0a6b04",
+        "u": 1
+      }
+    ]
+  },
+  {
+    "id": "6808a972afa811a03d0519dc",
+    "kind": "pack",
+    "name": "_ SALON 360º _ PRE-START",
+    "desc": "Plan de Crecimiento específicamente diseñado para salones en etapa 1 o anterior, que incluye mentoring para acompañamiento y lograr objetivos, organizar plan de trabajo, plan de ventas y marketing de 3 meses con seguimiento individual, y formación Peluquerías Imparables, especializada en el conocimiento de la situación actual real de tu salón y la implementación de un sistema de gestión.\n\nEste plan incluye también 3 sesiones de mentoring para seguimiento y guía de implementación con un consultor especialista.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 2485,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 3006.85,
+    "hasStock": true,
+    "stock": -77,
+    "barcode": "",
+    "sku": "S307",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "salon360",
+      "prestart"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778cc0f2da192c31f038409",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d038a2f4021a67026ac5",
+        "subtotal": 1267,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 1316.59,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 975.5,
+        "taxes": [
+          "s_iva_21"
+        ]
+      },
+      {
+        "id": "678350dda6c3f22ccc0a0c9d",
+        "subtotal": 0,
+        "taxes": [
+          "s_iva_21"
+        ]
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778ca9ee8556282470031c0",
+        "value": "_ Start ",
+        "name": "_ SALON 360º"
+      }
+    ],
+    "packItems": [
+      {
+        "pid": "678025386294b58ade076bf8#678025386294b58ade076bf7",
+        "u": 3
+      },
+      {
+        "pid": "678025396294b58ade076c38#678025396294b58ade076c37",
+        "u": 1
+      },
+      {
+        "pid": "678758ccbfc8f13bec02c3cb#678758ccbfc8f13bec02c3cc",
+        "u": 3
+      }
+    ]
+  },
+  {
+    "id": "687a386c4c24f8735c088d26",
+    "kind": "simple",
+    "name": "_ MARKETING SALON UPSELL JULIO 2025",
+    "desc": "Formación y servicio de pasarela de venta automatizada.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 97,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 117.37,
+    "hasStock": true,
+    "stock": 987,
+    "barcode": "",
+    "sku": "",
+    "cost": "",
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "mktsaupselljul25",
+      "mktsalon",
+      "upsell"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": null,
+    "expAccountId": null,
+    "warehouseId": "62f0f371656983d4ad0bc21a",
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6f256394881d7078d8f",
+        "value": "_ Marketing",
+        "name": "_ SERVICIOS "
+      }
+    ]
+  },
+  {
+    "id": "688826ddee31d9aab9027b18",
+    "kind": "simple",
+    "name": "_ Peluquerías IMPARABLES _ OFF",
+    "desc": "Formación Intensiva Online de 4 semanas, para aprender las bases del marketing estratégico y ser un imán de clientes, aprender el control de los principales indicadores de un negocio de peluquería rentable, y aprender los sistemas clave del crecimiento de un salón de peluquería.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 999,
+    "taxes": [],
+    "total": 999,
+    "hasStock": true,
+    "stock": -13,
+    "barcode": "",
+    "sku": "CI01",
+    "cost": 288,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "cursointensivo",
+      "peluqueriasimparables",
+      "formacionpresencial"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "66cfed48a97e10c6480289ed",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6888231b12c91ebaa4040a0f",
+        "subtotal": 149,
+        "taxes": []
+      },
+      {
+        "id": "6888238726a4aebb40019a0c",
+        "subtotal": 297,
+        "taxes": []
+      },
+      {
+        "id": "688823efb08ad3c847013ad8",
+        "subtotal": 499,
+        "taxes": []
+      }
+    ],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Intensiva",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "688839f3108c3178de0b9da3",
+    "kind": "simple",
+    "name": "_ Clientes sin Límites",
+    "desc": "Curso Intensivo Online de 4 semanas para aprender a implementar sistemas de captación de nuevos clientes mediante la creación del proposito comercial del salón, la configuración de un servicio altamente rentable y el desarrollo de un embudo de captación recurrente.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 999,
+    "taxes": [],
+    "total": 999,
+    "hasStock": true,
+    "stock": -3,
+    "barcode": "",
+    "sku": "CI03",
+    "cost": "",
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [
+      "cursointensivo",
+      "clientesinlimites"
+    ],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "66631d3221f7a19a9c015a7b",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "attributes": [
+      {
+        "id": "6778d6005d156783230de4c5",
+        "value": "_ Intensiva",
+        "name": "_ FORMACIÓN"
+      }
+    ]
+  },
+  {
+    "id": "68883b6fbfae2e9bae04d656",
+    "kind": "simple",
+    "name": "Funnel de Marca _ VSL",
+    "desc": "Creación de un embudo de marketing de marca que incluye la creación y gestión de herramientas para su lanzamiento. Guiones, landing page, integraciones de mensajería, emails.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 1997,
+    "taxes": [
+      "s_iva_21"
+    ],
+    "total": 2416.37,
+    "hasStock": true,
+    "stock": -2,
+    "barcode": "",
+    "sku": "",
+    "cost": "",
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "659163251171f9d3220cb426",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": []
+  },
+  {
+    "id": "68883cd387284b23200bdad9",
+    "kind": "pack",
+    "name": "Plan _ Acelera tus Ventas",
+    "desc": "Plan de crecimiento y captación de nuevos clientes mediante el aprendizaje y la implementación de sistemas de marketing y ventas avanzados, que incluye el curso intensivo de _Salón Hiperventas, el curso intensivo de _Clientes sin Límites y el servicio de _Funnel de Marca VSL.",
+    "typeId": "",
+    "contactId": "",
+    "contactName": "",
+    "price": 3595,
+    "taxes": [],
+    "total": 3595,
+    "hasStock": true,
+    "stock": 0,
+    "barcode": "",
+    "sku": "PC_01",
+    "cost": 0,
+    "purchasePrice": "",
+    "weight": "",
+    "tags": [],
+    "categoryId": "",
+    "factoryCode": "",
+    "forSale": 1,
+    "forPurchase": 1,
+    "salesChannelId": "6778df963fce4d14f90c1063",
+    "expAccountId": null,
+    "warehouseId": null,
+    "translations": [],
+    "rates": [
+      {
+        "id": "6778d8b3dc35589bc30faeb9",
+        "subtotal": 1997,
+        "taxes": []
+      },
+      {
+        "id": "6778d8d0f3944b0d9801a102",
+        "subtotal": 999,
+        "taxes": []
+      }
+    ],
+    "packItems": []
+  }
+]

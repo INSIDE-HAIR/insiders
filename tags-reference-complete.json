@@ -1,0 +1,102 @@
+{
+  "years": {
+    "2021": "68a58fd2c9646b2fbea8faa3",
+    "2022": "68a58fd2c9646b2fbea8faa6", 
+    "2023": "68a59392c9646b2fbea8fbdd",
+    "2024": "68a58fe9c9646b2fbea8fab0",
+    "2025": "68a2e58da200680c47d88d4c",
+    "2026": "68a58feac9646b2fbea8fab3"
+  },
+  "month_year_combinations_needed": {
+    "2021": {
+      "SEP21": "FIND_BY_API",
+      "OCT21": "FIND_BY_API", 
+      "NOV21": "FIND_BY_API",
+      "DIC21": "FIND_BY_API"
+    },
+    "2022": {
+      "ENE22": "FIND_BY_API",
+      "FEB22": "FIND_BY_API",
+      "MAR22": "FIND_BY_API", 
+      "ABR22": "FIND_BY_API"
+    },
+    "2023": {
+      "ENE23": "FIND_BY_API",
+      "FEB23": "FIND_BY_API",
+      "MAR23": "FIND_BY_API",
+      "ABR23": "FIND_BY_API",
+      "MAY23": "FIND_BY_API",
+      "SEP23": "FIND_BY_API",
+      "OCT23": "FIND_BY_API", 
+      "NOV23": "FIND_BY_API",
+      "DIC23": "FIND_BY_API"
+    },
+    "2024": {
+      "ENE24": "FIND_BY_API",
+      "FEB24": "FIND_BY_API",
+      "MAR24": "FIND_BY_API",
+      "ABR24": "FIND_BY_API",
+      "MAY24": "FIND_BY_API", 
+      "JUN24": "FIND_BY_API",
+      "JUL24": "FIND_BY_API",
+      "SEP24": "FIND_BY_API",
+      "OCT24": "FIND_BY_API",
+      "NOV24": "FIND_BY_API",
+      "DIC24": "FIND_BY_API"
+    },
+    "2025": {
+      "ENE25": "FIND_BY_API",
+      "FEB25": "FIND_BY_API",
+      "MAR25": "FIND_BY_API",
+      "ABR25": "FIND_BY_API",
+      "MAY25": "FIND_BY_API",
+      "SEP25": "FIND_BY_API",
+      "OCT25": "FIND_BY_API",
+      "NOV25": "FIND_BY_API", 
+      "DIC25": "FIND_BY_API"
+    },
+    "2026": {
+      "ENE26": "FIND_BY_API",
+      "FEB26": "FIND_BY_API",
+      "MAR26": "FIND_BY_API"
+    }
+  },
+  "assignment_plan": {
+    "salon_experience": {
+      "ED01_group_id": "68a5df639ad33843e93d10b7",
+      "ED01_months": ["SEP21", "OCT21", "NOV21", "DIC21"],
+      "ED02_group_id": "68a5df649ad33843e93d10ba",
+      "ED02_months": ["ENE23", "FEB23", "MAR23", "ABR23", "MAY23"],
+      "ED03_group_id": "68a5df659ad33843e93d10bd", 
+      "ED03_months": ["ENE24", "FEB24", "MAR24", "ABR24", "MAY24"],
+      "ED04_group_id": "68a5df669ad33843e93d10c0",
+      "ED04_months": ["ENE25", "FEB25", "MAR25", "ABR25", "MAY25"],
+      "ED05_group_id": "68a5df669ad33843e93d10c3",
+      "ED05_months": ["SEP25", "OCT25", "NOV25", "DIC25"]
+    },
+    "scaling_s": {
+      "ED01_group_id": "68a5df729ad33843e93d10c6",
+      "ED01_months": ["ENE24", "FEB24", "MAR24"],
+      "ED02_group_id": "68a5df739ad33843e93d10c9", 
+      "ED02_months": ["ABR24", "MAY24"],
+      "ED03_group_id": "68a5df749ad33843e93d10cc",
+      "ED03_months": ["MAY24", "JUN24"],
+      "ED04_group_id": "68a5df749ad33843e93d10cf",
+      "ED04_months": ["JUN24", "JUL24"],
+      "ED05_group_id": "68a5df759ad33843e93d10d2",
+      "ED05_months": ["ENE25", "FEB25", "MAR25"],
+      "ED06_group_id": "68a5df769ad33843e93d10d5",
+      "ED06_months": ["ENE26", "FEB26", "MAR26"]
+    },
+    "star_club": {
+      "ED01_group_id": "68a5df809ad33843e93d10d8",
+      "ED01_months": ["SEP21", "OCT21", "NOV21", "DIC21"],
+      "ED02_group_id": "68a5df819ad33843e93d10db",
+      "ED02_months": ["ENE22", "FEB22", "MAR22", "ABR22"], 
+      "ED03_group_id": "68a5df829ad33843e93d10de",
+      "ED03_months": ["SEP23", "OCT23", "NOV23", "DIC23"],
+      "ED04_group_id": "68a5df839ad33843e93d10e1",
+      "ED04_months": ["SEP24", "OCT24", "NOV24", "DIC24"]
+    }
+  }
+}

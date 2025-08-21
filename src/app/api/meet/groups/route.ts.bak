@@ -14,8 +14,6 @@ const createGroupSchema = z.object({
   parentId: z.string().optional(),
   customId: z.string().optional(),
   order: z.number().int().optional(),
-  isActive: z.boolean().optional(),
-  allowsReferences: z.boolean().optional(),
   defaultTagIds: z.array(z.string()).optional(), // Tags por defecto para asignar automáticamente
 });
 
@@ -27,20 +25,16 @@ async function handleGet(request: NextRequest) {
   let storageService: MeetStorageService | null = null;
   
   try {
-    // Verificar autenticación dual (sesión o API key)
-    const apiKeyUserId = request.headers.get("x-api-key-user-id");
+    // Verificar autenticación
     const session = await auth();
-    
-    if (!session?.user && !apiKeyUserId) {
+    if (!session?.user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
-    // Para sesiones, verificar permisos de admin
-    if (session?.user && session.user.role !== "ADMIN") {
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
-
-    // Para API keys, asumimos que tienen permisos (ya están validadas)
 
     storageService = new MeetStorageService();
     
@@ -125,24 +119,20 @@ async function handleGet(request: NextRequest) {
  * POST /api/meet/groups
  * Crea un nuevo grupo
  */
-async function handlePost(request: NextRequest) {
+export async function POST(request: NextRequest) {
   let storageService: MeetStorageService | null = null;
   
   try {
-    // Verificar autenticación dual (sesión o API key)
-    const apiKeyUserId = request.headers.get("x-api-key-user-id");
+    // Verificar autenticación
     const session = await auth();
-    
-    if (!session?.user && !apiKeyUserId) {
+    if (!session?.user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
-    // Para sesiones, verificar permisos de admin
-    if (session?.user && session.user.role !== "ADMIN") {
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
     }
-
-    // Para API keys, asumimos que tienen permisos (ya están validadas)
 
     // Parsear y validar body
     const body = await request.json();
@@ -175,7 +165,7 @@ async function handlePost(request: NextRequest) {
     const group = await storageService.createGroup({
       ...groupData,
       parentId: groupData.parentId || undefined, // Ensure empty string becomes undefined
-      createdBy: session?.user?.id || apiKeyUserId || 'api-user'
+      createdBy: session.user.id
     });
     
     // Asignar tags por defecto si se proporcionaron
@@ -199,7 +189,7 @@ async function handlePost(request: NextRequest) {
             data: {
               groupId: group.id,
               tagId: tag.id,
-              createdBy: session?.user?.id || apiKeyUserId || 'api-user'
+              createdBy: session.user.id
             }
           });
         } catch (error) {
@@ -238,7 +228,7 @@ async function handlePost(request: NextRequest) {
       true,
       201,
       null,
-      session?.user?.id || apiKeyUserId || 'api-user'
+      session.user.id
     );
     
     return NextResponse.json(groupWithRelations, { status: 201 });
@@ -285,7 +275,3 @@ function buildGroupTree(groups: any[]): any[] {
   
   return roots;
 }
-
-// Configurar middleware de autenticación para soporte dual
-export const GET = withApiKeyAuth(handleGet);
-export const POST = withApiKeyAuth(handlePost);

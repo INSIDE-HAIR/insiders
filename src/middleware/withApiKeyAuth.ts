@@ -61,19 +61,18 @@ export function withApiKeyAuth(middleware: Function) {
         `✅ API Key válida para ${pathname}, usuario: ${validation.context?.userId}`
       );
 
-      // Añadir contexto de la API Key a los headers para uso en las rutas
-      const response = NextResponse.next();
-      response.headers.set(
+      // Añadir contexto de la API Key a los headers de la request para uso en las rutas
+      request.headers.set(
         "x-api-key-context",
         JSON.stringify(validation.context)
       );
-      response.headers.set(
+      request.headers.set(
         "x-api-key-user-id",
         validation.context?.userId || ""
       );
-      response.headers.set("x-api-key-id", validation.context?.keyId || "");
+      request.headers.set("x-api-key-id", validation.context?.keyId || "");
 
-      return response;
+      return middleware(request, event);
     }
 
     // Si no hay API Key, continuar normalmente (permite acceso sin API Key)

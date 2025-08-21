@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { MeetStorageService } from "@/src/features/meet/services/MeetStorageService";
+import { withApiKeyAuth } from "@/src/middleware/withApiKeyAuth";
 import { z } from "zod";
 
 // Schema para crear tag
@@ -20,7 +21,7 @@ const createTagSchema = z.object({
  * GET /api/meet/tags
  * Lista todos los tags con jerarquía
  */
-export async function GET(request: NextRequest) {
+async function handleGet(request: NextRequest) {
   let storageService: MeetStorageService | null = null;
   
   try {
@@ -131,7 +132,7 @@ export async function GET(request: NextRequest) {
  * POST /api/meet/tags
  * Crea un nuevo tag
  */
-export async function POST(request: NextRequest) {
+async function handlePost(request: NextRequest) {
   let storageService: MeetStorageService | null = null;
   
   try {
@@ -248,3 +249,7 @@ function buildTagTree(tags: any[]): any[] {
   
   return roots;
 }
+
+// Configurar middleware de autenticación para soporte dual
+export const GET = withApiKeyAuth(handleGet);
+export const POST = withApiKeyAuth(handlePost);

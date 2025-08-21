@@ -38,6 +38,8 @@ interface HierarchyTreeProps {
   renderItemActions?: (item: HierarchyItem) => React.ReactNode;
   className?: string;
   maxInitialLevel?: number; // Auto-expand up to this level
+  expandedItems?: Set<string>; // External control of expanded state
+  onToggleExpand?: (itemId: string) => void; // External expand toggle handler
 }
 
 export const HierarchyTree: React.FC<HierarchyTreeProps> = ({
@@ -49,8 +51,10 @@ export const HierarchyTree: React.FC<HierarchyTreeProps> = ({
   renderItemActions,
   className,
   maxInitialLevel = 1,
+  expandedItems: externalExpandedItems,
+  onToggleExpand,
 }) => {
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(() => {
+  const [internalExpandedItems, setInternalExpandedItems] = useState<Set<string>>(() => {
     // Auto-expand items up to maxInitialLevel
     const expanded = new Set<string>();
     
@@ -69,16 +73,23 @@ export const HierarchyTree: React.FC<HierarchyTreeProps> = ({
     return expanded;
   });
 
+  // Use external expanded state if provided, otherwise use internal state
+  const expandedItems = externalExpandedItems || internalExpandedItems;
+
   const toggleExpand = (itemId: string) => {
-    setExpandedItems(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemId)) {
-        newSet.delete(itemId);
-      } else {
-        newSet.add(itemId);
-      }
-      return newSet;
-    });
+    if (onToggleExpand) {
+      onToggleExpand(itemId);
+    } else {
+      setInternalExpandedItems(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(itemId)) {
+          newSet.delete(itemId);
+        } else {
+          newSet.add(itemId);
+        }
+        return newSet;
+      });
+    }
   };
 
   const renderDefaultContent = (item: HierarchyItem) => (
@@ -164,7 +175,9 @@ export const HierarchyTree: React.FC<HierarchyTreeProps> = ({
         <div
           className={cn(
             "flex items-center gap-2 p-2 rounded-lg hover:bg-muted transition-colors",
-            level > 0 && "ml-6 border-l border-muted pl-4"
+            level > 0 && "ml-8 border-l-2 border-primary/30 pl-6",
+            level > 1 && "ml-12 pl-8",
+            level > 2 && "ml-16 pl-10"
           )}
         >
           {/* Expand/Collapse button */}
@@ -194,7 +207,10 @@ export const HierarchyTree: React.FC<HierarchyTreeProps> = ({
 
         {/* Render children if expanded */}
         {expandedItems.has(item.id) && item.children.length > 0 && (
-          <div className="mt-1">
+          <div className={cn(
+            "mt-1",
+            level >= 0 && "border-l-2 border-primary/20 ml-8 pl-2"
+          )}>
             {renderTree(item.children, level + 1)}
           </div>
         )}

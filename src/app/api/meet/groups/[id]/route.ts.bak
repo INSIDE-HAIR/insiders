@@ -59,8 +59,11 @@ async function handleGet(
   let storageService: MeetStorageService | null = null;
   
   try {
-    // Verificar autenticación dual
-    const authResult = await authenticateRequest(request);
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
 
     const resolvedParams = await params;
     const groupId = resolvedParams.id;
@@ -154,8 +157,16 @@ async function handlePut(
   let storageService: MeetStorageService | null = null;
   
   try {
-    // Verificar autenticación dual
-    const authResult = await authenticateRequest(request);
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+    }
 
     const resolvedParams = await params;
     const groupId = resolvedParams.id;
@@ -218,8 +229,8 @@ async function handlePut(
           );
         }
         
-        // Prevenir loops de jerarquía - verificar si el nuevo padre es descendiente del grupo actual
-        if (await isDescendant(updateData.parentId, groupId, storageService)) {
+        // Prevenir loops de jerarquía
+        if (await isDescendant(groupId, updateData.parentId, storageService)) {
           return NextResponse.json(
             { error: "Cannot set descendant as parent (would create loop)" },
             { status: 400 }
@@ -266,7 +277,7 @@ async function handlePut(
             data: existingTags.map(tag => ({
               groupId: groupId,
               tagId: tag.id,
-              createdBy: authResult.userId
+              createdBy: session.user.id
             }))
           });
           
@@ -303,7 +314,7 @@ async function handlePut(
       true,
       200,
       null,
-      authResult.userId
+      session.user.id
     );
     
     return NextResponse.json(groupWithRelations);
@@ -329,15 +340,23 @@ async function handlePut(
  * DELETE /api/meet/groups/[id]
  * Elimina un grupo
  */
-async function handleDelete(
+export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   let storageService: MeetStorageService | null = null;
   
   try {
-    // Verificar autenticación dual
-    const authResult = await authenticateRequest(request);
+    // Verificar autenticación
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    // Verificar permisos de admin
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+    }
 
     const resolvedParams = await params;
     const groupId = resolvedParams.id;
@@ -425,7 +444,7 @@ async function handleDelete(
       true,
       200,
       null,
-      authResult.userId
+      session.user.id
     );
     
     console.log(`🗑️ Group deleted: ${group.name}`);
