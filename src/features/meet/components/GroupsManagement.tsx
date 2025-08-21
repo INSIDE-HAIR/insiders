@@ -249,6 +249,8 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
     
     for (let i = 0; i < searchChars.length; i++) {
       const char = searchChars[i];
+      if (!char) continue; // Skip if char is undefined
+      
       const foundIndex = normalizedTarget.indexOf(char, targetIndex);
       
       if (foundIndex === -1) {
@@ -1084,7 +1086,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
       if (canDelete) {
         return (
           <div className="space-y-1">
-            <p className="font-medium">Eliminar grupo "{group.name}"</p>
+            <p className="font-medium">Eliminar grupo &ldquo;{group.name}&rdquo;</p>
             <p className="text-xs text-muted-foreground">
               Este grupo puede eliminarse de forma segura
             </p>
@@ -1122,10 +1124,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 {group.referencedBy.map((ref, index) => (
                   <div key={index} className="text-xs text-muted-foreground flex items-center gap-1">
                     <span className="text-blue-400">•</span>
-                    <span>{ref.sourceGroup?.name || 'Paquete eliminado'}</span>
-                    {!ref.sourceGroup && (
-                      <span className="text-red-400 text-xs">(huérfana)</span>
-                    )}
+                    <span>Referencia desde paquete {ref.sourceGroupId}</span>
                   </div>
                 ))}
               </div>
@@ -1176,7 +1175,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Agregar sub-grupo a "{group.name}"</p>
+              <p>Agregar sub-grupo a &ldquo;{group.name}&rdquo;</p>
             </TooltipContent>
           </Tooltip>
 
@@ -1192,7 +1191,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Editar grupo "{group.name}"</p>
+              <p>Editar grupo &ldquo;{group.name}&rdquo;</p>
             </TooltipContent>
           </Tooltip>
 
@@ -1429,7 +1428,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
             spaceGroups: 0, // Las referencias no tienen salas propias
             defaultTags: 0, // Las referencias no tienen tags propios
           },
-          defaultTags: ref.targetGroup.defaultTags || [],
+          defaultTags: [],
           createdAt: ref.createdAt,
           isActive: true,
           allowsReferences: false, // Las referencias no permiten sub-referencias
@@ -1533,9 +1532,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
         const searchFields = [
           tag.name,
           tag.slug,
-          tag.customId,
-          tag.internalDescription,
-          tag.publicDescription
+          tag.customId
         ].filter(Boolean);
         
         const matchesSearch = searchFields.some(field => 
@@ -2868,7 +2865,7 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <LinkIcon className="h-5 w-5" />
-              Referencias del grupo "{groupWithReferences?.name}"
+              Referencias del grupo &ldquo;{groupWithReferences?.name}&rdquo;
             </DialogTitle>
             <DialogDescription>
               Gestiona las referencias que apuntan a este grupo desde otros paquetes
@@ -2887,42 +2884,23 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                 <ScrollArea className="h-[400px] border rounded-md p-4">
                   <div className="space-y-3">
                     {groupWithReferences.referencedBy.map((reference) => {
-                      const isOrphan = !reference.sourceGroup;
-                      
                       return (
                         <div 
                           key={reference.id}
-                          className={cn(
-                            "p-4 border rounded-lg",
-                            isOrphan 
-                              ? "border-red-200 bg-red-50" 
-                              : "border-border bg-card"
-                          )}
+                          className="p-4 border rounded-lg border-border bg-card"
                         >
                           <div className="flex items-start justify-between">
                             <div className="space-y-2 flex-1">
                               {/* Información del paquete */}
                               <div className="flex items-center gap-2">
-                                {isOrphan ? (
-                                  <>
-                                    <ExclamationTriangleIcon className="h-4 w-4 text-red-500" />
-                                    <span className="font-medium text-red-700">Referencia Huérfana</span>
-                                    <Badge variant="destructive" className="text-xs">
-                                      Paquete eliminado
-                                    </Badge>
-                                  </>
-                                ) : (
-                                  <>
                                     <div
                                       className="h-3 w-3 rounded-full border"
-                                      style={{ backgroundColor: reference.sourceGroup?.color || '#6B7280' }}
+                                      style={{ backgroundColor: '#6B7280' }}
                                     />
-                                    <span className="font-medium">{reference.sourceGroup?.name}</span>
+                                    <span className="font-medium">Paquete {reference.sourceGroupId}</span>
                                     <Badge variant="outline" className="text-xs">
-                                      {reference.sourceGroup?.slug}
+                                      Referencia
                                     </Badge>
-                                  </>
-                                )}
                               </div>
 
                               {/* Información de la referencia */}
@@ -2940,16 +2918,6 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
 
                             {/* Acciones */}
                             <div className="flex gap-2">
-                              {isOrphan ? (
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => handleDeleteOrphanReference(reference.id)}
-                                >
-                                  <TrashIcon className="h-4 w-4 mr-1" />
-                                  Eliminar huérfana
-                                </Button>
-                              ) : (
                                 <Button
                                   variant="outline"
                                   size="sm"
@@ -2965,7 +2933,6 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                                   <PencilIcon className="h-4 w-4 mr-1" />
                                   Editar paquete
                                 </Button>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -2974,18 +2941,6 @@ export const GroupsManagement: React.FC<GroupsManagementProps> = ({ lang }) => {
                   </div>
                 </ScrollArea>
 
-                {/* Resumen de referencias huérfanas */}
-                {groupWithReferences.referencedBy.some(ref => !ref.sourceGroup) && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center gap-2 text-red-700">
-                      <ExclamationTriangleIcon className="h-4 w-4" />
-                      <span className="font-medium">Referencias huérfanas detectadas</span>
-                    </div>
-                    <p className="text-sm text-red-600 mt-1">
-                      Algunas referencias apuntan a paquetes que ya no existen. Puedes eliminarlas de forma segura.
-                    </p>
-                  </div>
-                )}
               </>
             ) : (
               <div className="text-center py-8">

@@ -466,6 +466,8 @@ export const TagsManagement: React.FC<TagsManagementProps> = ({ lang }) => {
     
     for (let i = 0; i < searchChars.length; i++) {
       const char = searchChars[i];
+      if (!char) continue; // Skip if char is undefined
+      
       const foundIndex = normalizedTarget.indexOf(char, targetIndex);
       
       if (foundIndex === -1) {
