@@ -439,6 +439,91 @@ export class MeetStorageService {
     }
   }
 
+  /**
+   * Obtiene opciones disponibles para filtros avanzados
+   */
+  async getFilterOptions(): Promise<{
+    tags: Array<{ value: string; label: string; count?: number }>;
+    groups: Array<{ value: string; label: string; count?: number }>;
+    users: Array<{ value: string; label: string; count?: number }>;
+  }> {
+    try {
+      // Obtener tags con conteo de uso
+      const tagsWithCount = await this.prisma.meetTag.findMany({
+        include: {
+          _count: {
+            select: {
+              spaceTags: true
+            }
+          }
+        },
+        orderBy: [
+          { order: 'asc' },
+          { name: 'asc' }
+        ]
+      });
+
+      // Obtener grupos con conteo de uso
+      const groupsWithCount = await this.prisma.meetGroup.findMany({
+        include: {
+          _count: {
+            select: {
+              spaceGroups: true
+            }
+          }
+        },
+        orderBy: [
+          { order: 'asc' },
+          { name: 'asc' }
+        ]
+      });
+
+      // Obtener usuarios que han creado spaces
+      const usersWithCount = await this.prisma.meetSpace.groupBy({
+        by: ['createdBy'],
+        _count: {
+          createdBy: true
+        },
+        where: {
+          createdBy: {
+            not: null
+          }
+        },
+        orderBy: {
+          _count: {
+            createdBy: 'desc'
+          }
+        }
+      });
+
+      return {
+        tags: tagsWithCount.map(tag => ({
+          value: tag.slug,
+          label: tag.name,
+          count: tag._count.spaceTags
+        })),
+        groups: groupsWithCount.map(group => ({
+          value: group.slug,
+          label: group.name,
+          count: group._count.spaceGroups
+        })),
+        users: usersWithCount.map(user => ({
+          value: user.createdBy || '',
+          label: user.createdBy || 'Usuario desconocido',
+          count: user._count.createdBy
+        })).filter(user => user.value) // Remove empty values
+      };
+    } catch (error) {
+      console.error('Error getting filter options:', error);
+      // Return empty options instead of throwing
+      return {
+        tags: [],
+        groups: [],
+        users: []
+      };
+    }
+  }
+
   async disconnect(): Promise<void> {
     await this.prisma.$disconnect();
   }

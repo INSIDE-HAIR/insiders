@@ -115,7 +115,8 @@ export async function GET(request: NextRequest) {
     );
 
     return NextResponse.json({
-      spaces: enhancedSpaces,
+      rooms: enhancedSpaces, // Changed from 'spaces' to 'rooms' for frontend compatibility
+      spaces: enhancedSpaces, // Keep both for backwards compatibility
       stats: stats,
       source: "fresh-api-hybrid",
       note: `Datos frescos de Google Meet API. IDs desde almacenamiento local.${includeAnalytics ? " Incluye métricas de participantes." : ""}`,
@@ -127,6 +128,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
+        rooms: [], // Added for frontend compatibility
         spaces: [],
         error: "Error listing Meet spaces",
         details: error.message,
