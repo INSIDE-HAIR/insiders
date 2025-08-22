@@ -113,12 +113,87 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   const [autoTranscription, setAutoTranscription] = useState(false);
   const [autoSmartNotes, setAutoSmartNotes] = useState(false);
 
+  // Wrapper functions for debugging
+  const handleModerationChange = (checked: boolean) => {
+    console.log("🎛️ Moderation toggle clicked:", checked);
+    setModeration(checked);
+  };
+
+  const handleAutoRecordingChange = (checked: boolean) => {
+    console.log("🎛️ Auto recording toggle clicked:", checked);
+    setAutoRecording(checked);
+  };
+
+  const handleAutoTranscriptionChange = (checked: boolean) => {
+    console.log("🎛️ Auto transcription toggle clicked:", checked);
+    setAutoTranscription(checked);
+  };
+
+  const handleAutoSmartNotesChange = (checked: boolean) => {
+    console.log("🎛️ Auto smart notes toggle clicked:", checked);
+    setAutoSmartNotes(checked);
+  };
+
+  const handleDefaultJoinAsViewerChange = (checked: boolean) => {
+    console.log("🎛️ Default join as viewer toggle clicked:", checked);
+    setDefaultJoinAsViewer(checked);
+  };
+
+  const handleRestrictEntryPointsChange = (checked: boolean) => {
+    console.log("🎛️ Restrict entry points toggle clicked:", checked);
+    setRestrictEntryPoints(checked);
+  };
+
+  // Debug: Log state changes
+  React.useEffect(() => {
+    console.log("🔄 State updated:", {
+      moderation,
+      autoRecording,
+      autoTranscription,
+      autoSmartNotes,
+      defaultJoinAsViewer,
+      restrictEntryPoints,
+    });
+  }, [
+    moderation,
+    autoRecording,
+    autoTranscription,
+    autoSmartNotes,
+    defaultJoinAsViewer,
+    restrictEntryPoints,
+  ]);
+
   // REPORTES: Comentado hasta tener Google Workspace Enterprise
   // Para habilitar: descomentar esta línea y las secciones relacionadas en el JSX
   // Requiere scope: meetings.space.settings y configuración en Google Admin
   // const [attendanceReport, setAttendanceReport] = useState(false);
 
   const [activeTab, setActiveTab] = useState("basic");
+
+  // Reset form when modal opens/closes
+  React.useEffect(() => {
+    if (isOpen) {
+      // Reset all form state when modal opens
+      setDisplayName("");
+      setAccessType("TRUSTED");
+      setRestrictEntryPoints(false);
+      setMembers([]);
+      setModeration(false);
+      setAutoRecording(false);
+      setAutoTranscription(false);
+      setAutoSmartNotes(false);
+      setChatRestriction("NO_RESTRICTION");
+      setReactionRestriction("NO_RESTRICTION");
+      setPresentRestriction("NO_RESTRICTION");
+      setDefaultJoinAsViewer(false);
+      setActiveTab("basic");
+      setNewMemberEmail("");
+      setNewMemberRole("ROLE_UNSPECIFIED");
+      setMemberSearchTerm("");
+      setMemberRoleFilter("ALL");
+      console.log("🔄 Modal opened - form reset");
+    }
+  }, [isOpen]);
 
   // Función para filtrar miembros
   const filteredMembers = members.filter((member) => {
@@ -170,40 +245,69 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
       setLoading(true);
 
       // Configuración completa según Google Meet API v2beta
-      const data = {
-        displayName,
-        config: {
-          accessType,
-          entryPointAccess: restrictEntryPoints ? "CREATOR_APP_ONLY" : "ALL",
-          moderation: moderation ? "ON" : "OFF",
-          moderationRestrictions: moderation
-            ? {
-                chatRestriction,
-                reactionRestriction,
-                presentRestriction,
-                defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF",
-              }
-            : undefined,
-          artifactConfig: {
-            recordingConfig: {
-              autoRecordingGeneration: autoRecording ? "ON" : "OFF",
-            },
-            transcriptionConfig: {
-              autoTranscriptionGeneration: autoTranscription ? "ON" : "OFF",
-            },
-            smartNotesConfig: {
-              autoSmartNotesGeneration: autoSmartNotes ? "ON" : "OFF",
-            },
-          },
-          // REPORTES: Comentado hasta tener Google Workspace Enterprise
-          // Cambiar por: attendanceReport ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
-          attendanceReportGenerationType: "DO_NOT_GENERATE",
-        },
-        initialMembers: members,
+      const config: any = {
+        accessType,
+        entryPointAccess: restrictEntryPoints ? "CREATOR_APP_ONLY" : "ALL",
+        moderation: moderation ? "ON" : "OFF",
       };
+
+      // Solo agregar moderationRestrictions si moderation está activada
+      if (moderation) {
+        config.moderationRestrictions = {
+          chatRestriction,
+          reactionRestriction,
+          presentRestriction,
+          defaultJoinAsViewerType: defaultJoinAsViewer ? "ON" : "OFF",
+        };
+      }
+
+      // Solo agregar artifactConfig si al menos una opción está activada
+      if (autoRecording || autoTranscription || autoSmartNotes) {
+        config.artifactConfig = {};
+
+        if (autoRecording) {
+          config.artifactConfig.recordingConfig = {
+            autoRecordingGeneration: "ON",
+          };
+        }
+
+        if (autoTranscription) {
+          config.artifactConfig.transcriptionConfig = {
+            autoTranscriptionGeneration: "ON",
+          };
+        }
+
+        if (autoSmartNotes) {
+          config.artifactConfig.smartNotesConfig = {
+            autoSmartNotesGeneration: "ON",
+          };
+        }
+      }
+
+      // REPORTES: Comentado hasta tener Google Workspace Enterprise
+      // Cambiar por: attendanceReport ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+      config.attendanceReportGenerationType = "DO_NOT_GENERATE";
+
+      const data: any = {
+        initialMembers: members || [],
+      };
+
+      // Solo agregar displayName si no está vacío
+      if (displayName && displayName.trim()) {
+        data.displayName = displayName.trim();
+      }
+
+      // Solo agregar config si tiene contenido
+      if (Object.keys(config).length > 0) {
+        data.config = config;
+      }
+
+      // Debug: Log the data being sent
+      console.log("🔍 Data being sent to API:", JSON.stringify(data, null, 2));
 
       const validation = CreateSpaceSchema.safeParse(data);
       if (!validation.success) {
+        console.error("❌ Validation errors:", validation.error.errors);
         toast({
           title: "Error de validación",
           description:
@@ -215,21 +319,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
       await onConfirm(data);
 
-      // Reset form
-      setDisplayName("");
-      setAccessType("TRUSTED");
-      setRestrictEntryPoints(false);
-      setMembers([]);
-      setModeration(false);
-      setAutoRecording(false);
-      setAutoTranscription(false);
-      setAutoSmartNotes(false);
-      // setAttendanceReport(false); // REPORTES: Descomentar cuando se habilite la funcionalidad
-      setChatRestriction("NO_RESTRICTION");
-      setReactionRestriction("NO_RESTRICTION");
-      setPresentRestriction("NO_RESTRICTION");
-      setDefaultJoinAsViewer(false);
-      setActiveTab("basic");
+      // Form will be reset when modal closes and reopens
     } catch (error) {
       console.error("Error creating room:", error);
     } finally {
@@ -252,7 +342,10 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className='sm:max-w-2xl max-h-[90vh] min-h-[80dvh] max-w-[95vw] flex flex-col overflow-hidden'>
+      <DialogContent
+        key={isOpen ? "open" : "closed"}
+        className='sm:max-w-2xl max-h-[90vh] min-h-[80dvh] max-w-[95vw] flex flex-col overflow-hidden'
+      >
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <VideoCameraIcon className='h-5 w-5 text-primary' />
@@ -494,7 +587,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   <Switch
                     id='restrict-entry'
                     checked={restrictEntryPoints}
-                    onCheckedChange={setRestrictEntryPoints}
+                    onCheckedChange={handleRestrictEntryPointsChange}
                   />
                 </div>
 
@@ -526,7 +619,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   <Switch
                     id='moderation'
                     checked={moderation}
-                    onCheckedChange={setModeration}
+                    onCheckedChange={handleModerationChange}
                   />
                 </div>
 
@@ -682,7 +775,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                       <Switch
                         id='default-viewer'
                         checked={defaultJoinAsViewer}
-                        onCheckedChange={setDefaultJoinAsViewer}
+                        onCheckedChange={handleDefaultJoinAsViewerChange}
                       />
                     </div>
                   </>
@@ -723,7 +816,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   <Switch
                     id='auto-recording'
                     checked={autoRecording}
-                    onCheckedChange={setAutoRecording}
+                    onCheckedChange={handleAutoRecordingChange}
                   />
                 </div>
 
@@ -758,7 +851,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   <Switch
                     id='auto-transcription'
                     checked={autoTranscription}
-                    onCheckedChange={setAutoTranscription}
+                    onCheckedChange={handleAutoTranscriptionChange}
                   />
                 </div>
 
@@ -792,7 +885,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                   <Switch
                     id='auto-smart-notes'
                     checked={autoSmartNotes}
-                    onCheckedChange={setAutoSmartNotes}
+                    onCheckedChange={handleAutoSmartNotesChange}
                   />
                 </div>
               </div>

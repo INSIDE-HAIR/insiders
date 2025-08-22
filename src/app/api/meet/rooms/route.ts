@@ -163,9 +163,13 @@ export async function POST(request: NextRequest) {
     // Parsear y validar body
     const body = await request.json();
 
+    // Debug: Log the received body
+    console.log("📥 Received body:", JSON.stringify(body, null, 2));
+
     // Validar configuración personalizada
     const validationResult = CreateSpaceSchema.safeParse(body);
     if (!validationResult.success) {
+      console.error("❌ API Validation errors:", validationResult.error.errors);
       return NextResponse.json(
         { error: "Invalid space data", details: validationResult.error.errors },
         { status: 400 }

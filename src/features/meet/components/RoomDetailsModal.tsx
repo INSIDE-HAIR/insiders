@@ -1619,7 +1619,9 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                           checked={room.config?.moderation === "ON"}
                           onCheckedChange={(checked) =>
                             handleUpdateSettings({
-                              moderation: checked ? "ON" : "OFF",
+                              moderationSettings: {
+                                moderationEnabled: checked,
+                              },
                             })
                           }
                         />
@@ -1653,8 +1655,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                               }
                               onValueChange={(value: any) =>
                                 handleUpdateSettings({
-                                  moderationRestrictions: {
-                                    ...settings.moderationRestrictions,
+                                  moderationSettings: {
                                     chatRestriction: value,
                                   },
                                 })
@@ -1701,8 +1702,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                               }
                               onValueChange={(value: any) =>
                                 handleUpdateSettings({
-                                  moderationRestrictions: {
-                                    ...settings.moderationRestrictions,
+                                  moderationSettings: {
                                     reactionRestriction: value,
                                   },
                                 })
@@ -1749,8 +1749,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                               }
                               onValueChange={(value: any) =>
                                 handleUpdateSettings({
-                                  moderationRestrictions: {
-                                    ...settings.moderationRestrictions,
+                                  moderationSettings: {
                                     presentRestriction: value,
                                   },
                                 })
@@ -1806,11 +1805,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                               }
                               onCheckedChange={(checked) =>
                                 handleUpdateSettings({
-                                  moderationRestrictions: {
-                                    ...settings.moderationRestrictions,
-                                    defaultJoinAsViewerType: checked
-                                      ? "ON"
-                                      : "OFF",
+                                  moderationSettings: {
+                                    defaultJoinAsViewer: checked,
                                   },
                                 })
                               }
@@ -1862,13 +1858,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                           }
                           onCheckedChange={(checked) =>
                             handleUpdateSettings({
-                              artifactConfig: {
-                                ...settings.artifactConfig,
-                                recordingConfig: {
-                                  autoRecordingGeneration: checked
-                                    ? "ON"
-                                    : "OFF",
-                                },
+                              recordingSettings: {
+                                autoRecordingGeneration: checked ? "ON" : "OFF",
                               },
                             })
                           }
@@ -1911,13 +1902,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                           }
                           onCheckedChange={(checked) =>
                             handleUpdateSettings({
-                              artifactConfig: {
-                                ...settings.artifactConfig,
-                                transcriptionConfig: {
-                                  autoTranscriptionGeneration: checked
-                                    ? "ON"
-                                    : "OFF",
-                                },
+                              transcriptionSettings: {
+                                autoTranscriptionGeneration: checked ? "ON" : "OFF",
                               },
                             })
                           }
@@ -1960,13 +1946,8 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                           }
                           onCheckedChange={(checked) =>
                             handleUpdateSettings({
-                              artifactConfig: {
-                                ...settings.artifactConfig,
-                                smartNotesConfig: {
-                                  autoSmartNotesGeneration: checked
-                                    ? "ON"
-                                    : "OFF",
-                                },
+                              smartNotesSettings: {
+                                autoSmartNotesGeneration: checked ? "ON" : "OFF",
                               },
                             })
                           }
@@ -2013,7 +1994,9 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
                         checked={room.config?.attendanceReportGenerationType === "GENERATE_REPORT"}
                         onCheckedChange={(checked) => 
                           handleUpdateSettings({
-                            attendanceReportGenerationType: checked ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+                            securitySettings: {
+                              attendanceReportGeneration: checked ? "GENERATE_REPORT" : "DO_NOT_GENERATE"
+                            }
                           })
                         }
                       />
