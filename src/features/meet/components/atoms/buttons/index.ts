@@ -1,0 +1,1 @@
+export { JoinMeetingButton } from './JoinMeetingButton';

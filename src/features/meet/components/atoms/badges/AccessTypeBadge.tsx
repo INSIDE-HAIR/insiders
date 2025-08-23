@@ -18,13 +18,13 @@ export const AccessTypeBadge: React.FC<AccessTypeBadgeProps> = ({
   className 
 }) => {
   const variants = {
-    OPEN: "bg-green-100 text-green-700 hover:bg-green-200",
-    TRUSTED: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
-    RESTRICTED: "bg-red-100 text-red-700 hover:bg-red-200"
+    OPEN: "bg-green-900 text-green-100 hover:bg-green-800",
+    TRUSTED: "bg-yellow-900 text-yellow-100 hover:bg-yellow-800",
+    RESTRICTED: "bg-red-900 text-red-100 hover:bg-red-800"
   };
   
   const labels = {
-    OPEN: "Libre",
+    OPEN: "Abierto",
     TRUSTED: "Organizacional",
     RESTRICTED: "Solo Invitados"
   };

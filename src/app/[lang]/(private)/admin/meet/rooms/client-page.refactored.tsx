@@ -55,8 +55,10 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 
-// Importar skeleton para analytics
-import { AnalyticsSkeleton } from "@/src/features/meet/components/atoms/skeletons/AnalyticsSkeleton";
+// Importar componentes SOLID refactorizados
+import { RoomCard } from "@/src/features/meet/components/molecules/cards";
+import { JoinMeetingButton } from "@/src/features/meet/components/atoms/buttons";
+import { ResponsiveModalDemo } from "@/src/features/meet/components/molecules/modals";
 
 // Types
 interface MeetRoomsClientRefactoredProps {
@@ -87,23 +89,7 @@ interface RoomAnalytics {
   };
 }
 
-// Función auxiliar para formatear duración en HH:MM:SS
-const formatDuration = (totalSeconds: number): string => {
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-};
-
-// Función auxiliar para formatear días desde la última reunión
-const formatDaysAgo = (days: number | null): string => {
-  if (days === null) return "Nunca";
-  if (days === 0) return "Hoy";
-  if (days === 1) return "Ayer";
-  if (days < 7) return `Hace ${days} días`;
-  if (days < 30) return `Hace ${Math.round(days / 7)} semanas`;
-  return `Hace ${Math.round(days / 30)} meses`;
-};
+// Funciones auxiliares movidas al componente RoomCard para reutilización
 
 /**
  * Componente principal completamente refactorizado para gestión de salas Meet
@@ -144,8 +130,9 @@ export const MeetRoomsClientRefactored: React.FC<
   console.log("🎯 Progressive Loading Component State:", {
     roomsCount: rooms?.totalCount,
     roomsPaginatedCount: rooms?.paginated?.length,
-    roomsWithAnalytics: rooms?.paginated?.filter(r => r._analytics).length,
-    roomsLoadingAnalytics: rooms?.paginated?.filter(r => r._analyticsLoading).length,
+    roomsWithAnalytics: rooms?.paginated?.filter((r) => r._analytics).length,
+    roomsLoadingAnalytics: rooms?.paginated?.filter((r) => r._analyticsLoading)
+      .length,
     isLoadingAnalytics,
   });
 
@@ -188,158 +175,25 @@ export const MeetRoomsClientRefactored: React.FC<
     );
   };
 
-  // Render individual room card - diseño compacto como original
+  // Render individual room card usando componente SOLID refactorizado
   const renderRoomCard = (room: any) => {
-    const spaceId = room.name?.split("/").pop();
+    const spaceId = room.name?.split("/").pop() || "";
     const displayName =
       room._metadata?.displayName || room.name || "Sala sin nombre";
-    const isActive = !!room.activeConference?.conferenceRecord;
     const isSelected = selectedRoomIds.has(spaceId);
-    const analytics = room._analytics;
-    const isLoadingAnalytics = room._analyticsLoading;
 
     return (
-      <Card
+      <RoomCard
         key={room.name}
-        className={`hover:shadow-md transition-shadow ${isSelected ? "ring-2 ring-primary" : ""} bg-card`}
-      >
-        <CardContent className='p-4 space-y-3'>
-          {/* Header with checkbox, name and status badge */}
-          <div className='flex items-start justify-between'>
-            <div className='flex items-start gap-2 flex-1 min-w-0'>
-              <Checkbox
-                checked={isSelected}
-                onCheckedChange={() => toggleRoomSelection(spaceId)}
-                className='mt-0.5'
-              />
-              <div className='flex items-center gap-2 flex-1 min-w-0'>
-                <VideoCameraIcon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-                <h3 className='font-medium text-sm truncate' title={displayName}>
-                  {displayName}
-                </h3>
-              </div>
-            </div>
-            <div className='flex-shrink-0'>
-              <AccessTypeBadge type={room.config?.accessType || "TRUSTED"} />
-            </div>
-          </div>
-
-          {/* Meeting code */}
-          {room.meetingCode && (
-            <div className='text-xs text-muted-foreground'>
-              Código: {room.meetingCode}
-            </div>
-          )}
-
-          {/* Analytics - Carga progresiva con 3 estados */}
-          <div className='space-y-2'>
-            {/* Datos básicos disponibles inmediatamente */}
-            <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-              <UsersIcon className='h-3 w-3' />
-              <span>
-                {room.members?.length || 0} miembro{(room.members?.length || 0) !== 1 ? "s" : ""} configurado{(room.members?.length || 0) !== 1 ? "s" : ""}
-              </span>
-            </div>
-            
-            {/* Analytics area - progresiva */}
-            {analytics && analytics.sessions && analytics.permanentMembers ? (
-              /* Estado 3: Analytics completas cargadas */
-              <div className='space-y-2 border-l-2 border-green-500 pl-2 animate-in fade-in duration-300'>
-                {/* Sessions & Duration */}
-                <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                  <ChartBarIcon className='h-3 w-3 text-green-600' />
-                  <span>
-                    {analytics.sessions?.total || 0} sesiones • {formatDuration(analytics.sessions?.totalDurationSeconds || 0)} total
-                  </span>
-                </div>
-
-                {/* Participants breakdown */}
-                <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                  <UserGroupIcon className='h-3 w-3 text-blue-600' />
-                  <span>
-                    {analytics.permanentMembers?.cohosts || 0} co-hosts • {analytics.permanentMembers?.regularMembers || 0} participantes
-                  </span>
-                </div>
-
-                {/* Average participants per session */}
-                {(analytics.sessions?.total || 0) > 0 && (
-                  <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                    <UsersIcon className='h-3 w-3 text-purple-600' />
-                    <span>
-                      {analytics.sessions?.averageParticipantsPerSession || 0} participantes promedio
-                    </span>
-                  </div>
-                )}
-
-                {/* Recent activity */}
-                {analytics.recentActivity?.lastMeetingDate && (
-                  <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                    <CalendarIcon className='h-3 w-3 text-orange-600' />
-                    <span>
-                      Última: {formatDaysAgo(analytics.recentActivity.daysSinceLastMeeting)} ({analytics.recentActivity.lastParticipantCount || 0} participantes)
-                    </span>
-                  </div>
-                )}
-              </div>
-            ) : isLoadingAnalytics ? (
-              /* Estado 2: Cargando analytics */
-              <div className='space-y-2 border-l-2 border-blue-500 pl-2'>
-                <div className='flex items-center gap-1.5 text-xs text-blue-600'>
-                  <div className='animate-spin h-3 w-3 border border-blue-600 border-t-transparent rounded-full'></div>
-                  <span>Cargando métricas...</span>
-                </div>
-                <AnalyticsSkeleton />
-              </div>
-            ) : (
-              /* Estado 1: Sin analytics (pendiente de cargar) */
-              <div className='space-y-2 border-l-2 border-gray-300 pl-2'>
-                <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-                  <ClockIcon className='h-3 w-3' />
-                  <span>Métricas pendientes...</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Action buttons - compactos como en original */}
-          <div className='flex gap-2 pt-2'>
-            <Button 
-              variant='destructive' 
-              size='sm' 
-              className='flex-1 h-8 text-xs'
-              onClick={() => {
-                // TODO: Implementar eliminar
-                showInfo("Eliminar", `Eliminando sala: ${displayName}`);
-              }}
-            >
-              <TrashIcon className='h-3 w-3 mr-1' />
-              Eliminar
-            </Button>
-            <Button 
-              variant='outline' 
-              size='sm' 
-              className='flex-1 h-8 text-xs'
-              onClick={() => handleViewRoom(spaceId, room)}
-            >
-              <Cog6ToothIcon className='h-3 w-3 mr-1' />
-              Gestionar
-            </Button>
-          </div>
-
-          {/* Unirse button - destacado como en original */}
-          <Button 
-            className='w-full h-8 text-xs bg-green-500 hover:bg-green-600'
-            onClick={() => {
-              if (room.meetingUri) {
-                window.open(room.meetingUri, '_blank');
-              }
-            }}
-          >
-            <EyeIcon className='h-3 w-3 mr-1' />
-            Unirse a la Reunión
-          </Button>
-        </CardContent>
-      </Card>
+        room={room}
+        isSelected={isSelected}
+        onToggleSelection={toggleRoomSelection}
+        onViewRoom={handleViewRoom}
+        onDuplicateRoom={handleDuplicateRoom}
+        onDeleteRoom={(spaceId, displayName) => {
+          showInfo("Eliminar", `Eliminando sala: ${displayName}`);
+        }}
+      />
     );
   };
 
@@ -436,6 +290,11 @@ export const MeetRoomsClientRefactored: React.FC<
         </div>
       </div>
 
+      {/* DEMO: ResponsiveModal + Sistema SOLID */}
+      <div className='mb-8'>
+        <ResponsiveModalDemo />
+      </div>
+
       {/* Stats Summary */}
       <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'>
         <Card>
@@ -455,7 +314,11 @@ export const MeetRoomsClientRefactored: React.FC<
             <div className='flex items-center justify-between'>
               <div>
                 <p className='text-2xl font-bold text-green-600'>
-                  {rooms.all.filter(room => !!room.activeConference?.conferenceRecord).length}
+                  {
+                    rooms.all.filter(
+                      (room) => !!room.activeConference?.conferenceRecord
+                    ).length
+                  }
                 </p>
                 <p className='text-xs text-muted-foreground'>Activas</p>
               </div>
@@ -469,11 +332,19 @@ export const MeetRoomsClientRefactored: React.FC<
             <div className='flex items-center justify-between'>
               <div>
                 <p className='text-2xl font-bold text-blue-600'>
-                  {rooms.all.filter(room => room.config?.accessType === "TRUSTED").length}
+                  {
+                    rooms.all.filter(
+                      (room) => room.config?.accessType === "TRUSTED"
+                    ).length
+                  }
                 </p>
-                <p className='text-xs text-muted-foreground'>Organizacionales</p>
+                <p className='text-xs text-muted-foreground'>
+                  Organizacionales
+                </p>
               </div>
-              <Badge variant='secondary' className='text-xs'>TRUSTED</Badge>
+              <Badge variant='secondary' className='text-xs'>
+                TRUSTED
+              </Badge>
             </div>
           </CardContent>
         </Card>
@@ -551,7 +422,9 @@ export const MeetRoomsClientRefactored: React.FC<
       {error && (
         <Card>
           <CardContent className='py-8 text-center'>
-            <p className='text-destructive'>Error al cargar salas: {String(error)}</p>
+            <p className='text-destructive'>
+              Error al cargar salas: {String(error)}
+            </p>
           </CardContent>
         </Card>
       )}
@@ -576,7 +449,9 @@ export const MeetRoomsClientRefactored: React.FC<
         <Card>
           <CardContent className='py-12 text-center'>
             <VideoCameraIcon className='h-12 w-12 mx-auto text-muted-foreground mb-4' />
-            <h3 className='text-lg font-semibold mb-2'>No hay salas disponibles</h3>
+            <h3 className='text-lg font-semibold mb-2'>
+              No hay salas disponibles
+            </h3>
             <p className='text-muted-foreground mb-4'>
               No se encontraron salas de reuniones
             </p>
@@ -588,7 +463,8 @@ export const MeetRoomsClientRefactored: React.FC<
       {rooms.totalPages > 1 && (
         <div className='flex items-center justify-between mt-6'>
           <div className='text-sm text-muted-foreground'>
-            Página {viewConfig.currentPage} de {rooms.totalPages} • Mostrando {rooms.paginated.length} de {rooms.totalCount} salas
+            Página {viewConfig.currentPage} de {rooms.totalPages} • Mostrando{" "}
+            {rooms.paginated.length} de {rooms.totalCount} salas
           </div>
 
           <div className='flex gap-2'>
@@ -774,16 +650,7 @@ export const MeetRoomsClientRefactored: React.FC<
                 <Button variant='outline' onClick={handleCloseModal}>
                   Cerrar
                 </Button>
-                <Button
-                  onClick={() => {
-                    if (selectedRoom.meetingUri) {
-                      window.open(selectedRoom.meetingUri, "_blank");
-                    }
-                  }}
-                >
-                  <VideoCameraIcon className='h-4 w-4 mr-2' />
-                  Unirse a la Reunión
-                </Button>
+                <JoinMeetingButton meetingUri={selectedRoom.meetingUri} />
               </div>
             </div>
           )}
