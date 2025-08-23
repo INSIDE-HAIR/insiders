@@ -1,0 +1,652 @@
+{
+  "roomInfo": {
+    "roomId": "spaces/demo-room-abc123xyz",
+    "meetingCode": "abc-def-ghi", 
+    "meetingLink": "https://meet.google.com/abc-def-ghi",
+    "accessType": {
+      "type": "open",
+      "label": "Abierto",
+      "variant": "secondary",
+      "className": "bg-green-900 text-green-100 hover:bg-green-800",
+      "icon": "lock"
+    },
+    "status": {
+      "type": "active",
+      "label": "Conferencia Activa", 
+      "variant": "default",
+      "className": "bg-green-900 text-green-100 hover:bg-green-800",
+      "animated": true,
+      "showCloseButton": true
+    },
+    "alert": {
+      "message": "Los cambios en la configuración pueden tardar unos minutos en aplicarse",
+      "icon": "information"
+    }
+  },
+  
+  "tags": {
+    "assigned": [
+      {
+        "name": "Marketing",
+        "color": "bg-blue-900 text-blue-100 hover:bg-blue-800",
+        "slug": "marketing",
+        "removable": true
+      },
+      {
+        "name": "Ventas", 
+        "color": "bg-green-900 text-green-100 hover:bg-green-800",
+        "slug": "sales",
+        "removable": true
+      },
+      {
+        "name": "Producto",
+        "color": "bg-purple-900 text-purple-100 hover:bg-purple-800", 
+        "slug": "product",
+        "removable": true
+      }
+    ],
+    "available": [
+      {
+        "name": "Estrategia",
+        "color": "bg-red-900 text-red-100 hover:bg-red-800",
+        "slug": "strategy"
+      },
+      {
+        "name": "Desarrollo",
+        "color": "bg-yellow-900 text-yellow-100 hover:bg-yellow-800",
+        "slug": "dev"  
+      },
+      {
+        "name": "Diseño",
+        "color": "bg-pink-900 text-pink-100 hover:bg-pink-800",
+        "slug": "design"
+      },
+      {
+        "name": "Cliente", 
+        "color": "bg-indigo-900 text-indigo-100 hover:bg-indigo-800",
+        "slug": "client"
+      }
+    ]
+  },
+
+  "references": {
+    "tags": {
+      "assigned": [
+        {
+          "name": "Marketing",
+          "color": "bg-blue-900 text-blue-100 hover:bg-blue-800",
+          "slug": "marketing"
+        },
+        {
+          "name": "Ventas",
+          "color": "bg-green-900 text-green-100 hover:bg-green-800",
+          "slug": "sales"
+        },
+        {
+          "name": "Producto",
+          "color": "bg-purple-900 text-purple-100 hover:bg-purple-800",
+          "slug": "product"
+        }
+      ],
+      "available": [
+        {
+          "name": "Estrategia",
+          "color": "bg-red-900 text-red-100 hover:bg-red-800",
+          "slug": "strategy"
+        },
+        {
+          "name": "Desarrollo",
+          "color": "bg-yellow-900 text-yellow-100 hover:bg-yellow-800",
+          "slug": "dev"
+        },
+        {
+          "name": "Diseño",
+          "color": "bg-pink-900 text-pink-100 hover:bg-pink-800",
+          "slug": "design"
+        },
+        {
+          "name": "Cliente",
+          "color": "bg-indigo-900 text-indigo-100 hover:bg-indigo-800",
+          "slug": "client"
+        }
+      ]
+    },
+    "groups": {
+      "assigned": [
+        {
+          "name": "Equipo Marketing",
+          "path": "/empresas/acme/equipos/marketing",
+          "color": "bg-blue-900 text-blue-100 hover:bg-blue-800"
+        },
+        {
+          "name": "Liderazgo",
+          "path": "/empresas/acme/liderazgo",
+          "color": "bg-green-900 text-green-100 hover:bg-green-800"
+        }
+      ],
+      "available": [
+        {
+          "name": "Ventas",
+          "path": "/empresas/acme/equipos/ventas",
+          "color": "bg-red-900 text-red-100 hover:bg-red-800"
+        },
+        {
+          "name": "Desarrollo",
+          "path": "/empresas/acme/equipos/desarrollo",
+          "color": "bg-yellow-900 text-yellow-100 hover:bg-yellow-800"
+        },
+        {
+          "name": "Soporte",
+          "path": "/empresas/acme/equipos/soporte",
+          "color": "bg-purple-900 text-purple-100 hover:bg-purple-800"
+        }
+      ]
+    }
+  },
+
+  "members": {
+    "totalMembers": 27,
+    "activeMembers": 15,
+    "members": [
+      {
+        "name": "Juan Pérez",
+        "email": "juan.perez@empresa.com",
+        "role": "Co-anfitrión"
+      },
+      {
+        "name": "María García", 
+        "email": "maria.garcia@empresa.com",
+        "role": "Participante"
+      },
+      {
+        "name": "Carlos López",
+        "email": "carlos.lopez@empresa.com", 
+        "role": "Participante"
+      },
+      {
+        "name": "Ana Rodríguez",
+        "email": "ana.rodriguez@empresa.com",
+        "role": "Co-anfitrión"
+      },
+      {
+        "name": "Pedro Martínez",
+        "email": "pedro.martinez@empresa.com",
+        "role": "Participante"
+      },
+      {
+        "name": "Laura Sánchez",
+        "email": "laura.sanchez@empresa.com", 
+        "role": "Participante"
+      },
+      {
+        "name": "Diego Torres",
+        "email": "diego.torres@empresa.com",
+        "role": "Participante"
+      },
+      {
+        "name": "Sofia Mendez",
+        "email": "sofia.mendez@empresa.com",
+        "role": "Participante"
+      }
+    ]
+  },
+
+  "sessions": {
+    "active": {
+      "id": "session-current",
+      "name": "Reunión de Marketing Q1 2025",
+      "startTime": "2025-01-23T10:30:00Z",
+      "duration": "1:45:32",
+      "recording": {
+        "enabled": true,
+        "status": "recording",
+        "size": "256 MB"
+      },
+      "transcription": {
+        "enabled": true, 
+        "status": "active",
+        "languages": ["es", "en"]
+      }
+    },
+    "history": [
+      {
+        "id": "session-1",
+        "date": "15 Enero 2025",
+        "duration": "90 min",
+        "participants": 8,
+        "isActive": false,
+        "recordings": [
+          {
+            "state": "Disponible",
+            "time": "14:30",
+            "hasLink": true,
+            "quality": "HD",
+            "calculatedSize": "225MB"
+          }
+        ],
+        "transcripts": [
+          {
+            "state": "Disponible", 
+            "preview": "Hola equipo, comenzamos con la revisión de objetivos...",
+            "hasLink": true,
+            "wordCount": 13500
+          }
+        ],
+        "smartNotes": [
+          {
+            "title": "Resumen ejecutivo",
+            "preview": "• Objetivos Q1 definidos\n• Asignación de responsables\n• Fechas de entrega confirmadas",
+            "hasLink": true,
+            "pointCount": 3
+          }
+        ],
+        "participantsList": [
+          {
+            "name": "Juan Pérez",
+            "type": "signed_in", 
+            "joinTime": "14:30",
+            "leaveTime": "16:00",
+            "duration": 90,
+            "participation": 100,
+            "totalSessions": 15,
+            "isTopParticipant": true
+          },
+          {
+            "name": "María García",
+            "type": "signed_in",
+            "joinTime": "14:32", 
+            "leaveTime": "16:00",
+            "duration": 88,
+            "participation": 98,
+            "totalSessions": 12,
+            "isTopParticipant": false
+          },
+          {
+            "name": "Carlos López",
+            "type": "signed_in",
+            "joinTime": "14:35",
+            "leaveTime": "15:45", 
+            "duration": 70,
+            "participation": 78,
+            "totalSessions": 10,
+            "isTopParticipant": false
+          },
+          {
+            "name": "Usuario Anónimo",
+            "type": "anonymous",
+            "joinTime": "14:50",
+            "leaveTime": "15:20",
+            "duration": 30,
+            "participation": 33,
+            "totalSessions": 1,
+            "isTopParticipant": false
+          },
+          {
+            "name": "Teléfono (+1234567)",
+            "type": "phone",
+            "joinTime": "14:45",
+            "leaveTime": "15:15",
+            "duration": 30, 
+            "participation": 33,
+            "totalSessions": 1,
+            "isTopParticipant": false
+          }
+        ],
+        "summary": {
+          "generalInfo": {
+            "duration": "90 min",
+            "participants": 8,
+            "status": "Finalizada"
+          },
+          "analytics": {
+            "averageAttendance": "87%",
+            "averageTime": "78 min",
+            "topParticipant": "Juan Pérez"
+          }
+        }
+      },
+      {
+        "id": "session-2",
+        "date": "14 Enero 2025", 
+        "duration": "75 min",
+        "participants": 12,
+        "isActive": false,
+        "recordings": [
+          {
+            "state": "Procesando",
+            "time": "10:15",
+            "hasLink": false,
+            "quality": "HD",
+            "calculatedSize": "188MB"
+          }
+        ],
+        "transcripts": [
+          {
+            "state": "Procesando",
+            "preview": null,
+            "hasLink": false,
+            "wordCount": 0
+          }
+        ],
+        "smartNotes": [],
+        "participantsList": [
+          {
+            "name": "Ana Rodríguez",
+            "type": "signed_in",
+            "joinTime": "10:15",
+            "leaveTime": "11:30",
+            "duration": 75,
+            "participation": 100,
+            "totalSessions": 8,
+            "isTopParticipant": true
+          },
+          {
+            "name": "Pedro Martínez", 
+            "type": "signed_in",
+            "joinTime": "10:18",
+            "leaveTime": "11:30",
+            "duration": 72,
+            "participation": 96,
+            "totalSessions": 6,
+            "isTopParticipant": false
+          },
+          {
+            "name": "Laura Sánchez",
+            "type": "signed_in", 
+            "joinTime": "10:20",
+            "leaveTime": "11:25",
+            "duration": 65,
+            "participation": 87,
+            "totalSessions": 5,
+            "isTopParticipant": false
+          }
+        ],
+        "summary": {
+          "generalInfo": {
+            "duration": "75 min",
+            "participants": 12,
+            "status": "Finalizada"
+          },
+          "analytics": {
+            "averageAttendance": "94%",
+            "averageTime": "71 min",
+            "topParticipant": "Ana Rodríguez"
+          }
+        }
+      },
+      {
+        "id": "session-3",
+        "date": "13 Enero 2025",
+        "duration": "120 min", 
+        "participants": 6,
+        "isActive": false,
+        "recordings": [
+          {
+            "state": "Disponible",
+            "time": "09:00", 
+            "hasLink": true,
+            "quality": "HD",
+            "calculatedSize": "300MB"
+          }
+        ],
+        "transcripts": [
+          {
+            "state": "Disponible",
+            "preview": "Buenos días, hoy vamos a revisar el roadmap del producto...",
+            "hasLink": true,
+            "wordCount": 18000
+          }
+        ],
+        "smartNotes": [
+          {
+            "title": "Action Items",
+            "preview": "• Revisar mockups UI\n• Definir specs técnicas\n• Planning sprint próximo", 
+            "hasLink": true,
+            "pointCount": 3
+          }
+        ],
+        "participantsList": [
+          {
+            "name": "Diego Torres",
+            "type": "signed_in",
+            "joinTime": "09:00",
+            "leaveTime": "11:00",
+            "duration": 120,
+            "participation": 100,
+            "totalSessions": 4,
+            "isTopParticipant": true
+          },
+          {
+            "name": "Sofia Mendez",
+            "type": "signed_in", 
+            "joinTime": "09:05",
+            "leaveTime": "11:00",
+            "duration": 115,
+            "participation": 96,
+            "totalSessions": 3,
+            "isTopParticipant": false
+          }
+        ],
+        "summary": {
+          "generalInfo": {
+            "duration": "120 min",
+            "participants": 6,
+            "status": "Finalizada"
+          },
+          "analytics": {
+            "averageAttendance": "98%", 
+            "averageTime": "118 min",
+            "topParticipant": "Diego Torres"
+          }
+        }
+      }
+    ]
+  },
+
+  "statistics": {
+    "general": {
+      "uniqueParticipants": 15,
+      "totalRecords": 47,
+      "analyzedMeetings": 12
+    },
+    "ranking": [
+      {
+        "rank": 1,
+        "name": "Juan Pérez",
+        "totalMinutes": 750,
+        "totalMeetings": 12,
+        "participation": "85%",
+        "avgPerSession": "63min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "15/01 - 90min",
+          "14/01 - 75min", 
+          "13/01 - 45min",
+          "12/01 - 60min"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "María García",
+        "totalMinutes": 555,
+        "totalMeetings": 10,
+        "participation": "78%",
+        "avgPerSession": "56min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "15/01 - 88min",
+          "14/01 - 70min",
+          "13/01 - 42min", 
+          "10/01 - 55min"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Carlos López",
+        "totalMinutes": 465,
+        "totalMeetings": 8,
+        "participation": "72%",
+        "avgPerSession": "58min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "15/01 - 70min",
+          "13/01 - 60min",
+          "11/01 - 65min"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "Ana Rodríguez",
+        "totalMinutes": 380,
+        "totalMeetings": 7,
+        "participation": "65%",
+        "avgPerSession": "54min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "15/01 - 90min",
+          "12/01 - 45min",
+          "09/01 - 50min"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Pedro Martínez",
+        "totalMinutes": 320,
+        "totalMeetings": 6,
+        "participation": "60%",
+        "avgPerSession": "53min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "14/01 - 72min",
+          "11/01 - 48min",
+          "08/01 - 40min"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Laura Sánchez",
+        "totalMinutes": 285,
+        "totalMeetings": 5,
+        "participation": "57%",
+        "avgPerSession": "57min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "14/01 - 65min",
+          "10/01 - 55min",
+          "07/01 - 45min"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Diego Torres",
+        "totalMinutes": 180,
+        "totalMeetings": 4,
+        "participation": "45%",
+        "avgPerSession": "45min",
+        "type": "Autenticado",
+        "recentSessions": [
+          "13/01 - 60min",
+          "09/01 - 30min",
+          "05/01 - 40min"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "Usuario Anónimo",
+        "totalMinutes": 105,
+        "totalMeetings": 3,
+        "participation": "35%",
+        "avgPerSession": "35min",
+        "type": "Anónimo",
+        "recentSessions": [
+          "14/01 - 30min",
+          "10/01 - 45min",
+          "06/01 - 30min"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "Teléfono (+1234567)",
+        "totalMinutes": 75,
+        "totalMeetings": 2,
+        "participation": "25%",
+        "avgPerSession": "38min",
+        "type": "Teléfono",
+        "recentSessions": [
+          "12/01 - 45min",
+          "08/01 - 30min"
+        ]
+      }
+    ]
+  },
+
+  "configuration": {
+    "moderation": {
+      "restrictEntry": {
+        "enabled": false,
+        "label": "Restringir Puntos de Entrada",
+        "description": "Limita el acceso solo a la aplicación que creó la sala",
+        "tooltip": "<strong>Control de Aplicaciones:</strong><br />• <strong>Desactivado:</strong> Se puede acceder desde cualquier aplicación (Google Meet, Calendar, etc.)<br />• <strong>Activado:</strong> Solo la aplicación que creó la sala puede acceder (más restrictivo)"
+      },
+      "enableModeration": {
+        "enabled": true,
+        "label": "Activar Moderación",
+        "description": "El organizador controla permisos de los participantes",
+        "tooltip": "<strong>Control del Anfitrión:</strong><br />Permite al anfitrión y co-anfitriones controlar quién puede chatear, presentar, reaccionar y si los nuevos participantes entran como espectadores."
+      },
+      "chatRestriction": {
+        "value": "NO_RESTRICTION",
+        "options": [
+          { "value": "NO_RESTRICTION", "label": "Sin restricción" },
+          { "value": "MODERATOR_ONLY", "label": "Solo moderadores" },
+          { "value": "DISABLED", "label": "Chat deshabilitado" }
+        ]
+      },
+      "reactionRestriction": {
+        "value": "NO_RESTRICTION", 
+        "options": [
+          { "value": "NO_RESTRICTION", "label": "Sin restricción" },
+          { "value": "MODERATOR_ONLY", "label": "Solo moderadores" },
+          { "value": "DISABLED", "label": "Reacciones deshabilitadas" }
+        ]
+      },
+      "presentationRestriction": {
+        "value": "NO_RESTRICTION",
+        "options": [
+          { "value": "NO_RESTRICTION", "label": "Sin restricción" },
+          { "value": "MODERATOR_ONLY", "label": "Solo moderadores" },
+          { "value": "DISABLED", "label": "Presentación deshabilitada" }
+        ]
+      },
+      "defaultViewer": {
+        "enabled": false,
+        "label": "Unirse como Espectador",
+        "description": "Nuevos participantes se unen como espectadores",
+        "tooltip": "<strong>Modo Espectador:</strong><br />Los nuevos participantes entrarán solo con permisos de visualización. El anfitrión puede promocionarlos a participantes activos después."
+      }
+    },
+    "aiFeatures": {
+      "autoRecording": {
+        "enabled": true,
+        "label": "Grabación Automática",
+        "description": "Las reuniones se grabarán automáticamente al iniciar",
+        "tooltip": "<strong>Grabación Automática:</strong><br />La reunión se grabará automáticamente cuando comience. Los archivos se guardan en Google Drive del organizador. Los participantes serán notificados."
+      },
+      "autoTranscription": {
+        "enabled": false,
+        "label": "Transcripción Automática",
+        "description": "Genera transcripciones de las conversaciones",
+        "tooltip": "<strong>Transcripción Automática:</strong><br />Convierte automáticamente el audio de la reunión en texto. El documento se guarda en Google Drive con marcas de tiempo y identificación de participantes."
+      },
+      "smartNotes": {
+        "enabled": true,
+        "label": "Notas Inteligentes", 
+        "description": "Genera resúmenes y puntos clave automáticamente",
+        "tooltip": "<strong>Notas Inteligentes:</strong><br />Genera automáticamente resúmenes, puntos clave, acciones y decisiones de la reunión usando IA. Se guarda como documento de Google Docs."
+      }
+    },
+    "alert": {
+      "message": "Los cambios en la configuración pueden tardar unos minutos en aplicarse"
+    }
+  }
+}

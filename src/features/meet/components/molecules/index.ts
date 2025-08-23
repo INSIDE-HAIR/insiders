@@ -2,3 +2,4 @@
 export * from "./settings";
 export * from "./forms";
 export * from "./cards";
+export * from "./loading";

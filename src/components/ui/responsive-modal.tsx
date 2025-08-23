@@ -4,8 +4,9 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-import { cn } from "@/src/lib/utils/utils";
+import { cn } from "@/src/lib/utils";
 
 const ResponsiveModal = DialogPrimitive.Root;
 
@@ -32,8 +33,8 @@ ResponsiveModalOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const ResponsiveModalVariants = cva(
   cn(
-    "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500 overflow-y-auto",
-    "lg:left-[50%] lg:top-[50%] lg:w-full lg:max-w-lg lg:translate-x-[-50%] lg:translate-y-[-50%] lg:border lg:duration-200 lg:data-[state=open]:animate-in lg:data-[state=closed]:animate-out lg:data-[state=closed]:fade-out-0 lg:data-[state=open]:fade-in-0 lg:data-[state=closed]:zoom-out-95 lg:data-[state=open]:zoom-in-95 lg:data-[state=closed]:slide-out-to-left-1/2 lg:data-[state=closed]:slide-out-to-top-[48%] lg:data-[state=open]:slide-in-from-left-1/2 lg:data-[state=open]:slide-in-from-top-[48%] lg:rounded-xl"
+    "fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
+    "w-11/12 lg:left-[50%] lg:top-[50%] lg:w-full lg:translate-x-[-50%] lg:translate-y-[-50%] lg:border lg:duration-200 lg:data-[state=open]:animate-in lg:data-[state=closed]:animate-out lg:data-[state=closed]:fade-out-0 lg:data-[state=open]:fade-in-0 lg:data-[state=closed]:zoom-out-95 lg:data-[state=open]:zoom-in-95 lg:data-[state=closed]:slide-out-to-left-1/2 lg:data-[state=closed]:slide-out-to-top-[48%] lg:data-[state=open]:slide-in-from-left-1/2 lg:data-[state=open]:slide-in-from-top-[48%] lg:rounded-xl"
   ),
   {
     variants: {
@@ -64,10 +65,15 @@ const ResponsiveModalContent = React.forwardRef<
     <ResponsiveModalOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      className={cn(ResponsiveModalVariants({ side }), className)}
+      className={cn(ResponsiveModalVariants({ side }), "overflow-visible", className)}
       {...props}
     >
-      {children}
+      <VisuallyHidden>
+        <DialogPrimitive.Title>Modal Content</DialogPrimitive.Title>
+      </VisuallyHidden>
+      <div className="overflow-y-auto overflow-x-visible max-h-full">
+        {children}
+      </div>
       <ResponsiveModalClose className='absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary'>
         <X className='h-4 w-4' />
         <span className='sr-only'>Close</span>

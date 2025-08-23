@@ -472,53 +472,144 @@ export class MeetMembersService {
     fields?: string
   ): Promise<MeetMember> {
     try {
+      console.log(
+        `👤🔄 Updating member ${memberId} role to ${newRole} in space ${spaceId} via delete+recreate`
+      );
+
+      // ESTRATEGIA: Google Meet API v2beta NO soporta PATCH de roles
+      // Necesitamos eliminar el miembro y volver a agregarlo con el nuevo rol
+
+      // 1. Obtener información completa del miembro antes de eliminarlo
+      const memberInfo = await this.getMemberById(spaceId, memberId);
+      if (!memberInfo || !memberInfo.email) {
+        throw new Error(`Cannot retrieve member information for ${memberId}`);
+      }
+
+      const memberEmail = memberInfo.email;
+      console.log(`👤📧 Member email retrieved: ${memberEmail}`);
+
+      // 2. Eliminar el miembro actual
+      console.log(`👤❌ Deleting member ${memberEmail} to change role...`);
+      await this.deleteMember(spaceId, memberId);
+
+      // 3. Volver a agregar el miembro con el nuevo rol
+      console.log(`👤➕ Re-adding member ${memberEmail} with role ${newRole}...`);
+      const recreatedMember = await this.createMember(
+        spaceId,
+        { email: memberEmail, role: newRole },
+        fields || 'name,email,role'
+      );
+
+      console.log(`✅ Member role updated successfully: ${memberEmail} -> ${newRole}`);
+      return recreatedMember;
+
+    } catch (error: any) {
+      // Si falla, intentar el método PATCH original por si acaso
+      console.log(`⚠️ Delete+recreate failed, trying direct PATCH as fallback...`);
+      
+      try {
+        const token = await this.auth.getAccessToken();
+        if (!token.token) {
+          throw new Error("No access token available");
+        }
+
+        const searchParams = new URLSearchParams();
+        if (fields) searchParams.set("fields", fields);
+        searchParams.set("updateMask", "role");
+
+        const url = `${this.baseUrl}/spaces/${spaceId}/members/${memberId}?${searchParams.toString()}`;
+
+        const requestBody = {
+          role: newRole,
+        };
+
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token.token}`,
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(
+            `Failed to update member role: ${response.status} ${response.statusText} - ${errorText}`
+          );
+        }
+
+        const updatedMember = await response.json();
+        console.log(`✅ Updated member ${memberId} role to ${newRole} (via PATCH)`);
+        return updatedMember;
+
+      } catch (patchError: any) {
+        console.error(`💥 Both delete+recreate and PATCH methods failed:`, patchError);
+        throw new Error(
+          `Unable to update member role. Google Meet API v2beta may not support role updates. ` +
+          `Original error: ${error.message}. PATCH fallback error: ${patchError.message}`
+        );
+      }
+    }
+  }
+
+  /**
+   * Obtiene información completa de un miembro por su ID
+   */
+  async getMemberById(spaceId: string, memberId: string): Promise<MeetMember | null> {
+    try {
       const token = await this.auth.getAccessToken();
       if (!token.token) {
         throw new Error("No access token available");
       }
 
-      const searchParams = new URLSearchParams();
-      if (fields) searchParams.set("fields", fields);
+      // Intentar con v2 stable primero
+      let url = `https://meet.googleapis.com/v2/spaces/${spaceId}/members/${memberId}`;
+      
+      console.log(`👤🔍 Getting member ${memberId} info from space ${spaceId}`);
 
-      // Update mask para especificar que solo se actualiza el rol
-      searchParams.set("updateMask", "role");
-
-      const url = `${this.baseUrl}/spaces/${spaceId}/members/${memberId}?${searchParams.toString()}`;
-
-      const requestBody = {
-        role: newRole,
-      };
-
-      console.log(
-        `👤🔄 Updating member ${memberId} role to ${newRole} in space ${spaceId}`
-      );
-
-      const response = await fetch(url, {
-        method: "PATCH",
+      let response = await fetch(url, {
+        method: "GET",
         headers: {
           Authorization: `Bearer ${token.token}`,
           Accept: "application/json",
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
       });
 
+      // Si v2 no funciona, intentar v2beta
+      if (!response.ok && response.status === 404) {
+        console.log(`⚠️ v2-stable endpoint not found, trying v2beta...`);
+        url = `https://meet.googleapis.com/v2beta/spaces/${spaceId}/members/${memberId}`;
+        
+        response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token.token}`,
+            Accept: "application/json",
+          },
+        });
+      }
+
       if (!response.ok) {
+        if (response.status === 404) {
+          console.log(`👤❌ Member ${memberId} not found in space ${spaceId}`);
+          return null;
+        }
+        
         const errorText = await response.text();
         throw new Error(
-          `Failed to update member role: ${response.status} ${response.statusText} - ${errorText}`
+          `Failed to get member ${memberId}: ${response.status} ${response.statusText} - ${errorText}`
         );
       }
 
-      const updatedMember = await response.json();
-      console.log(`✅ Updated member ${memberId} role to ${newRole}`);
+      const member = await response.json();
+      console.log(`✅ Retrieved member ${memberId} info from space ${spaceId}`);
+      
+      return member;
 
-      return updatedMember;
-    } catch (error) {
-      console.error(
-        `💥 Error updating member ${memberId} role in space ${spaceId}:`,
-        error
-      );
+    } catch (error: any) {
+      console.error(`💥 Error getting member ${memberId} from space ${spaceId}:`, error);
       throw error;
     }
   }

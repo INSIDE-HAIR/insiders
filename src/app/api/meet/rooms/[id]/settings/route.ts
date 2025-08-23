@@ -14,6 +14,7 @@ const meetSettingsSchema = z.object({
   moderationSettings: z.object({
     moderationEnabled: z.boolean().optional(),
     chatRestriction: z.enum(["HOSTS_ONLY", "NO_RESTRICTION"]).optional(),
+    reactionRestriction: z.enum(["HOSTS_ONLY", "NO_RESTRICTION"]).optional(),
     presentRestriction: z.enum(["HOSTS_ONLY", "NO_RESTRICTION"]).optional(),
     defaultJoinAsViewer: z.boolean().optional(),
     waitingRoomEnabled: z.boolean().optional(),
@@ -88,6 +89,8 @@ const quickSettingsSchema = z.object({
 /**
  * GET /api/meet/rooms/[id]/settings
  * Obtiene todas las configuraciones de un space/sala de Meet
+ * 
+ * Note: Uses Google Meet API v2beta for space configuration consistency
  */
 export async function GET(
   request: NextRequest,
@@ -122,7 +125,7 @@ export async function GET(
 
     // Obtener configuraciones del space
     const spaceResponse = await fetch(
-      `https://meet.googleapis.com/v2/spaces/${spaceId}?fields=config`,
+      `https://meet.googleapis.com/v2beta/spaces/${spaceId}?fields=config`,
       {
         method: 'GET',
         headers: {
@@ -172,6 +175,11 @@ export async function GET(
 /**
  * PATCH /api/meet/rooms/[id]/settings
  * Actualiza configuraciones específicas de un space/sala de Meet
+ * 
+ * Note: Uses Google Meet API v2beta for space configuration consistency
+ * - Members management: v2beta (MeetMembersService)
+ * - Space configuration: v2beta (MeetSpaceConfigService) 
+ * - Settings/Restrictions: v2beta (this endpoint)
  */
 export async function PATCH(
   request: NextRequest,
@@ -242,14 +250,20 @@ export async function PATCH(
     // Determinar qué campos actualizar
     const updateMask = generateUpdateMask(meetApiConfig);
     
+    // Actualizar configuraciones
+    // Using v2beta for consistency with other Meet space configuration services
+    const url = `https://meet.googleapis.com/v2beta/spaces/${spaceId}`;
+    
+    const requestPayload = { 
+      name: `spaces/${spaceId}`,
+      config: meetApiConfig 
+    };
+    
+    console.log('🎯 Space ID:', spaceId);
     console.log('📝 Update mask:', updateMask);
     console.log('📦 Config to send:', JSON.stringify(meetApiConfig, null, 2));
-    
-    // Actualizar configuraciones
-    // If updateMask is empty, don't include it to let API use defaults
-    const url = updateMask 
-      ? `https://meet.googleapis.com/v2/spaces/${spaceId}?updateMask=${encodeURIComponent(updateMask)}`
-      : `https://meet.googleapis.com/v2/spaces/${spaceId}`;
+    console.log('🌐 Full URL:', url);
+    console.log('📤 Request payload:', JSON.stringify(requestPayload, null, 2));
     
     const updateResponse = await fetch(
       url,
@@ -260,7 +274,7 @@ export async function PATCH(
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ config: meetApiConfig })
+        body: JSON.stringify(requestPayload)
       }
     );
 
@@ -347,10 +361,13 @@ function transformSettingsToMeetConfig(settings: any): any {
       config.moderation = settings.moderationSettings.moderationEnabled ? "ON" : "OFF";
     }
     
-    if (settings.moderationSettings.chatRestriction || settings.moderationSettings.presentRestriction || settings.moderationSettings.defaultJoinAsViewer !== undefined) {
+    if (settings.moderationSettings.chatRestriction || settings.moderationSettings.reactionRestriction || settings.moderationSettings.presentRestriction || settings.moderationSettings.defaultJoinAsViewer !== undefined) {
       config.moderationRestrictions = {};
       if (settings.moderationSettings.chatRestriction) {
         config.moderationRestrictions.chatRestriction = settings.moderationSettings.chatRestriction;
+      }
+      if (settings.moderationSettings.reactionRestriction) {
+        config.moderationRestrictions.reactionRestriction = settings.moderationSettings.reactionRestriction;
       }
       if (settings.moderationSettings.presentRestriction) {
         config.moderationRestrictions.presentRestriction = settings.moderationSettings.presentRestriction;
@@ -406,7 +423,19 @@ function generateUpdateMask(config: any): string {
   }
   
   if (config.moderationRestrictions !== undefined) {
-    fields.push('config.moderationRestrictions');
+    // Instead of the whole object, add individual fields that are actually being updated
+    if (config.moderationRestrictions.chatRestriction !== undefined) {
+      fields.push('config.moderationRestrictions.chatRestriction');
+    }
+    if (config.moderationRestrictions.reactionRestriction !== undefined) {
+      fields.push('config.moderationRestrictions.reactionRestriction');
+    }
+    if (config.moderationRestrictions.presentRestriction !== undefined) {
+      fields.push('config.moderationRestrictions.presentRestriction');
+    }
+    if (config.moderationRestrictions.defaultJoinAsViewerType !== undefined) {
+      fields.push('config.moderationRestrictions.defaultJoinAsViewerType');
+    }
   }
   
   // For artifactConfig, specify the exact nested field being updated

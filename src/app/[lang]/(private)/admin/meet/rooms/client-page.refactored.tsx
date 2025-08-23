@@ -58,7 +58,7 @@ import {
 // Importar componentes SOLID refactorizados
 import { RoomCard } from "@/src/features/meet/components/molecules/cards";
 import { JoinMeetingButton } from "@/src/features/meet/components/atoms/buttons";
-import { ResponsiveModalDemo } from "@/src/features/meet/components/molecules/modals";
+import { RoomDetailsModal } from "@/src/features/meet/components/molecules/modals/RoomDetailsModal";
 
 // Types
 interface MeetRoomsClientRefactoredProps {
@@ -290,10 +290,7 @@ export const MeetRoomsClientRefactored: React.FC<
         </div>
       </div>
 
-      {/* DEMO: ResponsiveModal + Sistema SOLID */}
-      <div className='mb-8'>
-        <ResponsiveModalDemo />
-      </div>
+      {/* Modal funcional para gestión de salas usando componentes atómicos */}
 
       {/* Stats Summary */}
       <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-6'>
@@ -502,160 +499,22 @@ export const MeetRoomsClientRefactored: React.FC<
         }}
       />
 
-      {/* Room Details Modal */}
-      <Dialog
-        open={isModalOpen}
-        onOpenChange={(open) => {
-          console.log(
-            "Modal open state changed:",
-            open,
-            "selectedRoom:",
-            selectedRoom
-          );
-          setIsModalOpen(open);
+      {/* Room Details Modal - Sistema Atómico Funcional */}
+      <RoomDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        room={selectedRoom}
+        onUpdate={() => {
+          console.log('🔄 Actualizando datos del room');
+          refetch(); // Refrescar datos
         }}
-      >
-        <DialogContent className='max-w-4xl'>
-          <DialogHeader>
-            <DialogTitle className='flex items-center gap-2'>
-              <VideoCameraIcon className='h-5 w-5' />
-              {selectedRoom?._metadata?.displayName ||
-                selectedRoom?.name ||
-                "Detalles de la Sala"}
-            </DialogTitle>
-          </DialogHeader>
-
-          {selectedRoom && (
-            <div className='space-y-6'>
-              {/* Basic Info */}
-              <div className='grid grid-cols-2 gap-4'>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    Nombre de la Sala
-                  </label>
-                  <p className='text-sm'>
-                    {selectedRoom._metadata?.displayName || selectedRoom.name}
-                  </p>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    ID de la Sala
-                  </label>
-                  <p className='text-sm font-mono'>
-                    {selectedRoom.name?.split("/").pop()}
-                  </p>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    Código de Reunión
-                  </label>
-                  <p className='text-sm font-mono'>
-                    {selectedRoom.meetingCode || "No disponible"}
-                  </p>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    Tipo de Acceso
-                  </label>
-                  <div className='mt-1'>
-                    {selectedRoom.config?.accessType && (
-                      <AccessTypeBadge type={selectedRoom.config.accessType} />
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    Estado
-                  </label>
-                  <div className='mt-1'>
-                    <RoomStatusBadge
-                      isActive={
-                        !!selectedRoom.activeConference?.conferenceRecord
-                      }
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className='text-sm font-medium text-muted-foreground'>
-                    URL de la Reunión
-                  </label>
-                  {selectedRoom.meetingUri ? (
-                    <a
-                      href={selectedRoom.meetingUri}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      className='text-sm text-blue-600 hover:underline'
-                    >
-                      Abrir en Google Meet
-                    </a>
-                  ) : (
-                    <p className='text-sm text-muted-foreground'>
-                      No disponible
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Creation Info */}
-              <div className='border-t pt-4'>
-                <h4 className='font-medium mb-2'>Información de Creación</h4>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <label className='text-sm font-medium text-muted-foreground'>
-                      Creada el
-                    </label>
-                    <p className='text-sm'>
-                      {selectedRoom._metadata?.createdAt
-                        ? new Date(
-                            selectedRoom._metadata.createdAt
-                          ).toLocaleDateString("es-ES")
-                        : "No disponible"}
-                    </p>
-                  </div>
-                  <div>
-                    <label className='text-sm font-medium text-muted-foreground'>
-                      Creada por
-                    </label>
-                    <p className='text-sm'>
-                      {selectedRoom._metadata?.createdBy || "No disponible"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Members */}
-              {selectedRoom.members && selectedRoom.members.length > 0 && (
-                <div className='border-t pt-4'>
-                  <h4 className='font-medium mb-2'>
-                    Miembros ({selectedRoom.members.length})
-                  </h4>
-                  <div className='space-y-2 max-h-32 overflow-y-auto'>
-                    {selectedRoom.members.map((member: any, index: number) => (
-                      <div
-                        key={index}
-                        className='flex items-center justify-between py-1'
-                      >
-                        <span className='text-sm'>
-                          {member.email || `Usuario ${index + 1}`}
-                        </span>
-                        <MemberRoleBadge role={member.role} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className='border-t pt-4 flex justify-end gap-2'>
-                <Button variant='outline' onClick={handleCloseModal}>
-                  Cerrar
-                </Button>
-                <JoinMeetingButton meetingUri={selectedRoom.meetingUri} />
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+        onDelete={() => {
+          console.log('🗑️ Eliminando room');
+          setIsModalOpen(false);
+          setSelectedRoom(null);
+          refetch(); // Refrescar datos
+        }}
+      />
     </div>
   );
 };
