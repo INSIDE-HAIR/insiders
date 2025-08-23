@@ -39,7 +39,15 @@ export const SessionsSectionDemo: React.FC<SessionsSectionDemoProps> = ({
   onExportSmartNote,
   className
 }) => {
+  console.log('🎬 SessionsSectionDemo: Component rendered with spaceId:', spaceId);
   const { data, loading, error, refetch } = useSessionsData(spaceId);
+
+  console.log('🎬 SessionsSectionDemo: Hook state:', { 
+    hasData: !!data, 
+    loading, 
+    error,
+    sessionsCount: data?.sessions?.sessions?.length || 0
+  });
 
   // Loading state
   if (loading) {

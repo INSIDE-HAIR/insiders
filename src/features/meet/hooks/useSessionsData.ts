@@ -106,12 +106,17 @@ export const useSessionsData = (spaceId: string | null) => {
   const { toast } = useToast();
 
   const fetchSessionsWithMedia = async () => {
-    if (!spaceId) return;
+    if (!spaceId) {
+      console.log('❌ useSessionsData: No spaceId provided');
+      return;
+    }
 
+    console.log(`🎬 useSessionsData: Starting fetch for spaceId=${spaceId}`);
     setLoading(true);
     setError(null);
 
     try {
+      console.log('🎬 useSessionsData: Calling APIs in parallel...');
       // Fetch todas las APIs en paralelo para mejor rendimiento
       const [sessionsResponse, recordingsResponse, transcriptsResponse] = await Promise.allSettled([
         fetch(`/api/meet/rooms/${spaceId}/participants-by-session`),
@@ -119,12 +124,27 @@ export const useSessionsData = (spaceId: string | null) => {
         fetch(`/api/meet/rooms/${spaceId}/transcripts`)
       ]);
 
+      console.log('🎬 useSessionsData: API responses received:', {
+        sessions: sessionsResponse.status === 'fulfilled' ? sessionsResponse.value.status : 'failed',
+        recordings: recordingsResponse.status === 'fulfilled' ? recordingsResponse.value.status : 'failed', 
+        transcripts: transcriptsResponse.status === 'fulfilled' ? transcriptsResponse.value.status : 'failed'
+      });
+
       // Procesar respuesta de sesiones
       let sessionsData: SessionsApiResponse;
       if (sessionsResponse.status === 'fulfilled' && sessionsResponse.value.ok) {
         sessionsData = await sessionsResponse.value.json();
+        console.log('✅ useSessionsData: Sessions data received:', {
+          totalSessions: sessionsData.sessions?.length || 0,
+          totalUniqueParticipants: sessionsData.totalUniqueParticipants,
+          spaceId: sessionsData.spaceId
+        });
       } else {
-        throw new Error('Error al cargar datos de sesiones');
+        const error = sessionsResponse.status === 'fulfilled' 
+          ? `HTTP ${sessionsResponse.value.status}: ${sessionsResponse.value.statusText}` 
+          : 'Network error';
+        console.error('❌ useSessionsData: Sessions API failed:', error);
+        throw new Error(`Error al cargar datos de sesiones: ${error}`);
       }
 
       // Procesar respuesta de grabaciones
@@ -136,8 +156,15 @@ export const useSessionsData = (spaceId: string | null) => {
       };
       if (recordingsResponse.status === 'fulfilled' && recordingsResponse.value.ok) {
         recordingsData = await recordingsResponse.value.json();
+        console.log('✅ useSessionsData: Recordings data received:', {
+          totalRecordings: recordingsData.totalRecordings,
+          recordingsCount: recordingsData.recordings?.length || 0
+        });
       } else {
-        console.warn('No se pudieron cargar las grabaciones');
+        const error = recordingsResponse.status === 'fulfilled' 
+          ? `HTTP ${recordingsResponse.value.status}` 
+          : 'Network error';
+        console.warn('⚠️ useSessionsData: Recordings API failed:', error);
       }
 
       // Procesar respuesta de transcripciones
@@ -149,8 +176,15 @@ export const useSessionsData = (spaceId: string | null) => {
       };
       if (transcriptsResponse.status === 'fulfilled' && transcriptsResponse.value.ok) {
         transcriptsData = await transcriptsResponse.value.json();
+        console.log('✅ useSessionsData: Transcripts data received:', {
+          totalTranscripts: transcriptsData.totalTranscripts,
+          transcriptsCount: transcriptsData.transcripts?.length || 0
+        });
       } else {
-        console.warn('No se pudieron cargar las transcripciones');
+        const error = transcriptsResponse.status === 'fulfilled' 
+          ? `HTTP ${transcriptsResponse.value.status}` 
+          : 'Network error';
+        console.warn('⚠️ useSessionsData: Transcripts API failed:', error);
       }
 
       const result: CompleteSessionsData = {
@@ -159,7 +193,14 @@ export const useSessionsData = (spaceId: string | null) => {
         transcripts: transcriptsData
       };
 
+      console.log('🎬 useSessionsData: Final result assembled:', {
+        sessionsTotal: sessionsData.sessions?.length || 0,
+        recordingsTotal: recordingsData.recordings?.length || 0,
+        transcriptsTotal: transcriptsData.transcripts?.length || 0
+      });
+
       setData(result);
+      console.log('🎬 useSessionsData: Data set successfully');
       
     } catch (err: any) {
       const errorMessage = err.message || 'Error al cargar los datos de sesiones';

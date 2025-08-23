@@ -24,7 +24,7 @@ export const SessionHistoryItem: React.FC<SessionHistoryItemProps> = ({
       "text-xs text-muted-foreground p-1 bg-background rounded",
       className
     )}>
-      • {session}
+      {session}
     </div>
   );
 };

@@ -118,6 +118,13 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
   const currentSectionData = sections.find((s) => s.id === currentSectionId);
   const CurrentSectionComponent = currentSectionData?.component;
 
+  console.log('🧭 SectionNavigationModal: Rendering section', {
+    currentSectionId,
+    sectionFound: !!currentSectionData,
+    componentFound: !!CurrentSectionComponent,
+    sectionTitle: currentSectionData?.title
+  });
+
   // Props combinadas para la sección actual
   const combinedProps = {
     ...globalProps,
@@ -219,8 +226,28 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
           <ScrollArea className='h-full px-1'>
             <div className='pb-6'>
               {CurrentSectionComponent ? (
-                <Suspense fallback={<SectionLoadingFallback />}>
-                  <CurrentSectionComponent {...combinedProps} />
+                <Suspense fallback={
+                  (() => {
+                    console.log('🧭 SectionNavigationModal: Showing loading fallback for section:', currentSectionId);
+                    return <SectionLoadingFallback />;
+                  })()
+                }>
+                  {(() => {
+                    console.log('🧭 SectionNavigationModal: Attempting to render component for section:', currentSectionId);
+                    try {
+                      return <CurrentSectionComponent {...combinedProps} />;
+                    } catch (error) {
+                      console.error('🧭 SectionNavigationModal: Error rendering component for section:', currentSectionId, error);
+                      return (
+                        <div className="text-center py-8">
+                          <div className="text-red-500 mb-2">Error al cargar la sección</div>
+                          <div className="text-xs text-muted-foreground">
+                            {error instanceof Error ? error.message : 'Error desconocido'}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
                 </Suspense>
               ) : (
                 <div className='text-center py-12'>

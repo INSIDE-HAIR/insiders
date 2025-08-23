@@ -26,7 +26,16 @@ export const StatisticsSectionDemo: React.FC<StatisticsSectionDemoProps> = ({
   spaceId,
   className
 }) => {
+  console.log('📊 StatisticsSectionDemo: Component rendered with spaceId:', spaceId);
   const { data, loading, error, refetch } = useStatisticsData(spaceId);
+
+  console.log('📊 StatisticsSectionDemo: Hook state:', { 
+    hasData: !!data, 
+    loading, 
+    error,
+    totalSessions: data?.sessions?.total || 0,
+    uniqueParticipants: data?.participants?.unique || 0
+  });
 
   // Loading state
   if (loading) {
@@ -158,8 +167,8 @@ export const StatisticsSectionDemo: React.FC<StatisticsSectionDemoProps> = ({
 
       {/* Footer info */}
       <div className="flex justify-between items-center text-xs text-muted-foreground pt-2 border-t">
-        <span>Actualizado: {new Date(data.generatedAt).toLocaleString('es-ES')}</span>
-        <span>{data.metrics.sessions.totalSessions} sesiones analizadas</span>
+        <span>Actualizado: {new Date(data.calculatedAt).toLocaleString('es-ES')}</span>
+        <span>{data.sessions.total} sesiones analizadas</span>
       </div>
       
     </div>

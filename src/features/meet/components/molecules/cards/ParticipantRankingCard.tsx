@@ -1,21 +1,43 @@
 import React from "react";
 import { Badge } from "@/src/components/ui/badge";
-import { CalendarDaysIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 import { RankBadge } from "../../atoms/badges/RankBadge";
 import { UserAvatar } from "../../atoms/display/UserAvatar";
-import { MetricCard } from "../../atoms/cards/MetricCard";
-import { SessionHistoryList } from "./SessionHistoryList";
+import { MetricCard, ParticipantStatsCard, SessionBreakdownCard, DetailedStatsCard } from "../../atoms/cards";
 import { cn } from "@/src/lib/utils";
 
 export interface ParticipantRankingData {
   rank: number;
   name: string;
   totalMinutes: number;
+  totalMinutesFormatted?: string; // HH:MM:SS formato
   totalMeetings: number;
   participation: string;
   avgPerSession: string;
   type: "Autenticado" | "Anónimo" | "Teléfono";
   recentSessions: string[];
+  // Nuevos campos estructurados
+  statsData?: {
+    totalSessions: string;
+    avgPerSession: string;
+    totalTime: string;
+    lastAccess: string;
+    email: string;
+    uniqueDays: number;
+  };
+  sessionBreakdown?: {
+    sessions: Array<{
+      formattedStartTime: string;
+      durationFormatted: string;
+      dayOfWeek: string;
+    }>;
+    detailedStats: {
+      longestSession: string;
+      shortestSession: string;
+      avgPerSession: string;
+      totalTime: string;
+    };
+  };
 }
 
 export interface ParticipantRankingCardProps {
@@ -48,7 +70,7 @@ export const ParticipantRankingCard: React.FC<ParticipantRankingCardProps> = ({
           <div>
             <span className="font-medium text-sm">{participant.name}</span>
             <div className="text-xs text-muted-foreground">
-              {participant.type} • {participant.totalMinutes} min total
+              {participant.type} • {participant.totalMinutesFormatted || `${participant.totalMinutes} min`} total
             </div>
           </div>
         </div>
@@ -83,25 +105,55 @@ export const ParticipantRankingCard: React.FC<ParticipantRankingCardProps> = ({
           />
         </div>
         
-        {/* Historial de sesiones recientes */}
-        <details className="group border border-border rounded-lg">
-          <summary className="flex items-center justify-between p-2 cursor-pointer hover:bg-muted/50">
-            <div className="flex items-center gap-2">
-              <CalendarDaysIcon className="h-4 w-4 text-primary" />
-              <span className="font-medium text-sm">Sesiones Recientes</span>
-              <Badge variant="outline" className="text-xs">
-                {participant.recentSessions.length}
-              </Badge>
+        {/* Estadísticas de participación (si están disponibles) */}
+        {participant.statsData && (
+          <ParticipantStatsCard data={participant.statsData} />
+        )}
+        
+        {/* Desglose por sesión (accordion separado) */}
+        {participant.sessionBreakdown && participant.sessionBreakdown.sessions.length > 0 && (
+          <details className="group border border-border rounded-lg">
+            <summary className="flex items-center justify-between p-2 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center gap-2">
+                <CalendarDaysIcon className="h-4 w-4 text-primary" />
+                <span className="font-medium text-sm">Desglose por Sesión</span>
+                <Badge variant="outline" className="text-xs">
+                  {participant.sessionBreakdown.sessions.length}
+                </Badge>
+              </div>
+              <svg className="h-3 w-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </summary>
+            
+            <div className="px-2 pb-2 pt-2">
+              <SessionBreakdownCard 
+                sessions={participant.sessionBreakdown.sessions}
+              />
             </div>
-            <svg className="h-3 w-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </summary>
-          
-          <div className="px-2 pb-2">
-            <SessionHistoryList sessions={participant.recentSessions} />
-          </div>
-        </details>
+          </details>
+        )}
+        
+        {/* Estadísticas detalladas (accordion separado) */}
+        {participant.sessionBreakdown && (
+          <details className="group border border-border rounded-lg">
+            <summary className="flex items-center justify-between p-2 cursor-pointer hover:bg-muted/50">
+              <div className="flex items-center gap-2">
+                <ChartBarIcon className="h-4 w-4 text-primary" />
+                <span className="font-medium text-sm">Estadísticas Detalladas</span>
+              </div>
+              <svg className="h-3 w-3 transition-transform group-open:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </summary>
+            
+            <div className="px-2 pb-2 pt-2">
+              <DetailedStatsCard 
+                stats={participant.sessionBreakdown.detailedStats}
+              />
+            </div>
+          </details>
+        )}
         
       </div>
     </details>

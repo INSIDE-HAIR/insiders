@@ -2,6 +2,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { GoogleCalendarService } from "@/src/features/calendar/services/calendar/GoogleCalendarService";
 import { MeetMembersService } from "@/src/features/meet/services/MeetMembersService";
+import type { 
+  GoogleMeetConferenceRecord,
+  GoogleMeetConferenceRecordsResponse,
+  GoogleMeetParticipant,
+  GoogleMeetParticipantsResponse,
+  GoogleMeetParticipantSession,
+  GoogleMeetParticipantSessionsResponse,
+  ProcessedAttendee,
+  ProcessedParticipantInfo,
+  ParticipantRanking,
+  AnalyticsResponse,
+  ParticipantType
+} from "@/src/features/meet/services/interfaces/GoogleMeetTypes";
+
+/**
+ * Convierte minutos a formato HH:MM:SS
+ */
+const formatMinutesToHMS = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = Math.floor(minutes % 60);
+  const seconds = Math.floor((minutes % 1) * 60);
+  
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+};
+
+/**
+ * Convierte segundos a formato HH:MM:SS
+ */
+const formatSecondsToHMS = (seconds: number): string => {
+  const hours = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
 
 /**
  * GET /api/meet/rooms/[id]/analytics
@@ -130,8 +165,18 @@ export async function GET(
       });
     }
 
-    const conferenceData = await conferenceResponse.json();
-    const conferenceRecords = conferenceData.conferenceRecords || [];
+    const conferenceData: GoogleMeetConferenceRecordsResponse = await conferenceResponse.json();
+    const conferenceRecords: GoogleMeetConferenceRecord[] = conferenceData.conferenceRecords || [];
+    
+    console.log('📊 CONFERENCE RECORDS DATA:', {
+      total: conferenceRecords.length,
+      records: conferenceRecords.map(record => ({
+        name: record.name,
+        startTime: record.startTime,
+        endTime: record.endTime,
+        spaceName: record.space?.name
+      }))
+    });
 
     if (conferenceRecords.length === 0) {
       console.log(`ℹ️ No conference records found for space ${spaceId}`);
@@ -150,16 +195,8 @@ export async function GET(
     let validSessionsCount = 0; // Contador de sesiones válidas (con filtros aplicados)
     let allParticipantCounts: number[] = [];
 
-    // Crear un mapa de asistentes únicos con su información
-    let uniqueAttendees = new Map<
-      string,
-      {
-        type: "signed_in" | "anonymous" | "phone";
-        displayName: string;
-        identifier: string;
-        isInvited: boolean;
-      }
-    >();
+    // Crear un mapa de asistentes únicos con su información y participación
+    const uniqueAttendees = new Map<string, ProcessedAttendee>();
 
     // Almacenar información de sesiones válidas para actividad reciente
     let validSessions: Array<{
@@ -176,14 +213,10 @@ export async function GET(
     // Procesar cada conferencia
     for (const record of conferenceRecords) {
       try {
-        // Calcular duración de la sesión en segundos
-        const startTime = new Date(record.startTime);
-        const endTime = record.endTime ? new Date(record.endTime) : new Date();
-        const sessionDurationSeconds = Math.round(
-          (endTime.getTime() - startTime.getTime()) / 1000
-        );
+        // Esta conferencia será procesada basándose en participaciones reales
+        console.log(`🔄 Processing conference: ${record.name}`);
 
-        // Obtener participantes de esta conferencia
+        // 📊 Obtener participantes de esta conferencia usando el patrón de las APIs de backup
         const participantsUrl = `https://meet.googleapis.com/v2/${record.name}/participants`;
 
         const participantsResponse = await fetch(participantsUrl, {
@@ -195,95 +228,183 @@ export async function GET(
         });
 
         if (participantsResponse.ok) {
-          const participantsData = await participantsResponse.json();
-          const sessionParticipants = participantsData.participants || [];
-
-          // **FILTROS DE CALIDAD DE SESIÓN**
-          // Excluir sesiones con 0 participantes o duración < 10 minutos (600 segundos)
-          const MIN_DURATION_SECONDS = 600; // 10 minutos
-          const MIN_PARTICIPANTS = 2; // 2 o más participantes
-
-          if (sessionParticipants.length < MIN_PARTICIPANTS) {
-            console.log(
-              `⚠️ Skipping session with ${sessionParticipants.length} participants (below minimum ${MIN_PARTICIPANTS})`
-            );
-            continue; // Saltar esta sesión
+          const participantsData: GoogleMeetParticipantsResponse = await participantsResponse.json();
+          const participants: GoogleMeetParticipant[] = participantsData.participants || [];
+          
+          console.log(`📊 Found ${participants.length} participants for conference ${record.name}`);
+          console.log('📊 PARTICIPANTS DATA:', participants.map(p => ({
+            name: p.name,
+            displayName: p.signedinUser?.displayName || p.anonymousUser?.displayName || p.phoneUser?.displayName,
+            type: p.signedinUser ? 'signed_in' : p.anonymousUser ? 'anonymous' : 'phone',
+            earliestStartTime: p.earliestStartTime,
+            latestEndTime: p.latestEndTime
+          })));
+          
+          if (participants.length === 0) {
+            console.log(`⚠️ Skipping conference with 0 participants`);
+            continue;
           }
 
-          if (sessionDurationSeconds < MIN_DURATION_SECONDS) {
-            console.log(
-              `⚠️ Skipping session with ${sessionDurationSeconds}s duration (below minimum ${MIN_DURATION_SECONDS}s)`
-            );
-            continue; // Saltar esta sesión
-          }
-
-          // Sesión válida - incluir en métricas
-          console.log(
-            `✅ Processing valid session: ${sessionParticipants.length} participants, ${sessionDurationSeconds}s duration`
-          );
           validSessionsCount++;
-          sessions.totalDurationSeconds += sessionDurationSeconds;
-
-          // Contar participantes de esta sesión
-          allParticipantCounts.push(sessionParticipants.length);
+          allParticipantCounts.push(participants.length);
 
           // Agregar a lista de sesiones válidas para actividad reciente
           validSessions.push({
             startTime: record.startTime,
-            participantCount: sessionParticipants.length,
+            participantCount: participants.length,
           });
 
-          // Procesar cada participante de la sesión
-          for (const participant of sessionParticipants) {
-            let attendeeKey = "";
-            let attendeeInfo = {
-              type: "anonymous" as "signed_in" | "anonymous" | "phone",
-              displayName: "Usuario desconocido",
-              identifier: "",
-              isInvited: false,
-            };
+          // 🔄 Procesar cada participante siguiendo el patrón de las APIs de backup
+          for (const participant of participants) {
+            try {
+              // Obtener todas las sesiones de este participante específico
+              const participantSessionsUrl = `https://meet.googleapis.com/v2/${participant.name}/participantSessions`;
 
-            if (participant.signedinUser) {
-              // Usuario autenticado - usar su ID único de Google (más confiable)
-              const userId = participant.signedinUser.user;
-              const displayName = participant.signedinUser.displayName;
+              const sessionsResponse = await fetch(participantSessionsUrl, {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token.token}`,
+                  Accept: "application/json",
+                },
+              });
 
-              // Usar el user ID como clave única (más confiable que displayName)
-              attendeeKey = userId || `signed_${displayName}`;
-              attendeeInfo = {
-                type: "signed_in",
-                displayName: displayName,
-                identifier: userId,
-                isInvited: false, // Lo determinaremos comparando con miembros
-              };
-            } else if (participant.anonymousUser) {
-              // Usuario anónimo - usar displayName (mismo anónimo = misma persona)
-              attendeeKey = `anonymous_${participant.anonymousUser.displayName}`;
-              attendeeInfo = {
-                type: "anonymous",
-                displayName: participant.anonymousUser.displayName,
-                identifier: "",
-                isInvited: false,
-              };
-            } else if (participant.phoneUser) {
-              // Usuario por teléfono - usar displayName
-              attendeeKey = `phone_${participant.phoneUser.displayName}`;
-              attendeeInfo = {
-                type: "phone",
-                displayName: participant.phoneUser.displayName,
-                identifier: "",
-                isInvited: false,
-              };
-            }
+              let participantSessions: GoogleMeetParticipantSession[] = [];
+              let totalParticipationMinutes = 0;
 
-            if (attendeeKey) {
-              // Solo agregar si no existe (evita duplicados entre sesiones)
-              if (!uniqueAttendees.has(attendeeKey)) {
-                uniqueAttendees.set(attendeeKey, attendeeInfo);
-                console.log(
-                  `➕ Added unique attendee: ${attendeeInfo.displayName} (${attendeeInfo.type}) | Key: ${attendeeKey} | ID: ${attendeeInfo.identifier}`
-                );
+              if (sessionsResponse.ok) {
+                const sessionsData: GoogleMeetParticipantSessionsResponse = await sessionsResponse.json();
+                participantSessions = sessionsData.participantSessions || [];
+                
+                console.log(`📊 PARTICIPANT SESSIONS for ${participant.name}:`, participantSessions.map(s => ({
+                  name: s.name,
+                  startTime: s.startTime,
+                  endTime: s.endTime,
+                  participant: s.participant
+                })));
+                
+                // Calcular duración real total de todas las sesiones de este participante
+                totalParticipationMinutes = participantSessions.reduce((sum: number, session: GoogleMeetParticipantSession) => {
+                  if (session.startTime && session.endTime) {
+                    const duration = (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60);
+                    return sum + duration;
+                  }
+                  return sum;
+                }, 0);
               }
+
+              console.log(`👤 Processing participant: ${participant.signedinUser?.displayName || participant.anonymousUser?.displayName || 'Unknown'}, Sessions: ${participantSessions.length}, Total minutes: ${totalParticipationMinutes}`);
+
+              // Identificar información del usuario siguiendo el patrón de backup
+              let attendeeKey = "";
+              let attendeeInfo: ProcessedParticipantInfo = {
+                type: "anonymous",
+                displayName: "Usuario desconocido",
+                identifier: "",
+                isInvited: false,
+              };
+
+              if (participant.signedinUser) {
+                const userId = participant.signedinUser.user;
+                const displayName = participant.signedinUser.displayName;
+                
+                // Usar displayName como clave principal, luego userId
+                attendeeKey = displayName || userId || `signed_${Math.random()}`;
+                
+                attendeeInfo = {
+                  type: "signed_in",
+                  displayName: displayName,
+                  identifier: userId,
+                  isInvited: false,
+                };
+              } else if (participant.anonymousUser) {
+                const displayName = participant.anonymousUser.displayName;
+                attendeeKey = `anonymous_${displayName}`;
+                
+                attendeeInfo = {
+                  type: "anonymous",
+                  displayName: displayName,
+                  identifier: "",
+                  isInvited: false,
+                };
+              } else if (participant.phoneUser) {
+                const displayName = participant.phoneUser.displayName;
+                attendeeKey = `phone_${displayName}`;
+                
+                attendeeInfo = {
+                  type: "phone",
+                  displayName: displayName,
+                  identifier: "",
+                  isInvited: false,
+                };
+              }
+
+              if (attendeeKey && totalParticipationMinutes > 0) {
+                const sessionId = record.name.split('/').pop() || 'unknown';
+                
+                // Calcular duración total de la conferencia
+                const conferenceDurationMinutes = record.endTime 
+                  ? (new Date(record.endTime).getTime() - new Date(record.startTime).getTime()) / (1000 * 60)
+                  : totalParticipationMinutes; // Si no hay endTime, usar la duración del participante como estimación
+                
+                // Crear detalles de sesiones para este participante
+                // IMPORTANTE: participantSessions son los segmentos de participación DENTRO de una conferencia
+                // Un participante puede entrar/salir varias veces, creando múltiples segmentos
+                const sessionDetails = [{
+                  sessionId,
+                  // Duración total del participante en esta conferencia (suma de todos los segmentos)
+                  duration: totalParticipationMinutes,
+                  // Hora de inicio de la conferencia (no del segmento individual)
+                  startTime: record.startTime,
+                  // Duración total de la conferencia para calcular porcentaje
+                  conferenceDuration: conferenceDurationMinutes,
+                  // Información adicional sobre los segmentos individuales
+                  segments: participantSessions
+                    .filter((session: GoogleMeetParticipantSession) => session.startTime && session.endTime)
+                    .map((session: GoogleMeetParticipantSession) => ({
+                      segmentStart: session.startTime,
+                      segmentEnd: session.endTime || session.startTime,
+                      segmentDuration: session.endTime 
+                        ? (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60)
+                        : 0
+                    }))
+                }];
+                
+                console.log(`📊 SESSION DETAILS for ${attendeeInfo.displayName}:`, sessionDetails);
+
+                if (!uniqueAttendees.has(attendeeKey)) {
+                  // Primera vez que vemos a este participante
+                  uniqueAttendees.set(attendeeKey, {
+                    ...attendeeInfo,
+                    sessionsAttended: [sessionId],
+                    totalMinutesReal: totalParticipationMinutes,
+                    participationSessions: sessionDetails
+                  });
+                  
+                  sessions.totalDurationSeconds += totalParticipationMinutes * 60;
+                  
+                  console.log(
+                    `➕ Added attendee: ${attendeeInfo.displayName} (${attendeeInfo.type}) | ${totalParticipationMinutes} min total`
+                  );
+                } else {
+                  // Ya existe, agregar datos de esta conferencia
+                  const existingAttendee = uniqueAttendees.get(attendeeKey)!;
+                  
+                  if (!existingAttendee.sessionsAttended.includes(sessionId)) {
+                    existingAttendee.sessionsAttended.push(sessionId);
+                    existingAttendee.totalMinutesReal += totalParticipationMinutes;
+                    existingAttendee.participationSessions.push(...sessionDetails);
+                    
+                    sessions.totalDurationSeconds += totalParticipationMinutes * 60;
+                    
+                    console.log(
+                      `🔄 Updated attendee: ${existingAttendee.displayName} | +${totalParticipationMinutes} min | Total: ${existingAttendee.totalMinutesReal} min`
+                    );
+                  }
+                }
+              }
+
+            } catch (participantError) {
+              console.error(`Error processing participant ${participant.name}:`, participantError);
             }
           }
         }
@@ -362,7 +483,7 @@ export async function GET(
     let invitedAttendees = 0;
     let uninvitedAttendees = 0;
 
-    for (const [key, attendee] of uniqueAttendees) {
+    for (const [, attendee] of uniqueAttendees) {
       let isInvited = false;
 
       if (attendee.type === "signed_in") {
@@ -462,16 +583,13 @@ export async function GET(
 
     sessions.averageDurationSeconds =
       sessions.total > 0
-        ? Math.round(sessions.totalDurationSeconds / sessions.total)
+        ? sessions.totalDurationSeconds / sessions.total
         : 0;
 
     sessions.averageParticipantsPerSession =
       allParticipantCounts.length > 0
-        ? Math.round(
-            (allParticipantCounts.reduce((sum, count) => sum + count, 0) /
-              allParticipantCounts.length) *
-              10
-          ) / 10 // 1 decimal
+        ? allParticipantCounts.reduce((sum, count) => sum + count, 0) /
+              allParticipantCounts.length // 1 decimal
         : 0;
 
     // 5. Actividad reciente - solo considerar sesiones válidas
@@ -499,21 +617,192 @@ export async function GET(
       console.log(`📅 No valid sessions found for recent activity`);
     }
 
+    // 6. Crear ranking de participantes reales con datos reales de participación
+    const participantRanking = Array.from(uniqueAttendees.entries())
+      .map(([, attendee]) => {
+        // Calcular última actividad real
+        const lastSession = attendee.participationSessions
+          .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())[0];
+        
+        return {
+          rank: 0, // Se asignará después del sorting
+          participant: {
+            name: attendee.displayName,
+            email: (() => {
+              // Intentar extraer email del displayName si no hay identifier
+              if (attendee.identifier && attendee.identifier.includes('@')) {
+                return attendee.identifier;
+              }
+              // Extraer email del displayName si contiene uno
+              const emailMatch = attendee.displayName.match(/[\w\.-]+@[\w\.-]+\.\w+/);
+              if (emailMatch) {
+                return emailMatch[0];
+              }
+              // Si es usuario autenticado pero no tenemos email, no mostrar email
+              return '';
+            })(),
+            type: attendee.type,
+            isInvited: attendee.isInvited
+          },
+          // ✅ USAR DATOS REALES DE PARTICIPACIÓN
+          totalMinutes: attendee.totalMinutesReal,
+          totalMinutesFormatted: formatMinutesToHMS(attendee.totalMinutesReal),
+          sessionsCount: attendee.sessionsAttended.length,
+          averageMinutesPerSession: attendee.sessionsAttended.length > 0 
+            ? attendee.totalMinutesReal / attendee.sessionsAttended.length
+            : 0,
+          averageMinutesPerSessionFormatted: attendee.sessionsAttended.length > 0 
+            ? formatMinutesToHMS(attendee.totalMinutesReal / attendee.sessionsAttended.length)
+            : "00:00:00",
+          lastActivity: lastSession?.startTime || recentActivity.lastMeetingDate || new Date().toISOString(),
+          
+          // 🆕 DESGLOSE DETALLADO DE CADA SESIÓN (conferencia completa, no segmentos)
+          sessionDetails: attendee.participationSessions
+            .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()) // Más reciente primero
+            .map((session) => {
+              // Si el participante entró/salió múltiples veces, mostrar nota
+              const hasMultipleSegments = session.segments && session.segments.length > 1;
+              const segmentNote = hasMultipleSegments 
+                ? ` (${session.segments!.length} entradas)`
+                : '';
+                
+              return {
+                sessionId: session.sessionId,
+                startTime: session.startTime,
+                formattedStartTime: new Date(session.startTime).toLocaleString('es-ES', {
+                  day: '2-digit',
+                  month: '2-digit', 
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) + segmentNote,
+                durationMinutes: session.duration,
+                durationFormatted: formatMinutesToHMS(session.duration),
+                // Calcular porcentaje de participación en esta sesión específica
+                participationPercentage: session.conferenceDuration && session.conferenceDuration > 0
+                  ? Math.min(100, Math.round((session.duration / session.conferenceDuration) * 100))
+                  : 100,
+                sessionDate: new Date(session.startTime).toLocaleDateString('es-ES', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                }),
+                dayOfWeek: new Date(session.startTime).toLocaleDateString('es-ES', {
+                  weekday: 'long'
+                }),
+                timeOfDay: new Date(session.startTime).toLocaleTimeString('es-ES', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })
+              };
+            }),
+            
+          // 📊 ESTADÍSTICAS ADICIONALES POR PARTICIPANTE
+          participationStats: {
+            totalSessionsInSpace: attendee.sessionsAttended.length,
+            longestSession: attendee.participationSessions.length > 0 
+              ? Math.max(...attendee.participationSessions.map(s => s.duration))
+              : 0,
+            shortestSession: attendee.participationSessions.length > 0 
+              ? Math.min(...attendee.participationSessions.map(s => s.duration))
+              : 0,
+            averageSessionDuration: attendee.sessionsAttended.length > 0 
+              ? attendee.totalMinutesReal / attendee.sessionsAttended.length
+              : 0,
+            // 🆕 Formatos HH:MM:SS
+            longestSessionFormatted: attendee.participationSessions.length > 0 
+              ? formatMinutesToHMS(Math.max(...attendee.participationSessions.map(s => s.duration)))
+              : "00:00:00",
+            shortestSessionFormatted: attendee.participationSessions.length > 0 
+              ? formatMinutesToHMS(Math.min(...attendee.participationSessions.map(s => s.duration)))
+              : "00:00:00",
+            averageSessionDurationFormatted: attendee.sessionsAttended.length > 0 
+              ? formatMinutesToHMS(attendee.totalMinutesReal / attendee.sessionsAttended.length)
+              : "00:00:00",
+            totalMinutesFormatted: formatMinutesToHMS(attendee.totalMinutesReal),
+            firstParticipation: attendee.participationSessions
+              .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())[0]?.startTime,
+            lastParticipation: lastSession?.startTime,
+            // Días únicos de participación
+            uniqueDays: [...new Set(attendee.participationSessions.map(s => 
+              new Date(s.startTime).toLocaleDateString('es-ES')
+            ))].length,
+            // Patrón de horarios (mañana, tarde, noche)
+            timePatterns: {
+              morning: attendee.participationSessions.filter(s => {
+                const hour = new Date(s.startTime).getHours();
+                return hour >= 6 && hour < 12;
+              }).length,
+              afternoon: attendee.participationSessions.filter(s => {
+                const hour = new Date(s.startTime).getHours();
+                return hour >= 12 && hour < 18;
+              }).length,
+              evening: attendee.participationSessions.filter(s => {
+                const hour = new Date(s.startTime).getHours();
+                return hour >= 18 && hour <= 23;
+              }).length,
+              night: attendee.participationSessions.filter(s => {
+                const hour = new Date(s.startTime).getHours();
+                return hour >= 0 && hour < 6;
+              }).length
+            }
+          }
+        };
+      })
+      .sort((a, b) => {
+        // Ordenar por: 1) Invitados primero, 2) Más sesiones, 3) Más minutos
+        if (a.participant.isInvited && !b.participant.isInvited) return -1;
+        if (!a.participant.isInvited && b.participant.isInvited) return 1;
+        if (a.sessionsCount !== b.sessionsCount) return b.sessionsCount - a.sessionsCount;
+        return b.totalMinutes - a.totalMinutes;
+      })
+      .map((item, index) => ({ ...item, rank: index + 1 })); // Re-asignar ranks después del sorting
+
     console.log(`✅ Analytics calculated for space ${spaceId}:`, {
       totalMembers: permanentMembers.total,
       cohosts: permanentMembers.cohosts,
       totalSessions: sessions.total,
       uniqueParticipants: participants.unique,
+      participantRankingCount: participantRanking.length
     });
 
-    return NextResponse.json({
+    // 📊 LOG COMPLETO DE TODOS LOS DATOS PARA DEBUGGING
+    const finalResponse: AnalyticsResponse = {
       spaceId,
       permanentMembers,
       participants,
       sessions,
       recentActivity,
+      participantRanking,
       calculatedAt: new Date().toISOString(),
+    };
+
+    console.log('🔍 FINAL ANALYTICS RESPONSE - COMPLETE DATA:');
+    console.log('spaceId:', finalResponse.spaceId);
+    console.log('permanentMembers:', JSON.stringify(finalResponse.permanentMembers, null, 2));
+    console.log('participants:', JSON.stringify(finalResponse.participants, null, 2));
+    console.log('sessions:', JSON.stringify(finalResponse.sessions, null, 2));
+    console.log('recentActivity:', JSON.stringify(finalResponse.recentActivity, null, 2));
+    console.log('participantRanking count:', finalResponse.participantRanking.length);
+    
+    finalResponse.participantRanking.forEach((participant, index) => {
+      console.log(`\n👤 PARTICIPANT #${index + 1}:`);
+      console.log('  rank:', participant.rank);
+      console.log('  name:', participant.participant.name);
+      console.log('  email:', participant.participant.email);
+      console.log('  type:', participant.participant.type);
+      console.log('  isInvited:', participant.participant.isInvited);
+      console.log('  totalMinutes:', participant.totalMinutes);
+      console.log('  totalMinutesFormatted:', participant.totalMinutesFormatted);
+      console.log('  sessionsCount:', participant.sessionsCount);
+      console.log('  averageMinutesPerSession:', participant.averageMinutesPerSession);
+      console.log('  averageMinutesPerSessionFormatted:', participant.averageMinutesPerSessionFormatted);
+      console.log('  lastActivity:', participant.lastActivity);
+      console.log('  sessionDetails count:', participant.sessionDetails?.length || 0);
+      console.log('  participationStats:', JSON.stringify(participant.participationStats, null, 4));
     });
+
+    return NextResponse.json(finalResponse);
   } catch (error: any) {
     console.error("Failed to generate analytics:", error);
 

@@ -152,15 +152,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
         {/* Analytics - Carga progresiva con 3 estados */}
         <div className='space-y-2'>
-          {/* Datos básicos disponibles inmediatamente */}
-          <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
-            <UsersIcon className='h-3 w-3' />
-            <span>
-              {room.members?.length || 0} miembro
-              {(room.members?.length || 0) !== 1 ? "s" : ""} configurado
-              {(room.members?.length || 0) !== 1 ? "s" : ""}
-            </span>
-          </div>
+
 
           {/* Analytics area - progresiva */}
           {analytics && analytics.sessions && analytics.permanentMembers ? (

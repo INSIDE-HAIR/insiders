@@ -21,12 +21,18 @@ export interface SessionData {
     hasLink: boolean;
     quality: string;
     calculatedSize: string;
+    exportUri?: string;
+    driveFileId?: string;
+    recordingIndex?: number;
   }>;
   transcripts: Array<{
     state: "Disponible" | "Procesando" | "Transcribiendo";
     preview: string | null;
     hasLink: boolean;
     wordCount: number;
+    exportUri?: string;
+    documentId?: string;
+    transcriptIndex?: number;
   }>;
   smartNotes: Array<{
     title: string;

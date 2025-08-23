@@ -298,10 +298,15 @@ const ConfigurationSectionWrapper = lazy(() => Promise.resolve({
   )
 }));
 
-const SessionsSectionWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation, roomData, room, toast }: any) => (
-    <SessionsSectionDemo
-      spaceId={room?.name?.split('/').pop() || null}
+const SessionsSectionWrapper = lazy(() => {
+  console.log('🎬 SessionsSectionWrapper: Lazy loading initiated');
+  return Promise.resolve({
+    default: ({ navigation, roomData, room, toast }: any) => {
+      const spaceId = room?.name?.split('/').pop() || null;
+      console.log('🎬 SessionsSectionWrapper: Component function called with spaceId:', spaceId);
+      return (
+        <SessionsSectionDemo
+          spaceId={spaceId}
       onPlayRecording={(sessionId, recordingIndex) => {
         console.log('🎬 Reproducir grabación:', sessionId, recordingIndex);
         toast({
@@ -350,17 +355,26 @@ const SessionsSectionWrapper = lazy(() => Promise.resolve({
         });
         // TODO: Implementar exportación real
       }}
-    />
-  )
-}));
+        />
+      );
+    }
+  });
+});
 
-const StatisticsSectionWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation, roomData, room }: any) => (
-    <StatisticsSectionDemo
-      spaceId={room?.name?.split('/').pop() || null}
-    />
-  )
-}));
+const StatisticsSectionWrapper = lazy(() => {
+  console.log('📊 StatisticsSectionWrapper: Lazy loading initiated');
+  return Promise.resolve({
+    default: ({ navigation, roomData, room }: any) => {
+      const spaceId = room?.name?.split('/').pop() || null;
+      console.log('📊 StatisticsSectionWrapper: Component function called with spaceId:', spaceId);
+      return (
+        <StatisticsSectionDemo
+          spaceId={spaceId}
+        />
+      );
+    }
+  });
+});
 
 // Definición de secciones
 const modalSections = [
