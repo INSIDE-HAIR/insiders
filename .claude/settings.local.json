@@ -39,7 +39,8 @@
       "Bash(git add:*)",
       "WebFetch(domain:developers.google.com)",
       "WebFetch(domain:github.com)",
-      "WebSearch"
+      "WebSearch",
+      "Read(//Users/luiseurdanetamartucci/Desktop/**)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

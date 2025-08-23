@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
+import { useToast } from "@/src/hooks/use-toast";
 
 export interface AddMemberFormProps {
   onAddMember?: (email: string, role: string) => void;
@@ -23,7 +24,7 @@ export const AddMemberForm: React.FC<AddMemberFormProps> = ({
   onRefresh,
   className
 }) => {
-  
+  const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("ROLE_UNSPECIFIED");
 
@@ -41,8 +42,11 @@ export const AddMemberForm: React.FC<AddMemberFormProps> = ({
   };
 
   const handleRefresh = () => {
+    toast({
+      title: "Actualizando lista",
+      description: "Refrescando la lista de miembros...",
+    });
     onRefresh?.();
-    alert('Refrescando...');
   };
 
   return (

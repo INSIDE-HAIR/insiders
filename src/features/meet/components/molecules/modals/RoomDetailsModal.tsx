@@ -206,7 +206,7 @@ const convertRoomToModalData = (
 
 // Componentes lazy-loaded para las secciones reales
 const GeneralSectionWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation, roomData, onUpdate }: any) => (
+  default: ({ navigation, roomData, onUpdate, toast }: any) => (
     <GeneralSectionDemo
       data={roomData.roomInfo}
       onCopy={(value) => {
@@ -219,8 +219,11 @@ const GeneralSectionWrapper = lazy(() => Promise.resolve({
       }}
       onCloseSession={() => {
         // TODO: Implementar cierre de sesión real
-        alert('Cerrando sesión...');
         console.log('🚪 Cerrando sesión');
+        toast({
+          title: "Cerrando sesión",
+          description: "Se está cerrando la sesión activa...",
+        });
         onUpdate?.(); // Callback para actualizar datos
       }}
     />
@@ -296,37 +299,55 @@ const ConfigurationSectionWrapper = lazy(() => Promise.resolve({
 }));
 
 const SessionsSectionWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation, roomData, room }: any) => (
+  default: ({ navigation, roomData, room, toast }: any) => (
     <SessionsSectionDemo
-      data={roomData.sessions}
+      spaceId={room?.name?.split('/').pop() || null}
       onPlayRecording={(sessionId, recordingIndex) => {
         console.log('🎬 Reproducir grabación:', sessionId, recordingIndex);
-        alert(`Reproduciendo grabación ${recordingIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Reproduciendo grabación",
+          description: `Iniciando grabación ${recordingIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar reproducción real de grabación
       }}
       onDownloadRecording={(sessionId, recordingIndex) => {
         console.log('💾 Descargar grabación:', sessionId, recordingIndex);
-        alert(`Descargando grabación ${recordingIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Descarga iniciada",
+          description: `Descargando grabación ${recordingIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar descarga real
       }}
       onViewTranscription={(sessionId, transcriptIndex) => {
         console.log('📄 Ver transcripción:', sessionId, transcriptIndex);
-        alert(`Abriendo transcripción ${transcriptIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Abriendo transcripción",
+          description: `Visualizando transcripción ${transcriptIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar visualización real
       }}
       onDownloadTranscriptionPdf={(sessionId, transcriptIndex) => {
         console.log('📄 Descargar PDF:', sessionId, transcriptIndex);
-        alert(`Descargando PDF de transcripción ${transcriptIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Descarga de PDF iniciada",
+          description: `Descargando PDF de transcripción ${transcriptIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar descarga de PDF real
       }}
       onViewSmartNote={(sessionId, noteIndex) => {
         console.log('✨ Ver nota inteligente:', sessionId, noteIndex);
-        alert(`Abriendo nota ${noteIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Abriendo nota inteligente",
+          description: `Visualizando nota ${noteIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar visualización real
       }}
       onExportSmartNote={(sessionId, noteIndex) => {
         console.log('📤 Exportar nota:', sessionId, noteIndex);
-        alert(`Exportando nota ${noteIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Exportación iniciada",
+          description: `Exportando nota ${noteIndex} de la sesión ${sessionId}`,
+        });
         // TODO: Implementar exportación real
       }}
     />
@@ -334,9 +355,9 @@ const SessionsSectionWrapper = lazy(() => Promise.resolve({
 }));
 
 const StatisticsSectionWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation, roomData }: any) => (
+  default: ({ navigation, roomData, room }: any) => (
     <StatisticsSectionDemo
-      data={roomData.statistics}
+      spaceId={room?.name?.split('/').pop() || null}
     />
   )
 }));
@@ -1162,6 +1183,7 @@ export const RoomDetailsModal: React.FC<RoomDetailsModalProps> = ({
         onUpdate: onUpdate,
         onDelete: onDelete,
         onClose: onClose,
+        toast: toast,
         // Funciones de organización reales
         handleAssignTag: handleAssignTag,
         handleUnassignTag: handleUnassignTag,
@@ -1258,9 +1280,6 @@ function transformApiConfigToComponentData(apiSettings: any) {
         description: "Define si generar automáticamente resumen y recapitulación para todos los invitados cuando se une usuario autorizado",
         tooltip: "smartNotesConfig.autoSmartNotesGeneration: Genera automáticamente resumen y recapitulación de reunión para todos los invitados de la organización cuando se une usuario autorizado"
       }
-    },
-    alert: {
-      message: "Los cambios en la configuración pueden tardar unos minutos en aplicarse en todas las sesiones activas."
     }
   };
 }

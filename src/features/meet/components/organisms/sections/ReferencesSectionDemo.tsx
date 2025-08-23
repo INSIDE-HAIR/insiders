@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/src/lib/utils";
+import { useToast } from "@/src/hooks/use-toast";
 import { AccordionSection } from "../../molecules/layout/AccordionSection";
 import { TagGroup } from "../../molecules/groups/TagGroup";
 import { GroupSection } from "../../molecules/groups/GroupSection";
@@ -61,6 +62,7 @@ export const ReferencesSectionDemo: React.FC<ReferencesSectionDemoProps> = ({
   loading = false,
   className
 }) => {
+  const { toast } = useToast();
   
   const handleTagRemove = (tagName: string) => {
     onTagRemove?.(tagName);
@@ -70,19 +72,28 @@ export const ReferencesSectionDemo: React.FC<ReferencesSectionDemoProps> = ({
   const handleTagAdd = (tagName: string) => {
     onTagAdd?.(tagName);
     console.log('➕ Agregar tag:', tagName);
-    alert(`Asignar tag: ${tagName}`);
+    toast({
+      title: "Tag asignado",
+      description: `Se ha asignado el tag "${tagName}" correctamente.`,
+    });
   };
 
   const handleGroupRemove = (groupName: string) => {
     onGroupRemove?.(groupName);
     console.log('👥 Desasignar grupo:', groupName);
-    alert(`Desasignar ${groupName}`);
+    toast({
+      title: "Grupo desasignado",
+      description: `Se ha desasignado el grupo "${groupName}" correctamente.`,
+    });
   };
 
   const handleGroupAdd = (groupName: string) => {
     onGroupAdd?.(groupName);
     console.log('➕ Asignar grupo:', groupName);
-    alert(`Asignar grupo: ${groupName}`);
+    toast({
+      title: "Grupo asignado",
+      description: `Se ha asignado el grupo "${groupName}" correctamente.`,
+    });
   };
 
   if (loading) {

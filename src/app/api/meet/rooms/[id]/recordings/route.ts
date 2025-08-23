@@ -87,6 +87,16 @@ export async function GET(
           
           // Agregar información del conference record a cada grabación
           recordings.forEach((recording: any) => {
+            const driveFile = recording.driveDestination?.file || null;
+            const driveExportUri = recording.driveDestination?.exportUri || null;
+            
+            console.log(`🎬 Processing recording ${recording.name?.split('/').pop()}:`, {
+              state: recording.state,
+              driveFile,
+              driveExportUri,
+              hasDriveDestination: !!recording.driveDestination
+            });
+            
             allRecordings.push({
               ...recording,
               conferenceRecord: record.name,
@@ -96,7 +106,10 @@ export async function GET(
               conferenceRecordId: record.name?.split('/').pop(),
               // Calcular duración de la grabación si está disponible
               duration: recording.startTime && recording.endTime ? 
-                Math.round((new Date(recording.endTime).getTime() - new Date(recording.startTime).getTime()) / (1000 * 60)) : null
+                Math.round((new Date(recording.endTime).getTime() - new Date(recording.startTime).getTime()) / (1000 * 60)) : null,
+              // Extraer campos necesarios de Google Meet API
+              file: driveFile, // Drive file ID
+              exportUri: driveExportUri, // URL para abrir en Drive
             });
           });
           

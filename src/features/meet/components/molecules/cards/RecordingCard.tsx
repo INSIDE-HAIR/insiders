@@ -5,7 +5,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/src/lib/utils";
 
 export interface RecordingData {
-  state: "Disponible" | "Procesando";
+  state: "Disponible" | "Procesando" | "Grabando";
   time: string;
   hasLink: boolean;
   quality: string;
@@ -42,6 +42,7 @@ export const RecordingCard: React.FC<RecordingCardProps> = ({
   
   const isAvailable = recording.state === "Disponible";
   const isProcessing = recording.state === "Procesando";
+  const isRecording = recording.state === "Grabando";
   
   return (
     <div className={cn("p-3 bg-muted/50 border rounded-lg", className)}>
@@ -57,6 +58,11 @@ export const RecordingCard: React.FC<RecordingCardProps> = ({
                   <StatusDot variant="available" size="sm" />
                   Disponible
                 </>
+              ) : isRecording ? (
+                <>
+                  <StatusDot variant="active" size="sm" />
+                  Grabando
+                </>
               ) : (
                 <>
                   <ArrowPathIcon className="h-3 w-3 animate-spin text-primary" />
@@ -71,21 +77,23 @@ export const RecordingCard: React.FC<RecordingCardProps> = ({
           </div>
         </div>
         
-        {/* Acciones de grabación */}
-        {recording.hasLink && (
-          <div className="flex gap-1">
-            <ActionButton
-              action="play"
-              onClick={() => onPlay?.()}
-              size="sm"
-            />
-            <ActionButton
-              action="download"
-              onClick={() => onDownload?.()}
-              size="sm"
-            />
-          </div>
-        )}
+        {/* Acciones de grabación - mostrar siempre para debugging */}
+        <div className="flex gap-1">
+          <ActionButton
+            action="play"
+            onClick={() => onPlay?.()}
+            size="sm"
+            tooltip={recording.hasLink ? "Ver en Drive" : "Vista previa (demo)"}
+            disabled={!recording.hasLink && recording.state === "Procesando"}
+          />
+          <ActionButton
+            action="download"
+            onClick={() => onDownload?.()}
+            size="sm"
+            tooltip={recording.hasLink ? "Descargar MP4" : "Descarga (demo)"}
+            disabled={!recording.hasLink && recording.state === "Procesando"}
+          />
+        </div>
       </div>
       
       {/* Metadata de archivo */}

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { Badge } from "@/src/components/ui/badge";
 import { cn } from "@/src/lib/utils";
 import { UsersIcon } from "@heroicons/react/24/outline";
+import { useToast } from "@/src/hooks/use-toast";
 import { AddMemberForm } from "../../molecules/forms/AddMemberForm";
 import { SearchInput } from "../../molecules/forms/SearchInput";
 import { FilterSelect, FilterOption } from "../../molecules/forms/FilterSelect";
@@ -48,7 +49,7 @@ export const MembersSectionDemo: React.FC<MembersSectionDemoProps> = ({
   onRefresh,
   className
 }) => {
-  
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
 
@@ -84,21 +85,63 @@ export const MembersSectionDemo: React.FC<MembersSectionDemoProps> = ({
   }, [data.members, searchQuery, roleFilter]);
 
   const handleAddMember = (email: string, role: string) => {
-    onAddMember?.(email, role);
+    // Mostrar toast de cargando
+    toast({
+      title: "Agregando miembro...",
+      description: `Agregando ${email} como ${role === "COHOST" ? "co-anfitrión" : "participante"}`,
+    });
+
     console.log('➕ Agregar miembro:', email, role);
-    alert('Agregando miembro...');
+    onAddMember?.(email, role);
+    
+    // Simular éxito después de un delay (en la implementación real sería después de la respuesta de la API)
+    setTimeout(() => {
+      toast({
+        title: "Miembro agregado",
+        description: `${email} se agregó exitosamente como ${role === "COHOST" ? "co-anfitrión" : "participante"}`,
+      });
+    }, 1000);
   };
 
   const handleDeleteMember = (member: MemberDemo) => {
-    onDeleteMember?.(member);
     console.log('🗑️ Eliminar miembro:', member.email);
-    alert(`Eliminar ${member.email}`);
+    
+    // Mostrar toast de confirmación y ejecutar acción
+    toast({
+      title: "Miembro eliminado",
+      description: `${member.name || member.email} ha sido removido del espacio`,
+      variant: "destructive",
+    });
+    
+    onDeleteMember?.(member);
   };
 
   const handleRoleChange = async (member: MemberDemo, newRole: MeetApiRole) => {
     if (onRoleChange) {
       console.log('🔄 Cambiar rol:', member.email, 'de', member.role, 'a', newRole);
-      await onRoleChange(member, newRole);
+      
+      // Mostrar toast de cargando
+      toast({
+        title: "Actualizando rol...",
+        description: `Cambiando rol de ${member.name || member.email}`,
+      });
+      
+      try {
+        await onRoleChange(member, newRole);
+        
+        // Toast de éxito
+        toast({
+          title: "Rol actualizado",
+          description: `${member.name || member.email} ahora es ${roleApiToDisplay[newRole]}`,
+        });
+      } catch (error) {
+        // Toast de error
+        toast({
+          title: "Error al actualizar rol",
+          description: "No se pudo cambiar el rol del miembro. Intenta nuevamente.",
+          variant: "destructive",
+        });
+      }
     }
   };
 

@@ -135,7 +135,7 @@ export const ConfigToggle: React.FC<ConfigToggleProps> = ({
                   />
                 </TooltipTrigger>
                 <TooltipContent 
-                  className="max-w-sm z-[9999]" 
+                  className="max-w-sm z-[60]" 
                   side="left"
                   align="center"
                   avoidCollisions={true}

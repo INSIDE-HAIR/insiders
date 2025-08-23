@@ -16,14 +16,14 @@ export interface SessionData {
   participants: number;
   isActive: boolean;
   recordings: Array<{
-    state: "Disponible" | "Procesando";
+    state: "Disponible" | "Procesando" | "Grabando";
     time: string;
     hasLink: boolean;
     quality: string;
     calculatedSize: string;
   }>;
   transcripts: Array<{
-    state: "Disponible" | "Procesando";
+    state: "Disponible" | "Procesando" | "Transcribiendo";
     preview: string | null;
     hasLink: boolean;
     wordCount: number;

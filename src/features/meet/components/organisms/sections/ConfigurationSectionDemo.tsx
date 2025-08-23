@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { cn } from "@/src/lib/utils";
+import { useToast } from "@/src/hooks/use-toast";
 import { SectionHeader } from "../../molecules/layout/SectionHeader";
 import { ConfigToggle } from "../../molecules/forms/ConfigToggle";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
@@ -90,6 +91,7 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
   onConfigChange,
   className
 }) => {
+  const { toast } = useToast();
   
   // Safety check for data prop
   if (!data || !data.moderation || !data.aiFeatures) {
@@ -109,103 +111,141 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
   const handleToggleChange = (key: string) => async (checked: boolean) => {
     if (onConfigChange) {
       console.log('⚙️ Config toggle:', key, checked);
-      await onConfigChange(key, checked);
+      
+      // Mostrar toast de cargando
+      const configNames: Record<string, string> = {
+        restrictEntry: 'restricción de puntos de entrada',
+        enableModeration: 'moderación',
+        defaultViewer: 'espectador por defecto',
+        autoRecording: 'grabación automática',
+        autoTranscription: 'transcripción automática',
+        smartNotes: 'notas inteligentes'
+      };
+      
+      toast({
+        title: "Actualizando configuración...",
+        description: `${checked ? 'Activando' : 'Desactivando'} ${configNames[key] || key}`,
+      });
+      
+      try {
+        await onConfigChange(key, checked);
+        
+        // Toast de éxito
+        toast({
+          title: "Configuración actualizada",
+          description: `${configNames[key] || key} ${checked ? 'activada' : 'desactivada'} correctamente`,
+        });
+      } catch (error) {
+        // Toast de error
+        toast({
+          title: "Error al actualizar configuración",
+          description: `No se pudo ${checked ? 'activar' : 'desactivar'} ${configNames[key] || key}. Intenta nuevamente.`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
   const handleSelectChange = (key: string) => async (value: string) => {
     if (onConfigChange) {
       console.log('📝 Config select:', key, value);
-      await onConfigChange(key, value);
+      
+      // Mostrar toast de cargando
+      const restrictionNames: Record<string, string> = {
+        chatRestriction: 'restricción de chat',
+        reactionRestriction: 'restricción de reacciones', 
+        presentRestriction: 'restricción de presentación'
+      };
+      
+      const valueNames: Record<string, string> = {
+        NO_RESTRICTION: 'sin restricción',
+        HOSTS_ONLY: 'solo anfitriones'
+      };
+      
+      toast({
+        title: "Actualizando restricción...",
+        description: `Cambiando ${restrictionNames[key] || key} a ${valueNames[value] || value}`,
+      });
+      
+      try {
+        await onConfigChange(key, value);
+        
+        // Toast de éxito
+        toast({
+          title: "Restricción actualizada",
+          description: `${restrictionNames[key] || key} configurada como ${valueNames[value] || value}`,
+        });
+      } catch (error) {
+        // Toast de error
+        toast({
+          title: "Error al actualizar restricción",
+          description: `No se pudo cambiar ${restrictionNames[key] || key}. Intenta nuevamente.`,
+          variant: "destructive",
+        });
+      }
     }
   };
 
   // Skeleton de loading
   if (loading) {
     return (
-      <div className={cn("space-y-6", className)}>
+      <div className={cn("space-y-4 max-h-[70vh] overflow-y-auto", className)}>
         
-        {/* Skeleton Sección 1: Moderación y Permisos */}
-        <div className="space-y-4">
+        {/* Skeleton compacto para configuraciones */}
+        <div className="space-y-3">
           {/* Header skeleton */}
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-5 h-5 bg-muted rounded animate-pulse" />
-            <div className="h-5 bg-muted rounded w-40 animate-pulse" />
-          </div>
-          
-          {/* Config toggles skeleton */}
-          {Array.from({ length: 2 }).map((_, index) => (
-            <div key={`toggle-skeleton-${index}`} className="space-y-2">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1 flex-1">
-                  <div className="h-4 bg-muted rounded w-32 animate-pulse" />
-                  <div className="h-3 bg-muted rounded w-48 animate-pulse" />
-                </div>
-                <div className="w-10 h-6 bg-muted rounded-full animate-pulse" />
-              </div>
-            </div>
-          ))}
-          
-          {/* Config selects skeleton */}
-          <div className="ml-6 space-y-4 border-l-2 border-primary/20 pl-4">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <div key={`select-skeleton-${index}`} className="space-y-2">
-                <div className="h-4 bg-muted rounded w-28 animate-pulse" />
-                <div className="h-10 bg-muted rounded w-full animate-pulse" />
-              </div>
-            ))}
-            
-            {/* Toggle skeleton dentro del sub-grupo */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1 flex-1">
-                  <div className="h-4 bg-muted rounded w-36 animate-pulse" />
-                  <div className="h-3 bg-muted rounded w-52 animate-pulse" />
-                </div>
-                <div className="w-10 h-6 bg-muted rounded-full animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Skeleton Sección 2: Herramientas */}
-        <div className="space-y-4">
-          {/* Header skeleton */}
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2">
             <div className="w-5 h-5 bg-muted rounded animate-pulse" />
             <div className="h-5 bg-muted rounded w-32 animate-pulse" />
           </div>
           
-          {/* AI toggles skeleton */}
-          {Array.from({ length: 3 }).map((_, index) => (
-            <div key={`ai-toggle-skeleton-${index}`} className="space-y-2">
-              <div className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="space-y-1 flex-1">
-                  <div className="h-4 bg-muted rounded w-36 animate-pulse" />
-                  <div className="h-3 bg-muted rounded w-56 animate-pulse" />
-                </div>
-                <div className="w-10 h-6 bg-muted rounded-full animate-pulse" />
+          {/* Config toggles skeleton - reducido */}
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div key={`toggle-skeleton-${index}`} className="flex items-center justify-between p-2 border rounded-lg">
+              <div className="space-y-1 flex-1">
+                <div className="h-3 bg-muted rounded w-28 animate-pulse" />
+                <div className="h-2 bg-muted rounded w-40 animate-pulse" />
               </div>
+              <div className="w-8 h-5 bg-muted rounded-full animate-pulse" />
+            </div>
+          ))}
+          
+          {/* Sub-configuraciones skeleton - más compacto */}
+          <div className="ml-4 space-y-2 border-l-2 border-primary/20 pl-3">
+            {Array.from({ length: 2 }).map((_, index) => (
+              <div key={`sub-skeleton-${index}`} className="space-y-1">
+                <div className="h-3 bg-muted rounded w-24 animate-pulse" />
+                <div className="h-8 bg-muted rounded w-full animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Skeleton Sección 2: Herramientas - reducido */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-muted rounded animate-pulse" />
+            <div className="h-5 bg-muted rounded w-28 animate-pulse" />
+          </div>
+          
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={`ai-toggle-skeleton-${index}`} className="flex items-center justify-between p-2 border rounded-lg">
+              <div className="space-y-1 flex-1">
+                <div className="h-3 bg-muted rounded w-32 animate-pulse" />
+                <div className="h-2 bg-muted rounded w-44 animate-pulse" />
+              </div>
+              <div className="w-8 h-5 bg-muted rounded-full animate-pulse" />
             </div>
           ))}
         </div>
 
-        {/* Alert skeleton */}
-        <div className="flex items-start gap-3 p-4 border rounded-lg">
-          <div className="w-4 h-4 bg-muted rounded animate-pulse mt-0.5" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 bg-muted rounded w-3/4 animate-pulse" />
-            <div className="h-4 bg-muted rounded w-1/2 animate-pulse" />
-          </div>
-        </div>
-
         {/* Mensaje de carga centrado */}
-        <div className="text-center py-6">
+        <div className="text-center py-4">
           <LoadingMessage 
-            message="Cargando configuraciones del espacio..." 
+            message="Cargando configuraciones..." 
             variant="primary" 
-            size="md"
-            spinnerSize="md"
+            size="sm"
+            spinnerSize="sm"
           />
         </div>
         
@@ -214,7 +254,7 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
   }
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div className={cn("space-y-6 max-h-[75vh] overflow-y-auto", className)}>
       
       {/* Sección 1: Moderación y Permisos */}
       <div className="space-y-4">
@@ -261,7 +301,7 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
                       <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent 
-                      className="max-w-sm z-[9999]" 
+                      className="max-w-sm z-[60]" 
                       side="left"
                       align="center"
                       avoidCollisions={true}
@@ -306,7 +346,7 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
                       <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent 
-                      className="max-w-sm z-[9999]" 
+                      className="max-w-sm z-[60]" 
                       side="left"
                       align="center"
                       avoidCollisions={true}
@@ -351,7 +391,7 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
                       <InformationCircleIcon className="h-4 w-4 text-primary cursor-help" />
                     </TooltipTrigger>
                     <TooltipContent 
-                      className="max-w-sm z-[9999]" 
+                      className="max-w-sm z-[60]" 
                       side="left"
                       align="center"
                       avoidCollisions={true}

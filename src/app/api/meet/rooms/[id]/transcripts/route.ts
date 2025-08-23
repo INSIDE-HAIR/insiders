@@ -105,6 +105,17 @@ export async function GET(
                 transcriptEntries = entriesData.entries || [];
               }
 
+              const docsDocument = transcript.docsDestination?.document || null;
+              const docsExportUri = transcript.docsDestination?.exportUri || null;
+              
+              console.log(`📄 Processing transcript ${transcript.name?.split('/').pop()}:`, {
+                state: transcript.state,
+                docsDocument,
+                docsExportUri,
+                hasDocsDestination: !!transcript.docsDestination,
+                entriesCount: transcriptEntries.length
+              });
+              
               allTranscripts.push({
                 ...transcript,
                 conferenceRecord: record.name,
@@ -121,7 +132,10 @@ export async function GET(
                 totalEntries: transcriptEntries.length,
                 // Calcular duración si está disponible
                 duration: transcript.startTime && transcript.endTime ? 
-                  Math.round((new Date(transcript.endTime).getTime() - new Date(transcript.startTime).getTime()) / (1000 * 60)) : null
+                  Math.round((new Date(transcript.endTime).getTime() - new Date(transcript.startTime).getTime()) / (1000 * 60)) : null,
+                // Extraer campos necesarios de Google Meet API
+                document: docsDocument, // Google Docs document ID
+                exportUri: docsExportUri, // URL para abrir en Google Docs
               });
             } catch (entryError) {
               // Si no podemos obtener las entradas, agregar la transcripción sin preview
@@ -133,7 +147,10 @@ export async function GET(
                 transcriptId: transcript.name?.split('/').pop(),
                 conferenceRecordId: record.name?.split('/').pop(),
                 entriesPreview: [],
-                totalEntries: 0
+                totalEntries: 0,
+                // Extraer campos necesarios de Google Meet API
+                document: transcript.docsDestination?.document || null, // Google Docs document ID
+                exportUri: transcript.docsDestination?.exportUri || null, // URL para abrir en Google Docs
               });
             }
           }

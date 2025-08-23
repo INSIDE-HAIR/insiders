@@ -6,7 +6,7 @@ import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/src/lib/utils";
 
 export interface TranscriptionData {
-  state: "Disponible" | "Procesando";
+  state: "Disponible" | "Procesando" | "Transcribiendo";
   preview: string | null;
   hasLink: boolean;
   wordCount: number;
@@ -42,6 +42,7 @@ export const TranscriptionCard: React.FC<TranscriptionCardProps> = ({
   
   const isAvailable = transcription.state === "Disponible";
   const isProcessing = transcription.state === "Procesando";
+  const isTranscribing = transcription.state === "Transcribiendo";
   const estimatedWords = transcription.wordCount || Math.round(parseInt(sessionDuration) * 150);
   
   return (
@@ -55,6 +56,11 @@ export const TranscriptionCard: React.FC<TranscriptionCardProps> = ({
             <>
               <StatusDot variant="available" size="sm" />
               Disponible
+            </>
+          ) : isTranscribing ? (
+            <>
+              <StatusDot variant="active" size="sm" />
+              Transcribiendo
             </>
           ) : (
             <>
@@ -78,21 +84,23 @@ export const TranscriptionCard: React.FC<TranscriptionCardProps> = ({
         </div>
       )}
       
-      {/* Acciones de transcripción */}
-      {transcription.hasLink && (
-        <div className="flex gap-1">
-          <ActionButton
-            action="viewComplete"
-            onClick={() => onViewComplete?.()}
-            size="sm"
-          />
-          <ActionButton
-            action="pdf"
-            onClick={() => onDownloadPdf?.()}
-            size="sm"
-          />
-        </div>
-      )}
+      {/* Acciones de transcripción - mostrar siempre para debugging */}
+      <div className="flex gap-1">
+        <ActionButton
+          action="external"
+          onClick={() => onViewComplete?.()}
+          size="sm"
+          tooltip={transcription.hasLink ? "Ver en Google Docs" : "Vista previa (demo)"}
+          disabled={!transcription.hasLink && transcription.state === "Procesando"}
+        />
+        <ActionButton
+          action="download"
+          onClick={() => onDownloadPdf?.()}
+          size="sm"
+          tooltip={transcription.hasLink ? "Descargar PDF" : "Descarga PDF (demo)"}
+          disabled={!transcription.hasLink && transcription.state === "Procesando"}
+        />
+      </div>
     </div>
   );
 };

@@ -51,21 +51,27 @@ export const SmartNoteCard: React.FC<SmartNoteCardProps> = ({
         {note.preview}
       </div>
       
-      {/* Acciones de notas inteligentes */}
-      {note.hasLink && (
-        <div className="flex gap-1">
-          <ActionButton
-            action="viewComplete"
-            onClick={() => onViewComplete?.()}
-            size="sm"
-          />
-          <ActionButton
-            action="export"
-            onClick={() => onExport?.()}
-            size="sm"
-          />
-        </div>
-      )}
+      {/* Acciones de notas inteligentes - mostrar siempre para debugging */}
+      <div className="flex gap-1">
+        <ActionButton
+          action="external"
+          onClick={() => {
+            console.log('🔗 SmartNoteCard: Ver resumen completo clicked');
+            onViewComplete?.();
+          }}
+          size="sm"
+          tooltip={note.hasLink ? "Ver resumen completo" : "Vista previa (demo)"}
+        />
+        <ActionButton
+          action="download"
+          onClick={() => {
+            console.log('📥 SmartNoteCard: Descargar resumen clicked');
+            onExport?.();
+          }}
+          size="sm"
+          tooltip={note.hasLink ? "Descargar resumen" : "Descarga (demo)"}
+        />
+      </div>
     </div>
   );
 };

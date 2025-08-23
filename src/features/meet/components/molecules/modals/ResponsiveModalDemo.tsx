@@ -7,6 +7,7 @@
  */
 
 import React, { useState, lazy } from "react";
+import { useToast } from "@/src/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
@@ -42,7 +43,7 @@ import modalDummyData from "../../data/modal-dummy-data.json";
 
 // Componentes lazy-loaded para las secciones (simulando secciones reales)
 const GeneralSectionDemoWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation }: any) => (
+  default: ({ navigation, toast }: any) => (
     <GeneralSectionDemo
       data={modalDummyData.roomInfo}
       onCopy={(value) => {
@@ -54,7 +55,10 @@ const GeneralSectionDemoWrapper = lazy(() => Promise.resolve({
         console.log('🔗 Abriendo:', value);
       }}
       onCloseSession={() => {
-        alert('Cerrando sesión...');
+        toast({
+          title: "Cerrando sesión",
+          description: "La sesión se está cerrando...",
+        });
         console.log('🚪 Cerrando sesión');
       }}
     />
@@ -62,7 +66,7 @@ const GeneralSectionDemoWrapper = lazy(() => Promise.resolve({
 }));
 
 const ReferencesSectionDemoWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation }: any) => (
+  default: ({ navigation, toast }: any) => (
     <ReferencesSectionDemo
       data={modalDummyData.references}
       onTagRemove={(tagName) => {
@@ -70,31 +74,47 @@ const ReferencesSectionDemoWrapper = lazy(() => Promise.resolve({
       }}
       onTagAdd={(tagName) => {
         console.log('➕ Agregar tag:', tagName);
-        alert(`Asignar tag: ${tagName}`);
+        toast({
+          title: "Tag asignado",
+          description: `Se ha asignado el tag: ${tagName}`,
+        });
       }}
       onGroupRemove={(groupName) => {
         console.log('👥 Desasignar grupo:', groupName);
-        alert(`Desasignar ${groupName}`);
+        toast({
+          title: "Grupo desasignado",
+          description: `Se ha desasignado el grupo: ${groupName}`,
+        });
       }}
       onGroupAdd={(groupName) => {
         console.log('➕ Asignar grupo:', groupName);
-        alert(`Asignar grupo: ${groupName}`);
+        toast({
+          title: "Grupo asignado",
+          description: `Se ha asignado el grupo: ${groupName}`,
+        });
       }}
     />
   )
 }));
 
 const MembersSectionDemoWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation }: any) => (
+  default: ({ navigation, toast }: any) => (
     <MembersSectionDemo
       data={modalDummyData.members as any}
       onAddMember={(email, role) => {
         console.log('➕ Agregar miembro:', email, role);
-        alert('Agregando miembro...');
+        toast({
+          title: "Agregando miembro",
+          description: `Agregando ${email} con rol de ${role}...`,
+        });
       }}
       onDeleteMember={(member) => {
         console.log('🗑️ Eliminar miembro:', member.email);
-        alert(`Eliminar ${member.email}`);
+        toast({
+          title: "Miembro eliminado",
+          description: `Se ha eliminado a ${member.email}`,
+          variant: "destructive",
+        });
       }}
       onRefresh={() => {
         console.log('🔄 Refrescar lista');
@@ -104,7 +124,7 @@ const MembersSectionDemoWrapper = lazy(() => Promise.resolve({
 }));
 
 const ConfigurationSectionDemoWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation }: any) => (
+  default: ({ navigation, toast }: any) => (
     <ConfigurationSectionDemo
       data={modalDummyData.configuration}
       onConfigChange={async (key, value) => {
@@ -115,32 +135,50 @@ const ConfigurationSectionDemoWrapper = lazy(() => Promise.resolve({
 }));
 
 const SessionsSectionDemoWrapper = lazy(() => Promise.resolve({
-  default: ({ navigation }: any) => (
+  default: ({ navigation, toast }: any) => (
     <SessionsSectionDemo
-      data={modalDummyData.sessions}
+      spaceId="demo-space-id"
       onPlayRecording={(sessionId, recordingIndex) => {
         console.log('🎬 Reproducir grabación:', sessionId, recordingIndex);
-        alert(`Reproduciendo grabación ${recordingIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Reproduciendo grabación",
+          description: `Reproduciendo grabación ${recordingIndex} de la sesión ${sessionId}`,
+        });
       }}
       onDownloadRecording={(sessionId, recordingIndex) => {
         console.log('💾 Descargar grabación:', sessionId, recordingIndex);
-        alert(`Descargando grabación ${recordingIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Descargando grabación",
+          description: `Descargando grabación ${recordingIndex} de la sesión ${sessionId}`,
+        });
       }}
       onViewTranscription={(sessionId, transcriptIndex) => {
         console.log('📄 Ver transcripción:', sessionId, transcriptIndex);
-        alert(`Abriendo transcripción ${transcriptIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Abriendo transcripción",
+          description: `Abriendo transcripción ${transcriptIndex} de la sesión ${sessionId}`,
+        });
       }}
       onDownloadTranscriptionPdf={(sessionId, transcriptIndex) => {
         console.log('📄 Descargar PDF:', sessionId, transcriptIndex);
-        alert(`Descargando PDF de transcripción ${transcriptIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Descargando PDF",
+          description: `Descargando PDF de transcripción ${transcriptIndex} de la sesión ${sessionId}`,
+        });
       }}
       onViewSmartNote={(sessionId, noteIndex) => {
         console.log('✨ Ver nota inteligente:', sessionId, noteIndex);
-        alert(`Abriendo nota ${noteIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Abriendo nota inteligente",
+          description: `Abriendo nota ${noteIndex} de la sesión ${sessionId}`,
+        });
       }}
       onExportSmartNote={(sessionId, noteIndex) => {
         console.log('📤 Exportar nota:', sessionId, noteIndex);
-        alert(`Exportando nota ${noteIndex} de sesión ${sessionId}`);
+        toast({
+          title: "Exportando nota",
+          description: `Exportando nota ${noteIndex} de la sesión ${sessionId}`,
+        });
       }}
     />
   )
@@ -149,7 +187,7 @@ const SessionsSectionDemoWrapper = lazy(() => Promise.resolve({
 const StatisticsSectionDemoWrapper = lazy(() => Promise.resolve({
   default: ({ navigation }: any) => (
     <StatisticsSectionDemo
-      data={modalDummyData.statistics}
+      spaceId="demo-space-id"
     />
   )
 }));
@@ -207,6 +245,7 @@ const demoSections = [
 ];
 
 export const ResponsiveModalDemo: React.FC = () => {
+  const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalVariant, setModalVariant] = useState<"top" | "bottom" | "left" | "right">("bottom");
   const [currentSection, setCurrentSection] = useState<string>(demoSections[0]?.id || "general");
@@ -340,6 +379,7 @@ export const ResponsiveModalDemo: React.FC = () => {
           // Props que se pasan a todas las secciones
           roomId: "demo-room-123",
           userId: "demo-user-456",
+          toast: toast,
         }}
       />
     </div>

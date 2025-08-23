@@ -13,7 +13,8 @@ import {
   ArrowPathIcon,
   PlayIcon,
   DocumentTextIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowTopRightOnSquareIcon
 } from "@heroicons/react/24/outline";
 
 export type ActionType = 
@@ -30,7 +31,8 @@ export type ActionType =
   | "download"   // Download - Para descargar
   | "viewComplete" // Document - Ver completa
   | "export"     // Sparkles - Exportar
-  | "pdf";       // PDF text - Descargar PDF
+  | "pdf"        // PDF text - Descargar PDF
+  | "external";  // External link - Abrir en nueva ventana
 
 export type ActionSize = "xs" | "sm" | "default" | "lg";
 
@@ -142,6 +144,11 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       icon: null, // Solo texto
       defaultAriaLabel: "Descargar PDF",
       hoverColor: "hover:bg-red-100 hover:text-red-700"
+    },
+    external: {
+      icon: <ArrowTopRightOnSquareIcon className="h-4 w-4" />,
+      defaultAriaLabel: "Abrir en nueva ventana",
+      hoverColor: "hover:bg-blue-100 hover:text-blue-700"
     }
   };
 
