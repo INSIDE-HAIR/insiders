@@ -30,7 +30,7 @@ interface JoinMeetingButtonProps {
 
 export const JoinMeetingButton: React.FC<JoinMeetingButtonProps> = ({
   meetingUri,
-  children = "Unirse a la Reunión",
+  children = "Unirse",
   size = "default",
   variant = "default",
   className,
