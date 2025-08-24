@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
     const calendarService = new GoogleCalendarService();
     await calendarService.initialize();
     const spaceConfigService = new MeetSpaceConfigService(calendarService.auth);
+    const membersService = new MeetMembersService(calendarService.auth);
 
     console.log(
       `🆙 Fetching space IDs and getting FRESH data from Meet API...${includeAnalytics ? " (with analytics)" : ""}`
@@ -57,11 +58,31 @@ export async function GET(request: NextRequest) {
             "name,meetingUri,meetingCode,config,activeConference"
           );
 
+          // Fetch members separately since getSpace doesn't include them
+          let members = [];
+          try {
+            const membersResponse = await membersService.listMembers(
+              registered.spaceId,
+              {
+                fields: "name,email,role,createTime,updateTime,user",
+                pageSize: 100
+              }
+            );
+            members = membersResponse.members || [];
+            console.log(`📋 Fetched ${members.length} members for space ${registered.spaceId}`);
+          } catch (memberError) {
+            console.warn(
+              `⚠️ Failed to fetch members for ${registered.spaceId}:`,
+              memberError
+            );
+          }
+
           // Actualizar tiempo de sync
           await storageService?.updateSyncTime(registered.spaceId);
 
           return {
             ...freshSpace,
+            members, // Add members to the response
             _metadata: {
               localId: registered.id,
               displayName: registered.displayName,
@@ -69,6 +90,7 @@ export async function GET(request: NextRequest) {
               createdBy: registered.createdBy,
               lastSyncAt: new Date(),
               source: "fresh-api-call",
+              membersCount: members.length,
             },
           };
         } catch (error) {
@@ -81,6 +103,7 @@ export async function GET(request: NextRequest) {
             name: `spaces/${registered.spaceId}`,
             spaceId: registered.spaceId,
             displayName: registered.displayName,
+            members: [], // Empty members array for fallback
             _metadata: {
               localId: registered.id,
               createdAt: registered.createdAt,
@@ -88,6 +111,7 @@ export async function GET(request: NextRequest) {
               lastSyncAt: registered.lastSyncAt,
               source: "local-fallback",
               error: "api-call-failed",
+              membersCount: 0,
             },
           };
         }

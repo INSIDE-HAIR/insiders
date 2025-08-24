@@ -6,7 +6,8 @@
  * Siguiendo principios de separación de responsabilidades y reutilización
  */
 
-import React from "react";
+import React, { useState } from "react";
+import { Toaster } from "sonner";
 import {
   Card,
   CardContent,
@@ -43,6 +44,8 @@ import { MemberRoleBadge } from "@/src/features/meet/components/atoms/badges/Mem
 // Importar hooks especializados
 import { useRoomsList } from "@/src/features/meet/hooks/useRoomsList";
 import { useAdvancedFilters } from "@/src/features/meet/hooks/useAdvancedFilters";
+import { useRoomOperations } from "@/src/features/meet/hooks/useRoomOperations";
+import { useConfirmation } from "@/src/features/meet/hooks/useConfirmation";
 
 // Importar stores
 import { useRoomStore, useNotificationStore } from "@/src/features/meet/stores";
@@ -57,7 +60,8 @@ import {
 
 // Importar componentes SOLID refactorizados
 import { RoomCard } from "@/src/features/meet/components/molecules/cards";
-import { JoinMeetingButton } from "@/src/features/meet/components/atoms/buttons";
+import { ConfirmationDialog } from "@/src/features/meet/components/atoms/modals/ConfirmationDialog";
+import { JoinMeetingButton, CreateRoomButton } from "@/src/features/meet/components/atoms/buttons";
 import { RoomDetailsModal } from "@/src/features/meet/components/molecules/modals/RoomDetailsModal";
 
 // Types
@@ -151,6 +155,12 @@ export const MeetRoomsClientRefactored: React.FC<
 
   // Store notification for feedback
   const { showInfo } = useNotificationStore();
+  
+  // Room operations hook
+  const { deleteRoom } = useRoomOperations();
+  
+  // Confirmation hook
+  const { showConfirmation, confirmationProps } = useConfirmation();
 
   // Modal state
   const [selectedRoom, setSelectedRoom] = React.useState<any>(null);
@@ -168,10 +178,47 @@ export const MeetRoomsClientRefactored: React.FC<
     setSelectedRoom(null);
   };
 
-  const handleDuplicateRoom = (room: any) => {
-    showInfo(
-      "Duplicar Sala",
-      `Duplicando sala: ${room._metadata?.displayName || room.name}`
+  // Estado para modal de duplicación
+  const [roomToDuplicate, setRoomToDuplicate] = useState<any>(null);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+
+  const handleDuplicateRoom = (spaceId: string, room: any) => {
+    // Debug: Verificar datos de la sala antes de duplicar
+    console.log('🚨 DUPLICATE BUTTON CLICKED!!!');
+    console.log('🚨 ROOM DATA:', room);
+    console.log('🚨 ROOM MEMBERS:', room.members);
+    
+    // Limpiar estado anterior
+    setRoomToDuplicate(null);
+    setIsDuplicateModalOpen(false);
+    
+    // Dar tiempo para que se limpie el estado
+    setTimeout(() => {
+      console.log('🚨 SETTING NEW ROOM TO DUPLICATE');
+      setRoomToDuplicate(room);
+      setIsDuplicateModalOpen(true);
+    }, 100);
+  };
+
+  const handleDeleteRoom = (spaceId: string, displayName: string) => {
+    showConfirmation(
+      {
+        type: "delete",
+        title: "Eliminar Sala",
+        description: "Esta acción eliminará permanentemente la sala de la base de datos. No se puede deshacer.",
+        itemName: displayName,
+        confirmText: "Eliminar definitivamente",
+      },
+      async () => {
+        try {
+          await deleteRoom(spaceId, displayName);
+          // Refetch para remover la sala de la lista
+          await refetch();
+        } catch (error) {
+          console.error('Error deleting room:', error);
+          // El error toast ya se maneja en useRoomOperations
+        }
+      }
     );
   };
 
@@ -190,9 +237,7 @@ export const MeetRoomsClientRefactored: React.FC<
         onToggleSelection={toggleRoomSelection}
         onViewRoom={handleViewRoom}
         onDuplicateRoom={handleDuplicateRoom}
-        onDeleteRoom={(spaceId, displayName) => {
-          showInfo("Eliminar", `Eliminando sala: ${displayName}`);
-        }}
+        onDeleteRoom={handleDeleteRoom}
       />
     );
   };
@@ -288,6 +333,15 @@ export const MeetRoomsClientRefactored: React.FC<
             Gestiona tus salas de reuniones de Google Meet
           </p>
         </div>
+        
+        {/* Botón Crear Sala */}
+        <CreateRoomButton
+          onRoomCreated={(room) => {
+            console.log('Nueva sala creada:', room);
+            // Refetch rooms para mostrar la nueva sala
+            refetch();
+          }}
+        />
       </div>
 
       {/* Modal funcional para gestión de salas usando componentes atómicos */}
@@ -515,6 +569,33 @@ export const MeetRoomsClientRefactored: React.FC<
           refetch(); // Refrescar datos
         }}
       />
+
+      {/* Confirmation Dialog - Sistema Atómico */}
+      <ConfirmationDialog {...confirmationProps} />
+      
+      {/* CreateRoom Modal para Duplicación */}
+      {roomToDuplicate && (
+        <CreateRoomButton
+          duplicateFrom={roomToDuplicate}
+          autoOpen={true}
+          onRoomCreated={async (newRoom) => {
+            console.log('🎉 Sala duplicada exitosamente:', newRoom);
+            setRoomToDuplicate(null);
+            setIsDuplicateModalOpen(false);
+            // Refetch para mostrar la nueva sala
+            await refetch();
+          }}
+          onCancel={() => {
+            console.log('❌ Duplicación cancelada');
+            setRoomToDuplicate(null);
+            setIsDuplicateModalOpen(false);
+          }}
+          style={{ display: 'none' }} // Ocultar el botón ya que se abre automáticamente
+        />
+      )}
+      
+      {/* Sonner Toaster para notificaciones */}
+      <Toaster position="top-right" closeButton richColors />
     </div>
   );
 };

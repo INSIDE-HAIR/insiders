@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/src/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { LoadingMessage } from "../../atoms/loading/LoadingMessage";
+import { Spinner } from "../../atoms/loading/Spinner";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 export interface ConfigurationSectionDemoData {
@@ -73,6 +74,7 @@ export interface ConfigurationSectionDemoProps {
   loading?: boolean;
   onConfigChange?: (key: string, value: boolean | string) => Promise<void>;
   className?: string;
+  optimisticUpdates?: boolean; // Nueva prop para controlar UX optimista
 }
 
 /**
@@ -89,9 +91,15 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
   data,
   loading = false,
   onConfigChange,
-  className
+  className,
+  optimisticUpdates = true
 }) => {
   const { toast } = useToast();
+  const [loadingStates, setLoadingStates] = React.useState<Record<string, boolean>>({});
+  
+  const setConfigLoading = (key: string, isLoading: boolean) => {
+    setLoadingStates(prev => ({ ...prev, [key]: isLoading }));
+  };
   
   // Safety check for data prop
   if (!data || !data.moderation || !data.aiFeatures) {
@@ -109,80 +117,75 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
   }
   
   const handleToggleChange = (key: string) => async (checked: boolean) => {
-    if (onConfigChange) {
-      console.log('⚙️ Config toggle:', key, checked);
+    if (!onConfigChange) return;
+    
+    console.log('⚙️ Config toggle:', key, checked);
+    setConfigLoading(key, true);
+    
+    const configNames: Record<string, string> = {
+      restrictEntry: 'restricción de puntos de entrada',
+      enableModeration: 'moderación',
+      defaultViewer: 'espectador por defecto',
+      autoRecording: 'grabación automática',
+      autoTranscription: 'transcripción automática',
+      smartNotes: 'notas inteligentes'
+    };
+    
+    try {
+      await onConfigChange(key, checked);
       
-      // Mostrar toast de cargando
-      const configNames: Record<string, string> = {
-        restrictEntry: 'restricción de puntos de entrada',
-        enableModeration: 'moderación',
-        defaultViewer: 'espectador por defecto',
-        autoRecording: 'grabación automática',
-        autoTranscription: 'transcripción automática',
-        smartNotes: 'notas inteligentes'
-      };
-      
+      // Toast de éxito más discreto
       toast({
-        title: "Actualizando configuración...",
-        description: `${checked ? 'Activando' : 'Desactivando'} ${configNames[key] || key}`,
+        title: "Configuración actualizada",
+        description: `${configNames[key] || key} ${checked ? 'activada' : 'desactivada'}`,
       });
-      
-      try {
-        await onConfigChange(key, checked);
-        
-        // Toast de éxito
-        toast({
-          title: "Configuración actualizada",
-          description: `${configNames[key] || key} ${checked ? 'activada' : 'desactivada'} correctamente`,
-        });
-      } catch (error) {
-        // Toast de error
-        toast({
-          title: "Error al actualizar configuración",
-          description: `No se pudo ${checked ? 'activar' : 'desactivar'} ${configNames[key] || key}. Intenta nuevamente.`,
-          variant: "destructive",
-        });
-      }
+    } catch (error) {
+      // Toast de error
+      toast({
+        title: "Error al actualizar configuración",
+        description: `No se pudo ${checked ? 'activar' : 'desactivar'} ${configNames[key] || key}. Intenta nuevamente.`,
+        variant: "destructive",
+      });
+      throw error; // Re-throw para que ConfigToggle pueda revertir el estado
+    } finally {
+      setConfigLoading(key, false);
     }
   };
 
   const handleSelectChange = (key: string) => async (value: string) => {
-    if (onConfigChange) {
-      console.log('📝 Config select:', key, value);
+    if (!onConfigChange) return;
+    
+    console.log('📝 Config select:', key, value);
+    setConfigLoading(key, true);
+    
+    const restrictionNames: Record<string, string> = {
+      chatRestriction: 'restricción de chat',
+      reactionRestriction: 'restricción de reacciones', 
+      presentRestriction: 'restricción de presentación'
+    };
+    
+    const valueNames: Record<string, string> = {
+      NO_RESTRICTION: 'sin restricción',
+      HOSTS_ONLY: 'solo anfitriones'
+    };
+    
+    try {
+      await onConfigChange(key, value);
       
-      // Mostrar toast de cargando
-      const restrictionNames: Record<string, string> = {
-        chatRestriction: 'restricción de chat',
-        reactionRestriction: 'restricción de reacciones', 
-        presentRestriction: 'restricción de presentación'
-      };
-      
-      const valueNames: Record<string, string> = {
-        NO_RESTRICTION: 'sin restricción',
-        HOSTS_ONLY: 'solo anfitriones'
-      };
-      
+      // Toast de éxito más discreto
       toast({
-        title: "Actualizando restricción...",
-        description: `Cambiando ${restrictionNames[key] || key} a ${valueNames[value] || value}`,
+        title: "Restricción actualizada",
+        description: `${restrictionNames[key] || key} configurada como ${valueNames[value] || value}`,
       });
-      
-      try {
-        await onConfigChange(key, value);
-        
-        // Toast de éxito
-        toast({
-          title: "Restricción actualizada",
-          description: `${restrictionNames[key] || key} configurada como ${valueNames[value] || value}`,
-        });
-      } catch (error) {
-        // Toast de error
-        toast({
-          title: "Error al actualizar restricción",
-          description: `No se pudo cambiar ${restrictionNames[key] || key}. Intenta nuevamente.`,
-          variant: "destructive",
-        });
-      }
+    } catch (error) {
+      // Toast de error
+      toast({
+        title: "Error al actualizar restricción",
+        description: `No se pudo cambiar ${restrictionNames[key] || key}. Intenta nuevamente.`,
+        variant: "destructive",
+      });
+    } finally {
+      setConfigLoading(key, false);
     }
   };
 
@@ -269,6 +272,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
             tooltip={data.moderation.restrictEntry.tooltip || "entryPointAccess: ALL permite todos los puntos de entrada, CREATOR_APP_ONLY solo puntos de entrada propios"}
             checked={data.moderation.restrictEntry.enabled || false}
             onChange={handleToggleChange('restrictEntry')}
+            loading={loadingStates.restrictEntry}
+            optimistic={optimisticUpdates}
             variant="security"
           />
         )}
@@ -282,6 +287,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
             tooltip={data.moderation.enableModeration.tooltip || "moderation: Cuando está ON permite gestionar co-anfitriones y restricciones de funciones"}
             checked={data.moderation.enableModeration.enabled || false}
             onChange={handleToggleChange('enableModeration')}
+            loading={loadingStates.enableModeration}
+            optimistic={optimisticUpdates}
             variant="security"
           />
         )}
@@ -319,9 +326,15 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
               <Select
                 value={data.moderation.chatRestriction.value || "NO_RESTRICTION"}
                 onValueChange={handleSelectChange('chatRestriction')}
+                disabled={loadingStates.chatRestriction}
               >
-                <SelectTrigger>
+                <SelectTrigger className={cn(loadingStates.chatRestriction && "opacity-75")}>
                   <SelectValue />
+                  {loadingStates.chatRestriction && (
+                    <div className="ml-2">
+                      <Spinner size="sm" className="text-primary" />
+                    </div>
+                  )}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="NO_RESTRICTION">
@@ -364,9 +377,15 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
               <Select
                 value={data.moderation.reactionRestriction.value || "NO_RESTRICTION"}
                 onValueChange={handleSelectChange('reactionRestriction')}
+                disabled={loadingStates.reactionRestriction}
               >
-                <SelectTrigger>
+                <SelectTrigger className={cn(loadingStates.reactionRestriction && "opacity-75")}>
                   <SelectValue />
+                  {loadingStates.reactionRestriction && (
+                    <div className="ml-2">
+                      <Spinner size="sm" className="text-primary" />
+                    </div>
+                  )}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="NO_RESTRICTION">
@@ -409,9 +428,15 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
               <Select
                 value={data.moderation.presentationRestriction.value || "NO_RESTRICTION"}
                 onValueChange={handleSelectChange('presentRestriction')}
+                disabled={loadingStates.presentRestriction}
               >
-                <SelectTrigger>
+                <SelectTrigger className={cn(loadingStates.presentRestriction && "opacity-75")}>
                   <SelectValue />
+                  {loadingStates.presentRestriction && (
+                    <div className="ml-2">
+                      <Spinner size="sm" className="text-primary" />
+                    </div>
+                  )}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="NO_RESTRICTION">
@@ -434,6 +459,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
               tooltip={data.moderation.defaultViewer.tooltip || "defaultJoinAsViewerType: Define si restringir el rol por defecto asignado a usuarios como espectador"}
               checked={data.moderation.defaultViewer.enabled || false}
               onChange={handleToggleChange('defaultViewer')}
+              loading={loadingStates.defaultViewer}
+              optimistic={optimisticUpdates}
               variant="security"
             />
           )}
@@ -465,6 +492,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
             tooltip={data.aiFeatures.autoRecording.tooltip || "recordingConfig.autoRecordingGeneration: Graba automáticamente reuniones cuando se une usuario autorizado"}
             checked={data.aiFeatures.autoRecording.enabled || false}
             onChange={handleToggleChange('autoRecording')}
+            loading={loadingStates.autoRecording}
+            optimistic={optimisticUpdates}
             variant="ai"
           />
         )}
@@ -478,6 +507,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
             tooltip={data.aiFeatures.autoTranscription.tooltip || "transcriptionConfig.autoTranscriptionGeneration: Transcribe automáticamente contenido de reunión cuando se une usuario autorizado"}
             checked={data.aiFeatures.autoTranscription.enabled || false}
             onChange={handleToggleChange('autoTranscription')}
+            loading={loadingStates.autoTranscription}
+            optimistic={optimisticUpdates}
             variant="ai"
           />
         )}
@@ -491,6 +522,8 @@ export const ConfigurationSectionDemo: React.FC<ConfigurationSectionDemoProps> =
             tooltip={data.aiFeatures.smartNotes.tooltip || "smartNotesConfig.autoSmartNotesGeneration: Genera automáticamente resumen y recapitulación de reunión para todos los invitados de la organización cuando se une usuario autorizado"}
             checked={data.aiFeatures.smartNotes.enabled || false}
             onChange={handleToggleChange('smartNotes')}
+            loading={loadingStates.smartNotes}
+            optimistic={optimisticUpdates}
             variant="ai"
           />
         )}

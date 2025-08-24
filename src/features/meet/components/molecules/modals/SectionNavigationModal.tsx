@@ -182,7 +182,7 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
     <ResponsiveModal open={isOpen} onOpenChange={onClose}>
       <ResponsiveModalContent
         side={variant}
-        className={getResponsiveClasses()}
+        className={cn(getResponsiveClasses(), "flex flex-col")}
         style={{ maxHeight }}
       >
         {/* Header ultra compacto con navegación integrada */}
@@ -222,9 +222,9 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
         </ResponsiveModalHeader>
 
         {/* Contenido de la sección actual con scroll */}
-        <div className='flex-1 overflow-hidden'>
+        <div className='flex-1 overflow-hidden min-h-0'>
           <ScrollArea className='h-full px-1'>
-            <div className='pb-6'>
+            <div className={cn("pb-2", customFooter && "pb-0")}>
               {CurrentSectionComponent ? (
                 <Suspense fallback={
                   (() => {
@@ -265,9 +265,9 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
           </ScrollArea>
         </div>
 
-        {/* Footer eliminado - solo botón cerrar en header */}
+        {/* Footer con flex-shrink-0 para evitar desbordamiento */}
         {customFooter && (
-          <ResponsiveModalFooter className='border-t pt-4'>
+          <ResponsiveModalFooter className='border-t flex-shrink-0'>
             {customFooter}
           </ResponsiveModalFooter>
         )}

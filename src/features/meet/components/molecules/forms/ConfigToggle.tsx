@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Switch } from "@/src/components/ui/switch";
 import { Label } from "@/src/components/ui/label";
 import { Badge } from "@/src/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/src/components/ui/tooltip";
 import { cn } from "@/src/lib/utils";
 import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { Spinner } from "../../atoms/loading/Spinner";
 
 export type ConfigToggleVariant = "default" | "feature" | "security" | "ai";
 
@@ -14,8 +15,9 @@ export interface ConfigToggleProps {
   description?: string;
   tooltip?: string;
   checked: boolean;
-  onChange: (checked: boolean) => void;
+  onChange: (checked: boolean) => Promise<void> | void;
   disabled?: boolean;
+  loading?: boolean;
   variant?: ConfigToggleVariant;
   badge?: {
     text: string;
@@ -25,6 +27,7 @@ export interface ConfigToggleProps {
   className?: string;
   labelClassName?: string;
   descriptionClassName?: string;
+  optimistic?: boolean; // Nueva prop para UX optimista
 }
 
 /**
@@ -60,13 +63,52 @@ export const ConfigToggle: React.FC<ConfigToggleProps> = ({
   checked,
   onChange,
   disabled = false,
+  loading = false,
   variant = "default",
   badge,
   showIcon = true,
   className,
   labelClassName,
-  descriptionClassName
+  descriptionClassName,
+  optimistic = true
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [optimisticChecked, setOptimisticChecked] = useState(checked);
+  
+  // Actualizar estado optimista cuando cambia el prop checked
+  React.useEffect(() => {
+    setOptimisticChecked(checked);
+  }, [checked]);
+  
+  const handleChange = async (newChecked: boolean) => {
+    if (disabled || isLoading || loading) return;
+    
+    // UX optimista: cambiar inmediatamente la UI
+    if (optimistic) {
+      setOptimisticChecked(newChecked);
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      await onChange(newChecked);
+      // Si no es optimista, actualizar aquí
+      if (!optimistic) {
+        setOptimisticChecked(newChecked);
+      }
+    } catch (error) {
+      // En caso de error, revertir el estado optimista
+      if (optimistic) {
+        setOptimisticChecked(checked);
+      }
+      console.error('Error updating config toggle:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const isCurrentlyLoading = isLoading || loading;
+  const displayChecked = optimistic ? optimisticChecked : checked;
   
   // Configuración de variantes por tipo
   const variantConfig = {
@@ -166,18 +208,32 @@ export const ConfigToggle: React.FC<ConfigToggleProps> = ({
         )}
       </div>
       
-      {/* Switch */}
-      <Switch
-        id={id}
-        checked={checked}
-        onCheckedChange={onChange}
-        disabled={disabled}
-        className={cn(
-          "flex-shrink-0",
-          disabled && "opacity-50"
+      {/* Switch con Loading */}
+      <div className="flex items-center gap-2 flex-shrink-0">
+        {isCurrentlyLoading && (
+          <Spinner 
+            size="sm" 
+            className={cn(
+              "text-primary",
+              variant === "security" && "text-amber-600",
+              variant === "ai" && "text-purple-600",
+              variant === "feature" && "text-blue-600"
+            )} 
+          />
         )}
-        aria-describedby={description ? `${id}-description` : undefined}
-      />
+        <Switch
+          id={id}
+          checked={displayChecked}
+          onCheckedChange={handleChange}
+          disabled={disabled || isCurrentlyLoading}
+          className={cn(
+            "flex-shrink-0 transition-opacity",
+            disabled && "opacity-50",
+            isCurrentlyLoading && "opacity-75"
+          )}
+          aria-describedby={description ? `${id}-description` : undefined}
+        />
+      </div>
       
       {/* Hidden description for screen readers */}
       {description && (

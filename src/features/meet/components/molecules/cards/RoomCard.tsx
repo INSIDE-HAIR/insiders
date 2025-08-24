@@ -154,8 +154,6 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
         {/* Analytics - Carga progresiva con 3 estados */}
         <div className='space-y-2'>
-
-
           {/* Analytics area - progresiva */}
           {analytics && analytics.sessions && analytics.permanentMembers ? (
             /* Estado 3: Analytics completas cargadas */
@@ -257,7 +255,6 @@ export const RoomCard: React.FC<RoomCardProps> = ({
               onClick={() => onDuplicateRoom(spaceId, room)}
             >
               <DocumentDuplicateIcon className='h-3 w-3 mr-1' />
-              {/* TODO: Implementar funcionalidad de duplicar */}
               Duplicar
             </Button>
             <Button

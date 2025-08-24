@@ -169,6 +169,22 @@ export const useRoomForm = () => {
     setFormState(initialState);
   }, []);
 
+  // Cargar datos de una sala existente (para duplicar)
+  const loadFromRoom = useCallback((roomData: Partial<RoomFormState>) => {
+    console.log('🔍 DEBUG loadFromRoom: Input data:', roomData);
+    console.log('🔍 DEBUG loadFromRoom: Members to load:', roomData.members);
+    
+    const newState = {
+      ...initialState,
+      ...roomData
+    };
+    
+    console.log('🔍 DEBUG loadFromRoom: New state:', newState);
+    console.log('🔍 DEBUG loadFromRoom: New state members:', newState.members);
+    
+    setFormState(newState);
+  }, []);
+
   return {
     formState,
     loading,
@@ -191,6 +207,7 @@ export const useRoomForm = () => {
     buildApiData,
     validate,
     reset,
+    loadFromRoom,
     // Validation
     validation,
   };

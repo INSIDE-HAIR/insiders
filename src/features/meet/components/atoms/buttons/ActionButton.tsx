@@ -14,13 +14,15 @@ import {
   PlayIcon,
   DocumentTextIcon,
   SparklesIcon,
-  ArrowTopRightOnSquareIcon
+  ArrowTopRightOnSquareIcon,
+  DocumentDuplicateIcon
 } from "@heroicons/react/24/outline";
 
 export type ActionType = 
   | "remove"     // X - Para desasignar, quitar, cerrar
   | "add"        // + - Para agregar, asignar
   | "delete"     // Trash - Para eliminar permanente  
+  | "duplicate"  // DocumentDuplicate - Para duplicar
   | "edit"       // Pencil - Para editar
   | "view"       // Eye - Para ver detalles
   | "next"       // Arrow right - Para siguiente
@@ -85,6 +87,11 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       icon: <TrashIcon className="h-4 w-4" />,
       defaultAriaLabel: "Eliminar elemento",
       hoverColor: "hover:bg-red-100 hover:text-red-700"
+    },
+    duplicate: {
+      icon: <DocumentDuplicateIcon className="h-4 w-4" />,
+      defaultAriaLabel: "Duplicar elemento",
+      hoverColor: "hover:bg-purple-100 hover:text-purple-700"
     },
     edit: {
       icon: <PencilIcon className="h-4 w-4" />,

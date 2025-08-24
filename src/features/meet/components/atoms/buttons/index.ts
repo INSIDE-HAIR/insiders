@@ -13,3 +13,6 @@ export type { MediaButtonProps, MediaType, MediaFormat } from './MediaButton';
 
 export { CloseSessionButton } from './CloseSessionButton';
 export type { CloseSessionButtonProps } from './CloseSessionButton';
+
+export { CreateRoomButton } from './CreateRoomButton';
+export type { CreateRoomButtonProps } from './CreateRoomButton';
