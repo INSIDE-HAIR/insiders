@@ -241,40 +241,157 @@ export async function POST(
 
     console.log(`👥 Adding ${membersToAdd.length} member(s) to space ${spaceId} via FRESH API calls`);
 
-    // AGREGAR MIEMBROS VIA GOOGLE MEET API v2beta
-    let result;
-    if (isBulkAdd) {
-      result = await membersService.bulkCreateMembers(spaceId, membersToAdd, {
-        batchDelay: 150,
-        continueOnError: true,
+    // Get current members first to check for role conflicts
+    console.log(`🔍 Fetching current members to check for role updates...`);
+    let currentMembers: any[] = [];
+    try {
+      const currentMembersResponse = await membersService.listMembers(spaceId, {
+        pageSize: 100,
         fields: 'name,email,role'
       });
-    } else {
-      try {
-        const createdMember = await membersService.createMember(
-          spaceId, 
-          membersToAdd[0], 
-          'name,email,role'
-        );
-        result = {
-          successes: [createdMember],
-          failures: []
-        };
-      } catch (error) {
-        // Detectar si es limitación de Developer Preview
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        const isPreviewLimitation = errorMessage.includes('Developer Preview access');
+      currentMembers = currentMembersResponse.members || [];
+      console.log(`📋 Found ${currentMembers.length} existing members`);
+    } catch (error) {
+      console.warn(`⚠️ Could not fetch current members, proceeding without role update checks:`, error);
+    }
+
+    // Check for role conflicts and handle updates
+    const membersToUpdate: Array<{ email: string; currentRole: string; newRole: string; memberName: string }> = [];
+    const membersToAddFiltered = membersToAdd.filter(newMember => {
+      const existingMember = currentMembers.find(m => m.email?.toLowerCase() === newMember.email.toLowerCase());
+      
+      if (existingMember) {
+        const currentRole = existingMember.role || "ROLE_UNSPECIFIED";
+        const newRole = newMember.role || "ROLE_UNSPECIFIED";
         
-        result = {
-          successes: [],
-          failures: [{ 
-            member: membersToAdd[0], 
-            error: errorMessage,
-            previewRequired: isPreviewLimitation
-          }]
-        };
+        if (currentRole !== newRole) {
+          // Role conflict - need to update
+          membersToUpdate.push({
+            email: newMember.email,
+            currentRole: currentRole,
+            newRole: newRole,
+            memberName: existingMember.name
+          });
+          console.log(`🔄 Role update needed for ${newMember.email}: ${currentRole} → ${newRole}`);
+          return false; // Don't add directly, will be handled separately
+        } else {
+          console.log(`⚠️ Member ${newMember.email} already exists with same role ${currentRole} - skipping`);
+          return false; // Skip, already exists with same role
+        }
+      }
+      
+      return true; // New member, proceed with addition
+    });
+
+    console.log(`📊 Processing: ${membersToAddFiltered.length} new members, ${membersToUpdate.length} role updates`);
+
+    // Handle role updates first
+    for (const memberUpdate of membersToUpdate) {
+      try {
+        console.log(`🔄 Updating role for ${memberUpdate.email}: ${memberUpdate.currentRole} → ${memberUpdate.newRole}`);
+        
+        // Extract member ID from member name
+        const memberId = membersService.extractMemberId(memberUpdate.memberName);
+        if (memberId) {
+          // Delete existing member
+          await membersService.deleteMember(spaceId, memberId);
+          console.log(`🗑️ Deleted existing member ${memberUpdate.email} (${memberUpdate.currentRole})`);
+          
+          // Add small delay to avoid race conditions
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Re-add with new role
+          const newMember = await membersService.createMember(spaceId, {
+            email: memberUpdate.email,
+            role: memberUpdate.newRole
+          }, 'name,email,role');
+          
+          console.log(`✅ Re-added ${memberUpdate.email} with new role ${memberUpdate.newRole}`);
+        }
+      } catch (updateError) {
+        console.error(`❌ Failed to update role for ${memberUpdate.email}:`, updateError);
       }
     }
+
+    // AGREGAR MIEMBROS NUEVOS VIA GOOGLE MEET API v2beta
+    // Initialize result with default structure to prevent undefined errors
+    let result = {
+      successes: [],
+      failures: []
+    };
+    
+    if (membersToAddFiltered.length > 0) {
+      if (isBulkAdd) {
+        console.log(`🔄 Using bulk create for ${membersToAddFiltered.length} members`);
+        try {
+          result = await membersService.bulkCreateMembers(spaceId, membersToAddFiltered, {
+            batchDelay: 150,
+            continueOnError: true,
+            fields: 'name,email,role'
+          });
+          
+          // Ensure the result has the correct structure
+          if (!result || !result.successes || !result.failures) {
+            console.error("❌ Invalid bulk create result structure:", result);
+            result = { successes: [], failures: [] };
+          }
+        } catch (bulkError) {
+          console.error("❌ Bulk create operation failed:", bulkError);
+          result = { successes: [], failures: [] };
+        }
+      } else {
+        console.log(`🔄 Using single create for 1 member`);
+        try {
+          const createdMember = await membersService.createMember(
+            spaceId, 
+            membersToAddFiltered[0], 
+            'name,email,role'
+          );
+          result = {
+            successes: [createdMember],
+            failures: []
+          };
+        } catch (error) {
+          // Detectar si es limitación de Developer Preview
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          const isPreviewLimitation = errorMessage.includes('Developer Preview access');
+          
+          result = {
+            successes: [],
+            failures: [{ 
+              member: membersToAddFiltered[0], 
+              error: errorMessage,
+              previewRequired: isPreviewLimitation
+            }]
+          };
+        }
+      }
+    } else {
+      console.log(`ℹ️ No new members to add (${membersToUpdate.length} role updates processed)`);
+      // result already initialized with empty arrays
+    }
+    
+    // Add role updates to successes
+    if (membersToUpdate.length > 0) {
+      const roleUpdateSuccesses = membersToUpdate.map(update => ({
+        name: `spaces/${spaceId}/members/updated-${update.email}`,
+        email: update.email,
+        role: update.newRole,
+        _updated: true,
+        _previousRole: update.currentRole
+      }));
+      
+      // Ensure result structure exists before adding role updates
+      if (!result || !Array.isArray(result.successes)) {
+        console.error("❌ Invalid result structure before adding role updates:", result);
+        result = { successes: [], failures: [] };
+      }
+      
+      result.successes = [...(result.successes || []), ...roleUpdateSuccesses];
+      console.log(`📊 Added ${roleUpdateSuccesses.length} role updates to successes`);
+    }
+    
+    console.log(`📊 Final successes: ${result.successes.length}, Final failures: ${result.failures.length}`);
     
     // Log de la operación (solo para auditoria)
     await storageService.logOperation(
@@ -286,21 +403,32 @@ export async function POST(
       session.user.id
     );
 
-    console.log(`📊 Members: ${result.successes.length} added, ${result.failures.length} failed`);
+    console.log(`📊 Members: ${result.successes.length} processed, ${result.failures.length} failed`);
 
+    // Detectar diferentes tipos de resultados
+    const skippedMembers = result.successes.filter((s: any) => s._skipped);
+    const updatedMembers = result.successes.filter((s: any) => s._updated);
+    const actuallyAdded = result.successes.filter((s: any) => !s._skipped && !s._updated);
+    
     // Detectar si hay limitaciones de Developer Preview
     const hasPreviewLimitation = result.failures.some((f: any) => f.previewRequired);
+    
+    console.log(`📊 Final result: ${actuallyAdded.length} added, ${updatedMembers.length} role updated, ${skippedMembers.length} already existed, ${result.failures.length} failed`);
     
     // Preparar respuesta informativa
     return NextResponse.json({
       spaceId: spaceId,
-      addedMembers: result.successes,
-      totalAdded: result.successes.length,
+      addedMembers: actuallyAdded,
+      updatedMembers: updatedMembers,
+      skippedMembers: skippedMembers,
+      totalAdded: actuallyAdded.length,
+      totalUpdated: updatedMembers.length,
+      totalSkipped: skippedMembers.length,
       totalFailed: result.failures.length,
       failures: result.failures,
       message: hasPreviewLimitation 
         ? "Google Meet API v2beta Members requiere acceso Developer Preview"
-        : `${result.successes.length} miembro(s) agregado(s) exitosamente via API`,
+        : `${actuallyAdded.length} miembro(s) agregado(s), ${updatedMembers.length} roles actualizados, ${skippedMembers.length} ya existían, ${result.failures.length} fallaron`,
       source: hasPreviewLimitation ? "developer-preview-required" : "fresh-meet-api-v2beta",
       note: hasPreviewLimitation 
         ? "Endpoints de members requieren inscripción en programa de preview"
@@ -311,6 +439,9 @@ export async function POST(
         localStorage: false,
         bulkOperation: isBulkAdd,
         totalRequested: membersToAdd.length,
+        actuallyAdded: actuallyAdded.length,
+        rolesUpdated: updatedMembers.length,
+        alreadyExisted: skippedMembers.length,
         previewRequired: hasPreviewLimitation
       }
     }, { status: hasPreviewLimitation ? 202 : (result.successes.length > 0 ? 201 : 500) });

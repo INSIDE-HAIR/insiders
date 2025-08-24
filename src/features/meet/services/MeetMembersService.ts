@@ -372,9 +372,19 @@ export class MeetMembersService {
             }
 
             if (response.status === 409) {
-              throw new Error(
-                `Member already exists (${version}): ${errorText}`
+              // Member already exists - treat as success (skip duplicate)
+              console.log(
+                `⚠️ Member ${memberData.email} already exists in space ${spaceId} (${version}) - skipping`
               );
+              
+              // Return a mock member object to indicate success
+              return {
+                name: `spaces/${spaceId}/members/existing-${memberData.email}`,
+                email: memberData.email,
+                role: memberData.role,
+                _skipped: true,
+                _reason: 'already_exists'
+              } as any;
             }
 
             throw new Error(

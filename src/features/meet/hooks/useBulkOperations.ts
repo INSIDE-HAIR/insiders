@@ -156,6 +156,43 @@ export const useBulkOperations = () => {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ["rooms-list"] });
       queryClient.invalidateQueries({ queryKey: ["filter-stats"] });
+      
+      // For member operations, also invalidate room analytics to refresh member counts
+      if (operation.type === "addMembers" || operation.type === "removeMembers") {
+        console.log(`🔄 Starting query invalidation for ${operation.type} operation on ${operation.roomIds.length} rooms`);
+        
+        // Only invalidate queries for the specific affected rooms
+        console.log(`🔄 Invalidating analytics only for affected rooms: ${operation.roomIds.join(', ')}`);
+        
+        operation.roomIds.forEach((roomId, index) => {
+          console.log(`🔄 Invalidating queries for room ${index + 1}/${operation.roomIds.length}: ${roomId}`);
+          
+          // Invalidate specific room analytics with precise predicate matching
+          queryClient.invalidateQueries({ 
+            predicate: query => {
+              // Match queries that contain this specific roomId
+              const queryKeyStr = JSON.stringify(query.queryKey);
+              const containsRoomId = query.queryKey.includes(roomId) || 
+                                   (Array.isArray(query.queryKey[1]) && query.queryKey[1]?.includes(roomId)) ||
+                                   queryKeyStr.includes(roomId);
+              
+              if (containsRoomId) {
+                console.log(`🎯 Invalidating query for ${roomId}:`, query.queryKey);
+              }
+              
+              return containsRoomId;
+            }
+          });
+          
+          // Also try individual patterns
+          queryClient.invalidateQueries({ queryKey: [`room-analytics-${roomId}`] });
+          queryClient.invalidateQueries({ queryKey: [`room-members-${roomId}`] });
+        });
+        
+        console.log(`✅ Invalidated analytics queries only for ${operation.roomIds.length} specific rooms`);
+        
+        console.log(`✅ Completed analytics invalidation for ${operation.roomIds.length} rooms after ${operation.type}`);
+      }
 
       const { successCount, failureCount, totalProcessed } = result;
       const operationLabel = getOperationLabel(operation.type);
@@ -371,25 +408,44 @@ export const useBulkOperations = () => {
       case "addMembers":
         if (!payload?.members || !Array.isArray(payload.members))
           throw new Error("Members array is required");
+        console.log(`👥 Adding members to ${roomId}:`, payload.members);
+        
         const addMembersResponse = await fetch(`/api/meet/rooms/${roomId}/members`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ members: payload.members }),
         });
-        if (!addMembersResponse.ok)
-          throw new Error(`Failed to add members to ${roomId}`);
+        
+        if (!addMembersResponse.ok) {
+          const errorText = await addMembersResponse.text();
+          console.error(`❌ Failed to add members to ${roomId}:`, errorText);
+          throw new Error(`Failed to add members to ${roomId}: ${errorText}`);
+        }
+        
+        const addResult = await addMembersResponse.json();
+        console.log(`✅ Add members result for ${roomId}:`, addResult);
         break;
 
       case "removeMembers":
         if (!payload?.memberIds || !Array.isArray(payload.memberIds))
           throw new Error("Member IDs array is required");
+        console.log(`🗑️ Removing members from ${roomId}:`, payload.memberIds);
+        
+        // The API accepts both emails and memberIds, but we'll send as emails for simplicity
         const removeMembersResponse = await fetch(`/api/meet/rooms/${roomId}/members`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ memberIds: payload.memberIds }),
+          body: JSON.stringify({ emails: payload.memberIds }), // Use emails field for email-based deletion
         });
-        if (!removeMembersResponse.ok)
-          throw new Error(`Failed to remove members from ${roomId}`);
+        
+        if (!removeMembersResponse.ok) {
+          const errorText = await removeMembersResponse.text();
+          console.error(`❌ Failed to remove members from ${roomId}:`, errorText);
+          throw new Error(`Failed to remove members from ${roomId}: ${errorText}`);
+        }
+        
+        const removeResult = await removeMembersResponse.json();
+        console.log(`✅ Remove members result for ${roomId}:`, removeResult);
         break;
 
       case "updateModerationSettings":
@@ -539,6 +595,7 @@ export const useBulkOperations = () => {
 
   const bulkAddMembers = useCallback(
     (roomIds: string[], members: any[]) => {
+      console.log(`🔧 bulkAddMembers called with:`, { roomIds, members });
       return bulkOperationMutation.mutateAsync({
         type: "addMembers",
         roomIds,
@@ -550,6 +607,7 @@ export const useBulkOperations = () => {
 
   const bulkRemoveMembers = useCallback(
     (roomIds: string[], memberIds: string[]) => {
+      console.log(`🔧 bulkRemoveMembers called with:`, { roomIds, memberIds });
       return bulkOperationMutation.mutateAsync({
         type: "removeMembers",
         roomIds,

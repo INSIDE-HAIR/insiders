@@ -52,12 +52,17 @@ import {
 
 // Import hooks
 import { useBulkOperations } from "../../../hooks/useBulkOperations";
+import { useQueryClient } from "@tanstack/react-query";
+
+// Import modals
+import { BulkMembersModal } from "../../molecules/modals/BulkMembersModal";
 
 export interface BulkActionsBarProps {
   selectedCount: number;
   selectedRoomIds: string[];
   onClearSelection: () => void;
   onBulkAction?: (action: string, payload?: any) => void;
+  onForceRefreshAnalytics?: (roomIds: string[]) => Promise<void>;
   className?: string;
 }
 
@@ -70,8 +75,10 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   selectedRoomIds,
   onClearSelection,
   onBulkAction,
+  onForceRefreshAnalytics,
   className,
 }) => {
+  const queryClient = useQueryClient();
   const {
     bulkDelete,
     bulkUpdateAccessType,
@@ -91,6 +98,8 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   } = useBulkOperations();
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+  const [membersModalOpen, setMembersModalOpen] = React.useState(false);
+  const [memberModalMode, setMemberModalMode] = React.useState<"add" | "overwrite">("add");
 
   if (selectedCount === 0) return null;
 
@@ -162,13 +171,124 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   };
 
   const handleAddMembers = async () => {
-    // TODO: Open member selection modal
-    console.log("Opening add members modal for:", selectedRoomIds);
+    setMemberModalMode("add");
+    setMembersModalOpen(true);
   };
 
-  const handleRemoveMembers = async () => {
-    // TODO: Open member removal modal
-    console.log("Opening remove members modal for:", selectedRoomIds);
+  const handleOverwriteMembers = async () => {
+    setMemberModalMode("overwrite");
+    setMembersModalOpen(true);
+  };
+
+  const handleBulkMemberAction = async (emails: string[], roles: string[], mode: "add" | "overwrite") => {
+    try {
+      // Convert emails and roles to members array format expected by API
+      const members = emails.map((email, index) => ({
+        email,
+        role: roles[index] || "ROLE_UNSPECIFIED"
+      }));
+
+      console.log(`🔧 Bulk ${mode} members:`, { selectedRoomIds, members, mode });
+      
+      // Log current analytics before operation
+      console.log(`🔍 All cached queries before operation:`, 
+        queryClient.getQueryCache().getAll().map(query => ({
+          queryKey: query.queryKey,
+          state: query.state.status
+        }))
+      );
+      
+      selectedRoomIds.forEach(roomId => {
+        // Try different query key patterns to find the correct one
+        const patterns = [
+          ['rooms-analytics', [roomId]],
+          ['rooms-analytics', selectedRoomIds],
+          [`room-analytics-${roomId}`],
+          [`room-members-${roomId}`]
+        ];
+        
+        patterns.forEach(pattern => {
+          const currentQuery = queryClient.getQueryData(pattern);
+          if (currentQuery) {
+            console.log(`📊 FOUND BEFORE operation - Pattern ${JSON.stringify(pattern)} for ${roomId}:`, currentQuery);
+          }
+        });
+      });
+
+      let operationResult;
+      
+      if (mode === "add") {
+        operationResult = await bulkAddMembers(selectedRoomIds, members);
+        
+        // Check for role updates in the result and show appropriate message
+        console.log("🔍 Bulk add members result:", operationResult);
+        
+        onBulkAction?.("membersAdded", { members, count: selectedCount });
+      } else {
+        // For overwrite mode, first get current members to delete them
+        // Note: This is a simplified approach. In production, you might want to
+        // get the actual member IDs first, but for now we'll use emails
+        await bulkRemoveMembers(selectedRoomIds, emails); // Remove by emails
+        operationResult = await bulkAddMembers(selectedRoomIds, members); // Then add new ones
+        onBulkAction?.("membersOverwritten", { members, count: selectedCount });
+      }
+
+      // Force immediate refresh of room cards and analytics
+      console.log("🔄 Force refreshing room data after member operations...");
+      console.log(`🔄 Affected rooms:`, selectedRoomIds);
+      
+      // Only invalidate main rooms-list to refresh the overall state
+      // DO NOT invalidate all analytics - let the hook handle specific rooms
+      console.log("🔄 Invalidating main rooms-list only (not analytics - specific rooms handled separately)");
+      await queryClient.invalidateQueries({ queryKey: ["rooms-list"] });
+      
+      console.log("🔄 Main queries refreshed, now refreshing individual room data...");
+      
+      // Skip individual query invalidation here - the useBulkOperations hook already handles this
+      // and we don't want to double-invalidate or cause unnecessary re-fetches
+      console.log("🔄 Skipping individual query invalidation - handled by useBulkOperations hook");
+      
+      // Small delay to allow API calls to complete and propagate
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Force refresh analytics using the hook function
+      if (onForceRefreshAnalytics) {
+        console.log("🔄 Using forceRefreshAnalytics callback for immediate state update");
+        await onForceRefreshAnalytics(selectedRoomIds);
+      }
+      
+      // Log analytics after operation to verify they updated
+      console.log(`🔍 All cached queries after operation:`, 
+        queryClient.getQueryCache().getAll().map(query => ({
+          queryKey: query.queryKey,
+          state: query.state.status
+        }))
+      );
+      
+      selectedRoomIds.forEach(roomId => {
+        // Try different query key patterns again
+        const patterns = [
+          ['rooms-analytics', [roomId]],
+          ['rooms-analytics', selectedRoomIds],
+          [`room-analytics-${roomId}`],
+          [`room-members-${roomId}`]
+        ];
+        
+        patterns.forEach(pattern => {
+          const updatedQuery = queryClient.getQueryData(pattern);
+          if (updatedQuery) {
+            console.log(`📊 FOUND AFTER operation - Pattern ${JSON.stringify(pattern)} for ${roomId}:`, updatedQuery);
+          }
+        });
+      });
+      
+      console.log("✅ All room data refreshed after member operations");
+      
+    } catch (error) {
+      console.error("Error in bulk member action:", error);
+      // Error is handled by the hook
+      throw error; // Re-throw so modal can handle it
+    }
   };
 
   const handleModerationToggle = async (type: string, enable: boolean) => {
@@ -470,9 +590,9 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
                 <span>Agregar Miembros</span>
               </DropdownMenuItem>
               
-              <DropdownMenuItem onClick={handleRemoveMembers} disabled={isOperationLoading}>
+              <DropdownMenuItem onClick={handleOverwriteMembers} disabled={isOperationLoading}>
                 <UserMinusIcon className="mr-2 h-4 w-4" />
-                <span>Quitar Miembros</span>
+                <span>Sobreescribir Miembros</span>
               </DropdownMenuItem>
 
               {/* TODO: Temporarily commented out - implement later */}
@@ -524,6 +644,17 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
           </div>
         )}
       </div>
+
+      {/* Bulk Members Modal */}
+      <BulkMembersModal
+        isOpen={membersModalOpen}
+        onClose={() => setMembersModalOpen(false)}
+        mode={memberModalMode}
+        selectedRoomIds={selectedRoomIds}
+        selectedRoomCount={selectedCount}
+        onBulkMemberAction={handleBulkMemberAction}
+        isLoading={isOperationLoading}
+      />
     </div>
   );
 };

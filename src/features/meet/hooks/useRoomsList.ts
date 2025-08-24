@@ -175,12 +175,16 @@ export const useRoomsList = () => {
             
             if (analyticsResponse.ok) {
               const analytics = await analyticsResponse.json();
+              console.log(`📊 Raw analytics data for ${spaceId}:`, analytics);
+              
               const enrichedAnalytics = {
                 permanentMembers: analytics.permanentMembers,
                 participants: analytics.participants,
                 sessions: analytics.sessions,
                 recentActivity: analytics.recentActivity,
               };
+              
+              console.log(`📊 Enriched analytics for ${spaceId}:`, enrichedAnalytics);
               
               // Update state immediately for progressive UI update
               setRoomAnalytics(prev => new Map(prev).set(spaceId, enrichedAnalytics));
@@ -337,6 +341,51 @@ export const useRoomsList = () => {
     setSelectedRoomIds(new Set());
   }, []);
 
+  // Force refresh analytics for specific rooms
+  const forceRefreshAnalytics = useCallback(async (roomIds: string[]) => {
+    console.log(`🔄 Force refreshing analytics for specific rooms:`, roomIds);
+    
+    for (const roomId of roomIds) {
+      try {
+        console.log(`🔄 Force fetching analytics for room: ${roomId}`);
+        setAnalyticsLoadingStates(prev => new Map(prev).set(roomId, true));
+        
+        const analyticsResponse = await fetch(`/api/meet/rooms/${roomId}/analytics`, {
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        
+        if (analyticsResponse.ok) {
+          const analytics = await analyticsResponse.json();
+          console.log(`📊 Fresh analytics for ${roomId}:`, analytics);
+          
+          const enrichedAnalytics = {
+            permanentMembers: analytics.permanentMembers,
+            participants: analytics.participants,
+            sessions: analytics.sessions,
+            recentActivity: analytics.recentActivity,
+          };
+          
+          // Force update the state immediately
+          setRoomAnalytics(prev => {
+            const newMap = new Map(prev);
+            newMap.set(roomId, enrichedAnalytics);
+            console.log(`🔄 Updated roomAnalytics state for ${roomId}`, enrichedAnalytics);
+            return newMap;
+          });
+          
+          setAnalyticsLoadingStates(prev => new Map(prev).set(roomId, false));
+        } else {
+          console.error(`❌ Failed to fetch fresh analytics for ${roomId}:`, analyticsResponse.status);
+          setAnalyticsLoadingStates(prev => new Map(prev).set(roomId, false));
+        }
+      } catch (error) {
+        console.error(`❌ Error fetching fresh analytics for ${roomId}:`, error);
+        setAnalyticsLoadingStates(prev => new Map(prev).set(roomId, false));
+      }
+    }
+  }, []);
+
   const toggleSelectAll = useCallback(() => {
     if (selectedRoomIds.size === (processedRooms.paginated?.length || 0)) {
       clearSelection();
@@ -471,5 +520,6 @@ export const useRoomsList = () => {
     
     // Data operations
     refetch,
+    forceRefreshAnalytics,
   };
 };

@@ -128,6 +128,7 @@ export const MeetRoomsClientRefactored: React.FC<
     clearSelection,
     toggleSelectAll,
     refetch,
+    forceRefreshAnalytics,
   } = useRoomsList();
 
   // DEBUG: Log lo que recibe el componente del hook
@@ -545,6 +546,7 @@ export const MeetRoomsClientRefactored: React.FC<
         selectedCount={selectedCount}
         selectedRoomIds={Array.from(selectedRoomIds)}
         onClearSelection={clearSelection}
+        onForceRefreshAnalytics={forceRefreshAnalytics}
         onBulkAction={(action, payload) => {
           showInfo(
             "Acción Masiva",
