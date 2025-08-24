@@ -30,7 +30,7 @@ export const ReactionRestrictionSelector: React.FC<ReactionRestrictionSelectorPr
     <>
       <strong>Control de Reacciones:</strong>
       <br />
-      Determina quién puede enviar reacciones (emojis, "me gusta", etc.)
+      Determina quién puede enviar reacciones (emojis, &ldquo;me gusta&rdquo;, etc.)
       durante la reunión.
     </>
   );

@@ -129,8 +129,8 @@ export const SessionsSectionDemo: React.FC<SessionsSectionDemoProps> = ({
     }
     
     const recording = session.recordings[recordingIndex];
-    console.log('🎬 Recording found:', { sessionId, recordingIndex, exportUri: recording.exportUri, hasLink: recording.hasLink });
-    return recording.exportUri || null;
+    console.log('🎬 Recording found:', { sessionId, recordingIndex, exportUri: recording?.exportUri, hasLink: recording?.hasLink });
+    return recording?.exportUri || null;
   };
 
   // Helper function to find transcript URL from adapted data
@@ -142,8 +142,8 @@ export const SessionsSectionDemo: React.FC<SessionsSectionDemoProps> = ({
     }
     
     const transcript = session.transcripts[transcriptIndex];
-    console.log('📄 Transcript found:', { sessionId, transcriptIndex, exportUri: transcript.exportUri, hasLink: transcript.hasLink });
-    return transcript.exportUri || null;
+    console.log('📄 Transcript found:', { sessionId, transcriptIndex, exportUri: transcript?.exportUri, hasLink: transcript?.hasLink });
+    return transcript?.exportUri || null;
   };
 
   // Success state with data

@@ -80,7 +80,7 @@ export const TranscriptionCard: React.FC<TranscriptionCardProps> = ({
       {/* Preview del contenido */}
       {transcription.preview && (
         <div className="text-xs text-muted-foreground mb-2 italic border-l-2 border-muted pl-2">
-          "{transcription.preview}"
+          &ldquo;{transcription.preview}&rdquo;
         </div>
       )}
       

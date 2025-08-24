@@ -212,7 +212,7 @@ export const ModalNavigationDemo: React.FC = () => {
                   <p><strong>Sección:</strong> {currentSection?.title}</p>
                   <p><strong>Índice:</strong> {currentIndex + 1}/{totalSections}</p>
                   <p><strong>ID:</strong> {currentSectionId}</p>
-                  <p><strong>Búsqueda:</strong> "{searchQuery || "sin filtro"}"</p>
+                  <p><strong>Búsqueda:</strong> {searchQuery ? `"${searchQuery}"` : "sin filtro"}</p>
                   <p><strong>Filtradas:</strong> {filteredSections.length}</p>
                   <p><strong>Historial:</strong> {navigationHistory.length} entradas</p>
                 </div>
@@ -241,7 +241,7 @@ export const ModalNavigationDemo: React.FC = () => {
             <CardContent>
               <div className="bg-muted/50 rounded-lg p-4 text-center">
                 <p className="text-muted-foreground">
-                  💡 Aquí iría el contenido de la sección "{currentSection?.title}"
+                  💡 Aquí iría el contenido de la sección &ldquo;{currentSection?.title}&rdquo;
                 </p>
                 <p className="text-xs text-muted-foreground mt-2">
                   🎹 Prueba: Alt+←/→ para navegar, números 1-5 para acceso directo

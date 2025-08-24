@@ -256,7 +256,7 @@ export const SectionNavigationModal: React.FC<SectionNavigationModalProps> = ({
                       Sección no encontrada
                     </div>
                     <p className='text-sm'>
-                      La sección "{currentSectionId}" no está disponible.
+                      La sección &ldquo;{currentSectionId}&rdquo; no está disponible.
                     </p>
                   </div>
                 </div>

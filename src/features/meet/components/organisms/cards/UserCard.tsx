@@ -261,11 +261,10 @@ export const UserCard: React.FC<UserCardProps> = ({
             {actions.map((action) => (
               <ActionButton
                 key={action}
-                action={action === "remove" ? "delete" : action === "promote" ? "edit" : "more"}
+                action={action === "remove" ? "delete" : action === "promote" ? "edit" : "view"}
                 variant={action === "remove" ? "destructive" : "secondary"}
                 size={variant === "compact" ? "xs" : "sm"}
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   onAction?.(action, email);
                 }}
                 tooltip={

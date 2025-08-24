@@ -353,7 +353,7 @@ export const ResponsiveModalDemo: React.FC = () => {
               <div className="mt-4 p-3 bg-muted/50 rounded-lg">
                 <p className="text-xs text-muted-foreground">
                   🎹 <strong>Prueba:</strong> Alt+←/→ para navegar, números 1-4 para acceso directo, 
-                  búsqueda por "miembros", "configuración", etc.
+                  búsqueda por &ldquo;miembros&rdquo;, &ldquo;configuración&rdquo;, etc.
                 </p>
               </div>
             </CardContent>

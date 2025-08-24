@@ -214,7 +214,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
               </span>
               
               {assetsCount > 0 && (
-                <CountBadge count={assetsCount} label="assets" variant="secondary" />
+                <CountBadge count={assetsCount} label="assets" variant="solid" type="total" />
               )}
             </div>
           </div>
@@ -224,19 +224,17 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         {showActions && (
           <div className="flex items-center gap-2 flex-shrink-0">
             <CopyButton 
-              textToCopy={id}
-              variant="ghost"
-              size={variant === "compact" ? "xs" : "sm"}
-              tooltip="Copiar ID de sesión"
+              value={id}
+              variant="copy"
+              size="sm"
             />
             
             {onView && (
               <ActionButton 
                 action="view"
                 variant="secondary"
-                size={variant === "compact" ? "xs" : "sm"}
-                onClick={(e) => {
-                  e.stopPropagation();
+                size="sm"
+                onClick={() => {
                   onView(id);
                 }}
                 tooltip="Ver detalles"
@@ -275,8 +273,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                     <div className="flex gap-1">
                       {recordingUrl && onPlayRecording && (
                         <MediaButton 
-                          action="play"
-                          size="xs"
+                          type="play"
+                          size="sm"
                           onClick={() => onPlayRecording(recordingUrl)}
                           tooltip="Reproducir grabación"
                         />
@@ -334,7 +332,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <h4 className="font-medium text-sm">Participantes</h4>
-            <CountBadge count={totalParticipants} label="total" />
+            <CountBadge count={totalParticipants} label="total" type="total" />
           </div>
           
           <div className="space-y-1 max-h-40 overflow-y-auto">
@@ -373,9 +371,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 variant="secondary"
                 onClick={() => onEdit(id)}
                 tooltip="Editar sesión"
-              >
-                Editar
-              </ActionButton>
+              />
             )}
             {onDelete && (
               <ActionButton 
@@ -383,9 +379,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 variant="destructive"
                 onClick={() => onDelete(id)}
                 tooltip="Eliminar sesión"
-              >
-                Eliminar
-              </ActionButton>
+              />
             )}
           </div>
         )}

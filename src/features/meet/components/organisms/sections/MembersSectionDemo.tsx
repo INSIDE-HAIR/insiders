@@ -132,7 +132,7 @@ export const MembersSectionDemo: React.FC<MembersSectionDemoProps> = ({
         // Toast de éxito
         toast({
           title: "Rol actualizado",
-          description: `${member.name || member.email} ahora es ${roleApiToDisplay[newRole]}`,
+          description: `${member.name || member.email} ahora es ${roleApiToDisplay(newRole)}`,
         });
       } catch (error) {
         // Toast de error

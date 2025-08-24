@@ -29,8 +29,8 @@ import {
 } from "@heroicons/react/24/outline";
 
 // Importar componentes refactorizados
-import { GeneralSection } from "./organisms/sections/GeneralSection";
-import { MembersSection } from "./organisms/sections/MembersSection";
+import { GeneralSectionDemo as GeneralSection } from "./organisms/sections/GeneralSectionDemo";
+import { MembersSectionDemo as MembersSection } from "./organisms/sections/MembersSectionDemo";
 import { OrganizationSection } from "./organisms/sections/OrganizationSection";
 import { ActivitySection } from "./organisms/sections/ActivitySection";
 import { RoomStatusBadge } from "./atoms/badges/RoomStatusBadge";
@@ -394,19 +394,50 @@ export const RoomDetailsModalRefactored: React.FC<
             <div className='flex-1 min-h-0 overflow-hidden'>
               <TabsContent value='general' className='h-full overflow-auto'>
                 <GeneralSection
-                  room={currentRoom}
-                  onUpdateName={handleUpdateName}
-                  onDeleteRoom={handleDeleteRoom}
-                  onEndConference={handleEndConference}
-                  loading={isUpdating}
+                  data={{
+                    roomId: currentRoom.name,
+                    meetingCode: currentRoom.meetingCode || '',
+                    meetingLink: currentRoom.meetingUri || '',
+                    accessType: {
+                      type: currentRoom.config?.accessType?.toLowerCase() || 'open',
+                      label: currentRoom.config?.accessType === 'TRUSTED' ? 'Confiable' : 'Abierto',
+                      className: currentRoom.config?.accessType === 'TRUSTED' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
+                    },
+                    status: {
+                      type: currentRoom.activeConference ? 'active' : 'inactive',
+                      label: currentRoom.activeConference ? 'Activo' : 'Inactivo',
+                      animated: !!currentRoom.activeConference,
+                      showCloseButton: !!currentRoom.activeConference
+                    },
+                    alert: {
+                      message: 'La sala está activa y lista para recibir participantes'
+                    }
+                  }}
+                  onCloseSession={handleEndConference}
                 />
               </TabsContent>
 
               <TabsContent value='members' className='h-full overflow-auto'>
                 <MembersSection
-                  initialMembers={members}
-                  onMembersChange={(newMembers) => {
-                    // Handle members change if needed
+                  data={{
+                    members: members.map(m => ({
+                      id: m.email,
+                      email: m.email,
+                      name: m.displayName || m.email,
+                      avatar: undefined,
+                      role: m.role as any,
+                      joinedAt: m.joinedAt || new Date().toISOString(),
+                      lastActive: m.joinedAt || new Date().toISOString(),
+                      isActive: true
+                    })),
+                    totalMembers: members.length,
+                    activeMembers: members.length
+                  }}
+                  onAddMember={(email, role) => {
+                    // Handle add member
+                  }}
+                  onDeleteMember={(member) => {
+                    // Handle delete member  
                   }}
                 />
               </TabsContent>

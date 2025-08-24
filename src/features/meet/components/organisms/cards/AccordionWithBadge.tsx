@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/src/lib/utils";
-import { CountBadge } from "../../atoms/badges/CountBadge";
+import { CountBadge, type CountType } from "../../atoms/badges/CountBadge";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export type AccordionVariant = "default" | "card" | "minimal";
@@ -15,7 +15,8 @@ export interface AccordionWithBadgeProps {
   icon?: AccordionIconComponent;
   badgeCount?: number;
   badgeLabel?: string;
-  badgeVariant?: "default" | "secondary" | "outline";
+  badgeVariant?: "outline" | "solid";
+  badgeType?: CountType;
   
   // Behavior
   defaultOpen?: boolean;
@@ -77,6 +78,7 @@ export const AccordionWithBadge: React.FC<AccordionWithBadgeProps> = ({
   badgeCount,
   badgeLabel = "items",
   badgeVariant = "outline",
+  badgeType = "total",
   defaultOpen = false,
   variant = "default",
   disabled = false,
@@ -160,6 +162,7 @@ export const AccordionWithBadge: React.FC<AccordionWithBadgeProps> = ({
               count={badgeCount}
               label={badgeLabel}
               variant={badgeVariant}
+              type={badgeType}
             />
           )}
         </div>
