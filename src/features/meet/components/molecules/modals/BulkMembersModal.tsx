@@ -241,17 +241,20 @@ export const BulkMembersModal: React.FC<BulkMembersModalProps> = ({
           )}
 
           {/* Warning for overwrite mode */}
-          {mode === "overwrite" && members.length > 0 && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-3 rounded-md">
+          {mode === "overwrite" && (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-md mb-4">
               <div className="flex items-start gap-2">
-                <svg className="h-5 w-5 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 text-red-600 dark:text-red-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                 </svg>
                 <div className="text-sm">
-                  <p className="font-medium text-yellow-800 dark:text-yellow-200">Advertencia</p>
-                  <p className="text-yellow-700 dark:text-yellow-300">
-                    Se eliminarán <strong>TODOS</strong> los miembros existentes de las {selectedRoomCount} salas seleccionadas 
-                    y se reemplazarán únicamente con los {members.length} miembro{members.length > 1 ? 's' : ''} de esta lista.
+                  <p className="font-medium text-red-800 dark:text-red-200">⚠️ SOBREESCRIBIR MIEMBROS</p>
+                  <p className="text-red-700 dark:text-red-300">
+                    Se eliminarán <strong>TODOS</strong> los miembros existentes de las {selectedRoomCount} salas seleccionadas.<br/>
+                    {members.length > 0 
+                      ? `Después se agregarán únicamente los ${members.length} miembro${members.length > 1 ? 's' : ''} de esta lista.`
+                      : "Si no agregas miembros, las salas quedarán sin miembros."
+                    }
                   </p>
                 </div>
               </div>
@@ -280,8 +283,8 @@ export const BulkMembersModal: React.FC<BulkMembersModalProps> = ({
               <UserIcon className="h-4 w-4" />
             )}
             {isLoading 
-              ? (mode === "add" ? "Agregando..." : "Sobreescribiendo...")
-              : (mode === "add" ? `Agregar a ${selectedRoomCount} sala${selectedRoomCount > 1 ? 's' : ''}` : `Sobreescribir en ${selectedRoomCount} sala${selectedRoomCount > 1 ? 's' : ''}`)
+              ? (mode === "add" ? "Agregando miembros..." : "Eliminando y reemplazando...")
+              : (mode === "add" ? `Agregar a ${selectedRoomCount} sala${selectedRoomCount > 1 ? 's' : ''}` : `Eliminar todos y agregar ${members.length}`)
             }
           </Button>
         </DialogFooter>

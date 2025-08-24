@@ -257,7 +257,7 @@ export async function POST(
 
     // Check for role conflicts and handle updates
     const membersToUpdate: Array<{ email: string; currentRole: string; newRole: string; memberName: string }> = [];
-    const membersToAddFiltered = membersToAdd.filter(newMember => {
+    const membersToAddFiltered = membersToAdd.filter((newMember: any) => {
       const existingMember = currentMembers.find(m => m.email?.toLowerCase() === newMember.email.toLowerCase());
       
       if (existingMember) {
@@ -303,7 +303,7 @@ export async function POST(
           // Re-add with new role
           const newMember = await membersService.createMember(spaceId, {
             email: memberUpdate.email,
-            role: memberUpdate.newRole
+            role: memberUpdate.newRole as "ROLE_UNSPECIFIED" | "COHOST"
           }, 'name,email,role');
           
           console.log(`✅ Re-added ${memberUpdate.email} with new role ${memberUpdate.newRole}`);
@@ -315,7 +315,10 @@ export async function POST(
 
     // AGREGAR MIEMBROS NUEVOS VIA GOOGLE MEET API v2beta
     // Initialize result with default structure to prevent undefined errors
-    let result = {
+    let result: {
+      successes: any[];
+      failures: any[];
+    } = {
       successes: [],
       failures: []
     };
@@ -506,7 +509,49 @@ export async function DELETE(
       // Check for bulk delete in request body
       try {
         const body = await request.json();
-        if (body.memberIds && Array.isArray(body.memberIds)) {
+        
+        // Check for overwrite mode (deleteAll flag)
+        if (body.deleteAll === true) {
+          console.log(`🔄 DELETE ALL MODE: Will delete all members from space ${spaceId}`);
+          
+          // Get all current members first
+          const calendarServiceTemp = new GoogleCalendarService();
+          await calendarServiceTemp.initialize();
+          const membersServiceTemp = new MeetMembersService(calendarServiceTemp.auth);
+          
+          const allMembersResponse = await membersServiceTemp.listMembers(spaceId, {
+            pageSize: 100,
+            fields: 'name,email,role'
+          });
+          
+          if (allMembersResponse.members && allMembersResponse.members.length > 0) {
+            // Use member IDs from the actual API response
+            membersToDelete = allMembersResponse.members
+              .map(member => member.name)
+              .filter(Boolean);
+            isBulkDelete = true;
+            console.log(`🗑️ DELETE ALL: Found ${membersToDelete.length} members to delete`);
+          } else {
+            console.log(`ℹ️ DELETE ALL: No members found in space ${spaceId}`);
+            // Return early success if no members to delete
+            return NextResponse.json({ 
+              message: "No members found to delete",
+              totalRequested: 0,
+              totalDeleted: 0,
+              totalFailed: 0,
+              successes: [],
+              failures: [],
+              spaceId: spaceId,
+              source: "fresh-meet-api-v2beta",
+              note: "No miembros encontrados para eliminar",
+              _metadata: {
+                apiSuccess: true,
+                localStorage: false,
+                bulkOperation: false
+              }
+            });
+          }
+        } else if (body.memberIds && Array.isArray(body.memberIds)) {
           membersToDelete = body.memberIds;
           isBulkDelete = true;
         } else if (body.emails && Array.isArray(body.emails)) {
