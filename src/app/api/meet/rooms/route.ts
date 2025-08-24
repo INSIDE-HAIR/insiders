@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
           );
 
           // Fetch members separately since getSpace doesn't include them
-          let members = [];
+          let members: any[] = [];
           try {
             const membersResponse = await membersService.listMembers(
               registered.spaceId,

@@ -334,8 +334,9 @@ export async function POST(
 }
 
 /**
- * DELETE /api/meet/rooms/[id]/members?email=user@example.com
- * Elimina un miembro SOLO via API - no modifica datos locales
+ * DELETE /api/meet/rooms/[id]/members
+ * Elimina miembros SOLO via API - no modifica datos locales
+ * Soporta tanto single delete (query param) como bulk delete (request body)
  */
 export async function DELETE(
   request: NextRequest,
@@ -360,19 +361,52 @@ export async function DELETE(
       return NextResponse.json({ error: "Space ID is required" }, { status: 400 });
     }
 
-    // Obtener email del query parameter
+    // Determinar si es single o bulk delete
     const { searchParams } = new URL(request.url);
     const memberEmail = searchParams.get('email');
     
-    if (!memberEmail) {
-      return NextResponse.json({ error: "Member email is required" }, { status: 400 });
+    let membersToDelete: string[] = [];
+    let isBulkDelete = false;
+    
+    if (memberEmail) {
+      // Single delete via query parameter
+      membersToDelete = [memberEmail];
+    } else {
+      // Check for bulk delete in request body
+      try {
+        const body = await request.json();
+        if (body.memberIds && Array.isArray(body.memberIds)) {
+          membersToDelete = body.memberIds;
+          isBulkDelete = true;
+        } else if (body.emails && Array.isArray(body.emails)) {
+          membersToDelete = body.emails;
+          isBulkDelete = true;
+        }
+      } catch (error) {
+        // No body or invalid JSON - continue with empty array
+      }
+    }
+    
+    if (membersToDelete.length === 0) {
+      return NextResponse.json({ 
+        error: "Member email or memberIds array is required" 
+      }, { status: 400 });
     }
 
-    // Validar email
+    // Validar emails si no es bulk con memberIds
     const emailSchema = z.string().email();
-    const emailValidation = emailSchema.safeParse(memberEmail);
-    if (!emailValidation.success) {
-      return NextResponse.json({ error: "Invalid email format" }, { status: 400 });
+    if (!isBulkDelete || !membersToDelete.every(id => id.includes('/'))) {
+      // Validar como emails si no son member IDs con formato "spaces/{id}/members/{id}"
+      for (const identifier of membersToDelete) {
+        if (!identifier.includes('/')) {
+          const emailValidation = emailSchema.safeParse(identifier);
+          if (!emailValidation.success) {
+            return NextResponse.json({ 
+              error: `Invalid email format: ${identifier}` 
+            }, { status: 400 });
+          }
+        }
+      }
     }
 
     // Verificar que el space esté registrado localmente (solo para validación)
@@ -391,52 +425,100 @@ export async function DELETE(
     await calendarService.initialize();
     const membersService = new MeetMembersService(calendarService.auth);
 
-    console.log(`👤❌ Deleting member ${memberEmail} from space ${spaceId} via FRESH API`);
+    console.log(`👤❌ Deleting ${membersToDelete.length} member(s) from space ${spaceId} via FRESH API`);
 
-    // 1. BUSCAR MIEMBRO POR EMAIL VIA API
-    const targetMember = await membersService.findMemberByEmail(spaceId, memberEmail);
+    // Procesar eliminaciones
+    const results = {
+      successes: [],
+      failures: []
+    };
 
-    if (!targetMember) {
-      return NextResponse.json({ 
-        error: "Member not found in space",
-        details: `No member with email ${memberEmail} found in space ${spaceId}`
-      }, { status: 404 });
+    for (const identifier of membersToDelete) {
+      try {
+        let memberId: string;
+        
+        if (identifier.includes('/')) {
+          // Es un member ID completo (spaces/{spaceId}/members/{memberId})
+          const extractedId = membersService.extractMemberId(identifier);
+          if (!extractedId) {
+            (results.failures as any).push({
+              identifier,
+              error: "Could not extract member ID from identifier"
+            });
+            continue;
+          }
+          memberId = extractedId;
+        } else {
+          // Es un email, necesita buscar el miembro
+          const targetMember = await membersService.findMemberByEmail(spaceId, identifier);
+          if (!targetMember) {
+            (results.failures as any).push({
+              identifier,
+              error: `Member not found in space: ${identifier}`
+            });
+            continue;
+          }
+          const extractedId = membersService.extractMemberId(targetMember.name);
+          if (!extractedId) {
+            (results.failures as any).push({
+              identifier,
+              error: "Could not extract member ID from member data"
+            });
+            continue;
+          }
+          memberId = extractedId;
+        }
+
+        if (!memberId) {
+          (results.failures as any).push({
+            identifier,
+            error: "Could not extract member ID"
+          });
+          continue;
+        }
+
+        // Eliminar vía API
+        await membersService.deleteMember(spaceId, memberId);
+        (results.successes as any).push({
+          identifier,
+          memberId,
+          message: "Member deleted successfully"
+        });
+        
+      } catch (error: any) {
+        (results.failures as any).push({
+          identifier,
+          error: error.message || "Unknown error during deletion"
+        });
+      }
     }
-
-    // 2. EXTRAER MEMBER ID
-    const memberId = membersService.extractMemberId(targetMember.name);
-    if (!memberId) {
-      return NextResponse.json({ 
-        error: "Invalid member ID",
-        details: "Could not extract member ID from member data"
-      }, { status: 400 });
-    }
-
-    // 3. ELIMINAR VIA API
-    await membersService.deleteMember(spaceId, memberId);
 
     // Log de la operación (solo para auditoria)
     await storageService.logOperation(
-      'delete_member',
+      isBulkDelete ? 'bulk_delete_members' : 'delete_member',
       spaceId,
-      true,
-      200,
-      null,
+      results.successes.length > 0,
+      results.successes.length > 0 ? 200 : 500,
+      results.failures.length > 0 ? `${results.failures.length} failures` : null,
       session.user.id
     );
 
-    console.log(`✅ Member removed: ${memberEmail} from space ${spaceId}`);
+    console.log(`📊 Members: ${results.successes.length} deleted, ${results.failures.length} failed`);
 
     return NextResponse.json({ 
-      message: "Member removed successfully via API",
-      memberEmail: memberEmail,
-      memberId: memberId,
+      message: `${results.successes.length} member(s) removed successfully via API`,
+      totalRequested: membersToDelete.length,
+      totalDeleted: results.successes.length,
+      totalFailed: results.failures.length,
+      successes: results.successes,
+      failures: results.failures,
       spaceId: spaceId,
       source: "fresh-meet-api-v2beta",
-      note: "Miembro eliminado directamente via Google Meet API v2beta",
+      note: "Miembros eliminados directamente via Google Meet API v2beta",
       _metadata: {
-        apiSuccess: true,
-        localStorage: false
+        apiSuccess: results.successes.length > 0,
+        localStorage: false,
+        bulkOperation: isBulkDelete
       }
     });
 

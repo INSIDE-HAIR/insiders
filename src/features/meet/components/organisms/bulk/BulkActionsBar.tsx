@@ -39,9 +39,15 @@ import {
   DocumentTextIcon,
   TagIcon,
   FolderIcon,
-  DocumentDuplicateIcon,
   ArrowDownTrayIcon,
   XMarkIcon,
+  UserPlusIcon,
+  UserMinusIcon,
+  CogIcon,
+  ShieldCheckIcon,
+  ChatBubbleBottomCenterTextIcon,
+  FaceSmileIcon,
+  PresentationChartBarIcon,
 } from "@heroicons/react/24/outline";
 
 // Import hooks
@@ -73,6 +79,13 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
     bulkDisableRecording,
     bulkEnableTranscription,
     bulkDisableTranscription,
+    bulkAddTags,
+    bulkRemoveTag,
+    bulkMoveToGroup,
+    bulkRemoveFromGroup,
+    bulkAddMembers,
+    bulkRemoveMembers,
+    executeBulkOperation,
     isOperationLoading,
     operationProgress,
   } = useBulkOperations();
@@ -121,6 +134,77 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
         await bulkDisableTranscription(selectedRoomIds);
       }
       onBulkAction?.("transcriptionToggled", { enabled: enable, count: selectedCount });
+    } catch (error) {
+      // Error is handled by the hook
+    }
+  };
+
+  const handleTagsManagement = async () => {
+    // TODO: Open tags management modal
+    console.log("Opening tags management modal for:", selectedRoomIds);
+  };
+
+  const handleMoveToGroup = async () => {
+    // TODO: Open group selection modal
+    console.log("Opening group selection modal for:", selectedRoomIds);
+  };
+
+  const handleExportData = async () => {
+    try {
+      await executeBulkOperation({
+        type: "export",
+        roomIds: selectedRoomIds,
+      });
+      onBulkAction?.("exported", { count: selectedCount });
+    } catch (error) {
+      // Error is handled by the hook
+    }
+  };
+
+  const handleAddMembers = async () => {
+    // TODO: Open member selection modal
+    console.log("Opening add members modal for:", selectedRoomIds);
+  };
+
+  const handleRemoveMembers = async () => {
+    // TODO: Open member removal modal
+    console.log("Opening remove members modal for:", selectedRoomIds);
+  };
+
+  const handleModerationToggle = async (type: string, enable: boolean) => {
+    try {
+      await executeBulkOperation({
+        type: "updateModerationSettings" as any,
+        roomIds: selectedRoomIds,
+        payload: { [type]: enable },
+      });
+      onBulkAction?.("moderationToggled", { type, enabled: enable, count: selectedCount });
+    } catch (error) {
+      // Error is handled by the hook
+    }
+  };
+
+  const handleRestrictionChange = async (restrictionType: string, value: string) => {
+    try {
+      await executeBulkOperation({
+        type: "updateModerationSettings" as any,
+        roomIds: selectedRoomIds,
+        payload: { [restrictionType]: value },
+      });
+      onBulkAction?.("restrictionChanged", { type: restrictionType, value, count: selectedCount });
+    } catch (error) {
+      // Error is handled by the hook
+    }
+  };
+
+  const handleSmartNotesToggle = async (enable: boolean) => {
+    try {
+      await executeBulkOperation({
+        type: "toggleSmartNotes" as any,
+        roomIds: selectedRoomIds,
+        payload: { enabled: enable },
+      });
+      onBulkAction?.("smartNotesToggled", { enabled: enable, count: selectedCount });
     } catch (error) {
       // Error is handled by the hook
     }
@@ -214,63 +298,204 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
 
-              {/* Recording */}
+              {/* Herramientas - Grandparent (Abuelo) */}
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <PlayCircleIcon className="mr-2 h-4 w-4" />
-                  <span>Grabaciones</span>
+                  <CogIcon className="mr-2 h-4 w-4" />
+                  <span>Herramientas</span>
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem onClick={() => handleRecordingToggle(true)}>
-                    Habilitar grabación automática
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleRecordingToggle(false)}>
-                    Deshabilitar grabación automática
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
+                  {/* Grabaciones - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <PlayCircleIcon className="mr-2 h-4 w-4" />
+                      <span>Grabaciones</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleRecordingToggle(true)} disabled={isOperationLoading}>
+                        Habilitar grabación automática
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRecordingToggle(false)} disabled={isOperationLoading}>
+                        Deshabilitar grabación automática
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
 
-              {/* Transcription */}
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <DocumentTextIcon className="mr-2 h-4 w-4" />
-                  <span>Transcripciones</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuItem onClick={() => handleTranscriptionToggle(true)}>
-                    Habilitar transcripción automática
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleTranscriptionToggle(false)}>
-                    Deshabilitar transcripción automática
-                  </DropdownMenuItem>
+                  {/* Transcripciones - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <DocumentTextIcon className="mr-2 h-4 w-4" />
+                      <span>Transcripciones</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleTranscriptionToggle(true)} disabled={isOperationLoading}>
+                        Habilitar transcripción automática
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleTranscriptionToggle(false)} disabled={isOperationLoading}>
+                        Deshabilitar transcripción automática
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Notas Inteligentes - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <DocumentTextIcon className="mr-2 h-4 w-4" />
+                      <span>Notas Inteligentes</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleSmartNotesToggle(true)} disabled={isOperationLoading}>
+                        Habilitar notas inteligentes
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleSmartNotesToggle(false)} disabled={isOperationLoading}>
+                        Deshabilitar notas inteligentes
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
 
               <DropdownMenuSeparator />
 
-              {/* Tags and Groups */}
-              <DropdownMenuItem>
+              {/* Moderación y Permisos - Grandparent (Abuelo) */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <ShieldCheckIcon className="mr-2 h-4 w-4" />
+                  <span>Moderación y Permisos</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {/* Puntos de Acceso - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <LockClosedIcon className="mr-2 h-4 w-4" />
+                      <span>Puntos de Acceso</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("entryPointRestriction", false)} disabled={isOperationLoading}>
+                        Permitir Puntos de Entrada
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("entryPointRestriction", true)} disabled={isOperationLoading}>
+                        Restringir Puntos de Entrada
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Moderación - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <CogIcon className="mr-2 h-4 w-4" />
+                      <span>Moderación</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("moderation", true)} disabled={isOperationLoading}>
+                        Activar Moderación
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("moderation", false)} disabled={isOperationLoading}>
+                        Desactivar Moderación
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Unirse como - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <EyeIcon className="mr-2 h-4 w-4" />
+                      <span>Unirse como</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("defaultJoinAsViewer", true)} disabled={isOperationLoading}>
+                        Espectador por Defecto
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleModerationToggle("defaultJoinAsViewer", false)} disabled={isOperationLoading}>
+                        Participante por Defecto
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Restricciones de Chat - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <ChatBubbleBottomCenterTextIcon className="mr-2 h-4 w-4" />
+                      <span>Restricciones de Chat</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("chatRestriction", "NO_RESTRICTION")} disabled={isOperationLoading}>
+                        Todos los participantes
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("chatRestriction", "HOSTS_ONLY")} disabled={isOperationLoading}>
+                        Solo organizadores
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Restricciones de Presentación - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <PresentationChartBarIcon className="mr-2 h-4 w-4" />
+                      <span>Restricciones de Presentación</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("presentRestriction", "NO_RESTRICTION")} disabled={isOperationLoading}>
+                        Todos los participantes
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("presentRestriction", "HOSTS_ONLY")} disabled={isOperationLoading}>
+                        Solo organizadores
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+
+                  {/* Restricciones de Reacciones - Parent (Padre) */}
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <FaceSmileIcon className="mr-2 h-4 w-4" />
+                      <span>Restricciones de Reacciones</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("reactionRestriction", "NO_RESTRICTION")} disabled={isOperationLoading}>
+                        Todos los participantes
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleRestrictionChange("reactionRestriction", "HOSTS_ONLY")} disabled={isOperationLoading}>
+                        Solo organizadores
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+
+              <DropdownMenuSeparator />
+
+              {/* Member Management */}
+              <DropdownMenuItem onClick={handleAddMembers} disabled={isOperationLoading}>
+                <UserPlusIcon className="mr-2 h-4 w-4" />
+                <span>Agregar Miembros</span>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem onClick={handleRemoveMembers} disabled={isOperationLoading}>
+                <UserMinusIcon className="mr-2 h-4 w-4" />
+                <span>Quitar Miembros</span>
+              </DropdownMenuItem>
+
+              {/* TODO: Temporarily commented out - implement later */}
+              {/* 
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuItem onClick={handleTagsManagement} disabled={isOperationLoading}>
                 <TagIcon className="mr-2 h-4 w-4" />
                 <span>Gestionar Tags</span>
               </DropdownMenuItem>
               
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleMoveToGroup} disabled={isOperationLoading}>
                 <FolderIcon className="mr-2 h-4 w-4" />
                 <span>Mover a Grupo</span>
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
-
-              {/* Other actions */}
-              <DropdownMenuItem>
-                <DocumentDuplicateIcon className="mr-2 h-4 w-4" />
-                <span>Duplicar Salas</span>
-              </DropdownMenuItem>
               
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleExportData} disabled={isOperationLoading}>
                 <ArrowDownTrayIcon className="mr-2 h-4 w-4" />
                 <span>Exportar Datos</span>
               </DropdownMenuItem>
+              */}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

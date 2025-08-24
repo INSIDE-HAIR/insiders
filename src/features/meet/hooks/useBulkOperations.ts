@@ -15,7 +15,11 @@ export interface BulkOperation {
     | "moveToGroup"
     | "removeFromGroup"
     | "export"
-    | "duplicate";
+    | "duplicate"
+    | "addMembers"
+    | "removeMembers"
+    | "updateModerationSettings"
+    | "toggleSmartNotes";
   roomIds: string[];
   payload?: any;
 }
@@ -197,6 +201,10 @@ export const useBulkOperations = () => {
       removeFromGroup: "Remover de Grupo",
       export: "Exportación",
       duplicate: "Duplicación",
+      addMembers: "Agregar Miembros",
+      removeMembers: "Remover Miembros",
+      updateModerationSettings: "Actualizar Moderación",
+      toggleSmartNotes: "Notas Inteligentes",
     };
     return labels[type] || "Operación";
   };
@@ -360,6 +368,51 @@ export const useBulkOperations = () => {
           throw new Error(`Failed to duplicate ${roomId}`);
         break;
 
+      case "addMembers":
+        if (!payload?.members || !Array.isArray(payload.members))
+          throw new Error("Members array is required");
+        const addMembersResponse = await fetch(`/api/meet/rooms/${roomId}/members`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ members: payload.members }),
+        });
+        if (!addMembersResponse.ok)
+          throw new Error(`Failed to add members to ${roomId}`);
+        break;
+
+      case "removeMembers":
+        if (!payload?.memberIds || !Array.isArray(payload.memberIds))
+          throw new Error("Member IDs array is required");
+        const removeMembersResponse = await fetch(`/api/meet/rooms/${roomId}/members`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ memberIds: payload.memberIds }),
+        });
+        if (!removeMembersResponse.ok)
+          throw new Error(`Failed to remove members from ${roomId}`);
+        break;
+
+      case "updateModerationSettings":
+        if (!payload) throw new Error("Moderation settings are required");
+        const moderationResponse = await fetch(`/api/meet/rooms/${roomId}/moderation`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!moderationResponse.ok)
+          throw new Error(`Failed to update moderation settings for ${roomId}`);
+        break;
+
+      case "toggleSmartNotes":
+        const smartNotesResponse = await fetch(`/api/meet/rooms/${roomId}/smart-notes`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ enabled: payload?.enabled ?? true }),
+        });
+        if (!smartNotesResponse.ok)
+          throw new Error(`Failed to toggle smart notes for ${roomId}`);
+        break;
+
       default:
         throw new Error(`Unknown operation type: ${type}`);
     }
@@ -484,6 +537,50 @@ export const useBulkOperations = () => {
     [bulkOperationMutation]
   );
 
+  const bulkAddMembers = useCallback(
+    (roomIds: string[], members: any[]) => {
+      return bulkOperationMutation.mutateAsync({
+        type: "addMembers",
+        roomIds,
+        payload: { members },
+      });
+    },
+    [bulkOperationMutation]
+  );
+
+  const bulkRemoveMembers = useCallback(
+    (roomIds: string[], memberIds: string[]) => {
+      return bulkOperationMutation.mutateAsync({
+        type: "removeMembers",
+        roomIds,
+        payload: { memberIds },
+      });
+    },
+    [bulkOperationMutation]
+  );
+
+  const bulkUpdateModerationSettings = useCallback(
+    (roomIds: string[], settings: any) => {
+      return bulkOperationMutation.mutateAsync({
+        type: "updateModerationSettings",
+        roomIds,
+        payload: settings,
+      });
+    },
+    [bulkOperationMutation]
+  );
+
+  const bulkToggleSmartNotes = useCallback(
+    (roomIds: string[], enabled: boolean = true) => {
+      return bulkOperationMutation.mutateAsync({
+        type: "toggleSmartNotes",
+        roomIds,
+        payload: { enabled },
+      });
+    },
+    [bulkOperationMutation]
+  );
+
   return {
     // State
     operationProgress,
@@ -504,6 +601,10 @@ export const useBulkOperations = () => {
     bulkMoveToGroup,
     bulkRemoveFromGroup,
     bulkDuplicate,
+    bulkAddMembers,
+    bulkRemoveMembers,
+    bulkUpdateModerationSettings,
+    bulkToggleSmartNotes,
 
     // Utilities
     getOperationLabel,

@@ -309,7 +309,7 @@ export const MeetRoomsClientRefactored: React.FC<
               <Button
                 variant='ghost'
                 size='sm'
-                onClick={() => handleDuplicateRoom(room)}
+                onClick={() => handleDuplicateRoom(room.spaceId || room.id, room)}
               >
                 <DocumentDuplicateIcon className='h-4 w-4' />
               </Button>
@@ -590,7 +590,7 @@ export const MeetRoomsClientRefactored: React.FC<
             setRoomToDuplicate(null);
             setIsDuplicateModalOpen(false);
           }}
-          style={{ display: 'none' }} // Ocultar el botón ya que se abre automáticamente
+          className="hidden" // Ocultar el botón ya que se abre automáticamente
         />
       )}
       

@@ -171,7 +171,7 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
               <>
                 <br />
                 <span className="font-medium text-foreground mt-1 block">
-                  "{itemName}"
+                  &quot;{itemName}&quot;
                 </span>
               </>
             )}

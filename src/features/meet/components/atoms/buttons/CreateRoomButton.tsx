@@ -24,14 +24,14 @@ const MembersSectionDemo = lazy(() => import("../../organisms/sections/MembersSe
 const ConfigurationSectionDemo = lazy(() => import("../../organisms/sections/ConfigurationSectionDemo").then(m => ({ default: m.ConfigurationSectionDemo })));
 
 // Componente estable para evitar re-renders del input
-const StableGeneralSection = React.memo(({ 
+const StableGeneralSection = React.memo(function StableGeneralSection({ 
   data, 
   formState, 
   validation,
   setDisplayName,
   setAccessType,
   ...props 
-}: any) => {
+}: any) {
   return (
     <div className="space-y-6">
       {/* Campo nombre de la sala */}
@@ -53,7 +53,7 @@ const StableGeneralSection = React.memo(({
         />
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">{formState.displayName.length}/100 caracteres</span>
-          {validation.fieldValidations.displayName.errors.map((error, idx) => (
+          {validation.fieldValidations.displayName.errors.map((error: any, idx: number) => (
             <span key={idx} className="text-red-500">{error.message}</span>
           ))}
         </div>
@@ -361,13 +361,13 @@ export const CreateRoomButton: React.FC<CreateRoomButtonProps> = ({
               toggleDefaultJoinAsViewer();
               break;
             case 'chatRestriction':
-              setChatRestriction(value as string);
+              setChatRestriction(value as "HOSTS_ONLY" | "NO_RESTRICTION");
               break;
             case 'reactionRestriction':
-              setReactionRestriction(value as string);
+              setReactionRestriction(value as "HOSTS_ONLY" | "NO_RESTRICTION");
               break;
             case 'presentRestriction':
-              setPresentRestriction(value as string);
+              setPresentRestriction(value as "HOSTS_ONLY" | "NO_RESTRICTION");
               break;
             case 'autoRecording':
               toggleAutoRecording();

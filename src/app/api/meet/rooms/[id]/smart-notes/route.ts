@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/src/config/auth/auth";
 import { GoogleCalendarService } from "@/src/features/calendar/services/calendar/GoogleCalendarService";
+import { MeetSpaceConfigService } from "@/src/features/meet/services/MeetSpaceConfigService";
 
 /**
  * GET /api/meet/rooms/[id]/smart-notes
@@ -195,6 +196,106 @@ export async function GET(
       { 
         error: error.message || "Error getting smart notes",
         details: error.stack 
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * PATCH /api/meet/rooms/[id]/smart-notes
+ * Toggle smart notes (automatic transcription) for a specific room
+ */
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Verify authentication
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+    }
+
+    // Verify admin permissions
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Sin permisos" }, { status: 403 });
+    }
+
+    const { id: spaceId } = await params;
+    if (!spaceId) {
+      return NextResponse.json({ error: "Space ID is required" }, { status: 400 });
+    }
+
+    // Parse request body
+    const { enabled } = await request.json();
+
+    // Initialize services
+    const calendarService = new GoogleCalendarService();
+    await calendarService.initialize();
+
+    // Get token
+    const token = await calendarService.auth.getAccessToken();
+    if (!token.token) {
+      throw new Error("No access token available");
+    }
+
+    // Call Google Meet API directly with correct smart notes configuration
+    const meetApiConfig = {
+      artifactConfig: {
+        smartNotesConfig: {
+          autoSmartNotesGeneration: enabled ? "ON" : "OFF" as "ON" | "OFF"
+        }
+      }
+    };
+    
+    const updateMask = "config.artifactConfig.smartNotesConfig.autoSmartNotesGeneration";
+    
+    const requestPayload = { 
+      name: `spaces/${spaceId}`,
+      config: meetApiConfig 
+    };
+    
+    console.log(`🤖 ${enabled ? 'Enabling' : 'Disabling'} smart notes for space ${spaceId}`);
+    console.log('📦 Config to send:', JSON.stringify(meetApiConfig, null, 2));
+    console.log('🎯 Update mask:', updateMask);
+    
+    const updateResponse = await fetch(
+      `https://meet.googleapis.com/v2beta/spaces/${spaceId}?updateMask=${encodeURIComponent(updateMask)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token.token}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestPayload)
+      }
+    );
+
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      console.error(`Failed to update smart notes: ${updateResponse.status}`, errorText);
+      throw new Error(`Failed to update smart notes: ${updateResponse.status} - ${errorText}`);
+    }
+
+    const updatedSpace = await updateResponse.json();
+
+    console.log(`✅ ${enabled ? 'Enabled' : 'Disabled'} smart notes for space ${spaceId}`);
+
+    return NextResponse.json({
+      success: true,
+      spaceId,
+      smartNotesEnabled: enabled,
+      space: updatedSpace,
+    });
+  } catch (error: any) {
+    console.error("Failed to toggle smart notes:", error);
+
+    return NextResponse.json(
+      {
+        error: "Error toggling smart notes",
+        details: error.message,
       },
       { status: 500 }
     );
