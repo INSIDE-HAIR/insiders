@@ -119,6 +119,9 @@ export const BulkMembersModal: React.FC<BulkMembersModalProps> = ({
   };
 
   const handleCancel = () => {
+    // Don't allow closing while loading
+    if (isLoading) return;
+    
     setMembers([]);
     setCurrentEmail("");
     setCurrentRole("ROLE_UNSPECIFIED");
@@ -126,7 +129,7 @@ export const BulkMembersModal: React.FC<BulkMembersModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleCancel}>
+    <Dialog open={isOpen} onOpenChange={isLoading ? undefined : handleCancel}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

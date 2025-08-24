@@ -102,6 +102,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   const [memberModalMode, setMemberModalMode] = React.useState<
     "add" | "overwrite"
   >("add");
+  const [isMemberOperationLoading, setIsMemberOperationLoading] = React.useState(false);
 
   if (selectedCount === 0) return null;
 
@@ -193,6 +194,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
     roles: string[],
     mode: "add" | "overwrite"
   ) => {
+    setIsMemberOperationLoading(true);
     try {
       // Convert emails and roles to members array format expected by API
       const members = emails.map((email, index) => ({
@@ -439,8 +441,10 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
       });
 
       console.log("✅ All room data refreshed after member operations");
+      setIsMemberOperationLoading(false);
     } catch (error) {
       console.error("Error in bulk member action:", error);
+      setIsMemberOperationLoading(false);
       // Error is handled by the hook
       throw error; // Re-throw so modal can handle it
     }
@@ -947,7 +951,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
         selectedRoomIds={selectedRoomIds}
         selectedRoomCount={selectedCount}
         onBulkMemberAction={handleBulkMemberAction}
-        isLoading={isOperationLoading}
+        isLoading={isMemberOperationLoading}
       />
     </div>
   );
