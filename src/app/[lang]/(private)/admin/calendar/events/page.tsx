@@ -47,6 +47,7 @@ import { EventDetailModal } from "./components/EventDetailModal";
 import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal";
 import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
 import { BulkMoveCalendarModal } from "./components/BulkMoveCalendarModal";
+import { BulkDateTimeModal } from "./components/BulkDateTimeModal";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
 import { Spinner } from "@/src/components/ui/spinner";
@@ -72,6 +73,8 @@ interface EventsPageState {
   isBulkDescriptionsModalOpen: boolean;
   selectedEventsForMove: GoogleCalendarEvent[];
   isBulkMoveModalOpen: boolean;
+  selectedEventsForDateTime: GoogleCalendarEvent[];
+  isBulkDateTimeModalOpen: boolean;
 }
 
 const CalendarEventsPage: React.FC = () => {
@@ -90,6 +93,8 @@ const CalendarEventsPage: React.FC = () => {
     isBulkDescriptionsModalOpen: false,
     selectedEventsForMove: [],
     isBulkMoveModalOpen: false,
+    selectedEventsForDateTime: [],
+    isBulkDateTimeModalOpen: false,
   });
 
   const {
@@ -840,6 +845,74 @@ const CalendarEventsPage: React.FC = () => {
     }
   };
 
+  const handleBulkUpdateDateTime = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDateTime: selectedEvents,
+      isBulkDateTimeModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkDateTimeModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDateTime: [],
+      isBulkDateTimeModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkUpdateDateTime = async (updates: Array<{
+    eventId: string;
+    calendarId: string;
+    updateData: any;
+  }>) => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      const response = await fetch("/api/calendar/events/bulk-datetime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          updates,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      toast({
+        title: "Fechas actualizadas",
+        description: `Se actualizaron ${result.successful} evento(s) exitosamente${
+          result.failed > 0 ? `. Falló: ${result.failed}` : ""
+        }`,
+        variant: result.failed > 0 ? "destructive" : "default",
+        duration: 5000,
+      });
+
+      // Reload events if successful
+      if (result.successful > 0) {
+        loadEvents();
+      }
+
+      handleCloseBulkDateTimeModal();
+    } catch (error: any) {
+      console.error("Error updating event dates:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Error al actualizar las fechas de los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
   if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
@@ -1031,6 +1104,7 @@ const CalendarEventsPage: React.FC = () => {
                   onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
                   onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
                   onBulkMoveCalendar={handleBulkMoveCalendar}
+                  onBulkUpdateDateTime={handleBulkUpdateDateTime}
                   calendars={state.calendars}
                 />
               ) : viewMode === "json" ? (
@@ -1221,6 +1295,13 @@ const CalendarEventsPage: React.FC = () => {
             selectedEvents={state.selectedEventsForMove}
             calendars={state.calendars}
             onMove={handleConfirmBulkMoveCalendar}
+          />
+          {/* Bulk Date/Time Update Modal */}
+          <BulkDateTimeModal
+            isOpen={state.isBulkDateTimeModalOpen}
+            onClose={handleCloseBulkDateTimeModal}
+            selectedEvents={state.selectedEventsForDateTime}
+            onUpdate={handleConfirmBulkUpdateDateTime}
           />
         </div>
       </div>

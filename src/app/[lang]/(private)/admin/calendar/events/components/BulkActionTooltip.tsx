@@ -16,6 +16,7 @@ interface BulkActionTooltipProps {
     | "generate-meet"
     | "generate-descriptions"
     | "move-calendar"
+    | "update-datetime"
     | "export";
   count: number;
   onClick: () => void;
@@ -51,6 +52,13 @@ const actionInfo = {
       "Mueve los eventos seleccionados a un calendario diferente manteniendo toda su información.",
     icon: Icons.Calendar,
     color: "bg-orange-600 hover:bg-orange-700",
+  },
+  "update-datetime": {
+    title: "Actualizar Fechas/Horas",
+    description:
+      "Modifica masivamente las fechas y horas de los eventos: mover, reprogramar o ajustar duración.",
+    icon: Icons.Clock,
+    color: "bg-indigo-600 hover:bg-indigo-700",
   },
   export: {
     title: "Exportar Seleccionados",

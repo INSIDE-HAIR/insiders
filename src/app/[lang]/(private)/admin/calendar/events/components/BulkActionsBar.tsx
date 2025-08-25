@@ -14,6 +14,7 @@ interface BulkActionsBarProps {
   onBulkGenerateMeetLinks: () => void;
   onBulkGenerateDescriptions: () => void;
   onBulkMoveCalendar: () => void;
+  onBulkUpdateDateTime: () => void;
   onExportSelected: () => void;
   onDeselectAll: () => void;
 }
@@ -25,6 +26,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   onBulkGenerateMeetLinks,
   onBulkGenerateDescriptions,
   onBulkMoveCalendar,
+  onBulkUpdateDateTime,
   onExportSelected,
   onDeselectAll,
 }) => {
@@ -121,6 +123,23 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
             >
               <Icons.Calendar className='mr-2 h-4 w-4' />
               Mover Calendario
+            </Button>
+          </BulkActionTooltip>
+
+          {/* Update Date/Time */}
+          <BulkActionTooltip
+            action='update-datetime'
+            count={selectedCount}
+            onClick={onBulkUpdateDateTime}
+          >
+            <Button
+              variant='default'
+              size='sm'
+              onClick={onBulkUpdateDateTime}
+              className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
+            >
+              <Icons.Clock className='mr-2 h-4 w-4' />
+              Actualizar Fechas
             </Button>
           </BulkActionTooltip>
 

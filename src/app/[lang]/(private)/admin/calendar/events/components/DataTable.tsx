@@ -45,6 +45,7 @@ interface DataTableProps<TData> {
   onBulkGenerateMeetLinks?: (selectedEvents: TData[]) => void;
   onBulkGenerateDescriptions?: (selectedEvents: TData[]) => void;
   onBulkMoveCalendar?: (selectedEvents: TData[]) => void;
+  onBulkUpdateDateTime?: (selectedEvents: TData[]) => void;
   calendars?: Array<{
     id: string;
     summary: string;
@@ -62,6 +63,7 @@ export function DataTable<TData>({
   onBulkGenerateMeetLinks,
   onBulkGenerateDescriptions,
   onBulkMoveCalendar,
+  onBulkUpdateDateTime,
   calendars = [],
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -315,6 +317,12 @@ export function DataTable<TData>({
             .getFilteredSelectedRowModel()
             .rows.map((row) => row.original);
           onBulkMoveCalendar?.(selectedData);
+        }}
+        onBulkUpdateDateTime={() => {
+          const selectedData = table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original);
+          onBulkUpdateDateTime?.(selectedData);
         }}
         onExportSelected={handleExportCSV}
         onDeselectAll={() => table.toggleAllPageRowsSelected(false)}
