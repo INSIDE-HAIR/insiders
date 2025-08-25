@@ -15,6 +15,7 @@ interface BulkActionTooltipProps {
     | "add-participants"
     | "generate-meet"
     | "generate-descriptions"
+    | "move-calendar"
     | "export";
   count: number;
   onClick: () => void;
@@ -43,6 +44,13 @@ const actionInfo = {
       "Crea descripciones automáticas usando plantillas personalizables para todos los eventos seleccionados.",
     icon: Icons.FileText,
     color: "bg-purple-600 hover:bg-purple-700",
+  },
+  "move-calendar": {
+    title: "Mover a Otro Calendario",
+    description:
+      "Mueve los eventos seleccionados a un calendario diferente manteniendo toda su información.",
+    icon: Icons.Calendar,
+    color: "bg-orange-600 hover:bg-orange-700",
   },
   export: {
     title: "Exportar Seleccionados",

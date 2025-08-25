@@ -240,27 +240,19 @@ export const useEventsColumns = (
     newCalendarId: string
   ) => {
     try {
-      // First, get the event from the old calendar
-      const getResponse = await fetch(
-        `/api/calendar/events/${eventId}?calendarId=${oldCalendarId}`
+      // Use the update API which now handles calendar moves correctly
+      const moveResponse = await fetch(
+        `/api/calendar/events/${eventId}/update?calendarId=${oldCalendarId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            calendarId: newCalendarId,
+          }),
+        }
       );
-      if (!getResponse.ok) {
-        throw new Error("Error obteniendo el evento");
-      }
-
-      const eventData = await getResponse.json();
-
-      // Move the event using the Google Calendar API move operation
-      const moveResponse = await fetch(`/api/calendar/events/bulk-move`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventIds: [{ eventId, calendarId: oldCalendarId }],
-          targetCalendarId: newCalendarId,
-        }),
-      });
 
       if (!moveResponse.ok) {
         let errorData;
@@ -276,11 +268,28 @@ export const useEventsColumns = (
         throw new Error(errorData.error || "Error al mover el evento");
       }
 
-      toast({
-        title: "Evento movido",
-        description: "El evento se movió correctamente al nuevo calendario",
-        duration: 3000,
-      });
+      const result = await moveResponse.json();
+
+      // Handle different success scenarios
+      if (result.success) {
+        const title = result.moved ? "Evento movido" : "Evento actualizado";
+        const description = result.moved 
+          ? "El evento se movió correctamente al nuevo calendario"
+          : "El evento se actualizó correctamente";
+          
+        toast({
+          title,
+          description,
+          duration: 3000,
+        });
+      } else if (result.isRecurringEventIssue && result.fallbackUsed) {
+        // Special handling for recurring events that used fallback
+        toast({
+          title: "Evento copiado",
+          description: "Este evento recurrente se copió al nuevo calendario (no se puede mover directamente)",
+          duration: 5000,
+        });
+      }
 
       onRefresh();
     } catch (error: any) {

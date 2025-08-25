@@ -224,12 +224,15 @@ export class GoogleCalendarService {
     this.ensureInitialized();
 
     try {
-      logger.info(`Creating event in calendar: ${calendarId} (${isOrganizationCalendar(calendarId) ? 'Organization Calendar' : 'External'})`);
+      // Use calendarId from eventData if provided, otherwise use the parameter or default
+      const targetCalendarId = (eventData as any).calendarId || calendarId || DEFAULT_CALENDAR_ID;
+      
+      logger.info(`Creating event in calendar: ${targetCalendarId} (${isOrganizationCalendar(targetCalendarId) ? 'Organization Calendar' : 'External'})`);
 
       const googleEvent = this.formToGoogleEvent(eventData);
       
       const response = await this.calendar.events.insert({
-        calendarId,
+        calendarId: targetCalendarId,
         requestBody: googleEvent,
         sendUpdates: 'all' // Send notifications to attendees
       });
@@ -296,6 +299,121 @@ export class GoogleCalendarService {
       logger.error(`Failed to delete event ${eventId}`, error);
       throw new Error(`Failed to delete event: ${error.message}`);
     }
+  }
+
+  /**
+   * Mueve un evento de un calendario a otro
+   * Usa la API move de Google Calendar para mantener el ID del evento
+   * Si falla (ej: evento recurrente), usa copy-delete como fallback
+   */
+  public async moveEvent(
+    sourceCalendarId: string,
+    eventId: string,
+    targetCalendarId: string
+  ): Promise<GoogleCalendarEvent> {
+    this.ensureInitialized();
+
+    try {
+      logger.info(`Moving event: ${eventId} from ${sourceCalendarId} to ${targetCalendarId}`);
+
+      const response = await this.calendar.events.move({
+        calendarId: sourceCalendarId,
+        eventId: eventId,
+        destination: targetCalendarId
+      });
+
+      logger.info(`Event moved successfully: ${eventId}`);
+      return response.data;
+    } catch (error: any) {
+      logger.error(`Failed to move event ${eventId}`, error);
+      
+      // Check if this is a recurring event limitation
+      if (error.message?.includes('Cannot change the organizer of an instance') ||
+          error.message?.includes('recurring') ||
+          error.message?.includes('instance')) {
+        logger.info(`Move failed for recurring event ${eventId}, trying copy-delete fallback`);
+        return await this.moveEventFallback(sourceCalendarId, eventId, targetCalendarId);
+      }
+      
+      throw new Error(`Failed to move event: ${error.message}`);
+    }
+  }
+
+  /**
+   * Fallback method for moving events when the move API fails
+   * Uses copy-delete approach for events that can't be moved directly
+   */
+  private async moveEventFallback(
+    sourceCalendarId: string,
+    eventId: string,
+    targetCalendarId: string
+  ): Promise<GoogleCalendarEvent> {
+    this.ensureInitialized();
+
+    try {
+      logger.info(`Using copy-delete fallback for event: ${eventId}`);
+
+      // First, get the event details from the source calendar
+      const sourceEvent = await this.getEvent(sourceCalendarId, eventId);
+      
+      // Create a copy of the event in the target calendar
+      const eventForm = this.googleEventToForm(sourceEvent, targetCalendarId);
+      const newEvent = await this.createEvent(eventForm, targetCalendarId);
+
+      if (!newEvent) {
+        throw new Error("Failed to create event copy in target calendar");
+      }
+
+      // Delete the original event from the source calendar
+      try {
+        await this.deleteEvent(sourceCalendarId, eventId);
+        logger.info(`Original event ${eventId} deleted from source calendar`);
+      } catch (deleteError) {
+        logger.warn(
+          `Failed to delete original event ${eventId} after copying. You may have duplicates.`,
+          deleteError
+        );
+      }
+
+      logger.info(`Event successfully moved using copy-delete fallback: ${eventId} -> ${newEvent.id}`);
+      return newEvent;
+    } catch (error: any) {
+      logger.error(`Copy-delete fallback failed for event ${eventId}`, error);
+      throw new Error(`Failed to move event using fallback method: ${error.message}`);
+    }
+  }
+
+  /**
+   * Converts a Google Calendar event to form data for recreation
+   */
+  private googleEventToForm(event: GoogleCalendarEvent, targetCalendarId?: string): CalendarEventForm {
+    return {
+      summary: event.summary || '',
+      description: event.description || '',
+      location: event.location || '',
+      startDate: event.start?.date || event.start?.dateTime?.split('T')[0] || '',
+      startTime: event.start?.dateTime 
+        ? event.start.dateTime.split('T')[1]?.substring(0, 5)
+        : undefined,
+      endDate: event.end?.date || event.end?.dateTime?.split('T')[0] || '',
+      endTime: event.end?.dateTime 
+        ? event.end.dateTime.split('T')[1]?.substring(0, 5)
+        : undefined,
+      allDay: !!event.start?.date,
+      timeZone: event.start?.timeZone || 'Europe/Madrid',
+      calendarId: targetCalendarId || DEFAULT_CALENDAR_ID, // Use target calendar or default
+      attendees: event.attendees?.map(att => ({
+        email: att.email || '',
+        displayName: att.displayName,
+        optional: att.optional || false
+      })) || [],
+      reminders: event.reminders?.overrides || [],
+      visibility: (event.visibility as any) || 'default',
+      transparency: (event.transparency as any) || 'opaque',
+      guestsCanInviteOthers: event.guestsCanInviteOthers || false,
+      guestsCanModify: event.guestsCanModify || false,
+      guestsCanSeeOtherGuests: event.guestsCanSeeOtherGuests || true
+    };
   }
 
   /**

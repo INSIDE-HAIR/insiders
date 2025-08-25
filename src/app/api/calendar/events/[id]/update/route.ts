@@ -37,6 +37,73 @@ export async function PATCH(
       );
     }
 
+    // Check if we need to move the event to a different calendar
+    const targetCalendarId = updateData.calendarId;
+    if (targetCalendarId && targetCalendarId !== calendarId) {
+      try {
+        // Use the move API to move the event
+        const movedEvent = await calendarService.moveEvent(
+          calendarId,
+          eventId,
+          targetCalendarId
+        );
+
+        // If there are additional updates after moving, apply them
+        if (Object.keys(updateData).length > 1) {
+          // Remove calendarId from updateData since we already moved it
+          const { calendarId: _, ...remainingUpdates } = updateData;
+          
+          if (Object.keys(remainingUpdates).length > 0) {
+            const updatedEvent = await calendarService.updateEvent(
+              targetCalendarId,
+              eventId,
+              remainingUpdates
+            );
+            return NextResponse.json({
+              success: true,
+              event: updatedEvent,
+              moved: true
+            });
+          }
+        }
+
+        return NextResponse.json({
+          success: true,
+          event: movedEvent,
+          moved: true
+        });
+      } catch (moveError: any) {
+        console.error("Error moving event:", moveError);
+        
+        // Provide more specific error messages based on the error type
+        let userMessage = "Error al mover el evento al calendario destino";
+        let isRecurringEventIssue = false;
+        
+        if (moveError.message?.includes('Cannot change the organizer of an instance')) {
+          userMessage = "No se puede mover esta instancia de evento recurrente. El evento se copiará al nuevo calendario y se eliminará del original.";
+          isRecurringEventIssue = true;
+        } else if (moveError.message?.includes('recurring') || moveError.message?.includes('instance')) {
+          userMessage = "Este evento recurrente se copiará al nuevo calendario ya que no se puede mover directamente.";
+          isRecurringEventIssue = true;
+        } else if (moveError.message?.includes('permission') || moveError.message?.includes('access')) {
+          userMessage = "No tienes permisos suficientes para mover eventos entre estos calendarios.";
+        } else if (moveError.message?.includes('not found')) {
+          userMessage = "El evento o calendario no fue encontrado.";
+        }
+        
+        return NextResponse.json(
+          {
+            error: userMessage,
+            details: moveError.message,
+            isRecurringEventIssue,
+            fallbackUsed: true
+          },
+          { status: isRecurringEventIssue ? 200 : 500 } // 200 if fallback worked for recurring events
+        );
+      }
+    }
+
+    // If no calendar move, proceed with regular update
     // Verificar permisos del calendario antes de intentar actualizar
     try {
       const calendarInfo = await calendarService.getCalendar(calendarId);
@@ -59,29 +126,17 @@ export async function PATCH(
       // Continuar con la actualización si no se puede verificar
     }
 
-    // Actualizar usando la API directa para mayor control
-    const calendar = (calendarService as any).calendar;
-
-    // Preparar datos de actualización
-    const eventUpdate = {
-      ...currentEvent,
-      ...updateData,
-      // Asegurar que ciertos campos críticos se mantengan
-      id: eventId,
-      start: updateData.start || currentEvent.start,
-      end: updateData.end || currentEvent.end,
-    };
-
+    // Use the service method for updating
     try {
-      const updatedEvent = await calendar.events.update({
+      const updatedEvent = await calendarService.updateEvent(
         calendarId,
         eventId,
-        requestBody: eventUpdate,
-      });
+        updateData
+      );
 
       return NextResponse.json({
         success: true,
-        event: updatedEvent.data,
+        event: updatedEvent,
       });
     } catch (googleError: any) {
       console.error("Google Calendar API error:", googleError);

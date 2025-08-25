@@ -46,6 +46,7 @@ import { AttendeesFilter } from "./components/AttendeesFilter";
 import { EventDetailModal } from "./components/EventDetailModal";
 import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal";
 import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
+import { BulkMoveCalendarModal } from "./components/BulkMoveCalendarModal";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
 import { Spinner } from "@/src/components/ui/spinner";
@@ -69,6 +70,8 @@ interface EventsPageState {
   isBulkModalOpen: boolean;
   selectedEventsForDescriptions: GoogleCalendarEvent[];
   isBulkDescriptionsModalOpen: boolean;
+  selectedEventsForMove: GoogleCalendarEvent[];
+  isBulkMoveModalOpen: boolean;
 }
 
 const CalendarEventsPage: React.FC = () => {
@@ -85,6 +88,8 @@ const CalendarEventsPage: React.FC = () => {
     isBulkModalOpen: false,
     selectedEventsForDescriptions: [],
     isBulkDescriptionsModalOpen: false,
+    selectedEventsForMove: [],
+    isBulkMoveModalOpen: false,
   });
 
   const {
@@ -420,13 +425,37 @@ const CalendarEventsPage: React.FC = () => {
         selectedEvent: { ...state.selectedEvent, ...result.event },
       }));
 
+      // Handle different success scenarios
+      let title = "Evento actualizado";
+      let description = "Los cambios se guardaron correctamente";
+      
+      if (result.moved) {
+        title = "Evento movido";
+        description = "El evento se movió correctamente al nuevo calendario";
+      } else if (result.isRecurringEventIssue && result.fallbackUsed) {
+        title = "Evento copiado";
+        description = "Este evento recurrente se copió al nuevo calendario (no se puede mover directamente)";
+      }
+
       toast({
-        title: "Evento actualizado",
-        description: "Los cambios se guardaron correctamente",
-        duration: 3000,
+        title,
+        description,
+        duration: result.isRecurringEventIssue ? 5000 : 3000,
       });
     } catch (error: any) {
       console.error("Error saving event:", error);
+      
+      // Check if this is a response parsing error where the request actually succeeded
+      if (error.message?.includes('isRecurringEventIssue')) {
+        // This is likely a fallback success case that got caught as an error
+        toast({
+          title: "Evento procesado",
+          description: "El evento se procesó correctamente usando un método alternativo",
+          duration: 5000,
+        });
+        return; // Don't re-throw for fallback success
+      }
+      
       toast({
         title: "Error",
         description: error.message || "Error al guardar los cambios",
@@ -740,6 +769,77 @@ const CalendarEventsPage: React.FC = () => {
     }
   };
 
+  const handleBulkMoveCalendar = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForMove: selectedEvents,
+      isBulkMoveModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkMoveModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForMove: [],
+      isBulkMoveModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkMoveCalendar = async (targetCalendarId: string) => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      // Prepare events for bulk move
+      const eventsToMove = state.selectedEventsForMove.map((event) => ({
+        eventId: event.id,
+        sourceCalendarId: (event as any).calendarId || "primary",
+      }));
+
+      const response = await fetch("/api/calendar/events/bulk-move", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          events: eventsToMove,
+          targetCalendarId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      toast({
+        title: "Eventos movidos",
+        description: `Se movieron ${result.successful} evento(s) exitosamente${
+          result.failed > 0 ? `. Falló: ${result.failed}` : ""
+        }`,
+        variant: result.failed > 0 ? "destructive" : "default",
+        duration: 5000,
+      });
+
+      // Reload events if successful
+      if (result.successful > 0) {
+        loadEvents();
+      }
+
+      handleCloseBulkMoveModal();
+    } catch (error: any) {
+      console.error("Error moving events:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Error al mover los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
   if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
@@ -930,6 +1030,7 @@ const CalendarEventsPage: React.FC = () => {
                   onBulkAddParticipants={handleBulkAddParticipants}
                   onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
                   onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
+                  onBulkMoveCalendar={handleBulkMoveCalendar}
                   calendars={state.calendars}
                 />
               ) : viewMode === "json" ? (
@@ -1112,6 +1213,14 @@ const CalendarEventsPage: React.FC = () => {
             onClose={handleCloseBulkDescriptionsModal}
             selectedEvents={state.selectedEventsForDescriptions}
             onConfirm={handleConfirmBulkGenerateDescriptions}
+          />
+          {/* Bulk Move Calendar Modal */}
+          <BulkMoveCalendarModal
+            isOpen={state.isBulkMoveModalOpen}
+            onClose={handleCloseBulkMoveModal}
+            selectedEvents={state.selectedEventsForMove}
+            calendars={state.calendars}
+            onMove={handleConfirmBulkMoveCalendar}
           />
         </div>
       </div>

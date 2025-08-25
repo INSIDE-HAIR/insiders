@@ -13,6 +13,7 @@ interface BulkActionsBarProps {
   onBulkAddParticipants: () => void;
   onBulkGenerateMeetLinks: () => void;
   onBulkGenerateDescriptions: () => void;
+  onBulkMoveCalendar: () => void;
   onExportSelected: () => void;
   onDeselectAll: () => void;
 }
@@ -23,6 +24,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   onBulkAddParticipants,
   onBulkGenerateMeetLinks,
   onBulkGenerateDescriptions,
+  onBulkMoveCalendar,
   onExportSelected,
   onDeselectAll,
 }) => {
@@ -102,6 +104,23 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
             >
               <Icons.FileText className='mr-2 h-4 w-4' />
               Generar Descripciones
+            </Button>
+          </BulkActionTooltip>
+
+          {/* Move to Calendar */}
+          <BulkActionTooltip
+            action='move-calendar'
+            count={selectedCount}
+            onClick={onBulkMoveCalendar}
+          >
+            <Button
+              variant='default'
+              size='sm'
+              onClick={onBulkMoveCalendar}
+              className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
+            >
+              <Icons.Calendar className='mr-2 h-4 w-4' />
+              Mover Calendario
             </Button>
           </BulkActionTooltip>
 

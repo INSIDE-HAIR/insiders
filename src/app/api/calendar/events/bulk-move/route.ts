@@ -66,78 +66,93 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        // First, get the event details from the source calendar
-        const event = await calendarService.getEvent(sourceCalendarId, eventId);
-        if (!event) {
-          results.failed++;
-          results.errors.push({
-            eventId,
-            error: "Event not found in source calendar",
-          });
-          continue;
-        }
-
-        // Create a copy of the event in the target calendar
-        // Convert the Google Calendar Event back to a form format for creation
-        const eventForm = {
-          summary: event.summary,
-          description: event.description || "",
-          location: event.location || "",
-          startDate:
-            event.start?.date || event.start?.dateTime?.split("T")[0] || "",
-          startTime: event.start?.dateTime
-            ? event.start.dateTime.split("T")[1]?.substring(0, 5)
-            : undefined,
-          endDate: event.end?.date || event.end?.dateTime?.split("T")[0] || "",
-          endTime: event.end?.dateTime
-            ? event.end.dateTime.split("T")[1]?.substring(0, 5)
-            : undefined,
-          allDay: !!event.start?.date,
-          timeZone: event.start?.timeZone || "Europe/Madrid",
-          calendarId: targetCalendarId,
-          attendees:
-            event.attendees?.map((att) => ({
-              email: att.email,
-              displayName: att.displayName,
-              optional: att.optional,
-            })) || [],
-          reminders: event.reminders?.overrides || [],
-          visibility: (event.visibility as any) || "default",
-          transparency: (event.transparency as any) || "opaque",
-          guestsCanInviteOthers: event.guestsCanInviteOthers || false,
-          guestsCanModify: event.guestsCanModify || false,
-          guestsCanSeeOtherGuests: event.guestsCanSeeOtherGuests || true,
-          conferenceData: event.conferenceData,
-        };
-
-        const newEvent = await calendarService.createEvent(
-          eventForm,
-          targetCalendarId
-        );
-
-        if (!newEvent) {
-          results.failed++;
-          results.errors.push({
-            eventId,
-            title: event.summary,
-            error: "Failed to create event in target calendar",
-          });
-          continue;
-        }
-
-        // Delete the original event from the source calendar
+        // Use the new moveEvent method which maintains the event ID
         try {
-          await calendarService.deleteEvent(sourceCalendarId, eventId);
-        } catch (deleteError) {
-          // If deletion fails, we should probably delete the copy we just created
-          // to avoid duplicates, but for now we'll just log the error
-          console.warn(
-            `Failed to delete original event ${eventId} from ${sourceCalendarId} after copying to ${targetCalendarId}:`,
-            deleteError
+          const movedEvent = await calendarService.moveEvent(
+            sourceCalendarId,
+            eventId,
+            targetCalendarId
           );
-        }
 
-        results.successful++;
+          if (movedEvent) {
+            results.successful++;
+          } else {
+            throw new Error("Move operation returned no event");
+          }
+        } catch (moveError: any) {
+          // If move fails, try the copy-delete approach as fallback
+          console.warn(`Move API failed for event ${eventId}, trying copy-delete approach:`, moveError);
+          
+          // First, get the event details from the source calendar
+          const event = await calendarService.getEvent(sourceCalendarId, eventId);
+          if (!event) {
+            results.failed++;
+            results.errors.push({
+              eventId,
+              error: "Event not found in source calendar",
+            });
+            continue;
+          }
+
+          // Create a copy of the event in the target calendar
+          const eventForm = {
+            summary: event.summary,
+            description: event.description || "",
+            location: event.location || "",
+            startDate:
+              event.start?.date || event.start?.dateTime?.split("T")[0] || "",
+            startTime: event.start?.dateTime
+              ? event.start.dateTime.split("T")[1]?.substring(0, 5)
+              : undefined,
+            endDate: event.end?.date || event.end?.dateTime?.split("T")[0] || "",
+            endTime: event.end?.dateTime
+              ? event.end.dateTime.split("T")[1]?.substring(0, 5)
+              : undefined,
+            allDay: !!event.start?.date,
+            timeZone: event.start?.timeZone || "Europe/Madrid",
+            calendarId: targetCalendarId,
+            attendees:
+              event.attendees?.map((att) => ({
+                email: att.email,
+                displayName: att.displayName,
+                optional: att.optional,
+              })) || [],
+            reminders: event.reminders?.overrides || [],
+            visibility: (event.visibility as any) || "default",
+            transparency: (event.transparency as any) || "opaque",
+            guestsCanInviteOthers: event.guestsCanInviteOthers || false,
+            guestsCanModify: event.guestsCanModify || false,
+            guestsCanSeeOtherGuests: event.guestsCanSeeOtherGuests || true,
+            conferenceData: event.conferenceData,
+          };
+
+          const newEvent = await calendarService.createEvent(
+            eventForm,
+            targetCalendarId
+          );
+
+          if (!newEvent) {
+            results.failed++;
+            results.errors.push({
+              eventId,
+              title: event.summary,
+              error: "Failed to create event in target calendar",
+            });
+            continue;
+          }
+
+          // Delete the original event from the source calendar
+          try {
+            await calendarService.deleteEvent(sourceCalendarId, eventId);
+          } catch (deleteError) {
+            console.warn(
+              `Failed to delete original event ${eventId} from ${sourceCalendarId} after copying to ${targetCalendarId}:`,
+              deleteError
+            );
+          }
+
+          results.successful++;
+        }
       } catch (error: any) {
         console.error(`Error moving event ${eventRequest.eventId}:`, error);
         results.failed++;
