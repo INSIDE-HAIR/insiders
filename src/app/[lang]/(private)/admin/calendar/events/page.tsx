@@ -31,13 +31,6 @@ import {
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { DataTable } from "./components/DataTable";
 import { useEventsColumns } from "./columns";
@@ -50,6 +43,7 @@ import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescript
 import { BulkMoveCalendarModal } from "./components/BulkMoveCalendarModal";
 import { BulkDateTimeModal } from "./components/BulkDateTimeModal";
 import { ParticipantKPIGrid } from "./components/ParticipantKPIGrid";
+import { DateTimeRangePicker } from "@/src/components/ui/date-picker";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
 import { Spinner } from "@/src/components/ui/spinner";
@@ -106,7 +100,10 @@ const CalendarEventsPage: React.FC = () => {
     viewMode,
     visibleColumns,
     attendeesFilter,
+    customStartDate,
+    customEndDate,
     setTimeRange,
+    setCustomDateRange,
     setSearch,
     setViewMode,
     setColumnVisibility,
@@ -206,22 +203,44 @@ const CalendarEventsPage: React.FC = () => {
               timeMax = endOfDay.toISOString();
               break;
             case "week":
-              timeMin = now.toISOString();
-              const weekFromNow = new Date(now);
-              weekFromNow.setDate(weekFromNow.getDate() + 7);
-              timeMax = weekFromNow.toISOString();
+              // Current week: Monday to Sunday
+              const startOfWeek = new Date(now);
+              const dayOfWeek = startOfWeek.getDay();
+              const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
+              startOfWeek.setDate(startOfWeek.getDate() + diff);
+              startOfWeek.setHours(0, 0, 0, 0);
+              
+              const endOfWeek = new Date(startOfWeek);
+              endOfWeek.setDate(endOfWeek.getDate() + 6);
+              endOfWeek.setHours(23, 59, 59, 999);
+              
+              timeMin = startOfWeek.toISOString();
+              timeMax = endOfWeek.toISOString();
               break;
             case "month":
-              timeMin = now.toISOString();
-              const monthFromNow = new Date(now);
-              monthFromNow.setMonth(monthFromNow.getMonth() + 1);
-              timeMax = monthFromNow.toISOString();
+              // Current month: 1st to last day of month
+              const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+              startOfMonth.setHours(0, 0, 0, 0);
+              
+              const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+              endOfMonth.setHours(23, 59, 59, 999);
+              
+              timeMin = startOfMonth.toISOString();
+              timeMax = endOfMonth.toISOString();
               break;
             case "all":
               // Sin límite temporal, comenzar desde hace 1 mes
               const monthAgo = new Date(now);
               monthAgo.setMonth(monthAgo.getMonth() - 1);
               timeMin = monthAgo.toISOString();
+              break;
+            case "custom":
+              if (customStartDate && customStartDate instanceof Date && !isNaN(customStartDate.getTime())) {
+                timeMin = customStartDate.toISOString();
+              }
+              if (customEndDate && customEndDate instanceof Date && !isNaN(customEndDate.getTime())) {
+                timeMax = customEndDate.toISOString();
+              }
               break;
           }
 
@@ -271,7 +290,7 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, [activeCalendars, timeRange, debouncedSearch]);
+  }, [activeCalendars, timeRange, debouncedSearch, customStartDate, customEndDate]);
 
   // Cargar datos iniciales - solo una vez cuando se autentica
   useEffect(() => {
@@ -286,7 +305,7 @@ const CalendarEventsPage: React.FC = () => {
     if (state.calendars.length > 0 && activeCalendars.length > 0) {
       loadEvents();
     }
-  }, [activeCalendars, timeRange, debouncedSearch, state.calendars.length, loadEvents]);
+  }, [activeCalendars, timeRange, debouncedSearch, state.calendars.length, customStartDate, customEndDate, loadEvents]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
@@ -1020,51 +1039,111 @@ const CalendarEventsPage: React.FC = () => {
             <CardContent className='p-4 md:p-6'>
               <div className='space-y-4'>
                 {/* Primera fila: Calendarios, Período, Invitados */}
-                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-                  {/* Calendar Multi-Selection */}
-                  <div>
-                    <label className='block text-sm font-medium text-foreground mb-2'>
-                      Calendarios
-                    </label>
-                    <CalendarMultiSelect calendars={state.calendars} />
+                <div className="space-y-4">
+                  {/* Row 1: Calendar Multi-Selection and Attendees Filter */}
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    {/* Calendar Multi-Selection */}
+                    <div>
+                      <label className='block text-sm font-medium text-foreground mb-2'>
+                        Calendarios
+                      </label>
+                      <CalendarMultiSelect calendars={state.calendars} />
+                    </div>
+
+                    {/* Attendees Filter */}
+                    <div>
+                      <label className='block text-sm font-medium text-foreground mb-2'>
+                        Filtrar por Invitados
+                      </label>
+                      <AttendeesFilter
+                        events={state.events}
+                        selectedAttendees={attendeesFilter}
+                        onSelectionChange={setAttendeesFilter}
+                      />
+                    </div>
                   </div>
 
-                  {/* Time Range */}
+                  {/* Row 2: Time Range Presets */}
                   <div>
                     <label className='block text-sm font-medium text-foreground mb-2'>
                       Período
                     </label>
-                    <Select
-                      value={timeRange}
-                      onValueChange={(value) => setTimeRange(value as any)}
-                    >
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Seleccionar período' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='all'>Todos</SelectItem>
-                        <SelectItem value='upcoming'>Próximos</SelectItem>
-                        <SelectItem value='today'>Hoy</SelectItem>
-                        <SelectItem value='week'>Esta semana</SelectItem>
-                        <SelectItem value='month'>Este mes</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Attendees Filter */}
-                  <div>
-                    <label className='block text-sm font-medium text-foreground mb-2'>
-                      Filtrar por Invitados
-                    </label>
-                    <AttendeesFilter
-                      events={state.events}
-                      selectedAttendees={attendeesFilter}
-                      onSelectionChange={setAttendeesFilter}
-                    />
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant={timeRange === 'all' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('all')}
+                        className="text-xs"
+                      >
+                        Todos
+                      </Button>
+                      <Button
+                        variant={timeRange === 'today' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('today')}
+                        className="text-xs"
+                      >
+                        Hoy
+                      </Button>
+                      <Button
+                        variant={timeRange === 'week' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('week')}
+                        className="text-xs"
+                      >
+                        Esta semana
+                      </Button>
+                      <Button
+                        variant={timeRange === 'month' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('month')}
+                        className="text-xs"
+                      >
+                        Este mes
+                      </Button>
+                      <Button
+                        variant={timeRange === 'upcoming' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('upcoming')}
+                        className="text-xs"
+                      >
+                        Próximos
+                      </Button>
+                      <Button
+                        variant={timeRange === 'custom' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setTimeRange('custom')}
+                        className="text-xs"
+                      >
+                        <CalendarIcon className="h-3 w-3 mr-1" />
+                        Personalizado
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Segunda fila: Búsqueda */}
+                {/* Custom Date Range Picker - Only show when timeRange is 'custom' */}
+                {timeRange === 'custom' && (
+                  <div className="mt-4">
+                    <DateTimeRangePicker
+                      startValue={customStartDate}
+                      endValue={customEndDate}
+                      onStartChange={(date) => {
+                        setCustomDateRange(date, customEndDate);
+                      }}
+                      onEndChange={(date) => {
+                        setCustomDateRange(customStartDate, date);
+                      }}
+                      hourCycle={24}
+                      granularity="minute"
+                      startPlaceholder="Fecha y hora de inicio"
+                      endPlaceholder="Fecha y hora de fin"
+                      className="max-w-md"
+                    />
+                  </div>
+                )}
+
+                {/* Row 3: Search */}
                 <div>
                   <label className='block text-sm font-medium text-foreground mb-2'>
                     Buscar eventos
@@ -1112,22 +1191,44 @@ const CalendarEventsPage: React.FC = () => {
                     end = endOfDay.toISOString();
                     break;
                   case "week":
-                    start = now.toISOString();
-                    const weekFromNow = new Date(now);
-                    weekFromNow.setDate(weekFromNow.getDate() + 7);
-                    end = weekFromNow.toISOString();
+                    // Current week: Monday to Sunday
+                    const startOfWeek = new Date(now);
+                    const dayOfWeek = startOfWeek.getDay();
+                    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
+                    startOfWeek.setDate(startOfWeek.getDate() + diff);
+                    startOfWeek.setHours(0, 0, 0, 0);
+                    
+                    const endOfWeek = new Date(startOfWeek);
+                    endOfWeek.setDate(endOfWeek.getDate() + 6);
+                    endOfWeek.setHours(23, 59, 59, 999);
+                    
+                    start = startOfWeek.toISOString();
+                    end = endOfWeek.toISOString();
                     break;
                   case "month":
-                    start = now.toISOString();
-                    const monthFromNow = new Date(now);
-                    monthFromNow.setMonth(monthFromNow.getMonth() + 1);
-                    end = monthFromNow.toISOString();
+                    // Current month: 1st to last day of month
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    startOfMonth.setHours(0, 0, 0, 0);
+                    
+                    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                    endOfMonth.setHours(23, 59, 59, 999);
+                    
+                    start = startOfMonth.toISOString();
+                    end = endOfMonth.toISOString();
                     break;
                   case "all":
                     // Sin límite temporal, comenzar desde hace 1 mes
                     const monthAgo = new Date(now);
                     monthAgo.setMonth(monthAgo.getMonth() - 1);
                     start = monthAgo.toISOString();
+                    break;
+                  case "custom":
+                    if (customStartDate && customStartDate instanceof Date && !isNaN(customStartDate.getTime())) {
+                      start = customStartDate.toISOString();
+                    }
+                    if (customEndDate && customEndDate instanceof Date && !isNaN(customEndDate.getTime())) {
+                      end = customEndDate.toISOString();
+                    }
                     break;
                 }
 

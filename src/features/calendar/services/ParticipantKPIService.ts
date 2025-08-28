@@ -26,6 +26,12 @@ export class ParticipantKPIService {
         needsActionEvents: 0,
         completedEvents: 0,
         upcomingEvents: 0,
+        totalDurationMinutes: 0,
+        acceptedDurationMinutes: 0,
+        declinedDurationMinutes: 0,
+        needsActionDurationMinutes: 0,
+        completedDurationMinutes: 0,
+        upcomingDurationMinutes: 0,
         participationRate: 0,
         responseRate: 0
       };
@@ -60,29 +66,39 @@ export class ParticipantKPIService {
 
           // Incrementar contador total
           kpi.totalEvents++;
+          
+          // Calcular duración del evento y agregar al total
+          const eventDuration = this.calculateEventDuration(event);
+          kpi.totalDurationMinutes += eventDuration;
 
-          // Contar por estado de respuesta
+          // Contar por estado de respuesta y agregar duración correspondiente
           switch (attendee.responseStatus) {
             case AttendeeResponseStatus.ACCEPTED:
               kpi.acceptedEvents++;
+              kpi.acceptedDurationMinutes += eventDuration;
               break;
             case AttendeeResponseStatus.DECLINED:
               kpi.declinedEvents++;
+              kpi.declinedDurationMinutes += eventDuration;
               break;
             case AttendeeResponseStatus.TENTATIVE:
               // Las tentativas las consideramos como sin respuesta definida
               kpi.needsActionEvents++;
+              kpi.needsActionDurationMinutes += eventDuration;
               break;
             case AttendeeResponseStatus.NEEDS_ACTION:
               kpi.needsActionEvents++;
+              kpi.needsActionDurationMinutes += eventDuration;
               break;
           }
 
-          // Contar eventos completados vs pendientes
+          // Contar eventos completados vs pendientes y agregar duración correspondiente
           if (isCompleted) {
             kpi.completedEvents++;
+            kpi.completedDurationMinutes += eventDuration;
           } else {
             kpi.upcomingEvents++;
+            kpi.upcomingDurationMinutes += eventDuration;
           }
         });
       }
@@ -101,6 +117,49 @@ export class ParticipantKPIService {
     });
 
     return kpisMap;
+  }
+
+  /**
+   * Calcula la duración de un evento en minutos
+   */
+  private calculateEventDuration(event: GoogleCalendarEvent): number {
+    try {
+      let startTime: Date;
+      let endTime: Date;
+
+      // Obtener fecha/hora de inicio
+      if (event.start?.dateTime) {
+        startTime = new Date(event.start.dateTime);
+      } else if (event.start?.date) {
+        // Para eventos de todo el día, usar inicio del día
+        startTime = new Date(event.start.date);
+        startTime.setHours(0, 0, 0, 0);
+      } else {
+        return 0; // No se puede calcular sin fecha de inicio
+      }
+
+      // Obtener fecha/hora de fin
+      if (event.end?.dateTime) {
+        endTime = new Date(event.end.dateTime);
+      } else if (event.end?.date) {
+        // Para eventos de todo el día, usar final del día
+        endTime = new Date(event.end.date);
+        endTime.setHours(23, 59, 59, 999);
+      } else {
+        // Si no hay fecha de fin, asumir 1 hora de duración por defecto
+        endTime = new Date(startTime);
+        endTime.setHours(startTime.getHours() + 1);
+      }
+
+      // Calcular diferencia en minutos
+      const durationMs = endTime.getTime() - startTime.getTime();
+      const durationMinutes = Math.max(0, Math.round(durationMs / (1000 * 60)));
+
+      return durationMinutes;
+    } catch (error) {
+      console.error('Error calculating event duration:', error);
+      return 0;
+    }
   }
 
   /**

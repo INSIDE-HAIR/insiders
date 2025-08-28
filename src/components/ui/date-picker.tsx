@@ -901,5 +901,277 @@ const DateTimePicker = React.forwardRef<
 
 DateTimePicker.displayName = "DateTimePicker";
 
-export { DateTimePicker, TimePickerInput, TimePicker };
-export type { TimePickerType, DateTimePickerProps, DateTimePickerRef };
+// Date/Time Range Picker Component
+type DateTimeRangePickerProps = {
+  startValue?: Date;
+  endValue?: Date;
+  onStartChange?: (date: Date | undefined) => void;
+  onEndChange?: (date: Date | undefined) => void;
+  disabled?: boolean;
+  hourCycle?: 12 | 24;
+  startPlaceholder?: string;
+  endPlaceholder?: string;
+  yearRange?: number;
+  displayFormat?: { hour24?: string; hour12?: string };
+  granularity?: Granularity;
+  className?: string;
+  startClassName?: string;
+  endClassName?: string;
+  minStartDate?: Date;
+  maxStartDate?: Date;
+  minEndDate?: Date;
+  maxEndDate?: Date;
+} & Pick<
+  DayPickerProps,
+  "locale" | "weekStartsOn" | "showWeekNumber" | "showOutsideDays"
+>;
+
+const DateTimeRangePicker = React.forwardRef<
+  HTMLDivElement,
+  DateTimeRangePickerProps
+>(
+  (
+    {
+      locale = enUS,
+      startValue,
+      endValue,
+      onStartChange,
+      onEndChange,
+      hourCycle = 24,
+      yearRange = 50,
+      disabled = false,
+      displayFormat,
+      granularity = "minute",
+      startPlaceholder = "Fecha y hora de inicio",
+      endPlaceholder = "Fecha y hora de fin",
+      className,
+      startClassName,
+      endClassName,
+      minStartDate,
+      maxStartDate,
+      minEndDate,
+      maxEndDate,
+      ...props
+    },
+    ref
+  ) => {
+    const [startMonth, setStartMonth] = React.useState<Date>(
+      startValue ?? new Date()
+    );
+    const [endMonth, setEndMonth] = React.useState<Date>(
+      endValue ?? new Date()
+    );
+
+    // Auto-set end date when start date changes (if end is not set or is before start)
+    const handleStartChange = (date: Date | undefined) => {
+      onStartChange?.(date);
+      
+      if (date && (!endValue || endValue < date)) {
+        // Set end date to 1 hour after start date
+        const newEndDate = new Date(date);
+        newEndDate.setHours(date.getHours() + 1);
+        onEndChange?.(newEndDate);
+        setEndMonth(newEndDate);
+      }
+    };
+
+    const handleEndChange = (date: Date | undefined) => {
+      // Ensure end date is not before start date
+      if (date && startValue && date < startValue) {
+        return;
+      }
+      onEndChange?.(date);
+    };
+
+    const initHourFormat = {
+      hour24:
+        displayFormat?.hour24 ??
+        `PPP HH:mm${!granularity || granularity === "second" ? ":ss" : ""}`,
+      hour12:
+        displayFormat?.hour12 ??
+        `PP hh:mm${!granularity || granularity === "second" ? ":ss" : ""} b`,
+    };
+
+    let loc = enUS;
+    const { options, localize, formatLong } = locale;
+    if (options && localize && formatLong) {
+      loc = {
+        ...enUS,
+        options,
+        localize,
+        formatLong,
+      };
+    }
+
+    return (
+      <div ref={ref} className={cn("space-y-4", className)}>
+        {/* Start Date/Time Picker */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">
+            Fecha y hora de inicio
+          </label>
+          <Popover>
+            <PopoverTrigger asChild disabled={disabled}>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !startValue && "text-muted-foreground",
+                  startClassName
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {startValue ? (
+                  format(
+                    startValue,
+                    hourCycle === 24
+                      ? initHourFormat.hour24
+                      : initHourFormat.hour12,
+                    { locale: loc }
+                  )
+                ) : (
+                  <span>{startPlaceholder}</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={startValue}
+                month={startMonth}
+                onSelect={(newDate) => {
+                  if (newDate) {
+                    newDate.setHours(
+                      startMonth?.getHours() ?? 0,
+                      startMonth?.getMinutes() ?? 0,
+                      startMonth?.getSeconds() ?? 0
+                    );
+                    handleStartChange(newDate);
+                    setStartMonth(newDate);
+                  }
+                }}
+                onMonthChange={(month) => {
+                  if (month) setStartMonth(month);
+                }}
+                yearRange={yearRange}
+                locale={locale}
+                fromDate={minStartDate}
+                toDate={maxStartDate}
+                {...props}
+              />
+              {granularity !== "day" && (
+                <div className="border-border border-t p-3">
+                  <TimePicker
+                    onChange={(value) => {
+                      handleStartChange(value);
+                      if (value) {
+                        setStartMonth(value);
+                      }
+                    }}
+                    date={startMonth}
+                    hourCycle={hourCycle}
+                    granularity={granularity}
+                  />
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* End Date/Time Picker */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">
+            Fecha y hora de fin
+          </label>
+          <Popover>
+            <PopoverTrigger asChild disabled={disabled}>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !endValue && "text-muted-foreground",
+                  endClassName
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {endValue ? (
+                  format(
+                    endValue,
+                    hourCycle === 24
+                      ? initHourFormat.hour24
+                      : initHourFormat.hour12,
+                    { locale: loc }
+                  )
+                ) : (
+                  <span>{endPlaceholder}</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={endValue}
+                month={endMonth}
+                onSelect={(newDate) => {
+                  if (newDate) {
+                    newDate.setHours(
+                      endMonth?.getHours() ?? 0,
+                      endMonth?.getMinutes() ?? 0,
+                      endMonth?.getSeconds() ?? 0
+                    );
+                    handleEndChange(newDate);
+                    setEndMonth(newDate);
+                  }
+                }}
+                onMonthChange={(month) => {
+                  if (month) setEndMonth(month);
+                }}
+                yearRange={yearRange}
+                locale={locale}
+                fromDate={minEndDate || startValue}
+                toDate={maxEndDate}
+                disabled={(date) => {
+                  // Disable dates before start date
+                  return startValue ? date < startValue : false;
+                }}
+                {...props}
+              />
+              {granularity !== "day" && (
+                <div className="border-border border-t p-3">
+                  <TimePicker
+                    onChange={(value) => {
+                      handleEndChange(value);
+                      if (value) {
+                        setEndMonth(value);
+                      }
+                    }}
+                    date={endMonth}
+                    hourCycle={hourCycle}
+                    granularity={granularity}
+                  />
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Validation Message */}
+        {startValue && endValue && endValue < startValue && (
+          <div className="text-sm text-destructive">
+            La fecha de fin debe ser posterior a la fecha de inicio
+          </div>
+        )}
+      </div>
+    );
+  }
+);
+
+DateTimeRangePicker.displayName = "DateTimeRangePicker";
+
+export { DateTimePicker, DateTimeRangePicker, TimePickerInput, TimePicker };
+export type { 
+  TimePickerType, 
+  DateTimePickerProps, 
+  DateTimePickerRef,
+  DateTimeRangePickerProps
+};

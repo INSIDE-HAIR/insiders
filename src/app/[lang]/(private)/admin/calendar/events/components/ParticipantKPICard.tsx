@@ -6,6 +6,7 @@ import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Skeleton } from "@/src/components/ui/skeleton";
 import { ParticipantKPI } from "@/src/features/calendar/types/participant-kpis";
+import { formatMinutesToHHMM } from "@/src/lib/utils/time";
 import {
   XMarkIcon,
   CalendarIcon,
@@ -74,7 +75,7 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
   };
 
   return (
-    <Card className="relative hover:shadow-lg transition-shadow border-2">
+    <Card className="relative hover:bg-muted/10 transition-colors border-2">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -111,6 +112,17 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
           </div>
         </div>
 
+        {/* Total de duración */}
+        <div className="flex items-center justify-between bg-muted/20 p-2 rounded-md">
+          <div className="flex items-center gap-2">
+            <ClockIcon className="h-4 w-4 text-foreground/80" />
+            <span className="text-sm font-semibold text-foreground">Total Duración</span>
+          </div>
+          <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-xs flex items-center gap-1">
+            {formatMinutesToHHMM(kpi.totalDurationMinutes || 0)}
+          </div>
+        </div>
+
         {/* Estado de respuestas */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
@@ -118,19 +130,37 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
           </div>
           
           <div className="flex flex-wrap gap-2">
-            <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-xs flex items-center gap-1">
-              <CheckCircleIcon className="h-3 w-3" />
-              <span>Aceptadas: {kpi.acceptedEvents} ({Math.round(responseDistribution.accepted)}%)</span>
+            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-white border-emerald-500/30 text-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircleIcon className="h-3 w-3 text-emerald-600" />
+                <span>Aceptadas: {kpi.acceptedEvents} ({Math.round(responseDistribution.accepted)}%)</span>
+              </div>
+              <div className="text-white text-xs pl-5 flex items-center gap-1">
+                <ClockIcon className="h-3 w-3 text-emerald-600" />
+                {formatMinutesToHHMM(kpi.acceptedDurationMinutes || 0)}
+              </div>
             </div>
             
-            <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-destructive/20 bg-destructive/10 text-destructive border-destructive/30 text-xs flex items-center gap-1">
-              <XCircleIcon className="h-3 w-3" />
-              <span>Rechazadas: {kpi.declinedEvents} ({Math.round(responseDistribution.declined)}%)</span>
+            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-destructive/20 bg-destructive/10 text-white border-destructive/30 text-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <XCircleIcon className="h-3 w-3 text-destructive" />
+                <span>Rechazadas: {kpi.declinedEvents} ({Math.round(responseDistribution.declined)}%)</span>
+              </div>
+              <div className="text-white text-xs pl-5 flex items-center gap-1">
+                <ClockIcon className="h-3 w-3 text-destructive" />
+                {formatMinutesToHHMM(kpi.declinedDurationMinutes || 0)}
+              </div>
             </div>
             
-            <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs flex items-center gap-1">
-              <ClockIcon className="h-3 w-3" />
-              <span>Sin respuesta: {kpi.needsActionEvents} ({Math.round(responseDistribution.needsAction)}%)</span>
+            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-white border-yellow-500/30 text-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <ClockIcon className="h-3 w-3 text-yellow-600" />
+                <span>Sin respuesta: {kpi.needsActionEvents} ({Math.round(responseDistribution.needsAction)}%)</span>
+              </div>
+              <div className="text-white text-xs pl-5 flex items-center gap-1">
+                <ClockIcon className="h-3 w-3 text-yellow-600" />
+                {formatMinutesToHHMM(kpi.needsActionDurationMinutes || 0)}
+              </div>
             </div>
           </div>
         </div>
@@ -142,12 +172,26 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
           </div>
           
           <div className="flex flex-wrap gap-2">
-            <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-xs flex items-center gap-1">
-              <span>Realizadas: {kpi.completedEvents}</span>
+            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-white border-emerald-500/30 text-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <CheckCircleIcon className="h-3 w-3 text-emerald-600" />
+                <span>Realizadas: {kpi.completedEvents}</span>
+              </div>
+              <div className="text-white text-xs flex items-center gap-1">
+                <ClockIcon className="h-3 w-3 text-emerald-600" />
+                {formatMinutesToHHMM(kpi.completedDurationMinutes || 0)}
+              </div>
             </div>
             
-            <div className="rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-xs flex items-center gap-1">
-              <span>Pendientes: {kpi.upcomingEvents}</span>
+            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-white border-yellow-500/30 text-xs">
+              <div className="flex items-center gap-2 mb-1">
+                <ClockIcon className="h-3 w-3 text-yellow-600" />
+                <span>Pendientes: {kpi.upcomingEvents}</span>
+              </div>
+              <div className="text-white text-xs flex items-center gap-1">
+                <ClockIcon className="h-3 w-3 text-yellow-600" />
+                {formatMinutesToHHMM(kpi.upcomingDurationMinutes || 0)}
+              </div>
             </div>
           </div>
         </div>
@@ -191,7 +235,7 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
                   <span className="text-sm font-semibold text-foreground">Tasa de Aceptación</span>
                 </div>
                 <div className={badgeClasses}>
-                  {kpi.participationRate}%
+                  <span className="text-white">{kpi.participationRate}%</span>
                 </div>
               </div>
               <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>
@@ -249,7 +293,7 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
                   <span className="text-sm font-semibold text-foreground">Tasa de Sesiones</span>
                 </div>
                 <div className={badgeClasses}>
-                  {sessionRate}%
+                  <span className="text-white">{sessionRate}%</span>
                 </div>
               </div>
               <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>
@@ -307,7 +351,7 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
                   <span className="text-sm font-semibold text-foreground">Tasa de Respuestas</span>
                 </div>
                 <div className={badgeClasses}>
-                  {responseRate}%
+                  <span className="text-white">{responseRate}%</span>
                 </div>
               </div>
               <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>

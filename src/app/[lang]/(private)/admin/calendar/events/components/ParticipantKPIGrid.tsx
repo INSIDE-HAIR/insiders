@@ -16,9 +16,13 @@ import {
   UserGroupIcon,
   ArrowPathIcon,
   InformationCircleIcon,
-  ChartBarIcon
+  ChartBarIcon,
+  CalendarIcon,
+  CheckCircleIcon,
+  ClockIcon
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatMinutesToHHMM } from "@/src/lib/utils/time";
 
 interface ParticipantKPIGridProps {
   selectedAttendees: string[];
@@ -68,6 +72,122 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
       .map(email => kpis[email])
       .filter((kpi): kpi is ParticipantKPI => Boolean(kpi));
   }, [selectedAttendees, kpis]);
+
+  // Calculate unique session-based KPIs
+  const uniqueSessionKPIs = useMemo(() => {
+    if (selectedKPIs.length === 0 || events.length === 0) {
+      return {
+        totalUniqueSessions: 0,
+        avgAcceptanceRate: 0,
+        avgResponseRate: 0,
+        completedUniqueSessions: 0,
+        totalDurationMinutes: 0
+      };
+    }
+
+    // Create a map of unique events based on event ID
+    const uniqueEventsMap = new Map<string, GoogleCalendarEvent>();
+    events.forEach(event => {
+      if (event.id && !uniqueEventsMap.has(event.id)) {
+        uniqueEventsMap.set(event.id, event);
+      }
+    });
+
+    const uniqueEvents = Array.from(uniqueEventsMap.values());
+    const totalUniqueSessions = uniqueEvents.length;
+
+    // Filter events that have selected attendees
+    const relevantEvents = uniqueEvents.filter(event => 
+      event.attendees?.some(attendee => 
+        selectedAttendees.includes(attendee.email)
+      )
+    );
+
+    if (relevantEvents.length === 0) {
+      return {
+        totalUniqueSessions: 0,
+        avgAcceptanceRate: 0,
+        avgResponseRate: 0,
+        completedUniqueSessions: 0,
+        totalDurationMinutes: 0
+      };
+    }
+
+    // Helper function to calculate event duration in minutes
+    const calculateEventDuration = (event: GoogleCalendarEvent): number => {
+      try {
+        let startTime: Date;
+        let endTime: Date;
+
+        // Get start time
+        if (event.start?.dateTime) {
+          startTime = new Date(event.start.dateTime);
+        } else if (event.start?.date) {
+          startTime = new Date(event.start.date);
+          startTime.setHours(0, 0, 0, 0);
+        } else {
+          return 0;
+        }
+
+        // Get end time
+        if (event.end?.dateTime) {
+          endTime = new Date(event.end.dateTime);
+        } else if (event.end?.date) {
+          endTime = new Date(event.end.date);
+          endTime.setHours(23, 59, 59, 999);
+        } else {
+          // Default to 1 hour if no end time
+          endTime = new Date(startTime);
+          endTime.setHours(startTime.getHours() + 1);
+        }
+
+        const durationMs = endTime.getTime() - startTime.getTime();
+        return Math.max(0, Math.round(durationMs / (1000 * 60)));
+      } catch (error) {
+        return 0;
+      }
+    };
+
+    // Calculate acceptance and response rates per session
+    let totalAcceptanceRate = 0;
+    let totalResponseRate = 0;
+    let completedUniqueSessions = 0;
+    let totalDurationMinutes = 0;
+
+    relevantEvents.forEach(event => {
+      const selectedAttendeesInEvent = event.attendees?.filter(attendee => 
+        selectedAttendees.includes(attendee.email)
+      ) || [];
+
+      if (selectedAttendeesInEvent.length > 0) {
+        const acceptedCount = selectedAttendeesInEvent.filter(a => a.responseStatus === 'accepted').length;
+        const respondedCount = selectedAttendeesInEvent.filter(a => a.responseStatus !== 'needsAction').length;
+        
+        const sessionAcceptanceRate = (acceptedCount / selectedAttendeesInEvent.length) * 100;
+        const sessionResponseRate = (respondedCount / selectedAttendeesInEvent.length) * 100;
+        
+        totalAcceptanceRate += sessionAcceptanceRate;
+        totalResponseRate += sessionResponseRate;
+
+        // Check if session is completed (past event)
+        const eventTime = event.start.dateTime || event.start.date;
+        if (eventTime && new Date(eventTime) < new Date()) {
+          completedUniqueSessions++;
+        }
+      }
+      
+      // Calculate duration for this event and add to total
+      totalDurationMinutes += calculateEventDuration(event);
+    });
+
+    return {
+      totalUniqueSessions: relevantEvents.length,
+      avgAcceptanceRate: Math.round(totalAcceptanceRate / relevantEvents.length),
+      avgResponseRate: Math.round(totalResponseRate / relevantEvents.length),
+      completedUniqueSessions,
+      totalDurationMinutes
+    };
+  }, [selectedKPIs, events, selectedAttendees]);
 
   // Handle remove attendee
   const handleRemoveAttendee = (email: string) => {
@@ -169,6 +289,12 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
                     needsActionEvents: 0,
                     completedEvents: 0,
                     upcomingEvents: 0,
+                    totalDurationMinutes: 0,
+                    acceptedDurationMinutes: 0,
+                    declinedDurationMinutes: 0,
+                    needsActionDurationMinutes: 0,
+                    completedDurationMinutes: 0,
+                    upcomingDurationMinutes: 0,
                     participationRate: 0,
                     responseRate: 0,
                   }}
@@ -209,43 +335,85 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
         </div>
       )}
 
-      {/* Summary stats */}
+      {/* Summary stats - Based on unique sessions */}
       {selectedKPIs.length > 1 && !isLoading && (
-        <div className="mt-6 p-5 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20">
-          <h4 className="text-lg font-bold mb-4 text-foreground flex items-center gap-2">
-            <ChartBarIcon className="h-5 w-5 text-primary" />
-            Resumen General
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white dark:bg-slate-800 p-3 rounded-md border border-border/50 text-center">
-              <span className="text-xs text-muted-foreground/80 font-medium block">Total Eventos</span>
-              <p className="text-2xl font-bold text-primary mt-1">
-                {selectedKPIs.reduce((sum, kpi) => sum + kpi.totalEvents, 0)}
-              </p>
+        <div className="mt-6">
+          <div className="flex items-center justify-between bg-gradient-to-r from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                <ChartBarIcon className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-foreground">Resumen General</h4>
+                <p className="text-xs text-muted-foreground/80">KPIs basados en sesiones únicas</p>
+              </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-3 rounded-md border border-border/50 text-center">
-              <span className="text-xs text-muted-foreground/80 font-medium block">Promedio Participación</span>
-              <p className="text-2xl font-bold text-green-600 mt-1">
-                {Math.round(
-                  selectedKPIs.reduce((sum, kpi) => sum + kpi.participationRate, 0) / 
-                  selectedKPIs.length
-                )}%
-              </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {/* Total Unique Sessions Card */}
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-semibold text-foreground/90">Sesiones Únicas</span>
+                </div>
+              </div>
+              <div className="rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-lg flex items-center justify-center">
+                {uniqueSessionKPIs.totalUniqueSessions}
+              </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-3 rounded-md border border-border/50 text-center">
-              <span className="text-xs text-muted-foreground/80 font-medium block">Promedio Respuesta</span>
-              <p className="text-2xl font-bold text-blue-600 mt-1">
-                {Math.round(
-                  selectedKPIs.reduce((sum, kpi) => sum + kpi.responseRate, 0) / 
-                  selectedKPIs.length
-                )}%
-              </p>
+
+            {/* Average Acceptance Rate Card */}
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <CheckCircleIcon className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-semibold text-foreground/90">Prom. Aceptación</span>
+                </div>
+              </div>
+              <div className="rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-lg flex items-center justify-center">
+                {uniqueSessionKPIs.avgAcceptanceRate}%
+              </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 p-3 rounded-md border border-border/50 text-center">
-              <span className="text-xs text-muted-foreground/80 font-medium block">Eventos Completados</span>
-              <p className="text-2xl font-bold text-purple-600 mt-1">
-                {selectedKPIs.reduce((sum, kpi) => sum + kpi.completedEvents, 0)}
-              </p>
+
+            {/* Average Response Rate Card */}
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <ChartBarIcon className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-semibold text-foreground/90">Prom. Respuesta</span>
+                </div>
+              </div>
+              <div className="rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-lg flex items-center justify-center">
+                {uniqueSessionKPIs.avgResponseRate}%
+              </div>
+            </div>
+
+            {/* Completed Unique Sessions Card */}
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <CheckCircleIcon className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-semibold text-foreground/90">Sesiones Completadas</span>
+                </div>
+              </div>
+              <div className="rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-lg flex items-center justify-center">
+                {uniqueSessionKPIs.completedUniqueSessions}
+              </div>
+            </div>
+
+            {/* Total Duration Card */}
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-4 rounded-lg border border-primary/20 hover:bg-primary/20 transition-colors">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <ClockIcon className="h-4 w-4 text-primary" />
+                  <span className="text-xs font-semibold text-foreground/90">Duración Total</span>
+                </div>
+              </div>
+              <div className="rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-primary/20 bg-primary/10 text-primary border-primary/30 text-lg flex items-center justify-center">
+                {formatMinutesToHHMM(uniqueSessionKPIs.totalDurationMinutes)}
+              </div>
             </div>
           </div>
         </div>
