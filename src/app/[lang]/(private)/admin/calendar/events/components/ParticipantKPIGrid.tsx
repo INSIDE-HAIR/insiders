@@ -64,7 +64,7 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [selectedAttendees, dateRange?.start, dateRange?.end, calendarIds]);
+  }, [selectedAttendees, dateRange?.start, dateRange?.end, calendarIds, fetchKPIs, kpis, removeKPI]);
 
   // Get KPIs for selected attendees
   const selectedKPIs = useMemo(() => {
