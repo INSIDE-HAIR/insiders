@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { DateFilter, RoomStatus } from "../types/room-dates.types";
 
 export interface FilterOption {
   value: string;
@@ -21,6 +22,15 @@ export interface AdvancedFilterState {
   customDateRange: {
     from?: Date;
     to?: Date;
+  };
+  // Nuevos filtros de fecha para salas
+  search?: string;
+  dateFilter?: DateFilter;
+  roomStatus?: RoomStatus[];
+  // Filtro personalizado de fechas de disponibilidad de salas
+  customAvailabilityRange: {
+    startDate?: Date;
+    endDate?: Date;
   };
 }
 
@@ -47,6 +57,10 @@ export const useAdvancedFilters = () => {
     hasTranscripts: null,
     memberCountRange: {},
     customDateRange: {},
+    search: '',
+    dateFilter: DateFilter.ALL,
+    roomStatus: [],
+    customAvailabilityRange: {},
   });
 
   const [isAdvancedMode, setIsAdvancedMode] = useState(false);
@@ -99,6 +113,15 @@ export const useAdvancedFilters = () => {
       }
       if (filterState.customDateRange.to) {
         params.set('toDate', filterState.customDateRange.to.toISOString());
+      }
+      if (filterState.search) {
+        params.set('search', filterState.search);
+      }
+      if (filterState.dateFilter && filterState.dateFilter !== DateFilter.ALL) {
+        params.set('dateFilter', filterState.dateFilter);
+      }
+      if (filterState.roomStatus && filterState.roomStatus.length > 0) {
+        params.set('status', filterState.roomStatus.join(','));
       }
 
       const response = await fetch(`/api/meet/rooms/stats?${params.toString()}`);
@@ -208,6 +231,42 @@ export const useAdvancedFilters = () => {
     }));
   }, []);
 
+  // Search filter
+  const setSearchFilter = useCallback((search: string) => {
+    setFilterState(prev => ({
+      ...prev,
+      search,
+    }));
+  }, []);
+
+  // Date filter
+  const setDateFilter = useCallback((dateFilter: AdvancedFilterState["dateFilter"]) => {
+    setFilterState(prev => ({
+      ...prev,
+      dateFilter,
+      // Si se cambia a un filtro que no es custom, limpiar las fechas personalizadas
+      customAvailabilityRange: dateFilter === DateFilter.CUSTOM ? prev.customAvailabilityRange : {},
+    }));
+  }, []);
+
+  // Custom availability range filter
+  const setCustomAvailabilityRange = useCallback((startDate?: Date, endDate?: Date) => {
+    setFilterState(prev => ({
+      ...prev,
+      customAvailabilityRange: { startDate, endDate },
+      // Auto-cambiar a custom cuando se establecen fechas personalizadas
+      dateFilter: (startDate || endDate) ? DateFilter.CUSTOM : prev.dateFilter === DateFilter.CUSTOM ? DateFilter.ALL : prev.dateFilter,
+    }));
+  }, []);
+
+  // Room status filter
+  const setRoomStatusFilter = useCallback((status: AdvancedFilterState["roomStatus"]) => {
+    setFilterState(prev => ({
+      ...prev,
+      roomStatus: status,
+    }));
+  }, []);
+
   // Clear actions
   const clearAllFilters = useCallback(() => {
     setFilterState({
@@ -219,6 +278,10 @@ export const useAdvancedFilters = () => {
       hasTranscripts: null,
       memberCountRange: {},
       customDateRange: {},
+      search: '',
+      dateFilter: DateFilter.ALL,
+      roomStatus: [],
+      customAvailabilityRange: {},
     });
   }, []);
 
@@ -307,6 +370,13 @@ export const useAdvancedFilters = () => {
     if (filterState.customDateRange.to) {
       params.set('toDate', filterState.customDateRange.to.toISOString());
     }
+    // Filtros de fechas de disponibilidad personalizadas
+    if (filterState.customAvailabilityRange.startDate) {
+      params.set('availabilityStartDate', filterState.customAvailabilityRange.startDate.toISOString());
+    }
+    if (filterState.customAvailabilityRange.endDate) {
+      params.set('availabilityEndDate', filterState.customAvailabilityRange.endDate.toISOString());
+    }
 
     return params;
   }, [filterState]);
@@ -322,7 +392,12 @@ export const useAdvancedFilters = () => {
            filterState.memberCountRange.min !== undefined ||
            filterState.memberCountRange.max !== undefined ||
            filterState.customDateRange.from !== undefined ||
-           filterState.customDateRange.to !== undefined;
+           filterState.customDateRange.to !== undefined ||
+           (filterState.search && filterState.search.trim() !== '') ||
+           (filterState.dateFilter && filterState.dateFilter !== DateFilter.ALL) ||
+           (filterState.roomStatus && filterState.roomStatus.length > 0) ||
+           (filterState.customAvailabilityRange?.startDate !== undefined) ||
+           (filterState.customAvailabilityRange?.endDate !== undefined);
   }, [filterState]);
 
   const activeFilterCount = useMemo(() => {
@@ -377,6 +452,10 @@ export const useAdvancedFilters = () => {
     setTranscriptsFilter,
     setMemberCountRange,
     setCustomDateRange,
+    setSearchFilter,
+    setDateFilter,
+    setRoomStatusFilter,
+    setCustomAvailabilityRange,
     
     // Bulk actions
     clearAllFilters,

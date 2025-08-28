@@ -33,8 +33,7 @@ import {
   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 
-// Importar templates y componentes refactorizados
-import { RoomsListTemplate } from "@/src/features/meet/components/templates/RoomsListTemplate";
+// Note: RoomsListTemplate import removed as it's not used anymore
 import { BulkActionsBar } from "@/src/features/meet/components/organisms/bulk/BulkActionsBar";
 import { BulkSelectionControls } from "@/src/features/meet/components/molecules/bulk/BulkSelectionControls";
 import { AccessTypeBadge } from "@/src/features/meet/components/atoms/badges/AccessTypeBadge";
@@ -63,6 +62,9 @@ import { RoomCard } from "@/src/features/meet/components/molecules/cards";
 import { ConfirmationDialog } from "@/src/features/meet/components/atoms/modals/ConfirmationDialog";
 import { JoinMeetingButton, CreateRoomButton } from "@/src/features/meet/components/atoms/buttons";
 import { RoomDetailsModal } from "@/src/features/meet/components/molecules/modals/RoomDetailsModal";
+import { AdvancedFiltersBar } from "@/src/features/meet/components/molecules/filters/AdvancedFiltersBar";
+import { DateFilter } from "@/src/features/meet/types/room-dates.types";
+import { FunnelIcon } from "@heroicons/react/24/outline";
 
 // Types
 interface MeetRoomsClientRefactoredProps {
@@ -102,7 +104,25 @@ interface RoomAnalytics {
 export const MeetRoomsClientRefactored: React.FC<
   MeetRoomsClientRefactoredProps
 > = ({ lang }) => {
-  // Hooks especializados
+  // Initialize advanced filters first
+  const {
+    filterState,
+    isAdvancedMode,
+    setIsAdvancedMode,
+    availableOptions,
+    hasActiveFilters: hasAdvancedFilters,
+    activeFilterCount,
+    addTag,
+    removeTag,
+    toggleTag,
+    clearAllFilters,
+    setSearchFilter,
+    setDateFilter,
+    setRoomStatusFilter,
+    setCustomAvailabilityRange,
+  } = useAdvancedFilters();
+
+  // Then use those filters in useRoomsList
   const {
     rooms,
     totalStats,
@@ -120,7 +140,6 @@ export const MeetRoomsClientRefactored: React.FC<
     updateDateRange,
     clearFilters,
     updateSort,
-    setViewMode,
     setItemsPerPage,
     goToPage,
     toggleRoomSelection,
@@ -129,7 +148,7 @@ export const MeetRoomsClientRefactored: React.FC<
     toggleSelectAll,
     refetch,
     forceRefreshAnalytics,
-  } = useRoomsList();
+  } = useRoomsList(filterState);
 
   // DEBUG: Log lo que recibe el componente del hook
   console.log("🎯 Progressive Loading Component State:", {
@@ -139,20 +158,8 @@ export const MeetRoomsClientRefactored: React.FC<
     roomsLoadingAnalytics: rooms?.paginated?.filter((r) => r._analyticsLoading)
       .length,
     isLoadingAnalytics,
-  });
-
-  const {
     filterState,
-    isAdvancedMode,
-    setIsAdvancedMode,
-    availableOptions,
-    hasActiveFilters: hasAdvancedFilters,
-    activeFilterCount,
-    addTag,
-    removeTag,
-    toggleTag,
-    clearAllFilters,
-  } = useAdvancedFilters();
+  });
 
   // Store notification for feedback
   const { showInfo } = useNotificationStore();
@@ -243,83 +250,6 @@ export const MeetRoomsClientRefactored: React.FC<
     );
   };
 
-  // Render list view
-  const renderRoomListItem = (room: any) => {
-    const spaceId = room.name?.split("/").pop();
-    const displayName =
-      room._metadata?.displayName || room.name || "Sala sin nombre";
-    const isActive = !!room.activeConference?.conferenceRecord;
-    const isSelected = selectedRoomIds.has(spaceId);
-
-    return (
-      <Card
-        key={room.name}
-        className={`hover:shadow-sm transition-shadow ${isSelected ? "ring-2 ring-primary" : ""}`}
-      >
-        <CardContent className='p-4'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-3 flex-1'>
-              <Checkbox
-                checked={isSelected}
-                onCheckedChange={() => toggleRoomSelection(spaceId)}
-              />
-
-              <VideoCameraIcon className='h-5 w-5 text-muted-foreground' />
-
-              <div className='space-y-1 flex-1 min-w-0'>
-                <div className='flex items-center gap-2'>
-                  <h3
-                    className='font-medium truncate max-w-[300px]'
-                    title={displayName}
-                  >
-                    {displayName}
-                  </h3>
-                  <div className='flex-shrink-0 flex items-center gap-2'>
-                    <RoomStatusBadge isActive={isActive} />
-                    {room.config?.accessType && (
-                      <AccessTypeBadge type={room.config.accessType} />
-                    )}
-                  </div>
-                </div>
-                <div className='text-sm text-muted-foreground truncate'>
-                  <span>ID: {spaceId}</span>
-                  <span className='mx-1'>•</span>
-                  <span>Miembros: {room.members?.length || 0}</span>
-                  {room.meetingCode && (
-                    <>
-                      <span className='mx-1'>•</span>
-                      <span>
-                        Código:{" "}
-                        <code className='text-xs'>{room.meetingCode}</code>
-                      </span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className='flex items-center gap-1'>
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => handleViewRoom(spaceId, room)}
-              >
-                <EyeIcon className='h-4 w-4' />
-              </Button>
-
-              <Button
-                variant='ghost'
-                size='sm'
-                onClick={() => handleDuplicateRoom(room.spaceId || room.id, room)}
-              >
-                <DocumentDuplicateIcon className='h-4 w-4' />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
 
   return (
     <div className='container mx-auto p-6 space-y-6'>
@@ -344,6 +274,27 @@ export const MeetRoomsClientRefactored: React.FC<
           }}
         />
       </div>
+
+      {/* Filtros */}
+      <Card>
+        <CardContent className="pt-6">
+          <AdvancedFiltersBar
+            searchTerm={filterState.search}
+            onSearchChange={setSearchFilter}
+            dateFilter={filterState.dateFilter || DateFilter.ALL}
+            onDateFilterChange={(dateFilter) => setDateFilter(dateFilter)}
+            customStartDate={filterState.customAvailabilityRange.startDate}
+            customEndDate={filterState.customAvailabilityRange.endDate}
+            onCustomStartDateChange={(date) => setCustomAvailabilityRange(date, filterState.customAvailabilityRange.endDate)}
+            onCustomEndDateChange={(date) => setCustomAvailabilityRange(filterState.customAvailabilityRange.startDate, date)}
+            selectedStatuses={filterState.roomStatus}
+            onStatusChange={setRoomStatusFilter}
+            onClearAll={clearAllFilters}
+            hasActiveFilters={hasAdvancedFilters}
+            variant="full"
+          />
+        </CardContent>
+      </Card>
 
       {/* Modal funcional para gestión de salas usando componentes atómicos */}
 
@@ -416,27 +367,7 @@ export const MeetRoomsClientRefactored: React.FC<
         </Card>
       </div>
 
-      {/* View Mode Controls */}
-      <div className='flex justify-end mb-4'>
-        <div className='flex border rounded-md'>
-          <Button
-            variant={viewConfig.mode === "grid" ? "default" : "ghost"}
-            size='sm'
-            onClick={() => setViewMode("grid")}
-            className='rounded-r-none'
-          >
-            <ChartBarIcon className='h-4 w-4' />
-          </Button>
-          <Button
-            variant={viewConfig.mode === "list" ? "default" : "ghost"}
-            size='sm'
-            onClick={() => setViewMode("list")}
-            className='rounded-l-none'
-          >
-            <CalendarIcon className='h-4 w-4' />
-          </Button>
-        </div>
-      </div>
+      {/* View is always grid now */}
 
       {/* Bulk selection controls */}
       {rooms.totalCount > 0 && (
@@ -481,19 +412,11 @@ export const MeetRoomsClientRefactored: React.FC<
         </Card>
       )}
 
-      {/* Rooms content - using custom render functions with analytics */}
+      {/* Rooms content - always grid view */}
       {!isLoading && !error && rooms.paginated.length > 0 && (
-        <>
-          {viewConfig.mode === "grid" ? (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'>
-              {rooms.paginated.map(renderRoomCard)}
-            </div>
-          ) : (
-            <div className='space-y-2'>
-              {rooms.paginated.map(renderRoomListItem)}
-            </div>
-          )}
-        </>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'>
+          {rooms.paginated.map(renderRoomCard)}
+        </div>
       )}
 
       {/* Empty State */}
