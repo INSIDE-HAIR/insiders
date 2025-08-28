@@ -48,6 +48,7 @@ import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal"
 import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
 import { BulkMoveCalendarModal } from "./components/BulkMoveCalendarModal";
 import { BulkDateTimeModal } from "./components/BulkDateTimeModal";
+import { ParticipantKPIGrid } from "./components/ParticipantKPIGrid";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
 import { Spinner } from "@/src/components/ui/spinner";
@@ -433,13 +434,14 @@ const CalendarEventsPage: React.FC = () => {
       // Handle different success scenarios
       let title = "Evento actualizado";
       let description = "Los cambios se guardaron correctamente";
-      
+
       if (result.moved) {
         title = "Evento movido";
         description = "El evento se movió correctamente al nuevo calendario";
       } else if (result.isRecurringEventIssue && result.fallbackUsed) {
         title = "Evento copiado";
-        description = "Este evento recurrente se copió al nuevo calendario (no se puede mover directamente)";
+        description =
+          "Este evento recurrente se copió al nuevo calendario (no se puede mover directamente)";
       }
 
       toast({
@@ -449,18 +451,19 @@ const CalendarEventsPage: React.FC = () => {
       });
     } catch (error: any) {
       console.error("Error saving event:", error);
-      
+
       // Check if this is a response parsing error where the request actually succeeded
-      if (error.message?.includes('isRecurringEventIssue')) {
+      if (error.message?.includes("isRecurringEventIssue")) {
         // This is likely a fallback success case that got caught as an error
         toast({
           title: "Evento procesado",
-          description: "El evento se procesó correctamente usando un método alternativo",
+          description:
+            "El evento se procesó correctamente usando un método alternativo",
           duration: 5000,
         });
         return; // Don't re-throw for fallback success
       }
-      
+
       toast({
         title: "Error",
         description: error.message || "Error al guardar los cambios",
@@ -861,11 +864,13 @@ const CalendarEventsPage: React.FC = () => {
     }));
   };
 
-  const handleConfirmBulkUpdateDateTime = async (updates: Array<{
-    eventId: string;
-    calendarId: string;
-    updateData: any;
-  }>) => {
+  const handleConfirmBulkUpdateDateTime = async (
+    updates: Array<{
+      eventId: string;
+      calendarId: string;
+      updateData: any;
+    }>
+  ) => {
     try {
       setState((prev) => ({ ...prev, isLoading: true }));
 
@@ -904,7 +909,8 @@ const CalendarEventsPage: React.FC = () => {
       console.error("Error updating event dates:", error);
       toast({
         title: "Error",
-        description: error.message || "Error al actualizar las fechas de los eventos",
+        description:
+          error.message || "Error al actualizar las fechas de los eventos",
         variant: "destructive",
         duration: 5000,
       });
@@ -1072,6 +1078,58 @@ const CalendarEventsPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Participant KPI Cards - Only show when attendees are filtered */}
+          {attendeesFilter.length > 0 && (
+            <ParticipantKPIGrid
+              selectedAttendees={attendeesFilter}
+              events={state.events}
+              onRemoveAttendee={(email) => {
+                const newFilter = attendeesFilter.filter((a) => a !== email);
+                setAttendeesFilter(newFilter);
+              }}
+              calendarIds={activeCalendars}
+              dateRange={(() => {
+                const now = new Date();
+                let start: string | undefined;
+                let end: string | undefined;
+
+                switch (timeRange) {
+                  case "upcoming":
+                    start = now.toISOString();
+                    break;
+                  case "today":
+                    const startOfDay = new Date(now);
+                    startOfDay.setHours(0, 0, 0, 0);
+                    const endOfDay = new Date(now);
+                    endOfDay.setHours(23, 59, 59, 999);
+                    start = startOfDay.toISOString();
+                    end = endOfDay.toISOString();
+                    break;
+                  case "week":
+                    start = now.toISOString();
+                    const weekFromNow = new Date(now);
+                    weekFromNow.setDate(weekFromNow.getDate() + 7);
+                    end = weekFromNow.toISOString();
+                    break;
+                  case "month":
+                    start = now.toISOString();
+                    const monthFromNow = new Date(now);
+                    monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+                    end = monthFromNow.toISOString();
+                    break;
+                  case "all":
+                    // Sin límite temporal, comenzar desde hace 1 mes
+                    const monthAgo = new Date(now);
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    start = monthAgo.toISOString();
+                    break;
+                }
+
+                return { start, end };
+              })()}
+            />
+          )}
 
           {/* Error Alert */}
           {state.error && (

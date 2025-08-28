@@ -1,5 +1,6 @@
 // Export all calendar types
 export * from './calendar';
+export * from './participant-kpis';
 
 // Re-export commonly used types for convenience
 export type {
@@ -14,6 +15,12 @@ export type {
   CalendarImportData,
   CsvEventData
 } from './calendar';
+
+export type {
+  ParticipantKPI,
+  ParticipantKPIsResponse,
+  ParticipantKPIParams
+} from './participant-kpis';
 
 export {
   EventVisibility,
