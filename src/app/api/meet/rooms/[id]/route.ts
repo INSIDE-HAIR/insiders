@@ -7,6 +7,10 @@ import { z } from "zod";
 // Schema para actualizar un space
 const updateSpaceSchema = z.object({
   displayName: z.string().min(1, "Display name is required").max(100, "Display name too long").optional(),
+  startDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
+  endDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
   config: z.object({
     accessType: z.enum(["OPEN", "TRUSTED", "RESTRICTED"]).optional(),
     
@@ -162,6 +166,32 @@ export async function PATCH(
     // Inicializar servicios
     const calendarService = new GoogleCalendarService();
     await calendarService.initialize();
+    
+    // Si hay fechas para actualizar, actualizarlas en la base de datos local
+    if (updateData.startDate !== undefined || updateData.endDate !== undefined) {
+      const { MeetStorageService } = await import("@/src/features/meet/services/MeetStorageService");
+      const storageService = new MeetStorageService();
+      
+      try {
+        await storageService.prisma.meetSpace.updateMany({
+          where: { spaceId: spaceId },
+          data: {
+            ...(updateData.startDate !== undefined && { 
+              startDate: updateData.startDate ? new Date(updateData.startDate) : null 
+            }),
+            ...(updateData.endDate !== undefined && { 
+              endDate: updateData.endDate ? new Date(updateData.endDate) : null 
+            }),
+            lastSyncAt: new Date()
+          }
+        });
+        console.log('📅 Space dates updated in local storage');
+      } catch (error) {
+        console.error('Failed to update space dates:', error);
+      } finally {
+        await storageService.disconnect();
+      }
+    }
 
     // Obtener token
     const token = await calendarService.auth.getAccessToken();

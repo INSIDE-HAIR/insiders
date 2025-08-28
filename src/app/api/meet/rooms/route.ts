@@ -4,7 +4,10 @@ import { GoogleCalendarService } from "@/src/features/calendar/services/calendar
 import { MeetStorageService } from "@/src/features/meet/services/MeetStorageService";
 import { MeetSpaceConfigService } from "@/src/features/meet/services/MeetSpaceConfigService";
 import { MeetMembersService } from "@/src/features/meet/services/MeetMembersService";
+import { MeetRoomFilterService } from "@/src/features/meet/services/MeetRoomFilterService";
 import { CreateSpaceSchema } from "@/src/features/meet/validations/SpaceConfigSchema";
+import { DateFilter, RoomFilters, MeetSpaceWithDates } from "@/src/features/meet/types/room-dates.types";
+import { calculateRoomStatus } from "@/src/features/meet/utils/date-filters";
 
 /**
  * GET /api/meet/rooms?include=analytics
@@ -33,6 +36,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const includeAnalytics =
       searchParams.get("include")?.includes("analytics") || false;
+    
+    // Nuevos parámetros de filtrado
+    const search = searchParams.get("search") || undefined;
+    const dateFilter = (searchParams.get("dateFilter") as DateFilter) || DateFilter.ALL;
+    const includeStatus = searchParams.get("includeStatus") === "true";
 
     // Inicializar servicios
     storageService = new MeetStorageService();
@@ -83,6 +91,8 @@ export async function GET(request: NextRequest) {
           return {
             ...freshSpace,
             members, // Add members to the response
+            startDate: registered.startDate,
+            endDate: registered.endDate,
             _metadata: {
               localId: registered.id,
               displayName: registered.displayName,
@@ -91,6 +101,7 @@ export async function GET(request: NextRequest) {
               lastSyncAt: new Date(),
               source: "fresh-api-call",
               membersCount: members.length,
+              status: includeStatus ? calculateRoomStatus(registered.startDate, registered.endDate) : undefined,
             },
           };
         } catch (error) {
@@ -118,14 +129,27 @@ export async function GET(request: NextRequest) {
       })
     );
 
-    // 3. Preparar spaces (analytics disponible via endpoint separado)
+    // 3. Aplicar filtros si es necesario
     let enhancedSpaces = freshSpaces;
+    
+    if (search || dateFilter !== DateFilter.ALL) {
+      const filterService = new MeetRoomFilterService();
+      const filters: RoomFilters = {
+        search,
+        dateFilter
+      };
+      
+      enhancedSpaces = filterService.applyFilters(enhancedSpaces as unknown as MeetSpaceWithDates[], filters) as any;
+      console.log(`🔍 Filtered ${enhancedSpaces.length} rooms from ${freshSpaces.length} total`);
+    }
+    
+    // Añadir analytics si se solicita
     if (includeAnalytics) {
       console.log(
         "ℹ️ Analytics solicitados - disponibles via /api/meet/rooms/[id]/analytics"
       );
       // Por ahora, solo agregamos un indicador de que analytics están disponibles
-      enhancedSpaces = freshSpaces.map((space) => ({
+      enhancedSpaces = enhancedSpaces.map((space) => ({
         ...space,
         _analyticsAvailable: true,
       }));
@@ -222,11 +246,13 @@ export async function POST(request: NextRequest) {
       throw new Error("No space ID returned from API");
     }
 
-    // 2. SOLO REGISTRAR ID EN ALMACENAMIENTO LOCAL
+    // 2. SOLO REGISTRAR ID EN ALMACENAMIENTO LOCAL (con fechas opcionales)
     await storageService.registerSpace(
       spaceId,
       spaceData.displayName,
-      session.user.id
+      session.user.id,
+      spaceData.startDate ? new Date(spaceData.startDate) : null,
+      spaceData.endDate ? new Date(spaceData.endDate) : null
     );
     console.log("💾 Space ID registered locally:", spaceId);
 

@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
+import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 import { SectionHeader } from "../../molecules/layout/SectionHeader";
 import { FieldGroup } from "../../molecules/forms/FieldGroup";
 import { FieldLabel } from "../../atoms/text/FieldLabel";
 import { StatusBadge } from "../../atoms/badges/StatusBadge";
 import { CloseSessionButton } from "../../atoms/buttons/CloseSessionButton";
-import { InformationCircleIcon } from "@heroicons/react/24/outline";
+import { DateTimePicker } from "@/src/components/ui/date-picker";
+import { InformationCircleIcon, CalendarIcon, CheckIcon } from "@heroicons/react/24/outline";
 
 export interface GeneralSectionDemoData {
   roomId: string;
@@ -26,6 +28,9 @@ export interface GeneralSectionDemoData {
   alert: {
     message: string;
   };
+  // Campos opcionales de fechas
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface GeneralSectionDemoProps {
@@ -33,6 +38,10 @@ export interface GeneralSectionDemoProps {
   onCopy?: (value: string) => void;
   onExternal?: (value: string) => void;
   onCloseSession?: () => void;
+  onStartDateChange?: (date: Date | undefined) => void;
+  onEndDateChange?: (date: Date | undefined) => void;
+  isUpdatingStartDate?: boolean;
+  isUpdatingEndDate?: boolean;
   className?: string;
 }
 
@@ -52,8 +61,32 @@ export const GeneralSectionDemo: React.FC<GeneralSectionDemoProps> = ({
   onCopy,
   onExternal, 
   onCloseSession,
+  onStartDateChange,
+  onEndDateChange,
+  isUpdatingStartDate = false,
+  isUpdatingEndDate = false,
   className
 }) => {
+  // Estados locales para las fechas temporales
+  const [tempStartDate, setTempStartDate] = useState<Date | undefined>(
+    data.startDate ? new Date(data.startDate) : undefined
+  );
+  const [tempEndDate, setTempEndDate] = useState<Date | undefined>(
+    data.endDate ? new Date(data.endDate) : undefined
+  );
+
+  // Estados para detectar cambios
+  const hasStartDateChanged = React.useMemo(() => {
+    const tempTime = tempStartDate?.getTime();
+    const originalTime = data.startDate ? new Date(data.startDate).getTime() : undefined;
+    return tempTime !== originalTime;
+  }, [tempStartDate, data.startDate]);
+  
+  const hasEndDateChanged = React.useMemo(() => {
+    const tempTime = tempEndDate?.getTime();
+    const originalTime = data.endDate ? new Date(data.endDate).getTime() : undefined;
+    return tempTime !== originalTime;
+  }, [tempEndDate, data.endDate]);
   
   const handleCopy = (value: string) => {
     onCopy?.(value);
@@ -72,6 +105,24 @@ export const GeneralSectionDemo: React.FC<GeneralSectionDemoProps> = ({
     // Mantener la funcionalidad original del demo
     alert('Cerrando sesión...');
   };
+
+  const handleUpdateStartDate = () => {
+    onStartDateChange?.(tempStartDate);
+  };
+
+  const handleUpdateEndDate = () => {
+    onEndDateChange?.(tempEndDate);
+  };
+
+  // Sincronizar estados cuando cambian los datos externos
+  React.useEffect(() => {
+    setTempStartDate(data.startDate ? new Date(data.startDate) : undefined);
+  }, [data.startDate]);
+
+  React.useEffect(() => {
+    setTempEndDate(data.endDate ? new Date(data.endDate) : undefined);
+  }, [data.endDate]);
+
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -138,6 +189,103 @@ export const GeneralSectionDemo: React.FC<GeneralSectionDemoProps> = ({
             {data.status.showCloseButton && (
               <CloseSessionButton onClick={handleCloseSession} />
             )}
+          </div>
+        </div>
+
+        {/* Fechas opcionales - date pickers editables con botones de actualización */}
+        <div className="space-y-3 pt-2 border-t">
+          {/* Fecha de Inicio */}
+          <div>
+            <FieldLabel>Fecha de Inicio</FieldLabel>
+            <div className="mt-1 space-y-2">
+              <DateTimePicker
+                value={tempStartDate}
+                onChange={setTempStartDate}
+                placeholder="Sin fecha de inicio (disponible inmediatamente)"
+                granularity="day"
+                hourCycle={24}
+                className="w-full"
+                disabled={isUpdatingStartDate}
+              />
+              {hasStartDateChanged && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    onClick={handleUpdateStartDate}
+                    disabled={isUpdatingStartDate}
+                    className="h-7 text-xs"
+                  >
+                    {isUpdatingStartDate ? (
+                      <div className="flex items-center gap-1">
+                        <div className="animate-spin h-3 w-3 border border-white border-t-transparent rounded-full" />
+                        <span>Actualizando...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <CheckIcon className="h-3 w-3" />
+                        <span>Actualizar</span>
+                      </div>
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setTempStartDate(data.startDate ? new Date(data.startDate) : undefined)}
+                    disabled={isUpdatingStartDate}
+                    className="h-7 text-xs"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Fecha de Fin */}
+          <div>
+            <FieldLabel>Fecha de Fin</FieldLabel>
+            <div className="mt-1 space-y-2">
+              <DateTimePicker
+                value={tempEndDate}
+                onChange={setTempEndDate}
+                placeholder="Sin fecha límite (siempre disponible)"
+                granularity="day"
+                hourCycle={24}
+                className="w-full"
+                disabled={isUpdatingEndDate}
+              />
+              {hasEndDateChanged && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    onClick={handleUpdateEndDate}
+                    disabled={isUpdatingEndDate}
+                    className="h-7 text-xs"
+                  >
+                    {isUpdatingEndDate ? (
+                      <div className="flex items-center gap-1">
+                        <div className="animate-spin h-3 w-3 border border-white border-t-transparent rounded-full" />
+                        <span>Actualizando...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <CheckIcon className="h-3 w-3" />
+                        <span>Actualizar</span>
+                      </div>
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setTempEndDate(data.endDate ? new Date(data.endDate) : undefined)}
+                    disabled={isUpdatingEndDate}
+                    className="h-7 text-xs"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         

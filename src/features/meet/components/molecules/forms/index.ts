@@ -17,3 +17,6 @@ export type { ConfigToggleProps, ConfigToggleVariant } from './ConfigToggle';
 
 export { FieldGroup } from './FieldGroup';
 export type { FieldGroupProps } from './FieldGroup';
+
+export { RoomDateRangeField } from './RoomDateRangeField';
+export type { RoomDateRangeFieldProps } from './RoomDateRangeField';

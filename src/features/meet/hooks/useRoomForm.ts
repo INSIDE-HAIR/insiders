@@ -18,6 +18,9 @@ export interface RoomFormState {
   autoTranscription: boolean;
   autoSmartNotes: boolean;
   members: RoomMember[];
+  // Nuevos campos opcionales de fechas
+  startDate?: string; // ISO string format
+  endDate?: string; // ISO string format
 }
 
 const initialState: RoomFormState = {
@@ -96,6 +99,15 @@ export const useRoomForm = () => {
     setFormState((prev) => ({ ...prev, members }));
   }, []);
 
+  // Manejo de fechas opcionales
+  const setStartDate = useCallback((date?: string) => {
+    setFormState((prev) => ({ ...prev, startDate: date }));
+  }, []);
+
+  const setEndDate = useCallback((date?: string) => {
+    setFormState((prev) => ({ ...prev, endDate: date }));
+  }, []);
+
   // Construir data para API
   const buildApiData = useCallback(() => {
     const config: any = {
@@ -144,6 +156,15 @@ export const useRoomForm = () => {
 
     if (formState.displayName && formState.displayName.trim()) {
       data.displayName = formState.displayName.trim();
+    }
+
+    // Agregar fechas opcionales
+    if (formState.startDate) {
+      data.startDate = formState.startDate;
+    }
+    
+    if (formState.endDate) {
+      data.endDate = formState.endDate;
     }
 
     return data;
@@ -203,6 +224,9 @@ export const useRoomForm = () => {
     setPresentRestriction,
     // Members
     setMembers,
+    // Dates
+    setStartDate,
+    setEndDate,
     // Utils
     buildApiData,
     validate,

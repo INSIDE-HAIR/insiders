@@ -40,7 +40,9 @@
       "WebFetch(domain:developers.google.com)",
       "WebFetch(domain:github.com)",
       "WebSearch",
-      "Read(//Users/luiseurdanetamartucci/Desktop/**)"
+      "Read(//Users/luiseurdanetamartucci/Desktop/**)",
+      "Bash(DOTENV_CONFIG_PATH=.env.local npx prisma db push)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

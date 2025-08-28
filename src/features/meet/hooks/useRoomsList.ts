@@ -28,7 +28,7 @@ export interface RoomsViewConfig {
  * Hook especializado para gestionar la lista de salas con filtros, ordenamiento y paginación
  * Integra con Tanstack Query para cache y sincronización
  */
-export const useRoomsList = () => {
+export const useRoomsList = (externalFilters?: any) => {
   const queryClient = useQueryClient();
   const { showError, showSuccess } = useNotificationStore();
 
@@ -64,18 +64,32 @@ export const useRoomsList = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['rooms-list', filters, sortConfig],
+    queryKey: ['rooms-list', filters, sortConfig, externalFilters],
     queryFn: async () => {
       try {
         const searchParams = new URLSearchParams();
         
-        // Add filters to query
+        // Add filters to query (internal filters)
         if (filters.search) searchParams.set('search', filters.search);
         if (filters.status !== 'all') searchParams.set('status', filters.status);
         if (filters.accessType !== 'all') searchParams.set('accessType', filters.accessType);
         if (filters.createdBy) searchParams.set('createdBy', filters.createdBy);
         if (filters.dateRange.from) searchParams.set('fromDate', filters.dateRange.from.toISOString());
         if (filters.dateRange.to) searchParams.set('toDate', filters.dateRange.to.toISOString());
+        
+        // Add external filters (from useAdvancedFilters) - these take precedence
+        if (externalFilters?.search) {
+          searchParams.set('search', externalFilters.search);
+          console.log(`🔍 Adding search filter: "${externalFilters.search}"`);
+        }
+        if (externalFilters?.dateFilter && externalFilters.dateFilter !== 'all') {
+          searchParams.set('dateFilter', externalFilters.dateFilter);
+          console.log(`📅 Adding date filter: "${externalFilters.dateFilter}"`);
+        }
+        if (externalFilters?.roomStatus && externalFilters.roomStatus.length > 0) {
+          searchParams.set('roomStatus', externalFilters.roomStatus.join(','));
+          console.log(`📊 Adding status filter: "${externalFilters.roomStatus.join(',')}"`);
+        }
         
         // Add sorting
         searchParams.set('sortBy', sortConfig.field);

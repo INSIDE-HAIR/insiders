@@ -26,6 +26,7 @@ import {
 import { AccessTypeBadge } from "../../atoms/badges/AccessTypeBadge";
 import { JoinMeetingButton } from "../../atoms/buttons/JoinMeetingButton";
 import { AnalyticsSkeleton } from "../../atoms/skeletons/AnalyticsSkeleton";
+import { Skeleton } from "@/src/components/ui/skeleton";
 
 interface RoomAnalytics {
   permanentMembers: {
@@ -57,6 +58,8 @@ interface RoomCardProps {
     name: string;
     meetingUri?: string;
     meetingCode?: string;
+    startDate?: string;
+    endDate?: string;
     _metadata?: {
       displayName?: string;
     };
@@ -100,6 +103,21 @@ const formatDaysAgo = (days: number | null): string => {
   if (days < 7) return `Hace ${days} días`;
   if (days < 30) return `Hace ${Math.round(days / 7)} semanas`;
   return `Hace ${Math.round(days / 30)} meses`;
+};
+
+// Función auxiliar para formatear fechas de inicio y fin
+const formatDate = (dateString?: string): string => {
+  if (!dateString) return "Sin fecha";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
+  } catch {
+    return "Fecha inválida";
+  }
 };
 
 export const RoomCard: React.FC<RoomCardProps> = ({
@@ -221,6 +239,43 @@ export const RoomCard: React.FC<RoomCardProps> = ({
               <div className='flex items-center gap-1.5 text-xs text-muted-foreground'>
                 <ClockIcon className='h-3 w-3' />
                 <span>Métricas pendientes...</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Room dates - Fechas de inicio y fin */}
+        <div className='space-y-2 pt-2 border-t border-border'>
+          {isLoadingAnalytics ? (
+            /* Skeleton para fechas mientras carga */
+            <div className='flex items-center justify-between gap-4'>
+              <div className='flex items-center gap-1.5 text-xs text-muted-foreground flex-1'>
+                <CalendarIcon className='h-3 w-3 text-green-600' />
+                <span className='font-medium text-green-600'>Inicio:</span>
+                <Skeleton className="h-3 w-16" />
+              </div>
+              
+              <div className='flex items-center gap-1.5 text-xs text-muted-foreground flex-1'>
+                <CalendarIcon className='h-3 w-3 text-red-600' />
+                <span className='font-medium text-red-600'>Final:</span>
+                <Skeleton className="h-3 w-16" />
+              </div>
+            </div>
+          ) : (
+            /* Fechas reales */
+            <div className='flex items-center justify-between gap-4'>
+              {/* Fecha de inicio */}
+              <div className='flex items-center gap-1.5 text-xs text-muted-foreground flex-1'>
+                <CalendarIcon className='h-3 w-3 text-green-600' />
+                <span className='font-medium text-green-600'>Inicio:</span>
+                <span>{room.startDate ? formatDate(room.startDate) : "Sin Inicio"}</span>
+              </div>
+              
+              {/* Fecha de fin */}
+              <div className='flex items-center gap-1.5 text-xs text-muted-foreground flex-1'>
+                <CalendarIcon className='h-3 w-3 text-red-600' />
+                <span className='font-medium text-red-600'>Final:</span>
+                <span>{room.endDate ? formatDate(room.endDate) : "Sin Final"}</span>
               </div>
             </div>
           )}

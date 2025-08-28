@@ -13,6 +13,8 @@ export interface Room {
   meetingCode?: string;
   config?: any;
   members?: any[];
+  startDate?: string; // ISO string format
+  endDate?: string; // ISO string format
   _metadata?: {
     displayName?: string;
     spaceId?: string;
@@ -24,6 +26,8 @@ export interface CreateRoomConfig {
   displayName: string;
   config: any;
   initialMembers?: any[];
+  startDate?: string; // ISO string format
+  endDate?: string; // ISO string format
   suppressSuccessToast?: boolean; // Para evitar dobles toasts en duplicación
 }
 
@@ -153,6 +157,9 @@ export const useRoomOperations = () => {
         },
         // Duplicar todos los miembros preservando roles y información completa
         initialMembers: originalRoom.members || [],
+        // Duplicar fechas opcionales
+        startDate: originalRoom.startDate,
+        endDate: originalRoom.endDate,
         // Suprimir toast de createRoom para mostrar el específico de duplicación
         suppressSuccessToast: true
       };
@@ -293,7 +300,10 @@ export const useRoomOperations = () => {
       autoRecording: artifactConfig.recordingConfig?.autoRecordingGeneration === "ON",
       autoTranscription: artifactConfig.transcriptionConfig?.autoTranscriptionGeneration === "ON",
       autoSmartNotes: artifactConfig.smartNotesConfig?.autoSmartNotesGeneration === "ON",
-      members: room.members || []
+      members: room.members || [],
+      // Incluir fechas opcionales para duplicación
+      startDate: room.startDate,
+      endDate: room.endDate
     };
     
     console.log('🔍 DEBUG extractRoomData: Output data:', extractedData);

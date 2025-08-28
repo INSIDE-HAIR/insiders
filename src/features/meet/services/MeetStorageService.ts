@@ -8,6 +8,8 @@ export interface StoredMeetSpace {
   createdAt: Date;
   createdBy?: string;
   lastSyncAt?: Date;
+  startDate?: Date | null;
+  endDate?: Date | null;
 }
 
 export class MeetStorageService {
@@ -20,7 +22,13 @@ export class MeetStorageService {
   /**
    * Registra un space ID recién creado (solo el ID, no los datos)
    */
-  async registerSpace(spaceId: string, displayName?: string, createdById?: string): Promise<StoredMeetSpace> {
+  async registerSpace(
+    spaceId: string, 
+    displayName?: string, 
+    createdById?: string,
+    startDate?: Date | null,
+    endDate?: Date | null
+  ): Promise<StoredMeetSpace> {
     try {
       const savedSpace = await this.prisma.meetSpace.create({
         data: {
@@ -28,6 +36,8 @@ export class MeetStorageService {
           displayName: displayName || null,
           createdBy: createdById || null,
           lastSyncAt: new Date(),
+          startDate: startDate || null,
+          endDate: endDate || null,
         }
       });
 

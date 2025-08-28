@@ -77,6 +77,27 @@ export const SpaceConfigSchema = z.object({
     AttendanceReportGenerationTypeEnum.default("DO_NOT_GENERATE"),
 });
 
+// Esquema para validación de fechas
+export const SpaceDatesSchema = z.object({
+  startDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
+  endDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
+}).refine(
+  (data) => {
+    if (data.startDate && data.endDate) {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return end > start;
+    }
+    return true;
+  },
+  {
+    message: "La fecha de fin debe ser posterior a la fecha de inicio",
+    path: ["endDate"],
+  }
+);
+
 // Esquema completo para crear un espacio
 export const CreateSpaceSchema = z.object({
   // Metadata básico
@@ -84,6 +105,12 @@ export const CreateSpaceSchema = z.object({
 
   // Configuración del espacio
   config: SpaceConfigSchema.optional(),
+
+  // Fechas opcionales
+  startDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
+  endDate: z.string().datetime().optional().nullable()
+    .or(z.date().optional().nullable()),
 
   // Miembros iniciales (requiere v2beta)
   initialMembers: z
@@ -95,7 +122,20 @@ export const CreateSpaceSchema = z.object({
       })
     )
     .default([]),
-});
+}).refine(
+  (data) => {
+    if (data.startDate && data.endDate) {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return end > start;
+    }
+    return true;
+  },
+  {
+    message: "La fecha de fin debe ser posterior a la fecha de inicio",
+    path: ["endDate"],
+  }
+);
 
 // Esquema para actualizar configuración
 export const UpdateSpaceConfigSchema = SpaceConfigSchema.partial();

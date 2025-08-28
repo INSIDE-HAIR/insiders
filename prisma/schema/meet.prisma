@@ -10,6 +10,10 @@ model MeetSpace {
   createdBy   String?   // Usuario que creó el space
   lastSyncAt  DateTime? // Última consulta a API (para referencia)
   
+  // Campos de fecha opcionales para gestión temporal
+  startDate   DateTime? // Fecha de inicio opcional (null = siempre disponible)
+  endDate     DateTime? // Fecha de fin opcional (null = sin fecha límite)
+  
   // Relaciones con tags (múltiples)
   spaceTags   MeetSpaceTag[]
   
@@ -18,6 +22,9 @@ model MeetSpace {
   
   @@index([createdBy])
   @@index([createdAt])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([displayName])
 }
 
 // MeetTag - Etiquetas jerárquicas para clasificación y filtrado rápido

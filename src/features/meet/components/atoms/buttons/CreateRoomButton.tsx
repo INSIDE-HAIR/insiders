@@ -23,6 +23,9 @@ const ReferencesSectionDemo = lazy(() => import("../../organisms/sections/Refere
 const MembersSectionDemo = lazy(() => import("../../organisms/sections/MembersSectionDemo").then(m => ({ default: m.MembersSectionDemo })));
 const ConfigurationSectionDemo = lazy(() => import("../../organisms/sections/ConfigurationSectionDemo").then(m => ({ default: m.ConfigurationSectionDemo })));
 
+// Importar componente molecular de fechas
+import { RoomDateRangeField } from '../../molecules/forms/RoomDateRangeField';
+
 // Componente estable para evitar re-renders del input
 const StableGeneralSection = React.memo(function StableGeneralSection({ 
   data, 
@@ -30,6 +33,8 @@ const StableGeneralSection = React.memo(function StableGeneralSection({
   validation,
   setDisplayName,
   setAccessType,
+  setStartDate,
+  setEndDate,
   ...props 
 }: any) {
   return (
@@ -72,6 +77,16 @@ const StableGeneralSection = React.memo(function StableGeneralSection({
           <option value="RESTRICTED">Restringido - Solo invitados específicos</option>
         </select>
       </div>
+
+      {/* Campo de fechas usando componente molecular SOLID */}
+      <RoomDateRangeField
+        startDate={formState.startDate}
+        endDate={formState.endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+        showHelp={true}
+        variant="default"
+      />
       
       {/* Vista previa usando GeneralSectionDemo */}
       <React.Suspense fallback={<div>Cargando...</div>}>
@@ -135,6 +150,8 @@ export const CreateRoomButton: React.FC<CreateRoomButtonProps> = ({
     formState,
     setDisplayName,
     setAccessType,
+    setStartDate,
+    setEndDate,
     toggleModeration,
     toggleRestrictEntryPoints,
     toggleAutoRecording,
@@ -223,7 +240,10 @@ export const CreateRoomButton: React.FC<CreateRoomButtonProps> = ({
     },
     alert: {
       message: 'La sala se creará al confirmar la configuración'
-    }
+    },
+    // Incluir fechas opcionales del formulario
+    startDate: formState.startDate,
+    endDate: formState.endDate
   };
 
   // Definir las secciones del modal
@@ -429,6 +449,8 @@ export const CreateRoomButton: React.FC<CreateRoomButtonProps> = ({
           isLoading,
           setDisplayName,
           setAccessType,
+          setStartDate,
+          setEndDate,
           toggleModeration,
           toggleRestrictEntryPoints,
           toggleAutoRecording,
