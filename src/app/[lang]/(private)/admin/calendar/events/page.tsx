@@ -7,7 +7,8 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useDebounce } from "@/src/hooks/use-debounce";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
@@ -114,6 +115,9 @@ const CalendarEventsPage: React.FC = () => {
     resetFilters,
   } = useCalendarFiltersStore();
 
+  // Debounce search to avoid excessive API calls
+  const debouncedSearch = useDebounce(search, 500);
+
   // Verificar autenticación y permisos
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -155,7 +159,7 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, []);
+  }, [initializeCalendars]);
 
   const loadEvents = useCallback(async () => {
     try {
@@ -223,7 +227,7 @@ const CalendarEventsPage: React.FC = () => {
 
           if (timeMin) params.append("timeMin", timeMin);
           if (timeMax) params.append("timeMax", timeMax);
-          if (search) params.append("q", search);
+          if (debouncedSearch) params.append("q", debouncedSearch);
 
           const response = await fetch(`/api/calendar/events?${params}`);
           if (response.ok) {
@@ -267,21 +271,22 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, [activeCalendars, timeRange, search]);
+  }, [activeCalendars, timeRange, debouncedSearch]);
 
-  // Cargar datos iniciales
+  // Cargar datos iniciales - solo una vez cuando se autentica
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "ADMIN") {
       loadInitialData();
     }
-  }, [status, session, loadInitialData]);
+  }, [status, session?.user?.role, loadInitialData]);
 
-  // Recargar eventos cuando cambien los filtros
+  // Recargar eventos cuando cambien los filtros - usando las dependencias directas
   useEffect(() => {
-    if (state.calendars.length > 0) {
+    // Solo cargar eventos si hay calendarios seleccionados y calendarios disponibles
+    if (state.calendars.length > 0 && activeCalendars.length > 0) {
       loadEvents();
     }
-  }, [loadEvents, state.calendars.length]);
+  }, [activeCalendars, timeRange, debouncedSearch, state.calendars.length, loadEvents]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
