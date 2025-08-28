@@ -48,6 +48,12 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
 
   // Fetch KPIs when selected attendees change
   useEffect(() => {
+    console.log('🔄 [KPI DEBUG] useEffect ejecutado', {
+      selectedAttendeesLength: selectedAttendees.length,
+      dateRange,
+      calendarIds
+    });
+
     if (selectedAttendees.length === 0) {
       // Clear KPIs when no attendees selected
       Object.keys(kpis).forEach(email => removeKPI(email));
@@ -56,6 +62,7 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
 
     // Debounced fetch to avoid too many requests
     const timer = setTimeout(() => {
+      console.log('📡 [KPI DEBUG] Llamando fetchKPIs');
       fetchKPIs(selectedAttendees, {
         startDate: dateRange?.start,
         endDate: dateRange?.end,
@@ -64,7 +71,7 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [selectedAttendees, dateRange?.start, dateRange?.end, calendarIds, fetchKPIs, kpis, removeKPI]);
+  }, [selectedAttendees, dateRange?.start, dateRange?.end, calendarIds]); // Removidas fetchKPIs, kpis, removeKPI para evitar bucle infinito
 
   // Get KPIs for selected attendees
   const selectedKPIs = useMemo(() => {
@@ -75,6 +82,12 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
 
   // Calculate unique session-based KPIs
   const uniqueSessionKPIs = useMemo(() => {
+    console.log('🧮 [KPI DEBUG] Calculando uniqueSessionKPIs', {
+      selectedKPIsLength: selectedKPIs.length,
+      eventsLength: events.length,
+      selectedAttendeesLength: selectedAttendees.length
+    });
+
     if (selectedKPIs.length === 0 || events.length === 0) {
       return {
         totalUniqueSessions: 0,
@@ -180,13 +193,16 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
       totalDurationMinutes += calculateEventDuration(event);
     });
 
-    return {
+    const result = {
       totalUniqueSessions: relevantEvents.length,
       avgAcceptanceRate: Math.round(totalAcceptanceRate / relevantEvents.length),
       avgResponseRate: Math.round(totalResponseRate / relevantEvents.length),
       completedUniqueSessions,
       totalDurationMinutes
     };
+
+    console.log('✅ [KPI DEBUG] uniqueSessionKPIs calculado:', result);
+    return result;
   }, [selectedKPIs, events, selectedAttendees]);
 
   // Handle remove attendee

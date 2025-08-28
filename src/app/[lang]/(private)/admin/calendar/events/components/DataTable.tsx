@@ -188,7 +188,7 @@ export function DataTable<TData>({
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-  }, [table]);
+  }, []); // Removido table de dependencias para evitar recreaciones
 
   const handleApplyFilter = useCallback(
     (columnId: string, filterValues: any[]) => {
@@ -199,7 +199,7 @@ export function DataTable<TData>({
       });
       table.getColumn(columnId)?.setFilterValue([...new Set(filterValues)]);
     },
-    [table]
+    [] // Removido table de dependencias para evitar recreaciones
   );
 
   const handleRemoveFilter = useCallback(
@@ -219,7 +219,7 @@ export function DataTable<TData>({
         return oldFilters.filter((v) => v !== filterValue);
       });
     },
-    [table]
+    [] // Removido table de dependencias para evitar recreaciones
   );
 
   const getUniqueColumnValues = useCallback(

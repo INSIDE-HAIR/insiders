@@ -57,7 +57,7 @@ export const useAdvancedFilters = () => {
     hasTranscripts: null,
     memberCountRange: {},
     customDateRange: {},
-    search: '',
+    search: "",
     dateFilter: DateFilter.ALL,
     roomStatus: [],
     customAvailabilityRange: {},
@@ -67,10 +67,10 @@ export const useAdvancedFilters = () => {
 
   // Fetch filter options (tags, groups, users)
   const { data: filterOptions, isLoading: optionsLoading } = useQuery({
-    queryKey: ['filter-options'],
+    queryKey: ["filter-options"],
     queryFn: async () => {
-      const response = await fetch('/api/meet/rooms/filter-options');
-      if (!response.ok) throw new Error('Failed to fetch filter options');
+      const response = await fetch("/api/meet/rooms/filter-options");
+      if (!response.ok) throw new Error("Failed to fetch filter options");
       return response.json();
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -79,53 +79,55 @@ export const useAdvancedFilters = () => {
 
   // Fetch filter stats
   const { data: filterStats, isLoading: statsLoading } = useQuery({
-    queryKey: ['filter-stats', filterState],
+    queryKey: ["filter-stats", filterState],
     queryFn: async () => {
       const params = new URLSearchParams();
-      
+
       // Add advanced filters to query
       if (filterState.tags.length > 0) {
-        params.set('tags', filterState.tags.join(','));
+        params.set("tags", filterState.tags.join(","));
       }
       if (filterState.groups.length > 0) {
-        params.set('groups', filterState.groups.join(','));
+        params.set("groups", filterState.groups.join(","));
       }
       if (filterState.createdByUsers.length > 0) {
-        params.set('users', filterState.createdByUsers.join(','));
+        params.set("users", filterState.createdByUsers.join(","));
       }
       if (filterState.lastActivityRange) {
-        params.set('activity', filterState.lastActivityRange);
+        params.set("activity", filterState.lastActivityRange);
       }
       if (filterState.hasRecordings !== null) {
-        params.set('recordings', filterState.hasRecordings.toString());
+        params.set("recordings", filterState.hasRecordings.toString());
       }
       if (filterState.hasTranscripts !== null) {
-        params.set('transcripts', filterState.hasTranscripts.toString());
+        params.set("transcripts", filterState.hasTranscripts.toString());
       }
       if (filterState.memberCountRange.min !== undefined) {
-        params.set('minMembers', filterState.memberCountRange.min.toString());
+        params.set("minMembers", filterState.memberCountRange.min.toString());
       }
       if (filterState.memberCountRange.max !== undefined) {
-        params.set('maxMembers', filterState.memberCountRange.max.toString());
+        params.set("maxMembers", filterState.memberCountRange.max.toString());
       }
       if (filterState.customDateRange.from) {
-        params.set('fromDate', filterState.customDateRange.from.toISOString());
+        params.set("fromDate", filterState.customDateRange.from.toISOString());
       }
       if (filterState.customDateRange.to) {
-        params.set('toDate', filterState.customDateRange.to.toISOString());
+        params.set("toDate", filterState.customDateRange.to.toISOString());
       }
       if (filterState.search) {
-        params.set('search', filterState.search);
+        params.set("search", filterState.search);
       }
       if (filterState.dateFilter && filterState.dateFilter !== DateFilter.ALL) {
-        params.set('dateFilter', filterState.dateFilter);
+        params.set("dateFilter", filterState.dateFilter);
       }
       if (filterState.roomStatus && filterState.roomStatus.length > 0) {
-        params.set('status', filterState.roomStatus.join(','));
+        params.set("status", filterState.roomStatus.join(","));
       }
 
-      const response = await fetch(`/api/meet/rooms/stats?${params.toString()}`);
-      if (!response.ok) throw new Error('Failed to fetch filter stats');
+      const response = await fetch(
+        `/api/meet/rooms/stats?${params.toString()}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch filter stats");
       return response.json();
     },
     enabled: isAdvancedMode,
@@ -134,89 +136,96 @@ export const useAdvancedFilters = () => {
 
   // Tag actions
   const addTag = useCallback((tag: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
       tags: prev.tags.includes(tag) ? prev.tags : [...prev.tags, tag],
     }));
   }, []);
 
   const removeTag = useCallback((tag: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      tags: prev.tags.filter(t => t !== tag),
+      tags: prev.tags.filter((t) => t !== tag),
     }));
   }, []);
 
   const toggleTag = useCallback((tag: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tag) 
-        ? prev.tags.filter(t => t !== tag)
+      tags: prev.tags.includes(tag)
+        ? prev.tags.filter((t) => t !== tag)
         : [...prev.tags, tag],
     }));
   }, []);
 
   // Group actions
   const addGroup = useCallback((group: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      groups: prev.groups.includes(group) ? prev.groups : [...prev.groups, group],
+      groups: prev.groups.includes(group)
+        ? prev.groups
+        : [...prev.groups, group],
     }));
   }, []);
 
   const removeGroup = useCallback((group: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      groups: prev.groups.filter(g => g !== group),
+      groups: prev.groups.filter((g) => g !== group),
     }));
   }, []);
 
   const toggleGroup = useCallback((group: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
       groups: prev.groups.includes(group)
-        ? prev.groups.filter(g => g !== group)
+        ? prev.groups.filter((g) => g !== group)
         : [...prev.groups, group],
     }));
   }, []);
 
   // User actions
   const addUser = useCallback((user: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      createdByUsers: prev.createdByUsers.includes(user) ? prev.createdByUsers : [...prev.createdByUsers, user],
+      createdByUsers: prev.createdByUsers.includes(user)
+        ? prev.createdByUsers
+        : [...prev.createdByUsers, user],
     }));
   }, []);
 
   const removeUser = useCallback((user: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
-      createdByUsers: prev.createdByUsers.filter(u => u !== user),
+      createdByUsers: prev.createdByUsers.filter((u) => u !== user),
     }));
   }, []);
 
   // Activity range actions
-  const setActivityRange = useCallback((range: AdvancedFilterState["lastActivityRange"]) => {
-    setFilterState(prev => ({
-      ...prev,
-      lastActivityRange: range,
-      // Clear custom date if selecting predefined range
-      customDateRange: range !== "custom" ? {} : prev.customDateRange,
-    }));
-  }, []);
+  const setActivityRange = useCallback(
+    (range: AdvancedFilterState["lastActivityRange"]) => {
+      setFilterState((prev) => ({
+        ...prev,
+        lastActivityRange: range,
+        // Clear custom date if selecting predefined range
+        customDateRange: range !== "custom" ? {} : prev.customDateRange,
+      }));
+    },
+    []
+  );
 
   // Feature filters
   const setRecordingsFilter = useCallback((hasRecordings: boolean | null) => {
-    setFilterState(prev => ({ ...prev, hasRecordings }));
+    setFilterState((prev) => ({ ...prev, hasRecordings }));
   }, []);
 
   const setTranscriptsFilter = useCallback((hasTranscripts: boolean | null) => {
-    setFilterState(prev => ({ ...prev, hasTranscripts }));
+    setFilterState((prev) => ({ ...prev, hasTranscripts }));
   }, []);
 
   // Member count range
   const setMemberCountRange = useCallback((min?: number, max?: number) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
       memberCountRange: { min, max },
     }));
@@ -224,7 +233,7 @@ export const useAdvancedFilters = () => {
 
   // Custom date range
   const setCustomDateRange = useCallback((from?: Date, to?: Date) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
       customDateRange: { from, to },
       lastActivityRange: from || to ? "custom" : prev.lastActivityRange,
@@ -233,39 +242,54 @@ export const useAdvancedFilters = () => {
 
   // Search filter
   const setSearchFilter = useCallback((search: string) => {
-    setFilterState(prev => ({
+    setFilterState((prev) => ({
       ...prev,
       search,
     }));
   }, []);
 
   // Date filter
-  const setDateFilter = useCallback((dateFilter: AdvancedFilterState["dateFilter"]) => {
-    setFilterState(prev => ({
-      ...prev,
-      dateFilter,
-      // Si se cambia a un filtro que no es custom, limpiar las fechas personalizadas
-      customAvailabilityRange: dateFilter === DateFilter.CUSTOM ? prev.customAvailabilityRange : {},
-    }));
-  }, []);
+  const setDateFilter = useCallback(
+    (dateFilter: AdvancedFilterState["dateFilter"]) => {
+      setFilterState((prev) => ({
+        ...prev,
+        dateFilter,
+        // Si se cambia a un filtro que no es custom, limpiar las fechas personalizadas
+        customAvailabilityRange:
+          dateFilter === DateFilter.CUSTOM ? prev.customAvailabilityRange : {},
+      }));
+    },
+    []
+  );
 
   // Custom availability range filter
-  const setCustomAvailabilityRange = useCallback((startDate?: Date, endDate?: Date) => {
-    setFilterState(prev => ({
-      ...prev,
-      customAvailabilityRange: { startDate, endDate },
-      // Auto-cambiar a custom cuando se establecen fechas personalizadas
-      dateFilter: (startDate || endDate) ? DateFilter.CUSTOM : prev.dateFilter === DateFilter.CUSTOM ? DateFilter.ALL : prev.dateFilter,
-    }));
-  }, []);
+  const setCustomAvailabilityRange = useCallback(
+    (startDate?: Date, endDate?: Date) => {
+      setFilterState((prev) => ({
+        ...prev,
+        customAvailabilityRange: { startDate, endDate },
+        // Auto-cambiar a custom cuando se establecen fechas personalizadas
+        dateFilter:
+          startDate || endDate
+            ? DateFilter.CUSTOM
+            : prev.dateFilter === DateFilter.CUSTOM
+              ? DateFilter.ALL
+              : prev.dateFilter,
+      }));
+    },
+    []
+  );
 
   // Room status filter
-  const setRoomStatusFilter = useCallback((status: AdvancedFilterState["roomStatus"]) => {
-    setFilterState(prev => ({
-      ...prev,
-      roomStatus: status,
-    }));
-  }, []);
+  const setRoomStatusFilter = useCallback(
+    (status: AdvancedFilterState["roomStatus"]) => {
+      setFilterState((prev) => ({
+        ...prev,
+        roomStatus: status,
+      }));
+    },
+    []
+  );
 
   // Clear actions
   const clearAllFilters = useCallback(() => {
@@ -278,7 +302,7 @@ export const useAdvancedFilters = () => {
       hasTranscripts: null,
       memberCountRange: {},
       customDateRange: {},
-      search: '',
+      search: "",
       dateFilter: DateFilter.ALL,
       roomStatus: [],
       customAvailabilityRange: {},
@@ -286,96 +310,108 @@ export const useAdvancedFilters = () => {
   }, []);
 
   const clearTags = useCallback(() => {
-    setFilterState(prev => ({ ...prev, tags: [] }));
+    setFilterState((prev) => ({ ...prev, tags: [] }));
   }, []);
 
   const clearGroups = useCallback(() => {
-    setFilterState(prev => ({ ...prev, groups: [] }));
+    setFilterState((prev) => ({ ...prev, groups: [] }));
   }, []);
 
   const clearUsers = useCallback(() => {
-    setFilterState(prev => ({ ...prev, createdByUsers: [] }));
+    setFilterState((prev) => ({ ...prev, createdByUsers: [] }));
   }, []);
 
   // Preset filters
-  const applyPresetFilter = useCallback((preset: "recent" | "active" | "popular" | "unused") => {
-    const now = new Date();
-    
-    switch (preset) {
-      case "recent":
-        setFilterState(prev => ({
-          ...prev,
-          lastActivityRange: "7d",
-          customDateRange: {},
-        }));
-        break;
-        
-      case "active":
-        setFilterState(prev => ({
-          ...prev,
-          lastActivityRange: "24h",
-          customDateRange: {},
-        }));
-        break;
-        
-      case "popular":
-        setFilterState(prev => ({
-          ...prev,
-          memberCountRange: { min: 5 },
-          lastActivityRange: "30d",
-        }));
-        break;
-        
-      case "unused":
-        setFilterState(prev => ({
-          ...prev,
-          lastActivityRange: "90d",
-          memberCountRange: { max: 2 },
-        }));
-        break;
-    }
-  }, []);
+  const applyPresetFilter = useCallback(
+    (preset: "recent" | "active" | "popular" | "unused") => {
+      const now = new Date();
+
+      switch (preset) {
+        case "recent":
+          setFilterState((prev) => ({
+            ...prev,
+            lastActivityRange: "7d",
+            customDateRange: {},
+          }));
+          break;
+
+        case "active":
+          setFilterState((prev) => ({
+            ...prev,
+            lastActivityRange: "24h",
+            customDateRange: {},
+          }));
+          break;
+
+        case "popular":
+          setFilterState((prev) => ({
+            ...prev,
+            memberCountRange: { min: 5 },
+            lastActivityRange: "30d",
+          }));
+          break;
+
+        case "unused":
+          setFilterState((prev) => ({
+            ...prev,
+            lastActivityRange: "90d",
+            memberCountRange: { max: 2 },
+          }));
+          break;
+      }
+    },
+    []
+  );
 
   // Generate API query parameters
   const generateQueryParams = useCallback(() => {
     const params = new URLSearchParams();
-    
+
     if (filterState.tags.length > 0) {
-      params.set('tags', filterState.tags.join(','));
+      params.set("tags", filterState.tags.join(","));
     }
     if (filterState.groups.length > 0) {
-      params.set('groups', filterState.groups.join(','));
+      params.set("groups", filterState.groups.join(","));
     }
     if (filterState.createdByUsers.length > 0) {
-      params.set('createdBy', filterState.createdByUsers.join(','));
+      params.set("createdBy", filterState.createdByUsers.join(","));
     }
-    if (filterState.lastActivityRange && filterState.lastActivityRange !== 'custom') {
-      params.set('activityRange', filterState.lastActivityRange);
+    if (
+      filterState.lastActivityRange &&
+      filterState.lastActivityRange !== "custom"
+    ) {
+      params.set("activityRange", filterState.lastActivityRange);
     }
     if (filterState.hasRecordings !== null) {
-      params.set('hasRecordings', filterState.hasRecordings.toString());
+      params.set("hasRecordings", filterState.hasRecordings.toString());
     }
     if (filterState.hasTranscripts !== null) {
-      params.set('hasTranscripts', filterState.hasTranscripts.toString());
+      params.set("hasTranscripts", filterState.hasTranscripts.toString());
     }
     if (filterState.memberCountRange.min !== undefined) {
-      params.set('minMembers', filterState.memberCountRange.min.toString());
+      params.set("minMembers", filterState.memberCountRange.min.toString());
     }
     if (filterState.memberCountRange.max !== undefined) {
-      params.set('maxMembers', filterState.memberCountRange.max.toString());
+      params.set("maxMembers", filterState.memberCountRange.max.toString());
     }
     if (filterState.customDateRange.from) {
-      params.set('fromDate', filterState.customDateRange.from.toISOString());
+      params.set("fromDate", filterState.customDateRange.from.toISOString());
     }
     if (filterState.customDateRange.to) {
-      params.set('toDate', filterState.customDateRange.to.toISOString());
+      params.set("toDate", filterState.customDateRange.to.toISOString());
     }
     // Filtros de fechas de disponibilidad personalizadas
     if (filterState.customAvailabilityRange.startDate) {
-      params.set('availabilityStartDate', filterState.customAvailabilityRange.startDate.toISOString());
+      params.set(
+        "availabilityStartDate",
+        filterState.customAvailabilityRange.startDate.toISOString()
+      );
     }
     if (filterState.customAvailabilityRange.endDate) {
-      params.set('availabilityEndDate', filterState.customAvailabilityRange.endDate.toISOString());
+      params.set(
+        "availabilityEndDate",
+        filterState.customAvailabilityRange.endDate.toISOString()
+      );
     }
 
     return params;
@@ -383,21 +419,23 @@ export const useAdvancedFilters = () => {
 
   // Computed values
   const hasActiveFilters = useMemo(() => {
-    return filterState.tags.length > 0 ||
-           filterState.groups.length > 0 ||
-           filterState.createdByUsers.length > 0 ||
-           filterState.lastActivityRange !== null ||
-           filterState.hasRecordings !== null ||
-           filterState.hasTranscripts !== null ||
-           filterState.memberCountRange.min !== undefined ||
-           filterState.memberCountRange.max !== undefined ||
-           filterState.customDateRange.from !== undefined ||
-           filterState.customDateRange.to !== undefined ||
-           (filterState.search && filterState.search.trim() !== '') ||
-           (filterState.dateFilter && filterState.dateFilter !== DateFilter.ALL) ||
-           (filterState.roomStatus && filterState.roomStatus.length > 0) ||
-           (filterState.customAvailabilityRange?.startDate !== undefined) ||
-           (filterState.customAvailabilityRange?.endDate !== undefined);
+    return (
+      filterState.tags.length > 0 ||
+      filterState.groups.length > 0 ||
+      filterState.createdByUsers.length > 0 ||
+      filterState.lastActivityRange !== null ||
+      filterState.hasRecordings !== null ||
+      filterState.hasTranscripts !== null ||
+      filterState.memberCountRange.min !== undefined ||
+      filterState.memberCountRange.max !== undefined ||
+      filterState.customDateRange.from !== undefined ||
+      filterState.customDateRange.to !== undefined ||
+      (filterState.search && filterState.search.trim() !== "") ||
+      (filterState.dateFilter && filterState.dateFilter !== DateFilter.ALL) ||
+      (filterState.roomStatus && filterState.roomStatus.length > 0) ||
+      filterState.customAvailabilityRange?.startDate !== undefined ||
+      filterState.customAvailabilityRange?.endDate !== undefined
+    );
   }, [filterState]);
 
   const activeFilterCount = useMemo(() => {
@@ -408,44 +446,51 @@ export const useAdvancedFilters = () => {
     if (filterState.lastActivityRange !== null) count++;
     if (filterState.hasRecordings !== null) count++;
     if (filterState.hasTranscripts !== null) count++;
-    if (filterState.memberCountRange.min !== undefined || filterState.memberCountRange.max !== undefined) count++;
+    if (
+      filterState.memberCountRange.min !== undefined ||
+      filterState.memberCountRange.max !== undefined
+    )
+      count++;
     return count;
   }, [filterState]);
 
-  const availableOptions = useMemo(() => ({
-    tags: (filterOptions?.tags || []) as FilterOption[],
-    groups: (filterOptions?.groups || []) as FilterOption[],
-    users: (filterOptions?.users || []) as FilterOption[],
-  }), [filterOptions]);
+  const availableOptions = useMemo(
+    () => ({
+      tags: (filterOptions?.tags || []) as FilterOption[],
+      groups: (filterOptions?.groups || []) as FilterOption[],
+      users: (filterOptions?.users || []) as FilterOption[],
+    }),
+    [filterOptions]
+  );
 
   return {
     // State
     filterState,
     isAdvancedMode,
     setIsAdvancedMode,
-    
+
     // Options and stats
     availableOptions,
     filterStats: filterStats as FilterStats,
     isLoading: optionsLoading || statsLoading,
-    
+
     // Tag actions
     addTag,
     removeTag,
     toggleTag,
     clearTags,
-    
+
     // Group actions
     addGroup,
     removeGroup,
     toggleGroup,
     clearGroups,
-    
+
     // User actions
     addUser,
     removeUser,
     clearUsers,
-    
+
     // Filter actions
     setActivityRange,
     setRecordingsFilter,
@@ -456,26 +501,34 @@ export const useAdvancedFilters = () => {
     setDateFilter,
     setRoomStatusFilter,
     setCustomAvailabilityRange,
-    
+
     // Bulk actions
     clearAllFilters,
     applyPresetFilter,
-    
+
     // Computed values
     hasActiveFilters,
     activeFilterCount,
     generateQueryParams,
-    
+
     // Utilities
     getFilterSummary: () => {
       const filters: string[] = [];
-      if (filterState.tags.length > 0) filters.push(`${filterState.tags.length} tags`);
-      if (filterState.groups.length > 0) filters.push(`${filterState.groups.length} groups`);
-      if (filterState.createdByUsers.length > 0) filters.push(`${filterState.createdByUsers.length} users`);
-      if (filterState.lastActivityRange) filters.push(`activity: ${filterState.lastActivityRange}`);
-      if (filterState.hasRecordings !== null) filters.push(`recordings: ${filterState.hasRecordings ? 'yes' : 'no'}`);
-      if (filterState.hasTranscripts !== null) filters.push(`transcripts: ${filterState.hasTranscripts ? 'yes' : 'no'}`);
-      return filters.join(', ') || 'No active filters';
+      if (filterState.tags.length > 0)
+        filters.push(`${filterState.tags.length} tags`);
+      if (filterState.groups.length > 0)
+        filters.push(`${filterState.groups.length} groups`);
+      if (filterState.createdByUsers.length > 0)
+        filters.push(`${filterState.createdByUsers.length} users`);
+      if (filterState.lastActivityRange)
+        filters.push(`activity: ${filterState.lastActivityRange}`);
+      if (filterState.hasRecordings !== null)
+        filters.push(`recordings: ${filterState.hasRecordings ? "yes" : "no"}`);
+      if (filterState.hasTranscripts !== null)
+        filters.push(
+          `transcripts: ${filterState.hasTranscripts ? "yes" : "no"}`
+        );
+      return filters.join(", ") || "No active filters";
     },
   };
 };

@@ -7,7 +7,13 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 import { useDebounce } from "@/src/hooks/use-debounce";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -158,12 +164,42 @@ const CalendarEventsPage: React.FC = () => {
     }
   }, [initializeCalendars]);
 
+  // Usar useRef para estabilizar las referencias y evitar recreaciones
+  const filtersRef = useRef({
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    customStartDate,
+    customEndDate,
+  });
+
+  // Actualizar ref cuando cambien los filtros
+  useEffect(() => {
+    filtersRef.current = {
+      activeCalendars,
+      timeRange,
+      debouncedSearch,
+      customStartDate,
+      customEndDate,
+    };
+  }, [
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    customStartDate,
+    customEndDate,
+  ]);
+
   const loadEvents = useCallback(async () => {
+    console.log("🚀 [DEBUG] loadEvents ejecutado");
     try {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
+      const filters = filtersRef.current;
+      console.log("🔧 [DEBUG] Filtros actuales:", filters);
+
       // Si no hay calendarios activos, no cargar eventos
-      if (activeCalendars.length === 0) {
+      if (filters.activeCalendars.length === 0) {
         setState((prev) => ({
           ...prev,
           events: [],
@@ -175,7 +211,7 @@ const CalendarEventsPage: React.FC = () => {
       // Cargar eventos de todos los calendarios activos
       const allEvents: GoogleCalendarEvent[] = [];
 
-      for (const calendarId of activeCalendars) {
+      for (const calendarId of filters.activeCalendars) {
         try {
           // Construir parámetros de consulta
           const params = new URLSearchParams({
@@ -190,7 +226,7 @@ const CalendarEventsPage: React.FC = () => {
           let timeMin: string | undefined;
           let timeMax: string | undefined;
 
-          switch (timeRange) {
+          switch (filters.timeRange) {
             case "upcoming":
               timeMin = now.toISOString();
               break;
@@ -209,22 +245,30 @@ const CalendarEventsPage: React.FC = () => {
               const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
               startOfWeek.setDate(startOfWeek.getDate() + diff);
               startOfWeek.setHours(0, 0, 0, 0);
-              
+
               const endOfWeek = new Date(startOfWeek);
               endOfWeek.setDate(endOfWeek.getDate() + 6);
               endOfWeek.setHours(23, 59, 59, 999);
-              
+
               timeMin = startOfWeek.toISOString();
               timeMax = endOfWeek.toISOString();
               break;
             case "month":
               // Current month: 1st to last day of month
-              const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+              const startOfMonth = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                1
+              );
               startOfMonth.setHours(0, 0, 0, 0);
-              
-              const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+              const endOfMonth = new Date(
+                now.getFullYear(),
+                now.getMonth() + 1,
+                0
+              );
               endOfMonth.setHours(23, 59, 59, 999);
-              
+
               timeMin = startOfMonth.toISOString();
               timeMax = endOfMonth.toISOString();
               break;
@@ -235,18 +279,27 @@ const CalendarEventsPage: React.FC = () => {
               timeMin = monthAgo.toISOString();
               break;
             case "custom":
-              if (customStartDate && customStartDate instanceof Date && !isNaN(customStartDate.getTime())) {
-                timeMin = customStartDate.toISOString();
+              if (
+                filters.customStartDate &&
+                filters.customStartDate instanceof Date &&
+                !isNaN(filters.customStartDate.getTime())
+              ) {
+                timeMin = filters.customStartDate.toISOString();
               }
-              if (customEndDate && customEndDate instanceof Date && !isNaN(customEndDate.getTime())) {
-                timeMax = customEndDate.toISOString();
+              if (
+                filters.customEndDate &&
+                filters.customEndDate instanceof Date &&
+                !isNaN(filters.customEndDate.getTime())
+              ) {
+                timeMax = filters.customEndDate.toISOString();
               }
               break;
           }
 
           if (timeMin) params.append("timeMin", timeMin);
           if (timeMax) params.append("timeMax", timeMax);
-          if (debouncedSearch) params.append("q", debouncedSearch);
+          if (filters.debouncedSearch)
+            params.append("q", filters.debouncedSearch);
 
           const response = await fetch(`/api/calendar/events?${params}`);
           if (response.ok) {
@@ -290,7 +343,7 @@ const CalendarEventsPage: React.FC = () => {
         isLoading: false,
       }));
     }
-  }, [activeCalendars, timeRange, debouncedSearch, customStartDate, customEndDate]);
+  }, []); // Sin dependencias para evitar recreaciones
 
   // Cargar datos iniciales - solo una vez cuando se autentica
   useEffect(() => {
@@ -301,11 +354,29 @@ const CalendarEventsPage: React.FC = () => {
 
   // Recargar eventos cuando cambien los filtros - usando las dependencias directas
   useEffect(() => {
+    console.log("🔄 [DEBUG] useEffect de filtros ejecutado", {
+      calendarsLength: state.calendars.length,
+      activeCalendarsLength: activeCalendars.length,
+      timeRange,
+      debouncedSearch,
+      customStartDate,
+      customEndDate,
+    });
+
     // Solo cargar eventos si hay calendarios seleccionados y calendarios disponibles
     if (state.calendars.length > 0 && activeCalendars.length > 0) {
+      console.log("📡 [DEBUG] Llamando loadEvents");
       loadEvents();
     }
-  }, [activeCalendars, timeRange, debouncedSearch, state.calendars.length, customStartDate, customEndDate, loadEvents]);
+  }, [
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    state.calendars.length,
+    customStartDate,
+    customEndDate,
+    // Removido loadEvents de las dependencias para evitar bucle infinito
+  ]);
 
   const handleDeleteEvent = async (eventId: string, calendarId: string) => {
     if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
@@ -1039,7 +1110,7 @@ const CalendarEventsPage: React.FC = () => {
             <CardContent className='p-4 md:p-6'>
               <div className='space-y-4'>
                 {/* Primera fila: Calendarios, Período, Invitados */}
-                <div className="space-y-4">
+                <div className='space-y-4'>
                   {/* Row 1: Calendar Multi-Selection and Attendees Filter */}
                   <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                     {/* Calendar Multi-Selection */}
@@ -1068,54 +1139,56 @@ const CalendarEventsPage: React.FC = () => {
                     <label className='block text-sm font-medium text-foreground mb-2'>
                       Período
                     </label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className='flex flex-wrap gap-2'>
                       <Button
-                        variant={timeRange === 'all' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('all')}
-                        className="text-xs"
+                        variant={timeRange === "all" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("all")}
+                        className='text-xs'
                       >
                         Todos
                       </Button>
                       <Button
-                        variant={timeRange === 'today' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('today')}
-                        className="text-xs"
+                        variant={timeRange === "today" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("today")}
+                        className='text-xs'
                       >
                         Hoy
                       </Button>
                       <Button
-                        variant={timeRange === 'week' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('week')}
-                        className="text-xs"
+                        variant={timeRange === "week" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("week")}
+                        className='text-xs'
                       >
                         Esta semana
                       </Button>
                       <Button
-                        variant={timeRange === 'month' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('month')}
-                        className="text-xs"
+                        variant={timeRange === "month" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("month")}
+                        className='text-xs'
                       >
                         Este mes
                       </Button>
                       <Button
-                        variant={timeRange === 'upcoming' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('upcoming')}
-                        className="text-xs"
+                        variant={
+                          timeRange === "upcoming" ? "default" : "outline"
+                        }
+                        size='sm'
+                        onClick={() => setTimeRange("upcoming")}
+                        className='text-xs'
                       >
                         Próximos
                       </Button>
                       <Button
-                        variant={timeRange === 'custom' ? 'default' : 'outline'}
-                        size="sm"
-                        onClick={() => setTimeRange('custom')}
-                        className="text-xs"
+                        variant={timeRange === "custom" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("custom")}
+                        className='text-xs'
                       >
-                        <CalendarIcon className="h-3 w-3 mr-1" />
+                        <CalendarIcon className='h-3 w-3 mr-1' />
                         Personalizado
                       </Button>
                     </div>
@@ -1123,8 +1196,8 @@ const CalendarEventsPage: React.FC = () => {
                 </div>
 
                 {/* Custom Date Range Picker - Only show when timeRange is 'custom' */}
-                {timeRange === 'custom' && (
-                  <div className="mt-4">
+                {timeRange === "custom" && (
+                  <div className='mt-4'>
                     <DateTimeRangePicker
                       startValue={customStartDate}
                       endValue={customEndDate}
@@ -1135,10 +1208,10 @@ const CalendarEventsPage: React.FC = () => {
                         setCustomDateRange(customStartDate, date);
                       }}
                       hourCycle={24}
-                      granularity="minute"
-                      startPlaceholder="Fecha y hora de inicio"
-                      endPlaceholder="Fecha y hora de fin"
-                      className="max-w-md"
+                      granularity='minute'
+                      startPlaceholder='Fecha y hora de inicio'
+                      endPlaceholder='Fecha y hora de fin'
+                      className='max-w-md'
                     />
                   </div>
                 )}
@@ -1197,22 +1270,30 @@ const CalendarEventsPage: React.FC = () => {
                     const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
                     startOfWeek.setDate(startOfWeek.getDate() + diff);
                     startOfWeek.setHours(0, 0, 0, 0);
-                    
+
                     const endOfWeek = new Date(startOfWeek);
                     endOfWeek.setDate(endOfWeek.getDate() + 6);
                     endOfWeek.setHours(23, 59, 59, 999);
-                    
+
                     start = startOfWeek.toISOString();
                     end = endOfWeek.toISOString();
                     break;
                   case "month":
                     // Current month: 1st to last day of month
-                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    const startOfMonth = new Date(
+                      now.getFullYear(),
+                      now.getMonth(),
+                      1
+                    );
                     startOfMonth.setHours(0, 0, 0, 0);
-                    
-                    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+                    const endOfMonth = new Date(
+                      now.getFullYear(),
+                      now.getMonth() + 1,
+                      0
+                    );
                     endOfMonth.setHours(23, 59, 59, 999);
-                    
+
                     start = startOfMonth.toISOString();
                     end = endOfMonth.toISOString();
                     break;
@@ -1223,10 +1304,18 @@ const CalendarEventsPage: React.FC = () => {
                     start = monthAgo.toISOString();
                     break;
                   case "custom":
-                    if (customStartDate && customStartDate instanceof Date && !isNaN(customStartDate.getTime())) {
+                    if (
+                      customStartDate &&
+                      customStartDate instanceof Date &&
+                      !isNaN(customStartDate.getTime())
+                    ) {
                       start = customStartDate.toISOString();
                     }
-                    if (customEndDate && customEndDate instanceof Date && !isNaN(customEndDate.getTime())) {
+                    if (
+                      customEndDate &&
+                      customEndDate instanceof Date &&
+                      !isNaN(customEndDate.getTime())
+                    ) {
                       end = customEndDate.toISOString();
                     }
                     break;

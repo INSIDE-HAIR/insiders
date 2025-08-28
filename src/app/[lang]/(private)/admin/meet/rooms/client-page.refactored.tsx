@@ -60,7 +60,10 @@ import {
 // Importar componentes SOLID refactorizados
 import { RoomCard } from "@/src/features/meet/components/molecules/cards";
 import { ConfirmationDialog } from "@/src/features/meet/components/atoms/modals/ConfirmationDialog";
-import { JoinMeetingButton, CreateRoomButton } from "@/src/features/meet/components/atoms/buttons";
+import {
+  JoinMeetingButton,
+  CreateRoomButton,
+} from "@/src/features/meet/components/atoms/buttons";
 import { RoomDetailsModal } from "@/src/features/meet/components/molecules/modals/RoomDetailsModal";
 import { AdvancedFiltersBar } from "@/src/features/meet/components/molecules/filters/AdvancedFiltersBar";
 import { DateFilter } from "@/src/features/meet/types/room-dates.types";
@@ -163,10 +166,10 @@ export const MeetRoomsClientRefactored: React.FC<
 
   // Store notification for feedback
   const { showInfo } = useNotificationStore();
-  
+
   // Room operations hook
   const { deleteRoom } = useRoomOperations();
-  
+
   // Confirmation hook
   const { showConfirmation, confirmationProps } = useConfirmation();
 
@@ -192,17 +195,17 @@ export const MeetRoomsClientRefactored: React.FC<
 
   const handleDuplicateRoom = (spaceId: string, room: any) => {
     // Debug: Verificar datos de la sala antes de duplicar
-    console.log('🚨 DUPLICATE BUTTON CLICKED!!!');
-    console.log('🚨 ROOM DATA:', room);
-    console.log('🚨 ROOM MEMBERS:', room.members);
-    
+    console.log("🚨 DUPLICATE BUTTON CLICKED!!!");
+    console.log("🚨 ROOM DATA:", room);
+    console.log("🚨 ROOM MEMBERS:", room.members);
+
     // Limpiar estado anterior
     setRoomToDuplicate(null);
     setIsDuplicateModalOpen(false);
-    
+
     // Dar tiempo para que se limpie el estado
     setTimeout(() => {
-      console.log('🚨 SETTING NEW ROOM TO DUPLICATE');
+      console.log("🚨 SETTING NEW ROOM TO DUPLICATE");
       setRoomToDuplicate(room);
       setIsDuplicateModalOpen(true);
     }, 100);
@@ -213,7 +216,8 @@ export const MeetRoomsClientRefactored: React.FC<
       {
         type: "delete",
         title: "Eliminar Sala",
-        description: "Esta acción eliminará permanentemente la sala de la base de datos. No se puede deshacer.",
+        description:
+          "Esta acción eliminará permanentemente la sala de la base de datos. No se puede deshacer.",
         itemName: displayName,
         confirmText: "Eliminar definitivamente",
       },
@@ -223,7 +227,7 @@ export const MeetRoomsClientRefactored: React.FC<
           // Refetch para remover la sala de la lista
           await refetch();
         } catch (error) {
-          console.error('Error deleting room:', error);
+          console.error("Error deleting room:", error);
           // El error toast ya se maneja en useRoomOperations
         }
       }
@@ -250,7 +254,6 @@ export const MeetRoomsClientRefactored: React.FC<
     );
   };
 
-
   return (
     <div className='container mx-auto p-6 space-y-6'>
       {/* Header */}
@@ -264,11 +267,11 @@ export const MeetRoomsClientRefactored: React.FC<
             Gestiona tus salas de reuniones de Google Meet
           </p>
         </div>
-        
+
         {/* Botón Crear Sala */}
         <CreateRoomButton
           onRoomCreated={(room) => {
-            console.log('Nueva sala creada:', room);
+            console.log("Nueva sala creada:", room);
             // Refetch rooms para mostrar la nueva sala
             refetch();
           }}
@@ -277,7 +280,7 @@ export const MeetRoomsClientRefactored: React.FC<
 
       {/* Filtros */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className='pt-6'>
           <AdvancedFiltersBar
             searchTerm={filterState.search}
             onSearchChange={setSearchFilter}
@@ -285,13 +288,23 @@ export const MeetRoomsClientRefactored: React.FC<
             onDateFilterChange={(dateFilter) => setDateFilter(dateFilter)}
             customStartDate={filterState.customAvailabilityRange.startDate}
             customEndDate={filterState.customAvailabilityRange.endDate}
-            onCustomStartDateChange={(date) => setCustomAvailabilityRange(date, filterState.customAvailabilityRange.endDate)}
-            onCustomEndDateChange={(date) => setCustomAvailabilityRange(filterState.customAvailabilityRange.startDate, date)}
+            onCustomStartDateChange={(date) =>
+              setCustomAvailabilityRange(
+                date,
+                filterState.customAvailabilityRange.endDate
+              )
+            }
+            onCustomEndDateChange={(date) =>
+              setCustomAvailabilityRange(
+                filterState.customAvailabilityRange.startDate,
+                date
+              )
+            }
             selectedStatuses={filterState.roomStatus}
             onStatusChange={setRoomStatusFilter}
             onClearAll={clearAllFilters}
             hasActiveFilters={hasAdvancedFilters}
-            variant="full"
+            variant='full'
           />
         </CardContent>
       </Card>
@@ -484,11 +497,11 @@ export const MeetRoomsClientRefactored: React.FC<
         onClose={handleCloseModal}
         room={selectedRoom}
         onUpdate={() => {
-          console.log('🔄 Actualizando datos del room');
+          console.log("🔄 Actualizando datos del room");
           refetch(); // Refrescar datos
         }}
         onDelete={() => {
-          console.log('🗑️ Eliminando room');
+          console.log("🗑️ Eliminando room");
           setIsModalOpen(false);
           setSelectedRoom(null);
           refetch(); // Refrescar datos
@@ -497,30 +510,30 @@ export const MeetRoomsClientRefactored: React.FC<
 
       {/* Confirmation Dialog - Sistema Atómico */}
       <ConfirmationDialog {...confirmationProps} />
-      
+
       {/* CreateRoom Modal para Duplicación */}
       {roomToDuplicate && (
         <CreateRoomButton
           duplicateFrom={roomToDuplicate}
           autoOpen={true}
           onRoomCreated={async (newRoom) => {
-            console.log('🎉 Sala duplicada exitosamente:', newRoom);
+            console.log("🎉 Sala duplicada exitosamente:", newRoom);
             setRoomToDuplicate(null);
             setIsDuplicateModalOpen(false);
             // Refetch para mostrar la nueva sala
             await refetch();
           }}
           onCancel={() => {
-            console.log('❌ Duplicación cancelada');
+            console.log("❌ Duplicación cancelada");
             setRoomToDuplicate(null);
             setIsDuplicateModalOpen(false);
           }}
-          className="hidden" // Ocultar el botón ya que se abre automáticamente
+          className='hidden' // Ocultar el botón ya que se abre automáticamente
         />
       )}
-      
+
       {/* Sonner Toaster para notificaciones */}
-      <Toaster position="top-right" closeButton richColors />
+      <Toaster position='top-right' closeButton richColors />
     </div>
   );
 };

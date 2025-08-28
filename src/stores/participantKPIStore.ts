@@ -32,17 +32,24 @@ export const useParticipantKPIStore = create<ParticipantKPIState>((set, get) => 
   error: null,
   lastFetchedAt: null,
 
-  // Fetch KPIs from API
+  // Fetch KPIs from API - Memoizada para evitar recreaciones
   fetchKPIs: async (emails, options = {}) => {
+    console.log('🚀 [KPI STORE] fetchKPIs ejecutado', { emails, options });
+    
     // Don't fetch if already loading
-    if (get().isLoading) return;
+    if (get().isLoading) {
+      console.log('⏸️ [KPI STORE] Ya está cargando, saltando...');
+      return;
+    }
 
     // Don't fetch if no emails provided
     if (emails.length === 0) {
+      console.log('📭 [KPI STORE] No hay emails, limpiando KPIs');
       set({ kpis: {}, error: null });
       return;
     }
 
+    console.log('📡 [KPI STORE] Iniciando carga de KPIs');
     set({ isLoading: true, error: null });
 
     try {
