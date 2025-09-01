@@ -60,34 +60,6 @@ export const ParticipantKPISection: React.FC<ParticipantKPISectionProps> = ({
 
   const isLoading = externalLoading || isStoreLoading;
 
-  // Loading skeleton para toda la sección
-  if (externalLoading) {
-    return (
-      <div className="mb-6 space-y-4">
-        {/* Header skeleton */}
-        <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 mb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <SkeletonBox width={32} height={32} rounded="full" />
-              <div>
-                <SkeletonBox width={180} height={20} className="mb-2" />
-                <SkeletonBox width={120} height={16} />
-              </div>
-            </div>
-            <SkeletonBox width={140} height={24} rounded="full" />
-          </div>
-        </div>
-        
-        {/* Grid skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {Array(4).fill(0).map((_, i) => (
-            <SkeletonBox key={i} width="100%" height={400} rounded="lg" />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   // Fetch KPIs when selected attendees change - copiado exacto líneas 49-74
   useEffect(() => {
     console.log('🔄 [KPI DEBUG] useEffect ejecutado', {
@@ -261,6 +233,34 @@ export const ParticipantKPISection: React.FC<ParticipantKPISectionProps> = ({
       calendarIds,
     });
   };
+
+  // Loading skeleton para toda la sección
+  if (externalLoading) {
+    return (
+      <div className="mb-6 space-y-4">
+        {/* Header skeleton */}
+        <div className="bg-primary/5 p-4 rounded-lg border border-primary/20 mb-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <SkeletonBox width={32} height={32} rounded="full" />
+              <div>
+                <SkeletonBox width={180} height={20} className="mb-2" />
+                <SkeletonBox width={120} height={16} />
+              </div>
+            </div>
+            <SkeletonBox width={140} height={24} rounded="full" />
+          </div>
+        </div>
+        
+        {/* Grid skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {Array(4).fill(0).map((_, i) => (
+            <SkeletonBox key={i} width="100%" height={400} rounded="lg" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   // If no attendees selected, show empty state - copiado exacto líneas 223-236
   if (selectedAttendees.length === 0) {

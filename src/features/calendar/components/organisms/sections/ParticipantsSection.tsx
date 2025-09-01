@@ -183,7 +183,7 @@ export const ParticipantsSection: React.FC<ParticipantsSectionProps> = ({ event 
 
                       {attendee.comment && (
                         <p className="text-sm text-muted-foreground mt-1 italic">
-                          "{attendee.comment}"
+                          &quot;{attendee.comment}&quot;
                         </p>
                       )}
                     </div>

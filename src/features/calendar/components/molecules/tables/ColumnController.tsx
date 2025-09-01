@@ -301,6 +301,18 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Loading skeleton
   if (isLoading) {
     return (
@@ -318,18 +330,6 @@ export const ColumnController: React.FC<ColumnControllerProps> = ({
     const matchesCategory = selectedCategory === "all" || column.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleToggleColumn = (columnId: string) => {
     const isVisible = visibleColumns.includes(columnId);

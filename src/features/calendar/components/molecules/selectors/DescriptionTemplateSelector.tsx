@@ -1,6 +1,6 @@
 /**
  * DescriptionTemplateSelector - Molecular Component
- * 
+ *
  * Selector de plantillas de descripción usando shadcn components
  * Migrado desde el componente original manteniendo estética IDÉNTICA
  */
@@ -54,7 +54,9 @@ const PREDEFINED_TEMPLATES = [
   { value: "personalizado", label: "Plantilla personalizada..." },
 ];
 
-export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorProps> = ({
+export const DescriptionTemplateSelector: React.FC<
+  DescriptionTemplateSelectorProps
+> = ({
   eventId,
   calendarId,
   currentDescription,
@@ -74,7 +76,7 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
 
   // Cargar plantilla personalizada guardada
   useEffect(() => {
-    const savedTemplate = localStorage.getItem('calendar-custom-template');
+    const savedTemplate = localStorage.getItem("calendar-custom-template");
     if (savedTemplate) {
       setCustomTemplate(savedTemplate);
     }
@@ -90,12 +92,12 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
         .replace(/\{hora\}/g, "10:00 AM - 11:00 AM")
         .replace(/\{ubicación\}/g, "Sala de Juntas")
         .replace(/\{asistentes\}/g, "Juan Pérez, María García");
-      
+
       setPreview(previewText);
     } else if (selectedTemplate !== "personalizado") {
       // Templates predefinidas
       const templates = {
-        "clásico": `📅 Reunión: {título}
+        clásico: `📅 Reunión: {título}
         
 🕐 Fecha: {fecha}
 ⏰ Hora: {hora}
@@ -110,8 +112,8 @@ export const DescriptionTemplateSelector: React.FC<DescriptionTemplateSelectorPr
 
 ---
 Esta reunión ha sido programada automáticamente.`,
-        
-        "reunión": `🤝 {título}
+
+        reunión: `🤝 {título}
 
 📊 Información:
 • Fecha: {fecha}
@@ -124,7 +126,7 @@ Esta reunión ha sido programada automáticamente.`,
 - [ ] Objetivo 2
 - [ ] Objetivo 3`,
 
-        "formación": `📚 Sesión de Formación: {título}
+        formación: `📚 Sesión de Formación: {título}
 
 📅 Cuándo: {fecha} a las {hora}
 🏢 Dónde: {ubicación}
@@ -138,7 +140,7 @@ Esta reunión ha sido programada automáticamente.`,
 
 💡 Preparación recomendada: Revisar material previo`,
 
-        "presentación": `🎤 Presentación: {título}
+        presentación: `🎤 Presentación: {título}
 
 📊 Detalles:
 📆 {fecha}
@@ -152,7 +154,7 @@ Esta reunión ha sido programada automáticamente.`,
 • Q&A (10 min)
 • Cierre (5 min)`,
 
-        "seguimiento": `🔄 Seguimiento: {título}
+        seguimiento: `🔄 Seguimiento: {título}
 
 📈 Revisión programada para:
 🗓️ {fecha} a las {hora}
@@ -165,20 +167,23 @@ Esta reunión ha sido programada automáticamente.`,
 - Bloqueadores
 - Decisiones pendientes`,
 
-        "automático": `{título}
+        automático: `{título}
 
 {fecha} - {hora}
 {ubicación}
-{asistentes}`
+{asistentes}`,
       };
-      
-      const template = templates[selectedTemplate as keyof typeof templates] || templates["automático"];
-      setPreview(template
-        .replace(/\{título\}/g, "Reunión de Equipo")
-        .replace(/\{fecha\}/g, "15 de Diciembre, 2024")
-        .replace(/\{hora\}/g, "10:00 AM - 11:00 AM")
-        .replace(/\{ubicación\}/g, "Sala de Juntas")
-        .replace(/\{asistentes\}/g, "Juan Pérez, María García")
+
+      const template =
+        templates[selectedTemplate as keyof typeof templates] ||
+        templates["automático"];
+      setPreview(
+        template
+          .replace(/\{título\}/g, "Reunión de Equipo")
+          .replace(/\{fecha\}/g, "15 de Diciembre, 2024")
+          .replace(/\{hora\}/g, "10:00 AM - 11:00 AM")
+          .replace(/\{ubicación\}/g, "Sala de Juntas")
+          .replace(/\{asistentes\}/g, "Juan Pérez, María García")
       );
     }
   }, [selectedTemplate, customTemplate]);
@@ -189,10 +194,10 @@ Esta reunión ha sido programada automáticamente.`,
 
   const handleGenerate = async () => {
     setIsGenerating(true);
-    
+
     try {
       let templateToUse = "";
-      
+
       if (selectedTemplate === "personalizado") {
         if (!customTemplate.trim()) {
           toast({
@@ -204,17 +209,17 @@ Esta reunión ha sido programada automáticamente.`,
         }
         templateToUse = customTemplate;
         // Guardar plantilla personalizada
-        localStorage.setItem('calendar-custom-template', customTemplate);
+        localStorage.setItem("calendar-custom-template", customTemplate);
       } else {
         // Usar plantilla predefinida
         const templates = {
-          "clásico": `📅 Reunión: {{titulo}}
+          clásico: `📅 Reunión: {{titulo}}
 
 🕐 Fecha: {{fecha}}
 ⏰ Hora: {{hora}}
-${includeLocation ? '📍 Ubicación: {{ubicacion}}' : ''}
+${includeLocation ? "📍 Ubicación: {{ubicacion}}" : ""}
 
-${includeAttendees ? '👥 Participantes: {{asistentes}}' : ''}
+${includeAttendees ? "👥 Participantes: {{asistentes}}" : ""}
 
 📋 Agenda:
 - Punto 1
@@ -225,14 +230,16 @@ ${includeAttendees ? '👥 Participantes: {{asistentes}}' : ''}
 Esta reunión ha sido programada automáticamente.`,
           // ... otros templates
         };
-        
-        templateToUse = templates[selectedTemplate as keyof typeof templates] || templates["clásico"];
+
+        templateToUse =
+          templates[selectedTemplate as keyof typeof templates] ||
+          templates["clásico"];
       }
 
       // Simular llamada API para generar descripción
-      const response = await fetch('/api/calendar/generate-description', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/calendar/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           eventId,
           calendarId,
@@ -244,23 +251,23 @@ Esta reunión ha sido programada automáticamente.`,
       });
 
       if (!response.ok) {
-        throw new Error('Error al generar descripción');
+        throw new Error("Error al generar descripción");
       }
 
       const { description } = await response.json();
-      
+
       onDescriptionGenerated(description);
       setIsDialogOpen(false);
-      
+
       toast({
         title: "Descripción generada",
         description: "La descripción se ha generado exitosamente",
       });
-
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Error desconocido",
+        description:
+          error instanceof Error ? error.message : "Error desconocido",
         variant: "destructive",
       });
     } finally {
@@ -272,51 +279,52 @@ Esta reunión ha sido programada automáticamente.`,
   if (isLoading) {
     return (
       <div className={cn("space-y-2", className)}>
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-10 w-full" />
+        <Skeleton className='h-4 w-32' />
+        <Skeleton className='h-10 w-full' />
       </div>
     );
   }
 
   return (
     <div className={cn("space-y-2", className)}>
-      <Label className="text-sm font-medium">
-        Plantilla de Descripción
-      </Label>
-      
+      <Label className='text-sm font-medium'>Plantilla de Descripción</Label>
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button
-            variant="outline"
-            className="w-full justify-start"
+            variant='outline'
+            className='w-full justify-start'
             disabled={disabled}
           >
-            <SparklesIcon className="mr-2 h-4 w-4" />
+            <SparklesIcon className='mr-2 h-4 w-4' />
             Generar descripción automática
             {currentDescription && (
-              <Badge variant="secondary" className="ml-auto">
+              <Badge variant='secondary' className='ml-auto'>
                 Tiene descripción
               </Badge>
             )}
           </Button>
         </DialogTrigger>
-        
-        <DialogContent className="max-w-4xl max-h-[90vh]">
+
+        <DialogContent className='max-w-4xl max-h-[90vh]'>
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <SparklesIcon className="h-5 w-5" />
+            <DialogTitle className='flex items-center gap-2'>
+              <SparklesIcon className='h-5 w-5' />
               Generar Descripción Automática
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-6 py-4">
+          <div className='grid grid-cols-2 gap-6 py-4'>
             {/* Configuración */}
-            <div className="space-y-4">
-              <div className="space-y-2">
+            <div className='space-y-4'>
+              <div className='space-y-2'>
                 <Label>Seleccionar Plantilla</Label>
-                <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                <Select
+                  value={selectedTemplate}
+                  onValueChange={setSelectedTemplate}
+                >
                   <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar plantilla..." />
+                    <SelectValue placeholder='Seleccionar plantilla...' />
                   </SelectTrigger>
                   <SelectContent>
                     {PREDEFINED_TEMPLATES.map((template) => (
@@ -329,55 +337,62 @@ Esta reunión ha sido programada automáticamente.`,
               </div>
 
               {selectedTemplate === "personalizado" && (
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   <Label>Plantilla Personalizada</Label>
                   <Textarea
-                    placeholder="Escribe tu plantilla usando variables como {título}, {fecha}, {hora}, {ubicación}, {asistentes}..."
+                    placeholder='Escribe tu plantilla usando variables como {título}, {fecha}, {hora}, {ubicación}, {asistentes}...'
                     value={customTemplate}
                     onChange={(e) => setCustomTemplate(e.target.value)}
                     rows={8}
-                    className="text-sm font-mono"
+                    className='text-sm font-mono'
                   />
-                  <div className="text-xs text-muted-foreground">
-                    Variables disponibles: {"{título}"}, {"{fecha}"}, {"{hora}"}, {"{ubicación}"}, {"{asistentes}"}
+                  <div className='text-xs text-muted-foreground'>
+                    Variables disponibles: {"{título}"}, {"{fecha}"}, {"{hora}"}
+                    , {"{ubicación}"}, {"{asistentes}"}
                   </div>
                 </div>
               )}
 
               <Separator />
 
-              <div className="space-y-3">
+              <div className='space-y-3'>
                 <Label>Incluir en la descripción</Label>
-                
-                <div className="flex items-center space-x-2">
+
+                <div className='flex items-center space-x-2'>
                   <Checkbox
-                    id="include-attendees"
+                    id='include-attendees'
                     checked={includeAttendees}
-                    onCheckedChange={setIncludeAttendees}
+                    onCheckedChange={(checked) =>
+                      setIncludeAttendees(checked === true)
+                    }
                   />
-                  <Label htmlFor="include-attendees" className="text-sm">
+                  <Label htmlFor='include-attendees' className='text-sm'>
                     Lista de asistentes
                   </Label>
                 </div>
-                
-                <div className="flex items-center space-x-2">
+
+                <div className='flex items-center space-x-2'>
                   <Checkbox
-                    id="include-location"
+                    id='include-location'
                     checked={includeLocation}
-                    onCheckedChange={setIncludeLocation}
+                    onCheckedChange={(checked) =>
+                      setIncludeLocation(checked === true)
+                    }
                   />
-                  <Label htmlFor="include-location" className="text-sm">
+                  <Label htmlFor='include-location' className='text-sm'>
                     Ubicación del evento
                   </Label>
                 </div>
-                
-                <div className="flex items-center space-x-2">
+
+                <div className='flex items-center space-x-2'>
                   <Checkbox
-                    id="include-datetime"
+                    id='include-datetime'
                     checked={includeDateTime}
-                    onCheckedChange={setIncludeDateTime}
+                    onCheckedChange={(checked) =>
+                      setIncludeDateTime(checked === true)
+                    }
                   />
-                  <Label htmlFor="include-datetime" className="text-sm">
+                  <Label htmlFor='include-datetime' className='text-sm'>
                     Fecha y hora
                   </Label>
                 </div>
@@ -385,17 +400,18 @@ Esta reunión ha sido programada automáticamente.`,
             </div>
 
             {/* Preview */}
-            <div className="space-y-2">
+            <div className='space-y-2'>
               <Label>Vista Previa</Label>
-              <div className="bg-muted p-4 rounded-lg min-h-[200px] text-sm whitespace-pre-line">
-                {preview || "Selecciona una plantilla para ver la vista previa..."}
+              <div className='bg-muted p-4 rounded-lg min-h-[200px] text-sm whitespace-pre-line'>
+                {preview ||
+                  "Selecciona una plantilla para ver la vista previa..."}
               </div>
             </div>
           </div>
 
           <DialogFooter>
             <Button
-              variant="outline"
+              variant='outline'
               onClick={() => setIsDialogOpen(false)}
               disabled={isGenerating}
             >
@@ -403,16 +419,19 @@ Esta reunión ha sido programada automáticamente.`,
             </Button>
             <Button
               onClick={handleGenerate}
-              disabled={isGenerating || (selectedTemplate === "personalizado" && !customTemplate.trim())}
+              disabled={
+                isGenerating ||
+                (selectedTemplate === "personalizado" && !customTemplate.trim())
+              }
             >
               {isGenerating ? (
                 <>
-                  <SpeakerXMarkIcon className="mr-2 h-4 w-4 animate-spin" />
+                  <SpeakerXMarkIcon className='mr-2 h-4 w-4 animate-spin' />
                   Generando...
                 </>
               ) : (
                 <>
-                  <SparklesIcon className="mr-2 h-4 w-4" />
+                  <SparklesIcon className='mr-2 h-4 w-4' />
                   Generar Descripción
                 </>
               )}
@@ -426,9 +445,9 @@ Esta reunión ha sido programada automáticamente.`,
 
 // Loading skeleton
 export const DescriptionTemplateSelectorSkeleton: React.FC = () => (
-  <div className="space-y-2 animate-pulse">
-    <Skeleton className="h-4 w-32" />
-    <Skeleton className="h-10 w-full" />
+  <div className='space-y-2 animate-pulse'>
+    <Skeleton className='h-4 w-32' />
+    <Skeleton className='h-10 w-full' />
   </div>
 );
 

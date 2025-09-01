@@ -133,7 +133,7 @@ export const EditableCalendarField: React.FC<EditableCalendarFieldProps> = ({
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Calendar className="h-3 w-3" />
             {selectedCalendarId !== currentCalendarId && (
-              <span>Mover de "{currentCalendar?.summary}" a "{selectedCalendar?.summary}"</span>
+              <span>Mover de &quot;{currentCalendar?.summary}&quot; a &quot;{selectedCalendar?.summary}&quot;</span>
             )}
           </div>
           <div className="flex items-center gap-1">
