@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { useRouter } from "next/navigation";
-import { AVAILABLE_COLUMNS } from "@/src/features/calendar/components/ColumnController";
+import { AVAILABLE_COLUMNS } from "@/src/features/calendar/components/molecules/tables/ColumnController";
 import { toast } from "@/src/components/ui/use-toast";
 // Migración a componentes atómicos - versión mejorada
 import {

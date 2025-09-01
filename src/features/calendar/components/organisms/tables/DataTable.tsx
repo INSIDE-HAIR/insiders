@@ -46,7 +46,7 @@ import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 // import { AdvancedColumnFilter } from "../../AdvancedColumnFilter"; // Original version with different interface
 // Temporarily disable advanced column filter until interface is fixed
 import { BulkActionsBar } from "../bars/BulkActionsBar";
-import { SelectionIndicator } from "../../SelectionIndicator";
+import { SelectionIndicator } from "../../atoms/indicators/SelectionIndicator";
 import { cn } from "@/src/lib/utils";
 
 interface DataTableProps<TData> {

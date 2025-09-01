@@ -108,11 +108,11 @@ export { useCalendarStore } from './stores/useCalendarStore';
 export { useModalNavigation } from '../hooks';
 
 // ========================================
-// LEGACY COMPONENTS - DEPRECATED
+// CARDS
 // ========================================
 
-// Legacy Card Components (usar atoms/molecules equivalentes)
-export { ParticipantKPICard } from './ParticipantKPICard';
+// KPI Cards
+export { ParticipantKPICard } from './molecules/cards/ParticipantKPICard';
 
 // NOTA: Migración atómica 100% completada
 // Todos los componentes están organizados siguiendo Atomic Design

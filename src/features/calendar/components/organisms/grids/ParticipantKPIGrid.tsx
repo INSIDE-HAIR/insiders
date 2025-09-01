@@ -8,7 +8,7 @@
 "use client";
 
 import React, { useEffect, useMemo } from "react";
-import { ParticipantKPICard } from "../../ParticipantKPICard";
+import { ParticipantKPICard } from "../../molecules/cards/ParticipantKPICard";
 import { GoogleCalendarEvent, ParticipantKPI } from "@/src/features/calendar/types";
 import { 
   useParticipantKPIStore, 
