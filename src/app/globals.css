@@ -458,12 +458,71 @@
     outline: none !important;
   }
 
-  /* Selection styles */
+  /* Global text selection - improved approach */
+  ::selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  ::-moz-selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  /* Apply to all elements */
+  *::selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  *::-moz-selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  /* Special handling for Quill editor */
   .ql-editor ::selection {
-    background-color: hsl(var(--primary) / 0.2) !important;
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
   }
 
   .ql-editor ::-moz-selection {
-    background-color: hsl(var(--primary) / 0.2) !important;
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  /* Ensure selection works in all text elements */
+  p::selection,
+  span::selection,
+  div::selection,
+  h1::selection,
+  h2::selection,
+  h3::selection,
+  h4::selection,
+  h5::selection,
+  h6::selection,
+  a::selection,
+  li::selection,
+  td::selection,
+  th::selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  p::-moz-selection,
+  span::-moz-selection,
+  div::-moz-selection,
+  h1::-moz-selection,
+  h2::-moz-selection,
+  h3::-moz-selection,
+  h4::-moz-selection,
+  h5::-moz-selection,
+  h6::-moz-selection,
+  a::-moz-selection,
+  li::-moz-selection,
+  td::-moz-selection,
+  th::-moz-selection {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
   }
 }

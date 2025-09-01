@@ -257,12 +257,15 @@ export class GoogleCalendarService {
 
     try {
       logger.info(`Updating event: ${eventId} in calendar: ${calendarId}`);
+      logger.info(`Event data received:`, JSON.stringify(eventData, null, 2));
 
       // Obtener evento actual para merge
       const currentEvent = await this.getEvent(calendarId, eventId);
+      logger.info(`Current event:`, JSON.stringify(currentEvent, null, 2));
       
       // Convertir datos del formulario
       const googleEvent = this.formToGoogleEvent(eventData as CalendarEventForm, currentEvent);
+      logger.info(`Google event payload:`, JSON.stringify(googleEvent, null, 2));
       
       const response = await this.calendar.events.update({
         calendarId,
@@ -275,6 +278,7 @@ export class GoogleCalendarService {
       return response.data;
     } catch (error: any) {
       logger.error(`Failed to update event ${eventId}`, error);
+      logger.error(`Error details:`, error.response?.data || error);
       throw new Error(`Failed to update event: ${error.message}`);
     }
   }
@@ -464,71 +468,105 @@ export class GoogleCalendarService {
     formData: CalendarEventForm, 
     existingEvent?: GoogleCalendarEvent
   ): Partial<GoogleCalendarEvent> {
-    const start = this.createEventDateTime(
-      formData.startDate,
-      formData.startTime,
-      formData.allDay,
-      formData.timeZone
-    );
-
-    const end = this.createEventDateTime(
-      formData.endDate,
-      formData.endTime,
-      formData.allDay,
-      formData.timeZone
-    );
-
     const googleEvent: Partial<GoogleCalendarEvent> = {
       ...existingEvent, // Merge with existing event if updating
-      summary: formData.summary,
-      description: formData.description,
-      location: formData.location,
-      start,
-      end,
-      visibility: formData.visibility,
-      transparency: formData.transparency,
-      guestsCanInviteOthers: formData.guestsCanInviteOthers,
-      guestsCanModify: formData.guestsCanModify,
-      guestsCanSeeOtherGuests: formData.guestsCanSeeOtherGuests
     };
 
-    // Invitados con soporte para hosts
-    if (formData.attendees && formData.attendees.length > 0) {
-      googleEvent.attendees = formData.attendees.map(attendee => ({
-        email: attendee.email,
-        displayName: attendee.displayName,
-        optional: attendee.optional || false,
-        responseStatus: 'needsAction' as any,
-        // Hacer que todos los invitados sean organizadores/hosts si está configurado
-        organizer: (formData as any).allAttendeesHosts || false
-      }));
+    // Only update fields that are explicitly provided
+    if (formData.summary !== undefined) {
+      googleEvent.summary = formData.summary;
+    }
+    
+    if (formData.description !== undefined) {
+      googleEvent.description = formData.description;
+    }
+    
+    if (formData.location !== undefined) {
+      googleEvent.location = formData.location;
     }
 
-    // Recordatorios
-    if (formData.reminders && formData.reminders.length > 0) {
-      googleEvent.reminders = {
-        useDefault: false,
-        overrides: formData.reminders
-      };
-    } else {
-      googleEvent.reminders = {
-        useDefault: true
-      };
+    // Only update start/end times if date information is provided
+    if (formData.startDate !== undefined) {
+      googleEvent.start = this.createEventDateTime(
+        formData.startDate,
+        formData.startTime,
+        formData.allDay,
+        formData.timeZone
+      );
     }
 
-    // Recurrencia
-    if (formData.recurrence) {
+    if (formData.endDate !== undefined) {
+      googleEvent.end = this.createEventDateTime(
+        formData.endDate,
+        formData.endTime,
+        formData.allDay,
+        formData.timeZone
+      );
+    }
+    
+    if (formData.visibility !== undefined) {
+      googleEvent.visibility = formData.visibility;
+    }
+    
+    if (formData.transparency !== undefined) {
+      googleEvent.transparency = formData.transparency;
+    }
+    
+    if (formData.guestsCanInviteOthers !== undefined) {
+      googleEvent.guestsCanInviteOthers = formData.guestsCanInviteOthers;
+    }
+    
+    if (formData.guestsCanModify !== undefined) {
+      googleEvent.guestsCanModify = formData.guestsCanModify;
+    }
+    
+    if (formData.guestsCanSeeOtherGuests !== undefined) {
+      googleEvent.guestsCanSeeOtherGuests = formData.guestsCanSeeOtherGuests;
+    };
+
+    // Invitados con soporte para hosts (solo si se proporcionan attendees)
+    if (formData.attendees !== undefined) {
+      if (formData.attendees.length > 0) {
+        googleEvent.attendees = formData.attendees.map(attendee => ({
+          email: attendee.email,
+          displayName: attendee.displayName,
+          optional: attendee.optional || false,
+          responseStatus: 'needsAction' as any,
+          // Hacer que todos los invitados sean organizadores/hosts si está configurado
+          organizer: (formData as any).allAttendeesHosts || false
+        }));
+      } else {
+        googleEvent.attendees = [];
+      }
+    }
+
+    // Recordatorios (solo si se proporcionan)
+    if (formData.reminders !== undefined) {
+      if (formData.reminders.length > 0) {
+        googleEvent.reminders = {
+          useDefault: false,
+          overrides: formData.reminders
+        };
+      } else {
+        googleEvent.reminders = {
+          useDefault: true
+        };
+      }
+    }
+
+    // Recurrencia (solo si se proporciona)
+    if (formData.recurrence !== undefined) {
       const rrule = this.buildRRule(formData.recurrence);
       googleEvent.recurrence = [rrule];
     }
 
-    // Configuración de Google Meet con funciones avanzadas
-    if ((formData as any).conferenceData) {
+    // Configuración de Google Meet con funciones avanzadas (solo si se proporciona)
+    if ((formData as any).conferenceData !== undefined) {
       googleEvent.conferenceData = this.buildConferenceData(formData as any);
     }
 
-    // Propiedades extendidas para características avanzadas
-    if ((formData as any).extendedProperties) {
+    // Propiedades extendidas para características avanzadas (solo si se proporcionan)
+    if ((formData as any).extendedProperties !== undefined) {
       (googleEvent as any).extendedProperties = (formData as any).extendedProperties;
     }
 

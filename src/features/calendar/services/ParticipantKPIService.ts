@@ -23,12 +23,14 @@ export class ParticipantKPIService {
         totalEvents: 0,
         acceptedEvents: 0,
         declinedEvents: 0,
+        tentativeEvents: 0,
         needsActionEvents: 0,
         completedEvents: 0,
         upcomingEvents: 0,
         totalDurationMinutes: 0,
         acceptedDurationMinutes: 0,
         declinedDurationMinutes: 0,
+        tentativeDurationMinutes: 0,
         needsActionDurationMinutes: 0,
         completedDurationMinutes: 0,
         upcomingDurationMinutes: 0,
@@ -82,9 +84,8 @@ export class ParticipantKPIService {
               kpi.declinedDurationMinutes += eventDuration;
               break;
             case AttendeeResponseStatus.TENTATIVE:
-              // Las tentativas las consideramos como sin respuesta definida
-              kpi.needsActionEvents++;
-              kpi.needsActionDurationMinutes += eventDuration;
+              kpi.tentativeEvents++;
+              kpi.tentativeDurationMinutes += eventDuration;
               break;
             case AttendeeResponseStatus.NEEDS_ACTION:
               kpi.needsActionEvents++;
@@ -111,7 +112,7 @@ export class ParticipantKPIService {
         kpi.participationRate = Math.round((kpi.acceptedEvents / kpi.totalEvents) * 100);
         
         // Tasa de respuesta: eventos con respuesta (no needsAction) / total
-        const respondedEvents = kpi.acceptedEvents + kpi.declinedEvents;
+        const respondedEvents = kpi.acceptedEvents + kpi.declinedEvents + kpi.tentativeEvents;
         kpi.responseRate = Math.round((respondedEvents / kpi.totalEvents) * 100);
       }
     });

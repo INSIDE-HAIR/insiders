@@ -14,8 +14,10 @@ interface ReactQuillWrapperProps {
   formats?: string[];
 }
 
+// We'll register the custom blot inside the component when Quill is available
+
 export const ReactQuillWrapper = forwardRef<
-  HTMLDivElement,
+  any,
   ReactQuillWrapperProps
 >(
   (
@@ -33,6 +35,12 @@ export const ReactQuillWrapper = forwardRef<
     const editorRef = useRef<HTMLDivElement>(null);
     const quillRef = useRef<Quill | null>(null);
     const isUpdatingFromProp = useRef(false);
+    const onChangeRef = useRef(onChange);
+
+    // Keep onChange ref updated
+    useEffect(() => {
+      onChangeRef.current = onChange;
+    }, [onChange]);
 
     useEffect(() => {
       if (editorRef.current && !quillRef.current) {
@@ -54,6 +62,7 @@ export const ReactQuillWrapper = forwardRef<
           "strike",
           "list",
           "link",
+          "code",
         ];
 
         quillRef.current = new Quill(editorRef.current, {
@@ -88,9 +97,10 @@ export const ReactQuillWrapper = forwardRef<
         }
 
         quillRef.current.on("text-change", () => {
-          if (!isUpdatingFromProp.current && onChange) {
+          if (!isUpdatingFromProp.current && onChangeRef.current) {
             const html = quillRef.current?.root.innerHTML || "";
-            onChange(html === "<p><br></p>" ? "" : html);
+            const cleanHtml = html === "<p><br></p>" ? "" : html;
+            onChangeRef.current(cleanHtml);
           }
         });
       }
@@ -100,7 +110,7 @@ export const ReactQuillWrapper = forwardRef<
           quillRef.current.off("text-change");
         }
       };
-    }, [theme, placeholder, modules, formats, onChange]);
+    }, [theme, placeholder, modules, formats]);
 
     useEffect(() => {
       if (quillRef.current) {
@@ -114,6 +124,17 @@ export const ReactQuillWrapper = forwardRef<
         }
       }
     }, [value]);
+
+    // Exponer el Quill instance a través del ref
+    useEffect(() => {
+      if (ref && quillRef.current) {
+        if (typeof ref === 'function') {
+          ref(quillRef.current);
+        } else {
+          ref.current = quillRef.current;
+        }
+      }
+    });
 
     return (
       <div

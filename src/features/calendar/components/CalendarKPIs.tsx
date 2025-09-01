@@ -608,10 +608,17 @@ export const CalendarKPIs: React.FC<CalendarKPIsProps> = ({ className }) => {
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertCircleIcon className="h-4 w-4 text-warning" />
-                <span className="text-sm">Pendientes</span>
+                <ClockIcon className="h-4 w-4 text-amber-600" />
+                <span className="text-sm">Tentativos</span>
               </div>
-              <Badge variant="warning">{kpis.eventStatusStats.needsAction}</Badge>
+              <Badge variant="warning">{kpis.eventStatusStats.tentative || 0}</Badge>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertCircleIcon className="h-4 w-4 text-gray-500" />
+                <span className="text-sm">Sin respuesta</span>
+              </div>
+              <Badge variant="outline">{kpis.eventStatusStats.needsAction}</Badge>
             </div>
           </CardContent>
         </Card>

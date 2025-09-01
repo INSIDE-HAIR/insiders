@@ -13,13 +13,15 @@ export interface ParticipantKPI {
   totalEvents: number;
   acceptedEvents: number;
   declinedEvents: number;
+  tentativeEvents: number;
   needsActionEvents: number;
   completedEvents: number;
   upcomingEvents: number;
   totalDurationMinutes: number; // Total duration in minutes
   // Duration breakdowns by response status
   acceptedDurationMinutes: number; // Duration of accepted events
-  declinedDurationMinutes: number; // Duration of declined events  
+  declinedDurationMinutes: number; // Duration of declined events
+  tentativeDurationMinutes: number; // Duration of tentative events  
   needsActionDurationMinutes: number; // Duration of events needing action
   // Duration breakdowns by completion status
   completedDurationMinutes: number; // Duration of completed events

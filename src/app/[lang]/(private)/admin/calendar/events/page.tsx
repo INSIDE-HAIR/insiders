@@ -38,17 +38,20 @@ import {
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
-import { DataTable } from "./components/DataTable";
-import { useEventsColumns } from "./columns";
-import { CalendarMultiSelect } from "./components/CalendarMultiSelect";
-import { ColumnController } from "./components/ColumnController";
-import { AttendeesFilter } from "./components/AttendeesFilter";
-import { EventDetailModal } from "./components/EventDetailModal";
-import { BulkAddParticipantsModal } from "./components/BulkAddParticipantsModal";
-import { BulkGenerateDescriptionsModal } from "./components/BulkGenerateDescriptionsModal";
-import { BulkMoveCalendarModal } from "./components/BulkMoveCalendarModal";
-import { BulkDateTimeModal } from "./components/BulkDateTimeModal";
-import { ParticipantKPIGrid } from "./components/ParticipantKPIGrid";
+// Migración a componentes atómicos - 100% compatible
+import { 
+  DataTable,
+  CalendarMultiSelect,
+  ColumnController,
+  AttendeesFilter,
+  EventDetailsModal,
+  BulkAddParticipantsModal,
+  BulkGenerateDescriptionsModal,
+  BulkMoveCalendarModal,
+  BulkDateTimeModal,
+  ParticipantKPIGrid
+} from "@/src/features/calendar/components";
+import { getEventsColumns } from "./columns";
 import { DateTimeRangePicker } from "@/src/components/ui/date-picker";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
 import { toast } from "@/src/components/ui/use-toast";
@@ -69,6 +72,7 @@ interface EventsPageState {
   error: string | null;
   selectedEvent: GoogleCalendarEvent | null;
   isModalOpen: boolean;
+  initialModalSection: "general" | "edit" | "participants";
   selectedEventsForBulk: GoogleCalendarEvent[];
   isBulkModalOpen: boolean;
   selectedEventsForDescriptions: GoogleCalendarEvent[];
@@ -89,6 +93,7 @@ const CalendarEventsPage: React.FC = () => {
     error: null,
     selectedEvent: null,
     isModalOpen: false,
+    initialModalSection: "general",
     selectedEventsForBulk: [],
     isBulkModalOpen: false,
     selectedEventsForDescriptions: [],
@@ -116,6 +121,7 @@ const CalendarEventsPage: React.FC = () => {
     setAttendeesFilter,
     initializeCalendars,
     resetFilters,
+    setActiveCalendars,
   } = useCalendarFiltersStore();
 
   // Debounce search to avoid excessive API calls
@@ -402,13 +408,6 @@ const CalendarEventsPage: React.FC = () => {
     }
   };
 
-  const columns = useEventsColumns(
-    activeCalendars[0] || "primary",
-    loadEvents,
-    visibleColumns,
-    state.calendars
-  );
-
   const formatEventDate = (event: GoogleCalendarEvent) => {
     const start = event.start?.dateTime || event.start?.date;
     if (!start) return "Fecha no disponible";
@@ -462,21 +461,31 @@ const CalendarEventsPage: React.FC = () => {
   }, [state.events, attendeesFilter]);
 
   // Funciones para manejar el modal
-  const handleRowClick = (event: GoogleCalendarEvent) => {
+  const handleRowClick = useCallback((event: GoogleCalendarEvent) => {
     setState((prev) => ({
       ...prev,
       selectedEvent: event,
       isModalOpen: true,
+      initialModalSection: "general",
     }));
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleEventEdit = useCallback((event: GoogleCalendarEvent) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEvent: event,
+      isModalOpen: true,
+      initialModalSection: "edit",
+    }));
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
     setState((prev) => ({
       ...prev,
       selectedEvent: null,
       isModalOpen: false,
     }));
-  };
+  }, []);
 
   const handleDeleteEventFromModal = async () => {
     if (!state.selectedEvent) return;
@@ -568,6 +577,16 @@ const CalendarEventsPage: React.FC = () => {
       throw error;
     }
   };
+
+  // Crear las columnas después de que todas las funciones estén definidas
+  const columns = useMemo(() => getEventsColumns(
+    activeCalendars[0] || "primary",
+    loadEvents,
+    visibleColumns,
+    state.calendars,
+    handleEventEdit,
+    router
+  ), [activeCalendars, loadEvents, visibleColumns, state.calendars, handleEventEdit, router]);
 
   const handleBulkAddParticipants = (selectedEvents: GoogleCalendarEvent[]) => {
     setState((prev) => ({
@@ -676,16 +695,28 @@ const CalendarEventsPage: React.FC = () => {
   };
 
   const handleConfirmBulkGenerateDescriptions = async (
-    eventIds: Array<{ eventId: string; calendarId: string }>,
-    options: {
-      template: string;
-      customTemplate?: string;
-      includeAttendees: boolean;
-      includeLocation: boolean;
-      includeDateTime: boolean;
-    }
+    template: string,
+    overwriteExisting: boolean
   ) => {
     try {
+      // Preparar los IDs de eventos con sus calendarios
+      const eventIds = state.selectedEventsForDescriptions
+        .filter((event) => event.id && (event as any).calendarId)
+        .map((event) => ({
+          eventId: event.id!,
+          calendarId: (event as any).calendarId,
+        }));
+
+      if (eventIds.length === 0) {
+        toast({
+          title: "Error",
+          description: "No se encontraron eventos válidos para procesar",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
       const response = await fetch(
         "/api/calendar/events/bulk-generate-descriptions",
         {
@@ -695,7 +726,10 @@ const CalendarEventsPage: React.FC = () => {
           },
           body: JSON.stringify({
             eventIds,
-            ...options,
+            customTemplate: template,
+            includeAttendees: true,
+            includeLocation: true,
+            includeDateTime: true,
           }),
         }
       );
@@ -809,26 +843,14 @@ const CalendarEventsPage: React.FC = () => {
       const promises = selectedEvents.map(async (event) => {
         const eventCalendarId = (event as any).calendarId || activeCalendars[0];
 
-        // Configurar conferenceData para Google Meet
-        const updateData = {
-          conferenceData: {
-            createRequest: {
-              requestId: `meet-${event.id}-${Date.now()}`,
-              conferenceSolutionKey: {
-                type: "hangoutsMeet",
-              },
-            },
-          },
-        };
-
+        // Usar el endpoint específico de Meet con método POST
         const response = await fetch(
-          `/api/calendar/events/${event.id}?calendarId=${eventCalendarId}`,
+          `/api/calendar/events/${event.id}/meet?calendarId=${eventCalendarId}`,
           {
-            method: "PATCH",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(updateData),
           }
         );
 
@@ -836,7 +858,7 @@ const CalendarEventsPage: React.FC = () => {
           const errorData = await response.json();
           throw new Error(
             `Error en evento "${event.summary}": ${
-              errorData.message || "Error desconocido"
+              errorData.error || "Error desconocido"
             }`
           );
         }
@@ -1014,6 +1036,70 @@ const CalendarEventsPage: React.FC = () => {
     }
   };
 
+  const handleBulkDelete = async (selectedEvents: GoogleCalendarEvent[]) => {
+    if (selectedEvents.length === 0) return;
+
+    const confirmed = confirm(
+      `¿Estás seguro de que quieres eliminar ${
+        selectedEvents.length
+      } evento${selectedEvents.length !== 1 ? "s" : ""}? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      const promises = selectedEvents.map(async (event) => {
+        const eventCalendarId = (event as any).calendarId || activeCalendars[0];
+
+        const response = await fetch(
+          `/api/calendar/events/${event.id}?calendarId=${eventCalendarId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Error eliminando evento "${event.summary}": ${
+              errorData.message || "Error desconocido"
+            }`
+          );
+        }
+
+        return response.json();
+      });
+
+      await Promise.all(promises);
+
+      // Recargar eventos para mostrar los cambios
+      await loadEvents();
+
+      // Mostrar notificación de éxito
+      toast({
+        title: "Eventos eliminados",
+        description: `Se eliminaron ${selectedEvents.length} evento${
+          selectedEvents.length !== 1 ? "s" : ""
+        } correctamente`,
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error("Error deleting events:", error);
+
+      // Mostrar notificación de error
+      toast({
+        title: "Error",
+        description: error.message || "Error al eliminar los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
   if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
@@ -1118,7 +1204,11 @@ const CalendarEventsPage: React.FC = () => {
                       <label className='block text-sm font-medium text-foreground mb-2'>
                         Calendarios
                       </label>
-                      <CalendarMultiSelect calendars={state.calendars} />
+                      <CalendarMultiSelect 
+                        calendars={state.calendars}
+                        selectedCalendars={activeCalendars}
+                        onSelectionChange={setActiveCalendars}
+                      />
                     </div>
 
                     {/* Attendees Filter */}
@@ -1358,6 +1448,7 @@ const CalendarEventsPage: React.FC = () => {
                   onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
                   onBulkMoveCalendar={handleBulkMoveCalendar}
                   onBulkUpdateDateTime={handleBulkUpdateDateTime}
+                  onBulkDelete={handleBulkDelete}
                   calendars={state.calendars}
                 />
               ) : viewMode === "json" ? (
@@ -1516,14 +1607,16 @@ const CalendarEventsPage: React.FC = () => {
             </>
           )}
 
-          {/* Event Detail Modal */}
-          <EventDetailModal
-            event={state.selectedEvent}
+          {/* Event Details Modal */}
+          <EventDetailsModal
             isOpen={state.isModalOpen}
             onClose={handleCloseModal}
+            event={state.selectedEvent}
+            calendars={state.calendars}
+            calendarId={activeCalendars[0] || "primary"}
             onSave={handleSaveEvent}
             onDelete={handleDeleteEventFromModal}
-            calendars={state.calendars}
+            initialSection={state.initialModalSection}
           />
 
           {/* Bulk Add Participants Modal */}

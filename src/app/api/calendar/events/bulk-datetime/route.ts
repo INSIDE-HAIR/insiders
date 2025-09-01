@@ -35,9 +35,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body: BulkDateTimeRequest = await request.json();
+    console.log("📡 Received bulk datetime request body:", JSON.stringify(body, null, 2));
+    
     const { updates } = body;
 
     if (!updates || !Array.isArray(updates) || updates.length === 0) {
+      console.log("❌ Validation failed - updates array issue:", { updates, isArray: Array.isArray(updates), length: updates?.length });
       return NextResponse.json(
         { error: "Updates array is required" },
         { status: 400 }

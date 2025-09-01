@@ -42,7 +42,11 @@
       "WebSearch",
       "Read(//Users/luiseurdanetamartucci/Desktop/**)",
       "Bash(DOTENV_CONFIG_PATH=.env.local npx prisma db push)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(for:*)",
+      "Bash(do basename \"$file\")",
+      "Bash(done)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -400,8 +400,9 @@ function processCustomTemplate(
 ): string {
   let processed = template;
 
-  // Variables disponibles
+  // Variables disponibles - soportar tanto formato español como inglés
   const variables = {
+    // Formato español con llaves simples
     "{titulo}": event.summary || "Evento sin título",
     "{fecha_inicio}": formatDate(event.start),
     "{hora_inicio}": formatTime(event.start),
@@ -409,7 +410,9 @@ function processCustomTemplate(
     "{hora_fin}": formatTime(event.end),
     "{duracion}": calculateDuration(event),
     "{ubicacion}": event.location || "",
-    "{meet_link}": event.hangoutLink || "",
+    "{meet_link}": event.hangoutLink 
+      ? `<a href="${event.hangoutLink}" target="_blank">${event.hangoutLink}</a>`
+      : "",
     "{zona_horaria}": "Europe/Madrid",
     "{lista_participantes}": options.includeAttendees
       ? formatAttendeesList(event.attendees)
@@ -421,12 +424,37 @@ function processCustomTemplate(
       event.organizer?.displayName || event.organizer?.email || "",
     "{fecha_completa}": formatFullDate(event.start),
     "{rango_horario}": formatTimeRange(event.start, event.end),
+    
+    // Formato inglés con llaves dobles (usado por el modal)
+    "{{title}}": event.summary || "Evento sin título",
+    "{{startDate}}": formatDate(event.start),
+    "{{startTime}}": formatTime(event.start),
+    "{{endDate}}": formatDate(event.end),
+    "{{endTime}}": formatTime(event.end),
+    "{{duration}}": calculateDuration(event),
+    "{{location}}": event.location || "",
+    "{{meetLink}}": event.hangoutLink 
+      ? `<a href="${event.hangoutLink}" target="_blank">${event.hangoutLink}</a>`
+      : "",
+    "{{timezone}}": "Europe/Madrid",
+    "{{attendees}}": options.includeAttendees
+      ? formatAttendeesList(event.attendees)
+      : "",
+    "{{numParticipants}}": event.attendees
+      ? event.attendees.length.toString()
+      : "0",
+    "{{organizer}}":
+      event.organizer?.displayName || event.organizer?.email || "",
+    "{{fullDate}}": formatFullDate(event.start),
+    "{{timeRange}}": formatTimeRange(event.start, event.end),
   };
 
   // Reemplazar variables
   Object.entries(variables).forEach(([key, value]) => {
+    // Escapar caracteres especiales de regex
+    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     processed = processed.replace(
-      new RegExp(key.replace(/[{}]/g, "\\$&"), "g"),
+      new RegExp(escapedKey, "g"),
       value
     );
   });
@@ -483,7 +511,12 @@ function formatDateTime(event: any): string {
 function formatDate(dateTime: any): string {
   if (!dateTime) return "";
   const date = new Date(dateTime.dateTime || dateTime.date);
-  return date.toLocaleDateString("es-ES");
+  return date.toLocaleDateString("es-ES", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 }
 
 function formatTime(dateTime: any): string {

@@ -25,14 +25,18 @@ import {
 } from "lucide-react";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 import { useRouter } from "next/navigation";
-import { AVAILABLE_COLUMNS } from "./components/ColumnController";
+import { AVAILABLE_COLUMNS } from "@/src/features/calendar/components/ColumnController";
 import { toast } from "@/src/components/ui/use-toast";
-import { EditableDescription } from "./components/EditableDescription";
-import { EditableAttendees } from "./components/EditableAttendees";
-import { EditableCalendar } from "./components/EditableCalendar";
-import { EditableDateTime } from "./components/EditableDateTime";
+// Migración a componentes atómicos - versión mejorada
+import {
+  EditableDescriptionField,
+  EditableAttendeesField,
+  EditableCalendarField,
+  EditableDateTimeField,
+  EditableTitleField
+} from "@/src/features/calendar/components";
 
-export const useEventsColumns = (
+export const getEventsColumns = (
   defaultCalendarId: string,
   onRefresh: () => void,
   visibleColumns: string[] = Object.keys(AVAILABLE_COLUMNS),
@@ -42,9 +46,10 @@ export const useEventsColumns = (
     colorId?: string;
     backgroundColor?: string;
     foregroundColor?: string;
-  }> = []
+  }> = [],
+  onEventEdit?: (event: GoogleCalendarEvent) => void,
+  router?: any
 ): ColumnDef<GoogleCalendarEvent>[] => {
-  const router = useRouter();
 
   // Helper para obtener el color del calendario
   const getCalendarColor = (calendarId: string) => {
@@ -162,6 +167,59 @@ export const useEventsColumns = (
       toast({
         title: "Error",
         description: error.message || "Error al actualizar la descripción",
+        variant: "destructive",
+        duration: 5000,
+      });
+      throw error;
+    }
+  };
+
+  // Function to update event title
+  const handleUpdateTitle = async (
+    eventId: string,
+    calendarId: string,
+    summary: string
+  ) => {
+    try {
+      const response = await fetch(
+        `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ summary }),
+        }
+      );
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (jsonError) {
+          const errorText = await response.text();
+          console.error("Response text:", errorText);
+          throw new Error(
+            `Error del servidor: ${response.status} ${response.statusText}`
+          );
+        }
+        throw new Error(
+          errorData.error || "Error al actualizar el título"
+        );
+      }
+
+      toast({
+        title: "Título actualizado",
+        description: "Los cambios se guardaron correctamente",
+        duration: 3000,
+      });
+
+      onRefresh();
+    } catch (error: any) {
+      console.error("Error updating title:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Error al actualizar el título",
         variant: "destructive",
         duration: 5000,
       });
@@ -430,14 +488,32 @@ export const useEventsColumns = (
         return {
           accessorKey: "summary",
           header: "Título",
-          cell: ({ row }) => (
-            <div className='flex items-center gap-2'>
-              <CalendarIcon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
-              <span className='font-medium truncate' title={event(row).summary}>
-                {event(row).summary || "Sin título"}
-              </span>
-            </div>
-          ),
+          cell: ({ row }) => {
+            const eventData = event(row);
+            const eventId = eventData.id;
+            const calendarId = (eventData as any).calendarId || defaultCalendarId;
+            const summary = eventData.summary || "";
+            
+            if (!eventId) {
+              return (
+                <div className='flex items-center gap-2'>
+                  <CalendarIcon className='h-4 w-4 text-muted-foreground flex-shrink-0' />
+                  <span className='font-medium truncate'>
+                    {summary || "Sin título"}
+                  </span>
+                </div>
+              );
+            }
+            
+            return (
+              <EditableTitleField
+                title={summary}
+                eventId={eventId}
+                calendarId={calendarId}
+                onUpdate={handleUpdateTitle}
+              />
+            );
+          },
         };
 
       case "start":
@@ -451,7 +527,7 @@ export const useEventsColumns = (
               (eventData as any).calendarId || defaultCalendarId;
 
             return (
-              <EditableDateTime
+              <EditableDateTimeField
                 dateTimeValue={eventData.start}
                 eventId={eventId}
                 calendarId={calendarId}
@@ -475,7 +551,7 @@ export const useEventsColumns = (
               (eventData as any).calendarId || defaultCalendarId;
 
             return (
-              <EditableDateTime
+              <EditableDateTimeField
                 dateTimeValue={eventData.end}
                 eventId={eventId}
                 calendarId={calendarId}
@@ -541,7 +617,7 @@ export const useEventsColumns = (
             const attendees = eventData.attendees || [];
 
             return (
-              <EditableAttendees
+              <EditableAttendeesField
                 attendees={attendees}
                 eventId={eventId}
                 calendarId={calendarId}
@@ -578,7 +654,7 @@ export const useEventsColumns = (
             const description = eventData.description || "";
 
             return (
-              <EditableDescription
+              <EditableDescriptionField
                 description={description}
                 eventId={eventId}
                 calendarId={calendarId}
@@ -1383,7 +1459,7 @@ export const useEventsColumns = (
               return <span className='text-muted-foreground'>-</span>;
 
             return (
-              <EditableCalendar
+              <EditableCalendarField
                 currentCalendarId={calendarId}
                 eventId={eventId}
                 calendars={calendars}
@@ -1419,13 +1495,17 @@ export const useEventsColumns = (
               <Button
                 variant='ghost'
                 size='sm'
-                onClick={() =>
-                  router.push(
-                    `/admin/calendar/events/${event(row).id}?calendarId=${
-                      (event(row) as any).calendarId || defaultCalendarId
-                    }`
-                  )
-                }
+                onClick={() => {
+                  if (onEventEdit) {
+                    onEventEdit(event(row));
+                  } else if (router) {
+                    router.push(
+                      `/admin/calendar/events/${event(row).id}?calendarId=${
+                        (event(row) as any).calendarId || defaultCalendarId
+                      }`
+                    );
+                  }
+                }}
                 className='h-8 w-8 p-0'
                 title='Editar evento'
               >
