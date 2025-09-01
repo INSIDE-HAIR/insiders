@@ -5,4 +5,3 @@
  */
 
 export { SelectionIndicator } from './SelectionIndicator';
-export { CountBadge } from './CountBadge';

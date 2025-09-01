@@ -39,8 +39,7 @@ import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 // Migración a componentes atómicos - 100% compatible
-import { 
-  DataTable,
+import {
   CalendarMultiSelect,
   ColumnController,
   AttendeesFilter,
@@ -49,8 +48,10 @@ import {
   BulkGenerateDescriptionsModal,
   BulkMoveCalendarModal,
   BulkDateTimeModal,
-  ParticipantKPIGrid
+  ParticipantKPIGrid,
 } from "@/src/features/calendar/components";
+// Import directo de EventsDataTable ya que no está en el index principal
+import { EventsDataTable } from "@/src/features/calendar/components/organisms/tables/EventsDataTable";
 import { getEventsColumns } from "./columns";
 import { DateTimeRangePicker } from "@/src/components/ui/date-picker";
 import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
@@ -460,6 +461,91 @@ const CalendarEventsPage: React.FC = () => {
     });
   }, [state.events, attendeesFilter]);
 
+  // Memoizar dateRange para evitar re-renders innecesarios en ParticipantKPIGrid
+  const memoizedDateRange = useMemo(() => {
+    const now = new Date();
+    let start: string | undefined;
+    let end: string | undefined;
+
+    switch (timeRange) {
+      case "upcoming":
+        start = now.toISOString();
+        break;
+      case "today":
+        const startOfDay = new Date(now);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(now);
+        endOfDay.setHours(23, 59, 59, 999);
+        start = startOfDay.toISOString();
+        end = endOfDay.toISOString();
+        break;
+      case "week":
+        // Current week: Monday to Sunday
+        const startOfWeek = new Date(now);
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
+        startOfWeek.setDate(startOfWeek.getDate() + diff);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        start = startOfWeek.toISOString();
+        end = endOfWeek.toISOString();
+        break;
+      case "month":
+        // Current month: 1st to last day of month
+        const startOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          1
+        );
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const endOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0
+        );
+        endOfMonth.setHours(23, 59, 59, 999);
+
+        start = startOfMonth.toISOString();
+        end = endOfMonth.toISOString();
+        break;
+      case "all":
+        // Sin límite temporal, comenzar desde hace 1 mes
+        const monthAgo = new Date(now);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        start = monthAgo.toISOString();
+        break;
+      case "custom":
+        if (
+          customStartDate &&
+          customStartDate instanceof Date &&
+          !isNaN(customStartDate.getTime())
+        ) {
+          start = customStartDate.toISOString();
+        }
+        if (
+          customEndDate &&
+          customEndDate instanceof Date &&
+          !isNaN(customEndDate.getTime())
+        ) {
+          end = customEndDate.toISOString();
+        }
+        break;
+    }
+
+    return { start, end };
+  }, [timeRange, customStartDate, customEndDate]);
+
+  // Memoizar callback para evitar re-renders innecesarios
+  const handleRemoveAttendee = useCallback((email: string) => {
+    const newFilter = attendeesFilter.filter((a) => a !== email);
+    setAttendeesFilter(newFilter);
+  }, [attendeesFilter, setAttendeesFilter]);
+
   // Funciones para manejar el modal
   const handleRowClick = useCallback((event: GoogleCalendarEvent) => {
     setState((prev) => ({
@@ -579,14 +665,25 @@ const CalendarEventsPage: React.FC = () => {
   };
 
   // Crear las columnas después de que todas las funciones estén definidas
-  const columns = useMemo(() => getEventsColumns(
-    activeCalendars[0] || "primary",
-    loadEvents,
-    visibleColumns,
-    state.calendars,
-    handleEventEdit,
-    router
-  ), [activeCalendars, loadEvents, visibleColumns, state.calendars, handleEventEdit, router]);
+  const columns = useMemo(
+    () =>
+      getEventsColumns(
+        activeCalendars[0] || "primary",
+        loadEvents,
+        visibleColumns,
+        state.calendars,
+        handleEventEdit,
+        router
+      ),
+    [
+      activeCalendars,
+      loadEvents,
+      visibleColumns,
+      state.calendars,
+      handleEventEdit,
+      router,
+    ]
+  );
 
   const handleBulkAddParticipants = (selectedEvents: GoogleCalendarEvent[]) => {
     setState((prev) => ({
@@ -1204,7 +1301,7 @@ const CalendarEventsPage: React.FC = () => {
                       <label className='block text-sm font-medium text-foreground mb-2'>
                         Calendarios
                       </label>
-                      <CalendarMultiSelect 
+                      <CalendarMultiSelect
                         calendars={state.calendars}
                         selectedCalendars={activeCalendars}
                         onSelectionChange={setActiveCalendars}
@@ -1331,88 +1428,9 @@ const CalendarEventsPage: React.FC = () => {
             <ParticipantKPIGrid
               selectedAttendees={attendeesFilter}
               events={state.events}
-              onRemoveAttendee={(email) => {
-                const newFilter = attendeesFilter.filter((a) => a !== email);
-                setAttendeesFilter(newFilter);
-              }}
+              onRemoveAttendee={handleRemoveAttendee}
               calendarIds={activeCalendars}
-              dateRange={(() => {
-                const now = new Date();
-                let start: string | undefined;
-                let end: string | undefined;
-
-                switch (timeRange) {
-                  case "upcoming":
-                    start = now.toISOString();
-                    break;
-                  case "today":
-                    const startOfDay = new Date(now);
-                    startOfDay.setHours(0, 0, 0, 0);
-                    const endOfDay = new Date(now);
-                    endOfDay.setHours(23, 59, 59, 999);
-                    start = startOfDay.toISOString();
-                    end = endOfDay.toISOString();
-                    break;
-                  case "week":
-                    // Current week: Monday to Sunday
-                    const startOfWeek = new Date(now);
-                    const dayOfWeek = startOfWeek.getDay();
-                    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
-                    startOfWeek.setDate(startOfWeek.getDate() + diff);
-                    startOfWeek.setHours(0, 0, 0, 0);
-
-                    const endOfWeek = new Date(startOfWeek);
-                    endOfWeek.setDate(endOfWeek.getDate() + 6);
-                    endOfWeek.setHours(23, 59, 59, 999);
-
-                    start = startOfWeek.toISOString();
-                    end = endOfWeek.toISOString();
-                    break;
-                  case "month":
-                    // Current month: 1st to last day of month
-                    const startOfMonth = new Date(
-                      now.getFullYear(),
-                      now.getMonth(),
-                      1
-                    );
-                    startOfMonth.setHours(0, 0, 0, 0);
-
-                    const endOfMonth = new Date(
-                      now.getFullYear(),
-                      now.getMonth() + 1,
-                      0
-                    );
-                    endOfMonth.setHours(23, 59, 59, 999);
-
-                    start = startOfMonth.toISOString();
-                    end = endOfMonth.toISOString();
-                    break;
-                  case "all":
-                    // Sin límite temporal, comenzar desde hace 1 mes
-                    const monthAgo = new Date(now);
-                    monthAgo.setMonth(monthAgo.getMonth() - 1);
-                    start = monthAgo.toISOString();
-                    break;
-                  case "custom":
-                    if (
-                      customStartDate &&
-                      customStartDate instanceof Date &&
-                      !isNaN(customStartDate.getTime())
-                    ) {
-                      start = customStartDate.toISOString();
-                    }
-                    if (
-                      customEndDate &&
-                      customEndDate instanceof Date &&
-                      !isNaN(customEndDate.getTime())
-                    ) {
-                      end = customEndDate.toISOString();
-                    }
-                    break;
-                }
-
-                return { start, end };
-              })()}
+              dateRange={memoizedDateRange}
             />
           )}
 
@@ -1438,20 +1456,7 @@ const CalendarEventsPage: React.FC = () => {
             </Card>
           ) : (
             <>
-              {viewMode === "table" ? (
-                <DataTable
-                  columns={columns}
-                  data={filteredEvents}
-                  onRowClick={handleRowClick}
-                  onBulkAddParticipants={handleBulkAddParticipants}
-                  onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
-                  onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
-                  onBulkMoveCalendar={handleBulkMoveCalendar}
-                  onBulkUpdateDateTime={handleBulkUpdateDateTime}
-                  onBulkDelete={handleBulkDelete}
-                  calendars={state.calendars}
-                />
-              ) : viewMode === "json" ? (
+              {viewMode === "json" && (
                 <Card>
                   <CardHeader>
                     <CardTitle className='flex items-center gap-2'>
@@ -1479,7 +1484,21 @@ const CalendarEventsPage: React.FC = () => {
                     </div>
                   </CardContent>
                 </Card>
-              ) : (
+              )}
+              {viewMode === "table" && (
+                <EventsDataTable
+                  columns={columns}
+                  data={filteredEvents}
+                  onRowClick={handleRowClick}
+                  onBulkAddParticipants={handleBulkAddParticipants}
+                  onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
+                  onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
+                  onBulkMoveCalendar={handleBulkMoveCalendar}
+                  onBulkUpdateDateTime={handleBulkUpdateDateTime}
+                  onBulkDelete={handleBulkDelete}
+                />
+              )}
+              {viewMode === "list" && (
                 <Card className='border-border bg-card'>
                   <CardHeader>
                     <CardTitle className='flex items-center gap-2 text-foreground'>

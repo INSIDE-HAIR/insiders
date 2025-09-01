@@ -1,1 +1,8 @@
-export { OptionsDropdown, OptionsDropdownSkeleton, type OptionsDropdownProps, type DropdownOption } from './OptionsDropdown';
+/**
+ * Calendar Dropdowns - Atomic Components
+ *
+ * Dropdowns básicos reutilizables
+ */
+
+// No hay componentes implementados actualmente
+export {};

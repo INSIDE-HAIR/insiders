@@ -28,7 +28,7 @@ import { cn } from "@/src/lib/utils";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
 import { CompactSectionSelector } from "../../atoms/modal/CompactSectionSelector";
-import { useModalNavigation } from "../../../hooks/useModalNavigation";
+import { useModalNavigation } from "../../hooks/ui/useModalNavigation";
 
 interface Section {
   id: string;

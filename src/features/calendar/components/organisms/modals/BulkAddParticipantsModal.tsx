@@ -34,7 +34,7 @@ import {
   DocumentArrowUpIcon
 } from "@heroicons/react/24/outline";
 import { SearchInput } from "../../atoms/inputs/SearchInput";
-import { CountBadge } from "../../atoms/indicators/CountBadge";
+import { CountBadge } from "../../atoms/badges/CountBadge";
 import { cn } from "@/src/lib/utils";
 import { GoogleCalendarEvent } from "@/src/features/calendar/types";
 

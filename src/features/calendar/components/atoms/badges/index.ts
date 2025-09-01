@@ -4,7 +4,6 @@
  * Badges reutilizables para estados, tipos y categorías
  */
 
-export { StatusBadge } from "./StatusBadge";
 export {
   CountBadge,
   CountBadgeSkeleton,

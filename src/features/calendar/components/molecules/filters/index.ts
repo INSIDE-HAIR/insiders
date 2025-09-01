@@ -4,4 +4,4 @@
  * Componentes de filtrado complejos
  */
 
-export { AdvancedColumnFilter } from './AdvancedColumnFilter';
+export { AttendeesFilter } from './AttendeesFilter';

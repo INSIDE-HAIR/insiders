@@ -5,5 +5,3 @@
  */
 
 export { CalendarMultiSelect, CalendarMultiSelectSkeleton } from './CalendarMultiSelect';
-// export { DescriptionTemplateSelector } from './DescriptionTemplateSelector';
-// export { TimeZoneSelector } from './TimeZoneSelector';

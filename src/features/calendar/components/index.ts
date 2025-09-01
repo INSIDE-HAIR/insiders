@@ -20,8 +20,6 @@ export { FilterCheckbox } from './atoms/checkboxes/FilterCheckbox';
 // Buttons
 export { FilterButton } from './atoms/buttons/FilterButton';
 
-// Badges
-export { StatusBadge } from './atoms/badges/StatusBadge';
 
 // Loading
 export { Spinner } from './atoms/loading/Spinner';
@@ -35,7 +33,6 @@ export { SelectionIndicator } from './atoms/indicators/SelectionIndicator';
 // ========================================
 
 // Filters
-export { AdvancedColumnFilter } from './molecules/filters/AdvancedColumnFilter';
 export { AttendeesFilter } from './molecules/filters/AttendeesFilter';
 
 // Forms  
@@ -47,30 +44,18 @@ export { EditableTitleField } from './molecules/forms/EditableTitleField';
 
 // Selectors
 export { CalendarMultiSelect } from './molecules/selectors/CalendarMultiSelect';
-export { DescriptionTemplateSelector } from './molecules/selectors/DescriptionTemplateSelector';
-
-// Info
-export { EventMeetInfo } from './molecules/info/EventMeetInfo';
 
 // Tooltips
 export { BulkActionTooltip } from './molecules/tooltips/BulkActionTooltip';
 
 // Controls
-export { ColumnVisibilityToggle } from './molecules/controls/ColumnVisibilityToggle';
 export { ColumnController } from './molecules/tables/ColumnController';
 
-// Indicators  
-export { ColumnVisibilityIndicator } from './molecules/indicators/ColumnVisibilityIndicator';
-
-// Content
-export { EventDetailContent } from './molecules/content/EventDetailContent';
 
 // ========================================
 // ORGANISMS - Componentes complejos
 // ========================================
 
-// Views
-export { AllParticipantsView } from './organisms/views/AllParticipantsView';
 
 // Modals
 export { BulkAddParticipantsModal } from './organisms/modals/BulkAddParticipantsModal';
@@ -93,8 +78,6 @@ export { ParticipantKPIGrid } from './organisms/grids/ParticipantKPIGrid';
 // Bars
 export { BulkActionsBar } from './organisms/bars/BulkActionsBar';
 
-// Tables
-export { DataTable } from './organisms/tables/DataTable';
 
 // ========================================
 // BUSINESS LOGIC - Hooks y Stores

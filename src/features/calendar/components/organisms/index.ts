@@ -1,24 +1,18 @@
 /**
  * Calendar Organisms - Secciones Completas
- * 
+ *
  * Exporta todos los componentes organism del módulo Calendar
  * Combinan molecules para crear secciones funcionales completas
  */
 
 // Types
-export * from './types';
-
-// Analytics
-export * from './analytics';
+export * from "./types";
 
 // Modals
-export * from './modals';
+export * from "./modals";
 
 // Tables
-export * from './tables';
-
-// Views  
-export * from './views';
+export * from "./tables";
 
 // Sections
-export * from './sections';
+export * from "./sections";

@@ -25,6 +25,7 @@ interface BulkActionsSectionProps {
   onBulkGenerateDescriptions?: () => void;
   onBulkMoveCalendar?: () => void;
   onBulkUpdateDateTime?: () => void;
+  onBulkDelete?: () => void;
   onExportSelected?: () => void;
   onDeselectAll?: () => void;
   isLoading?: boolean;
@@ -38,6 +39,7 @@ export const BulkActionsSection: React.FC<BulkActionsSectionProps> = ({
   onBulkGenerateDescriptions,
   onBulkMoveCalendar,
   onBulkUpdateDateTime,
+  onBulkDelete,
   onExportSelected,
   onDeselectAll,
   isLoading = false,
@@ -121,7 +123,7 @@ export const BulkActionsSection: React.FC<BulkActionsSectionProps> = ({
                 variant='default'
                 size='sm'
                 onClick={onBulkGenerateMeetLinks}
-                className='bg-blue-600 hover:bg-blue-700 text-white font-semibold'
+                className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
               >
                 <Icons.Video className='mr-2 h-4 w-4' />
                 Generar Meet
@@ -141,7 +143,7 @@ export const BulkActionsSection: React.FC<BulkActionsSectionProps> = ({
                 variant='default'
                 size='sm'
                 onClick={onBulkGenerateDescriptions}
-                className='bg-purple-600 hover:bg-purple-700 text-white font-semibold'
+                className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
               >
                 <Icons.FileText className='mr-2 h-4 w-4' />
                 Generar Descripciones
@@ -161,7 +163,7 @@ export const BulkActionsSection: React.FC<BulkActionsSectionProps> = ({
                 variant='default'
                 size='sm'
                 onClick={onBulkMoveCalendar}
-                className='bg-orange-600 hover:bg-orange-700 text-white font-semibold'
+                className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
               >
                 <Icons.Calendar className='mr-2 h-4 w-4' />
                 Mover Calendario
@@ -181,10 +183,30 @@ export const BulkActionsSection: React.FC<BulkActionsSectionProps> = ({
                 variant='default'
                 size='sm'
                 onClick={onBulkUpdateDateTime}
-                className='bg-indigo-600 hover:bg-indigo-700 text-white font-semibold'
+                className='bg-primary hover:bg-primary/90 text-primary-foreground font-semibold'
               >
                 <Icons.Clock className='mr-2 h-4 w-4' />
                 Actualizar Fechas
+              </Button>
+            </ActionTooltip>
+          )}
+
+          {/* Delete Selected */}
+          {onBulkDelete && (
+            <ActionTooltip
+              title="Eliminar Seleccionados"
+              description="Elimina permanentemente los eventos seleccionados. Esta acción no se puede deshacer."
+              count={selectedCount}
+              icon={Icons.Trash}
+            >
+              <Button
+                variant='destructive'
+                size='sm'
+                onClick={onBulkDelete}
+                className='bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold'
+              >
+                <Icons.Trash className='mr-2 h-4 w-4' />
+                Eliminar
               </Button>
             </ActionTooltip>
           )}

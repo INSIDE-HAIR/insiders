@@ -75,9 +75,25 @@ export const ParticipantKPIGrid: React.FC<ParticipantKPIGridProps> = ({
       return;
     }
 
+    // Create a cache key to avoid duplicate requests
+    const cacheKey = JSON.stringify({
+      emails: selectedAttendees.sort(),
+      start: dateRange?.start,
+      end: dateRange?.end,
+      calendars: calendarIds?.sort()
+    });
+
+    // Check if we already have this exact request
+    const lastRequest = (fetchKPIs as any).lastCacheKey;
+    if (lastRequest === cacheKey) {
+      console.log('🔄 [KPI DEBUG] Request identical to previous one, skipping');
+      return;
+    }
+
     // Debounced fetch to avoid too many requests
     const timer = setTimeout(() => {
       console.log('📡 [KPI DEBUG] Llamando fetchKPIs');
+      (fetchKPIs as any).lastCacheKey = cacheKey;
       fetchKPIs(selectedAttendees, {
         startDate: dateRange?.start,
         endDate: dateRange?.end,

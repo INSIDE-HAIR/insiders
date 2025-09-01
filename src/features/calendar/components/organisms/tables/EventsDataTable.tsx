@@ -56,6 +56,7 @@ interface EventsDataTableProps<TData> {
   onBulkGenerateDescriptions?: (selectedEvents: TData[]) => void;
   onBulkMoveCalendar?: (selectedEvents: TData[]) => void;
   onBulkUpdateDateTime?: (selectedEvents: TData[]) => void;
+  onBulkDelete?: (selectedEvents: TData[]) => void;
   isLoading?: boolean;
 }
 
@@ -68,6 +69,7 @@ export function EventsDataTable<TData>({
   onBulkGenerateDescriptions,
   onBulkMoveCalendar,
   onBulkUpdateDateTime,
+  onBulkDelete,
   isLoading = false,
 }: EventsDataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -252,6 +254,9 @@ export function EventsDataTable<TData>({
         onBulkMoveCalendar={() => onBulkMoveCalendar?.(selectedEvents as any)}
         onBulkUpdateDateTime={() =>
           onBulkUpdateDateTime?.(selectedEvents as any)
+        }
+        onBulkDelete={() =>
+          onBulkDelete?.(selectedEvents as any)
         }
         onDeselectAll={clearSelection}
       />

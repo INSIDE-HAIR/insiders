@@ -2,4 +2,4 @@
  * Export all calendar hooks
  */
 
-export { useModalNavigation } from './useModalNavigation';
+export { useModalNavigation } from '../components/hooks/ui/useModalNavigation';
