@@ -1,6 +1,7 @@
-// Cards - Componentes de tarjetas atómicas
-export * from "./MetricCard";
-export * from "./ParticipantStatsCard";
-export * from "./SessionBreakdownCard";
-export * from "./DetailedStatsCard";
-export * from "./StatCard";
+// Atom cards exports - post recovery
+export { MetricCard } from './MetricCard';
+export type { MetricCardProps } from './MetricCard';
+
+export { ParticipantStatsCard } from './ParticipantStatsCard';
+export { SessionBreakdownCard } from './SessionBreakdownCard';
+export { DetailedStatsCard } from './DetailedStatsCard';

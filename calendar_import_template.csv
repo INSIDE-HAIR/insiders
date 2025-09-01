@@ -1,6 +1,0 @@
-title,description,location,startDate,startTime,endDate,endTime,allDay,timeZone,attendeeEmails,reminderMinutes,visibility,transparency
-"Reunión de equipo","Reunión semanal del equipo de desarrollo","Sala de conferencias A","2024-02-15","09:00","2024-02-15","10:00","false","Europe/Madrid","user1@example.com;user2@example.com","15;60","default","opaque"
-"Conferencia","Conferencia anual de tecnología","Centro de convenciones","2024-03-01","08:00","2024-03-01","18:00","false","Europe/Madrid","","30","public","opaque"
-"Evento todo el día","Día de la empresa","Oficina central","2024-04-01","","2024-04-01","","true","Europe/Madrid","team@company.com","1440","default","transparent"
-"Standup diario","Reunión de seguimiento diario","Sala virtual","2024-02-20","09:30","2024-02-20","10:00","false","Europe/Madrid","dev-team@company.com","10","default","opaque"
-"Workshop técnico","Taller de capacitación en nuevas tecnologías","Auditorio principal","2024-02-25","14:00","2024-02-25","17:00","false","Europe/Madrid","developers@company.com;managers@company.com","30;60","default","opaque"

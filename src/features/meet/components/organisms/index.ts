@@ -1,8 +1,6 @@
-// Organisms - Secciones complejas
-export * from "./sections/ArtifactsSection";
-export * from "./sections/MembersSection";
-export * from "./tabs/AdvancedSettingsTab";
-export * from "./tabs/MembersTab";
-
-// Card Organisms - Atomic Design System Phase 4
-export * from "./cards";
+// Organisms exports - post recovery
+export * from "./activity";
+export * from "./analytics";
+export * from "./bulk";
+export * from "./sections";
+export * from "./tabs";

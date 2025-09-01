@@ -46,7 +46,8 @@
       "mcp__ide__getDiagnostics",
       "Bash(for:*)",
       "Bash(do basename \"$file\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

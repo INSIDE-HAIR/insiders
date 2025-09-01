@@ -1,14 +1,13 @@
-// Hooks - Lógica de negocio separada de UI
-export * from "./useRoomForm";
-export * from "./useRoomMembers";
-export * from "./useRoomValidation";
-export * from "./useRoomSettings";
-export * from "./useRoomActivity";
-
-// Room operations CRUD
-export * from "./useRoomOperations";
-
-// Advanced hooks for room management
-export * from "./useRoomsList";
+// Hooks exports - post recovery
 export * from "./useAdvancedFilters";
 export * from "./useBulkOperations";
+export * from "./useConfirmation";
+export * from "./useModalNavigation";
+export * from "./useRoomActivity";
+export * from "./useRoomForm";
+export * from "./useRoomMembers";
+export * from "./useRoomOperations";
+export * from "./useRoomsList";
+export * from "./useRoomValidation";
+export * from "./useSessionsData";
+export * from "./useStatisticsData";

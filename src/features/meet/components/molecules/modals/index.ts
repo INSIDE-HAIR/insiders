@@ -1,3 +1,4 @@
-export { SectionNavigationModal } from './SectionNavigationModal';
-export { ResponsiveModalDemo } from './ResponsiveModalDemo';
+// Molecular modals exports - post recovery
 export { RoomDetailsModal } from './RoomDetailsModal';
+export { SectionNavigationModal } from './SectionNavigationModal';
+export { BulkMembersModal } from './BulkMembersModal';

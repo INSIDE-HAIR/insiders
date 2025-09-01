@@ -1,2 +1,3 @@
+// Atomic display exports
 export { CodeDisplay } from './CodeDisplay';
-export type { CodeDisplayProps } from './CodeDisplay';
+export { UserAvatar } from './UserAvatar';

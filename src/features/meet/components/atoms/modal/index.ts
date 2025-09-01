@@ -1,3 +1,2 @@
-export { SectionSelector } from './SectionSelector';
-export { NavigationButton } from './NavigationButton';
-export { SectionIndicator } from './SectionIndicator';
+// Atomic modal exports
+export { CompactSectionSelector } from './CompactSectionSelector';

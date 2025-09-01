@@ -278,7 +278,7 @@ export const useRoomOperations = () => {
 
   /**
    * Extraer datos de una sala para duplicación
-   * Convierte Room a RoomFormState para reutilizar en CreateRoomModal
+   * Convierte Room a RoomFormState para reutilizar en componentes de formulario
    */
   const extractRoomData = useCallback((room: Room): Partial<RoomFormState> => {
     console.log('🔍 DEBUG extractRoomData: Input room:', room);
