@@ -148,7 +148,7 @@ export const useTableControls = (
 
   const selectAll = useCallback((items: GoogleCalendarEvent[]) => {
     if (!enableSelection || !enableMultiSelect) return;
-    setSelectedItems(new Set(items.map(item => item.id)));
+    setSelectedItems(new Set(items.map(item => item.id).filter((id): id is string => Boolean(id))));
   }, [enableSelection, enableMultiSelect]);
 
   const deselectAll = useCallback(() => {
@@ -158,7 +158,7 @@ export const useTableControls = (
   const toggleSelectAll = useCallback((items: GoogleCalendarEvent[]) => {
     if (!enableSelection || !enableMultiSelect) return;
     
-    const allSelected = items.length > 0 && items.every(item => selectedItems.has(item.id));
+    const allSelected = items.length > 0 && items.every(item => item.id && selectedItems.has(item.id));
     
     if (allSelected) {
       deselectAll();
@@ -172,11 +172,11 @@ export const useTableControls = (
   }, [selectedItems]);
 
   const isAllSelected = useCallback((items: GoogleCalendarEvent[]) => {
-    return items.length > 0 && items.every(item => selectedItems.has(item.id));
+    return items.length > 0 && items.every(item => item.id && selectedItems.has(item.id));
   }, [selectedItems]);
 
   const isIndeterminate = useCallback((items: GoogleCalendarEvent[]) => {
-    const selectedCount = items.filter(item => selectedItems.has(item.id)).length;
+    const selectedCount = items.filter(item => item.id && selectedItems.has(item.id)).length;
     return selectedCount > 0 && selectedCount < items.length;
   }, [selectedItems]);
 

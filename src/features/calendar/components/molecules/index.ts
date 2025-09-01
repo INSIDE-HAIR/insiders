@@ -23,8 +23,8 @@ export * from './forms';
 // Navigation
 export * from './navigation';
 
-// Selects
-export * from './selects';
+// Selectors
+export * from './selectors';
 
 // Tables
 export * from './tables';

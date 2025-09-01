@@ -38,7 +38,7 @@ import {
   AccordionTrigger,
 } from "@/src/components/ui/accordion";
 import { DEFAULT_CALENDAR_ID } from "@/src/features/calendar/constants/calendar.constants";
-import { CalendarKPIs } from "@/src/features/calendar/components/CalendarKPIs";
+import { CalendarKPIs } from "@/src/features/calendar/components/organisms/kpis/CalendarKPIs";
 import { Spinner } from "@heroui/react";
 
 interface CalendarStats {

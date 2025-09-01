@@ -64,7 +64,7 @@ export const EditSection: React.FC<EditSectionProps> = ({
       const startDate = new Date(event.start.dateTime);
       setFormData(prev => ({
         ...prev,
-        startDate: startDate.toISOString().split('T')[0],
+        startDate: startDate.toISOString().split('T')[0] || '',
         startTime: startDate.toTimeString().slice(0, 5),
       }));
     } else if (event.start?.date) {
@@ -79,7 +79,7 @@ export const EditSection: React.FC<EditSectionProps> = ({
       const endDate = new Date(event.end.dateTime);
       setFormData(prev => ({
         ...prev,
-        endDate: endDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0] || '',
         endTime: endDate.toTimeString().slice(0, 5),
       }));
     } else if (event.end?.date) {

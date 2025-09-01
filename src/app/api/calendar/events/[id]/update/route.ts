@@ -46,7 +46,7 @@ function convertToCalendarEventForm(updateData: any, eventId: string): Partial<C
       if (!isNaN(startDate.getTime())) {
         converted.startDate = startDate.toISOString().split('T')[0]; // YYYY-MM-DD
         if (!isAllDay) {
-          converted.startTime = startDate.toISOString().split('T')[1].substring(0, 5); // HH:MM
+          converted.startTime = startDate.toISOString().split('T')[1]?.substring(0, 5) || '00:00'; // HH:MM
           converted.allDay = false;
           converted.timeZone = process.env.GOOGLE_CALENDAR_DEFAULT_TIMEZONE || 'Europe/Madrid';
         } else {
@@ -78,7 +78,7 @@ function convertToCalendarEventForm(updateData: any, eventId: string): Partial<C
       if (!isNaN(endDate.getTime())) {
         converted.endDate = endDate.toISOString().split('T')[0]; // YYYY-MM-DD
         if (!isAllDay) {
-          converted.endTime = endDate.toISOString().split('T')[1].substring(0, 5); // HH:MM
+          converted.endTime = endDate.toISOString().split('T')[1]?.substring(0, 5) || '00:00'; // HH:MM
         }
       }
     }

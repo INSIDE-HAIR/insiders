@@ -147,7 +147,7 @@ export const useModalState = <T = any>(
   return {
     isOpen: config.isOpen,
     data: config.data,
-    context: config.context,
+    context: config.context || {},
     open,
     close,
     toggle,

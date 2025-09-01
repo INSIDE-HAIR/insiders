@@ -371,14 +371,14 @@ export const useMeetIntegration = (
         if (meetData) {
           success++;
           results.push({
-            eventId: event.id,
+            eventId: event.id || '',
             success: true,
             meetData,
           });
         } else {
           failed++;
           results.push({
-            eventId: event.id,
+            eventId: event.id || '',
             success: false,
             error: 'No se pudo generar el enlace',
           });
@@ -386,7 +386,7 @@ export const useMeetIntegration = (
       } catch (error) {
         failed++;
         results.push({
-          eventId: event.id,
+          eventId: event.id || '',
           success: false,
           error: error instanceof Error ? error.message : 'Error desconocido',
         });
