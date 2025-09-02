@@ -2,7 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { sendErrorResolutionEmail } from "@/src/config/email/templates/error-report-resolution-email";
 
-const prisma = new PrismaClient();
+// Crear instancia de Prisma con configuración para manejar problemas de conexión
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL + '&readPreference=secondaryPreferred&maxPoolSize=10&serverSelectionTimeoutMS=10000'
+    }
+  }
+});
 export const dynamic = "force-dynamic";
 
 /**
@@ -43,10 +50,35 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
       );
     }
 
-    // Obtener datos del reporte
-    const errorReport = await prisma.driveErrorReport.findUnique({
-      where: { id },
-    });
+    // Obtener datos del reporte con retry en caso de problemas de conexión
+    let errorReport;
+    try {
+      errorReport = await prisma.driveErrorReport.findUnique({
+        where: { id },
+      });
+    } catch (dbError) {
+      console.error("Error de base de datos:", dbError);
+      // Si hay problemas de BD, permitir envío con datos del formulario
+      console.warn("Base de datos no disponible, enviando correo con datos proporcionados");
+      
+      // Usar datos mínimos para el envío
+      await sendErrorResolutionEmail({
+        fileName: `Reporte ID: ${id}`,
+        fileId: undefined,
+        fullName: "Cliente",
+        email: recipients[0],
+        reportedAt: new Date().toLocaleDateString(),
+        resolvedBy: (cc || []).join(", ") || "Equipo de soporte",
+        customSubject: subject,
+        customContent: content,
+      });
+
+      return NextResponse.json({
+        success: true,
+        message: "Correo enviado exitosamente (sin actualización de estado por problemas de BD)",
+        warning: "No se pudo verificar el estado del reporte en la base de datos",
+      });
+    }
 
     if (!errorReport) {
       return NextResponse.json(
@@ -71,13 +103,20 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
     });
 
     // Actualizar reporte para indicar que se envió correo de resolución
-    await prisma.driveErrorReport.update({
-      where: { id },
-      data: {
-        status: "resolved",
-        updatedAt: new Date(),
-      },
-    });
+    try {
+      await prisma.driveErrorReport.update({
+        where: { id },
+        data: {
+          status: "resolved",
+          updatedAt: new Date(),
+        },
+      });
+    } catch (updateError) {
+      console.error("Error al actualizar reporte:", updateError);
+      // El correo se envió exitosamente, pero no se pudo actualizar el estado
+      // Esto no es crítico, así que continuamos
+      console.warn("Correo enviado exitosamente pero no se pudo actualizar el estado del reporte");
+    }
 
     return NextResponse.json({
       success: true,

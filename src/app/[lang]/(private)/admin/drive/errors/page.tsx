@@ -26,6 +26,7 @@ import {
   Info,
   Bell,
 } from "lucide-react";
+import { DateTimePicker } from "@/src/components/ui/date-picker";
 import {
   Table,
   TableBody,
@@ -198,14 +199,14 @@ function UserChipSelect({
   return (
     <div className="relative" ref={wrapperRef}>
       <div
-        className="flex flex-wrap gap-2 p-2 min-h-10 border rounded-md cursor-text"
+        className="flex flex-wrap gap-2 p-2 min-h-10 bg-zinc-800 border border-zinc-700 rounded-md cursor-text"
         onClick={() => setIsOpen(true)}
       >
         {selectedUsers.map((user) => (
           <Badge
             key={user.id}
             variant="secondary"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 bg-zinc-700 text-white hover:bg-zinc-600"
           >
             {user.name}
             <button
@@ -214,7 +215,7 @@ function UserChipSelect({
                 e.stopPropagation();
                 handleRemoveUser(user.id);
               }}
-              className="ml-1 hover:text-destructive"
+              className="ml-1 hover:text-red-400"
             >
               <X className="h-3 w-3" />
             </button>
@@ -224,7 +225,7 @@ function UserChipSelect({
         <div className="grow flex items-center">
           <input
             type="text"
-            className="grow outline-none bg-transparent"
+            className="grow outline-none bg-transparent text-white placeholder-zinc-500"
             placeholder={selectedUsers.length === 0 ? placeholder : ""}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -234,12 +235,12 @@ function UserChipSelect({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md">
-          <div className="p-2 border-b flex items-center gap-2">
-            <Search className="h-4 w-4 text-muted-foreground" />
+        <div className="absolute z-10 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-md shadow-md">
+          <div className="p-2 border-b border-zinc-700 flex items-center gap-2">
+            <Search className="h-4 w-4 text-zinc-400" />
             <input
               type="text"
-              className="grow outline-none bg-transparent"
+              className="grow outline-none bg-transparent text-white placeholder-zinc-500"
               placeholder="Buscar usuarios..."
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
@@ -248,22 +249,22 @@ function UserChipSelect({
           </div>
           <div className="max-h-[200px] overflow-y-auto p-1">
             {filteredUsers.length === 0 ? (
-              <div className="p-2 text-center text-sm text-muted-foreground">
+              <div className="p-2 text-center text-sm text-zinc-400">
                 No se encontraron usuarios
               </div>
             ) : (
               filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-2 p-2 hover:bg-accent rounded cursor-pointer"
+                  className="flex items-center gap-2 p-2 hover:bg-zinc-800 rounded cursor-pointer"
                   onClick={() => {
                     onChange([...selectedIds, user.id]);
                     setSearchValue("");
                   }}
                 >
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium">{user.name}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-sm font-medium text-white">{user.name}</span>
+                    <span className="text-xs text-zinc-500">
                       {user.email}
                     </span>
                   </div>
@@ -434,14 +435,32 @@ export default function ErrorReportsPage() {
   const fetchUsers = async () => {
     try {
       setLoadingUsers(true);
-      const response = await fetch("/api/users/role?roles=ADMIN,EMPLOYEE");
+      const response = await fetch("/api/users/role?roles=ADMIN,EMPLOYEE", {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       const data = await response.json();
 
+      console.log('🔍 Users API response:', {
+        status: response.status,
+        ok: response.ok,
+        data: data
+      });
+
       if (!response.ok) {
+        // Si es error de autenticación, no mostrar error pero registrar
+        if (response.status === 401 || response.status === 403) {
+          console.warn("Usuario no autenticado o sin permisos para cargar usuarios", data);
+          setUsers([]);
+          return;
+        }
         throw new Error(data.error || "Error al cargar usuarios");
       }
 
       setUsers(data.users || []);
+      console.log(`✅ Loaded ${data.users?.length || 0} users`);
     } catch (err) {
       console.error("Error al cargar usuarios:", err);
     } finally {
@@ -1427,11 +1446,11 @@ export default function ErrorReportsPage() {
                 </div>
               </div>
 
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="rounded-md border border-zinc-700 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                      <TableHead className="w-10">
+                  <TableRow className="bg-zinc-800 hover:bg-zinc-800">
+                      <TableHead className="text-zinc-300 w-10">
                         <div className="flex items-center justify-center">
                           <input
                             type="checkbox"
@@ -1441,33 +1460,33 @@ export default function ErrorReportsPage() {
                               getDisplayReports().length > 0
                             }
                             onChange={toggleAllReports}
-                            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                            className="w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors"
                           />
                         </div>
                       </TableHead>
-                    <TableHead>Archivo</TableHead>
-                    <TableHead>Reportado por</TableHead>
-                    <TableHead>Categoría</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Resuelto</TableHead>
-                    <TableHead>Asignado a</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead className="text-zinc-300">Archivo</TableHead>
+                    <TableHead className="text-zinc-300">Reportado por</TableHead>
+                    <TableHead className="text-zinc-300">Categoría</TableHead>
+                    <TableHead className="text-zinc-300">Fecha</TableHead>
+                    <TableHead className="text-zinc-300">Resuelto</TableHead>
+                    <TableHead className="text-zinc-300">Asignado a</TableHead>
+                    <TableHead className="text-zinc-300 text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                     {getDisplayReports().map((report) => (
-                    <TableRow key={report.id} className="hover:bg-gray-50">
+                    <TableRow key={report.id} className="hover:bg-zinc-900 group">
                         <TableCell>
                           <div className="flex items-center justify-center">
                             <input
                               type="checkbox"
                               checked={selectedReportIds.includes(report.id)}
                               onChange={() => toggleReportSelection(report.id)}
-                              className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                              className="w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors"
                             />
                           </div>
                         </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell className="font-medium group-hover:text-primary">
                         <div className="flex flex-col">
                           <span>{report.fileName}</span>
                           <div className="flex mt-1">
@@ -1475,10 +1494,10 @@ export default function ErrorReportsPage() {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="group-hover:text-primary">
                         <div className="flex flex-col">
                           <span>{report.fullName}</span>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-zinc-400 group-hover:text-primary">
                             {report.email}
                           </span>
                         </div>
@@ -1496,12 +1515,12 @@ export default function ErrorReportsPage() {
                             {report.categoryRef.name}
                           </Badge>
                         ) : (
-                          <span className="text-gray-400 text-sm">
+                          <span className="text-zinc-400 text-sm group-hover:text-primary">
                             Sin categoría
                           </span>
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-sm text-zinc-400 group-hover:text-primary">
                         {format(
                           new Date(report.createdAt),
                           "dd/MM/yyyy HH:mm",
@@ -1510,7 +1529,7 @@ export default function ErrorReportsPage() {
                           }
                         )}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-sm text-zinc-400 group-hover:text-primary">
                         {report.resolvedAt
                           ? format(
                               new Date(report.resolvedAt),
@@ -1524,44 +1543,62 @@ export default function ErrorReportsPage() {
                       <TableCell>
                         {report.assignedTo && report.assignedTo.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
-                            {report.assignedTo.length <= 2 ? (
-                              report.assignedTo.map((userId) => {
-                                  const user = users.find(
-                                    (u) => u.id === userId
+                            {users.length > 0 ? (
+                              report.assignedTo.length <= 2 ? (
+                                report.assignedTo.map((userId) => {
+                                    const user = users.find(
+                                      (u) => u.id === userId
+                                    );
+                                  return user ? (
+                                    <Badge
+                                      key={userId}
+                                      variant="outline"
+                                      className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
+                                    >
+                                      {user.name?.split(" ")[0] || "Usuario"}
+                                    </Badge>
+                                  ) : (
+                                    <Badge
+                                      key={userId}
+                                      variant="outline"
+                                      className="bg-zinc-800 text-zinc-400 border-zinc-600"
+                                    >
+                                      ID: {userId.slice(-6)}
+                                    </Badge>
                                   );
-                                return user ? (
+                                })
+                              ) : (
+                                <>
                                   <Badge
-                                    key={userId}
                                     variant="outline"
-                                    className="bg-blue-50 text-blue-700 border-blue-200"
+                                    className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
                                   >
-                                    {user.name.split(" ")[0]}
+                                    {users
+                                        .find(
+                                          (u) => u.id === report.assignedTo![0]
+                                        )
+                                      ?.name?.split(" ")[0] || "Usuario"}
                                   </Badge>
-                                ) : null;
-                              })
+                                  <Badge
+                                    variant="outline"
+                                    className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
+                                  >
+                                    +{report.assignedTo.length - 1}
+                                  </Badge>
+                                </>
+                              )
                             ) : (
-                              <>
-                                <Badge
-                                  variant="outline"
-                                  className="bg-blue-50 text-blue-700 border-blue-200"
-                                >
-                                  {users
-                                      .find(
-                                        (u) => u.id === report.assignedTo![0]
-                                      )
-                                    ?.name.split(" ")[0] || ""}
-                                </Badge>
-                                <Badge
-                                  variant="outline"
-                                  className="bg-blue-50 text-blue-700 border-blue-200"
-                                >
-                                  +{report.assignedTo.length - 1}
-                                </Badge>
-                              </>
+                              // Si no hay usuarios cargados, mostrar solo IDs
+                              <Badge
+                                variant="outline"
+                                className="bg-zinc-800 text-zinc-400 border-zinc-600"
+                              >
+                                {report.assignedTo.length} asignado{report.assignedTo.length > 1 ? 's' : ''}
+                              </Badge>
                             )}
                           </div>
                         ) : (
-                          <span className="text-gray-400 text-sm">
+                          <span className="text-zinc-400 text-sm group-hover:text-primary">
                             Sin asignar
                           </span>
                         )}
@@ -1577,6 +1614,7 @@ export default function ErrorReportsPage() {
                                     onClick={() => {
                                       handleEditReport(report);
                                     }}
+                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
                                   >
                                     <Pencil className="h-4 w-4" />
                                   </Button>
@@ -1599,8 +1637,9 @@ export default function ErrorReportsPage() {
                                     disabled={
                                       isUpdating || report.status === "resolved"
                                     }
+                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
                                   >
-                                    <BellRing className="h-4 w-4 text-blue-500" />
+                                    <BellRing className="h-4 w-4" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>
@@ -1615,7 +1654,7 @@ export default function ErrorReportsPage() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="text-destructive hover:text-destructive"
+                                    className="h-8 w-8 text-red-500 hover:text-red-400 hover:bg-zinc-800"
                           onClick={() => {
                             setSelectedReport(report);
                                       setIsDeleteDialogOpen(true);
@@ -1640,6 +1679,7 @@ export default function ErrorReportsPage() {
                                       setSelectedReport(report);
                                       setIsEmailModalOpen(true);
                                     }}
+                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
                                   >
                                     <Mail className="h-4 w-4" />
                                   </Button>
@@ -1672,44 +1712,44 @@ export default function ErrorReportsPage() {
       {/* Modal de detalles del reporte */}
       {selectedReport && (
         <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
-          <DialogContent className="max-w-md max-h-[85dvh] overflow-y-auto">
+          <DialogContent className="max-w-md max-h-[85dvh] overflow-y-auto bg-zinc-900 text-white border-zinc-700">
             <DialogHeader>
-              <DialogTitle>Detalles del Reporte</DialogTitle>
+              <DialogTitle className="text-white">Detalles del Reporte</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4 my-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Archivo</h3>
-                <p className="mt-1">{selectedReport.fileName}</p>
+                <h3 className="text-sm font-medium text-zinc-400">Archivo</h3>
+                <p className="mt-1 text-white">{selectedReport.fileName}</p>
                 {selectedReport.fileId && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-zinc-500 mt-1">
                     ID: {selectedReport.fileId}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">
+                <h3 className="text-sm font-medium text-zinc-400">
                   Reportado por
                 </h3>
-                <p className="mt-1">{selectedReport.fullName}</p>
-                <p className="text-sm text-gray-500">{selectedReport.email}</p>
+                <p className="mt-1 text-white">{selectedReport.fullName}</p>
+                <p className="text-sm text-zinc-500">{selectedReport.email}</p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Mensaje</h3>
-                <div className="mt-1 p-3 bg-gray-50 rounded-md">
-                  <p className="whitespace-pre-wrap">
+                <h3 className="text-sm font-medium text-zinc-400">Mensaje</h3>
+                <div className="mt-1 p-3 bg-zinc-800 rounded-md border border-zinc-700">
+                  <p className="whitespace-pre-wrap text-white">
                     {selectedReport.message}
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">
+                <h3 className="text-sm font-medium text-zinc-400">
                   Fecha del reporte
                 </h3>
-                <p className="mt-1">
+                <p className="mt-1 text-white">
                   {format(
                     new Date(selectedReport.createdAt),
                     "dd/MM/yyyy HH:mm",
@@ -1719,7 +1759,7 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">
+                <h3 className="text-sm font-medium text-zinc-400">
                   Estado del reporte
                 </h3>
                 <div className="mt-1">
@@ -1774,20 +1814,32 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">
+                <h3 className="text-sm font-medium text-zinc-400">
                   Fecha de resolución
                 </h3>
                 <div className="mt-1 relative">
                   <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                    <Input
-                      type="datetime-local"
-                      value={resolvedDate}
-                      onChange={(e) => setResolvedDate(e.target.value)}
-                      className="w-full pr-10"
-                      placeholder="Seleccionar fecha y hora de resolución"
-                    />
-                      <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
+                    <div className="flex-1">
+                      <DateTimePicker
+                        value={resolvedDate ? new Date(resolvedDate) : undefined}
+                        onChange={(date) => {
+                          if (date) {
+                            // Convert to datetime-local format for compatibility
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const hours = String(date.getHours()).padStart(2, '0');
+                            const minutes = String(date.getMinutes()).padStart(2, '0');
+                            setResolvedDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+                          } else {
+                            setResolvedDate("");
+                          }
+                        }}
+                        placeholder="Seleccionar fecha y hora de resolución"
+                        className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white"
+                        granularity="minute"
+                        locale={es}
+                      />
                     </div>
                     <TooltipProvider>
                       <Tooltip>
@@ -1797,6 +1849,7 @@ export default function ErrorReportsPage() {
                             variant="outline"
                             size="icon"
                             onClick={setCurrentDateTime}
+                            className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white"
                           >
                             <Clock3 className="h-4 w-4" />
                           </Button>
@@ -1807,14 +1860,14 @@ export default function ErrorReportsPage() {
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-zinc-500 mt-1">
                     Fecha y hora en que se resolvió el error
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Categoría</h3>
+                <h3 className="text-sm font-medium text-zinc-400">Categoría</h3>
                 <div className="mt-1">
                   <Select
                     value={selectedCategory}
@@ -1843,7 +1896,7 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Asignados</h3>
+                <h3 className="text-sm font-medium text-zinc-400">Asignados</h3>
                 <div className="mt-1">
                   <UserChipSelect
                     users={users}
@@ -1852,17 +1905,17 @@ export default function ErrorReportsPage() {
                     placeholder="Buscar y seleccionar usuarios asignados..."
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-zinc-500 mt-1">
                   Personas asignadas a resolver este error
                 </p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Notas</h3>
+                <h3 className="text-sm font-medium text-zinc-400">Notas</h3>
                 <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className="mt-1 w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary"
                   rows={3}
                   placeholder="Añadir notas sobre este reporte..."
                 />
@@ -1872,7 +1925,7 @@ export default function ErrorReportsPage() {
             <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
               <Button
                 variant="default"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none"
                 onClick={handleUpdateReport}
                 disabled={updatingReport}
               >
@@ -1886,7 +1939,7 @@ export default function ErrorReportsPage() {
 
               <Button
                 variant="secondary"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700"
                 onClick={() => setIsReportDialogOpen(false)}
               >
                 Cerrar
@@ -2260,10 +2313,10 @@ export default function ErrorReportsPage() {
 
       {/* Modal de envío de correo de resolución */}
       <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-3xl bg-zinc-900 text-white border-zinc-700">
           <DialogHeader>
-            <DialogTitle>Enviar correo de resolución</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-white">Enviar correo de resolución</DialogTitle>
+            <DialogDescription className="text-zinc-400">
               Envía un correo al cliente para informarle que su problema ha sido
               resuelto.
             </DialogDescription>
@@ -2271,12 +2324,12 @@ export default function ErrorReportsPage() {
 
           <div className="space-y-4 my-4">
             {selectedReport && (
-              <div className="bg-slate-100 p-3 rounded-md mb-4">
-                <p className="font-medium">{selectedReport.fileName}</p>
-                <p className="text-sm">
+              <div className="bg-zinc-800 p-3 rounded-md mb-4 border border-zinc-700">
+                <p className="font-medium text-white">{selectedReport.fileName}</p>
+                <p className="text-sm text-zinc-300">
                   Reportado por: {selectedReport.fullName}
                 </p>
-                <p className="text-sm">Correo: {selectedReport.email}</p>
+                <p className="text-sm text-zinc-300">Correo: {selectedReport.email}</p>
                 <div className="flex items-center mt-1">
                   {renderStatusBadge(selectedReport.status)}
                   {renderCategoryBadge(selectedReport)}
@@ -2285,7 +2338,7 @@ export default function ErrorReportsPage() {
             )}
 
             <div>
-              <Label htmlFor="template" className="text-sm font-medium">
+              <Label htmlFor="template" className="text-sm font-medium text-zinc-300">
                 Plantilla
               </Label>
               <Select
@@ -2293,23 +2346,23 @@ export default function ErrorReportsPage() {
                 onValueChange={handleTemplateChange}
                 disabled={loadingTemplates}
               >
-                <SelectTrigger className="w-full bg-white">
+                <SelectTrigger className="w-full bg-zinc-800 border-zinc-700 text-white">
                   <SelectValue placeholder="Selecciona una plantilla" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-zinc-800 border-zinc-700">
                   {emailTemplates.map((template) => (
-                    <SelectItem key={template.id} value={template.id}>
+                    <SelectItem key={template.id} value={template.id} className="text-white hover:bg-zinc-700">
                       {template.name}
                       {template.isDefault && " (Predeterminada)"}
                     </SelectItem>
                   ))}
-                  <SelectItem value="custom">Personalizada</SelectItem>
+                  <SelectItem value="custom" className="text-white hover:bg-zinc-700">Personalizada</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="subject" className="text-sm font-medium">
+              <Label htmlFor="subject" className="text-sm font-medium text-zinc-300">
                 Asunto
               </Label>
               <Input
@@ -2317,17 +2370,17 @@ export default function ErrorReportsPage() {
                 value={customEmailSubject}
                 onChange={(e) => setCustomEmailSubject(e.target.value)}
                 placeholder="Asunto del correo"
-                className="w-full bg-white"
+                className="w-full bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500"
               />
             </div>
 
             <div>
-              <Label htmlFor="content" className="text-sm font-medium">
+              <Label htmlFor="content" className="text-sm font-medium text-zinc-300">
                 Contenido
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="ml-2 cursor-help">
-                      <Info className="h-4 w-4 text-gray-400" />
+                      <Info className="h-4 w-4 text-zinc-400" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p className="text-xs">
@@ -2350,7 +2403,7 @@ export default function ErrorReportsPage() {
                 value={customEmailContent}
                 onChange={(e) => setCustomEmailContent(e.target.value)}
                 rows={10}
-                className="w-full border rounded-md p-2 bg-white"
+                className="w-full border border-zinc-700 rounded-md p-2 bg-zinc-800 text-white placeholder-zinc-500"
                 placeholder="Contenido del correo"
               ></textarea>
             </div>
@@ -2361,12 +2414,12 @@ export default function ErrorReportsPage() {
               variant="default"
               onClick={sendResolutionEmail}
               disabled={isSendingEmail}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none"
             >
               {isSendingEmail ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <Send className="h-4 w-4 mr-2" />
+                <SendIcon className="h-4 w-4 mr-2" />
               )}
               Enviar correo
             </Button>
@@ -2374,7 +2427,7 @@ export default function ErrorReportsPage() {
             <Button
               variant="secondary"
               onClick={() => setIsEmailModalOpen(false)}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700"
             >
               Cancelar
             </Button>

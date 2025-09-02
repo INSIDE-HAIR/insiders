@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from '@/src/config/auth/auth';
 import prisma from "@/src/lib/prisma";
 export const dynamic = "force-dynamic";
 
@@ -8,30 +8,38 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication and admin role
-    const token = await getToken({ 
-      req: request, 
-      secret: process.env.NEXTAUTH_SECRET 
+    // Use auth() instead of getToken() for consistency
+    const session = await auth();
+
+    console.log('🔍 Session received:', {
+      exists: !!session,
+      email: session?.user?.email,
+      role: session?.user?.role,
+      id: session?.user?.id
     });
 
-    if (!token) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       );
     }
 
-    const userRole = token.role as string || 'user';
-    if (userRole !== 'admin' && userRole !== 'super-admin') {
+    const userRole = (session.user.role || 'CLIENT').toUpperCase();
+    console.log(`📋 Checking role: ${userRole} for user ${session.user.email}`);
+    
+    // Verificar si el usuario tiene permisos (ADMIN o EMPLOYEE)
+    if (userRole !== 'ADMIN' && userRole !== 'EMPLOYEE') {
+      console.log(`❌ User ${session.user.email} with role ${session.user.role} denied access`);
       return NextResponse.json(
-        { error: 'Admin access required' },
+        { error: 'Admin or Employee access required', role: session.user.role },
         { status: 403 }
       );
     }
 
     const user = {
-      id: token.sub,
-      email: token.email,
+      id: session.user.id,
+      email: session.user.email,
       role: userRole
     };
 
