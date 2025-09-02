@@ -57,7 +57,7 @@
     "src/context/ToastContext.tsx",
     "src/app/[lang]/(private)/admin/holded/Components/HoldedContactBackup/modals/CreatingUpdatingModal.tsx",
     "src/app/[lang]/(private)/admin/holded/Components/AdvancedTable/types",
-    "src/app/[lang]/(private)/admin/users/lib/queries/userQueries",
+    "src/app/[lang]/(private)/admin/users/lib/queries/userQueries"
   ],
   "exclude": [
     "node_modules"

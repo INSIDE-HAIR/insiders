@@ -1,7 +1,7 @@
 import { DashboardRoutes } from "@/src/types/dashboard-routes";
 
 /**
- * NOTA IMPORTANTE: Los roles deben usar minúsculas ("admin", "super-admin") 
+ * NOTA IMPORTANTE: Los roles deben usar minúsculas ("admin", "super-admin")
  * para mantener consistencia con el sistema de autenticación.
  * NO usar mayúsculas como "ADMIN" - esto causará problemas de acceso.
  */
@@ -258,8 +258,8 @@ export const dashboardRoutesData: DashboardRoutes = {
     {
       id: "drive",
       label: {
-        en: "Drive",
-        es: "Drive",
+        en: "Google Drive",
+        es: "Google Drive",
       },
       href: "/admin/drive",
       icon: "HardDrive",
@@ -344,8 +344,8 @@ export const dashboardRoutesData: DashboardRoutes = {
     {
       id: "calendar",
       label: {
-        en: "Calendar",
-        es: "Calendario",
+        en: "Google Calendar",
+        es: "Google Calendar",
       },
       href: "/admin/calendar",
       icon: "Calendar",
@@ -356,21 +356,12 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
       subItems: [
         {
-          id: "calendar-dashboard",
+          id: "calendars",
           label: {
-            en: "Calendar Dashboard",
-            es: "Dashboard de Calendario",
+            en: "Calendars",
+            es: "Calendarios",
           },
           href: "/admin/calendar",
-          icon: "Calendar",
-        },
-        {
-          id: "calendar-events",
-          label: {
-            en: "Event List",
-            es: "Lista de Eventos",
-          },
-          href: "/admin/calendar/events",
           icon: "CalendarDays",
         },
       ],
@@ -378,8 +369,8 @@ export const dashboardRoutesData: DashboardRoutes = {
     {
       id: "meet",
       label: {
-        en: "Meet",
-        es: "Meet",
+        en: "Google Meet",
+        es: "Google Meet",
       },
       href: "/admin/meet",
       icon: "Video",

@@ -42,34 +42,35 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   description,
   itemName,
   confirmText = "Confirmar",
-  cancelText = "Cancelar", 
+  cancelText = "Cancelar",
   variant = "default",
   loading = false,
 }) => {
   // Use description if provided, fallback to message, or default
-  const content = description || message || "¿Estás seguro de que deseas continuar?";
-  
+  const content =
+    description || message || "¿Estás seguro de que deseas continuar?";
+
   // Auto-detect variant based on type
   const finalVariant = type === "delete" ? "destructive" : variant;
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
-          <p className="text-sm text-gray-600">{content}</p>
+        <div className='py-4'>
+          <p className='text-sm text-gray-600'>{content}</p>
           {itemName && (
-            <p className="text-sm font-medium mt-2">"{itemName}"</p>
+            <p className='text-sm font-medium mt-2'>&ldquo;{itemName}&rdquo;</p>
           )}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={loading}>
+          <Button variant='outline' onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button 
-            variant={finalVariant === "destructive" ? "destructive" : "default"} 
+          <Button
+            variant={finalVariant === "destructive" ? "destructive" : "default"}
             onClick={onConfirm}
             disabled={loading}
           >

@@ -1,27 +1,33 @@
 /**
- * Calendar Dashboard
+ * Calendar Events List
  *
- * Página principal del módulo de Calendar que proporciona:
- * - Resumen de calendarios disponibles
- * - Estadísticas de eventos
- * - Accesos rápidos a funcionalidades principales
- * - Estado de conexión con Google Calendar
+ * Página para listar y gestionar eventos de calendario
+ * Incluye filtros, búsqueda y acciones CRUD
  */
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
+import { useDebounce } from "@/src/hooks/use-debounce";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   CalendarIcon,
   PlusIcon,
-  ClockIcon,
-  DocumentArrowUpIcon,
-  Cog6ToothIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  PencilIcon,
+  TrashIcon,
+  EyeIcon,
+  TableCellsIcon,
+  ListBulletIcon,
+  CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 import {
   Card,
@@ -31,72 +37,96 @@ import {
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
+import { GoogleCalendarEvent } from "@/src/features/calendar/types";
+// Migración a componentes atómicos - 100% compatible
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/src/components/ui/accordion";
-import { DEFAULT_CALENDAR_ID } from "@/src/features/calendar/constants/calendar.constants";
-import { CalendarKPIs } from "@/src/features/calendar/components/organisms/kpis/CalendarKPIs";
-import { Spinner } from "@heroui/react";
+  CalendarMultiSelect,
+  ColumnController,
+  AttendeesFilter,
+  EventDetailsModal,
+  BulkAddParticipantsModal,
+  BulkGenerateDescriptionsModal,
+  BulkMoveCalendarModal,
+  BulkDateTimeModal,
+  ParticipantKPIGrid,
+} from "@/src/features/calendar/components";
+// Import directo de EventsDataTable ya que no está en el index principal
+import { EventsDataTable } from "@/src/features/calendar/components/organisms/tables/EventsDataTable";
+import { getEventsColumns } from "./columns";
+import { DateTimeRangePicker } from "@/src/components/ui/date-picker";
+import { useCalendarFiltersStore } from "@/src/stores/calendarFiltersStore";
+import { toast } from "@/src/components/ui/use-toast";
+import { Spinner } from "@/src/components/ui/spinner";
+import { MapPin, Users } from "lucide-react";
+import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 
-interface CalendarStats {
-  totalCalendars: number;
-  upcomingEvents: number;
-  todayEvents: number;
-  authStatus: "connected" | "error" | "loading";
-  primaryCalendar?: {
+interface EventsPageState {
+  events: GoogleCalendarEvent[];
+  calendars: Array<{
     id: string;
     summary: string;
-    email?: string;
-  };
-  accountInfo?: {
-    email: string;
-    name?: string;
-  };
-}
-
-interface EnvHealthStatus {
-  status: "healthy" | "unhealthy";
-  severity: "success" | "warning" | "error";
-  message: string;
-  canConnectToAPI: boolean;
-  variables: Array<{
-    name: string;
-    displayName: string;
-    value: string | null;
-    isSet: boolean;
-    isValid: boolean;
-    required: boolean;
-    error?: string;
-    description: string;
+    colorId?: string;
+    backgroundColor?: string;
+    foregroundColor?: string;
   }>;
-  recommendations: string[];
+  isLoading: boolean;
+  error: string | null;
+  selectedEvent: GoogleCalendarEvent | null;
+  isModalOpen: boolean;
+  initialModalSection: "general" | "edit" | "participants";
+  selectedEventsForBulk: GoogleCalendarEvent[];
+  isBulkModalOpen: boolean;
+  selectedEventsForDescriptions: GoogleCalendarEvent[];
+  isBulkDescriptionsModalOpen: boolean;
+  selectedEventsForMove: GoogleCalendarEvent[];
+  isBulkMoveModalOpen: boolean;
+  selectedEventsForDateTime: GoogleCalendarEvent[];
+  isBulkDateTimeModalOpen: boolean;
 }
 
-interface QuickAction {
-  title: string;
-  description: string;
-  href: string;
-  icon: React.ElementType;
-  color: "blue" | "green" | "purple" | "orange";
-}
-
-const CalendarDashboard: React.FC = () => {
+const CalendarEventsPage: React.FC = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [stats, setStats] = useState<CalendarStats>({
-    totalCalendars: 0,
-    upcomingEvents: 0,
-    todayEvents: 0,
-    authStatus: "loading",
-    primaryCalendar: undefined,
-    accountInfo: undefined,
+  const [state, setState] = useState<EventsPageState>({
+    events: [],
+    calendars: [],
+    isLoading: true,
+    error: null,
+    selectedEvent: null,
+    isModalOpen: false,
+    initialModalSection: "general",
+    selectedEventsForBulk: [],
+    isBulkModalOpen: false,
+    selectedEventsForDescriptions: [],
+    isBulkDescriptionsModalOpen: false,
+    selectedEventsForMove: [],
+    isBulkMoveModalOpen: false,
+    selectedEventsForDateTime: [],
+    isBulkDateTimeModalOpen: false,
   });
-  const [envHealth, setEnvHealth] = useState<EnvHealthStatus | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const {
+    activeCalendars,
+    timeRange,
+    search,
+    viewMode,
+    visibleColumns,
+    attendeesFilter,
+    customStartDate,
+    customEndDate,
+    setTimeRange,
+    setCustomDateRange,
+    setSearch,
+    setViewMode,
+    setColumnVisibility,
+    setAttendeesFilter,
+    initializeCalendars,
+    resetFilters,
+    setActiveCalendars,
+  } = useCalendarFiltersStore();
+
+  // Debounce search to avoid excessive API calls
+  const debouncedSearch = useDebounce(search, 500);
 
   // Verificar autenticación y permisos
   useEffect(() => {
@@ -111,148 +141,1063 @@ const CalendarDashboard: React.FC = () => {
     }
   }, [status, session, router]);
 
-  const loadDashboardStats = useCallback(async () => {
+  const loadInitialData = useCallback(async () => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      // Verificar estado de variables de entorno
-      const envHealthResponse = await fetch("/api/calendar/env/health");
-      if (envHealthResponse.ok) {
-        const envHealthData = await envHealthResponse.json();
-        setEnvHealth(envHealthData);
+      // Cargar calendarios disponibles
+      const calendarsResponse = await fetch("/api/calendar/calendars");
+      if (!calendarsResponse.ok) {
+        throw new Error("Error loading calendars");
       }
 
-      // Verificar estado de autenticación de Calendar
-      const authResponse = await fetch("/api/calendar/auth/token");
-      const authData = await authResponse.json();
+      const calendarsData = await calendarsResponse.json();
+      const calendars = calendarsData.calendars || [];
 
-      let authStatus: CalendarStats["authStatus"] = "error";
-      if (authData.authenticated) {
-        authStatus = "connected";
+      setState((prev) => ({
+        ...prev,
+        calendars,
+      }));
+
+      // Inicializar calendarios activos (todos por defecto)
+      const calendarIds = calendars.map((cal: any) => cal.id);
+      initializeCalendars(calendarIds);
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        error: error.message || "Error loading initial data",
+        isLoading: false,
+      }));
+    }
+  }, [initializeCalendars]);
+
+  // Usar useRef para estabilizar las referencias y evitar recreaciones
+  const filtersRef = useRef({
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    customStartDate,
+    customEndDate,
+  });
+
+  // Actualizar ref cuando cambien los filtros
+  useEffect(() => {
+    filtersRef.current = {
+      activeCalendars,
+      timeRange,
+      debouncedSearch,
+      customStartDate,
+      customEndDate,
+    };
+  }, [
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    customStartDate,
+    customEndDate,
+  ]);
+
+  const loadEvents = useCallback(async () => {
+    console.log("🚀 [DEBUG] loadEvents ejecutado");
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      const filters = filtersRef.current;
+      console.log("🔧 [DEBUG] Filtros actuales:", filters);
+
+      // Si no hay calendarios activos, no cargar eventos
+      if (filters.activeCalendars.length === 0) {
+        setState((prev) => ({
+          ...prev,
+          events: [],
+          isLoading: false,
+        }));
+        return;
       }
 
-      // Si la autenticación es exitosa, cargar más estadísticas
-      let totalCalendars = 0;
-      let upcomingEvents = 0;
-      let todayEvents = 0;
+      // Cargar eventos de todos los calendarios activos
+      const allEvents: GoogleCalendarEvent[] = [];
 
-      if (authStatus === "connected") {
+      for (const calendarId of filters.activeCalendars) {
         try {
-          // Obtener calendarios
-          const calendarsResponse = await fetch("/api/calendar/calendars");
-          if (calendarsResponse.ok) {
-            const calendarsData = await calendarsResponse.json();
-            totalCalendars = calendarsData.total || 0;
+          // Construir parámetros de consulta
+          const params = new URLSearchParams({
+            calendarId: calendarId,
+            maxResults: "100",
+            orderBy: "startTime",
+            singleEvents: "true",
+          });
 
-            // Identificar calendario primario
-            const primaryCal =
-              calendarsData.calendars?.find((cal: any) => cal.primary) ||
-              calendarsData.calendars?.[0];
+          // Agregar filtros de tiempo
+          const now = new Date();
+          let timeMin: string | undefined;
+          let timeMax: string | undefined;
 
-            if (primaryCal) {
-              stats.primaryCalendar = {
-                id: primaryCal.id,
-                summary: primaryCal.summary,
-                email:
-                  primaryCal.id === "primary"
-                    ? primaryCal.summary
-                    : primaryCal.id,
-              };
-            }
+          switch (filters.timeRange) {
+            case "upcoming":
+              timeMin = now.toISOString();
+              break;
+            case "today":
+              const startOfDay = new Date(now);
+              startOfDay.setHours(0, 0, 0, 0);
+              const endOfDay = new Date(now);
+              endOfDay.setHours(23, 59, 59, 999);
+              timeMin = startOfDay.toISOString();
+              timeMax = endOfDay.toISOString();
+              break;
+            case "week":
+              // Current week: Monday to Sunday
+              const startOfWeek = new Date(now);
+              const dayOfWeek = startOfWeek.getDay();
+              const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
+              startOfWeek.setDate(startOfWeek.getDate() + diff);
+              startOfWeek.setHours(0, 0, 0, 0);
+
+              const endOfWeek = new Date(startOfWeek);
+              endOfWeek.setDate(endOfWeek.getDate() + 6);
+              endOfWeek.setHours(23, 59, 59, 999);
+
+              timeMin = startOfWeek.toISOString();
+              timeMax = endOfWeek.toISOString();
+              break;
+            case "month":
+              // Current month: 1st to last day of month
+              const startOfMonth = new Date(
+                now.getFullYear(),
+                now.getMonth(),
+                1
+              );
+              startOfMonth.setHours(0, 0, 0, 0);
+
+              const endOfMonth = new Date(
+                now.getFullYear(),
+                now.getMonth() + 1,
+                0
+              );
+              endOfMonth.setHours(23, 59, 59, 999);
+
+              timeMin = startOfMonth.toISOString();
+              timeMax = endOfMonth.toISOString();
+              break;
+            case "all":
+              // Sin límite temporal, comenzar desde hace 1 mes
+              const monthAgo = new Date(now);
+              monthAgo.setMonth(monthAgo.getMonth() - 1);
+              timeMin = monthAgo.toISOString();
+              break;
+            case "custom":
+              if (
+                filters.customStartDate &&
+                filters.customStartDate instanceof Date &&
+                !isNaN(filters.customStartDate.getTime())
+              ) {
+                timeMin = filters.customStartDate.toISOString();
+              }
+              if (
+                filters.customEndDate &&
+                filters.customEndDate instanceof Date &&
+                !isNaN(filters.customEndDate.getTime())
+              ) {
+                timeMax = filters.customEndDate.toISOString();
+              }
+              break;
           }
 
-          // Obtener eventos próximos (próximos 7 días)
-          const weekFromNow = new Date();
-          weekFromNow.setDate(weekFromNow.getDate() + 7);
+          if (timeMin) params.append("timeMin", timeMin);
+          if (timeMax) params.append("timeMax", timeMax);
+          if (filters.debouncedSearch)
+            params.append("q", filters.debouncedSearch);
 
-          const eventsResponse = await fetch(
-            `/api/calendar/events?timeMin=${new Date().toISOString()}&timeMax=${weekFromNow.toISOString()}&maxResults=100`
+          const response = await fetch(`/api/calendar/events?${params}`);
+          if (response.ok) {
+            const data = await response.json();
+            const events = data.items || [];
+
+            // Agregar información del calendario a cada evento
+            const eventsWithCalendar = events.map(
+              (event: GoogleCalendarEvent) => ({
+                ...event,
+                calendarId: calendarId,
+              })
+            );
+
+            allEvents.push(...eventsWithCalendar);
+          }
+        } catch (calendarError) {
+          console.warn(
+            `Error loading events from calendar ${calendarId}:`,
+            calendarError
           );
-
-          if (eventsResponse.ok) {
-            const eventsData = await eventsResponse.json();
-            upcomingEvents = eventsData.items?.length || 0;
-
-            // Contar eventos de hoy
-            const today = new Date().toISOString().split("T")[0];
-            todayEvents =
-              eventsData.items?.filter((event: any) => {
-                const eventDate =
-                  event.start?.date || event.start?.dateTime?.split("T")[0];
-                return eventDate === today;
-              }).length || 0;
-          }
-        } catch (statsError) {
-          console.warn("Error loading additional stats:", statsError);
         }
       }
 
-      setStats((prev) => ({
+      // Ordenar todos los eventos por fecha
+      allEvents.sort((a, b) => {
+        const dateA = new Date(a.start?.dateTime || a.start?.date || "");
+        const dateB = new Date(b.start?.dateTime || b.start?.date || "");
+        return dateA.getTime() - dateB.getTime();
+      });
+
+      setState((prev) => ({
         ...prev,
-        totalCalendars,
-        upcomingEvents,
-        todayEvents,
-        authStatus,
+        events: allEvents,
+        isLoading: false,
       }));
     } catch (error: any) {
-      console.error("Error loading dashboard stats:", error);
-      setError(error.message || "Error loading dashboard data");
-      setStats((prev) => ({ ...prev, authStatus: "error" }));
-    } finally {
-      setIsLoading(false);
+      setState((prev) => ({
+        ...prev,
+        error: error.message || "Error loading events",
+        isLoading: false,
+      }));
     }
-  }, []);
+  }, []); // Sin dependencias para evitar recreaciones
 
-  // Cargar estadísticas del dashboard
+  // Cargar datos iniciales - solo una vez cuando se autentica
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role === "ADMIN") {
-      loadDashboardStats();
+      loadInitialData();
     }
-  }, [status, session, loadDashboardStats]);
+  }, [status, session?.user?.role, loadInitialData]);
 
-  const quickActions: QuickAction[] = [
-    {
-      title: "Crear Evento",
-      description: "Crear un nuevo evento de calendario",
-      href: "/admin/calendar/events/create",
-      icon: PlusIcon,
-      color: "blue",
-    },
-    {
-      title: "Ver Eventos",
-      description: "Gestionar eventos existentes",
-      href: "/admin/calendar/events",
-      icon: CalendarIcon,
-      color: "green",
-    },
-    {
-      title: "Importar JSON",
-      description: "Importar eventos desde archivo JSON",
-      href: "/admin/calendar/import/json",
-      icon: DocumentArrowUpIcon,
-      color: "purple",
-    },
-    {
-      title: "Importar CSV",
-      description: "Importar eventos desde archivo CSV",
-      href: "/admin/calendar/import/csv",
-      icon: DocumentArrowUpIcon,
-      color: "orange",
-    },
-  ];
+  // Recargar eventos cuando cambien los filtros - usando las dependencias directas
+  useEffect(() => {
+    console.log("🔄 [DEBUG] useEffect de filtros ejecutado", {
+      calendarsLength: state.calendars.length,
+      activeCalendarsLength: activeCalendars.length,
+      timeRange,
+      debouncedSearch,
+      customStartDate,
+      customEndDate,
+    });
 
-  const getColorClasses = (color: QuickAction["color"]) => {
-    const colors = {
-      blue: "bg-blue-500 hover:bg-blue-600",
-      green: "bg-green-500 hover:bg-green-600",
-      purple: "bg-purple-500 hover:bg-purple-600",
-      orange: "bg-orange-500 hover:bg-orange-600",
-    };
-    return colors[color];
+    // Solo cargar eventos si hay calendarios seleccionados y calendarios disponibles
+    if (state.calendars.length > 0 && activeCalendars.length > 0) {
+      console.log("📡 [DEBUG] Llamando loadEvents");
+      loadEvents();
+    }
+  }, [
+    activeCalendars,
+    timeRange,
+    debouncedSearch,
+    state.calendars.length,
+    customStartDate,
+    customEndDate,
+    // Removido loadEvents de las dependencias para evitar bucle infinito
+  ]);
+
+  const handleDeleteEvent = async (eventId: string, calendarId: string) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar este evento?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/calendar/events/${eventId}?calendarId=${calendarId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error deleting event");
+      }
+
+      // Recargar eventos
+      loadEvents();
+    } catch (error: any) {
+      alert(`Error eliminando evento: ${error.message}`);
+    }
   };
 
-  if (status === "loading" || isLoading) {
+  const formatEventDate = (event: GoogleCalendarEvent) => {
+    const start = event.start?.dateTime || event.start?.date;
+    if (!start) return "Fecha no disponible";
+
+    const date = new Date(start);
+    const isAllDay = !!event.start?.date;
+
+    if (isAllDay) {
+      return date.toLocaleDateString("es-ES", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+
+    return date.toLocaleDateString("es-ES", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getEventStatus = (event: GoogleCalendarEvent) => {
+    const now = new Date();
+    const start = new Date(event.start?.dateTime || event.start?.date || "");
+    const end = new Date(event.end?.dateTime || event.end?.date || "");
+
+    if (now < start) return { status: "upcoming", color: "blue" };
+    if (now > end) return { status: "past", color: "gray" };
+    return { status: "ongoing", color: "green" };
+  };
+
+  // Filtrar eventos por attendees
+  const filteredEvents = React.useMemo(() => {
+    if (attendeesFilter.length === 0) {
+      return state.events;
+    }
+
+    return state.events.filter((event) => {
+      if (!event.attendees || event.attendees.length === 0) {
+        return false;
+      }
+
+      return event.attendees.some(
+        (attendee) => attendee.email && attendeesFilter.includes(attendee.email)
+      );
+    });
+  }, [state.events, attendeesFilter]);
+
+  // Memoizar dateRange para evitar re-renders innecesarios en ParticipantKPIGrid
+  const memoizedDateRange = useMemo(() => {
+    const now = new Date();
+    let start: string | undefined;
+    let end: string | undefined;
+
+    switch (timeRange) {
+      case "upcoming":
+        start = now.toISOString();
+        break;
+      case "today":
+        const startOfDay = new Date(now);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(now);
+        endOfDay.setHours(23, 59, 59, 999);
+        start = startOfDay.toISOString();
+        end = endOfDay.toISOString();
+        break;
+      case "week":
+        // Current week: Monday to Sunday
+        const startOfWeek = new Date(now);
+        const dayOfWeek = startOfWeek.getDay();
+        const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Adjust for Monday start
+        startOfWeek.setDate(startOfWeek.getDate() + diff);
+        startOfWeek.setHours(0, 0, 0, 0);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        endOfWeek.setHours(23, 59, 59, 999);
+
+        start = startOfWeek.toISOString();
+        end = endOfWeek.toISOString();
+        break;
+      case "month":
+        // Current month: 1st to last day of month
+        const startOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          1
+        );
+        startOfMonth.setHours(0, 0, 0, 0);
+
+        const endOfMonth = new Date(
+          now.getFullYear(),
+          now.getMonth() + 1,
+          0
+        );
+        endOfMonth.setHours(23, 59, 59, 999);
+
+        start = startOfMonth.toISOString();
+        end = endOfMonth.toISOString();
+        break;
+      case "all":
+        // Sin límite temporal, comenzar desde hace 1 mes
+        const monthAgo = new Date(now);
+        monthAgo.setMonth(monthAgo.getMonth() - 1);
+        start = monthAgo.toISOString();
+        break;
+      case "custom":
+        if (
+          customStartDate &&
+          customStartDate instanceof Date &&
+          !isNaN(customStartDate.getTime())
+        ) {
+          start = customStartDate.toISOString();
+        }
+        if (
+          customEndDate &&
+          customEndDate instanceof Date &&
+          !isNaN(customEndDate.getTime())
+        ) {
+          end = customEndDate.toISOString();
+        }
+        break;
+    }
+
+    return { start, end };
+  }, [timeRange, customStartDate, customEndDate]);
+
+  // Memoizar callback para evitar re-renders innecesarios
+  const handleRemoveAttendee = useCallback((email: string) => {
+    const newFilter = attendeesFilter.filter((a) => a !== email);
+    setAttendeesFilter(newFilter);
+  }, [attendeesFilter, setAttendeesFilter]);
+
+  // Funciones para manejar el modal
+  const handleRowClick = useCallback((event: GoogleCalendarEvent) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEvent: event,
+      isModalOpen: true,
+      initialModalSection: "general",
+    }));
+  }, []);
+
+  const handleEventEdit = useCallback((event: GoogleCalendarEvent) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEvent: event,
+      isModalOpen: true,
+      initialModalSection: "edit",
+    }));
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      selectedEvent: null,
+      isModalOpen: false,
+    }));
+  }, []);
+
+  const handleDeleteEventFromModal = async () => {
+    if (!state.selectedEvent) return;
+
+    const eventId = state.selectedEvent.id!;
+    const calendarId =
+      (state.selectedEvent as any).calendarId || activeCalendars[0];
+
+    handleCloseModal();
+    await handleDeleteEvent(eventId, calendarId);
+  };
+
+  const handleSaveEvent = async (
+    updatedEvent: Partial<GoogleCalendarEvent>
+  ) => {
+    if (!state.selectedEvent) return;
+
+    const eventId = state.selectedEvent.id!;
+    const calendarId =
+      (state.selectedEvent as any).calendarId || activeCalendars[0];
+
+    try {
+      const response = await fetch(
+        `/api/calendar/events/${eventId}/update?calendarId=${calendarId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedEvent),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al actualizar el evento");
+      }
+
+      const result = await response.json();
+
+      // Actualizar el evento en la lista local
+      setState((prev) => ({
+        ...prev,
+        events: prev.events.map((event) =>
+          event.id === eventId ? { ...event, ...result.event } : event
+        ),
+        selectedEvent: { ...state.selectedEvent, ...result.event },
+      }));
+
+      // Handle different success scenarios
+      let title = "Evento actualizado";
+      let description = "Los cambios se guardaron correctamente";
+
+      if (result.moved) {
+        title = "Evento movido";
+        description = "El evento se movió correctamente al nuevo calendario";
+      } else if (result.isRecurringEventIssue && result.fallbackUsed) {
+        title = "Evento copiado";
+        description =
+          "Este evento recurrente se copió al nuevo calendario (no se puede mover directamente)";
+      }
+
+      toast({
+        title,
+        description,
+        duration: result.isRecurringEventIssue ? 5000 : 3000,
+      });
+    } catch (error: any) {
+      console.error("Error saving event:", error);
+
+      // Check if this is a response parsing error where the request actually succeeded
+      if (error.message?.includes("isRecurringEventIssue")) {
+        // This is likely a fallback success case that got caught as an error
+        toast({
+          title: "Evento procesado",
+          description:
+            "El evento se procesó correctamente usando un método alternativo",
+          duration: 5000,
+        });
+        return; // Don't re-throw for fallback success
+      }
+
+      toast({
+        title: "Error",
+        description: error.message || "Error al guardar los cambios",
+        variant: "destructive",
+        duration: 5000,
+      });
+      throw error;
+    }
+  };
+
+  // Crear las columnas después de que todas las funciones estén definidas
+  const columns = useMemo(
+    () =>
+      getEventsColumns(
+        activeCalendars[0] || "primary",
+        loadEvents,
+        visibleColumns,
+        state.calendars,
+        handleEventEdit,
+        router
+      ),
+    [
+      activeCalendars,
+      loadEvents,
+      visibleColumns,
+      state.calendars,
+      handleEventEdit,
+      router,
+    ]
+  );
+
+  const handleBulkAddParticipants = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForBulk: selectedEvents,
+      isBulkModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForBulk: [],
+      isBulkModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkAddParticipants = async (
+    participants: string[],
+    message?: string
+  ) => {
+    try {
+      const promises = state.selectedEventsForBulk.map(async (event) => {
+        const eventCalendarId = (event as any).calendarId || activeCalendars[0];
+
+        // Obtener el evento actual para conservar los participantes existentes
+        const currentAttendees = event.attendees || [];
+
+        // Crear lista de nuevos participantes
+        const newAttendees = participants.map((email) => ({
+          email,
+          responseStatus: "needsAction" as const,
+        }));
+
+        // Combinar participantes existentes con nuevos (evitar duplicados)
+        const existingEmails = currentAttendees
+          .map((a) => a.email?.toLowerCase())
+          .filter(Boolean);
+        const uniqueNewAttendees = newAttendees.filter(
+          (newAttendee) =>
+            !existingEmails.includes(newAttendee.email.toLowerCase())
+        );
+
+        const allAttendees = [...currentAttendees, ...uniqueNewAttendees];
+
+        const updateData: any = {
+          attendees: allAttendees,
+        };
+
+        // Agregar mensaje si se proporcionó
+        if (message) {
+          updateData.description = event.description
+            ? `${event.description}\n\n---\n${message}`
+            : message;
+        }
+
+        const response = await fetch(
+          `/api/calendar/events/${event.id}?calendarId=${eventCalendarId}`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateData),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Error en evento "${event.summary}": ${
+              errorData.message || "Error desconocido"
+            }`
+          );
+        }
+
+        return response.json();
+      });
+
+      await Promise.all(promises);
+
+      // Recargar eventos para mostrar los cambios
+      loadEvents();
+    } catch (error: any) {
+      console.error("Error adding participants to events:", error);
+      throw error; // Re-throw para que el modal pueda manejar el error
+    }
+  };
+
+  const handleBulkGenerateDescriptions = (
+    selectedEvents: GoogleCalendarEvent[]
+  ) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDescriptions: selectedEvents,
+      isBulkDescriptionsModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkDescriptionsModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDescriptions: [],
+      isBulkDescriptionsModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkGenerateDescriptions = async (
+    template: string,
+    overwriteExisting: boolean
+  ) => {
+    try {
+      // Preparar los IDs de eventos con sus calendarios
+      const eventIds = state.selectedEventsForDescriptions
+        .filter((event) => event.id && (event as any).calendarId)
+        .map((event) => ({
+          eventId: event.id!,
+          calendarId: (event as any).calendarId,
+        }));
+
+      if (eventIds.length === 0) {
+        toast({
+          title: "Error",
+          description: "No se encontraron eventos válidos para procesar",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
+
+      const response = await fetch(
+        "/api/calendar/events/bulk-generate-descriptions",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventIds,
+            customTemplate: template,
+            includeAttendees: true,
+            includeLocation: true,
+            includeDateTime: true,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Error al generar descripciones");
+      }
+
+      const result = await response.json();
+
+      // Recargar eventos para mostrar los cambios
+      await loadEvents();
+
+      // Verificar si al menos algunos eventos se procesaron correctamente
+      if (result.successful > 0) {
+        // Mostrar notificación de éxito
+        toast({
+          title: "Descripciones generadas",
+          description: `Se generaron descripciones para ${result.successful} de ${result.processed} eventos`,
+          duration: 3000,
+        });
+      }
+
+      // Si hubo errores, mostrar detalles
+      if (result.failed > 0 && result.errors && result.errors.length > 0) {
+        // Solo log en desarrollo para debugging, no como error crítico
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            "Algunos eventos tuvieron errores durante la generación:",
+            result.errors
+          );
+        }
+
+        // Crear un mensaje de error más detallado
+        const errorMessages = result.errors
+          .slice(0, 3)
+          .map((err: any) => {
+            const eventTitle = err.title || err.eventId || "Evento desconocido";
+            const errorMsg = err.error || "Error desconocido";
+            return `• ${eventTitle}: ${errorMsg}`;
+          })
+          .join("\n");
+
+        const errorSummary = `${result.failed} de ${result.processed} eventos no pudieron procesarse`;
+        const fullMessage = `${errorSummary}\n\n${errorMessages}${
+          result.errors.length > 3 ? "\n\n...y más errores" : ""
+        }`;
+
+        // Solo mostrar toast de error si no se procesó ningún evento correctamente
+        if (result.successful === 0) {
+          toast({
+            title: "Error al generar descripciones",
+            description: fullMessage,
+            variant: "destructive",
+            duration: 10000,
+          });
+        } else {
+          // Si algunos eventos se procesaron correctamente, mostrar como advertencia
+          toast({
+            title: "Algunos eventos tuvieron errores",
+            description: fullMessage,
+            variant: "destructive",
+            duration: 10000,
+          });
+        }
+      }
+    } catch (error: any) {
+      // Log detallado para debugging
+      console.error("Error crítico en generación de descripciones:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        error: error,
+      });
+
+      // Crear un mensaje de error más informativo
+      let errorMessage = "Error al generar descripciones";
+
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else if (error.error) {
+        errorMessage = error.error;
+      }
+
+      // Lanzar un error más estructurado
+      const structuredError = new Error(errorMessage);
+      structuredError.name = "BulkDescriptionError";
+      throw structuredError;
+    }
+  };
+
+  const handleBulkGenerateMeetLinks = async (
+    selectedEvents: GoogleCalendarEvent[]
+  ) => {
+    if (selectedEvents.length === 0) return;
+
+    const confirmed = confirm(
+      `¿Estás seguro de que quieres generar enlaces de Google Meet para ${
+        selectedEvents.length
+      } evento${selectedEvents.length !== 1 ? "s" : ""}?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      const promises = selectedEvents.map(async (event) => {
+        const eventCalendarId = (event as any).calendarId || activeCalendars[0];
+
+        // Usar el endpoint específico de Meet con método POST
+        const response = await fetch(
+          `/api/calendar/events/${event.id}/meet?calendarId=${eventCalendarId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Error en evento "${event.summary}": ${
+              errorData.error || "Error desconocido"
+            }`
+          );
+        }
+
+        return response.json();
+      });
+
+      await Promise.all(promises);
+
+      // Recargar eventos para mostrar los cambios
+      await loadEvents();
+
+      // Mostrar notificación de éxito
+      toast({
+        title: "Enlaces de Meet generados",
+        description: `Se generaron enlaces de Google Meet para ${
+          selectedEvents.length
+        } evento${selectedEvents.length !== 1 ? "s" : ""}`,
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error("Error generating Meet links:", error);
+
+      // Mostrar notificación de error
+      toast({
+        title: "Error",
+        description: error.message || "Error al generar enlaces de Google Meet",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleBulkMoveCalendar = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForMove: selectedEvents,
+      isBulkMoveModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkMoveModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForMove: [],
+      isBulkMoveModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkMoveCalendar = async (targetCalendarId: string) => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      // Prepare events for bulk move
+      const eventsToMove = state.selectedEventsForMove.map((event) => ({
+        eventId: event.id,
+        sourceCalendarId: (event as any).calendarId || "primary",
+      }));
+
+      const response = await fetch("/api/calendar/events/bulk-move", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          events: eventsToMove,
+          targetCalendarId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      toast({
+        title: "Eventos movidos",
+        description: `Se movieron ${result.successful} evento(s) exitosamente${
+          result.failed > 0 ? `. Falló: ${result.failed}` : ""
+        }`,
+        variant: result.failed > 0 ? "destructive" : "default",
+        duration: 5000,
+      });
+
+      // Reload events if successful
+      if (result.successful > 0) {
+        loadEvents();
+      }
+
+      handleCloseBulkMoveModal();
+    } catch (error: any) {
+      console.error("Error moving events:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Error al mover los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleBulkUpdateDateTime = (selectedEvents: GoogleCalendarEvent[]) => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDateTime: selectedEvents,
+      isBulkDateTimeModalOpen: true,
+    }));
+  };
+
+  const handleCloseBulkDateTimeModal = () => {
+    setState((prev) => ({
+      ...prev,
+      selectedEventsForDateTime: [],
+      isBulkDateTimeModalOpen: false,
+    }));
+  };
+
+  const handleConfirmBulkUpdateDateTime = async (
+    updates: Array<{
+      eventId: string;
+      calendarId: string;
+      updateData: any;
+    }>
+  ) => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      const response = await fetch("/api/calendar/events/bulk-datetime", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          updates,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+
+      toast({
+        title: "Fechas actualizadas",
+        description: `Se actualizaron ${result.successful} evento(s) exitosamente${
+          result.failed > 0 ? `. Falló: ${result.failed}` : ""
+        }`,
+        variant: result.failed > 0 ? "destructive" : "default",
+        duration: 5000,
+      });
+
+      // Reload events if successful
+      if (result.successful > 0) {
+        loadEvents();
+      }
+
+      handleCloseBulkDateTimeModal();
+    } catch (error: any) {
+      console.error("Error updating event dates:", error);
+      toast({
+        title: "Error",
+        description:
+          error.message || "Error al actualizar las fechas de los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  const handleBulkDelete = async (selectedEvents: GoogleCalendarEvent[]) => {
+    if (selectedEvents.length === 0) return;
+
+    const confirmed = confirm(
+      `¿Estás seguro de que quieres eliminar ${
+        selectedEvents.length
+      } evento${selectedEvents.length !== 1 ? "s" : ""}? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setState((prev) => ({ ...prev, isLoading: true }));
+
+      const promises = selectedEvents.map(async (event) => {
+        const eventCalendarId = (event as any).calendarId || activeCalendars[0];
+
+        const response = await fetch(
+          `/api/calendar/events/${event.id}?calendarId=${eventCalendarId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Error eliminando evento "${event.summary}": ${
+              errorData.message || "Error desconocido"
+            }`
+          );
+        }
+
+        return response.json();
+      });
+
+      await Promise.all(promises);
+
+      // Recargar eventos para mostrar los cambios
+      await loadEvents();
+
+      // Mostrar notificación de éxito
+      toast({
+        title: "Eventos eliminados",
+        description: `Se eliminaron ${selectedEvents.length} evento${
+          selectedEvents.length !== 1 ? "s" : ""
+        } correctamente`,
+        duration: 3000,
+      });
+    } catch (error: any) {
+      console.error("Error deleting events:", error);
+
+      // Mostrar notificación de error
+      toast({
+        title: "Error",
+        description: error.message || "Error al eliminar los eventos",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setState((prev) => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  if (status === "loading") {
     return (
       <div className='flex justify-center items-center h-screen'>
         <Spinner size='lg' />
@@ -261,208 +1206,472 @@ const CalendarDashboard: React.FC = () => {
   }
 
   if (status === "unauthenticated" || session?.user?.role !== "ADMIN") {
-    return null; // Will redirect via useEffect
+    return null;
   }
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      {/* Header */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900 mb-2'>
-          Calendar Dashboard
-        </h1>
-        <p className='text-gray-600'>
-          Gestiona eventos de Google Calendar de forma centralizada
-        </p>
-      </div>
-
-      {/* Error Alert */}
-      {error && (
-        <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6'>
-          <div className='flex items-center'>
-            <ExclamationTriangleIcon className='h-5 w-5 mr-2' />
-            <span>{error}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Stats Cards */}
-      {stats.authStatus === "connected" && (
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
-          <Card>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                Calendarios Disponibles
-              </CardTitle>
-              <CalendarIcon className='h-4 w-4 text-muted-foreground' />
-            </CardHeader>
-            <CardContent>
-              <div className='text-2xl font-bold'>{stats.totalCalendars}</div>
-              <p className='text-xs text-muted-foreground'>
-                Calendarios con acceso
+    <TailwindGrid fullSize padding='' className='z-0'>
+      <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
+        <div className='flex-1 p-6'>
+          {/* Header */}
+          <div className='flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6 md:mb-8'>
+            <div>
+              <h1 className='text-2xl md:text-3xl font-bold text-foreground mb-2'>
+                Eventos de Calendar
+              </h1>
+              <p className='text-muted-foreground'>
+                Gestiona y visualiza eventos de Google Calendar
               </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>
-                Eventos Próximos
-              </CardTitle>
-              <ClockIcon className='h-4 w-4 text-muted-foreground' />
-            </CardHeader>
-            <CardContent>
-              <div className='text-2xl font-bold'>{stats.upcomingEvents}</div>
-              <p className='text-xs text-muted-foreground'>Próximos 7 días</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-              <CardTitle className='text-sm font-medium'>Eventos Hoy</CardTitle>
-              <Badge variant={stats.todayEvents > 0 ? "default" : "secondary"}>
-                {stats.todayEvents > 0 ? "Activo" : "Libre"}
-              </Badge>
-            </CardHeader>
-            <CardContent>
-              <div className='text-2xl font-bold'>{stats.todayEvents}</div>
-              <p className='text-xs text-muted-foreground'>
-                Eventos programados hoy
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Calendar KPIs - Only show if connected */}
-      {stats.authStatus === "connected" && (
-        <div className='mb-8'>
-          <CalendarKPIs />
-        </div>
-      )}
-
-      {/* Connection Status Accordion */}
-      <div className='mb-6'>
-        <Accordion type='single' collapsible>
-          <AccordionItem value='connection-status'>
-            <AccordionTrigger className='text-sm font-medium'>
-              <div className='flex items-center gap-2'>
-                {stats.authStatus === "connected" && (
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                )}
-                {stats.authStatus === "error" && (
-                  <ExclamationTriangleIcon className='h-4 w-4 text-red-500' />
-                )}
-                {stats.authStatus === "loading" && (
-                  <Cog6ToothIcon className='h-4 w-4 text-gray-500 animate-spin' />
-                )}
-                Estado de Conexión -{" "}
-                {stats.authStatus === "connected"
-                  ? "Conectado"
-                  : stats.authStatus === "error"
-                    ? "Error"
-                    : "Verificando..."}
+            </div>
+            <div className='flex flex-wrap items-center gap-2 md:gap-3'>
+              {/* View Toggle */}
+              <div className='flex items-center border border-border rounded-lg p-1 bg-background'>
+                <Button
+                  variant={viewMode === "table" ? "default" : "ghost"}
+                  size='sm'
+                  onClick={() => setViewMode("table")}
+                  className='h-8 px-2 text-xs md:text-sm'
+                >
+                  <TableCellsIcon className='h-4 w-4 mr-1' />
+                  Tabla
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
+                  size='sm'
+                  onClick={() => setViewMode("list")}
+                  className='h-8 px-2 text-xs md:text-sm'
+                >
+                  <ListBulletIcon className='h-4 w-4 mr-1' />
+                  Lista
+                </Button>
+                <Button
+                  variant={viewMode === "json" ? "default" : "ghost"}
+                  size='sm'
+                  onClick={() => setViewMode("json")}
+                  className='h-8 px-2 text-xs md:text-sm'
+                >
+                  <CodeBracketIcon className='h-4 w-4 mr-1' />
+                  JSON
+                </Button>
               </div>
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className='space-y-3 pt-2'>
-                <div className='flex items-center gap-3'>
-                  {stats.authStatus === "connected" && (
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium text-green-700'>
-                        ✅ Conectado a Google Calendar
-                      </p>
-                      <p className='text-xs text-gray-600'>
-                        La integración está funcionando correctamente
-                      </p>
-                    </div>
-                  )}
 
-                  {stats.authStatus === "error" && (
-                    <>
-                      <div className='flex-1'>
-                        <p className='text-sm font-medium text-red-700'>
-                          ❌ Error de Conexión
-                        </p>
-                        <p className='text-xs text-gray-600'>
-                          Revisa la configuración de Google Calendar API
-                        </p>
-                      </div>
+              {/* Column Controller - Only show in table mode */}
+              {viewMode === "table" && (
+                <>
+                  <ColumnController
+                    visibleColumns={visibleColumns}
+                    onColumnVisibilityChange={setColumnVisibility}
+                  />
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() => {
+                      resetFilters();
+                      // Recargar después de resetear para aplicar los cambios
+                      setTimeout(() => window.location.reload(), 100);
+                    }}
+                    className='text-xs'
+                    title='Restaurar columnas por defecto incluyendo invitados'
+                  >
+                    Restaurar Columnas
+                  </Button>
+                </>
+              )}
+
+              <Button
+                onClick={() => router.push("/admin/calendar/events/create")}
+                className='flex items-center gap-2'
+              >
+                <PlusIcon className='h-4 w-4' />
+                Crear Evento
+              </Button>
+            </div>
+          </div>
+
+          {/* Filters */}
+          <Card className='mb-6'>
+            <CardContent className='p-4 md:p-6'>
+              <div className='space-y-4'>
+                {/* Primera fila: Calendarios, Período, Invitados */}
+                <div className='space-y-4'>
+                  {/* Row 1: Calendar Multi-Selection and Attendees Filter */}
+                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                    {/* Calendar Multi-Selection */}
+                    <div>
+                      <label className='block text-sm font-medium text-foreground mb-2'>
+                        Calendarios
+                      </label>
+                      <CalendarMultiSelect
+                        calendars={state.calendars}
+                        selectedCalendars={activeCalendars}
+                        onSelectionChange={setActiveCalendars}
+                      />
+                    </div>
+
+                    {/* Attendees Filter */}
+                    <div>
+                      <label className='block text-sm font-medium text-foreground mb-2'>
+                        Filtrar por Invitados
+                      </label>
+                      <AttendeesFilter
+                        events={state.events}
+                        selectedAttendees={attendeesFilter}
+                        onSelectionChange={setAttendeesFilter}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Time Range Presets */}
+                  <div>
+                    <label className='block text-sm font-medium text-foreground mb-2'>
+                      Período
+                    </label>
+                    <div className='flex flex-wrap gap-2'>
                       <Button
-                        onClick={loadDashboardStats}
-                        variant='outline'
+                        variant={timeRange === "all" ? "default" : "outline"}
                         size='sm'
+                        onClick={() => setTimeRange("all")}
+                        className='text-xs'
                       >
-                        Reintentar
+                        Todos
                       </Button>
-                    </>
-                  )}
-
-                  {stats.authStatus === "loading" && (
-                    <div className='flex-1'>
-                      <p className='text-sm font-medium text-gray-700'>
-                        🔄 Verificando conexión...
-                      </p>
-                      <p className='text-xs text-gray-600'>
-                        Conectando con Google Calendar
-                      </p>
+                      <Button
+                        variant={timeRange === "today" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("today")}
+                        className='text-xs'
+                      >
+                        Hoy
+                      </Button>
+                      <Button
+                        variant={timeRange === "week" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("week")}
+                        className='text-xs'
+                      >
+                        Esta semana
+                      </Button>
+                      <Button
+                        variant={timeRange === "month" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("month")}
+                        className='text-xs'
+                      >
+                        Este mes
+                      </Button>
+                      <Button
+                        variant={
+                          timeRange === "upcoming" ? "default" : "outline"
+                        }
+                        size='sm'
+                        onClick={() => setTimeRange("upcoming")}
+                        className='text-xs'
+                      >
+                        Próximos
+                      </Button>
+                      <Button
+                        variant={timeRange === "custom" ? "default" : "outline"}
+                        size='sm'
+                        onClick={() => setTimeRange("custom")}
+                        className='text-xs'
+                      >
+                        <CalendarIcon className='h-3 w-3 mr-1' />
+                        Personalizado
+                      </Button>
                     </div>
-                  )}
+                  </div>
                 </div>
 
-                {/* Account Information */}
-                {stats.authStatus === "connected" && stats.primaryCalendar && (
-                  <div className='border-t pt-3 space-y-2'>
-                    <div className='grid grid-cols-2 gap-3 text-xs'>
-                      <div>
-                        <span className='text-gray-500'>Cuenta:</span>
-                        <p className='font-mono text-blue-600 truncate'>
-                          {stats.primaryCalendar.email}
-                        </p>
-                      </div>
-                      <div>
-                        <span className='text-gray-500'>Calendarios:</span>
-                        <p className='font-medium'>{stats.totalCalendars}</p>
-                      </div>
-                    </div>
-
-                    <div className='p-2 bg-blue-50 rounded text-xs'>
-                      <p className='text-blue-800'>
-                        <strong>📅 Eventos se crean en:</strong>{" "}
-                        {DEFAULT_CALENDAR_ID}
-                      </p>
-                    </div>
-
-                    {stats.primaryCalendar.email !== DEFAULT_CALENDAR_ID && (
-                      <div className='p-2 bg-amber-50 rounded text-xs'>
-                        <p className='text-amber-800'>
-                          <strong>⚠️</strong> Autenticado con{" "}
-                          {stats.primaryCalendar.email}
-                        </p>
-                      </div>
-                    )}
+                {/* Custom Date Range Picker - Only show when timeRange is 'custom' */}
+                {timeRange === "custom" && (
+                  <div className='mt-4'>
+                    <DateTimeRangePicker
+                      startValue={customStartDate}
+                      endValue={customEndDate}
+                      onStartChange={(date) => {
+                        setCustomDateRange(date, customEndDate);
+                      }}
+                      onEndChange={(date) => {
+                        setCustomDateRange(customStartDate, date);
+                      }}
+                      hourCycle={24}
+                      granularity='minute'
+                      startPlaceholder='Fecha y hora de inicio'
+                      endPlaceholder='Fecha y hora de fin'
+                      className='max-w-md'
+                    />
                   </div>
                 )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
 
-      {/* Quick Link to Health */}
-      <div className='text-center'>
-        <Link
-          href='/admin/calendar/health'
-          className='inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors'
-        >
-          <Cog6ToothIcon className='h-4 w-4' />
-          <span className='font-medium'>
-            Ver Diagnóstico Completo y Documentación
-          </span>
-        </Link>
+                {/* Row 3: Search */}
+                <div>
+                  <label className='block text-sm font-medium text-foreground mb-2'>
+                    Buscar eventos
+                  </label>
+                  <div className='relative'>
+                    <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
+                    <input
+                      type='text'
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder='Buscar por título, descripción...'
+                      className='w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Participant KPI Cards - Only show when attendees are filtered */}
+          {attendeesFilter.length > 0 && (
+            <ParticipantKPIGrid
+              selectedAttendees={attendeesFilter}
+              events={state.events}
+              onRemoveAttendee={handleRemoveAttendee}
+              calendarIds={activeCalendars}
+              dateRange={memoizedDateRange}
+            />
+          )}
+
+          {/* Error Alert */}
+          {state.error && (
+            <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6'>
+              {state.error}
+            </div>
+          )}
+
+          {/* Events Display */}
+          {state.isLoading ? (
+            <div className='flex justify-center py-8'>
+              <Spinner size='lg' />
+            </div>
+          ) : filteredEvents.length === 0 ? (
+            <Card className='border-border bg-card'>
+              <CardContent className='text-center py-8 text-muted-foreground'>
+                {state.events.length === 0
+                  ? "No se encontraron eventos con los filtros aplicados"
+                  : `No se encontraron eventos para los ${attendeesFilter.length} invitados seleccionados`}
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {viewMode === "json" && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-5 w-5' />
+                      JSON View - Eventos ({filteredEvents.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className='relative'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={() => {
+                          navigator.clipboard.writeText(
+                            JSON.stringify(filteredEvents, null, 2)
+                          );
+                        }}
+                        className='absolute top-2 right-2 z-10'
+                      >
+                        Copiar JSON
+                      </Button>
+                      <pre className='bg-card text-card-foreground p-4 rounded-lg overflow-auto max-h-96 text-xs font-mono border border-border'>
+                        {JSON.stringify(filteredEvents, null, 2)}
+                      </pre>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              {viewMode === "table" && (
+                <EventsDataTable
+                  columns={columns}
+                  data={filteredEvents}
+                  onRowClick={handleRowClick}
+                  onBulkAddParticipants={handleBulkAddParticipants}
+                  onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
+                  onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
+                  onBulkMoveCalendar={handleBulkMoveCalendar}
+                  onBulkUpdateDateTime={handleBulkUpdateDateTime}
+                  onBulkDelete={handleBulkDelete}
+                />
+              )}
+              {viewMode === "list" && (
+                <Card className='border-border bg-card'>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2 text-foreground'>
+                      <CalendarIcon className='h-5 w-5' />
+                      Eventos ({filteredEvents.length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className='p-4 md:p-6'>
+                    <div className='space-y-4'>
+                      {filteredEvents.map((event) => {
+                        const eventStatus = getEventStatus(event);
+
+                        return (
+                          <div
+                            key={`${event.id}-${(event as any).calendarId || "default"}`}
+                            className='border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card'
+                          >
+                            <div className='flex justify-between items-start'>
+                              <div className='flex-1'>
+                                <div className='flex items-center gap-3 mb-2'>
+                                  <h3 className='font-semibold text-foreground'>
+                                    {event.summary}
+                                  </h3>
+                                  <Badge
+                                    variant={
+                                      eventStatus.color === "blue"
+                                        ? "default"
+                                        : eventStatus.color === "green"
+                                          ? "default"
+                                          : "secondary"
+                                    }
+                                  >
+                                    {eventStatus.status === "upcoming"
+                                      ? "Próximo"
+                                      : eventStatus.status === "ongoing"
+                                        ? "En curso"
+                                        : "Pasado"}
+                                  </Badge>
+                                </div>
+
+                                <p className='text-sm text-muted-foreground mb-2'>
+                                  {formatEventDate(event)}
+                                </p>
+
+                                {event.description && (
+                                  <div
+                                    className='text-sm text-muted-foreground mb-2 line-clamp-2 [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium'
+                                    dangerouslySetInnerHTML={{
+                                      __html: event.description,
+                                    }}
+                                  />
+                                )}
+
+                                {event.location && (
+                                  <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+                                    <MapPin className='h-3.5 w-3.5' />
+                                    <span>{event.location}</span>
+                                  </div>
+                                )}
+
+                                {event.attendees &&
+                                  event.attendees.length > 0 && (
+                                    <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+                                      <Users className='h-3.5 w-3.5' />
+                                      <span>
+                                        {event.attendees.length} invitados
+                                      </span>
+                                    </div>
+                                  )}
+                              </div>
+
+                              <div className='flex items-center gap-2 ml-4'>
+                                {event.htmlLink && (
+                                  <Button
+                                    variant='outline'
+                                    size='sm'
+                                    onClick={() =>
+                                      window.open(event.htmlLink, "_blank")
+                                    }
+                                  >
+                                    <EyeIcon className='h-4 w-4' />
+                                  </Button>
+                                )}
+
+                                <Button
+                                  variant='outline'
+                                  size='sm'
+                                  onClick={() =>
+                                    router.push(
+                                      `/admin/calendar/events/${
+                                        event.id
+                                      }?calendarId=${
+                                        (event as any).calendarId ||
+                                        activeCalendars[0]
+                                      }`
+                                    )
+                                  }
+                                >
+                                  <PencilIcon className='h-4 w-4' />
+                                </Button>
+
+                                <Button
+                                  variant='outline'
+                                  size='sm'
+                                  onClick={() =>
+                                    handleDeleteEvent(
+                                      event.id!,
+                                      (event as any).calendarId ||
+                                        activeCalendars[0]
+                                    )
+                                  }
+                                  className='text-destructive hover:text-destructive hover:bg-destructive/10'
+                                >
+                                  <TrashIcon className='h-4 w-4' />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          )}
+
+          {/* Event Details Modal */}
+          <EventDetailsModal
+            isOpen={state.isModalOpen}
+            onClose={handleCloseModal}
+            event={state.selectedEvent}
+            calendars={state.calendars}
+            calendarId={activeCalendars[0] || "primary"}
+            onSave={handleSaveEvent}
+            onDelete={handleDeleteEventFromModal}
+            initialSection={state.initialModalSection}
+          />
+
+          {/* Bulk Add Participants Modal */}
+          <BulkAddParticipantsModal
+            isOpen={state.isBulkModalOpen}
+            onClose={handleCloseBulkModal}
+            selectedEvents={state.selectedEventsForBulk}
+            onConfirm={handleConfirmBulkAddParticipants}
+          />
+
+          {/* Bulk Generate Descriptions Modal */}
+          <BulkGenerateDescriptionsModal
+            isOpen={state.isBulkDescriptionsModalOpen}
+            onClose={handleCloseBulkDescriptionsModal}
+            selectedEvents={state.selectedEventsForDescriptions}
+            onConfirm={handleConfirmBulkGenerateDescriptions}
+          />
+          {/* Bulk Move Calendar Modal */}
+          <BulkMoveCalendarModal
+            isOpen={state.isBulkMoveModalOpen}
+            onClose={handleCloseBulkMoveModal}
+            selectedEvents={state.selectedEventsForMove}
+            calendars={state.calendars}
+            onMove={handleConfirmBulkMoveCalendar}
+          />
+          {/* Bulk Date/Time Update Modal */}
+          <BulkDateTimeModal
+            isOpen={state.isBulkDateTimeModalOpen}
+            onClose={handleCloseBulkDateTimeModal}
+            selectedEvents={state.selectedEventsForDateTime}
+            onUpdate={handleConfirmBulkUpdateDateTime}
+          />
+        </div>
       </div>
-    </div>
+    </TailwindGrid>
   );
 };
 
-export default CalendarDashboard;
+export default CalendarEventsPage;
