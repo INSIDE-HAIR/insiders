@@ -10,6 +10,8 @@ interface ErrorResolutionEmailData {
   templateType?: "standard" | "detailed" | "formal";
   customSubject?: string;
   customContent?: string;
+  cc?: string[];
+  bcc?: string[];
 }
 
 export const templates = {
@@ -107,6 +109,8 @@ export const sendErrorResolutionEmail = async (
     await emailConfig.emails.send({
       from: emailDefaults.from,
       to: [data.email],
+      cc: data.cc,
+      bcc: data.bcc,
       subject: subject,
       html: `<!DOCTYPE html>
       <html>
@@ -143,6 +147,12 @@ export const sendErrorResolutionEmail = async (
     });
 
     console.info("Email de resolución enviado con éxito a:", data.email);
+    if (data.cc && data.cc.length > 0) {
+      console.info("CC:", data.cc.join(", "));
+    }
+    if (data.bcc && data.bcc.length > 0) {
+      console.info("BCC:", data.bcc.join(", "));
+    }
 
     return true;
   } catch (error) {

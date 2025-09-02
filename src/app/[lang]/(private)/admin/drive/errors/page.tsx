@@ -197,35 +197,35 @@ function UserChipSelect({
   const selectedUsers = users.filter((user) => selectedIds.includes(user.id));
 
   return (
-    <div className="relative" ref={wrapperRef}>
+    <div className='relative' ref={wrapperRef}>
       <div
-        className="flex flex-wrap gap-2 p-2 min-h-10 bg-zinc-800 border border-zinc-700 rounded-md cursor-text"
+        className='flex flex-wrap gap-2 p-2 min-h-10 bg-zinc-800 border border-zinc-700 rounded-md cursor-text'
         onClick={() => setIsOpen(true)}
       >
         {selectedUsers.map((user) => (
           <Badge
             key={user.id}
-            variant="secondary"
-            className="flex items-center gap-1 bg-zinc-700 text-white hover:bg-zinc-600"
+            variant='secondary'
+            className='flex items-center gap-1 bg-zinc-700 text-white hover:bg-zinc-600'
           >
             {user.name}
             <button
-              type="button"
+              type='button'
               onClick={(e) => {
                 e.stopPropagation();
                 handleRemoveUser(user.id);
               }}
-              className="ml-1 hover:text-red-400"
+              className='ml-1 hover:text-red-400'
             >
-              <X className="h-3 w-3" />
+              <X className='h-3 w-3' />
             </button>
           </Badge>
         ))}
 
-        <div className="grow flex items-center">
+        <div className='grow flex items-center'>
           <input
-            type="text"
-            className="grow outline-none bg-transparent text-white placeholder-zinc-500"
+            type='text'
+            className='grow outline-none bg-transparent text-white placeholder-zinc-500'
             placeholder={selectedUsers.length === 0 ? placeholder : ""}
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
@@ -235,38 +235,38 @@ function UserChipSelect({
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-md shadow-md">
-          <div className="p-2 border-b border-zinc-700 flex items-center gap-2">
-            <Search className="h-4 w-4 text-zinc-400" />
+        <div className='absolute z-10 w-full mt-1 bg-zinc-900 border border-zinc-700 rounded-md shadow-md'>
+          <div className='p-2 border-b border-zinc-700 flex items-center gap-2'>
+            <Search className='h-4 w-4 text-zinc-400' />
             <input
-              type="text"
-              className="grow outline-none bg-transparent text-white placeholder-zinc-500"
-              placeholder="Buscar usuarios..."
+              type='text'
+              className='grow outline-none bg-transparent text-white placeholder-zinc-500'
+              placeholder='Buscar usuarios...'
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               autoFocus
             />
           </div>
-          <div className="max-h-[200px] overflow-y-auto p-1">
+          <div className='max-h-[200px] overflow-y-auto p-1'>
             {filteredUsers.length === 0 ? (
-              <div className="p-2 text-center text-sm text-zinc-400">
+              <div className='p-2 text-center text-sm text-zinc-400'>
                 No se encontraron usuarios
               </div>
             ) : (
               filteredUsers.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center gap-2 p-2 hover:bg-zinc-800 rounded cursor-pointer"
+                  className='flex items-center gap-2 p-2 hover:bg-zinc-800 rounded cursor-pointer'
                   onClick={() => {
                     onChange([...selectedIds, user.id]);
                     setSearchValue("");
                   }}
                 >
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-white">{user.name}</span>
-                    <span className="text-xs text-zinc-500">
-                      {user.email}
+                  <div className='flex flex-col'>
+                    <span className='text-sm font-medium text-white'>
+                      {user.name}
                     </span>
+                    <span className='text-xs text-zinc-500'>{user.email}</span>
                   </div>
                 </div>
               ))
@@ -321,12 +321,38 @@ export default function ErrorReportsPage() {
   const [isMassActionLoading, setIsMassActionLoading] = useState(false);
 
   // Add these new state variables
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("pending");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [assignedFilter, setAssignedFilter] = useState<string>("all");
   const [dateRangeFilter, setDateRangeFilter] = useState<string>("all");
   const [customDateStart, setCustomDateStart] = useState<string>("");
   const [customDateEnd, setCustomDateEnd] = useState<string>("");
   const [filteredReports, setFilteredReports] = useState<ErrorReport[]>([]);
   const [isCustomDateDialogOpen, setIsCustomDateDialogOpen] = useState(false);
+
+  // Funciones para obtener opciones disponibles dinámicamente
+  const getAvailableCategories = () => {
+    const availableCategories = new Set<string>();
+    reports.forEach(report => {
+      if (report.category && report.category !== "none") {
+        availableCategories.add(report.category);
+      }
+    });
+    return categories.filter(cat => availableCategories.has(cat.id) || availableCategories.has(cat.name));
+  };
+
+  const getAvailableUsers = () => {
+    const assignedUserIds = new Set<string>();
+    reports.forEach(report => {
+      if (report.assignedTo && report.assignedTo.length > 0) {
+        report.assignedTo.forEach(userId => assignedUserIds.add(userId));
+      }
+    });
+    return users.filter(user => assignedUserIds.has(user.id));
+  };
+
+  const hasUnassignedReports = reports.some(report => !report.assignedTo || report.assignedTo.length === 0);
+  const hasUncategorizedReports = reports.some(report => !report.category || report.category === "none");
 
   // Estado para envío de correos
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -336,6 +362,8 @@ export default function ErrorReportsPage() {
   const [customEmailSubject, setCustomEmailSubject] = useState("");
   const [customEmailContent, setCustomEmailContent] = useState("");
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailRecipient, setEmailRecipient] = useState("");
+  const [emailBcc, setEmailBcc] = useState("");
 
   // Cargar reportes y configuración al iniciar
   useEffect(() => {
@@ -436,23 +464,26 @@ export default function ErrorReportsPage() {
     try {
       setLoadingUsers(true);
       const response = await fetch("/api/users/role?roles=ADMIN,EMPLOYEE", {
-        credentials: 'include',
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
-        }
+          "Content-Type": "application/json",
+        },
       });
       const data = await response.json();
 
-      console.log('🔍 Users API response:', {
+      console.log("🔍 Users API response:", {
         status: response.status,
         ok: response.ok,
-        data: data
+        data: data,
       });
 
       if (!response.ok) {
         // Si es error de autenticación, no mostrar error pero registrar
         if (response.status === 401 || response.status === 403) {
-          console.warn("Usuario no autenticado o sin permisos para cargar usuarios", data);
+          console.warn(
+            "Usuario no autenticado o sin permisos para cargar usuarios",
+            data
+          );
           setUsers([]);
           return;
         }
@@ -545,9 +576,9 @@ export default function ErrorReportsPage() {
 
       // Si se marca como resuelto pero no hay fecha de resolución, usar la fecha actual
       if (selectedStatus === "resolved") {
-      if (resolvedDate) {
-        resolvedAtDate = new Date(resolvedDate);
-        // Asegurar que la fecha sea válida
+        if (resolvedDate) {
+          resolvedAtDate = new Date(resolvedDate);
+          // Asegurar que la fecha sea válida
           if (isNaN(resolvedAtDate.getTime())) {
             resolvedAtDate = new Date(); // Usar fecha actual si no es válida
           }
@@ -823,32 +854,32 @@ export default function ErrorReportsPage() {
       case "pending":
         return (
           <Badge
-            variant="outline"
-            className="bg-yellow-100 text-yellow-800 border-yellow-300"
+            variant='outline'
+            className='bg-yellow-100 text-yellow-800 border-yellow-300'
           >
-            <Clock className="h-3 w-3 mr-1" /> Pendiente
+            <Clock className='h-3 w-3 mr-1' /> Pendiente
           </Badge>
         );
       case "in-progress":
         return (
           <Badge
-            variant="outline"
-            className="bg-blue-100 text-blue-800 border-blue-300"
+            variant='outline'
+            className='bg-blue-100 text-blue-800 border-blue-300'
           >
-            <Loader2 className="h-3 w-3 mr-1 animate-spin" /> En proceso
+            <Loader2 className='h-3 w-3 mr-1 animate-spin' /> En proceso
           </Badge>
         );
       case "resolved":
         return (
           <Badge
-            variant="outline"
-            className="bg-green-100 text-green-800 border-green-300"
+            variant='outline'
+            className='bg-green-100 text-green-800 border-green-300'
           >
-            <CheckCircle2 className="h-3 w-3 mr-1" /> Resuelto
+            <CheckCircle2 className='h-3 w-3 mr-1' /> Resuelto
           </Badge>
         );
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant='outline'>{status}</Badge>;
     }
   };
 
@@ -858,8 +889,8 @@ export default function ErrorReportsPage() {
 
     return (
       <Badge
-        variant="outline"
-        className="ml-2"
+        variant='outline'
+        className='ml-2'
         style={{
           backgroundColor: `${report.categoryRef.color}20`,
           borderColor: report.categoryRef.color,
@@ -1002,6 +1033,31 @@ export default function ErrorReportsPage() {
       result = result.filter((report) => report.status === statusFilter);
     }
 
+    // Apply category filter
+    if (categoryFilter !== "all") {
+      result = result.filter((report) => {
+        if (categoryFilter === "none") {
+          return !report.category || report.category === "none";
+        }
+        // Check both category ID and category name
+        const category = categories.find(cat => cat.id === categoryFilter || cat.name === categoryFilter);
+        if (category) {
+          return report.category === category.id || report.category === category.name;
+        }
+        return report.category === categoryFilter;
+      });
+    }
+
+    // Apply assigned user filter
+    if (assignedFilter !== "all") {
+      result = result.filter((report) => {
+        if (assignedFilter === "unassigned") {
+          return !report.assignedTo || report.assignedTo.length === 0;
+        }
+        return report.assignedTo && report.assignedTo.includes(assignedFilter);
+      });
+    }
+
     // Apply date filter
     if (dateRangeFilter !== "all") {
       const now = new Date();
@@ -1046,12 +1102,14 @@ export default function ErrorReportsPage() {
     }
 
     setFilteredReports(result);
-  }, [reports, statusFilter, dateRangeFilter, customDateStart, customDateEnd]);
+  }, [reports, statusFilter, categoryFilter, assignedFilter, dateRangeFilter, customDateStart, customDateEnd]);
 
   // Get reports for rendering - either filtered or all
   const getDisplayReports = () => {
     return filteredReports.length > 0 ||
       statusFilter !== "all" ||
+      categoryFilter !== "all" ||
+      assignedFilter !== "all" ||
       dateRangeFilter !== "all"
       ? filteredReports
       : reports;
@@ -1133,11 +1191,28 @@ export default function ErrorReportsPage() {
   const sendResolutionEmail = async () => {
     if (!selectedReport) return;
 
+    // Validar el correo del destinatario
+    if (!emailRecipient || !emailRecipient.includes('@')) {
+      toast({
+        title: "Error",
+        description: "Por favor ingresa un correo electrónico válido para el destinatario.",
+        variant: "error",
+      });
+      return;
+    }
+
     try {
       setIsSendingEmail(true);
 
-      // Determinar los destinatarios (email del cliente que reportó)
-      const recipients = [selectedReport.email];
+      // Usar el correo editado del destinatario
+      const recipients = [emailRecipient];
+
+      // Procesar los correos BCC (copias ocultas)
+      const bccEmails: string[] = [];
+      if (emailBcc) {
+        const bccList = emailBcc.split(',').map(email => email.trim()).filter(email => email.includes('@'));
+        bccEmails.push(...bccList);
+      }
 
       // Obtener emails de usuarios asignados para CC
       const assignedUserEmails: string[] = [];
@@ -1176,6 +1251,7 @@ export default function ErrorReportsPage() {
           body: JSON.stringify({
             recipients,
             cc: assignedUserEmails,
+            bcc: bccEmails,
             subject: customEmailSubject,
             content: emailContent,
           }),
@@ -1248,8 +1324,8 @@ export default function ErrorReportsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-4" />
+      <div className='flex flex-col items-center justify-center min-h-screen p-4'>
+        <Loader2 className='h-8 w-8 animate-spin text-blue-500 mb-4' />
         <p>Cargando reportes de errores...</p>
       </div>
     );
@@ -1257,56 +1333,56 @@ export default function ErrorReportsPage() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <AlertTriangle className="h-8 w-8 text-red-500 mb-4" />
-        <p className="text-red-500 mb-2">{error}</p>
+      <div className='flex flex-col items-center justify-center min-h-screen p-4'>
+        <AlertTriangle className='h-8 w-8 text-red-500 mb-4' />
+        <p className='text-red-500 mb-2'>{error}</p>
         <Button onClick={() => window.location.reload()}>Reintentar</Button>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className='container mx-auto px-4 py-8'>
       <Toaster />
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestión de Errores en Archivos</h1>
+      <div className='flex justify-between items-center mb-6'>
+        <h1 className='text-2xl font-bold'>Gestión de Errores en Archivos</h1>
 
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Button
-            variant="outline"
+            variant='outline'
             onClick={() => setIsConfigDialogOpen(true)}
-            className="flex items-center"
+            className='flex items-center'
           >
-            <Mail className="h-4 w-4 mr-2" />
+            <Mail className='h-4 w-4 mr-2' />
             Configurar Destinatarios
           </Button>
         </div>
       </div>
 
       <Tabs
-        defaultValue="reports"
-        className="mb-8"
+        defaultValue='reports'
+        className='mb-8'
         onValueChange={setActiveTab}
       >
-        <TabsList className="grid w-full max-w-md grid-cols-3">
-          <TabsTrigger value="reports" className="flex items-center gap-2">
-            <Flag className="h-4 w-4" />
+        <TabsList className='grid w-full max-w-md grid-cols-3'>
+          <TabsTrigger value='reports' className='flex items-center gap-2'>
+            <Flag className='h-4 w-4' />
             Reportes
           </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-2">
-            <Tag className="h-4 w-4" />
+          <TabsTrigger value='categories' className='flex items-center gap-2'>
+            <Tag className='h-4 w-4' />
             Categorías
           </TabsTrigger>
-          <TabsTrigger value="reminders" className="flex items-center gap-2">
-            <BellRing className="h-4 w-4" />
+          <TabsTrigger value='reminders' className='flex items-center gap-2'>
+            <BellRing className='h-4 w-4' />
             Recordatorios
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="reports" className="mt-6">
+        <TabsContent value='reports' className='mt-6'>
           {reports.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-500">
+            <div className='text-center py-8'>
+              <p className='text-gray-500'>
                 No hay reportes de errores registrados
               </p>
             </div>
@@ -1314,16 +1390,16 @@ export default function ErrorReportsPage() {
             <>
               {/* Bulk actions toolbar - appears when items are selected */}
               {selectedReportIds.length > 0 && (
-                <div className="bg-blue-50 p-2 mb-4 rounded-md flex items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="mr-2 text-blue-700 font-medium">
+                <div className='bg-blue-50 p-2 mb-4 rounded-md flex items-center justify-between'>
+                  <div className='flex items-center'>
+                    <span className='mr-2 text-blue-700 font-medium'>
                       {selectedReportIds.length}{" "}
                       {selectedReportIds.length === 1
                         ? "elemento seleccionado"
                         : "elementos seleccionados"}
                     </span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <Select
                       value={massActionType || ""}
                       onValueChange={(value) => {
@@ -1333,29 +1409,29 @@ export default function ErrorReportsPage() {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Acciones masivas" />
+                      <SelectTrigger className='w-48'>
+                        <SelectValue placeholder='Acciones masivas' />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="update-status">
+                        <SelectItem value='update-status'>
                           Cambiar estado
                         </SelectItem>
-                        <SelectItem value="assign-category">
+                        <SelectItem value='assign-category'>
                           Asignar categoría
                         </SelectItem>
-                        <SelectItem value="assign-users">
+                        <SelectItem value='assign-users'>
                           Asignar usuarios
                         </SelectItem>
-                        <SelectItem value="delete">Eliminar</SelectItem>
+                        <SelectItem value='delete'>Eliminar</SelectItem>
                       </SelectContent>
                     </Select>
 
                     <Button
-                      variant="outline"
+                      variant='outline'
                       onClick={() => setSelectedReportIds([])}
-                      size="sm"
+                      size='sm'
                     >
-                      <X className="h-4 w-4 mr-1" />
+                      <X className='h-4 w-4 mr-1' />
                       Limpiar selección
                     </Button>
                   </div>
@@ -1363,30 +1439,30 @@ export default function ErrorReportsPage() {
               )}
 
               {/* Filters section */}
-              <div className="mb-4 flex flex-wrap gap-3 items-center border-b pb-4">
+              <div className='mb-4 flex flex-wrap gap-3 items-center border-b pb-4'>
                 {/* Status filter */}
-                <div className="mt-1">
+                <div className='mt-1'>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Estado" />
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Estado' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos los estados</SelectItem>
-                      <SelectItem value="pending">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                      <SelectItem value='all'>Todos los estados</SelectItem>
+                      <SelectItem value='pending'>
+                        <div className='flex items-center'>
+                          <Clock className='h-4 w-4 mr-2 text-yellow-500' />
                           <span>Pendientes</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="in-progress">
-                        <div className="flex items-center">
-                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                      <SelectItem value='in-progress'>
+                        <div className='flex items-center'>
+                          <Loader2 className='h-4 w-4 mr-2 text-blue-500' />
                           <span>En progreso</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="resolved">
-                        <div className="flex items-center">
-                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                      <SelectItem value='resolved'>
+                        <div className='flex items-center'>
+                          <CheckCircle2 className='h-4 w-4 mr-2 text-green-500' />
                           <span>Resuelto</span>
                         </div>
                       </SelectItem>
@@ -1394,8 +1470,59 @@ export default function ErrorReportsPage() {
                   </Select>
                 </div>
 
+                {/* Category filter */}
+                <div className='mt-1'>
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Categoría' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>Todas las categorías</SelectItem>
+                      {hasUncategorizedReports && (
+                        <SelectItem value='none'>Sin categoría</SelectItem>
+                      )}
+                      {getAvailableCategories().map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          <div className='flex items-center'>
+                            <div 
+                              className='w-3 h-3 rounded-full mr-2' 
+                              style={{ backgroundColor: category.color }}
+                            />
+                            <span>{category.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Assigned user filter */}
+                <div className='mt-1'>
+                  <Select value={assignedFilter} onValueChange={setAssignedFilter}>
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Asignado a' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value='all'>Todos los usuarios</SelectItem>
+                      {hasUnassignedReports && (
+                        <SelectItem value='unassigned'>Sin asignar</SelectItem>
+                      )}
+                      {getAvailableUsers().map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          <div className='flex items-center'>
+                            <div className='w-6 h-6 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center mr-2'>
+                              {user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span>{user.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Date filter */}
-                <div className="mt-1">
+                <div className='mt-1'>
                   <Select
                     value={dateRangeFilter}
                     onValueChange={(value) => {
@@ -1405,16 +1532,16 @@ export default function ErrorReportsPage() {
                       }
                     }}
                   >
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Período" />
+                    <SelectTrigger className='w-[180px]'>
+                      <SelectValue placeholder='Período' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todo el tiempo</SelectItem>
-                      <SelectItem value="7days">Últimos 7 días</SelectItem>
-                      <SelectItem value="30days">Últimos 30 días</SelectItem>
-                      <SelectItem value="3months">Últimos 3 meses</SelectItem>
-                      <SelectItem value="6months">Últimos 6 meses</SelectItem>
-                      <SelectItem value="custom">Personalizado</SelectItem>
+                      <SelectItem value='all'>Todo el tiempo</SelectItem>
+                      <SelectItem value='7days'>Últimos 7 días</SelectItem>
+                      <SelectItem value='30days'>Últimos 30 días</SelectItem>
+                      <SelectItem value='3months'>Últimos 3 meses</SelectItem>
+                      <SelectItem value='6months'>Últimos 6 meses</SelectItem>
+                      <SelectItem value='custom'>Personalizado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1423,288 +1550,357 @@ export default function ErrorReportsPage() {
                 {dateRangeFilter === "custom" &&
                   customDateStart &&
                   customDateEnd && (
-                    <div className="flex items-center gap-2 text-sm text-blue-600">
-                      <Calendar className="h-4 w-4" />
+                    <div className='flex items-center gap-2 text-sm text-blue-600'>
+                      <Calendar className='h-4 w-4' />
                       <span>
                         {new Date(customDateStart).toLocaleDateString()} -{" "}
                         {new Date(customDateEnd).toLocaleDateString()}
                       </span>
                       <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-6 w-6"
+                        variant='ghost'
+                        size='icon'
+                        className='h-6 w-6'
                         onClick={() => setIsCustomDateDialogOpen(true)}
                       >
-                        <Pencil className="h-3 w-3" />
+                        <Pencil className='h-3 w-3' />
                       </Button>
                     </div>
                   )}
 
                 {/* Filter counts */}
-                <div className="ml-auto text-sm text-gray-500">
+                <div className='ml-auto text-sm text-gray-500'>
                   {getDisplayReports().length} de {reports.length} reportes
                 </div>
               </div>
 
-            <div className="rounded-md border border-zinc-700 overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-zinc-800 hover:bg-zinc-800">
-                      <TableHead className="text-zinc-300 w-10">
-                        <div className="flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            checked={
-                              selectedReportIds.length ===
-                                getDisplayReports().length &&
-                              getDisplayReports().length > 0
-                            }
-                            onChange={toggleAllReports}
-                            className="w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors"
-                          />
-                        </div>
-                      </TableHead>
-                    <TableHead className="text-zinc-300">Archivo</TableHead>
-                    <TableHead className="text-zinc-300">Reportado por</TableHead>
-                    <TableHead className="text-zinc-300">Categoría</TableHead>
-                    <TableHead className="text-zinc-300">Fecha</TableHead>
-                    <TableHead className="text-zinc-300">Resuelto</TableHead>
-                    <TableHead className="text-zinc-300">Asignado a</TableHead>
-                    <TableHead className="text-zinc-300 text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {getDisplayReports().map((report) => (
-                    <TableRow key={report.id} className="hover:bg-zinc-900 group">
-                        <TableCell>
-                          <div className="flex items-center justify-center">
+              <div className='rounded-md border border-zinc-700 overflow-hidden'>
+                <div className='overflow-x-auto'>
+                  <Table className='min-w-[1200px]'>
+                    <TableHeader>
+                      <TableRow className='bg-zinc-800 hover:bg-zinc-800'>
+                        <TableHead className='text-zinc-300 w-10'>
+                          <div className='flex items-center justify-center'>
                             <input
-                              type="checkbox"
-                              checked={selectedReportIds.includes(report.id)}
-                              onChange={() => toggleReportSelection(report.id)}
-                              className="w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors"
+                              type='checkbox'
+                              checked={
+                                selectedReportIds.length ===
+                                  getDisplayReports().length &&
+                                getDisplayReports().length > 0
+                              }
+                              onChange={toggleAllReports}
+                              className='w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors'
                             />
                           </div>
-                        </TableCell>
-                      <TableCell className="font-medium group-hover:text-primary">
-                        <div className="flex flex-col">
-                          <span>{report.fileName}</span>
-                          <div className="flex mt-1">
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[120px]'>
+                          Estado
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[180px]'>
+                          Categoría
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[150px]'>
+                          Asignado a
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[120px]'>
+                          Fecha
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[120px]'>
+                          Resuelto
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[250px]'>
+                          Archivo
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[150px]'>
+                          Reportado por
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[300px]'>
+                          Mensaje
+                        </TableHead>
+                        <TableHead className='text-zinc-300 min-w-[300px]'>
+                          Notas
+                        </TableHead>
+                        <TableHead className='text-zinc-300 text-right min-w-[150px]'>
+                          Acciones
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {getDisplayReports().map((report) => (
+                        <TableRow
+                          key={report.id}
+                          className='hover:bg-zinc-900 group'
+                        >
+                          <TableCell>
+                            <div className='flex items-center justify-center'>
+                              <input
+                                type='checkbox'
+                                checked={selectedReportIds.includes(report.id)}
+                                onChange={() =>
+                                  toggleReportSelection(report.id)
+                                }
+                                className='w-4 h-4 text-primary bg-background border-primary/30 rounded focus:ring-primary focus:ring-2 focus:ring-offset-2 hover:border-primary transition-colors'
+                              />
+                            </div>
+                          </TableCell>
+                          
+                          {/* 0. Estado */}
+                          <TableCell>
                             {renderStatusBadge(report.status)}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="group-hover:text-primary">
-                        <div className="flex flex-col">
-                          <span>{report.fullName}</span>
-                          <span className="text-sm text-zinc-400 group-hover:text-primary">
-                            {report.email}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {report.categoryRef ? (
-                          <Badge
-                            variant="outline"
-                            style={{
-                              backgroundColor: `${report.categoryRef.color}20`,
-                              borderColor: report.categoryRef.color,
-                              color: report.categoryRef.color,
-                            }}
-                          >
-                            {report.categoryRef.name}
-                          </Badge>
-                        ) : (
-                          <span className="text-zinc-400 text-sm group-hover:text-primary">
-                            Sin categoría
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-sm text-zinc-400 group-hover:text-primary">
-                        {format(
-                          new Date(report.createdAt),
-                          "dd/MM/yyyy HH:mm",
-                          {
-                            locale: es,
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell className="text-sm text-zinc-400 group-hover:text-primary">
-                        {report.resolvedAt
-                          ? format(
-                              new Date(report.resolvedAt),
+                          </TableCell>
+
+                          {/* 1. Categoría */}
+                          <TableCell>
+                            {report.categoryRef ? (
+                              <Badge
+                                variant='outline'
+                                style={{
+                                  backgroundColor: `${report.categoryRef.color}20`,
+                                  borderColor: report.categoryRef.color,
+                                  color: report.categoryRef.color,
+                                }}
+                              >
+                                {report.categoryRef.name}
+                              </Badge>
+                            ) : (
+                              <span className='text-zinc-400 text-sm group-hover:text-primary'>
+                                Sin categoría
+                              </span>
+                            )}
+                          </TableCell>
+
+                          {/* 2. Asignado a */}
+                          <TableCell>
+                            {report.assignedTo &&
+                            report.assignedTo.length > 0 ? (
+                              <div className='flex flex-wrap gap-1'>
+                                {users.length > 0 ? (
+                                  report.assignedTo.length <= 2 ? (
+                                    report.assignedTo.map((userId) => {
+                                      const user = users.find(
+                                        (u) => u.id === userId
+                                      );
+                                      return user ? (
+                                        <Badge
+                                          key={userId}
+                                          variant='outline'
+                                          className='bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700'
+                                        >
+                                          {user.name?.split(" ")[0] ||
+                                            "Usuario"}
+                                        </Badge>
+                                      ) : (
+                                        <Badge
+                                          key={userId}
+                                          variant='outline'
+                                          className='bg-zinc-800 text-zinc-400 border-zinc-600'
+                                        >
+                                          ID: {userId.slice(-6)}
+                                        </Badge>
+                                      );
+                                    })
+                                  ) : (
+                                    <>
+                                      <Badge
+                                        variant='outline'
+                                        className='bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700'
+                                      >
+                                        {users
+                                          .find(
+                                            (u) =>
+                                              u.id === report.assignedTo![0]
+                                          )
+                                          ?.name?.split(" ")[0] || "Usuario"}
+                                      </Badge>
+                                      <Badge
+                                        variant='outline'
+                                        className='bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700'
+                                      >
+                                        +{report.assignedTo.length - 1}
+                                      </Badge>
+                                    </>
+                                  )
+                                ) : (
+                                  // Si no hay usuarios cargados, mostrar solo IDs
+                                  <Badge
+                                    variant='outline'
+                                    className='bg-zinc-800 text-zinc-400 border-zinc-600'
+                                  >
+                                    {report.assignedTo.length} asignado
+                                    {report.assignedTo.length > 1 ? "s" : ""}
+                                  </Badge>
+                                )}
+                              </div>
+                            ) : (
+                              <span className='text-zinc-400 text-sm group-hover:text-primary'>
+                                Sin asignar
+                              </span>
+                            )}
+                          </TableCell>
+
+                          {/* 3. Fecha */}
+                          <TableCell className='text-sm text-zinc-400 group-hover:text-primary'>
+                            {format(
+                              new Date(report.createdAt),
                               "dd/MM/yyyy HH:mm",
                               {
                                 locale: es,
                               }
-                            )
-                          : "-"}
-                      </TableCell>
-                      <TableCell>
-                        {report.assignedTo && report.assignedTo.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {users.length > 0 ? (
-                              report.assignedTo.length <= 2 ? (
-                                report.assignedTo.map((userId) => {
-                                    const user = users.find(
-                                      (u) => u.id === userId
-                                    );
-                                  return user ? (
-                                    <Badge
-                                      key={userId}
-                                      variant="outline"
-                                      className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
-                                    >
-                                      {user.name?.split(" ")[0] || "Usuario"}
-                                    </Badge>
-                                  ) : (
-                                    <Badge
-                                      key={userId}
-                                      variant="outline"
-                                      className="bg-zinc-800 text-zinc-400 border-zinc-600"
-                                    >
-                                      ID: {userId.slice(-6)}
-                                    </Badge>
-                                  );
-                                })
-                              ) : (
-                                <>
-                                  <Badge
-                                    variant="outline"
-                                    className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
-                                  >
-                                    {users
-                                        .find(
-                                          (u) => u.id === report.assignedTo![0]
-                                        )
-                                      ?.name?.split(" ")[0] || "Usuario"}
-                                  </Badge>
-                                  <Badge
-                                    variant="outline"
-                                    className="bg-zinc-800 text-primary border-zinc-600 group-hover:bg-zinc-700"
-                                  >
-                                    +{report.assignedTo.length - 1}
-                                  </Badge>
-                                </>
-                              )
-                            ) : (
-                              // Si no hay usuarios cargados, mostrar solo IDs
-                              <Badge
-                                variant="outline"
-                                className="bg-zinc-800 text-zinc-400 border-zinc-600"
-                              >
-                                {report.assignedTo.length} asignado{report.assignedTo.length > 1 ? 's' : ''}
-                              </Badge>
                             )}
-                          </div>
-                        ) : (
-                          <span className="text-zinc-400 text-sm group-hover:text-primary">
-                            Sin asignar
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                        <Button
-                          variant="ghost"
-                                    size="icon"
-                                    onClick={() => {
-                                      handleEditReport(report);
-                                    }}
-                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
-                                  >
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Editar</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                          </TableCell>
 
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() =>
-                                      sendImmediateReminder(report)
-                                    }
-                                    disabled={
-                                      isUpdating || report.status === "resolved"
-                                    }
-                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
-                                  >
-                                    <BellRing className="h-4 w-4" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Enviar recordatorio inmediato</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                          {/* 4. Resuelto */}
+                          <TableCell className='text-sm text-zinc-400 group-hover:text-primary'>
+                            {report.resolvedAt
+                              ? format(
+                                  new Date(report.resolvedAt),
+                                  "dd/MM/yyyy HH:mm",
+                                  {
+                                    locale: es,
+                                  }
+                                )
+                              : "-"}
+                          </TableCell>
 
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 text-red-500 hover:text-red-400 hover:bg-zinc-800"
-                          onClick={() => {
-                            setSelectedReport(report);
-                                      setIsDeleteDialogOpen(true);
-                          }}
-                        >
-                                    <Trash2 className="h-4 w-4" />
-                        </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Eliminar</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                          {/* 5. Archivo */}
+                          <TableCell className='font-medium group-hover:text-primary'>
+                            <span>{report.fileName}</span>
+                          </TableCell>
 
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => {
-                                      setSelectedReport(report);
-                                      setIsEmailModalOpen(true);
-                                    }}
-                                    className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
-                                  >
-                                    <Mail className="h-4 w-4" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Enviar correo de resolución</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                          {/* 6. Reportado por */}
+                          <TableCell className='group-hover:text-primary'>
+                            <div className='flex flex-col'>
+                              <span>{report.fullName}</span>
+                              <span className='text-sm text-zinc-400 group-hover:text-primary'>
+                                {report.email}
+                              </span>
+                            </div>
+                          </TableCell>
+
+                          {/* 7. Mensaje - multilínea y más ancho */}
+                          <TableCell className='group-hover:text-primary min-w-[300px] max-w-[400px]'>
+                            <div className='py-2'>
+                              <span className='text-sm whitespace-pre-wrap break-words'>
+                                {report.message || "Sin mensaje"}
+                              </span>
+                            </div>
+                          </TableCell>
+
+                          {/* 8. Notas - multilínea y más ancho */}
+                          <TableCell className='group-hover:text-primary min-w-[300px] max-w-[400px]'>
+                            <div className='py-2'>
+                              <span className='text-sm text-zinc-400 group-hover:text-primary whitespace-pre-wrap break-words'>
+                                {report.notes || "Sin notas"}
+                              </span>
+                            </div>
+                          </TableCell>
+
+                          {/* 9. Acciones */}
+                          <TableCell className='text-right'>
+                            <div className='flex justify-end gap-2'>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant='ghost'
+                                      size='icon'
+                                      onClick={() => {
+                                        handleEditReport(report);
+                                      }}
+                                      className='h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800'
+                                    >
+                                      <Pencil className='h-4 w-4' />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Editar</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant='ghost'
+                                      size='icon'
+                                      onClick={() =>
+                                        sendImmediateReminder(report)
+                                      }
+                                      disabled={
+                                        isUpdating ||
+                                        report.status === "resolved"
+                                      }
+                                      className='h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800'
+                                    >
+                                      <BellRing className='h-4 w-4' />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Enviar recordatorio inmediato</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant='ghost'
+                                      size='icon'
+                                      className='h-8 w-8 text-red-500 hover:text-red-400 hover:bg-zinc-800'
+                                      onClick={() => {
+                                        setSelectedReport(report);
+                                        setIsDeleteDialogOpen(true);
+                                      }}
+                                    >
+                                      <Trash2 className='h-4 w-4' />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Eliminar</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant='ghost'
+                                      size='icon'
+                                      onClick={() => {
+                                        setSelectedReport(report);
+                                        setEmailRecipient(report.email);
+                                        setEmailBcc("");
+                                        setIsEmailModalOpen(true);
+                                      }}
+                                      className='h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800'
+                                    >
+                                      <Mail className='h-4 w-4' />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Enviar correo de resolución</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
             </>
           )}
         </TabsContent>
 
-        <TabsContent value="categories" className="mt-6">
+        <TabsContent value='categories' className='mt-6'>
           <CategoryManager onCategoryChange={handleCategoryChange} />
         </TabsContent>
 
-        <TabsContent value="reminders" className="mt-6">
+        <TabsContent value='reminders' className='mt-6'>
           <ReminderManager onReminderChange={fetchReports} />
         </TabsContent>
       </Tabs>
@@ -1712,44 +1908,46 @@ export default function ErrorReportsPage() {
       {/* Modal de detalles del reporte */}
       {selectedReport && (
         <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
-          <DialogContent className="max-w-md max-h-[85dvh] overflow-y-auto bg-zinc-900 text-white border-zinc-700">
+          <DialogContent className='max-w-md max-h-[85dvh] overflow-y-auto bg-zinc-900 text-white border-zinc-700'>
             <DialogHeader>
-              <DialogTitle className="text-white">Detalles del Reporte</DialogTitle>
+              <DialogTitle className='text-white'>
+                Detalles del Reporte
+              </DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-4 my-4">
+            <div className='space-y-4 my-4'>
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">Archivo</h3>
-                <p className="mt-1 text-white">{selectedReport.fileName}</p>
+                <h3 className='text-sm font-medium text-zinc-400'>Archivo</h3>
+                <p className='mt-1 text-white'>{selectedReport.fileName}</p>
                 {selectedReport.fileId && (
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className='text-xs text-zinc-500 mt-1'>
                     ID: {selectedReport.fileId}
                   </p>
                 )}
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">
+                <h3 className='text-sm font-medium text-zinc-400'>
                   Reportado por
                 </h3>
-                <p className="mt-1 text-white">{selectedReport.fullName}</p>
-                <p className="text-sm text-zinc-500">{selectedReport.email}</p>
+                <p className='mt-1 text-white'>{selectedReport.fullName}</p>
+                <p className='text-sm text-zinc-500'>{selectedReport.email}</p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">Mensaje</h3>
-                <div className="mt-1 p-3 bg-zinc-800 rounded-md border border-zinc-700">
-                  <p className="whitespace-pre-wrap text-white">
+                <h3 className='text-sm font-medium text-zinc-400'>Mensaje</h3>
+                <div className='mt-1 p-3 bg-zinc-800 rounded-md border border-zinc-700'>
+                  <p className='whitespace-pre-wrap text-white'>
                     {selectedReport.message}
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">
+                <h3 className='text-sm font-medium text-zinc-400'>
                   Fecha del reporte
                 </h3>
-                <p className="mt-1 text-white">
+                <p className='mt-1 text-white'>
                   {format(
                     new Date(selectedReport.createdAt),
                     "dd/MM/yyyy HH:mm",
@@ -1759,52 +1957,52 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">
+                <h3 className='text-sm font-medium text-zinc-400'>
                   Estado del reporte
                 </h3>
-                <div className="mt-1">
+                <div className='mt-1'>
                   <Select
                     value={selectedStatus}
                     onValueChange={setSelectedStatus}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className='w-full'>
                       <SelectValue>
                         {selectedStatus === "pending" && (
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                          <div className='flex items-center'>
+                            <Clock className='h-4 w-4 mr-2 text-yellow-500' />
                             <span>Pendiente</span>
                           </div>
                         )}
                         {selectedStatus === "in-progress" && (
-                          <div className="flex items-center">
-                            <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                          <div className='flex items-center'>
+                            <Loader2 className='h-4 w-4 mr-2 text-blue-500' />
                             <span>En progreso</span>
                           </div>
                         )}
                         {selectedStatus === "resolved" && (
-                          <div className="flex items-center">
-                            <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                          <div className='flex items-center'>
+                            <CheckCircle2 className='h-4 w-4 mr-2 text-green-500' />
                             <span>Resuelto</span>
                           </div>
                         )}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="pending">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                      <SelectItem value='pending'>
+                        <div className='flex items-center'>
+                          <Clock className='h-4 w-4 mr-2 text-yellow-500' />
                           <span>Pendiente</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="in-progress">
-                        <div className="flex items-center">
-                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                      <SelectItem value='in-progress'>
+                        <div className='flex items-center'>
+                          <Loader2 className='h-4 w-4 mr-2 text-blue-500' />
                           <span>En progreso</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="resolved">
-                        <div className="flex items-center">
-                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                      <SelectItem value='resolved'>
+                        <div className='flex items-center'>
+                          <CheckCircle2 className='h-4 w-4 mr-2 text-green-500' />
                           <span>Resuelto</span>
                         </div>
                       </SelectItem>
@@ -1814,30 +2012,43 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">
+                <h3 className='text-sm font-medium text-zinc-400'>
                   Fecha de resolución
                 </h3>
-                <div className="mt-1 relative">
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
+                <div className='mt-1 relative'>
+                  <div className='flex items-center gap-2'>
+                    <div className='flex-1'>
                       <DateTimePicker
-                        value={resolvedDate ? new Date(resolvedDate) : undefined}
+                        value={
+                          resolvedDate ? new Date(resolvedDate) : undefined
+                        }
                         onChange={(date) => {
                           if (date) {
                             // Convert to datetime-local format for compatibility
                             const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(2, '0');
-                            const day = String(date.getDate()).padStart(2, '0');
-                            const hours = String(date.getHours()).padStart(2, '0');
-                            const minutes = String(date.getMinutes()).padStart(2, '0');
-                            setResolvedDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+                            const month = String(date.getMonth() + 1).padStart(
+                              2,
+                              "0"
+                            );
+                            const day = String(date.getDate()).padStart(2, "0");
+                            const hours = String(date.getHours()).padStart(
+                              2,
+                              "0"
+                            );
+                            const minutes = String(date.getMinutes()).padStart(
+                              2,
+                              "0"
+                            );
+                            setResolvedDate(
+                              `${year}-${month}-${day}T${hours}:${minutes}`
+                            );
                           } else {
                             setResolvedDate("");
                           }
                         }}
-                        placeholder="Seleccionar fecha y hora de resolución"
-                        className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white"
-                        granularity="minute"
+                        placeholder='Seleccionar fecha y hora de resolución'
+                        className='bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white'
+                        granularity='minute'
                         locale={es}
                       />
                     </div>
@@ -1845,45 +2056,45 @@ export default function ErrorReportsPage() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
+                            type='button'
+                            variant='outline'
+                            size='icon'
                             onClick={setCurrentDateTime}
-                            className="bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white"
+                            className='bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-white'
                           >
-                            <Clock3 className="h-4 w-4" />
+                            <Clock3 className='h-4 w-4' />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="right">
+                        <TooltipContent side='right'>
                           <p>Usar fecha y hora actuales</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className='text-xs text-zinc-500 mt-1'>
                     Fecha y hora en que se resolvió el error
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">Categoría</h3>
-                <div className="mt-1">
+                <h3 className='text-sm font-medium text-zinc-400'>Categoría</h3>
+                <div className='mt-1'>
                   <Select
                     value={selectedCategory}
                     onValueChange={setSelectedCategory}
                     disabled={loadingCategories}
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar categoría" />
+                    <SelectTrigger className='w-full'>
+                      <SelectValue placeholder='Seleccionar categoría' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Sin categoría</SelectItem>
+                      <SelectItem value='none'>Sin categoría</SelectItem>
                       {categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
-                          <div className="flex items-center gap-2">
+                          <div className='flex items-center gap-2'>
                             <div
-                              className="w-2 h-2 rounded-full"
+                              className='w-2 h-2 rounded-full'
                               style={{ backgroundColor: category.color }}
                             ></div>
                             <span>{category.name}</span>
@@ -1896,50 +2107,50 @@ export default function ErrorReportsPage() {
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">Asignados</h3>
-                <div className="mt-1">
+                <h3 className='text-sm font-medium text-zinc-400'>Asignados</h3>
+                <div className='mt-1'>
                   <UserChipSelect
                     users={users}
                     selectedIds={selectedUsers}
                     onChange={setSelectedUsers}
-                    placeholder="Buscar y seleccionar usuarios asignados..."
+                    placeholder='Buscar y seleccionar usuarios asignados...'
                   />
                 </div>
-                <p className="text-xs text-zinc-500 mt-1">
+                <p className='text-xs text-zinc-500 mt-1'>
                   Personas asignadas a resolver este error
                 </p>
               </div>
 
               <div>
-                <h3 className="text-sm font-medium text-zinc-400">Notas</h3>
+                <h3 className='text-sm font-medium text-zinc-400'>Notas</h3>
                 <textarea
                   value={newNote}
                   onChange={(e) => setNewNote(e.target.value)}
-                  className="mt-1 w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary"
+                  className='mt-1 w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary'
                   rows={3}
-                  placeholder="Añadir notas sobre este reporte..."
+                  placeholder='Añadir notas sobre este reporte...'
                 />
               </div>
             </div>
 
-            <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+            <DialogFooter className='flex flex-col sm:flex-row gap-2 mt-4'>
               <Button
-                variant="default"
-                className="w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none"
+                variant='default'
+                className='w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
                 onClick={handleUpdateReport}
                 disabled={updatingReport}
               >
                 {updatingReport ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <Loader2 className='h-4 w-4 animate-spin mr-2' />
                 ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className='h-4 w-4 mr-2' />
                 )}
                 Actualizar
               </Button>
 
               <Button
-                variant="secondary"
-                className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700"
+                variant='secondary'
+                className='w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700'
                 onClick={() => setIsReportDialogOpen(false)}
               >
                 Cerrar
@@ -1951,44 +2162,46 @@ export default function ErrorReportsPage() {
 
       {/* Modal de confirmación de eliminación */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className='max-w-md bg-zinc-900 border-zinc-800'>
           <DialogHeader>
-            <DialogTitle>Confirmar eliminación</DialogTitle>
+            <DialogTitle className='text-white'>Confirmar eliminación</DialogTitle>
+            <DialogDescription className='text-zinc-400'>
+              ¿Está seguro que desea eliminar este reporte?
+            </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
-            <p>¿Está seguro que desea eliminar este reporte?</p>
+          <div className='space-y-4 my-4'>
             {selectedReport && (
-              <div className="bg-gray-50 p-3 rounded">
-                <p className="font-medium">{selectedReport.fileName}</p>
-                <p className="text-sm text-gray-500">
+              <div className='bg-zinc-800 p-3 rounded-md border border-zinc-700'>
+                <p className='font-medium text-white'>{selectedReport.fileName}</p>
+                <p className='text-sm text-zinc-400'>
                   Reportado por: {selectedReport.fullName}
                 </p>
               </div>
             )}
-            <p className="text-sm text-destructive">
+            <p className='text-sm text-red-400'>
               Esta acción no se puede deshacer.
             </p>
           </div>
 
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+          <DialogFooter className='flex flex-col sm:flex-row gap-2 mt-4'>
             <Button
-              variant="destructive"
-              className="w-full sm:w-auto"
+              variant='destructive'
+              className='w-full sm:w-auto'
               onClick={handleDeleteReport}
               disabled={isUpdating}
             >
               {isUpdating ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
               ) : (
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className='h-4 w-4 mr-2' />
               )}
               Eliminar
             </Button>
 
             <Button
-              variant="outline"
-              className="w-full sm:w-auto"
+              variant='outline'
+              className='w-full sm:w-auto bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700'
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               Cancelar
@@ -1999,70 +2212,71 @@ export default function ErrorReportsPage() {
 
       {/* Modal de configuración de destinatarios */}
       <Dialog open={isConfigDialogOpen} onOpenChange={setIsConfigDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className='max-w-md bg-zinc-900 border-zinc-800'>
           <DialogHeader>
-            <DialogTitle>Configuración de Destinatarios</DialogTitle>
+            <DialogTitle className='text-white'>Configuración de Destinatarios</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
+          <div className='space-y-4 my-4'>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className='block text-sm font-medium text-zinc-300 mb-1'>
                 Destinatarios principales
               </label>
               <textarea
                 value={editRecipients}
                 onChange={(e) => setEditRecipients(e.target.value)}
-                className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className='w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary placeholder:text-zinc-500'
                 rows={2}
-                placeholder="Correos separados por comas"
+                placeholder='Correos separados por comas'
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className='text-xs text-zinc-400 mt-1'>
                 Personas que reciben directamente los reportes de errores
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className='block text-sm font-medium text-zinc-300 mb-1'>
                 Destinatarios en CC
               </label>
               <textarea
                 value={editCcRecipients}
                 onChange={(e) => setEditCcRecipients(e.target.value)}
-                className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className='w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary placeholder:text-zinc-500'
                 rows={2}
-                placeholder="Correos separados por comas"
+                placeholder='Correos separados por comas'
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className='block text-sm font-medium text-zinc-300 mb-1'>
                 Destinatarios en CCO
               </label>
               <textarea
                 value={editBccRecipients}
                 onChange={(e) => setEditBccRecipients(e.target.value)}
-                className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className='w-full bg-zinc-800 border-zinc-700 text-white rounded-md shadow-sm focus:border-primary focus:ring-primary placeholder:text-zinc-500'
                 rows={2}
-                placeholder="Correos separados por comas"
+                placeholder='Correos separados por comas'
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button
-              variant="secondary"
-              className="mr-2"
+              variant='outline'
+              className='mr-2 bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700'
               onClick={() => setIsConfigDialogOpen(false)}
             >
               Cancelar
             </Button>
             <Button
-              variant="default"
+              variant='default'
               onClick={updateRecipientsConfig}
               disabled={isUpdating}
+              className='bg-primary hover:bg-primary/90 text-zinc-900'
             >
               {isUpdating ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
               ) : (
                 <></>
               )}
@@ -2077,9 +2291,9 @@ export default function ErrorReportsPage() {
         open={isMassActionDialogOpen}
         onOpenChange={setIsMassActionDialogOpen}
       >
-        <DialogContent className="max-w-md">
+        <DialogContent className='max-w-md bg-zinc-900 border-zinc-800'>
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className='text-white'>
               {massActionType === "delete" && "Eliminar reportes"}
               {massActionType === "update-status" && "Cambiar estado"}
               {massActionType === "assign-category" && "Asignar categoría"}
@@ -2087,8 +2301,8 @@ export default function ErrorReportsPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
-            <p className="mb-4">
+          <div className='space-y-4 my-4'>
+            <p className='mb-4 text-white'>
               {selectedReportIds.length}{" "}
               {selectedReportIds.length === 1
                 ? "elemento seleccionado"
@@ -2097,11 +2311,11 @@ export default function ErrorReportsPage() {
 
             {massActionType === "delete" && (
               <div>
-                <p className="text-destructive font-medium">
+                <p className='text-red-400 font-medium'>
                   ¿Está seguro que desea eliminar todos los reportes
                   seleccionados?
                 </p>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className='text-sm text-zinc-400 mt-2'>
                   Esta acción no se puede deshacer.
                 </p>
               </div>
@@ -2109,50 +2323,50 @@ export default function ErrorReportsPage() {
 
             {massActionType === "update-status" && (
               <div>
-                <Label>Nuevo estado</Label>
-                <div className="mt-1">
+                <Label className='text-zinc-300'>Nuevo estado</Label>
+                <div className='mt-1'>
                   <Select
                     value={selectedMassStatus}
                     onValueChange={setSelectedMassStatus}
                   >
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className='w-full bg-zinc-800 border-zinc-700 text-white'>
                       <SelectValue>
                         {selectedMassStatus === "pending" && (
-                          <div className="flex items-center">
-                            <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                          <div className='flex items-center'>
+                            <Clock className='h-4 w-4 mr-2 text-yellow-500' />
                             <span>Pendiente</span>
                           </div>
                         )}
                         {selectedMassStatus === "in-progress" && (
-                          <div className="flex items-center">
-                            <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                          <div className='flex items-center'>
+                            <Loader2 className='h-4 w-4 mr-2 text-blue-500' />
                             <span>En progreso</span>
                           </div>
                         )}
                         {selectedMassStatus === "resolved" && (
-                          <div className="flex items-center">
-                            <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                          <div className='flex items-center'>
+                            <CheckCircle2 className='h-4 w-4 mr-2 text-green-500' />
                             <span>Resuelto</span>
                           </div>
                         )}
                       </SelectValue>
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="pending">
-                        <div className="flex items-center">
-                          <Clock className="h-4 w-4 mr-2 text-yellow-500" />
+                    <SelectContent className='bg-zinc-800 border-zinc-700'>
+                      <SelectItem value='pending' className='text-white hover:bg-zinc-700'>
+                        <div className='flex items-center'>
+                          <Clock className='h-4 w-4 mr-2 text-yellow-500' />
                           <span>Pendiente</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="in-progress">
-                        <div className="flex items-center">
-                          <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
+                      <SelectItem value='in-progress' className='text-white hover:bg-zinc-700'>
+                        <div className='flex items-center'>
+                          <Loader2 className='h-4 w-4 mr-2 text-blue-500' />
                           <span>En progreso</span>
                         </div>
                       </SelectItem>
-                      <SelectItem value="resolved">
-                        <div className="flex items-center">
-                          <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
+                      <SelectItem value='resolved' className='text-white hover:bg-zinc-700'>
+                        <div className='flex items-center'>
+                          <CheckCircle2 className='h-4 w-4 mr-2 text-green-500' />
                           <span>Resuelto</span>
                         </div>
                       </SelectItem>
@@ -2160,7 +2374,7 @@ export default function ErrorReportsPage() {
                   </Select>
                 </div>
                 {selectedMassStatus === "resolved" && (
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className='text-sm text-zinc-400 mt-1'>
                     Se establecerá la fecha de resolución automáticamente.
                   </p>
                 )}
@@ -2169,23 +2383,23 @@ export default function ErrorReportsPage() {
 
             {massActionType === "assign-category" && (
               <div>
-                <Label>Categoría</Label>
-                <div className="mt-1">
+                <Label className='text-zinc-300'>Categoría</Label>
+                <div className='mt-1'>
                   <Select
                     value={selectedMassCategory}
                     onValueChange={setSelectedMassCategory}
                     disabled={loadingCategories}
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Seleccionar categoría" />
+                    <SelectTrigger className='w-full bg-zinc-800 border-zinc-700 text-white'>
+                      <SelectValue placeholder='Seleccionar categoría' />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Sin categoría</SelectItem>
+                    <SelectContent className='bg-zinc-800 border-zinc-700'>
+                      <SelectItem value='none' className='text-white hover:bg-zinc-700'>Sin categoría</SelectItem>
                       {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          <div className="flex items-center gap-2">
+                        <SelectItem key={category.id} value={category.id} className='text-white hover:bg-zinc-700'>
+                          <div className='flex items-center gap-2'>
                             <div
-                              className="w-2 h-2 rounded-full"
+                              className='w-2 h-2 rounded-full'
                               style={{ backgroundColor: category.color }}
                             ></div>
                             <span>{category.name}</span>
@@ -2200,16 +2414,16 @@ export default function ErrorReportsPage() {
 
             {massActionType === "assign-users" && (
               <div>
-                <Label>Asignar a usuarios</Label>
-                <div className="mt-1">
+                <Label className='text-zinc-300'>Asignar a usuarios</Label>
+                <div className='mt-1'>
                   <UserChipSelect
                     users={users}
                     selectedIds={selectedMassUsers}
                     onChange={setSelectedMassUsers}
-                    placeholder="Buscar y seleccionar usuarios..."
+                    placeholder='Buscar y seleccionar usuarios...'
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className='text-xs text-zinc-400 mt-1'>
                   Los usuarios seleccionados serán asignados a todos los
                   reportes seleccionados.
                 </p>
@@ -2217,32 +2431,32 @@ export default function ErrorReportsPage() {
             )}
           </div>
 
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+          <DialogFooter className='flex flex-col sm:flex-row gap-2 mt-4'>
             <Button
               variant={massActionType === "delete" ? "destructive" : "default"}
-              className="w-full sm:w-auto"
+              className={`w-full sm:w-auto ${massActionType === "delete" ? "" : "bg-primary hover:bg-primary/90 text-zinc-900"}`}
               onClick={executeMassAction}
               disabled={isMassActionLoading}
             >
               {isMassActionLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
               ) : massActionType === "delete" ? (
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className='h-4 w-4 mr-2' />
               ) : (
-                <Check className="h-4 w-4 mr-2" />
+                <Check className='h-4 w-4 mr-2' />
               )}
               {massActionType === "delete"
                 ? "Eliminar"
                 : massActionType === "update-status"
-                ? "Actualizar estado"
-                : massActionType === "assign-category"
-                ? "Asignar categoría"
-                : "Asignar usuarios"}
+                  ? "Actualizar estado"
+                  : massActionType === "assign-category"
+                    ? "Asignar categoría"
+                    : "Asignar usuarios"}
             </Button>
 
             <Button
-              variant="secondary"
-              className="w-full sm:w-auto"
+              variant='outline'
+              className='w-full sm:w-auto bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700'
               onClick={() => setIsMassActionDialogOpen(false)}
             >
               Cancelar
@@ -2256,38 +2470,38 @@ export default function ErrorReportsPage() {
         open={isCustomDateDialogOpen}
         onOpenChange={setIsCustomDateDialogOpen}
       >
-        <DialogContent className="max-w-md">
+        <DialogContent className='max-w-md bg-zinc-900 border-zinc-800'>
           <DialogHeader>
-            <DialogTitle>Seleccionar rango de fechas</DialogTitle>
+            <DialogTitle className='text-white'>Seleccionar rango de fechas</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
+          <div className='space-y-4 my-4'>
             <div>
-              <Label htmlFor="start-date">Fecha de inicio</Label>
+              <Label htmlFor='start-date' className='text-zinc-300'>Fecha de inicio</Label>
               <Input
-                id="start-date"
-                type="date"
+                id='start-date'
+                type='date'
                 value={customDateStart}
                 onChange={(e) => setCustomDateStart(e.target.value)}
-                className="mt-1"
+                className='mt-1 bg-zinc-800 border-zinc-700 text-white'
               />
             </div>
             <div>
-              <Label htmlFor="end-date">Fecha de fin</Label>
+              <Label htmlFor='end-date' className='text-zinc-300'>Fecha de fin</Label>
               <Input
-                id="end-date"
-                type="date"
+                id='end-date'
+                type='date'
                 value={customDateEnd}
                 onChange={(e) => setCustomDateEnd(e.target.value)}
-                className="mt-1"
+                className='mt-1 bg-zinc-800 border-zinc-700 text-white'
               />
             </div>
           </div>
 
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+          <DialogFooter className='flex flex-col sm:flex-row gap-2 mt-4'>
             <Button
-              variant="default"
-              className="w-full sm:w-auto"
+              variant='default'
+              className='w-full sm:w-auto bg-primary hover:bg-primary/90 text-zinc-900'
               onClick={() => {
                 if (customDateStart && customDateEnd) {
                   setIsCustomDateDialogOpen(false);
@@ -2296,13 +2510,13 @@ export default function ErrorReportsPage() {
                 }
               }}
             >
-              <Check className="h-4 w-4 mr-2" />
+              <Check className='h-4 w-4 mr-2' />
               Aplicar filtro
             </Button>
 
             <Button
-              variant="secondary"
-              className="w-full sm:w-auto"
+              variant='outline'
+              className='w-full sm:w-auto bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700'
               onClick={() => setIsCustomDateDialogOpen(false)}
             >
               Cancelar
@@ -2313,24 +2527,30 @@ export default function ErrorReportsPage() {
 
       {/* Modal de envío de correo de resolución */}
       <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
-        <DialogContent className="max-w-3xl bg-zinc-900 text-white border-zinc-700">
+        <DialogContent className='max-w-3xl bg-zinc-900 text-white border-zinc-700'>
           <DialogHeader>
-            <DialogTitle className="text-white">Enviar correo de resolución</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogTitle className='text-white'>
+              Enviar correo de resolución
+            </DialogTitle>
+            <DialogDescription className='text-zinc-400'>
               Envía un correo al cliente para informarle que su problema ha sido
               resuelto.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 my-4">
+          <div className='space-y-4 my-4'>
             {selectedReport && (
-              <div className="bg-zinc-800 p-3 rounded-md mb-4 border border-zinc-700">
-                <p className="font-medium text-white">{selectedReport.fileName}</p>
-                <p className="text-sm text-zinc-300">
+              <div className='bg-zinc-800 p-3 rounded-md mb-4 border border-zinc-700'>
+                <p className='font-medium text-white'>
+                  {selectedReport.fileName}
+                </p>
+                <p className='text-sm text-zinc-300'>
                   Reportado por: {selectedReport.fullName}
                 </p>
-                <p className="text-sm text-zinc-300">Correo: {selectedReport.email}</p>
-                <div className="flex items-center mt-1">
+                <p className='text-sm text-zinc-300'>
+                  Correo: {selectedReport.email}
+                </p>
+                <div className='flex items-center mt-1'>
                   {renderStatusBadge(selectedReport.status)}
                   {renderCategoryBadge(selectedReport)}
                 </div>
@@ -2338,7 +2558,47 @@ export default function ErrorReportsPage() {
             )}
 
             <div>
-              <Label htmlFor="template" className="text-sm font-medium text-zinc-300">
+              <Label
+                htmlFor='recipient'
+                className='text-sm font-medium text-zinc-300'
+              >
+                Destinatario
+              </Label>
+              <Input
+                id='recipient'
+                type='email'
+                value={emailRecipient}
+                onChange={(e) => setEmailRecipient(e.target.value)}
+                placeholder='Correo del destinatario'
+                className='w-full bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500'
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor='bcc'
+                className='text-sm font-medium text-zinc-300'
+              >
+                CC Oculto (BCC)
+                <span className='text-xs text-zinc-500 ml-2'>
+                  (Opcional - separa múltiples correos con comas)
+                </span>
+              </Label>
+              <Input
+                id='bcc'
+                type='text'
+                value={emailBcc}
+                onChange={(e) => setEmailBcc(e.target.value)}
+                placeholder='correo1@ejemplo.com, correo2@ejemplo.com'
+                className='w-full bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500'
+              />
+            </div>
+
+            <div>
+              <Label
+                htmlFor='template'
+                className='text-sm font-medium text-zinc-300'
+              >
                 Plantilla
               </Label>
               <Select
@@ -2346,44 +2606,59 @@ export default function ErrorReportsPage() {
                 onValueChange={handleTemplateChange}
                 disabled={loadingTemplates}
               >
-                <SelectTrigger className="w-full bg-zinc-800 border-zinc-700 text-white">
-                  <SelectValue placeholder="Selecciona una plantilla" />
+                <SelectTrigger className='w-full bg-zinc-800 border-zinc-700 text-white'>
+                  <SelectValue placeholder='Selecciona una plantilla' />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-800 border-zinc-700">
+                <SelectContent className='bg-zinc-800 border-zinc-700'>
                   {emailTemplates.map((template) => (
-                    <SelectItem key={template.id} value={template.id} className="text-white hover:bg-zinc-700">
+                    <SelectItem
+                      key={template.id}
+                      value={template.id}
+                      className='text-white hover:bg-zinc-700'
+                    >
                       {template.name}
                       {template.isDefault && " (Predeterminada)"}
                     </SelectItem>
                   ))}
-                  <SelectItem value="custom" className="text-white hover:bg-zinc-700">Personalizada</SelectItem>
+                  <SelectItem
+                    value='custom'
+                    className='text-white hover:bg-zinc-700'
+                  >
+                    Personalizada
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="subject" className="text-sm font-medium text-zinc-300">
+              <Label
+                htmlFor='subject'
+                className='text-sm font-medium text-zinc-300'
+              >
                 Asunto
               </Label>
               <Input
-                id="subject"
+                id='subject'
                 value={customEmailSubject}
                 onChange={(e) => setCustomEmailSubject(e.target.value)}
-                placeholder="Asunto del correo"
-                className="w-full bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500"
+                placeholder='Asunto del correo'
+                className='w-full bg-zinc-800 border-zinc-700 text-white placeholder-zinc-500'
               />
             </div>
 
             <div>
-              <Label htmlFor="content" className="text-sm font-medium text-zinc-300">
+              <Label
+                htmlFor='content'
+                className='text-sm font-medium text-zinc-300'
+              >
                 Contenido
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger className="ml-2 cursor-help">
-                      <Info className="h-4 w-4 text-zinc-400" />
+                    <TooltipTrigger className='ml-2 cursor-help'>
+                      <Info className='h-4 w-4 text-zinc-400' />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">
+                      <p className='text-xs'>
                         Puedes usar las siguientes variables:
                         <br />
                         {"{nombreCliente}"} - Nombre del cliente
@@ -2399,35 +2674,35 @@ export default function ErrorReportsPage() {
                 </TooltipProvider>
               </Label>
               <textarea
-                id="content"
+                id='content'
                 value={customEmailContent}
                 onChange={(e) => setCustomEmailContent(e.target.value)}
                 rows={10}
-                className="w-full border border-zinc-700 rounded-md p-2 bg-zinc-800 text-white placeholder-zinc-500"
-                placeholder="Contenido del correo"
+                className='w-full border border-zinc-700 rounded-md p-2 bg-zinc-800 text-white placeholder-zinc-500'
+                placeholder='Contenido del correo'
               ></textarea>
             </div>
           </div>
 
-          <DialogFooter className="flex flex-col sm:flex-row gap-2 mt-4">
+          <DialogFooter className='flex flex-col sm:flex-row gap-2 mt-4'>
             <Button
-              variant="default"
+              variant='default'
               onClick={sendResolutionEmail}
               disabled={isSendingEmail}
-              className="w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none"
+              className='w-full sm:w-auto bg-primary hover:bg-[#bfef33] text-zinc-900 border-none'
             >
               {isSendingEmail ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className='h-4 w-4 animate-spin mr-2' />
               ) : (
-                <SendIcon className="h-4 w-4 mr-2" />
+                <SendIcon className='h-4 w-4 mr-2' />
               )}
               Enviar correo
             </Button>
 
             <Button
-              variant="secondary"
+              variant='secondary'
               onClick={() => setIsEmailModalOpen(false)}
-              className="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700"
+              className='w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700'
             >
               Cancelar
             </Button>

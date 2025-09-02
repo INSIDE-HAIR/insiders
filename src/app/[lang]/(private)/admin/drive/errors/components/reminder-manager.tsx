@@ -273,7 +273,7 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
     return (
       <div className="flex items-center justify-center p-8">
         <Loader2 className="h-8 w-8 animate-spin text-blue-500 mr-2" />
-        <p>Cargando recordatorios...</p>
+        <p className="text-white">Cargando recordatorios...</p>
       </div>
     );
   }
@@ -281,103 +281,112 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Recordatorios</h2>
-        <Button onClick={handleCreate} className="flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-white">Recordatorios</h2>
+        <Button onClick={handleCreate} className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-zinc-900">
           <PlusCircle className="h-4 w-4" />
           Nuevo recordatorio
         </Button>
       </div>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className="bg-red-800/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
 
       {reminders.length === 0 ? (
-        <div className="text-center py-8 bg-zinc-50 rounded-lg">
-          <ClockIcon className="h-16 w-16 text-zinc-300 mx-auto mb-4" />
-          <p className="text-zinc-500 mb-4">
+        <div className="text-center py-8 bg-zinc-800 rounded-lg border border-zinc-700">
+          <ClockIcon className="h-16 w-16 text-zinc-400 mx-auto mb-4" />
+          <p className="text-zinc-400 mb-4">
             No hay recordatorios configurados
           </p>
-          <Button onClick={handleCreate} variant="outline" className="mx-auto">
+          <Button onClick={handleCreate} variant="outline" className="mx-auto bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
             Crear el primer recordatorio
           </Button>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Estado</TableHead>
-                <TableHead>Frecuencia</TableHead>
-                <TableHead>Última ejecución</TableHead>
-                <TableHead>Estado</TableHead>
-                <TableHead className="text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reminders.map((reminder) => (
-                <TableRow key={reminder.id} className="hover:bg-gray-50">
-                  <TableCell>
-                    <div className="flex items-center">
-                      {renderStatusIcon(reminder.status)}
-                      <span className="ml-2">
-                        {getStatusText(reminder.status)}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {getFrequencyText(reminder.frequency, reminder.interval)}
-                  </TableCell>
-                  <TableCell>
-                    {reminder.lastSent
-                      ? format(
-                          new Date(reminder.lastSent),
-                          "dd/MM/yyyy HH:mm",
-                          { locale: es }
-                        )
-                      : "Nunca ejecutado"}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={reminder.active ? "default" : "outline"}>
-                      {reminder.active ? "Activo" : "Inactivo"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(reminder)}
+        <div className="rounded-md border border-zinc-700 overflow-hidden bg-zinc-950">
+          <div className="overflow-x-auto">
+            <Table className="min-w-[800px]">
+              <TableHeader>
+                <TableRow className="bg-zinc-800 hover:bg-zinc-800 border-b border-zinc-700">
+                  <TableHead className="text-zinc-300 font-medium">Tipo</TableHead>
+                  <TableHead className="text-zinc-300 font-medium">Frecuencia</TableHead>
+                  <TableHead className="text-zinc-300 font-medium">Última ejecución</TableHead>
+                  <TableHead className="text-zinc-300 font-medium">Estado</TableHead>
+                  <TableHead className="text-zinc-300 font-medium text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reminders.map((reminder) => (
+                  <TableRow key={reminder.id} className="hover:bg-zinc-900/50 group border-b border-zinc-800 bg-zinc-950">
+                    <TableCell className="text-zinc-200">
+                      <div className="flex items-center">
+                        {renderStatusIcon(reminder.status)}
+                        <span className="ml-2">
+                          {getStatusText(reminder.status)}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-zinc-200">
+                      {getFrequencyText(reminder.frequency, reminder.interval)}
+                    </TableCell>
+                    <TableCell className="text-zinc-400">
+                      {reminder.lastSent
+                        ? format(
+                            new Date(reminder.lastSent),
+                            "dd/MM/yyyy HH:mm",
+                            { locale: es }
+                          )
+                        : "Nunca ejecutado"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant={reminder.active ? "default" : "outline"}
+                        className={reminder.active ? 
+                          "bg-green-600/20 text-green-400 border-green-600/50" : 
+                          "bg-zinc-800/50 text-zinc-400 border-zinc-700"
+                        }
                       >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive"
-                        onClick={() => {
-                          setDeleteId(reminder.id);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+                        {reminder.active ? "Activo" : "Inactivo"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(reminder)}
+                          className="h-8 w-8 text-zinc-400 hover:text-primary hover:bg-zinc-800"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-500 hover:text-red-400 hover:bg-zinc-800"
+                          onClick={() => {
+                            setDeleteId(reminder.id);
+                            setIsDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          </div>
         </div>
       )}
 
       {/* Modal de edición/creación de recordatorio */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md bg-zinc-900 border-zinc-800">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-white">
               {selectedReminder ? "Editar recordatorio" : "Nuevo recordatorio"}
             </DialogTitle>
           </DialogHeader>
@@ -385,30 +394,30 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
           <form onSubmit={handleSubmit}>
             <div className="space-y-4 my-4">
               {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <div className="bg-red-800/20 border border-red-600 text-red-400 px-4 py-3 rounded mb-4">
                   {error}
                 </div>
               )}
 
               <div>
-                <Label htmlFor="status">Estado de reportes</Label>
+                <Label htmlFor="status" className="text-zinc-300">Estado de reportes</Label>
                 <Select
                   value={formStatus}
                   onValueChange={(value: "pending" | "in-progress") =>
                     setFormStatus(value)
                   }
                 >
-                  <SelectTrigger id="status" className="w-full">
+                  <SelectTrigger id="status" className="w-full bg-zinc-800 border-zinc-700 text-white">
                     <SelectValue placeholder="Selecciona un estado" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">
+                  <SelectContent className="bg-zinc-800 border-zinc-700">
+                    <SelectItem value="pending" className="text-white hover:bg-zinc-700">
                       <div className="flex items-center">
                         <AlertTriangle className="h-4 w-4 mr-2 text-yellow-500" />
                         <span>Pendiente</span>
                       </div>
                     </SelectItem>
-                    <SelectItem value="in-progress">
+                    <SelectItem value="in-progress" className="text-white hover:bg-zinc-700">
                       <div className="flex items-center">
                         <Loader2 className="h-4 w-4 mr-2 text-blue-500" />
                         <span>En progreso</span>
@@ -416,48 +425,48 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
                     </SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-zinc-400 mt-1">
                   Los recordatorios se enviarán para reportes en este estado
                 </p>
               </div>
 
               <div className="flex space-x-4">
                 <div className="flex-1">
-                  <Label htmlFor="frequency">Frecuencia</Label>
+                  <Label htmlFor="frequency" className="text-zinc-300">Frecuencia</Label>
                   <Select
                     value={formFrequency}
                     onValueChange={(
                       value: "hourly" | "daily" | "weekly" | "monthly"
                     ) => setFormFrequency(value)}
                   >
-                    <SelectTrigger id="frequency" className="w-full">
+                    <SelectTrigger id="frequency" className="w-full bg-zinc-800 border-zinc-700 text-white">
                       <SelectValue placeholder="Selecciona frecuencia" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hourly">Horas</SelectItem>
-                      <SelectItem value="daily">Días</SelectItem>
-                      <SelectItem value="weekly">Semanas</SelectItem>
-                      <SelectItem value="monthly">Meses</SelectItem>
+                    <SelectContent className="bg-zinc-800 border-zinc-700">
+                      <SelectItem value="hourly" className="text-white hover:bg-zinc-700">Horas</SelectItem>
+                      <SelectItem value="daily" className="text-white hover:bg-zinc-700">Días</SelectItem>
+                      <SelectItem value="weekly" className="text-white hover:bg-zinc-700">Semanas</SelectItem>
+                      <SelectItem value="monthly" className="text-white hover:bg-zinc-700">Meses</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="w-1/3">
-                  <Label htmlFor="interval">Intervalo</Label>
+                  <Label htmlFor="interval" className="text-zinc-300">Intervalo</Label>
                   <Input
                     id="interval"
                     type="number"
                     min="1"
                     value={formInterval}
                     onChange={(e) => setFormInterval(e.target.value)}
-                    className="w-full"
+                    className="w-full bg-zinc-800 border-zinc-700 text-white"
                   />
                 </div>
               </div>
 
               <div>
-                <p className="text-sm mt-2">
-                  <InfoIcon className="h-4 w-4 inline-block mr-1 text-blue-500" />
+                <p className="text-sm mt-2 text-zinc-400">
+                  <InfoIcon className="h-4 w-4 inline-block mr-1 text-blue-400" />
                   Los recordatorios se enviarán a los usuarios asignados a cada
                   reporte. Si un reporte no tiene usuarios asignados, se
                   utilizará la configuración general de destinatarios.
@@ -470,10 +479,11 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
                 type="button"
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
+                className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="ml-2">
+              <Button type="submit" disabled={isSubmitting} className="ml-2 bg-primary hover:bg-primary/90 text-zinc-900">
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -490,14 +500,14 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
 
       {/* Modal de confirmación de eliminación */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md bg-zinc-900 border-zinc-800">
           <DialogHeader>
-            <DialogTitle>Confirmar eliminación</DialogTitle>
+            <DialogTitle className="text-white">Confirmar eliminación</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 my-4">
-            <p>¿Está seguro que desea eliminar este recordatorio?</p>
-            <p className="text-sm text-destructive">
+            <p className="text-zinc-200">¿Está seguro que desea eliminar este recordatorio?</p>
+            <p className="text-sm text-red-400">
               Esta acción no se puede deshacer.
             </p>
           </div>
@@ -507,6 +517,7 @@ export function ReminderManager({ onReminderChange }: ReminderManagerProps) {
               type="button"
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
+              className="border-zinc-700 text-zinc-200 hover:bg-zinc-800"
             >
               Cancelar
             </Button>

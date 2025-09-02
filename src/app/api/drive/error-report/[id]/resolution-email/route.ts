@@ -39,7 +39,7 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
 
     // Obtener datos del body
     const body = await request.json();
-    const { recipients, cc, subject, content } = body;
+    const { recipients, cc, bcc, subject, content } = body;
 
     if (!recipients || !recipients.length || !subject || !content) {
       return NextResponse.json(
@@ -71,6 +71,8 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
         resolvedBy: (cc || []).join(", ") || "Equipo de soporte",
         customSubject: subject,
         customContent: content,
+        cc: cc || [],
+        bcc: bcc || [],
       });
 
       return NextResponse.json({
@@ -100,23 +102,12 @@ export async function POST(request: NextRequest, props: { params: Promise<{ id: 
       resolvedBy: assignedUserEmails.join(", "),
       customSubject: subject,
       customContent: content,
+      cc: cc || [],
+      bcc: bcc || [],
     });
 
-    // Actualizar reporte para indicar que se envió correo de resolución
-    try {
-      await prisma.driveErrorReport.update({
-        where: { id },
-        data: {
-          status: "resolved",
-          updatedAt: new Date(),
-        },
-      });
-    } catch (updateError) {
-      console.error("Error al actualizar reporte:", updateError);
-      // El correo se envió exitosamente, pero no se pudo actualizar el estado
-      // Esto no es crítico, así que continuamos
-      console.warn("Correo enviado exitosamente pero no se pudo actualizar el estado del reporte");
-    }
+    // No actualizamos automáticamente el estado a "resolved"
+    // El usuario debe marcarlo manualmente como resuelto
 
     return NextResponse.json({
       success: true,
