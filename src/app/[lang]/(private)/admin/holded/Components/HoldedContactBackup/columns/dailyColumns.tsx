@@ -3,8 +3,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsDailyBackup } from "@prisma/client";
 import { CreateBaseColumns } from "./columns";
 import { BackupActions } from "../actions/BackupActions";
-import { useTranslations } from "@/src/context/TranslationContext";
-
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
   onViewDetails?: (backup: HoldedContactsDailyBackup) => void;
@@ -12,18 +10,18 @@ interface ColumnMeta {
   onToggleFavorite?: (backup: HoldedContactsDailyBackup) => void;
   isFavorite: (backupId: string) => boolean;
   loadingBackupId?: string | null;
+  dayOfMonthHeader?: string;
+  actionsHeader?: string;
 }
 
 export const Columns = (
   meta: ColumnMeta
 ): ColumnDef<HoldedContactsDailyBackup>[] => {
-  const t = useTranslations("Common.columns");
-
   return [
     ...CreateBaseColumns<HoldedContactsDailyBackup>(),
     {
       accessorKey: "dayOfMonth",
-      header: t("dayOfMonth"),
+      header: meta.dayOfMonthHeader || "Day of Month",
       cell: ({ row }) => {
         const dayOfMonth: number = row.getValue("dayOfMonth");
         return <span>{dayOfMonth}</span>;
@@ -31,7 +29,7 @@ export const Columns = (
     },
     {
       id: "actions",
-      header: t("actions"),
+      header: meta.actionsHeader || "Actions",
       cell: ({ row }) => {
         const backup = row.original;
         return (

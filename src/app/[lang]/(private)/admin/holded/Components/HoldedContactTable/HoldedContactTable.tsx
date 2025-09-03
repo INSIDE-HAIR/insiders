@@ -6,6 +6,7 @@ import { Columns } from "./columns/contactColumns";
 import { Spinner } from "@/src/components/ui/spinner";
 import { Button } from "@/src/components/ui/button";
 import { useToast } from "@/src/components/ui/use-toast";
+import { useTranslations } from "@/src/context/TranslationContext";
 
 const fetchBackupData = async () => {
   const response = await fetch(
@@ -26,6 +27,7 @@ const createOrUpdateBackup = async () => {
 const HoldedContactTable: React.FC = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const t = useTranslations("Common.columns");
 
   const {
     data: contacts,
@@ -67,6 +69,7 @@ const HoldedContactTable: React.FC = () => {
 
   const columnMeta = {
     loadingBackupId: null,
+    actionsHeader: t("actions"),
   };
 
   return (

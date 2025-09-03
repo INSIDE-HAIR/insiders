@@ -43,6 +43,7 @@ const MonthlyBackupsTab: React.FC = () => {
   const a = useTranslations("Common.actions");
   const m = useTranslations("Common.modals.confirmation");
   const to = useTranslations("Common.toasts");
+  const c = useTranslations("Common.columns");
 
   const monthlyBackups = backups as HoldedContactsMonthlyBackup[] | undefined;
 
@@ -161,6 +162,9 @@ const MonthlyBackupsTab: React.FC = () => {
     loadingBackupId,
     isDeletingBackup,
     isFavorite,
+    monthHeader: c("month"),
+    yearHeader: c("year"),
+    actionsHeader: c("actions"),
   };
 
   return (

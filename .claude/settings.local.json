@@ -48,7 +48,8 @@
       "Bash(do basename \"$file\")",
       "Bash(done)",
       "Bash(git restore:*)",
-      "Bash(tail:*)"
+      "Bash(tail:*)",
+      "Bash(wc:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

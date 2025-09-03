@@ -3,8 +3,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsMonthlyBackup } from "@prisma/client";
 import { CreateBaseColumns } from "./columns";
 import { BackupActions } from "../actions/BackupActions";
-import { useTranslations } from "@/src/context/TranslationContext";
-
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
   onViewDetails: (backup: HoldedContactsMonthlyBackup) => void;
@@ -12,18 +10,19 @@ interface ColumnMeta {
   loadingBackupId: string | null;
   isDeletingBackup: boolean;
   isFavorite: (backupId: string) => boolean;
+  monthHeader?: string;
+  yearHeader?: string;
+  actionsHeader?: string;
 }
 
 export const Columns: (
   meta: ColumnMeta
 ) => ColumnDef<HoldedContactsMonthlyBackup>[] = (meta) => {
-  const t = useTranslations("Common.columns");
-
   return [
     ...CreateBaseColumns<HoldedContactsMonthlyBackup>(),
     {
       accessorKey: "month",
-      header: t("month"),
+      header: meta.monthHeader || "Month",
       cell: ({ row }) => {
         const month: number = row.getValue("month");
         return <span>{month}</span>;
@@ -31,7 +30,7 @@ export const Columns: (
     },
     {
       accessorKey: "year",
-      header: t("year"),
+      header: meta.yearHeader || "Year",
       cell: ({ row }) => {
         const year: number = row.getValue("year");
         return <span>{year}</span>;
@@ -39,7 +38,7 @@ export const Columns: (
     },
     {
       id: "actions",
-      header: t("actions"),
+      header: meta.actionsHeader || "Actions",
       cell: ({ row }) => {
         const backup = row.original;
         return (

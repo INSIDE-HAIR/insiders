@@ -31,6 +31,7 @@ const FavoriteBackupsTab: React.FC = () => {
   const b = useTranslations("Common.backups");
   const a = useTranslations("Common.actions");
   const to = useTranslations("Common.toasts");
+  const c = useTranslations("Common.columns");
 
   const favoriteBackups = backups as HoldedContactsFavoriteBackup[] | undefined;
 
@@ -113,6 +114,11 @@ const FavoriteBackupsTab: React.FC = () => {
     loadingBackupId,
     isDeletingBackup,
     isFavorite: () => true, // All backups in this tab are favorites
+    originalTypeHeader: c("originalType"),
+    dayOfMonthHeader: c("dayOfMonth"),
+    monthHeader: c("month"),
+    yearHeader: c("year"),
+    actionsHeader: c("actions"),
   };
 
   return (

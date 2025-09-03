@@ -22,16 +22,14 @@ export const dashboardRoutesData: DashboardRoutes = {
         "products",
         "users",
         "groups",
-        "analytics",
         "messages",
-        "pages",
-        "menu",
         "drive",
         "holded",
         "calendar",
         "meet",
         "sitemap",
         "access-control",
+        "operations-hub",
         "settings",
       ],
     },
@@ -41,7 +39,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo Creativo",
       },
       plan: "Pro",
-      routes: ["pages", "menu", "drive", "calendar", "meet"],
+      routes: ["pages", "drive", "calendar", "meet", "operations-hub"],
     },
     consultoria: {
       name: {
@@ -49,7 +47,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo de Consultoría",
       },
       plan: "Pro",
-      routes: ["analytics", "users", "admin", "dashboard", "messages"],
+      routes: ["users", "admin", "messages"],
     },
     crecimiento: {
       name: {
@@ -57,31 +55,17 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo de Crecimiento",
       },
       plan: "Pro",
-      routes: ["analytics", "products", "admin", "dashboard", "messages"],
+      routes: ["products", "admin", "messages"],
     },
   },
   routes: [
     {
       id: "admin",
       label: {
-        en: "Home",
-        es: "Inicio",
-      },
-      href: "/admin",
-      icon: "Home",
-      type: "direct",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "consultoria", "crecimiento"],
-      },
-    },
-    {
-      id: "dashboard",
-      label: {
         en: "Dashboard",
         es: "Dashboard",
       },
-      href: "/admin/dashboard",
+      href: "/admin",
       icon: "BarChart3",
       type: "direct",
       access: {
@@ -167,20 +151,6 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
     {
-      id: "analytics",
-      label: {
-        en: "Analytics",
-        es: "Analíticas",
-      },
-      href: "/admin/analytics",
-      icon: "BarChart3",
-      type: "direct",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "consultoria", "crecimiento"],
-      },
-    },
-    {
       id: "messages",
       label: {
         en: "Messages",
@@ -202,56 +172,6 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           href: "/admin/messages",
           icon: "Mail",
-        },
-      ],
-    },
-    {
-      id: "pages",
-      label: {
-        en: "Pages",
-        es: "Páginas",
-      },
-      href: "/admin/pages",
-      icon: "FileText",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin", "editor"],
-        teams: ["gestion", "creativos"],
-      },
-      subItems: [
-        {
-          id: "pages-list",
-          label: {
-            en: "Page List",
-            es: "Lista de Páginas",
-          },
-          href: "/admin/pages",
-          icon: "FileText",
-        },
-      ],
-    },
-    {
-      id: "menu",
-      label: {
-        en: "Menu",
-        es: "Menú",
-      },
-      href: "/admin/menu",
-      icon: "Menu",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "creativos"],
-      },
-      subItems: [
-        {
-          id: "menu-config",
-          label: {
-            en: "Menu Configuration",
-            es: "Configuración de Menú",
-          },
-          href: "/admin/menu",
-          icon: "Settings",
         },
       ],
     },
@@ -390,24 +310,6 @@ export const dashboardRoutesData: DashboardRoutes = {
           icon: "Video",
         },
         {
-          id: "meet-tags",
-          label: {
-            en: "Tags",
-            es: "Tags",
-          },
-          href: "/admin/meet/tags",
-          icon: "TagIcon",
-        },
-        {
-          id: "meet-groups",
-          label: {
-            en: "Groups",
-            es: "Grupos",
-          },
-          href: "/admin/meet/groups",
-          icon: "FolderIcon",
-        },
-        {
           id: "meet-analytics",
           label: {
             en: "Analytics",
@@ -504,6 +406,58 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
     {
+      id: "operations-hub",
+      label: {
+        en: "Operations Hub",
+        es: "Centro de Operaciones",
+      },
+      href: "/admin/operations-hub",
+      icon: "Layers",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
+      },
+      subItems: [
+        {
+          id: "operations-groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
+          },
+          href: "/admin/operations-hub/groups",
+          icon: "Users",
+        },
+        {
+          id: "operations-tags",
+          label: {
+            en: "Tags",
+            es: "Tags",
+          },
+          href: "/admin/operations-hub/tags",
+          icon: "Tag",
+        },
+        {
+          id: "operations-sitemap",
+          label: {
+            en: "Sitemap",
+            es: "Sitemap",
+          },
+          href: "/admin/operations-hub/sitemap",
+          icon: "Map",
+        },
+        {
+          id: "operations-navigation",
+          label: {
+            en: "Navigation",
+            es: "Navegación",
+          },
+          href: "/admin/operations-hub/navigation",
+          icon: "Navigation",
+        },
+      ],
+    },
+    {
       id: "settings",
       label: {
         en: "Settings",
@@ -538,7 +492,7 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
   ],
-  directLinkRoutes: ["admin", "analytics", "sitemap"],
+  directLinkRoutes: ["admin", "sitemap"],
   settings: {
     defaultTeam: "gestion",
     enableTeamSwitching: true,

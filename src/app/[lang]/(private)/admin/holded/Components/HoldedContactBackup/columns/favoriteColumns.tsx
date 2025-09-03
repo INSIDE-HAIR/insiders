@@ -3,8 +3,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { HoldedContactsFavoriteBackup } from "@prisma/client";
 import { BackupActions } from "../actions/BackupActions";
 import { CreateBaseColumns } from "./columns";
-import { useTranslations } from "@/src/context/TranslationContext";
-
 interface ColumnMeta {
   openDeleteModal: (backupId: string) => void;
   onViewDetails: (backup: HoldedContactsFavoriteBackup) => void;
@@ -12,18 +10,21 @@ interface ColumnMeta {
   loadingBackupId: string | null;
   isDeletingBackup: boolean;
   isFavorite: (backupId: string) => boolean;
+  originalTypeHeader?: string;
+  dayOfMonthHeader?: string;
+  monthHeader?: string;
+  yearHeader?: string;
+  actionsHeader?: string;
 }
 
 export const Columns: (
   meta: ColumnMeta
 ) => ColumnDef<HoldedContactsFavoriteBackup>[] = (meta) => {
-  const t = useTranslations("Common.columns");
-
   return [
     ...CreateBaseColumns<HoldedContactsFavoriteBackup>(),
     {
       accessorKey: "originalType",
-      header: t("originalType"),
+      header: meta.originalTypeHeader || "Original Type",
       cell: ({ row }) => {
         const originalType: string = row.getValue("originalType");
         return <span>{originalType}</span>;
@@ -31,7 +32,7 @@ export const Columns: (
     },
     {
       accessorKey: "dayOfMonth",
-      header: t("dayOfMonth"),
+      header: meta.dayOfMonthHeader || "Day of Month",
       cell: ({ row }) => {
         const dayOfMonth: number | null = row.getValue("dayOfMonth");
         return <span>{dayOfMonth !== null ? dayOfMonth : "-"}</span>;
@@ -39,7 +40,7 @@ export const Columns: (
     },
     {
       accessorKey: "month",
-      header: t("month"),
+      header: meta.monthHeader || "Month",
       cell: ({ row }) => {
         const month: number | null = row.getValue("month");
         return <span>{month !== null ? month : "-"}</span>;
@@ -47,7 +48,7 @@ export const Columns: (
     },
     {
       accessorKey: "year",
-      header: t("year"),
+      header: meta.yearHeader || "Year",
       cell: ({ row }) => {
         const year: number | null = row.getValue("year");
         return <span>{year !== null ? year : "-"}</span>;
@@ -55,7 +56,7 @@ export const Columns: (
     },
     {
       id: "actions",
-      header: t("actions"),
+      header: meta.actionsHeader || "Actions",
       cell: ({ row }) => {
         const backup = row.original;
         return (

@@ -6,6 +6,8 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import { Alert, AlertDescription } from "@/src/components/ui/alert";
+import { MapIcon, InboxIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -74,7 +76,6 @@ import {
   Edit,
   Loader2,
 } from "lucide-react";
-import { AccessControlModule } from "./components/AccessControlModule";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import {
   DropdownMenu,
@@ -84,7 +85,6 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { MoreVertical } from "lucide-react";
-import { MoveToModal } from "./components/MoveToModal";
 import {
   Tabs,
   TabsContent,
@@ -98,6 +98,8 @@ import { ChipInput as TagInput } from "@/src/components/ui/chip-input";
 import { SeoProgress } from "@/src/components/ui/seo-progress";
 import { Progress } from "@/src/components/ui/progress";
 import { cn } from "@/src/lib/utils";
+import { MoveToModal } from "./components/MoveToModal";
+import { AccessControlModule } from "./components/AccessControlModule";
 
 type Page = DynamicPage & {
   children?: Page[];
@@ -714,7 +716,9 @@ export default function PageCreator({}) {
       )),
     ].flat();
 
-    return options.filter((option): option is React.ReactElement => option !== null);
+    return options.filter(
+      (option): option is React.ReactElement => option !== null
+    );
   };
 
   const handleParentChange = (parentId: string) => {
@@ -923,7 +927,54 @@ export default function PageCreator({}) {
     <>
       <Toaster position='top-right' />
       <div className='container mx-auto p-4'>
-        <h1 className='text-2xl font-bold mb-4'>{t("title")}</h1>
+        <div className='flex items-center gap-3 mb-6'>
+          <MapIcon className='h-8 w-8 text-blue-600' />
+          <div>
+            <h1 className='text-2xl font-bold'>Gestión de Sitemaps</h1>
+            <p className='text-muted-foreground'>
+              Administra los sitemaps de tu sitio web
+            </p>
+          </div>
+        </div>
+
+        {/* Alert informativo sobre múltiples sitemaps */}
+        <Alert className='mb-6 border-blue-500 bg-blue-50'>
+          <InboxIcon className='h-4 w-4 text-blue-600' />
+          <AlertDescription className='text-blue-800'>
+            <strong>Sistema de múltiples sitemaps:</strong> Esta opción te
+            permite crear diferentes sitemaps para organizar mejor tu contenido.
+            Puedes tener sitemaps específicos para el blog, la web principal, y
+            cualquier otra sección que necesites. Esto mejora el SEO y facilita
+            la indexación por parte de los motores de búsqueda.
+          </AlertDescription>
+        </Alert>
+
+        {/* Badges informativos */}
+        <div className='flex flex-wrap gap-2 mb-6'>
+          <Badge variant='outline' className='flex items-center gap-2'>
+            <MapIcon className='h-3 w-3' />
+            Sitemap General
+          </Badge>
+          <Badge
+            variant='outline'
+            className='flex items-center gap-2 bg-green-50 text-green-700 border-green-300'
+          >
+            📝 Sitemap del Blog
+          </Badge>
+          <Badge
+            variant='outline'
+            className='flex items-center gap-2 bg-purple-50 text-purple-700 border-purple-300'
+          >
+            🌐 Sitemap Web
+          </Badge>
+          <Badge
+            variant='outline'
+            className='flex items-center gap-2 bg-orange-50 text-orange-700 border-orange-300'
+          >
+            ➕ Sitemaps Personalizados
+          </Badge>
+        </div>
+
         <div className='mb-4 flex space-x-2'>
           <Button onClick={handleCreatePage}>{a("createNewPage")}</Button>
         </div>
@@ -1132,8 +1183,8 @@ export default function PageCreator({}) {
                               const placeholderSlug = isPublished
                                 ? field.value || generatedSlug
                                 : pageId
-                                ? `${pageId}-${status}`
-                                : `[id]-${status}`;
+                                  ? `${pageId}-${status}`
+                                  : `[id]-${status}`;
                               const currentValue = field.value || "";
 
                               return (
@@ -1454,8 +1505,8 @@ export default function PageCreator({}) {
                                           currentValue.length < 50
                                             ? "bg-red-500"
                                             : currentValue.length > 60
-                                            ? "bg-red-500"
-                                            : "bg-green-500"
+                                              ? "bg-red-500"
+                                              : "bg-green-500"
                                         )}
                                       />
                                       <div className='flex justify-between text-xs text-muted-foreground'>
@@ -1508,8 +1559,8 @@ export default function PageCreator({}) {
                                           currentValue.length < 120
                                             ? "bg-red-500"
                                             : currentValue.length > 160
-                                            ? "bg-red-500"
-                                            : "bg-green-500"
+                                              ? "bg-red-500"
+                                              : "bg-green-500"
                                         )}
                                       />
                                       <div className='flex justify-between text-xs text-muted-foreground'>

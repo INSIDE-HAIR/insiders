@@ -42,6 +42,7 @@ const DailyBackupsTab: React.FC = () => {
   const b = useTranslations("Common.backups");
   const a = useTranslations("Common.actions");
   const to = useTranslations("Common.toasts");
+  const c = useTranslations("Common.columns");
 
   const dailyBackups = backups as HoldedContactsDailyBackup[] | undefined;
 
@@ -160,6 +161,8 @@ const DailyBackupsTab: React.FC = () => {
     loadingBackupId,
     isDeletingBackup,
     isFavorite,
+    dayOfMonthHeader: c("dayOfMonth"),
+    actionsHeader: c("actions"),
   };
 
   return (

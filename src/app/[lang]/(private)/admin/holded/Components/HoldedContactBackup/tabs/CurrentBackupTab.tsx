@@ -35,6 +35,7 @@ const CurrentBackupTab: React.FC = () => {
   const t = useTranslations("Common.general");
   const b = useTranslations("Common.backups");
   const to = useTranslations("Common.toasts");
+  const c = useTranslations("Common.columns");
 
   const currentBackup = useMemo(() => {
     return backups as HoldedContactsCurrentBackup | undefined;
@@ -117,6 +118,7 @@ const CurrentBackupTab: React.FC = () => {
     onDelete: handleDelete,
     loadingBackupId,
     isDeletingBackup,
+    actionsHeader: c("actions"),
   };
 
   return (
