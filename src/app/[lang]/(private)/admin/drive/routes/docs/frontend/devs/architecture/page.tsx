@@ -2,6 +2,7 @@
 
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { GitBranch, Lightbulb, ArrowDown, Globe, Shield, Zap, Server, Database, Settings, Users, Layout, Eye } from "lucide-react";
 
 export default function ArchitecturePage() {
   return (
@@ -9,6 +10,7 @@ export default function ArchitecturePage() {
       <DocHeader
         title='Arquitectura del Sistema'
         description='Visión general de la arquitectura y flujo de datos'
+        icon={GitBranch}
       />
 
       <DocContent>
@@ -38,26 +40,98 @@ export default function ArchitecturePage() {
           </li>
         </ol>
 
-        <h3 className='text-xl font-semibold mt-6 mb-3'>
+        <h3 className='text-xl font-semibold mt-6 mb-6 text-white'>
           Diagrama de flujo de datos
         </h3>
 
-        <div className='border border-zinc-200 rounded-md p-4 mb-6'>
-          <pre className='text-sm overflow-x-auto'>
-            {`ContentProvider (Context)
-  ↓
-ContentLayout
-  ↓
-  ├── AppSidebar → Selección de elemento de sidebar
-  │                 ↓
-  └── ContentRenderer → RecursiveContentRenderer
-                         ↓
-                         ├── TabNavigation → Selección de pestaña
-                         │                    ↓
-                         ├── SectionNavigation → Selección de sección
-                         │                        ↓
-                         └── ComponentSelector → Componente específico`}
-          </pre>
+        <div className='bg-slate-900 border border-slate-600 rounded-lg p-8 overflow-hidden mb-8'>
+          <div className='flex flex-col items-center space-y-8 max-w-5xl mx-auto'>
+            
+            {/* ContentProvider Layer */}
+            <div className='w-full max-w-3xl'>
+              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
+                <div className='flex items-center gap-4 mb-5'>
+                  <Database className='h-8 w-8 text-primary' />
+                  <h4 className='text-2xl font-bold text-white'>ContentProvider (Context)</h4>
+                </div>
+                <div className='text-base text-slate-200'>
+                  Contexto global que provee datos y funciones de navegación
+                </div>
+              </div>
+            </div>
+            
+            {/* Arrow Down */}
+            <div className='flex justify-center'>
+              <ArrowDown className='h-8 w-8 text-slate-400' />
+            </div>
+            
+            {/* ContentLayout Layer */}
+            <div className='w-full max-w-3xl'>
+              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
+                <div className='flex items-center gap-4 mb-5'>
+                  <Layout className='h-8 w-8 text-primary' />
+                  <h4 className='text-2xl font-bold text-white'>ContentLayout</h4>
+                </div>
+                <div className='text-base text-slate-200'>
+                  Estructura principal del layout de la aplicación
+                </div>
+              </div>
+            </div>
+            
+            {/* Arrow Down */}
+            <div className='flex justify-center'>
+              <ArrowDown className='h-8 w-8 text-slate-400' />
+            </div>
+            
+            {/* Navigation Layer */}
+            <div className='w-full max-w-4xl'>
+              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
+                <div className='flex items-center gap-4 mb-6'>
+                  <Users className='h-8 w-8 text-primary' />
+                  <h4 className='text-2xl font-bold text-white'>Navigation Components</h4>
+                </div>
+                <div className='text-base text-slate-200 mb-6'>
+                  Componentes de navegación y selección de contenido
+                </div>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
+                    <Shield className='h-6 w-6 mx-auto mb-3 text-primary' />
+                    <div className='text-sm font-semibold text-white leading-tight'>AppSidebar</div>
+                  </div>
+                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
+                    <Zap className='h-6 w-6 mx-auto mb-3 text-primary' />
+                    <div className='text-sm font-semibold text-white leading-tight'>TabNavigation</div>
+                  </div>
+                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
+                    <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
+                    <div className='text-sm font-semibold text-white leading-tight'>SectionNavigation</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Arrow Down */}
+            <div className='flex justify-center'>
+              <ArrowDown className='h-8 w-8 text-slate-400' />
+            </div>
+            
+            {/* Renderer Layer */}
+            <div className='w-full max-w-3xl'>
+              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
+                <div className='flex items-center gap-4 mb-6'>
+                  <Eye className='h-8 w-8 text-primary' />
+                  <h4 className='text-2xl font-bold text-white'>Content Renderers</h4>
+                </div>
+                <div className='text-base text-slate-200 mb-5'>
+                  Sistema de renderizado recursivo y selección de componentes
+                </div>
+                <div className='grid grid-cols-2 gap-4'>
+                  <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>ContentRenderer</div>
+                  <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>ComponentSelector</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
@@ -144,31 +218,166 @@ ContentLayout
           que se pasa a través de los componentes:
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`interface HierarchyItem {
- id: string                  // ID único del elemento
- name: string                // Nombre original del archivo/carpeta
- originalName: string        // Nombre original sin modificaciones
- displayName: string         // Nombre para mostrar en la interfaz
- description?: string        // Campo para propiedades personalizadas en formato JSON
- driveType: "folder" | "file" // Tipo de elemento en Google Drive
- depth: number               // Nivel de profundidad en la jerarquía
- prefixes: string[]          // Array de prefijos extraídos del nombre
- suffixes: string[]          // Array de sufijos extraídos del nombre
- order: number               // Orden de visualización
- mimeType: string            // Tipo MIME del archivo
- size?: number               // Tamaño del archivo en bytes
- modifiedTime: string        // Fecha de última modificación
- children?: HierarchyItem[]    // Elementos hijos (para carpetas)
- transformedUrl?: {          // URLs transformadas para diferentes usos
-   download?: string
-   preview?: string
-   embed?: string
- }
- isActive?: boolean          // Indica si el elemento está activo
- formUrl?: string            // URL específica para formularios
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-purple-300'>interface</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>id</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>// ID único del elemento</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>name</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Nombre original del archivo/carpeta
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>originalName</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Nombre original sin modificaciones
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>displayName</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Nombre para mostrar en la interfaz
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>description</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Campo para propiedades personalizadas en formato JSON
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>driveType</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"folder"</code>{" "}
+            <code className='text-slate-400'>|</code>{" "}
+            <code className='text-green-300'>"file"</code>{" "}
+            <code className='text-slate-500'>
+              // Tipo de elemento en Google Drive
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>depth</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>number</code>{" "}
+            <code className='text-slate-500'>
+              // Nivel de profundidad en la jerarquía
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>prefixes</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <code className='text-slate-400'>[]</code>{" "}
+            <code className='text-slate-500'>
+              // Array de prefijos extraídos del nombre
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>suffixes</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <code className='text-slate-400'>[]</code>{" "}
+            <code className='text-slate-500'>
+              // Array de sufijos extraídos del nombre
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>order</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>number</code>{" "}
+            <code className='text-slate-500'>// Orden de visualización</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>mimeType</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>// Tipo MIME del archivo</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>size</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>number</code>{" "}
+            <code className='text-slate-500'>
+              // Tamaño del archivo en bytes
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>modifiedTime</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Fecha de última modificación
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>children</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>[]</code>{" "}
+            <code className='text-slate-500'>
+              // Elementos hijos (para carpetas)
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>transformedUrl</code>
+            <code className='text-slate-400'>?: {"{"}</code>{" "}
+            <code className='text-slate-500'>
+              // URLs transformadas para diferentes usos
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>download</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>preview</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>embed</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>isActive</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>boolean</code>{" "}
+            <code className='text-slate-500'>
+              // Indica si el elemento está activo
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>formUrl</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // URL específica para formularios
+            </code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h4 className='text-lg font-medium mt-4 mb-2'>Prefijos y Sufijos</h4>
 
@@ -199,22 +408,84 @@ ContentLayout
           verifica si el elemento tiene un prefijo específico.
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// En utils/component-type-utils.tsx
-export function determineComponentType(item: HierarchyItem): string {
- // Verificar prefijos para el nuevo tipo de componente
- if (item.prefixes.includes("mi-componente")) {
-   return "mi-componente"
- }
- 
- // Verificar sufijos si es necesario
- if (item.suffixes.includes("mi-sufijo")) {
-   // Lógica específica para elementos con este sufijo
- }
- 
- // Resto de la lógica existente...
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-slate-500'>
+              // En utils/component-type-utils.tsx
+            </code>
+            <br />
+            <code className='text-purple-300'>export</code>{" "}
+            <code className='text-purple-300'>function</code>{" "}
+            <code className='text-yellow-300'>determineComponentType</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>):</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Verificar prefijos para el nuevo tipo de componente
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>prefixes</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>includes</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-green-300'>"mi-componente"</code>
+            <code className='text-slate-400'>))</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-green-300'>"mi-componente"</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Verificar sufijos si es necesario
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>suffixes</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>includes</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-green-300'>"mi-sufijo"</code>
+            <code className='text-slate-400'>))</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Lógica específica para elementos con este sufijo
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Resto de la lógica existente...
+            </code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Sistema de Previsualizaciones
@@ -227,16 +498,49 @@ export function determineComponentType(item: HierarchyItem): string {
           interfaz <code>HierarchyItem</code>:
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`interface HierarchyItem {
-  // ... otras propiedades ...
-  
-  // Propiedades relacionadas con previsualizaciones
-  previewItems?: HierarchyItem[]  // Array de elementos que sirven como previsualizaciones
-  isPreviewOf?: string          // ID del elemento principal del que este es una previsualización
-  previewPattern?: string       // Patrón utilizado para identificar archivos de previsualización
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-purple-300'>interface</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>// ... otras propiedades ...</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Propiedades relacionadas con previsualizaciones
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>[]</code>{" "}
+            <code className='text-slate-500'>
+              // Array de elementos que sirven como previsualizaciones
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>isPreviewOf</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // ID del elemento principal del que este es una previsualización
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>previewPattern</code>
+            <code className='text-slate-400'>?:</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-500'>
+              // Patrón utilizado para identificar archivos de previsualización
+            </code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h4 className='text-lg font-medium mt-4 mb-2'>
           Funcionamiento del Sistema de Previsualizaciones
@@ -276,27 +580,114 @@ export function determineComponentType(item: HierarchyItem): string {
           Ejemplo de Estructura de Datos
         </h4>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// Archivo principal
-{
-  "id": "file-123",
-  "name": "01_image_Documento_Principal",
-  "displayName": "Documento Principal",
-  "previewItems": [
-    { "id": "preview-1", "name": "01_image_Documento_Principal-P1", ... },
-    { "id": "preview-2", "name": "01_image_Documento_Principal-P2", ... }
-  ],
-  "previewPattern": "-P"
-}
-
-// Archivo de previsualización
-{
-  "id": "preview-1",
-  "name": "01_image_Documento_Principal-P1",
-  "displayName": "Documento Principal P1",
-  "isPreviewOf": "file-123"
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-slate-500'>// Archivo principal</code>
+            <br />
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"id"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"file-123"</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"name"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>
+              "01_image_Documento_Principal"
+            </code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"displayName"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"Documento Principal"</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"previewItems"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-slate-400'>[</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"{"}</code>{" "}
+            <code className='text-blue-300'>"id"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"preview-1"</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-blue-300'>"name"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>
+              "01_image_Documento_Principal-P1"
+            </code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-slate-500'>...</code>{" "}
+            <code className='text-slate-400'>{"}"}</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"{"}</code>{" "}
+            <code className='text-blue-300'>"id"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"preview-2"</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-blue-300'>"name"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>
+              "01_image_Documento_Principal-P2"
+            </code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-slate-500'>...</code>{" "}
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>]</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"previewPattern"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"-P"</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-500'>
+              // Archivo de previsualización
+            </code>
+            <br />
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"id"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"preview-1"</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"name"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>
+              "01_image_Documento_Principal-P1"
+            </code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"displayName"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"Documento Principal P1"</code>
+            <code className='text-slate-400'>,</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>"isPreviewOf"</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-300'>"file-123"</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h4 className='text-lg font-medium mt-4 mb-2'>
           Sistema de Carrusel para Múltiples Previsualizaciones
@@ -341,70 +732,237 @@ export function determineComponentType(item: HierarchyItem): string {
           Implementación del Carrusel
         </h4>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// En components/renderers/generic-renderer.tsx
-const GenericRenderer = ({ item }: { item: HierarchyItem }) => {
-  // Estados para controlar el carrusel
-  const [currentCardPreviewIndex, setCurrentCardPreviewIndex] = useState(0);
-  const [currentModalPreviewIndex, setCurrentModalPreviewIndex] = useState(0);
-  
-  // Verificar si hay múltiples imágenes de previsualización
-  const hasMultiplePreviews = item.previewItems && item.previewItems.length > 1;
-  
-  // Obtener la imagen de previsualización actual
-  const currentCardPreview = item.previewItems && item.previewItems.length > 0 
-    ? item.previewItems[currentCardPreviewIndex] 
-    : null;
-    
-  // Funciones de navegación del carrusel
-  const nextPreview = () => {
-    if (item.previewItems && item.previewItems.length > 0) {
-      setCurrentCardPreviewIndex((prev) => 
-        (prev + 1) % item.previewItems!.length
-      );
-    }
-  };
-  
-  const prevPreview = () => {
-    if (item.previewItems && item.previewItems.length > 0) {
-      setCurrentCardPreviewIndex((prev) => 
-        (prev - 1 + item.previewItems!.length) % item.previewItems!.length
-      );
-    }
-  };
-  
-  return (
-    <div className="generic-item">
-      {/* Vista de tarjeta con carrusel */}
-      <div className="card">
-        <img src={currentCardPreview?.transformedUrl?.preview || ''} />
-        
-        {/* Controles del carrusel */}
-        {hasMultiplePreviews && (
-          <>
-            <button onClick={prevPreview}>
-              <ChevronLeft />
-            </button>
-            <button onClick={nextPreview}>
-              <ChevronRight />
-            </button>
-            
-            {/* Indicadores de posición */}
-            <div className="indicators">
-              {item.previewItems?.map((_, index) => (
-                <div 
-                  key={index} 
-                  className={index === currentCardPreviewIndex ? 'active' : ''}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-slate-500'>
+              // En components/renderers/generic-renderer.tsx
+            </code>
+            <br />
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-yellow-300'>GenericRenderer</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-slate-400'>({"{"}</code>{" "}
+            <code className='text-blue-300'>item</code>{" "}
+            <code className='text-slate-400'>{"}"}</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>{" "}
+            <code className='text-slate-400'>{"}"}</code>
+            <code className='text-slate-400'>)</code>{" "}
+            <code className='text-slate-400'>{"=>"}</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Estados para controlar el carrusel
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>currentCardPreviewIndex</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-blue-300'>setCurrentCardPreviewIndex</code>
+            <code className='text-slate-400'>]</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-yellow-300'>useState</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-orange-300'>0</code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>currentModalPreviewIndex</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-blue-300'>setCurrentModalPreviewIndex</code>
+            <code className='text-slate-400'>]</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-yellow-300'>useState</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-orange-300'>0</code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Verificar si hay múltiples imágenes de previsualización
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>hasMultiplePreviews</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>length</code>{" "}
+            <code className='text-slate-400'>{">"}</code>{" "}
+            <code className='text-orange-300'>1</code>
+            <code className='text-slate-400'>;</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Obtener la imagen de previsualización actual
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>currentCardPreview</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>length</code>{" "}
+            <code className='text-slate-400'>{">"}</code>{" "}
+            <code className='text-orange-300'>0</code>
+            <br />
+            <code className='text-slate-400'> ?</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>currentCardPreviewIndex</code>
+            <code className='text-slate-400'>]</code>
+            <br />
+            <code className='text-slate-400'> :</code>{" "}
+            <code className='text-orange-300'>null</code>
+            <code className='text-slate-400'>;</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Funciones de navegación del carrusel
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-yellow-300'>nextPreview</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-slate-400'>()</code>{" "}
+            <code className='text-slate-400'>{"=>"}</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>length</code>{" "}
+            <code className='text-slate-400'>{">"}</code>{" "}
+            <code className='text-orange-300'>0</code>
+            <code className='text-slate-400'>)</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-yellow-300'>setCurrentCardPreviewIndex</code>
+            <code className='text-slate-400'>((</code>
+            <code className='text-blue-300'>prev</code>
+            <code className='text-slate-400'>)</code>{" "}
+            <code className='text-slate-400'>{"=>"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>prev</code>{" "}
+            <code className='text-slate-400'>+</code>{" "}
+            <code className='text-orange-300'>1</code>
+            <code className='text-slate-400'>)</code>{" "}
+            <code className='text-slate-400'>%</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>previewItems</code>
+            <code className='text-slate-400'>!</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>length</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"}"}</code>
+            <code className='text-slate-400'>;</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"<"}</code>
+            <code className='text-red-300'>div</code>{" "}
+            <code className='text-blue-300'>className</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-green-300'>"generic-item"</code>
+            <code className='text-slate-400'>{">"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              {/* Vista de tarjeta con carrusel */}
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"<"}</code>
+            <code className='text-red-300'>div</code>{" "}
+            <code className='text-blue-300'>className</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-green-300'>"card"</code>
+            <code className='text-slate-400'>{">"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"<"}</code>
+            <code className='text-red-300'>img</code>{" "}
+            <code className='text-blue-300'>src</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-slate-400'>{"{"}</code>
+            <code className='text-blue-300'>currentCardPreview</code>
+            <code className='text-slate-400'>?.</code>
+            <code className='text-blue-300'>transformedUrl</code>
+            <code className='text-slate-400'>?.</code>
+            <code className='text-blue-300'>preview</code>{" "}
+            <code className='text-slate-400'>||</code>{" "}
+            <code className='text-green-300'>''</code>
+            <code className='text-slate-400'>{"}"}</code>{" "}
+            <code className='text-slate-400'>{"/>"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"</"}</code>
+            <code className='text-red-300'>div</code>
+            <code className='text-slate-400'>{">"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>{"</"}</code>
+            <code className='text-red-300'>div</code>
+            <code className='text-slate-400'>{">"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+            <code className='text-slate-400'>;</code>
+          </pre>
+        </div>
 
         <h4 className='text-lg font-medium mt-4 mb-2'>
           Consideraciones para Desarrolladores
@@ -445,11 +1003,12 @@ const GenericRenderer = ({ item }: { item: HierarchyItem }) => {
           </li>
         </ul>
 
-        <div className='bg-blue-50 border-l-4 border-blue-500 p-4 my-6'>
-          <p className='text-blue-800'>
-            <strong>Consejo:</strong> Al extender la plataforma, es importante
-            mantener este flujo de datos y renderizado para garantizar la
-            coherencia del sistema.
+        <div className='bg-primary/5 border-l-4 border-primary p-6 my-8 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <Lightbulb className='h-4 w-4' />
+            <strong>Consejo:</strong> Al extender la
+            plataforma, es importante mantener este flujo de datos y renderizado
+            para garantizar la coherencia del sistema.
           </p>
         </div>
       </DocContent>

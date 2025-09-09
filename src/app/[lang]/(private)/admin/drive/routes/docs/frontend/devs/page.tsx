@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { Code, AlertTriangle } from "lucide-react";
 
 export default function DevsDocsPage() {
   return (
@@ -7,6 +8,7 @@ export default function DevsDocsPage() {
       <DocHeader
         title='Manual para Desarrolladores'
         description='Documentación técnica para extender la plataforma'
+        icon={Code}
       />
 
       <DocContent>
@@ -110,8 +112,9 @@ export default function DevsDocsPage() {
           </li>
         </ul>
 
-        <div className='bg-amber-50 border-l-4 border-amber-500 p-4 my-6'>
-          <p className='text-amber-800'>
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <AlertTriangle className='h-4 w-4' />
             <strong>Nota:</strong> Esta documentación asume conocimientos
             básicos de React, Next.js y TypeScript.
           </p>

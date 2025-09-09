@@ -14,19 +14,21 @@ import {
   CardTitle,
 } from "@/src/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, Users } from "lucide-react";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 
 export default function FrontendUserGuide() {
   return (
-    <div className='space-y-6'>
-      <div>
-        <h1 className='text-3xl font-bold mb-2'>Guía de Usuario - Frontend</h1>
-        <p className='text-lg text-muted-foreground mb-6'>
-          Aprende a utilizar la interfaz de usuario de Rutas de Drive de manera
-          efectiva.
-        </p>
-
-        <Alert>
+    <div>
+      <DocHeader
+        title='Guía de Usuario - Frontend'
+        description='Aprende a utilizar la interfaz de usuario de Rutas de Drive de manera efectiva'
+        icon={Users}
+      />
+      
+      <DocContent>
+        <Alert className='mb-6'>
           <InfoIcon className='h-4 w-4' />
           <AlertTitle>Documentación en desarrollo</AlertTitle>
           <AlertDescription>
@@ -34,7 +36,6 @@ export default function FrontendUserGuide() {
             actualización: Abril 2024.
           </AlertDescription>
         </Alert>
-      </div>
 
       <Tabs defaultValue='getting-started' className='mt-6'>
         <TabsList className='grid w-full md:w-auto grid-cols-1 md:grid-cols-4'>
@@ -55,38 +56,38 @@ export default function FrontendUserGuide() {
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
-              <h3 className='text-lg font-medium'>¿Qué es Rutas de Drive?</h3>
-              <p>
+              <h3 className='text-lg font-medium text-white'>¿Qué es Rutas de Drive?</h3>
+              <p className='text-slate-300'>
                 Rutas de Drive es una funcionalidad que te permite conectar
                 carpetas de Google Drive con tu sitio web, creando rutas
                 personalizadas para acceder a contenido específico.
               </p>
 
-              <h3 className='text-lg font-medium'>Requisitos previos</h3>
-              <ul className='list-disc pl-6 space-y-1'>
+              <h3 className='text-lg font-medium text-white'>Requisitos previos</h3>
+              <ul className='list-disc pl-6 space-y-1 text-slate-300'>
                 <li>Una cuenta de Google con acceso a Google Drive</li>
                 <li>Permisos de administrador en la plataforma</li>
                 <li>Carpetas organizadas en Google Drive</li>
               </ul>
 
-              <h3 className='text-lg font-medium'>Pasos iniciales</h3>
-              <ol className='list-decimal pl-6 space-y-2'>
+              <h3 className='text-lg font-medium text-white'>Pasos iniciales</h3>
+              <ol className='list-decimal pl-6 space-y-2 text-slate-300'>
                 <li>
-                  <strong>Acceder al panel:</strong> Inicia sesión y navega a la
+                  <strong className='text-white'>Acceder al panel:</strong> Inicia sesión y navega a la
                   sección &quot;Rutas de Drive&quot; en el panel de
                   administración.
                 </li>
                 <li>
-                  <strong>Autenticación:</strong> Conecta tu cuenta de Google si
+                  <strong className='text-white'>Autenticación:</strong> Conecta tu cuenta de Google si
                   aún no lo has hecho, siguiendo los pasos de autenticación.
                 </li>
                 <li>
-                  <strong>Explorar la interfaz:</strong> Familiarízate con el
+                  <strong className='text-white'>Explorar la interfaz:</strong> Familiarízate con el
                   panel principal, que muestra tus rutas existentes y opciones
                   para crear nuevas.
                 </li>
                 <li>
-                  <strong>Crear tu primera ruta:</strong> Haz clic en
+                  <strong className='text-white'>Crear tu primera ruta:</strong> Haz clic en
                   &quot;Nueva ruta&quot; y sigue el asistente para conectar una
                   carpeta de Google Drive con una URL en tu sitio.
                 </li>
@@ -148,6 +149,7 @@ export default function FrontendUserGuide() {
           </Card>
         </TabsContent>
       </Tabs>
+      </DocContent>
     </div>
   );
 }

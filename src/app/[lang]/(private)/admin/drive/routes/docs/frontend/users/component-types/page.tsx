@@ -2,9 +2,8 @@
 
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Layers, FileText, PlusCircle, Eye, Puzzle, Lightbulb, Folder } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
-import Image from "next/image";
 
 export default function ComponentTypesPage() {
   return (
@@ -12,12 +11,14 @@ export default function ComponentTypesPage() {
       <DocHeader
         title='Tipos de Componentes'
         description='Componentes disponibles y cómo utilizarlos'
+        icon={Puzzle}
       />
 
       <DocContent>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mt-8'>
           <div>
-            <h2 className='text-2xl font-bold mb-4'>
+            <h2 className='text-2xl font-bold mb-4 flex items-center gap-3 text-white'>
+              <Layers className='h-6 w-6 text-primary' />
               Componentes de navegación
             </h2>
 
@@ -45,7 +46,8 @@ export default function ComponentTypesPage() {
           </div>
 
           <div>
-            <h2 className='text-2xl font-bold mb-4'>
+            <h2 className='text-2xl font-bold mb-4 flex items-center gap-3 text-white'>
+              <FileText className='h-6 w-6 text-primary' />
               Componentes de contenido
             </h2>
 
@@ -82,7 +84,8 @@ export default function ComponentTypesPage() {
           </div>
         </div>
 
-        <h2 className='text-2xl font-bold mt-8 mb-4'>
+        <h2 className='text-2xl font-bold mt-8 mb-4 flex items-center gap-3 text-white'>
+          <PlusCircle className='h-6 w-6 text-primary' />
           Componentes adicionales
         </h2>
 
@@ -125,53 +128,95 @@ export default function ComponentTypesPage() {
           </div>
         </div>
 
-        <h2 className='text-2xl font-bold mt-8 mb-4'>Ejemplos visuales</h2>
+        <h2 className='text-2xl font-bold mt-8 mb-4 flex items-center gap-3 text-white'>
+          <Eye className='h-6 w-6 text-primary' />
+          Ejemplos visuales
+        </h2>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-8'>
-          <div className='border border-zinc-200 rounded-md overflow-hidden'>
-            <div className='bg-zinc-100 px-4 py-2 font-medium border-b border-zinc-200'>
+          <div className='border border-slate-600 rounded-md overflow-hidden bg-slate-800/50'>
+            <div className='bg-slate-700 px-4 py-2 font-medium border-b border-slate-600 text-slate-200'>
               Ejemplo de Tabs
             </div>
-            <div className='p-4'>
-              <Image
-                src='/placeholder.svg?height=200&width=400'
-                alt='Ejemplo de pestañas'
-                className='w-full rounded-md border border-zinc-200'
-                width={400}
-                height={200}
-              />
-              <p className='mt-2 text-sm text-zinc-600'>
+            <div className='p-6'>
+              <div className='w-full bg-slate-800 rounded-md border border-slate-600 flex items-center justify-center p-4'>
+                <div className='text-center'>
+                  <div className='flex space-x-2 mb-4 justify-center'>
+                    <div className='px-4 py-2 bg-emerald-600 text-white rounded-t-md text-sm font-medium'>
+                      Información
+                    </div>
+                    <div className='px-4 py-2 bg-slate-600 text-slate-300 rounded-t-md text-sm'>
+                      Recursos
+                    </div>
+                    <div className='px-4 py-2 bg-slate-600 text-slate-300 rounded-t-md text-sm'>
+                      Contacto
+                    </div>
+                  </div>
+                  <div className='w-64 h-16 bg-slate-700 rounded border border-slate-600 mx-auto flex items-center justify-center text-slate-300'>
+                    Contenido de Información
+                  </div>
+                </div>
+              </div>
+              <p className='mt-2 text-sm text-slate-300 font-medium'>
                 Las pestañas permiten organizar contenido relacionado en una
                 misma vista.
               </p>
             </div>
           </div>
 
-          <div className='border border-zinc-200 rounded-md overflow-hidden'>
-            <div className='bg-zinc-100 px-4 py-2 font-medium border-b border-zinc-200'>
+          <div className='border border-slate-600 rounded-md overflow-hidden bg-slate-800/50'>
+            <div className='bg-slate-700 px-4 py-2 font-medium border-b border-slate-600 text-slate-200'>
               Ejemplo de Secciones
             </div>
-            <div className='p-4'>
-              <Image
-                src='/placeholder.svg?height=200&width=400'
-                alt='Ejemplo de secciones'
-                className='w-full rounded-md border border-zinc-200'
-                width={400}
-                height={200}
-              />
-              <p className='mt-2 text-sm text-zinc-600'>
+            <div className='p-6'>
+              <div className='w-full bg-slate-800 rounded-md border border-slate-600 flex items-center justify-center p-4'>
+                <div className='w-full max-w-sm mx-auto'>
+                  <div className='mb-3'>
+                    <div className='text-left text-sm font-medium text-slate-300 mb-2 flex items-center gap-2'>
+                      <Folder className='h-4 w-4 text-emerald-400' />
+                      Videos
+                    </div>
+                    <div className='w-full h-12 bg-slate-700 rounded border border-slate-600 flex items-center px-3 py-3 gap-2'>
+                      <FileText className='h-4 w-4 text-blue-400 flex-shrink-0' />
+                      <span className='text-slate-300 text-xs truncate'>01_vimeo_tutorial.txt</span>
+                    </div>
+                  </div>
+                  <div className='mb-3'>
+                    <div className='text-left text-sm font-medium text-slate-300 mb-2 flex items-center gap-2'>
+                      <Folder className='h-4 w-4 text-emerald-400' />
+                      Formularios
+                    </div>
+                    <div className='w-full h-12 bg-slate-700 rounded border border-slate-600 flex items-center px-3 py-3 gap-2'>
+                      <FileText className='h-4 w-4 text-purple-400 flex-shrink-0' />
+                      <span className='text-slate-300 text-xs truncate'>02_googleForm.txt</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div className='text-left text-sm font-medium text-slate-300 mb-2 flex items-center gap-2'>
+                      <Folder className='h-4 w-4 text-emerald-400' />
+                      Recursos
+                    </div>
+                    <div className='w-full h-12 bg-slate-700 rounded border border-slate-600 flex items-center px-3 py-3 gap-2'>
+                      <FileText className='h-4 w-4 text-orange-400 flex-shrink-0' />
+                      <span className='text-slate-300 text-xs truncate'>03_button_guia.txt</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p className='mt-2 text-sm text-slate-300 font-medium'>
                 Las secciones agrupan contenido bajo un título descriptivo.
               </p>
             </div>
           </div>
         </div>
 
-        <div className='bg-blue-50 border-l-4 border-blue-500 p-4 my-6'>
-          <p className='text-blue-800'>
-            <strong>Consejo:</strong> Combina diferentes tipos de componentes
-            para crear una experiencia de usuario rica y organizada. Por
-            ejemplo, usa pestañas para categorías principales y secciones dentro
-            de cada pestaña para subcategorías.
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <Lightbulb className='h-4 w-4' />
+            <strong>Consejo:</strong> Combina
+            diferentes tipos de componentes para crear una experiencia de
+            usuario rica y organizada. Por ejemplo, usa pestañas para categorías
+            principales y secciones dentro de cada pestaña para subcategorías.
           </p>
         </div>
       </DocContent>

@@ -7,12 +7,9 @@ export type IconKeys = keyof typeof Icons;
 export interface NavItem {
   title: string;
   url: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   isActive?: boolean;
-  items?: {
-    title: string;
-    url: string;
-  }[];
+  items?: NavItem[];
 }
 
 export interface Project {

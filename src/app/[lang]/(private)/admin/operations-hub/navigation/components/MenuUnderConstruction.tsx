@@ -81,27 +81,97 @@ interface MenuUnderConstructionProps {
 type MenuSection = "footer" | "header" | "sidebar" | "architecture";
 
 const rolesList = [
-  { role: "ADMIN", color: "bg-purple-500", description: "Administrador completo del sistema" },
-  { role: "CLIENT", color: "bg-blue-500", description: "Clientes con acceso a servicios" },
-  { role: "EMPLOYEE", color: "bg-green-500", description: "Empleados de la organización" },
-  { role: "DEBTOR", color: "bg-orange-500", description: "Deudores con acceso limitado" },
-  { role: "PROVIDER", color: "bg-indigo-500", description: "Proveedores de servicios" },
+  {
+    role: "ADMIN",
+    color: "bg-purple-500",
+    description: "Administrador completo del sistema",
+  },
+  {
+    role: "CLIENT",
+    color: "bg-blue-500",
+    description: "Clientes con acceso a servicios",
+  },
+  {
+    role: "EMPLOYEE",
+    color: "bg-green-500",
+    description: "Empleados de la organización",
+  },
+  {
+    role: "DEBTOR",
+    color: "bg-orange-500",
+    description: "Deudores con acceso limitado",
+  },
+  {
+    role: "PROVIDER",
+    color: "bg-indigo-500",
+    description: "Proveedores de servicios",
+  },
   { role: "LEAD", color: "bg-pink-500", description: "Leads y prospectos" },
 ];
 
 const teams = [
-  { key: "gestion", name: "Equipo de Gestión", modules: 16, color: "bg-purple-500" },
-  { key: "creativos", name: "Equipo Creativo", modules: 5, color: "bg-pink-500" },
-  { key: "consultoria", name: "Equipo de Consultoría", modules: 5, color: "bg-blue-500" },
-  { key: "crecimiento", name: "Equipo de Crecimiento", modules: 5, color: "bg-green-500" },
+  {
+    key: "gestion",
+    name: "Equipo de Gestión",
+    modules: 16,
+    color: "bg-purple-500",
+  },
+  {
+    key: "creativos",
+    name: "Equipo Creativo",
+    modules: 5,
+    color: "bg-pink-500",
+  },
+  {
+    key: "consultoria",
+    name: "Equipo de Consultoría",
+    modules: 5,
+    color: "bg-blue-500",
+  },
+  {
+    key: "crecimiento",
+    name: "Equipo de Crecimiento",
+    modules: 5,
+    color: "bg-green-500",
+  },
 ];
 
 const developmentPhases = [
-  { phase: 1, name: "Configuración Base", duration: "1 semana", progress: 0, status: "pending" },
-  { phase: 2, name: "Gestión de Footers", duration: "1 semana", progress: 0, status: "pending" },
-  { phase: 3, name: "Gestión de Headers", duration: "1 semana", progress: 0, status: "pending" },
-  { phase: 4, name: "Sidebars por Equipo", duration: "1 semana", progress: 0, status: "pending" },
-  { phase: 5, name: "Integración y Polish", duration: "1 semana", progress: 0, status: "pending" },
+  {
+    phase: 1,
+    name: "Configuración Base",
+    duration: "1 semana",
+    progress: 0,
+    status: "pending",
+  },
+  {
+    phase: 2,
+    name: "Gestión de Footers",
+    duration: "1 semana",
+    progress: 0,
+    status: "pending",
+  },
+  {
+    phase: 3,
+    name: "Gestión de Headers",
+    duration: "1 semana",
+    progress: 0,
+    status: "pending",
+  },
+  {
+    phase: 4,
+    name: "Sidebars por Equipo",
+    duration: "1 semana",
+    progress: 0,
+    status: "pending",
+  },
+  {
+    phase: 5,
+    name: "Integración y Polish",
+    duration: "1 semana",
+    progress: 0,
+    status: "pending",
+  },
 ];
 
 export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
@@ -110,65 +180,71 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
   const [selectedTeam, setSelectedTeam] = useState<string | null>("gestion");
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {/* Header Section */}
-      <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 p-8 text-white">
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-4">
-            <WrenchScrewdriverIcon className="h-10 w-10" />
-            <Badge className="bg-yellow-500 text-black border-0">EN CONSTRUCCIÓN</Badge>
+      <div className='relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 p-8 text-white'>
+        <div className='relative z-10'>
+          <div className='flex items-center gap-3 mb-4'>
+            <WrenchScrewdriverIcon className='h-10 w-10' />
+            <Badge className='bg-yellow-500 text-black border-0'>
+              EN CONSTRUCCIÓN
+            </Badge>
           </div>
-          <h1 className="text-4xl font-bold mb-3">Sistema de Gestión de Menús Dinámicos</h1>
-          <p className="text-xl opacity-90 mb-6">
-            Configuración centralizada de Headers, Footers y Sidebars por rol y equipo
+          <h1 className='text-4xl font-bold mb-3'>
+            Sistema de Gestión de Menús Dinámicos
+          </h1>
+          <p className='text-xl opacity-90 mb-6'>
+            Configuración centralizada de Headers, Footers y Sidebars por rol y
+            equipo
           </p>
-          <div className="flex flex-wrap gap-4">
-            <div className="flex items-center gap-2">
-              <CheckCircleIcon className="h-5 w-5" />
+          <div className='flex flex-wrap gap-4'>
+            <div className='flex items-center gap-2'>
+              <CheckCircleIcon className='h-5 w-5' />
               <span>Multi-idioma (ES/EN)</span>
             </div>
-            <div className="flex items-center gap-2">
-              <ShieldCheckIcon className="h-5 w-5" />
+            <div className='flex items-center gap-2'>
+              <ShieldCheckIcon className='h-5 w-5' />
               <span>Control de acceso integrado</span>
             </div>
-            <div className="flex items-center gap-2">
-              <ArrowPathIcon className="h-5 w-5" />
+            <div className='flex items-center gap-2'>
+              <ArrowPathIcon className='h-5 w-5' />
               <span>Herencia configurable</span>
             </div>
           </div>
         </div>
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 opacity-10">
-          <Menu className="h-64 w-64" />
+        <div className='absolute top-0 right-0 -mt-8 -mr-8 opacity-10'>
+          <Menu className='h-64 w-64' />
         </div>
       </div>
 
       {/* Alert de desarrollo */}
-      <Alert className="border-yellow-500 bg-yellow-50">
-        <ExclamationTriangleIcon className="h-4 w-4 text-yellow-600" />
-        <AlertDescription className="text-yellow-800">
-          <strong>Sistema en desarrollo:</strong> Esta página muestra el diseño y funcionalidades planificadas 
-          del nuevo sistema de gestión de menús. Tiempo estimado de desarrollo: 5 semanas.
+      <Alert className='border-yellow-500 bg-yellow-50'>
+        <ExclamationTriangleIcon className='h-4 w-4 text-yellow-600' />
+        <AlertDescription className='text-yellow-800'>
+          <strong>Sistema en desarrollo:</strong> Esta página muestra el diseño
+          y funcionalidades planificadas del nuevo sistema de gestión de menús.
+          Tiempo estimado de desarrollo: 5 semanas.
         </AlertDescription>
       </Alert>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid grid-cols-4 w-full">
-          <TabsTrigger value="overview">Vista General</TabsTrigger>
-          <TabsTrigger value="features">Funcionalidades</TabsTrigger>
-          <TabsTrigger value="architecture">Arquitectura</TabsTrigger>
-          <TabsTrigger value="roadmap">Roadmap</TabsTrigger>
+      <Tabs defaultValue='overview' className='space-y-6'>
+        <TabsList className='grid grid-cols-4 w-full'>
+          <TabsTrigger value='overview'>Vista General</TabsTrigger>
+          <TabsTrigger value='features'>Funcionalidades</TabsTrigger>
+          <TabsTrigger value='architecture'>Arquitectura</TabsTrigger>
+          <TabsTrigger value='roadmap'>Roadmap</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <TabsContent value='overview' className='space-y-6'>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
             {/* Footer Card */}
-            <Card className="border-2 hover:border-purple-500 transition-colors cursor-pointer">
+            <Card className='border-2 hover:border-purple-500 transition-colors cursor-pointer'>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <Columns3 className="h-8 w-8 text-purple-500" />
-                  <Badge variant="outline">6 variantes</Badge>
+                <div className='flex items-center justify-between'>
+                  <Columns3 className='h-8 w-8 text-purple-500' />
+                  <Badge variant='outline'>6 variantes</Badge>
                 </div>
                 <CardTitle>Gestión de Footers</CardTitle>
                 <CardDescription>
@@ -176,22 +252,22 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <GlobeAltIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Footer Público</span>
+                <div className='space-y-3'>
+                  <div className='flex items-center gap-2'>
+                    <GlobeAltIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Footer Público</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <LockClosedIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Footer Privado</span>
+                  <div className='flex items-center gap-2'>
+                    <LockClosedIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Footer Privado</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <UsersIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Por Rol (6 roles)</span>
+                  <div className='flex items-center gap-2'>
+                    <UsersIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Por Rol (6 roles)</span>
                   </div>
                   <Separator />
-                  <div className="pt-2">
-                    <p className="text-xs text-muted-foreground">
+                  <div className='pt-2'>
+                    <p className='text-xs text-muted-foreground'>
                       Sistema de herencia: Público → Privado → Rol
                     </p>
                   </div>
@@ -200,11 +276,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
             </Card>
 
             {/* Header Card */}
-            <Card className="border-2 hover:border-blue-500 transition-colors cursor-pointer">
+            <Card className='border-2 hover:border-blue-500 transition-colors cursor-pointer'>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <Navigation className="h-8 w-8 text-blue-500" />
-                  <Badge variant="outline">Mega-menús</Badge>
+                <div className='flex items-center justify-between'>
+                  <Navigation className='h-8 w-8 text-blue-500' />
+                  <Badge variant='outline'>Mega-menús</Badge>
                 </div>
                 <CardTitle>Gestión de Headers</CardTitle>
                 <CardDescription>
@@ -212,22 +288,22 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <ViewColumnsIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Dropdowns multinivel</span>
+                <div className='space-y-3'>
+                  <div className='flex items-center gap-2'>
+                    <ViewColumnsIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Dropdowns multinivel</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <AdjustmentsHorizontalIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">CTAs configurables</span>
+                  <div className='flex items-center gap-2'>
+                    <AdjustmentsHorizontalIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>CTAs configurables</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <CubeTransparentIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Mobile responsive</span>
+                  <div className='flex items-center gap-2'>
+                    <CubeTransparentIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Mobile responsive</span>
                   </div>
                   <Separator />
-                  <div className="pt-2">
-                    <p className="text-xs text-muted-foreground">
+                  <div className='pt-2'>
+                    <p className='text-xs text-muted-foreground'>
                       Soporte para badges y notificaciones
                     </p>
                   </div>
@@ -236,11 +312,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
             </Card>
 
             {/* Sidebar Card */}
-            <Card className="border-2 hover:border-green-500 transition-colors cursor-pointer">
+            <Card className='border-2 hover:border-green-500 transition-colors cursor-pointer'>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <PanelLeft className="h-8 w-8 text-green-500" />
-                  <Badge variant="outline">4 equipos</Badge>
+                <div className='flex items-center justify-between'>
+                  <PanelLeft className='h-8 w-8 text-green-500' />
+                  <Badge variant='outline'>4 equipos</Badge>
                 </div>
                 <CardTitle>Sidebars por Equipo</CardTitle>
                 <CardDescription>
@@ -248,22 +324,22 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <UserGroupIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Selector de equipo</span>
+                <div className='space-y-3'>
+                  <div className='flex items-center gap-2'>
+                    <UserGroupIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Selector de equipo</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Squares2X2Icon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Módulos disponibles</span>
+                  <div className='flex items-center gap-2'>
+                    <Squares2X2Icon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Módulos disponibles</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <ShieldCheckIcon className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm">Validación de permisos</span>
+                  <div className='flex items-center gap-2'>
+                    <ShieldCheckIcon className='h-4 w-4 text-gray-500' />
+                    <span className='text-sm'>Validación de permisos</span>
                   </div>
                   <Separator />
-                  <div className="pt-2">
-                    <p className="text-xs text-muted-foreground">
+                  <div className='pt-2'>
+                    <p className='text-xs text-muted-foreground'>
                       Prioridad: Equipo {">"} Rol {">"} General
                     </p>
                   </div>
@@ -275,8 +351,8 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           {/* Roles Section */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Users className='h-5 w-5' />
                 Sistema de Roles
               </CardTitle>
               <CardDescription>
@@ -284,7 +360,7 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4'>
                 {rolesList.map((role) => (
                   <div
                     key={role.role}
@@ -293,19 +369,28 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                         ? "border-purple-500 bg-purple-50"
                         : "border-gray-200 hover:border-gray-400"
                     }`}
-                    onClick={() => setSelectedRole(role.role === selectedRole ? null : role.role)}
+                    onClick={() =>
+                      setSelectedRole(
+                        role.role === selectedRole ? null : role.role
+                      )
+                    }
                   >
-                    <div className={`h-2 w-2 rounded-full ${role.color} mb-2`} />
-                    <div className="font-medium text-sm">{role.role}</div>
-                    <div className="text-xs text-muted-foreground mt-1">{role.description}</div>
+                    <div
+                      className={`h-2 w-2 rounded-full ${role.color} mb-2`}
+                    />
+                    <div className='font-medium text-sm'>{role.role}</div>
+                    <div className='text-xs text-muted-foreground mt-1'>
+                      {role.description}
+                    </div>
                   </div>
                 ))}
               </div>
               {selectedRole && (
-                <Alert className="mt-4">
+                <Alert className='mt-4'>
                   <AlertDescription>
-                    El rol <strong>{selectedRole}</strong> tendrá acceso a menús personalizados 
-                    que heredan del menú privado pero pueden sobrescribirse completamente.
+                    El rol <strong>{selectedRole}</strong> tendrá acceso a menús
+                    personalizados que heredan del menú privado pero pueden
+                    sobrescribirse completamente.
                   </AlertDescription>
                 </Alert>
               )}
@@ -315,8 +400,8 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           {/* Teams Section */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <UserGroupIcon className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <UserGroupIcon className='h-5 w-5' />
                 Equipos y Sidebars
               </CardTitle>
               <CardDescription>
@@ -324,7 +409,7 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                 {teams.map((team) => (
                   <div
                     key={team.key}
@@ -335,23 +420,37 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                     }`}
                     onClick={() => setSelectedTeam(team.key)}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className='flex items-center justify-between mb-2'>
                       <div className={`h-3 w-3 rounded-full ${team.color}`} />
-                      <Badge variant="secondary">{team.modules} módulos</Badge>
+                      <Badge variant='secondary'>{team.modules} módulos</Badge>
                     </div>
-                    <div className="font-medium">{team.name}</div>
-                    <div className="text-xs text-muted-foreground mt-2">
+                    <div className='font-medium'>{team.name}</div>
+                    <div className='text-xs text-muted-foreground mt-2'>
                       dashboard-routes.ts
                     </div>
                   </div>
                 ))}
               </div>
               {selectedTeam && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-medium mb-2">Módulos disponibles para {teams.find(t => t.key === selectedTeam)?.name}:</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {["admin", "dashboard", "products", "users", "analytics", "drive", "meet", "calendar"].map((module) => (
-                      <Badge key={module} variant="outline">{module}</Badge>
+                <div className='mt-4 p-4 bg-gray-50 rounded-lg'>
+                  <h4 className='font-medium mb-2'>
+                    Módulos disponibles para{" "}
+                    {teams.find((t) => t.key === selectedTeam)?.name}:
+                  </h4>
+                  <div className='flex flex-wrap gap-2'>
+                    {[
+                      "admin",
+                      "dashboard",
+                      "products",
+                      "users",
+                      "analytics",
+                      "drive",
+                      "meet",
+                      "calendar",
+                    ].map((module) => (
+                      <Badge key={module} variant='outline'>
+                        {module}
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -361,46 +460,62 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         </TabsContent>
 
         {/* Features Tab */}
-        <TabsContent value="features" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <TabsContent value='features' className='space-y-6'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <GitBranch className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <GitBranch className='h-5 w-5' />
                   Sistema de Herencia
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">1</div>
-                    <div className="flex-1">
-                      <div className="font-medium">Menú Público</div>
-                      <div className="text-sm text-muted-foreground">Base para todos los usuarios</div>
+              <CardContent className='space-y-4'>
+                <div className='space-y-2'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
+                      1
+                    </div>
+                    <div className='flex-1'>
+                      <div className='font-medium'>Menú Público</div>
+                      <div className='text-sm text-muted-foreground'>
+                        Base para todos los usuarios
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-4 border-l-2 border-dashed h-4" />
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">2</div>
-                    <div className="flex-1">
-                      <div className="font-medium">Menú Privado</div>
-                      <div className="text-sm text-muted-foreground">Hereda o rompe con público</div>
+                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='flex items-center gap-2'>
+                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
+                      2
+                    </div>
+                    <div className='flex-1'>
+                      <div className='font-medium'>Menú Privado</div>
+                      <div className='text-sm text-muted-foreground'>
+                        Hereda o rompe con público
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-4 border-l-2 border-dashed h-4" />
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">3</div>
-                    <div className="flex-1">
-                      <div className="font-medium">Menú por Rol</div>
-                      <div className="text-sm text-muted-foreground">6 roles disponibles</div>
+                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='flex items-center gap-2'>
+                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
+                      3
+                    </div>
+                    <div className='flex-1'>
+                      <div className='font-medium'>Menú por Rol</div>
+                      <div className='text-sm text-muted-foreground'>
+                        6 roles disponibles
+                      </div>
                     </div>
                   </div>
-                  <div className="ml-4 border-l-2 border-dashed h-4" />
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">4</div>
-                    <div className="flex-1">
-                      <div className="font-medium">Sidebar por Equipo</div>
-                      <div className="text-sm text-muted-foreground">Máxima prioridad</div>
+                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='flex items-center gap-2'>
+                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
+                      4
+                    </div>
+                    <div className='flex-1'>
+                      <div className='font-medium'>Sidebar por Equipo</div>
+                      <div className='text-sm text-muted-foreground'>
+                        Máxima prioridad
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -409,36 +524,39 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Shield className='h-5 w-5' />
                   Control de Acceso
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Integración con AccessControl</span>
+              <CardContent className='space-y-3'>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Integración con AccessControl</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Validación server-side</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Validación server-side</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Ocultación automática de items</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>
+                    Ocultación automática de items
+                  </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Logs de acceso denegado</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Logs de acceso denegado</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Warnings de permisos</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Warnings de permisos</span>
                 </div>
-                <Separator className="my-3" />
+                <Separator className='my-3' />
                 <Alert>
-                  <AlertDescription className="text-xs">
-                    Reutiliza el sistema ComplexAccessControl existente para validación granular
+                  <AlertDescription className='text-xs'>
+                    Reutiliza el sistema ComplexAccessControl existente para
+                    validación granular
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -446,68 +564,70 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Palette className='h-5 w-5' />
                   Interfaz de Usuario
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">Componentes reutilizados:</div>
-                  <div className="pl-4 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <CodeBracketIcon className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">GroupsManagement</span>
+              <CardContent className='space-y-3'>
+                <div className='space-y-2'>
+                  <div className='text-sm font-medium'>
+                    Componentes reutilizados:
+                  </div>
+                  <div className='pl-4 space-y-1'>
+                    <div className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
+                      <span className='text-sm'>GroupsManagement</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CodeBracketIcon className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">TagsManagement</span>
+                    <div className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
+                      <span className='text-sm'>TagsManagement</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CodeBracketIcon className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">HierarchyTree</span>
+                    <div className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
+                      <span className='text-sm'>HierarchyTree</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <CodeBracketIcon className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">ComplexRuleBuilder</span>
+                    <div className='flex items-center gap-2'>
+                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
+                      <span className='text-sm'>ComplexRuleBuilder</span>
                     </div>
                   </div>
                 </div>
                 <Separator />
-                <div className="flex items-center gap-2">
-                  <SparklesIcon className="h-4 w-4 text-yellow-500" />
-                  <span className="text-sm">UI consistente con Meet</span>
+                <div className='flex items-center gap-2'>
+                  <SparklesIcon className='h-4 w-4 text-yellow-500' />
+                  <span className='text-sm'>UI consistente con Meet</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-5 w-5" />
+                <CardTitle className='flex items-center gap-2'>
+                  <Globe className='h-5 w-5' />
                   Características Adicionales
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Multi-idioma (ES/EN)</span>
+              <CardContent className='space-y-3'>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Multi-idioma (ES/EN)</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Preview antes de publicar</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Preview antes de publicar</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Sistema draft/published</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Sistema draft/published</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Iconos Lucide React</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Iconos Lucide React</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircleIcon className="h-4 w-4 text-green-500" />
-                  <span className="text-sm">Cache de menús</span>
+                <div className='flex items-center gap-2'>
+                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
+                  <span className='text-sm'>Cache de menús</span>
                 </div>
               </CardContent>
             </Card>
@@ -515,28 +635,30 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         </TabsContent>
 
         {/* Architecture Tab */}
-        <TabsContent value="architecture" className="space-y-6">
+        <TabsContent value='architecture' className='space-y-6'>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Database className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <Database className='h-5 w-5' />
                 Arquitectura Técnica
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="models">
+              <Accordion type='single' collapsible className='w-full'>
+                <AccordionItem value='models'>
                   <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <ServerStackIcon className="h-4 w-4" />
+                    <div className='flex items-center gap-2'>
+                      <ServerStackIcon className='h-4 w-4' />
                       Modelos de Datos (Prisma)
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
-                      <div className="font-mono text-sm">
-                        <div className="font-bold text-purple-600">MenuConfiguration</div>
-                        <ul className="ml-4 mt-2 space-y-1">
+                    <div className='space-y-3 p-4 bg-gray-50 rounded-lg'>
+                      <div className='font-mono text-sm'>
+                        <div className='font-bold text-purple-600'>
+                          MenuConfiguration
+                        </div>
+                        <ul className='ml-4 mt-2 space-y-1'>
                           <li>• type: HEADER | FOOTER | SIDEBAR</li>
                           <li>• scope: PUBLIC | PRIVATE | ROLE | TEAM</li>
                           <li>• inheritsFrom: Herencia configurable</li>
@@ -544,9 +666,9 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                           <li>• accessControl: Integración permisos</li>
                         </ul>
                       </div>
-                      <div className="font-mono text-sm">
-                        <div className="font-bold text-blue-600">MenuItem</div>
-                        <ul className="ml-4 mt-2 space-y-1">
+                      <div className='font-mono text-sm'>
+                        <div className='font-bold text-blue-600'>MenuItem</div>
+                        <ul className='ml-4 mt-2 space-y-1'>
                           <li>• label: Multi-idioma JSON</li>
                           <li>• href: Ruta del enlace</li>
                           <li>• icon: Lucide icon name</li>
@@ -554,9 +676,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                           <li>• requiredRoles: Permisos</li>
                         </ul>
                       </div>
-                      <div className="font-mono text-sm">
-                        <div className="font-bold text-green-600">TeamSidebar</div>
-                        <ul className="ml-4 mt-2 space-y-1">
+                      <div className='font-mono text-sm'>
+                        <div className='font-bold text-green-600'>
+                          TeamSidebar
+                        </div>
+                        <ul className='ml-4 mt-2 space-y-1'>
                           <li>• teamKey: ID del equipo</li>
                           <li>• availableRoutes: Módulos</li>
                           <li>• priority: Orden de prioridad</li>
@@ -567,90 +691,102 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="api">
+                <AccordionItem value='api'>
                   <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <CommandLineIcon className="h-4 w-4" />
+                    <div className='flex items-center gap-2'>
+                      <CommandLineIcon className='h-4 w-4' />
                       API Routes
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="space-y-2 p-4 bg-gray-50 rounded-lg font-mono text-sm">
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">GET</Badge>
+                    <div className='space-y-2 p-4 bg-gray-50 rounded-lg font-mono text-sm'>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          GET
+                        </Badge>
                         <span>/api/admin/menu/[type]</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">POST</Badge>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          POST
+                        </Badge>
                         <span>/api/admin/menu/[type]</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">PUT</Badge>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          PUT
+                        </Badge>
                         <span>/api/admin/menu/[type]/[id]</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">DELETE</Badge>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          DELETE
+                        </Badge>
                         <span>/api/admin/menu/[type]/[id]</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">POST</Badge>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          POST
+                        </Badge>
                         <span>/api/admin/menu/publish</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="font-mono">GET</Badge>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline' className='font-mono'>
+                          GET
+                        </Badge>
                         <span>/api/admin/menu/preview</span>
                       </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="integration">
+                <AccordionItem value='integration'>
                   <AccordionTrigger>
-                    <div className="flex items-center gap-2">
-                      <CpuChipIcon className="h-4 w-4" />
+                    <div className='flex items-center gap-2'>
+                      <CpuChipIcon className='h-4 w-4' />
                       Integraciones
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                      <div className="space-y-2">
-                        <h4 className="font-medium">Sistemas Existentes</h4>
-                        <ul className="space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
+                      <div className='space-y-2'>
+                        <h4 className='font-medium'>Sistemas Existentes</h4>
+                        <ul className='space-y-1 text-sm'>
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             dashboard-routes.ts
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             AccessControl
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             NextAuth roles
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             i18n system
                           </li>
                         </ul>
                       </div>
-                      <div className="space-y-2">
-                        <h4 className="font-medium">Componentes UI</h4>
-                        <ul className="space-y-1 text-sm">
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                      <div className='space-y-2'>
+                        <h4 className='font-medium'>Componentes UI</h4>
+                        <ul className='space-y-1 text-sm'>
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             shadcn/ui
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             Radix UI
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             Lucide icons
                           </li>
-                          <li className="flex items-center gap-2">
-                            <CheckCircleIcon className="h-4 w-4 text-green-500" />
+                          <li className='flex items-center gap-2'>
+                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
                             HeroIcons
                           </li>
                         </ul>
@@ -664,80 +800,92 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         </TabsContent>
 
         {/* Roadmap Tab */}
-        <TabsContent value="roadmap" className="space-y-6">
+        <TabsContent value='roadmap' className='space-y-6'>
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <RocketLaunchIcon className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <RocketLaunchIcon className='h-5 w-5' />
                 Plan de Desarrollo
               </CardTitle>
               <CardDescription>
                 5 sprints de 1 semana cada uno - Total: 5 semanas
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className='space-y-6'>
               {developmentPhases.map((phase, index) => (
-                <div key={phase.phase} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`h-10 w-10 rounded-full flex items-center justify-center font-bold ${
-                        phase.status === "completed" ? "bg-green-500 text-white" :
-                        phase.status === "in-progress" ? "bg-blue-500 text-white" :
-                        "bg-gray-200 text-gray-600"
-                      }`}>
+                <div key={phase.phase} className='space-y-3'>
+                  <div className='flex items-center justify-between'>
+                    <div className='flex items-center gap-3'>
+                      <div
+                        className={`h-10 w-10 rounded-full flex items-center justify-center font-bold ${
+                          phase.status === "completed"
+                            ? "bg-green-500 text-white"
+                            : phase.status === "in-progress"
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-200 text-gray-600"
+                        }`}
+                      >
                         {phase.phase}
                       </div>
                       <div>
-                        <div className="font-medium">{phase.name}</div>
-                        <div className="text-sm text-muted-foreground">{phase.duration}</div>
+                        <div className='font-medium'>{phase.name}</div>
+                        <div className='text-sm text-muted-foreground'>
+                          {phase.duration}
+                        </div>
                       </div>
                     </div>
-                    <Badge variant={
-                      phase.status === "completed" ? "default" :
-                      phase.status === "in-progress" ? "secondary" :
-                      "outline"
-                    }>
-                      {phase.status === "completed" ? "Completado" :
-                       phase.status === "in-progress" ? "En Progreso" :
-                       "Pendiente"}
+                    <Badge
+                      variant={
+                        phase.status === "completed"
+                          ? "default"
+                          : phase.status === "in-progress"
+                            ? "secondary"
+                            : "outline"
+                      }
+                    >
+                      {phase.status === "completed"
+                        ? "Completado"
+                        : phase.status === "in-progress"
+                          ? "En Progreso"
+                          : "Pendiente"}
                     </Badge>
                   </div>
-                  
+
                   {/* Progress bar */}
-                  <Progress value={phase.progress} className="h-2" />
-                  
+                  <Progress value={phase.progress} className='h-2' />
+
                   {/* Phase details */}
-                  <div className="ml-13 pl-4 border-l-2 border-gray-200">
+                  <div className='ml-13 pl-4 border-l-2 border-gray-200'>
                     {phase.phase === 1 && (
-                      <ul className="space-y-1 text-sm text-muted-foreground">
+                      <ul className='space-y-1 text-sm text-muted-foreground'>
                         <li>• Setup de esquema Prisma</li>
                         <li>• Página base de gestión</li>
                         <li>• API Routes CRUD</li>
                       </ul>
                     )}
                     {phase.phase === 2 && (
-                      <ul className="space-y-1 text-sm text-muted-foreground">
+                      <ul className='space-y-1 text-sm text-muted-foreground'>
                         <li>• Footer Management Component</li>
                         <li>• Footer Item Builder</li>
                         <li>• Footer Preview</li>
                       </ul>
                     )}
                     {phase.phase === 3 && (
-                      <ul className="space-y-1 text-sm text-muted-foreground">
+                      <ul className='space-y-1 text-sm text-muted-foreground'>
                         <li>• Header Management Component</li>
                         <li>• Header Navigation Builder</li>
                         <li>• Mega-menús y dropdowns</li>
                       </ul>
                     )}
                     {phase.phase === 4 && (
-                      <ul className="space-y-1 text-sm text-muted-foreground">
+                      <ul className='space-y-1 text-sm text-muted-foreground'>
                         <li>• Team Sidebar Manager</li>
                         <li>• Module Permission Checker</li>
                         <li>• Sidebar Priority System</li>
                       </ul>
                     )}
                     {phase.phase === 5 && (
-                      <ul className="space-y-1 text-sm text-muted-foreground">
+                      <ul className='space-y-1 text-sm text-muted-foreground'>
                         <li>• Menu Inheritance System</li>
                         <li>• Access Control Integration</li>
                         <li>• Publishing System</li>
@@ -745,9 +893,9 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                       </ul>
                     )}
                   </div>
-                  
+
                   {index < developmentPhases.length - 1 && (
-                    <Separator className="mt-6" />
+                    <Separator className='mt-6' />
                   )}
                 </div>
               ))}
@@ -755,63 +903,87 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           </Card>
 
           {/* KPIs Card */}
-          <Card>
+          <Card className='bg-blue-500/5 border-blue-500/20'>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ChartBarIcon className="h-5 w-5" />
+              <CardTitle className='flex items-center gap-2'>
+                <ChartBarIcon className='h-5 w-5 text-blue-600' />
                 Métricas de Éxito
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">KPIs Técnicos</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Carga de menú {"<"} 100ms
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                <div className='space-y-2 bg-emerald-500/5 p-3 rounded-md border border-emerald-500/20'>
+                  <h4 className='font-medium text-sm text-emerald-600'>
+                    KPIs Técnicos
+                  </h4>
+                  <ul className='space-y-1 text-sm'>
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-emerald-600' />
+                      <span className='text-emerald-700'>
+                        Carga de menú {"<"} 100ms
+                      </span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Cache hit rate {">"} 90%
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-emerald-600' />
+                      <span className='text-emerald-700'>
+                        Cache hit rate {">"} 90%
+                      </span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Error rate {"<"} 0.1%
-                    </li>
-                  </ul>
-                </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">KPIs de Negocio</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Tiempo config -50%
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Tickets soporte -30%
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <Target className="h-3 w-3" />
-                      Adopción 100% en 30 días
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-emerald-600' />
+                      <span className='text-emerald-700'>
+                        Error rate {"<"} 0.1%
+                      </span>
                     </li>
                   </ul>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Beneficios</h4>
-                  <ul className="space-y-1 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2">
-                      <Zap className="h-3 w-3" />
-                      Gestión centralizada
+                <div className='space-y-2 bg-yellow-500/5 p-3 rounded-md border border-yellow-500/20'>
+                  <h4 className='font-medium text-sm text-yellow-600'>
+                    KPIs de Negocio
+                  </h4>
+                  <ul className='space-y-1 text-sm'>
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-yellow-600' />
+                      <span className='text-yellow-700'>
+                        Tiempo config -50%
+                      </span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Zap className="h-3 w-3" />
-                      Permisos granulares
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-yellow-600' />
+                      <span className='text-yellow-700'>
+                        Tickets soporte -30%
+                      </span>
                     </li>
-                    <li className="flex items-center gap-2">
-                      <Zap className="h-3 w-3" />
-                      Herencia inteligente
+                    <li className='flex items-center gap-2'>
+                      <Target className='h-3 w-3 text-yellow-600' />
+                      <span className='text-yellow-700'>
+                        Adopción 100% en 30 días
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div className='space-y-2 bg-primary/5 p-3 rounded-md border border-primary/20'>
+                  <h4 className='font-medium text-sm text-primary'>
+                    Beneficios
+                  </h4>
+                  <ul className='space-y-1 text-sm'>
+                    <li className='flex items-center gap-2'>
+                      <Zap className='h-3 w-3 text-primary' />
+                      <span className='text-primary/80'>
+                        Gestión centralizada
+                      </span>
+                    </li>
+                    <li className='flex items-center gap-2'>
+                      <Zap className='h-3 w-3 text-primary' />
+                      <span className='text-primary/80'>
+                        Permisos granulares
+                      </span>
+                    </li>
+                    <li className='flex items-center gap-2'>
+                      <Zap className='h-3 w-3 text-primary' />
+                      <span className='text-primary/80'>
+                        Herencia inteligente
+                      </span>
                     </li>
                   </ul>
                 </div>
@@ -822,22 +994,25 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
       </Tabs>
 
       {/* Footer CTA */}
-      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
+      <Card className='bg-gradient-to-r from-purple-100/50 to-blue-100/50 border-purple-300 dark:from-purple-900/20 dark:to-blue-900/20 dark:border-purple-700'>
+        <CardContent className='p-6'>
+          <div className='flex items-center justify-between'>
             <div>
-              <h3 className="text-lg font-semibold mb-2">¿Listo para comenzar el desarrollo?</h3>
-              <p className="text-sm text-muted-foreground">
-                Este sistema reutilizará componentes existentes de Meet y AccessControl
+              <h3 className='text-lg font-semibold mb-2'>
+                ¿Listo para comenzar el desarrollo?
+              </h3>
+              <p className='text-sm text-muted-foreground'>
+                Este sistema reutilizará componentes existentes de Meet y
+                AccessControl
               </p>
             </div>
-            <div className="flex gap-3">
-              <Button variant="outline">
-                <FileText className="h-4 w-4 mr-2" />
+            <div className='flex gap-3'>
+              <Button variant='outline'>
+                <FileText className='h-4 w-4 mr-2' />
                 Ver PRD
               </Button>
               <Button>
-                <RocketLaunchIcon className="h-4 w-4 mr-2" />
+                <RocketLaunchIcon className='h-4 w-4 mr-2' />
                 Iniciar Sprint 1
               </Button>
             </div>

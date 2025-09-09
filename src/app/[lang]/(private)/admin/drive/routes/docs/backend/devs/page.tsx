@@ -1,14 +1,17 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
+  ArrowRight,
   Database,
-  Code,
-  GitBranch,
-  FileText,
-  RefreshCw,
   Server,
+  Workflow,
+  PlusCircle,
+  GitBranch,
+  Code,
 } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 import {
   Card,
   CardContent,
@@ -16,381 +19,207 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
+import { useRouter } from "next/navigation";
 
-// Componentes de documentación importados pero ahora mostrados directamente
-const ModeloSection = () => (
-  <Card className='mb-8'>
-    <CardHeader>
-      <CardTitle id='modelo'>Modelo de datos</CardTitle>
-    </CardHeader>
-    <CardContent className='space-y-6'>
-      <section>
-        <h3 className='text-xl font-bold mb-2'>DriveRoute</h3>
-        <p className='mb-2'>
-          El modelo principal para almacenar rutas y su configuración:
-        </p>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`model DriveRoute {
-  id               String   @id @default(auto()) @map("_id") @db.ObjectId
-  slug             String   @unique 
-  folderIds        String[] 
-  title            String?  
-  subtitle         String?  
-  description      String?  
-  hierarchyData    Json     
-  lastUpdated      DateTime @default(now()) 
-  lastSyncAttempt  DateTime? 
-  nextSyncDue      DateTime 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  isActive         Boolean  @default(true)
-  createdById      String?
-  viewCount        Int      @default(0)
-  customSettings   Json?    
-}`}
-        </pre>
-      </section>
+export default function BackendDevsDocsPage() {
+  const router = useRouter();
 
-      <section>
-        <h3 className='text-xl font-bold mb-2'>DriveRouteLog</h3>
-        <p className='mb-2'>Modelo para registrar operaciones sobre rutas:</p>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`model DriveRouteLog {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  routeId        String   @db.ObjectId
-  operation      String   
-  timestamp      DateTime @default(now())
-  success        Boolean
-  errorMessage   String?
-  hierarchySize  Int?     
-  processingTime Int?     
-  
-  @@index([routeId])
-}`}
-        </pre>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Campos principales</h3>
-        <ul className='list-disc pl-6 space-y-1'>
-          <li>
-            <strong>slug</strong>: Identificador único en URL
-          </li>
-          <li>
-            <strong>folderIds</strong>: Array de IDs de carpetas de Google Drive
-          </li>
-          <li>
-            <strong>hierarchyData</strong>: JSON con la estructura jerárquica de
-            Drive
-          </li>
-          <li>
-            <strong>lastUpdated</strong>: Última vez que se actualizó el
-            contenido
-          </li>
-          <li>
-            <strong>nextSyncDue</strong>: Cuándo debe realizarse la próxima
-            sincronización
-          </li>
-          <li>
-            <strong>customSettings</strong>: Configuraciones adicionales
-            (extensible)
-          </li>
-        </ul>
-      </section>
-    </CardContent>
-  </Card>
-);
-
-const ApiSection = () => (
-  <Card className='mb-8'>
-    <CardHeader>
-      <CardTitle id='api'>API</CardTitle>
-    </CardHeader>
-    <CardContent className='space-y-6'>
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Endpoints</h3>
-        <p className='mb-4'>
-          A continuación, se detallan los endpoints disponibles para interactuar
-          con las rutas de Drive:
-        </p>
-
-        <h4 className='text-lg font-semibold'>Operaciones CRUD</h4>
-        <ul className='list-disc pl-6 space-y-1 mb-4'>
-          <li>
-            <strong>GET /api/drive/management</strong> - Listar todas las rutas
-          </li>
-          <li>
-            <strong>POST /api/drive/management</strong> - Crear una nueva ruta
-          </li>
-          <li>
-            <strong>GET /api/drive/management/:id</strong> - Obtener una ruta
-            específica
-          </li>
-          <li>
-            <strong>PUT /api/drive/management/:id</strong> - Actualizar una ruta
-          </li>
-          <li>
-            <strong>DELETE /api/drive/management/:id</strong> - Eliminar una
-            ruta
-          </li>
-        </ul>
-
-        <h4 className='text-lg font-semibold'>Sincronización</h4>
-        <ul className='list-disc pl-6 space-y-1 mb-4'>
-          <li>
-            <strong>POST /api/drive/management/:id/fetch</strong> - Sincronizar
-            una ruta con Drive
-          </li>
-          <li>
-            <strong>POST /api/cron/sync-drive</strong> - Endpoint para tarea
-            CRON (automática)
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Ejemplos de uso</h3>
-        <h4 className='text-lg font-semibold'>Creación de una ruta</h4>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`// POST /api/drive/management
-{
-  "slug": "mi-ruta",
-  "folderIds": ["1ABCd123XYZ_exampleFolderId"],
-  "title": "Mi Ruta de Drive",
-  "subtitle": "Contenido compartido", 
-  "description": "Descripción de la ruta"
-}`}
-        </pre>
-      </section>
-    </CardContent>
-  </Card>
-);
-
-const FlujoSection = () => (
-  <Card className='mb-8'>
-    <CardHeader>
-      <CardTitle id='flujo'>Flujo de datos</CardTitle>
-    </CardHeader>
-    <CardContent className='space-y-6'>
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Proceso de sincronización</h3>
-        <p className='mb-4'>
-          El flujo de datos entre Google Drive y la aplicación sigue estos
-          pasos:
-        </p>
-        <ol className='list-decimal pl-6 space-y-2'>
-          <li>
-            <strong>Inicio de sincronización</strong>: Puede ser manual (botón
-            en UI) o automática (cron job cada 24h)
-          </li>
-          <li>
-            <strong>Obtención de datos</strong>: Se consulta la API de Google
-            Drive para obtener la estructura de carpetas
-          </li>
-          <li>
-            <strong>Procesamiento</strong>: Se analiza la estructura y se genera
-            un JSON jerárquico
-          </li>
-          <li>
-            <strong>Almacenamiento</strong>: Se guarda el JSON en el campo
-            hierarchyData de la ruta
-          </li>
-          <li>
-            <strong>Registro</strong>: Se crea un log de la operación en
-            DriveRouteLog
-          </li>
-        </ol>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Estructura de datos</h3>
-        <p className='mb-4'>
-          El JSON almacenado en hierarchyData tiene esta estructura:
-        </p>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`{
-  "id": "folder_id",
-  "name": "Nombre de la carpeta",
-  "type": "folder",
-  "children": [
+  const backendSections = [
     {
-      "id": "file_id",
-      "name": "Nombre del archivo",
-      "type": "file",
-      "mimeType": "application/pdf",
-      "webViewLink": "https://drive.google.com/...",
-      "thumbnailLink": "https://drive.google.com/..."
+      title: "Tecnologías Principales",
+      description: "Stack tecnológico del backend",
+      icon: Database,
+      href: "/admin/drive/routes/docs/backend/devs/technologies",
+      color: "blue",
+      items: [
+        "Next.js API Routes",
+        "Prisma ORM",
+        "TypeScript",
+        "Google Drive API",
+        "MongoDB",
+      ],
     },
     {
-      "id": "subfolder_id",
-      "name": "Subcarpeta",
-      "type": "folder",
-      "children": [...]
-    }
-  ]
-}`}
-        </pre>
-      </section>
-    </CardContent>
-  </Card>
-);
+      title: "Arquitectura Backend",
+      description: "Diseño en capas y patrones arquitectónicos",
+      icon: PlusCircle,
+      href: "/admin/drive/routes/docs/backend/devs/architecture",
+      color: "purple",
+      items: [
+        "Arquitectura en Capas",
+        "Patrones",
+        "Services Layer",
+        "Data Layer",
+      ],
+    },
+    {
+      title: "Servicios Principales",
+      description: "Servicios core del sistema backend",
+      icon: GitBranch,
+      href: "/admin/drive/routes/docs/backend/devs/services",
+      color: "green",
+      items: [
+        "DriveSyncService",
+        "FileAnalyzerService",
+        "HierarchyService",
+        "AuthService",
+      ],
+    },
+    {
+      title: "Modelo de Datos",
+      description:
+        "Esquemas de Prisma, estructura de base de datos y relaciones",
+      icon: Database,
+      href: "/admin/drive/routes/docs/backend/devs/data-model",
+      color: "orange",
+      items: [
+        "DriveRoute Schema",
+        "DriveRouteLog Schema",
+        "Campos principales",
+        "Relaciones",
+      ],
+    },
+    {
+      title: "API Endpoints",
+      description: "Rutas REST, operaciones CRUD y ejemplos de uso",
+      icon: Server,
+      href: "/admin/drive/routes/docs/backend/devs/api",
+      color: "red",
+      items: [
+        "Operaciones CRUD",
+        "Sincronización",
+        "Ejemplos de requests",
+        "Responses",
+      ],
+    },
+    {
+      title: "Flujos de Trabajo",
+      description: "Procesos de sincronización y manejo de datos",
+      icon: Workflow,
+      href: "/admin/drive/routes/docs/backend/devs/workflows",
+      color: "blue",
+      items: ["Sincronización", "Procesamiento", "Logs", "Monitoreo"],
+    },
+    {
+      title: "Extensiones",
+      description: "Cómo extender el sistema con nuevas funcionalidades",
+      icon: PlusCircle,
+      href: "/admin/drive/routes/docs/backend/devs/extensions",
+      color: "green",
+      items: [
+        "Personalización",
+        "Servicios modulares",
+        "Componentes UI",
+        "Custom Settings",
+      ],
+    },
+    {
+      title: "Sincronización",
+      description: "Sistema automático de sincronización con Google Drive",
+      icon: GitBranch,
+      href: "/admin/drive/routes/docs/backend/devs/synchronization",
+      color: "purple",
+      items: ["Mecanismos", "Cron Jobs", "Logs", "Monitoreo"],
+    },
+  ];
 
-const ExtensionSection = () => (
-  <Card className='mb-8'>
-    <CardHeader>
-      <CardTitle id='extension'>Extensión</CardTitle>
-    </CardHeader>
-    <CardContent className='space-y-6'>
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Personalización</h3>
-        <p className='mb-4'>
-          El sistema está diseñado para ser extensible. Puedes personalizar el
-          comportamiento mediante:
-        </p>
-        <ul className='list-disc pl-6 space-y-2'>
-          <li>
-            <strong>customSettings</strong>: Campo JSON para configuraciones
-            específicas de cada ruta
-          </li>
-          <li>
-            <strong>Servicios modulares</strong>: DriveSyncService, FileAnalyzer
-            y HierarchyService pueden ser extendidos
-          </li>
-          <li>
-            <strong>Componentes de UI</strong>: Los componentes de visualización
-            pueden ser personalizados por ruta
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Ejemplo de extensión</h3>
-        <p className='mb-4'>
-          Para añadir un nuevo tipo de archivo o comportamiento personalizado:
-        </p>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`// 1. Extender el FileAnalyzer
-class CustomFileAnalyzer extends FileAnalyzer {
-  analyzeFile(file) {
-    // Lógica personalizada
-    return {
-      ...super.analyzeFile(file),
-      customProperty: "valor"
-    };
-  }
-}
-
-// 2. Usar en la sincronización
-const analyzer = new CustomFileAnalyzer();
-const hierarchy = await hierarchyService.buildHierarchy(folderId, { analyzer });`}
-        </pre>
-      </section>
-    </CardContent>
-  </Card>
-);
-
-const SincronizacionSection = () => (
-  <Card className='mb-8'>
-    <CardHeader>
-      <CardTitle id='sincronizacion'>Sincronización</CardTitle>
-    </CardHeader>
-    <CardContent className='space-y-6'>
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Mecanismos</h3>
-        <p className='mb-4'>
-          La sincronización puede realizarse de dos formas:
-        </p>
-        <ul className='list-disc pl-6 space-y-2'>
-          <li>
-            <strong>Manual</strong>: A través del botón &quot;Sincronizar&quot;
-            en la interfaz de administración
-          </li>
-          <li>
-            <strong>Automática</strong>: Mediante un cron job que se ejecuta
-            cada 24 horas
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Implementación del cron</h3>
-        <p className='mb-4'>
-          El cron job está implementado en el endpoint /api/cron/sync-drive:
-        </p>
-        <pre className='bg-slate-100 p-4 rounded overflow-x-auto'>
-          {`// Ejemplo de implementación
-export async function GET() {
-  const syncService = new DriveSyncService();
-  
-  // Obtener rutas que necesitan sincronización
-  const routes = await prisma.driveRoute.findMany({
-    where: {
-      nextSyncDue: {
-        lte: new Date()
-      },
-      isActive: true
-    }
-  });
-  
-  // Sincronizar cada ruta
-  for (const route of routes) {
-    await syncService.syncRoute(route.id);
-  }
-  
-  return NextResponse.json({ success: true, synced: routes.length });
-}`}
-        </pre>
-      </section>
-
-      <section>
-        <h3 className='text-xl font-bold mb-2'>Logs y monitoreo</h3>
-        <p className='mb-4'>
-          Cada operación de sincronización genera un registro en DriveRouteLog:
-        </p>
-        <ul className='list-disc pl-6 space-y-1'>
-          <li>
-            <strong>operation</strong>: Tipo de operación (&quot;create&quot;,
-            &quot;update&quot;, &quot;refresh&quot;)
-          </li>
-          <li>
-            <strong>success</strong>: Indica si la operación fue exitosa
-          </li>
-          <li>
-            <strong>errorMessage</strong>: Mensaje de error si la operación
-            falló
-          </li>
-          <li>
-            <strong>hierarchySize</strong>: Tamaño del JSON en bytes
-          </li>
-          <li>
-            <strong>processingTime</strong>: Tiempo de procesamiento en ms
-          </li>
-        </ul>
-      </section>
-    </CardContent>
-  </Card>
-);
-
-// Componente principal
-export default function DevDocsPage() {
   return (
-    <div className='container py-10'>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold'>
-          Documentación Técnica para Desarrolladores
-        </h1>
-        <p className='text-muted-foreground mt-2'>
-          Referencia técnica completa sobre el sistema de rutas de Drive
-        </p>
-      </div>
+    <div>
+      <DocHeader
+        title='Documentación Técnica Backend'
+        description='Guía completa para desarrolladores del sistema backend'
+        icon={Code}
+      />
 
-      <div>
-        <ModeloSection />
-        <ApiSection />
-        <FlujoSection />
-        <ExtensionSection />
-        <SincronizacionSection />
-      </div>
+      <DocContent>
+        <div className='mb-8'>
+          <p className='text-lg text-slate-300'>
+            El backend está construido con Next.js API Routes, Prisma ORM y
+            TypeScript, utilizando una arquitectura modular que facilita la
+            extensión y mantenimiento.
+          </p>
+        </div>
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6'>
+          {backendSections.map((section) => {
+            const Icon = section.icon;
+            const colorClasses = {
+              blue: "border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30",
+              green:
+                "border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30",
+              purple:
+                "border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30",
+              orange:
+                "border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30",
+              red: "border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/30",
+            };
+
+            const iconColorClasses = {
+              blue: "text-primary",
+              green: "text-primary",
+              purple: "text-primary",
+              orange: "text-primary",
+              red: "text-primary",
+            };
+
+            return (
+              <Card
+                key={section.title}
+                className={`cursor-pointer transition-all duration-200 ${colorClasses[section.color as keyof typeof colorClasses]}`}
+                onClick={() => router.push(section.href)}
+              >
+                <CardHeader>
+                  <div className='flex items-center gap-3 mb-2'>
+                    <Icon
+                      className={`h-6 w-6 ${iconColorClasses[section.color as keyof typeof iconColorClasses]}`}
+                    />
+                    <CardTitle className='text-lg'>{section.title}</CardTitle>
+                  </div>
+                  <CardDescription className='text-sm'>
+                    {section.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className='space-y-2 mb-4'>
+                    {section.items.map((item, index) => (
+                      <div
+                        key={index}
+                        className='flex items-center gap-2 text-sm text-slate-300'
+                      >
+                        <div className='w-1.5 h-1.5 bg-current rounded-full' />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <Button
+                    variant='outline'
+                    className='w-full group'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(section.href);
+                    }}
+                  >
+                    Ver Detalles
+                    <ArrowRight className='ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform' />
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <div className='bg-primary/5 border border-primary/20 rounded-lg p-6 mt-8'>
+          <h4 className='font-semibold mb-2 flex items-center gap-2 text-primary'>
+            ⚠️ Prerrequisitos
+          </h4>
+          <p className='text-sm text-slate-300'>
+            Esta documentación asume conocimientos básicos de{" "}
+            <strong>Node.js</strong>,<strong>TypeScript</strong>,{" "}
+            <strong>Prisma ORM</strong> y <strong>APIs RESTful</strong>. Cada
+            sección incluye ejemplos prácticos y casos de uso reales.
+          </p>
+        </div>
+      </DocContent>
     </div>
   );
 }

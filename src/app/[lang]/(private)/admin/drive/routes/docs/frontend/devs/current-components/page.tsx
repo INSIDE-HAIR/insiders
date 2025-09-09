@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { Layers, Lightbulb } from "lucide-react";
 
 export default function CurrentComponentsPage() {
   return (
@@ -7,6 +8,7 @@ export default function CurrentComponentsPage() {
       <DocHeader
         title='Componentes Actuales'
         description='Referencia de los componentes disponibles en el sistema'
+        icon={Layers}
       />
 
       <DocContent>
@@ -250,8 +252,9 @@ export default function CurrentComponentsPage() {
           </li>
         </ul>
 
-        <div className='bg-blue-50 border-l-4 border-blue-500 p-4 my-6'>
-          <p className='text-blue-800'>
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <Lightbulb className='h-4 w-4' />
             <strong>Consejo:</strong> Antes de crear un nuevo componente,
             verifica si puedes extender uno existente. Esto ayuda a mantener la
             coherencia del sistema y reduce la duplicación de código.

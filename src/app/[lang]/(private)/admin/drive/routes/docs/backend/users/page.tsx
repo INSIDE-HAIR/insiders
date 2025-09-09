@@ -15,6 +15,7 @@ import {
   InfoIcon,
   AlertTriangle,
   Bookmark,
+  Users,
 } from "lucide-react";
 import {
   Card,
@@ -39,6 +40,8 @@ import {
   TabsTrigger,
 } from "@/src/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/src/components/ui/alert";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 
 // Componentes de documentación
 const IntroduccionSection = () => (
@@ -98,9 +101,9 @@ const IntroduccionSection = () => (
 
       <Separator className='my-4' />
 
-      <div className='bg-slate-50 p-4 rounded-lg border border-slate-200'>
-        <h4 className='font-semibold text-slate-800 mb-2'>¿Sabías que...?</h4>
-        <p className='text-slate-700'>
+      <div className='bg-primary/5 p-4 rounded-lg border border-primary/20'>
+        <h4 className='font-semibold text-primary mb-2'>¿Sabías que...?</h4>
+        <p className='text-white'>
           El sistema sincroniza automáticamente tu contenido cada 24 horas, pero
           también puedes forzar la sincronización manual en cualquier momento.
         </p>
@@ -169,9 +172,9 @@ const CrearRutasSection = () => (
           </li>
           <li>
             Observa la URL en tu navegador, que tendrá un formato similar a:
-            <pre className='bg-slate-100 p-2 rounded mt-1 text-xs'>
+            <pre className='bg-slate-800 p-2 rounded mt-1 text-xs border border-slate-600 text-green-400'>
               https://drive.google.com/drive/folders/
-              <span className='font-bold text-blue-600'>
+              <span className='font-bold text-blue-300'>
                 1ABCd123XYZ_exampleFolderId
               </span>
             </pre>
@@ -222,9 +225,9 @@ const GestionarRutasSection = () => (
       <section>
         <h3 className='text-xl font-bold mb-3'>Funciones Disponibles</h3>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <div className='border rounded-lg p-4'>
-            <h4 className='font-semibold mb-2'>Editar Ruta</h4>
-            <p className='text-sm mb-2'>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Editar Ruta</h4>
+            <p className='text-sm mb-2 text-white'>
               Modifica la configuración de una ruta existente para cambiar su
               título, descripción, slug, etc.
             </p>
@@ -235,9 +238,9 @@ const GestionarRutasSection = () => (
             </ol>
           </div>
 
-          <div className='border rounded-lg p-4'>
-            <h4 className='font-semibold mb-2'>Sincronizar con Drive</h4>
-            <p className='text-sm mb-2'>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Sincronizar con Drive</h4>
+            <p className='text-sm mb-2 text-white'>
               Actualiza manualmente los datos para reflejar cambios recientes en
               Google Drive.
             </p>
@@ -248,9 +251,9 @@ const GestionarRutasSection = () => (
             </ol>
           </div>
 
-          <div className='border rounded-lg p-4'>
-            <h4 className='font-semibold mb-2'>Ver JSON</h4>
-            <p className='text-sm mb-2'>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Ver JSON</h4>
+            <p className='text-sm mb-2 text-white'>
               Examina los datos estructurados que se han obtenido de Google
               Drive.
             </p>
@@ -261,9 +264,9 @@ const GestionarRutasSection = () => (
             </ol>
           </div>
 
-          <div className='border rounded-lg p-4'>
-            <h4 className='font-semibold mb-2'>Eliminar Ruta</h4>
-            <p className='text-sm mb-2'>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Eliminar Ruta</h4>
+            <p className='text-sm mb-2 text-white'>
               Elimina permanentemente una ruta cuando ya no se necesite.
             </p>
             <ol className='list-decimal pl-4 text-sm'>
@@ -329,8 +332,8 @@ const SincronizacionSection = () => (
         </p>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <div className='border rounded-lg p-4 bg-blue-50'>
-            <h4 className='font-semibold mb-2'>Sincronización Automática</h4>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Sincronización Automática</h4>
             <ul className='list-disc pl-4 space-y-1'>
               <li>
                 Se ejecuta <strong>cada 24 horas</strong>
@@ -341,8 +344,8 @@ const SincronizacionSection = () => (
             </ul>
           </div>
 
-          <div className='border rounded-lg p-4 bg-green-50'>
-            <h4 className='font-semibold mb-2'>Sincronización Manual</h4>
+          <div className='border border-primary/20 rounded-lg p-4 bg-primary/5'>
+            <h4 className='font-semibold mb-2 text-primary'>Sincronización Manual</h4>
             <ul className='list-disc pl-4 space-y-1'>
               <li>Iniciada por el administrador</li>
               <li>Ideal para ver cambios inmediatos</li>
@@ -382,11 +385,11 @@ const SincronizacionSection = () => (
 
       <section>
         <h3 className='text-xl font-bold mb-3'>Solución de problemas</h3>
-        <div className='bg-slate-50 p-4 rounded-lg border border-slate-200'>
-          <h4 className='font-semibold mb-2'>
+        <div className='bg-primary/5 p-4 rounded-lg border border-primary/20'>
+          <h4 className='font-semibold mb-2 text-primary'>
             ¿Problemas con la sincronización?
           </h4>
-          <p className='mb-2'>
+          <p className='mb-2 text-white'>
             Si experimentas problemas con la sincronización, prueba estos pasos:
           </p>
           <ol className='list-decimal pl-6 space-y-1'>
@@ -415,26 +418,26 @@ const PermisosSection = () => (
     <CardContent className='space-y-6'>
       <section>
         <h3 className='text-xl font-bold mb-3'>Configuración de permisos</h3>
-        <p className='mb-4'>
+        <p className='mb-4 text-white'>
           Para que el sistema pueda acceder y mostrar el contenido de tus
           carpetas, asegúrate de configurar correctamente los permisos:
         </p>
 
         <h4 className='text-lg font-semibold mb-2'>Opciones de permisos:</h4>
         <div className='grid grid-cols-1 gap-4'>
-          <div className='border rounded-lg p-4 bg-green-50'>
+          <div className='border rounded-lg p-4 bg-primary/5'>
             <h5 className='font-semibold mb-1'>
               Opción recomendada: Compartir con la cuenta de servicio
             </h5>
             <p className='text-sm mb-2'>
               Compartir directamente con la cuenta de servicio del sistema:
             </p>
-            <ol className='list-decimal ml-5 text-green-700 space-y-1'>
+            <ol className='list-decimal ml-5 text-white space-y-1'>
               <li>En Google Drive, haz clic derecho en la carpeta</li>
               <li>Selecciona &quot;Compartir&quot;</li>
               <li>
                 Introduce la dirección de correo de la cuenta de servicio:{" "}
-                <code className='bg-green-100 px-1 rounded'>
+                <code className='bg-slate-800 border border-slate-600 px-1 rounded'>
                   g-drive@insiders-vercel.iam.gserviceaccount.com
                 </code>
               </li>
@@ -443,7 +446,7 @@ const PermisosSection = () => (
             </ol>
           </div>
 
-          <div className='border rounded-lg p-4 bg-yellow-50'>
+          <div className='border rounded-lg p-4 bg-primary/5'>
             <h5 className='font-semibold mb-1'>
               Alternativa: Hacer la carpeta pública
             </h5>
@@ -451,7 +454,7 @@ const PermisosSection = () => (
               Si prefieres hacer la carpeta accesible para cualquiera con el
               enlace:
             </p>
-            <ol className='list-decimal ml-5 text-yellow-700 space-y-1'>
+            <ol className='list-decimal ml-5 text-white space-y-1'>
               <li>En Google Drive, haz clic derecho en la carpeta</li>
               <li>Selecciona &quot;Compartir&quot;</li>
               <li>
@@ -461,7 +464,7 @@ const PermisosSection = () => (
               <li>Asegúrate de que el rol sea &quot;Lector&quot;</li>
               <li>Haz clic en &quot;Listo&quot;</li>
             </ol>
-            <p className='text-yellow-600 mt-2 text-sm flex items-center'>
+            <p className='text-orange-400 mt-2 text-sm flex items-center'>
               <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que esto
               hará que el contenido sea accesible para cualquier persona que
               tenga el enlace directo.
@@ -472,10 +475,10 @@ const PermisosSection = () => (
 
       <section>
         <h3 className='text-xl font-bold mb-3'>Verificar permisos</h3>
-        <p className='mb-2'>
+        <p className='mb-2 text-white'>
           Para comprobar que los permisos están configurados correctamente:
         </p>
-        <ol className='list-decimal pl-6 space-y-1'>
+        <ol className='list-decimal pl-6 space-y-1 text-white'>
           <li>Crea una ruta con el ID de carpeta</li>
           <li>Intenta sincronizar manualmente</li>
           <li>
@@ -600,13 +603,14 @@ export default function BackendUserGuide() {
   };
 
   return (
-    <div className='space-y-6'>
-      <div>
-        <h1 className='text-3xl font-bold mb-2'>Guía de Usuario - Backend</h1>
-        <p className='text-lg text-muted-foreground mb-6'>
-          Administración y configuración del backend de Rutas de Drive.
-        </p>
+    <div>
+      <DocHeader
+        title='Guía de Usuario - Backend'
+        description='Administración y configuración del backend de Rutas de Drive'
+        icon={Users}
+      />
 
+      <DocContent>
         <Alert>
           <InfoIcon className='h-4 w-4' />
           <AlertTitle>Documentación en desarrollo</AlertTitle>
@@ -615,162 +619,170 @@ export default function BackendUserGuide() {
             actualización: Abril 2024.
           </AlertDescription>
         </Alert>
-      </div>
 
-      <Tabs defaultValue='permissions' className='mt-6'>
-        <TabsList className='grid w-full md:w-auto grid-cols-1 md:grid-cols-4'>
-          <TabsTrigger value='permissions'>Permisos</TabsTrigger>
-          <TabsTrigger value='configuration'>Configuración</TabsTrigger>
-          <TabsTrigger value='monitoring'>Monitoreo</TabsTrigger>
-          <TabsTrigger value='troubleshooting'>
-            Solución de problemas
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue='permissions' className='mt-6'>
+          <TabsList className='grid w-full md:w-auto grid-cols-1 md:grid-cols-4'>
+            <TabsTrigger value='permissions'>Permisos</TabsTrigger>
+            <TabsTrigger value='configuration'>Configuración</TabsTrigger>
+            <TabsTrigger value='monitoring'>Monitoreo</TabsTrigger>
+            <TabsTrigger value='troubleshooting'>
+              Solución de problemas
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value='permissions' className='mt-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center'>
-                <Shield className='h-5 w-5 mr-2 text-blue-600' />
-                Permisos de Google Drive
-              </CardTitle>
-              <CardDescription>
-                Configuración de permisos para el acceso a carpetas
-              </CardDescription>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <h3 className='text-lg font-medium'>Configuración de permisos</h3>
-              <p>
-                Para que el sistema pueda acceder y mostrar el contenido de tus
-                carpetas, asegúrate de configurar correctamente los permisos:
-              </p>
-
-              <div className='bg-green-50 p-4 rounded-md border border-green-200'>
-                <h4 className='font-medium text-green-800'>
-                  Opción recomendada: Compartir con la cuenta de servicio
-                </h4>
-                <p className='text-green-700 mb-2'>
-                  Compartir directamente con la cuenta de servicio del sistema:
+          <TabsContent value='permissions' className='mt-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center'>
+                  <Shield className='h-5 w-5 mr-2 text-primary' />
+                  Permisos de Google Drive
+                </CardTitle>
+                <CardDescription>
+                  Configuración de permisos para el acceso a carpetas
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='space-y-4'>
+                <h3 className='text-lg font-medium'>
+                  Configuración de permisos
+                </h3>
+                <p className='text-white'>
+                  Para que el sistema pueda acceder y mostrar el contenido de
+                  tus carpetas, asegúrate de configurar correctamente los
+                  permisos:
                 </p>
-                <ol className='list-decimal ml-5 text-green-700 space-y-1'>
-                  <li>En Google Drive, haz clic derecho en la carpeta</li>
-                  <li>Selecciona &quot;Compartir&quot;</li>
+
+                <div className='bg-primary/5 p-4 rounded-md border border-primary/20'>
+                  <h4 className='font-medium text-primary'>
+                    Opción recomendada: Compartir con la cuenta de servicio
+                  </h4>
+                  <p className='text-white mb-2'>
+                    Compartir directamente con la cuenta de servicio del
+                    sistema:
+                  </p>
+                  <ol className='list-decimal ml-5 text-white space-y-1'>
+                    <li>En Google Drive, haz clic derecho en la carpeta</li>
+                    <li>Selecciona &quot;Compartir&quot;</li>
+                    <li>
+                      Introduce la dirección de correo de la cuenta de servicio:{" "}
+                      <code className='bg-slate-800 border border-slate-600 px-1 rounded'>
+                        g-drive@insiders-vercel.iam.gserviceaccount.com
+                      </code>
+                    </li>
+                    <li>Otorga permisos de &quot;Lector&quot;</li>
+                    <li>Haz clic en &quot;Listo&quot;</li>
+                  </ol>
+                </div>
+
+                <div className='bg-primary/5 p-4 rounded-md border border-primary/20 mt-4'>
+                  <h4 className='font-medium text-primary'>
+                    Alternativa: Hacer la carpeta pública
+                  </h4>
+                  <p className='text-white mb-2'>
+                    Si prefieres hacer la carpeta accesible para cualquiera con
+                    el enlace:
+                  </p>
+                  <ol className='list-decimal ml-5 text-white space-y-1'>
+                    <li>En Google Drive, haz clic derecho en la carpeta</li>
+                    <li>Selecciona &quot;Compartir&quot;</li>
+                    <li>
+                      Haz clic en &quot;Configuración general de uso
+                      compartido&quot;
+                    </li>
+                    <li>Cambia a &quot;Cualquiera con el enlace&quot;</li>
+                    <li>Asegúrate de que el rol sea &quot;Lector&quot;</li>
+                    <li>Haz clic en &quot;Listo&quot;</li>
+                  </ol>
+                  <p className='text-orange-400 mt-2 text-sm flex items-center'>
+                    <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que
+                    esto hará que el contenido sea accesible para cualquier
+                    persona que tenga el enlace directo.
+                  </p>
+                </div>
+
+                <h3 className='text-lg font-medium mt-6'>Verificar permisos</h3>
+                <p className='text-white'>
+                  Para comprobar que los permisos están configurados
+                  correctamente:
+                </p>
+                <ol className='list-decimal pl-6 space-y-1 text-white'>
+                  <li>Crea una ruta con el ID de carpeta</li>
+                  <li>Intenta sincronizar manualmente</li>
                   <li>
-                    Introduce la dirección de correo de la cuenta de servicio:{" "}
-                    <code className='bg-green-100 px-1 rounded'>
-                      g-drive@insiders-vercel.iam.gserviceaccount.com
-                    </code>
+                    Si la sincronización tiene éxito, los permisos están
+                    correctos
                   </li>
-                  <li>Otorga permisos de &quot;Lector&quot;</li>
-                  <li>Haz clic en &quot;Listo&quot;</li>
-                </ol>
-              </div>
-
-              <div className='bg-yellow-50 p-4 rounded-md border border-yellow-200 mt-4'>
-                <h4 className='font-medium text-yellow-800'>
-                  Alternativa: Hacer la carpeta pública
-                </h4>
-                <p className='text-yellow-700 mb-2'>
-                  Si prefieres hacer la carpeta accesible para cualquiera con el
-                  enlace:
-                </p>
-                <ol className='list-decimal ml-5 text-yellow-700 space-y-1'>
-                  <li>En Google Drive, haz clic derecho en la carpeta</li>
-                  <li>Selecciona &quot;Compartir&quot;</li>
                   <li>
-                    Haz clic en &quot;Configuración general de uso
-                    compartido&quot;
+                    Si hay error, verifica que la cuenta de servicio tenga
+                    acceso a la carpeta
                   </li>
-                  <li>Cambia a &quot;Cualquiera con el enlace&quot;</li>
-                  <li>Asegúrate de que el rol sea &quot;Lector&quot;</li>
-                  <li>Haz clic en &quot;Listo&quot;</li>
                 </ol>
-                <p className='text-yellow-600 mt-2 text-sm flex items-center'>
-                  <AlertTriangle className='h-4 w-4 mr-1' /> Ten en cuenta que
-                  esto hará que el contenido sea accesible para cualquier
-                  persona que tenga el enlace directo.
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value='configuration' className='mt-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center'>
+                  <Settings className='h-5 w-5 mr-2 text-primary' />
+                  Configuración del sistema
+                </CardTitle>
+                <CardDescription>
+                  Opciones de configuración avanzadas
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className='text-slate-400 italic'>
+                  Contenido en desarrollo. Esta sección explicará las diferentes
+                  opciones de configuración del sistema backend.
                 </p>
-              </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-              <h3 className='text-lg font-medium mt-6'>Verificar permisos</h3>
-              <p>
-                Para comprobar que los permisos están configurados
-                correctamente:
-              </p>
-              <ol className='list-decimal pl-6 space-y-1'>
-                <li>Crea una ruta con el ID de carpeta</li>
-                <li>Intenta sincronizar manualmente</li>
-                <li>
-                  Si la sincronización tiene éxito, los permisos están correctos
-                </li>
-                <li>
-                  Si hay error, verifica que la cuenta de servicio tenga acceso
-                  a la carpeta
-                </li>
-              </ol>
-            </CardContent>
-          </Card>
-        </TabsContent>
+          <TabsContent value='monitoring' className='mt-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center'>
+                  <Bookmark className='h-5 w-5 mr-2 text-primary' />
+                  Monitoreo y auditoría
+                </CardTitle>
+                <CardDescription>
+                  Seguimiento de actividad y uso
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className='text-slate-400 italic'>
+                  Contenido en desarrollo. Esta sección explicará cómo
+                  monitorear el uso del sistema y revisar registros de
+                  actividad.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value='configuration' className='mt-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center'>
-                <Settings className='h-5 w-5 mr-2 text-slate-600' />
-                Configuración del sistema
-              </CardTitle>
-              <CardDescription>
-                Opciones de configuración avanzadas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-muted-foreground italic'>
-                Contenido en desarrollo. Esta sección explicará las diferentes
-                opciones de configuración del sistema backend.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value='monitoring' className='mt-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center'>
-                <Bookmark className='h-5 w-5 mr-2 text-indigo-600' />
-                Monitoreo y auditoría
-              </CardTitle>
-              <CardDescription>Seguimiento de actividad y uso</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-muted-foreground italic'>
-                Contenido en desarrollo. Esta sección explicará cómo monitorear
-                el uso del sistema y revisar registros de actividad.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value='troubleshooting' className='mt-6'>
-          <Card>
-            <CardHeader>
-              <CardTitle className='flex items-center'>
-                <AlertTriangle className='h-5 w-5 mr-2 text-amber-600' />
-                Solución de problemas comunes
-              </CardTitle>
-              <CardDescription>
-                Respuestas a problemas frecuentes del backend
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className='text-muted-foreground italic'>
-                Contenido en desarrollo. Esta sección proporcionará respuestas a
-                preguntas frecuentes y soluciones a problemas comunes del
-                backend.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+          <TabsContent value='troubleshooting' className='mt-6'>
+            <Card>
+              <CardHeader>
+                <CardTitle className='flex items-center'>
+                  <AlertTriangle className='h-5 w-5 mr-2 text-primary' />
+                  Solución de problemas comunes
+                </CardTitle>
+                <CardDescription>
+                  Respuestas a problemas frecuentes del backend
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className='text-slate-400 italic'>
+                  Contenido en desarrollo. Esta sección proporcionará respuestas
+                  a preguntas frecuentes y soluciones a problemas comunes del
+                  backend.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </DocContent>
     </div>
   );
 }

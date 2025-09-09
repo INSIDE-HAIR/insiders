@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { FileText, AlertTriangle } from "lucide-react";
 
 export default function DescriptionFieldPage() {
   return (
@@ -7,6 +8,7 @@ export default function DescriptionFieldPage() {
       <DocHeader
         title='Campo Description'
         description='Propiedades personalizadas para archivos y carpetas'
+        icon={FileText}
       />
 
       <DocContent>
@@ -28,15 +30,15 @@ export default function DescriptionFieldPage() {
         <ul className='list-disc pl-5 space-y-2 mb-4'>
           <li>
             <code>formUrl</code>: URL específica para formularios de Google
-            <pre className='bg-zinc-900 text-zinc-100 p-2 rounded text-xs mt-1 overflow-x-auto'>
-              {`"formUrl":"https://docs.google.com/forms/d/e/1FAIpQLSdg7a7Ova2NuP67O2NQUf9kpnEHHPnAeqeqF3M2ECaKl4QWYQ/viewform"`}
-            </pre>
+            <div className='bg-slate-900 border border-slate-700 p-3 rounded text-xs mt-1 overflow-x-auto'>
+              <code><span className='text-blue-400'>"formUrl"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"https://docs.google.com/forms/d/e/1FAIpQLSdg7a7Ova2NuP67O2NQUf9kpnEHHPnAeqeqF3M2ECaKl4QWYQ/viewform"</span></code>
+            </div>
           </li>
           <li>
             <code>copy</code>: Texto para copiar al portapapeles
-            <pre className='bg-zinc-900 text-zinc-100 p-2 rounded text-xs mt-1 overflow-x-auto'>
-              {`"copy":"🌟 Esta primavera descubre LUMINAE 2025 🌟\\nEl secreto mejor guardado de las estrellas✨, ahora en tu salón."`}
-            </pre>
+            <div className='bg-slate-900 border border-slate-700 p-3 rounded text-xs mt-1 overflow-x-auto'>
+              <code><span className='text-blue-400'>"copy"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"🌟 Esta primavera descubre LUMINAE 2025 🌟\\nEl secreto mejor guardado de las estrellas✨, ahora en tu salón."</span></code>
+            </div>
           </li>
         </ul>
 
@@ -49,9 +51,11 @@ export default function DescriptionFieldPage() {
           Google Drive con el formato:
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`"propiedad1":"valor1","propiedad2":"valor2"`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code><span className='text-blue-400'>"propiedad1"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"valor1"</span><span className='text-slate-300'>,</span><span className='text-blue-400'>"propiedad2"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"valor2"</span></code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Pasos para editar el campo Description
@@ -72,19 +76,24 @@ export default function DescriptionFieldPage() {
         <h4 className='text-lg font-medium mt-4 mb-2'>
           Ejemplo 1: Formulario de Google
         </h4>
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-4'>
-          {`"formUrl":"https://docs.google.com/forms/d/e/1FAIpQLSdg7a7Ova2NuP67O2NQUf9kpnEHHPnAeqeqF3M2ECaKl4QWYQ/viewform"`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-4'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code><span className='text-blue-400'>"formUrl"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"https://docs.google.com/forms/d/e/1FAIpQLSdg7a7Ova2NuP67O2NQUf9kpnEHHPnAeqeqF3M2ECaKl4QWYQ/viewform"</span></code>
+          </pre>
+        </div>
 
         <h4 className='text-lg font-medium mt-4 mb-2'>
           Ejemplo 2: Texto para copiar
         </h4>
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-4'>
-          {`"copy":"🌟 Esta primavera descubre LUMINAE 2025 🌟\\nEl secreto mejor guardado de las estrellas✨, ahora en tu salón.\\n\\nImagina un cabello iluminado, lleno de vida, con un efecto de luz natural que realza tu belleza sin esfuerzo. 💫"`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-4'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code><span className='text-blue-400'>"copy"</span><span className='text-slate-300'>:</span><span className='text-green-300'>"🌟 Esta primavera descubre LUMINAE 2025 🌟\\nEl secreto mejor guardado de las estrellas✨, ahora en tu salón.\\n\\nImagina un cabello iluminado, lleno de vida, con un efecto de luz natural que realza tu belleza sin esfuerzo. 💫"</span></code>
+          </pre>
+        </div>
 
-        <div className='bg-amber-50 border-l-4 border-amber-500 p-4 my-6'>
-          <p className='text-amber-800'>
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <AlertTriangle className='h-4 w-4' />
             <strong>Importante:</strong> Asegúrate de usar comillas dobles para
             las propiedades y valores, y escapa los caracteres especiales con
             barra invertida (\).

@@ -3,6 +3,8 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BookOpen, FileText, Code, Home, Users, Cog } from "lucide-react"
+import { useCallback } from "react"
+import { cn } from "@/src/lib/utils"
 import {
   Sidebar,
   SidebarContent,
@@ -82,14 +84,21 @@ const devMenuItems = [
 export function DocsNavigation() {
   const pathname = usePathname()
 
+  // Function to check if a route is currently active (exact match)
+  const isRouteActive = useCallback((routePath: string): boolean => {
+    // Remove language prefix from pathname for comparison
+    const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
+    return cleanPathname === routePath;
+  }, [pathname]);
+
   return (
-    <Sidebar variant="sidebar" className="bg-zinc-50 text-zinc-900 border-r border-zinc-200 shadow-sm">
-      <SidebarHeader className="border-b border-zinc-200">
+    <Sidebar collapsible="icon" className="border-r shadow-sm">
+      <SidebarHeader className="h-14 lg:h-[60px] py-0 m-auto w-full text-background [&>button]:hover:text-background">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/" className="flex items-center gap-2">
-                <Home className="h-5 w-5 text-black" />
+                <Home className="h-5 w-5" />
                 <span className="font-semibold">Marketing Salón</span>
               </Link>
             </SidebarMenuButton>
@@ -99,22 +108,25 @@ export function DocsNavigation() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
-            <Users className="h-4 w-4 mr-2" />
-            Manual para Usuarios
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Manual para Usuarios</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {userMenuItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
-                    <Link href={item.href} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {userMenuItems.map((item) => {
+                const isActive = isRouteActive(item.href);
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span className={cn(
+                          "transition-colors",
+                          isActive && "text-primary font-medium"
+                        )}>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -122,22 +134,25 @@ export function DocsNavigation() {
         <SidebarSeparator />
 
         <SidebarGroup>
-          <SidebarGroupLabel>
-            <Code className="h-4 w-4 mr-2" />
-            Manual para Desarrolladores
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Manual para Desarrolladores</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {devMenuItems.map((item) => (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
-                    <Link href={item.href} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {devMenuItems.map((item) => {
+                const isActive = isRouteActive(item.href);
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild tooltip={item.title}>
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span className={cn(
+                          "transition-colors",
+                          isActive && "text-primary font-medium"
+                        )}>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

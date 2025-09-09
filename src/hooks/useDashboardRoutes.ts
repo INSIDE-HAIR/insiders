@@ -34,6 +34,8 @@ import {
   Layers,
   Video,
   Tag,
+  Bell,
+  BellRing,
 } from 'lucide-react'
 
 // Mapeo de iconos string a componentes
@@ -66,6 +68,8 @@ const iconMap = {
   Layers,
   Video,
   Tag,
+  Bell,
+  BellRing,
   // Compatibility with existing icons
   TagIcon: Tag,
   FolderIcon: Folder,

@@ -22,7 +22,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         "products",
         "users",
         "groups",
-        "messages",
+        "notifications",
         "drive",
         "holded",
         "calendar",
@@ -47,7 +47,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo de Consultoría",
       },
       plan: "Pro",
-      routes: ["users", "admin", "messages"],
+      routes: ["users", "admin", "notifications"],
     },
     crecimiento: {
       name: {
@@ -55,7 +55,7 @@ export const dashboardRoutesData: DashboardRoutes = {
         es: "Equipo de Crecimiento",
       },
       plan: "Pro",
-      routes: ["products", "admin", "messages"],
+      routes: ["products", "admin", "notifications"],
     },
   },
   routes: [
@@ -151,13 +151,13 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
     {
-      id: "messages",
+      id: "notifications",
       label: {
-        en: "Messages",
-        es: "Mensajes",
+        en: "Notifications",
+        es: "Notificaciones",
       },
-      href: "/admin/messages",
-      icon: "Mail",
+      href: "/admin/notifications",
+      icon: "BellRing",
       type: "accordion",
       access: {
         roles: ["admin", "super-admin"],
@@ -165,13 +165,31 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
       subItems: [
         {
-          id: "messages-all",
+          id: "notifications-tickets",
           label: {
-            en: "All Messages",
-            es: "Todos los Mensajes",
+            en: "Tickets",
+            es: "Tickets",
           },
-          href: "/admin/messages",
-          icon: "Mail",
+          href: "/admin/notifications/tickets",
+          icon: "AlertTriangle",
+        },
+        {
+          id: "notifications-requests",
+          label: {
+            en: "Requests",
+            es: "Solicitudes",
+          },
+          href: "/admin/notifications/requests",
+          icon: "FileText",
+        },
+        {
+          id: "notifications-system",
+          label: {
+            en: "System Logs",
+            es: "Sistema",
+          },
+          href: "/admin/notifications/system",
+          icon: "Terminal",
         },
       ],
     },
@@ -206,15 +224,6 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           href: "/admin/drive/codes",
           icon: "Code",
-        },
-        {
-          id: "drive-errors",
-          label: {
-            en: "Error Reports",
-            es: "Reportes de Errores",
-          },
-          href: "/admin/drive/errors",
-          icon: "AlertTriangle",
         },
         {
           id: "drive-routes",

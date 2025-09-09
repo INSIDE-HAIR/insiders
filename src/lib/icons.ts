@@ -38,6 +38,7 @@ import {
   User,
   Users,
   Bell,
+  BellRing,
   Home,
   Folder,
   Download,
@@ -133,6 +134,7 @@ export const Icons = {
   User,
   Users,
   Bell,
+  BellRing,
   Home,
   Folder,
   Download,
@@ -223,6 +225,7 @@ export const iconCategories = {
   ],
   Notificaciones: [
     { name: "Bell", icon: "Bell" },
+    { name: "BellRing", icon: "BellRing" },
     { name: "Info", icon: "Info" },
     { name: "AlertCircle", icon: "AlertCircle" },
     { name: "AlertTriangle", icon: "AlertTriangle" },

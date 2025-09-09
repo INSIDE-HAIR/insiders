@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { FileCode, AlertTriangle } from "lucide-react";
 
 export default function DescriptionParserPage() {
   return (
@@ -7,6 +8,7 @@ export default function DescriptionParserPage() {
       <DocHeader
         title='Campo Description'
         description='Procesamiento del campo Description para propiedades personalizadas'
+        icon={FileCode}
       />
 
       <DocContent>
@@ -29,69 +31,325 @@ export default function DescriptionParserPage() {
           funciones para extraer propiedades:
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// Extraer cualquier propiedad del campo description
-export function extractPropertyFromDescription(
-item: HierarchyItem, 
-propertyName: string
-): string | null {
-if (!item.description) return null;
-
-try {
-  // Múltiples estrategias de parseo
-  // 1. Intentar parsear como JSON completo
-  try {
-    const jsonObj = JSON.parse(item.description)
-    if (jsonObj && jsonObj[propertyName]) {
-      return jsonObj[propertyName]
-    }
-  } catch (e) {
-    // Si falla, continuamos con otros métodos
-  }
-
-  // 2. Usar expresiones regulares para buscar patrones
-  // Buscar patrones como &quot;propertyName&quot;:&quot;value&quot; o &quot;propertyName&quot;:&quot;value&quot;
-  const regex = new RegExp(\`["']\${propertyName}["']\\s*:\\s*["']([^"']*)["']\`, "i")
-  const match = item.description.match(regex)
-
-  if (match && match[1]) {
-    return match[1]
-  }
-
-  // 3. Intentar parsear como fragmento de JSON
-  const wrappedJson = \`{\${item.description.replace(/^"|"$/g, "")}}\`
-  try {
-    const parsedObj = JSON.parse(wrappedJson)
-    if (parsedObj && parsedObj[propertyName]) {
-      return parsedObj[propertyName]
-    }
-  } catch (e) {
-    // Si falla, continuamos con otros métodos
-  }
-
-  return null
-} catch (error) {
-  console.error(\`Error parsing description for \${propertyName}\`, error);
-  return null;
-}
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
+            <code className='text-slate-500'>
+              // Extraer cualquier propiedad del campo description
+            </code>
+            <br />
+            <code className='text-purple-300'>export</code>{" "}
+            <code className='text-purple-300'>function</code>{" "}
+            <code className='text-yellow-300'>
+              extractPropertyFromDescription
+            </code>
+            <code className='text-slate-400'>(</code>
+            <br />
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>,</code> <br />
+            <code className='text-blue-300'>propertyName</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-orange-300'>string</code>
+            <br />
+            <code className='text-slate-400'>):</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-400'>|</code>{" "}
+            <code className='text-orange-300'>null</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(!</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>description</code>
+            <code className='text-slate-400'>)</code>{" "}
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-orange-300'>null</code>
+            <code className='text-slate-400'>;</code>
+            <br />
+            <br />
+            <code className='text-purple-300'>try</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Múltiples estrategias de parseo
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // 1. Intentar parsear como JSON completo
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>try</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>jsonObj</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-green-400'>JSON</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>parse</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>description</code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>jsonObj</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>jsonObj</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>propertyName</code>
+            <code className='text-slate-400'>]) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-blue-300'>jsonObj</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>propertyName</code>
+            <code className='text-slate-400'>]</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>{" "}
+            <code className='text-purple-300'>catch</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>e</code>
+            <code className='text-slate-400'>) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Si falla, continuamos con otros métodos
+            </code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // 2. Usar expresiones regulares para buscar patrones
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Buscar patrones como "propertyName":"value" o
+              "propertyName":"value"
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>regex</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-purple-300'>new</code>{" "}
+            <code className='text-green-400'>RegExp</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-green-300'>
+              `[&quot;']$&#123;propertyName&#125;[&quot;']\\s*:\\s*[&quot;']([^&quot;']*)[&quot;']`
+            </code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-green-300'>&quot;i&quot;</code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>match</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-blue-300'>description</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>match</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>regex</code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>match</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>match</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-cyan-300'>1</code>
+            <code className='text-slate-400'>]) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-blue-300'>match</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-cyan-300'>1</code>
+            <code className='text-slate-400'>]</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // 3. Intentar parsear como fragmento de JSON
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>wrappedJson</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-green-300'>
+              `&#123;$&#123;item.description.replace(/^&quot;|&quot;$/g,
+              &quot;&quot;)&#125;&#125;`
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>try</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>parsedObj</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-green-400'>JSON</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>parse</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>wrappedJson</code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>if</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>parsedObj</code>{" "}
+            <code className='text-slate-400'>&&</code>{" "}
+            <code className='text-blue-300'>parsedObj</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>propertyName</code>
+            <code className='text-slate-400'>]) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-blue-300'>parsedObj</code>
+            <code className='text-slate-400'>[</code>
+            <code className='text-blue-300'>propertyName</code>
+            <code className='text-slate-400'>]</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>{" "}
+            <code className='text-purple-300'>catch</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>e</code>
+            <code className='text-slate-400'>) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Si falla, continuamos con otros métodos
+            </code>
+            <br />
+            <code className='text-slate-400'> {"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-orange-300'>null</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>{" "}
+            <code className='text-purple-300'>catch</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>error</code>
+            <code className='text-slate-400'>) {"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-blue-300'>console</code>
+            <code className='text-slate-400'>.</code>
+            <code className='text-yellow-300'>error</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-green-300'>
+              `Error parsing description for $&#123;propertyName&#125;`
+            </code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-blue-300'>error</code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-orange-300'>null</code>
+            <code className='text-slate-400'>;</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Funciones específicas para propiedades comunes
         </h3>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// Extraer URL de formulario
-export function extractFormUrl(item: HierarchyItem): string | null {
-  return extractPropertyFromDescription(item, "formUrl");
-}
-
-// Extraer texto para copiar
-export function extractCopyText(item: HierarchyItem): string | null {
-  return extractPropertyFromDescription(item, "copy");
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
+            <code className='text-slate-500'>// Extraer URL de formulario</code>
+            <br />
+            <code className='text-purple-300'>export</code>{" "}
+            <code className='text-purple-300'>function</code>{" "}
+            <code className='text-yellow-300'>extractFormUrl</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>):</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-400'>|</code>{" "}
+            <code className='text-orange-300'>null</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-yellow-300'>
+              extractPropertyFromDescription
+            </code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-green-300'>"formUrl"</code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+            <br />
+            <br />
+            <code className='text-slate-500'>// Extraer texto para copiar</code>
+            <br />
+            <code className='text-purple-300'>export</code>{" "}
+            <code className='text-purple-300'>function</code>{" "}
+            <code className='text-yellow-300'>extractCopyText</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>
+            <code className='text-slate-400'>):</code>{" "}
+            <code className='text-orange-300'>string</code>{" "}
+            <code className='text-slate-400'>|</code>{" "}
+            <code className='text-orange-300'>null</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-yellow-300'>
+              extractPropertyFromDescription
+            </code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>,</code>{" "}
+            <code className='text-green-300'>"copy"</code>
+            <code className='text-slate-400'>);</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Estrategias de parseo
@@ -124,24 +382,98 @@ export function extractCopyText(item: HierarchyItem): string | null {
           propiedades específicas:
         </p>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`// En un componente
-import { extractFormUrl } from "@/utils/description-parser"
-
-export function GoogleFormRenderer({ item }: { item: HierarchyItem }) {
-  // Extraer la URL del formulario
-  const formUrl = extractFormUrl(item)
-  
-  // Usar la URL para renderizar el componente
-  return (
-    <Button asChild>
-      <a href={formUrl} target="_blank" rel="noopener noreferrer">
-        Abrir formulario
-      </a>
-    </Button>
-  )
-}`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
+            <code className='text-slate-500'>// En un componente</code>
+            <br />
+            <code className='text-purple-300'>import</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>{" "}
+            <code className='text-yellow-300'>extractFormUrl</code>{" "}
+            <code className='text-slate-400'>{"}"}</code>{" "}
+            <code className='text-purple-300'>from</code>{" "}
+            <code className='text-green-300'>"@/utils/description-parser"</code>
+            <br />
+            <br />
+            <code className='text-purple-300'>export</code>{" "}
+            <code className='text-purple-300'>function</code>{" "}
+            <code className='text-yellow-300'>GoogleFormRenderer</code>
+            <code className='text-slate-400'>({"{"}</code>{" "}
+            <code className='text-blue-300'>item</code>{" "}
+            <code className='text-slate-400'>
+              {"}"}: {"{"}
+            </code>{" "}
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>:</code>{" "}
+            <code className='text-green-400'>HierarchyItem</code>{" "}
+            <code className='text-slate-400'>{"})"}</code>{" "}
+            <code className='text-slate-400'>{"{"}</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Extraer la URL del formulario
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>const</code>{" "}
+            <code className='text-blue-300'>formUrl</code>{" "}
+            <code className='text-slate-400'>=</code>{" "}
+            <code className='text-yellow-300'>extractFormUrl</code>
+            <code className='text-slate-400'>(</code>
+            <code className='text-blue-300'>item</code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-500'>
+              // Usar la URL para renderizar el componente
+            </code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-purple-300'>return</code>{" "}
+            <code className='text-slate-400'>(</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>&lt;</code>
+            <code className='text-green-400'>Button</code>{" "}
+            <code className='text-blue-300'>asChild</code>
+            <code className='text-slate-400'>&gt;</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>&lt;</code>
+            <code className='text-green-400'>a</code>{" "}
+            <code className='text-blue-300'>href</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-slate-400'>{"{"}</code>
+            <code className='text-blue-300'>formUrl</code>
+            <code className='text-slate-400'>{"}"}</code>{" "}
+            <code className='text-blue-300'>target</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-green-300'>"_blank"</code>{" "}
+            <code className='text-blue-300'>rel</code>
+            <code className='text-slate-400'>=</code>
+            <code className='text-green-300'>"noopener noreferrer"</code>
+            <code className='text-slate-400'>&gt;</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-300'>Abrir formulario</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>&lt;/</code>
+            <code className='text-green-400'>a</code>
+            <code className='text-slate-400'>&gt;</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>&lt;/</code>
+            <code className='text-green-400'>Button</code>
+            <code className='text-slate-400'>&gt;</code>
+            <br />
+            <code className='text-slate-400'> </code>
+            <code className='text-slate-400'>)</code>
+            <br />
+            <code className='text-slate-400'>{"}"}</code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Añadir nuevas propiedades
@@ -155,39 +487,141 @@ export function GoogleFormRenderer({ item }: { item: HierarchyItem }) {
           <li>
             Añade una nueva función de utilidad en{" "}
             <code>utils/description-parser.ts</code>:
-            <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mt-2'>
-              {`/**
-* Extrae mi propiedad personalizada desde el campo description
-* 
-* @param {HierarchyItem} item - El elemento de contenido
-* @returns {string|null} El valor de mi propiedad o null si no existe
-*/
-export function extractMiPropiedad(item: HierarchyItem): string | null {
-  return extractPropertyFromDescription(item, "miPropiedad");
-}`}
-            </pre>
+            <div className='bg-slate-800 border border-slate-600 rounded-lg p-4 mt-2'>
+              <pre className='text-sm bg-slate-900 p-3 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
+                <code className='text-slate-500'>/**</code>
+                <br />
+                <code className='text-slate-500'>
+                  * Extrae mi propiedad personalizada desde el campo description
+                </code>
+                <br />
+                <code className='text-slate-500'>* </code>
+                <br />
+                <code className='text-slate-500'>
+                  * @param {"{"}
+                  <code className='text-green-400'>HierarchyItem</code>
+                  {"}"} item - El elemento de contenido
+                </code>
+                <br />
+                <code className='text-slate-500'>
+                  * @returns {"{"}
+                  <code className='text-orange-300'>string</code>|
+                  <code className='text-orange-300'>null</code>
+                  {"}"} El valor de mi propiedad o null si no existe
+                </code>
+                <br />
+                <code className='text-slate-500'>*/</code>
+                <br />
+                <code className='text-purple-300'>export</code>{" "}
+                <code className='text-purple-300'>function</code>{" "}
+                <code className='text-yellow-300'>extractMiPropiedad</code>
+                <code className='text-slate-400'>(</code>
+                <code className='text-blue-300'>item</code>
+                <code className='text-slate-400'>:</code>{" "}
+                <code className='text-green-400'>HierarchyItem</code>
+                <code className='text-slate-400'>):</code>{" "}
+                <code className='text-orange-300'>string</code>{" "}
+                <code className='text-slate-400'>|</code>{" "}
+                <code className='text-orange-300'>null</code>{" "}
+                <code className='text-slate-400'>{"{"}</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-purple-300'>return</code>{" "}
+                <code className='text-yellow-300'>
+                  extractPropertyFromDescription
+                </code>
+                <code className='text-slate-400'>(</code>
+                <code className='text-blue-300'>item</code>
+                <code className='text-slate-400'>,</code>{" "}
+                <code className='text-green-300'>"miPropiedad"</code>
+                <code className='text-slate-400'>);</code>
+                <br />
+                <code className='text-slate-400'>{"}"}</code>
+              </pre>
+            </div>
           </li>
           <li>
             Utiliza la nueva función en tus componentes:
-            <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mt-2'>
-              {`import { extractMiPropiedad } from "@/utils/description-parser"
-
-export function MiComponente({ item }: { item: HierarchyItem }) {
-  const miPropiedad = extractMiPropiedad(item)
-  
-  // Usar la propiedad para renderizar el componente
-  return (
-    <div>
-      {miPropiedad && <p>{miPropiedad}</p>}
-    </div>
-  )
-}`}
-            </pre>
+            <div className='bg-slate-800 border border-slate-600 rounded-lg p-4 mt-2'>
+              <pre className='text-sm bg-slate-900 p-3 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
+                <code className='text-purple-300'>import</code>{" "}
+                <code className='text-slate-400'>{"{"}</code>{" "}
+                <code className='text-yellow-300'>extractMiPropiedad</code>{" "}
+                <code className='text-slate-400'>{"}"}</code>{" "}
+                <code className='text-purple-300'>from</code>{" "}
+                <code className='text-green-300'>
+                  "@/utils/description-parser"
+                </code>
+                <br />
+                <br />
+                <code className='text-purple-300'>export</code>{" "}
+                <code className='text-purple-300'>function</code>{" "}
+                <code className='text-yellow-300'>MiComponente</code>
+                <code className='text-slate-400'>({"{"}</code>{" "}
+                <code className='text-blue-300'>item</code>{" "}
+                <code className='text-slate-400'>
+                  {"}"}: {"{"}
+                </code>{" "}
+                <code className='text-blue-300'>item</code>
+                <code className='text-slate-400'>:</code>{" "}
+                <code className='text-green-400'>HierarchyItem</code>{" "}
+                <code className='text-slate-400'>{"})"}</code>{" "}
+                <code className='text-slate-400'>{"{"}</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-purple-300'>const</code>{" "}
+                <code className='text-blue-300'>miPropiedad</code>{" "}
+                <code className='text-slate-400'>=</code>{" "}
+                <code className='text-yellow-300'>extractMiPropiedad</code>
+                <code className='text-slate-400'>(</code>
+                <code className='text-blue-300'>item</code>
+                <code className='text-slate-400'>)</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-slate-500'>
+                  // Usar la propiedad para renderizar el componente
+                </code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-purple-300'>return</code>{" "}
+                <code className='text-slate-400'>(</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-slate-400'>&lt;</code>
+                <code className='text-green-400'>div</code>
+                <code className='text-slate-400'>&gt;</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-slate-400'>{"{"}</code>
+                <code className='text-blue-300'>miPropiedad</code>{" "}
+                <code className='text-slate-400'>&&</code>{" "}
+                <code className='text-slate-400'>&lt;</code>
+                <code className='text-green-400'>p</code>
+                <code className='text-slate-400'>&gt;{"{"}</code>
+                <code className='text-blue-300'>miPropiedad</code>
+                <code className='text-slate-400'>{"}"}&lt;/</code>
+                <code className='text-green-400'>p</code>
+                <code className='text-slate-400'>&gt;{"}"}</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-slate-400'>&lt;/</code>
+                <code className='text-green-400'>div</code>
+                <code className='text-slate-400'>&gt;</code>
+                <br />
+                <code className='text-slate-400'> </code>
+                <code className='text-slate-400'>)</code>
+                <br />
+                <code className='text-slate-400'>{"}"}</code>
+              </pre>
+            </div>
           </li>
         </ol>
 
-        <div className='bg-amber-50 border-l-4 border-amber-500 p-4 my-6'>
-          <p className='text-amber-800'>
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <AlertTriangle className='h-4 w-4' />
             <strong>Importante:</strong> El campo description debe seguir un
             formato específico para que las propiedades puedan ser extraídas
             correctamente. Asegúrate de documentar el formato esperado para los

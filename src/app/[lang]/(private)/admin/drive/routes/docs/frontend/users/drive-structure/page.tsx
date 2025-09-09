@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { FolderTree, Lightbulb } from "lucide-react";
 
 export default function DriveStructurePage() {
   return (
@@ -7,6 +8,7 @@ export default function DriveStructurePage() {
       <DocHeader
         title='Estructura de Google Drive'
         description='Cómo organizar carpetas y archivos en Google Drive'
+        icon={FolderTree}
       />
 
       <DocContent>
@@ -50,22 +52,37 @@ export default function DriveStructurePage() {
           Ejemplo de estructura completa
         </h3>
 
-        <pre className='bg-zinc-900 text-zinc-100 p-3 rounded text-sm overflow-x-auto mb-6'>
-          {`01_client_INSIDERS/
-├── 01_sidebar_Plan de Marketing/
-│   ├── 01_googleForm_PLAN MKT GRUPAL Marzo 2025
-│   ├── 02_tabs/
-│   │   ├── 01_tab_Contexto/
-│   │   │   └── 01_vimeo_contexto.txt
-│   │   └── 02_tab_Acción Principal/
-│   │       └── 01_vimeo_1053382395.txt
-│   └── 03_googleSlide_PLAN DE MKT-MARZO 2025
-├── 02_sidebar_Guia/
-└── 03_sidebar_Listas de Control/
-    └── 01_section_Manager/
-        ├── A-A-2503-1111-01-00-01-P1.jpg
-        └── A-A-2503-1111-01-00-01.pdf`}
-        </pre>
+        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
+          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
+            <code className='text-green-400'>01_client_INSIDERS/</code>
+            <br/>
+            <code className='text-slate-400'>├── </code><code className='text-blue-300'>01_sidebar_Plan de Marketing/</code>
+            <br/>
+            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>01_googleForm_PLAN MKT GRUPAL Marzo 2025</code>
+            <br/>
+            <code className='text-slate-400'>│   ├── </code><code className='text-yellow-300'>02_tabs/</code>
+            <br/>
+            <code className='text-slate-400'>│   │   ├── </code><code className='text-blue-300'>01_tab_Contexto/</code>
+            <br/>
+            <code className='text-slate-400'>│   │   │   └── </code><code className='text-orange-300'>01_vimeo_contexto.txt</code>
+            <br/>
+            <code className='text-slate-400'>│   │   └── </code><code className='text-blue-300'>02_tab_Acción Principal/</code>
+            <br/>
+            <code className='text-slate-400'>│   │       └── </code><code className='text-orange-300'>01_vimeo_1053382395.txt</code>
+            <br/>
+            <code className='text-slate-400'>│   └── </code><code className='text-cyan-300'>03_googleSlide_PLAN DE MKT-MARZO 2025</code>
+            <br/>
+            <code className='text-slate-400'>├── </code><code className='text-blue-300'>02_sidebar_Guia/</code>
+            <br/>
+            <code className='text-slate-400'>└── </code><code className='text-blue-300'>03_sidebar_Listas de Control/</code>
+            <br/>
+            <code className='text-slate-400'>    └── </code><code className='text-green-300'>01_section_Manager/</code>
+            <br/>
+            <code className='text-slate-400'>        ├── </code><code className='text-pink-300'>A-A-2503-1111-01-00-01-P1.jpg</code>
+            <br/>
+            <code className='text-slate-400'>        └── </code><code className='text-red-300'>A-A-2503-1111-01-00-01.pdf</code>
+          </pre>
+        </div>
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Recomendaciones para la estructura
@@ -90,8 +107,9 @@ export default function DriveStructurePage() {
           </li>
         </ul>
 
-        <div className='bg-blue-50 border-l-4 border-blue-500 p-4 my-6'>
-          <p className='text-blue-800'>
+        <div className='bg-primary/5 border-l-4 border-primary p-4 my-6 rounded-r-lg'>
+          <p className='text-primary font-medium flex items-center gap-2'>
+            <Lightbulb className='h-4 w-4' />
             <strong>Consejo:</strong> Planifica la estructura antes de empezar a
             crear carpetas. Una buena organización desde el principio facilitará
             la gestión del contenido a largo plazo.

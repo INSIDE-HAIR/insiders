@@ -13,9 +13,11 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   ClockIcon,
-  ChartBarIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import {
+  Percent
+} from "lucide-react";
 
 interface ParticipantKPICardProps {
   kpi: ParticipantKPI;
@@ -177,210 +179,73 @@ export const ParticipantKPICard: React.FC<ParticipantKPICardProps> = ({
           </div>
         </div>
 
-        {/* Estado de realización */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-foreground/90 font-medium">Estado de Sesiones</span>
-          </div>
-          
-          <div className="flex flex-wrap gap-2">
-            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-white border-emerald-500/30 text-xs">
-              <div className="flex items-center gap-2 mb-1">
-                <CheckCircleIcon className="h-3 w-3 text-emerald-600" />
-                <span>Realizadas: {kpi.completedEvents}</span>
-              </div>
-              <div className="text-white text-xs flex items-center gap-1">
-                <ClockIcon className="h-3 w-3 text-emerald-600" />
-                {formatMinutesToHHMM(kpi.completedDurationMinutes || 0)}
-              </div>
-            </div>
-            
-            <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-white border-yellow-500/30 text-xs">
-              <div className="flex items-center gap-2 mb-1">
-                <ClockIcon className="h-3 w-3 text-yellow-600" />
-                <span>Pendientes: {kpi.upcomingEvents}</span>
-              </div>
-              <div className="text-white text-xs flex items-center gap-1">
-                <ClockIcon className="h-3 w-3 text-yellow-600" />
-                {formatMinutesToHHMM(kpi.upcomingDurationMinutes || 0)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tasa de aceptación */}
+        {/* Estado de sesiones con porcentaje */}
         {(() => {
-          const rate = kpi.participationRate;
-          const isDestructive = rate < 25;
-          const isWarning = rate >= 25 && rate <= 75;
-          const isSuccess = rate > 75;
+          const sessionCompletionRate = kpi.totalEvents > 0 ? Math.round((kpi.completedEvents / kpi.totalEvents) * 100) : 0;
+          const sessionPendingRate = kpi.totalEvents > 0 ? Math.round((kpi.upcomingEvents / kpi.totalEvents) * 100) : 0;
+          const isHighCompletion = sessionCompletionRate > 75;
+          const isMediumCompletion = sessionCompletionRate >= 25 && sessionCompletionRate <= 75;
+          const isLowCompletion = sessionCompletionRate < 25;
           
-          const containerClasses = isDestructive 
+          const containerClasses = isLowCompletion 
             ? "space-y-2 bg-destructive/5 p-3 rounded-md border border-destructive/20"
-            : isWarning 
+            : isMediumCompletion 
             ? "space-y-2 bg-yellow-500/5 p-3 rounded-md border border-yellow-500/20"
             : "space-y-2 bg-emerald-500/5 p-3 rounded-md border border-emerald-500/20";
             
-          const iconClasses = isDestructive 
+          const iconClasses = isLowCompletion 
             ? "h-5 w-5 text-destructive"
-            : isWarning 
+            : isMediumCompletion 
             ? "h-5 w-5 text-yellow-600"
             : "h-5 w-5 text-emerald-600";
             
-          const badgeClasses = isDestructive
+          const badgeClasses = isLowCompletion
             ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-destructive/20 bg-destructive/10 text-destructive border-destructive/30 text-sm flex items-center gap-1"
-            : isWarning
+            : isMediumCompletion
             ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-sm flex items-center gap-1"
             : "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-sm flex items-center gap-1";
-            
-          const progressClasses = isDestructive
-            ? "h-3 bg-destructive/10 border border-destructive/20"
-            : isWarning
-            ? "h-3 bg-yellow-500/10 border border-yellow-500/20"
-            : "h-3 bg-emerald-500/10 border border-emerald-500/20";
             
           return (
             <div className={containerClasses}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <ChartBarIcon className={iconClasses} />
-                  <span className="text-sm font-semibold text-foreground">Tasa de Aceptación</span>
+                  <Percent className={iconClasses} />
+                  <span className="text-sm font-semibold text-foreground">Estado de Sesiones</span>
                 </div>
                 <div className={badgeClasses}>
-                  <span className="text-white">{kpi.participationRate}%</span>
+                  <span className="text-white">{sessionCompletionRate}%</span>
                 </div>
               </div>
-              <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>
-                <div 
-                  className={`h-full transition-all duration-300 ${
-                    isDestructive 
-                      ? "bg-destructive" 
-                      : isWarning 
-                      ? "bg-yellow-500" 
-                      : "bg-emerald-500"
-                  }`}
-                  style={{ width: `${kpi.participationRate}%` }}
-                />
+              
+              <div className="flex flex-wrap gap-2 mt-3">
+                <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-white border-emerald-500/30 text-xs">
+                  <div className="flex items-center gap-2 mb-1">
+                    <CheckCircleIcon className="h-3 w-3 text-emerald-600" />
+                    <span>Realizadas: {kpi.completedEvents} ({sessionCompletionRate}%)</span>
+                  </div>
+                  <div className="text-white text-xs flex items-center gap-1">
+                    <ClockIcon className="h-3 w-3 text-emerald-600" />
+                    {formatMinutesToHHMM(kpi.completedDurationMinutes || 0)}
+                  </div>
+                </div>
+                
+                <div className="rounded-lg border px-3 py-2 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-white border-yellow-500/30 text-xs">
+                  <div className="flex items-center gap-2 mb-1">
+                    <ClockIcon className="h-3 w-3 text-yellow-600" />
+                    <span>Pendientes: {kpi.upcomingEvents} ({sessionPendingRate}%)</span>
+                  </div>
+                  <div className="text-white text-xs flex items-center gap-1">
+                    <ClockIcon className="h-3 w-3 text-yellow-600" />
+                    {formatMinutesToHHMM(kpi.upcomingDurationMinutes || 0)}
+                  </div>
+                </div>
               </div>
             </div>
           );
         })()}
 
-        {/* Tasa de sesiones */}
-        {(() => {
-          const sessionRate = kpi.totalEvents > 0 ? Math.round((kpi.completedEvents / kpi.totalEvents) * 100) : 0;
-          const isDestructive = sessionRate < 25;
-          const isWarning = sessionRate >= 25 && sessionRate <= 75;
-          const isSuccess = sessionRate > 75;
-          
-          const containerClasses = isDestructive 
-            ? "space-y-2 bg-destructive/5 p-3 rounded-md border border-destructive/20"
-            : isWarning 
-            ? "space-y-2 bg-yellow-500/5 p-3 rounded-md border border-yellow-500/20"
-            : "space-y-2 bg-emerald-500/5 p-3 rounded-md border border-emerald-500/20";
-            
-          const iconClasses = isDestructive 
-            ? "h-5 w-5 text-destructive"
-            : isWarning 
-            ? "h-5 w-5 text-yellow-600"
-            : "h-5 w-5 text-emerald-600";
-            
-          const badgeClasses = isDestructive
-            ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-destructive/20 bg-destructive/10 text-destructive border-destructive/30 text-sm flex items-center gap-1"
-            : isWarning
-            ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-sm flex items-center gap-1"
-            : "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-sm flex items-center gap-1";
-            
-          const progressClasses = isDestructive
-            ? "h-3 bg-destructive/10 border border-destructive/20"
-            : isWarning
-            ? "h-3 bg-yellow-500/10 border border-yellow-500/20"
-            : "h-3 bg-emerald-500/10 border border-emerald-500/20";
-            
-          return (
-            <div className={containerClasses}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ChartBarIcon className={iconClasses} />
-                  <span className="text-sm font-semibold text-foreground">Tasa de Sesiones</span>
-                </div>
-                <div className={badgeClasses}>
-                  <span className="text-white">{sessionRate}%</span>
-                </div>
-              </div>
-              <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>
-                <div 
-                  className={`h-full transition-all duration-300 ${
-                    isDestructive 
-                      ? "bg-destructive" 
-                      : isWarning 
-                      ? "bg-yellow-500" 
-                      : "bg-emerald-500"
-                  }`}
-                  style={{ width: `${sessionRate}%` }}
-                />
-              </div>
-            </div>
-          );
-        })()}
 
-        {/* Tasa de respuestas */}
-        {(() => {
-          const responseRate = kpi.responseRate;
-          const isDestructive = responseRate < 25;
-          const isWarning = responseRate >= 25 && responseRate <= 75;
-          const isSuccess = responseRate > 75;
-          
-          const containerClasses = isDestructive 
-            ? "space-y-2 bg-destructive/5 p-3 rounded-md border border-destructive/20"
-            : isWarning 
-            ? "space-y-2 bg-yellow-500/5 p-3 rounded-md border border-yellow-500/20"
-            : "space-y-2 bg-emerald-500/5 p-3 rounded-md border border-emerald-500/20";
-            
-          const iconClasses = isDestructive 
-            ? "h-5 w-5 text-destructive"
-            : isWarning 
-            ? "h-5 w-5 text-yellow-600"
-            : "h-5 w-5 text-emerald-600";
-            
-          const badgeClasses = isDestructive
-            ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-destructive/20 bg-destructive/10 text-destructive border-destructive/30 text-sm flex items-center gap-1"
-            : isWarning
-            ? "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-yellow-500/20 bg-yellow-500/10 text-yellow-700 border-yellow-500/30 text-sm flex items-center gap-1"
-            : "rounded-full border px-3 py-1 font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-emerald-500/20 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-sm flex items-center gap-1";
-            
-          const progressClasses = isDestructive
-            ? "h-3 bg-destructive/10 border border-destructive/20"
-            : isWarning
-            ? "h-3 bg-yellow-500/10 border border-yellow-500/20"
-            : "h-3 bg-emerald-500/10 border border-emerald-500/20";
-            
-          return (
-            <div className={containerClasses}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ChartBarIcon className={iconClasses} />
-                  <span className="text-sm font-semibold text-foreground">Tasa de Respuestas</span>
-                </div>
-                <div className={badgeClasses}>
-                  <span className="text-white">{responseRate}%</span>
-                </div>
-              </div>
-              <div className={`w-full rounded-full overflow-hidden ${progressClasses}`}>
-                <div 
-                  className={`h-full transition-all duration-300 ${
-                    isDestructive 
-                      ? "bg-destructive" 
-                      : isWarning 
-                      ? "bg-yellow-500" 
-                      : "bg-emerald-500"
-                  }`}
-                  style={{ width: `${responseRate}%` }}
-                />
-              </div>
-            </div>
-          );
-        })()}
+
       </CardContent>
     </Card>
   );
