@@ -2,7 +2,8 @@
 
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
-import { GitBranch, Lightbulb, ArrowDown, Globe, Shield, Zap, Server, Database, Settings, Users, Layout, Eye } from "lucide-react";
+import { MermaidDiagram } from "@/src/components/drive/docs/mermaid-diagram";
+import { GitBranch, Lightbulb } from "lucide-react";
 
 export default function ArchitecturePage() {
   return (
@@ -44,95 +45,50 @@ export default function ArchitecturePage() {
           Diagrama de flujo de datos
         </h3>
 
-        <div className='bg-slate-900 border border-slate-600 rounded-lg p-8 overflow-hidden mb-8'>
-          <div className='flex flex-col items-center space-y-8 max-w-5xl mx-auto'>
-            
-            {/* ContentProvider Layer */}
-            <div className='w-full max-w-3xl'>
-              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                <div className='flex items-center gap-4 mb-5'>
-                  <Database className='h-8 w-8 text-primary' />
-                  <h4 className='text-2xl font-bold text-white'>ContentProvider (Context)</h4>
-                </div>
-                <div className='text-base text-slate-200'>
-                  Contexto global que provee datos y funciones de navegación
-                </div>
-              </div>
-            </div>
-            
-            {/* Arrow Down */}
-            <div className='flex justify-center'>
-              <ArrowDown className='h-8 w-8 text-slate-400' />
-            </div>
-            
-            {/* ContentLayout Layer */}
-            <div className='w-full max-w-3xl'>
-              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                <div className='flex items-center gap-4 mb-5'>
-                  <Layout className='h-8 w-8 text-primary' />
-                  <h4 className='text-2xl font-bold text-white'>ContentLayout</h4>
-                </div>
-                <div className='text-base text-slate-200'>
-                  Estructura principal del layout de la aplicación
-                </div>
-              </div>
-            </div>
-            
-            {/* Arrow Down */}
-            <div className='flex justify-center'>
-              <ArrowDown className='h-8 w-8 text-slate-400' />
-            </div>
-            
-            {/* Navigation Layer */}
-            <div className='w-full max-w-4xl'>
-              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                <div className='flex items-center gap-4 mb-6'>
-                  <Users className='h-8 w-8 text-primary' />
-                  <h4 className='text-2xl font-bold text-white'>Navigation Components</h4>
-                </div>
-                <div className='text-base text-slate-200 mb-6'>
-                  Componentes de navegación y selección de contenido
-                </div>
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                    <Shield className='h-6 w-6 mx-auto mb-3 text-primary' />
-                    <div className='text-sm font-semibold text-white leading-tight'>AppSidebar</div>
-                  </div>
-                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                    <Zap className='h-6 w-6 mx-auto mb-3 text-primary' />
-                    <div className='text-sm font-semibold text-white leading-tight'>TabNavigation</div>
-                  </div>
-                  <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                    <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
-                    <div className='text-sm font-semibold text-white leading-tight'>SectionNavigation</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Arrow Down */}
-            <div className='flex justify-center'>
-              <ArrowDown className='h-8 w-8 text-slate-400' />
-            </div>
-            
-            {/* Renderer Layer */}
-            <div className='w-full max-w-3xl'>
-              <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                <div className='flex items-center gap-4 mb-6'>
-                  <Eye className='h-8 w-8 text-primary' />
-                  <h4 className='text-2xl font-bold text-white'>Content Renderers</h4>
-                </div>
-                <div className='text-base text-slate-200 mb-5'>
-                  Sistema de renderizado recursivo y selección de componentes
-                </div>
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>ContentRenderer</div>
-                  <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>ComponentSelector</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MermaidDiagram
+          chart={`
+flowchart TD
+    CP[ContentProvider Context] --> CL[ContentLayout]
+    
+    CL --> NC{Navigation Components}
+    NC --> AS[AppSidebar]
+    NC --> TN[TabNavigation] 
+    NC --> SN[SectionNavigation]
+    
+    AS --> CR{Content Renderers}
+    TN --> CR
+    SN --> CR
+    
+    CR --> ContentR[ContentRenderer]
+    CR --> RCR[RecursiveContentRenderer]
+    
+    ContentR --> CS[ComponentSelector]
+    RCR --> CS
+    
+    CS --> COMPS{Component Types}
+    COMPS --> HeroC[HeroComponent]
+    COMPS --> TextC[TextComponent]
+    COMPS --> ImageC[ImageComponent]
+    COMPS --> VideoC[VideoComponent]
+    COMPS --> TabsC[TabsComponent]
+    COMPS --> FormC[FormComponent]
+    COMPS --> ButtonC[ButtonComponent]
+    COMPS --> ModalC[ModalComponent]
+    
+    classDef contextClass fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+    classDef layoutClass fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef navClass fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    classDef rendererClass fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+    classDef componentClass fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    
+    class CP contextClass
+    class CL layoutClass
+    class AS,TN,SN,NC navClass
+    class CR,ContentR,RCR,CS rendererClass
+    class COMPS,HeroC,TextC,ImageC,VideoC,TabsC,FormC,ButtonC,ModalC componentClass
+          `}
+          className="mb-8"
+        />
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Componentes principales

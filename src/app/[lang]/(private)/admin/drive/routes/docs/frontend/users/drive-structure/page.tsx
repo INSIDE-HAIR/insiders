@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { MermaidDiagram } from "@/src/components/drive/docs/mermaid-diagram";
 import { FolderTree, Lightbulb } from "lucide-react";
 
 export default function DriveStructurePage() {
@@ -52,37 +53,47 @@ export default function DriveStructurePage() {
           Ejemplo de estructura completa
         </h3>
 
-        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
-          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
-            <code className='text-green-400'>01_client_INSIDERS/</code>
-            <br/>
-            <code className='text-slate-400'>├── </code><code className='text-blue-300'>01_sidebar_Plan de Marketing/</code>
-            <br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>01_googleForm_PLAN MKT GRUPAL Marzo 2025</code>
-            <br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-yellow-300'>02_tabs/</code>
-            <br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-blue-300'>01_tab_Contexto/</code>
-            <br/>
-            <code className='text-slate-400'>│   │   │   └── </code><code className='text-orange-300'>01_vimeo_contexto.txt</code>
-            <br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-blue-300'>02_tab_Acción Principal/</code>
-            <br/>
-            <code className='text-slate-400'>│   │       └── </code><code className='text-orange-300'>01_vimeo_1053382395.txt</code>
-            <br/>
-            <code className='text-slate-400'>│   └── </code><code className='text-cyan-300'>03_googleSlide_PLAN DE MKT-MARZO 2025</code>
-            <br/>
-            <code className='text-slate-400'>├── </code><code className='text-blue-300'>02_sidebar_Guia/</code>
-            <br/>
-            <code className='text-slate-400'>└── </code><code className='text-blue-300'>03_sidebar_Listas de Control/</code>
-            <br/>
-            <code className='text-slate-400'>    └── </code><code className='text-green-300'>01_section_Manager/</code>
-            <br/>
-            <code className='text-slate-400'>        ├── </code><code className='text-pink-300'>A-A-2503-1111-01-00-01-P1.jpg</code>
-            <br/>
-            <code className='text-slate-400'>        └── </code><code className='text-red-300'>A-A-2503-1111-01-00-01.pdf</code>
-          </pre>
-        </div>
+        <MermaidDiagram
+          chart={`
+flowchart TD
+    ROOT["🗂️ Google Drive Root"] --> CLIENT["📁 01_client_INSIDERS"]
+    
+    CLIENT --> SIDEBAR1["📁 01_sidebar_Plan de Marketing"]
+    CLIENT --> SIDEBAR2["📁 02_sidebar_Guia"]
+    CLIENT --> SIDEBAR3["📁 03_sidebar_Listas de Control"]
+    
+    SIDEBAR1 --> FORM["📝 01_googleForm_PLAN MKT GRUPAL Marzo 2025"]
+    SIDEBAR1 --> TABS["📁 02_tabs"]
+    SIDEBAR1 --> SLIDES["📊 03_googleSlide_PLAN DE MKT-MARZO 2025"]
+    
+    TABS --> TAB1["📁 01_tab_Contexto"]
+    TABS --> TAB2["📁 02_tab_Acción Principal"]
+    
+    TAB1 --> VIMEO1["🎥 01_vimeo_contexto.txt"]
+    TAB2 --> VIMEO2["🎥 01_vimeo_1053382395.txt"]
+    
+    SIDEBAR3 --> SECTION1["📁 01_section_Manager"]
+    
+    SECTION1 --> PREVIEW["🖼️ A-A-2503-1111-01-00-01-P1.jpg"]
+    SECTION1 --> PDF["📄 A-A-2503-1111-01-00-01.pdf"]
+    
+    %% Styling classes
+    classDef clientClass fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+    classDef sidebarClass fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef tabClass fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    classDef sectionClass fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+    classDef fileClass fill:#ef4444,stroke:#dc2626,stroke-width:1px,color:#fff
+    classDef rootClass fill:#6b7280,stroke:#4b5563,stroke-width:2px,color:#fff
+    
+    class ROOT rootClass
+    class CLIENT clientClass
+    class SIDEBAR1,SIDEBAR2,SIDEBAR3 sidebarClass
+    class TABS,TAB1,TAB2 tabClass
+    class SECTION1 sectionClass
+    class FORM,SLIDES,VIMEO1,VIMEO2,PREVIEW,PDF fileClass
+          `}
+          className="mb-8"
+        />
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Recomendaciones para la estructura

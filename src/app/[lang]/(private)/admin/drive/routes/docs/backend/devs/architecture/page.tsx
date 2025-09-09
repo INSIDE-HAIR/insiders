@@ -2,7 +2,8 @@
 
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
-import { Layers, Building, ArrowDown, Globe, Server, Database, Zap, Shield, Settings } from "lucide-react";
+import { MermaidDiagram } from "@/src/components/drive/docs/mermaid-diagram";
+import { Layers, Building } from "lucide-react";
 
 export default function ArchitecturePage() {
   return (
@@ -16,123 +17,68 @@ export default function ArchitecturePage() {
       <DocContent>
 
         <section className='mb-10'>
-          <h3 className='text-xl font-bold mb-6 text-white'>Diagrama de Arquitectura</h3>
-          <div className='bg-slate-900 border border-slate-600 rounded-lg p-8 overflow-hidden'>
-            <div className='flex flex-col items-center space-y-8 max-w-5xl mx-auto'>
-              
-              {/* API Routes Layer */}
-              <div className='w-full max-w-3xl'>
-                <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                  <div className='flex items-center gap-4 mb-5'>
-                    <Globe className='h-8 w-8 text-primary' />
-                    <h4 className='text-2xl font-bold text-white'>API Routes (Next.js)</h4>
-                  </div>
-                  <div className='text-base text-slate-200 mb-4'>
-                    Capa de entrada HTTP que maneja las peticiones del cliente
-                  </div>
-                  <div className='grid grid-cols-2 gap-3'>
-                    <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm font-mono text-white text-center font-medium'>/api/drive/*</div>
-                    <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm font-mono text-white text-center font-medium'>/api/cron/*</div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Arrow Down */}
-              <div className='flex justify-center'>
-                <ArrowDown className='h-8 w-8 text-slate-400' />
-              </div>
-              
-              {/* Controllers Layer */}
-              <div className='w-full max-w-3xl'>
-                <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                  <div className='flex items-center gap-4 mb-5'>
-                    <Shield className='h-8 w-8 text-primary' />
-                    <h4 className='text-2xl font-bold text-white'>Controllers/Handlers</h4>
-                  </div>
-                  <div className='text-base text-slate-200'>
-                    Validación de peticiones • Verificación de autenticación • Manejo de errores
-                  </div>
-                </div>
-              </div>
-              
-              {/* Arrow Down */}
-              <div className='flex justify-center'>
-                <ArrowDown className='h-8 w-8 text-slate-400' />
-              </div>
-              
-              {/* Services Layer */}
-              <div className='w-full max-w-4xl'>
-                <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                  <div className='flex items-center gap-4 mb-6'>
-                    <Zap className='h-8 w-8 text-primary' />
-                    <h4 className='text-2xl font-bold text-white'>Services Layer</h4>
-                  </div>
-                  <div className='text-base text-slate-200 mb-6'>
-                    Lógica de negocio centralizada y servicios reutilizables
-                  </div>
-                  <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                    <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                      <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
-                      <div className='text-sm font-semibold text-white leading-tight'>DriveSync<br/>Service</div>
-                    </div>
-                    <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                      <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
-                      <div className='text-sm font-semibold text-white leading-tight'>FileAnalyzer<br/>Service</div>
-                    </div>
-                    <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                      <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
-                      <div className='text-sm font-semibold text-white leading-tight'>Hierarchy<br/>Service</div>
-                    </div>
-                    <div className='bg-primary/50 rounded-lg p-4 text-center'>
-                      <Settings className='h-6 w-6 mx-auto mb-3 text-primary' />
-                      <div className='text-sm font-semibold text-white leading-tight'>Authentication<br/>Service</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Arrow Down */}
-              <div className='flex justify-center'>
-                <ArrowDown className='h-8 w-8 text-slate-400' />
-              </div>
-              
-              {/* Data Layer */}
-              <div className='w-full max-w-3xl'>
-                <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                  <div className='flex items-center gap-4 mb-5'>
-                    <Server className='h-8 w-8 text-primary' />
-                    <h4 className='text-2xl font-bold text-white'>Data Layer (Prisma)</h4>
-                  </div>
-                  <div className='text-base text-slate-200'>
-                    Acceso a datos con ORM • Modelos • Queries • Mutations • Transactions
-                  </div>
-                </div>
-              </div>
-              
-              {/* Arrow Down */}
-              <div className='flex justify-center'>
-                <ArrowDown className='h-8 w-8 text-slate-400' />
-              </div>
-              
-              {/* Database Layer */}
-              <div className='w-full max-w-3xl'>
-                <div className='bg-primary/30 rounded-xl p-8 text-white border border-primary/60'>
-                  <div className='flex items-center gap-4 mb-6'>
-                    <Database className='h-8 w-8 text-primary' />
-                    <h4 className='text-2xl font-bold text-white'>MongoDB Database</h4>
-                  </div>
-                  <div className='text-base text-slate-200 mb-5'>
-                    Base de datos NoSQL con esquemas flexibles para almacenamiento jerárquico
-                  </div>
-                  <div className='grid grid-cols-3 gap-4'>
-                    <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>DriveRoute</div>
-                    <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>Users</div>
-                    <div className='bg-primary/50 rounded-lg px-4 py-3 text-sm text-center text-white font-semibold'>Logs</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h3 className='text-xl font-bold mb-6 text-white'>Diagrama de Arquitectura Backend</h3>
+          
+          <MermaidDiagram
+            chart={`
+flowchart TD
+    CLIENT[Client Request] --> API[API Routes - Next.js]
+    
+    API --> CONTROLLERS[Controllers/Handlers]
+    CONTROLLERS --> AUTH{Authentication}
+    CONTROLLERS --> VALIDATION{Request Validation}
+    
+    AUTH --> SERVICES[Services Layer]
+    VALIDATION --> SERVICES
+    
+    SERVICES --> DRIVE_SYNC[DriveSyncService]
+    SERVICES --> FILE_ANALYZER[FileAnalyzerService] 
+    SERVICES --> HIERARCHY[HierarchyService]
+    SERVICES --> AUTH_SERVICE[AuthenticationService]
+    
+    DRIVE_SYNC --> DATA_LAYER[Data Layer - Prisma ORM]
+    FILE_ANALYZER --> DATA_LAYER
+    HIERARCHY --> DATA_LAYER
+    AUTH_SERVICE --> DATA_LAYER
+    
+    DATA_LAYER --> REPOSITORIES[Repository Pattern]
+    REPOSITORIES --> DRIVE_REPO[DriveRouteRepository]
+    REPOSITORIES --> USER_REPO[UserRepository]
+    REPOSITORIES --> LOG_REPO[LogRepository]
+    
+    DRIVE_REPO --> MONGODB[(MongoDB Database)]
+    USER_REPO --> MONGODB
+    LOG_REPO --> MONGODB
+    
+    MONGODB --> COLLECTIONS{Database Collections}
+    COLLECTIONS --> DRIVE_ROUTES[DriveRoute Collection]
+    COLLECTIONS --> USERS[Users Collection]
+    COLLECTIONS --> LOGS[Logs Collection]
+    
+    %% External APIs
+    DRIVE_SYNC -.->|Google Drive API| GOOGLE_DRIVE[Google Drive]
+    AUTH_SERVICE -.->|OAuth 2.0| GOOGLE_AUTH[Google Auth]
+    
+    %% Response flow
+    DATA_LAYER --> RESPONSE[Response Processing]
+    RESPONSE --> CLIENT
+    
+    classDef apiClass fill:#10b981,stroke:#059669,stroke-width:3px,color:#fff
+    classDef controllerClass fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef serviceClass fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    classDef dataClass fill:#f59e0b,stroke:#d97706,stroke-width:2px,color:#fff
+    classDef dbClass fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    classDef externalClass fill:#6b7280,stroke:#4b5563,stroke-width:1px,color:#fff
+    
+    class CLIENT,API apiClass
+    class CONTROLLERS,AUTH,VALIDATION controllerClass
+    class SERVICES,DRIVE_SYNC,FILE_ANALYZER,HIERARCHY,AUTH_SERVICE serviceClass
+    class DATA_LAYER,REPOSITORIES,DRIVE_REPO,USER_REPO,LOG_REPO dataClass
+    class MONGODB,COLLECTIONS,DRIVE_ROUTES,USERS,LOGS dbClass
+    class GOOGLE_DRIVE,GOOGLE_AUTH externalClass
+            `}
+            className="mb-8"
+          />
         </section>
 
         <section className='mb-10'>

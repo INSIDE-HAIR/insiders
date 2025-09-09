@@ -1,5 +1,6 @@
 import { DocHeader } from "@/src/components/drive/docs/doc-header";
 import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { MermaidDiagram } from "@/src/components/drive/docs/mermaid-diagram";
 import { FolderTree, Lightbulb } from "lucide-react";
 
 export default function FileStructurePage() {
@@ -21,55 +22,81 @@ export default function FileStructurePage() {
           que facilita la localización y mantenimiento del código.
         </p>
 
-        <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
-          <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto leading-relaxed'>
-            <code className='text-slate-400'>├── </code><code className='text-green-400'>app/</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-blue-300'>marketing-salon/</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-yellow-300'>[id]/</code><br/>
-            <code className='text-slate-400'>│   │       └── </code><code className='text-orange-300'>page.tsx</code>         <code className='text-slate-500'># Página principal con ID de sidebar</code><br/>
-            <code className='text-slate-400'>│   └── </code><code className='text-blue-300'>docs/</code><br/>
-            <code className='text-slate-400'>│       └── </code><code className='text-blue-300'>marketing-salon/</code><br/>
-            <code className='text-slate-400'>│           └── </code><code className='text-orange-300'>page.tsx</code>         <code className='text-slate-500'># Esta página de documentación</code><br/>
-            <code className='text-slate-400'>├── </code><code className='text-green-400'>components/</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>content/</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>content-renderer.tsx</code>      <code className='text-slate-500'># Renderizador principal de contenido</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>recursive-content-renderer.tsx</code>  <code className='text-slate-500'># Renderizador recursivo</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>content-grid.tsx</code>          <code className='text-slate-500'># Cuadrícula para mostrar elementos</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>navigation/</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-cyan-300'>sidebar/</code><br/>
-            <code className='text-slate-400'>│   │   │   ├── </code><code className='text-orange-300'>app-sidebar.tsx</code>       <code className='text-slate-500'># Barra lateral principal</code><br/>
-            <code className='text-slate-400'>│   │   │   └── </code><code className='text-orange-300'>sidebar-toggle.tsx</code>    <code className='text-slate-500'># Botón para mostrar/ocultar sidebar</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>tab-navigation.tsx</code>        <code className='text-slate-500'># Navegación por pestañas</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>section-navigation.tsx</code>    <code className='text-slate-500'># Navegación por secciones</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>renderers/</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>vimeo-renderer.tsx</code>        <code className='text-slate-500'># Renderizador de videos Vimeo</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>google-slides-renderer.tsx</code> <code className='text-slate-500'># Renderizador de Google Slides</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>google-form-renderer.tsx</code>  <code className='text-slate-500'># Renderizador de formularios Google</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>modal-renderer.tsx</code>        <code className='text-slate-500'># Renderizador de modales</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>button-renderer.tsx</code>       <code className='text-slate-500'># Renderizador de botones</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>pdf-renderer.tsx</code>          <code className='text-slate-500'># Renderizador de PDFs</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>image-renderer.tsx</code>        <code className='text-slate-500'># Renderizador de imágenes</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>direct-image-renderer.tsx</code> <code className='text-slate-500'># Renderizador de imágenes directas</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>generic-renderer.tsx</code>      <code className='text-slate-500'># Renderizador genérico</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>selectors/</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>component-selector.tsx</code>    <code className='text-slate-500'># Selector central de componentes</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>cards/</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>custom-card.tsx</code>           <code className='text-slate-500'># Tarjeta personalizada</code><br/>
-            <code className='text-slate-400'>│   ├── </code><code className='text-purple-300'>layout/</code><br/>
-            <code className='text-slate-400'>│   │   ├── </code><code className='text-orange-300'>content-layout.tsx</code>        <code className='text-slate-500'># Layout principal de contenido</code><br/>
-            <code className='text-slate-400'>│   │   └── </code><code className='text-orange-300'>content-header.tsx</code>        <code className='text-slate-500'># Encabezado del contenido</code><br/>
-            <code className='text-slate-400'>│   └── </code><code className='text-purple-300'>ui/</code><br/>
-            <code className='text-slate-400'>│       └── </code><code className='text-cyan-300'>image-components/</code>         <code className='text-slate-500'># Componentes de imágenes</code><br/>
-            <code className='text-slate-400'>├── </code><code className='text-green-400'>contexts/</code><br/>
-            <code className='text-slate-400'>│   └── </code><code className='text-orange-300'>content-context.tsx</code>      <code className='text-slate-500'># Contexto para gestión de estado</code><br/>
-            <code className='text-slate-400'>├── </code><code className='text-green-400'>types/</code><br/>
-            <code className='text-slate-400'>│   └── </code><code className='text-pink-300'>content-types.ts</code>         <code className='text-slate-500'># Definiciones de tipos</code><br/>
-            <code className='text-slate-400'>└── </code><code className='text-green-400'>utils/</code><br/>
-            <code className='text-slate-400'>    ├── </code><code className='text-pink-300'>file-decoder.ts</code>          <code className='text-slate-500'># Decodificador de nombres de archivo</code><br/>
-            <code className='text-slate-400'>    ├── </code><code className='text-orange-300'>component-type-utils.tsx</code> <code className='text-slate-500'># Utilidades para tipos de componentes</code><br/>
-            <code className='text-slate-400'>    └── </code><code className='text-pink-300'>description-parser.ts</code>    <code className='text-slate-500'># Procesador del campo description</code>
-          </pre>
-        </div>
+        <MermaidDiagram
+          chart={`
+flowchart TD
+    ROOT[Proyecto Frontend] --> APP[app/]
+    ROOT --> COMPONENTS[components/]
+    ROOT --> CONTEXTS[contexts/]
+    ROOT --> TYPES[types/]
+    ROOT --> UTILS[utils/]
+    
+    APP --> MARKETING[marketing-salon/]
+    APP --> DOCS[docs/]
+    
+    MARKETING --> PAGE_ID["[id]/page.tsx"]
+    DOCS --> DOC_MARKETING[marketing-salon/page.tsx]
+    
+    COMPONENTS --> CONTENT[content/]
+    COMPONENTS --> NAVIGATION[navigation/]
+    COMPONENTS --> RENDERERS[renderers/]
+    COMPONENTS --> SELECTORS[selectors/]
+    COMPONENTS --> CARDS[cards/]
+    COMPONENTS --> LAYOUT[layout/]
+    COMPONENTS --> UI[ui/]
+    
+    CONTENT --> CONTENT_RENDERER[content-renderer.tsx]
+    CONTENT --> RECURSIVE_RENDERER[recursive-content-renderer.tsx]
+    CONTENT --> CONTENT_GRID[content-grid.tsx]
+    
+    NAVIGATION --> SIDEBAR[sidebar/]
+    NAVIGATION --> TAB_NAV[tab-navigation.tsx]
+    NAVIGATION --> SECTION_NAV[section-navigation.tsx]
+    
+    SIDEBAR --> APP_SIDEBAR[app-sidebar.tsx]
+    SIDEBAR --> SIDEBAR_TOGGLE[sidebar-toggle.tsx]
+    
+    RENDERERS --> VIMEO_R[vimeo-renderer.tsx]
+    RENDERERS --> SLIDES_R[google-slides-renderer.tsx]
+    RENDERERS --> FORM_R[google-form-renderer.tsx]
+    RENDERERS --> MODAL_R[modal-renderer.tsx]
+    RENDERERS --> BUTTON_R[button-renderer.tsx]
+    RENDERERS --> PDF_R[pdf-renderer.tsx]
+    RENDERERS --> IMAGE_R[image-renderer.tsx]
+    RENDERERS --> DIRECT_IMAGE_R[direct-image-renderer.tsx]
+    RENDERERS --> GENERIC_R[generic-renderer.tsx]
+    
+    SELECTORS --> COMPONENT_SELECTOR[component-selector.tsx]
+    
+    CARDS --> CUSTOM_CARD[custom-card.tsx]
+    
+    LAYOUT --> CONTENT_LAYOUT[content-layout.tsx]
+    LAYOUT --> CONTENT_HEADER[content-header.tsx]
+    
+    UI --> IMAGE_COMPONENTS[image-components/]
+    
+    CONTEXTS --> CONTENT_CONTEXT[content-context.tsx]
+    
+    TYPES --> CONTENT_TYPES[content-types.ts]
+    
+    UTILS --> FILE_DECODER[file-decoder.ts]
+    UTILS --> COMPONENT_TYPE_UTILS[component-type-utils.tsx]
+    UTILS --> DESCRIPTION_PARSER[description-parser.ts]
+    
+    classDef appClass fill:#10b981,stroke:#059669,stroke-width:2px,color:#fff
+    classDef componentClass fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff
+    classDef subComponentClass fill:#8b5cf6,stroke:#7c3aed,stroke-width:2px,color:#fff
+    classDef fileClass fill:#f59e0b,stroke:#d97706,stroke-width:1px,color:#fff
+    classDef utilClass fill:#ef4444,stroke:#dc2626,stroke-width:2px,color:#fff
+    
+    class ROOT,APP,MARKETING,DOCS appClass
+    class COMPONENTS,CONTENT,NAVIGATION,RENDERERS,SELECTORS,CARDS,LAYOUT,UI componentClass
+    class SIDEBAR,IMAGE_COMPONENTS subComponentClass
+    class PAGE_ID,DOC_MARKETING,CONTENT_RENDERER,RECURSIVE_RENDERER,CONTENT_GRID,TAB_NAV,SECTION_NAV,APP_SIDEBAR,SIDEBAR_TOGGLE,VIMEO_R,SLIDES_R,FORM_R,MODAL_R,BUTTON_R,PDF_R,IMAGE_R,DIRECT_IMAGE_R,GENERIC_R,COMPONENT_SELECTOR,CUSTOM_CARD,CONTENT_LAYOUT,CONTENT_HEADER,CONTENT_CONTEXT,CONTENT_TYPES fileClass
+    class CONTEXTS,TYPES,UTILS,FILE_DECODER,COMPONENT_TYPE_UTILS,DESCRIPTION_PARSER utilClass
+          `}
+          className="mb-8"
+        />
 
         <h3 className='text-xl font-semibold mt-6 mb-3'>
           Organización por funcionalidad
