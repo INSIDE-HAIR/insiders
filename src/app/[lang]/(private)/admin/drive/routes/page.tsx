@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Table,
   TableBody,
@@ -34,6 +36,7 @@ import {
   Clock,
   InfoIcon,
   Copy,
+  Route,
 } from "lucide-react";
 import { format, differenceInHours } from "date-fns";
 import { useToast } from "@/src/components/ui/use-toast";
@@ -531,15 +534,17 @@ export default function DriveRoutesPage() {
   };
 
   return (
-    <div className='container py-4 md:py-10 px-4'>
-      <div className='flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4'>
-        <div>
-          <h1 className='text-2xl md:text-3xl font-bold'>Rutas de Drive</h1>
-          <p className='text-muted-foreground text-sm md:text-base'>
-            Administra tus rutas de integración con Google Drive
-          </p>
-        </div>
-        <div className='flex flex-wrap gap-2 md:space-x-2'>
+    <div>
+      <DocHeader
+        title='Rutas de Drive'
+        description='Administra tus rutas de integración con Google Drive'
+        icon={Route}
+      />
+
+      <DocContent>
+        <div className='container py-4 md:py-10 px-4'>
+          <div className='flex justify-end items-center mb-6 gap-4'>
+            <div className='flex flex-wrap gap-2 md:space-x-2'>
           <Button
             variant='outline'
             onClick={() => setLegendModalOpen(true)}
@@ -1100,6 +1105,8 @@ export default function DriveRoutesPage() {
           </div>
         </DialogContent>
       </Dialog>
+        </div>
+      </DocContent>
     </div>
   );
 }

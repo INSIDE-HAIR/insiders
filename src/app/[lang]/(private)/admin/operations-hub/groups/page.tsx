@@ -1,5 +1,8 @@
 import { Metadata } from "next";
 import { GroupsManagement } from "@/src/features/meet/components/GroupsManagement";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { Users } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Grupos | Operations Hub",
@@ -16,17 +19,18 @@ export default async function GroupsPage({ params }: GroupsPageProps) {
   const { lang } = await params;
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-3xl font-bold">Gestión de Grupos</h1>
+    <div>
+      <DocHeader
+        title="Gestión de Grupos"
+        description="Sistema de grupos jerárquicos para organización centralizada de usuarios y contenido"
+        icon={Users}
+      />
+      
+      <DocContent>
+        <div className="container mx-auto py-6">
+          <GroupsManagement lang={lang} />
         </div>
-        <p className="text-muted-foreground">
-          Sistema de grupos jerárquicos para organización de usuarios y contenido. 
-          Moved from Meet to Operations Hub for centralized management.
-        </p>
-      </div>
-      <GroupsManagement lang={lang} />
+      </DocContent>
     </div>
   );
 }

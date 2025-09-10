@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Card,
   CardContent,
@@ -55,20 +57,19 @@ export default async function SystemPage({ params }: SystemPageProps) {
   const isSpanish = lang === "es";
 
   return (
-    <div className='container mx-auto p-6 space-y-6'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold'>
-            {isSpanish ? "Logs del Sistema" : "System Logs"}
-          </h1>
-          <p className='text-muted-foreground mt-1'>
-            {isSpanish
-              ? "Monitoreo en tiempo real, auditoría de acciones y análisis de rendimiento"
-              : "Real-time monitoring, action auditing, and performance analysis"}
-          </p>
-        </div>
-        <div className='flex gap-2'>
+    <div>
+      <DocHeader
+        title={isSpanish ? "Logs del Sistema" : "System Logs"}
+        description={isSpanish
+          ? "Monitoreo en tiempo real, auditoría de acciones y análisis de rendimiento"
+          : "Real-time monitoring, action auditing and performance analysis"}
+        icon={ServerStackIcon}
+      />
+
+      <DocContent>
+        <div className='container mx-auto p-6 space-y-6'>
+          <div className='flex items-center justify-between'>
+            <div className='flex gap-2'>
           <Button variant='outline' className='gap-2'>
             <FunnelIcon className='h-4 w-4' />
             {isSpanish ? "Filtros" : "Filters"}
@@ -592,6 +593,8 @@ export default async function SystemPage({ params }: SystemPageProps) {
           </div>
         </CardContent>
       </Card>
+        </div>
+      </DocContent>
     </div>
   );
 }

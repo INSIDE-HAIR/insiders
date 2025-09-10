@@ -50,6 +50,8 @@ import {
 } from "@/src/components/ui/select";
 import { Checkbox } from "@/src/components/ui/checkbox";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 
 interface User {
   id: string;
@@ -396,59 +398,60 @@ export default function GroupsClient() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Gestión de Grupos</h1>
-          <p className="text-muted-foreground">
-            Administra los grupos de usuarios y sus asignaciones
-          </p>
-        </div>
-        
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Crear Grupo
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Crear Nuevo Grupo</DialogTitle>
-              <DialogDescription>
-                Crea un nuevo grupo para organizar usuarios
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name">Nombre del Grupo</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Ej: Administradores, Soporte..."
-                />
-              </div>
-              <div>
-                <Label htmlFor="description">Descripción (Opcional)</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Descripción del grupo..."
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                Cancelar
-              </Button>
-              <Button onClick={handleCreateGroup}>Crear Grupo</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+    <div>
+      <DocHeader
+        title="Gestión de Grupos"
+        description="Administra los grupos de usuarios y sus asignaciones de manera centralizada"
+        icon={Users}
+      />
+      
+      <DocContent>
+        <div className="container mx-auto px-4 py-8 space-y-6">
+          {/* Action Button */}
+          <div className="flex justify-end">
+            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Crear Grupo
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Crear Nuevo Grupo</DialogTitle>
+                  <DialogDescription>
+                    Crea un nuevo grupo para organizar usuarios
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="name">Nombre del Grupo</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Ej: Administradores, Soporte..."
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="description">Descripción (Opcional)</Label>
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      placeholder="Descripción del grupo..."
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                    Cancelar
+                  </Button>
+                  <Button onClick={handleCreateGroup}>Crear Grupo</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
 
       {/* Search */}
       <div className="flex items-center space-x-2">
@@ -740,6 +743,8 @@ export default function GroupsClient() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </div>
+      </DocContent>
     </div>
   );
 }

@@ -40,6 +40,8 @@ import {
   TrendingUp,
   Clock,
 } from "lucide-react";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { ApiKeyCard } from "@/src/features/settings/components/api-keys/ApiKeyCard";
 import { CreateApiKeyDialog } from "@/src/features/settings/components/api-keys/CreateApiKeyDialog";
 import { ApiKeySuccessDialog } from "@/src/features/settings/components/api-keys/ApiKeySuccessDialog";
@@ -431,7 +433,7 @@ function ApiKeysPageContent() {
     }
 
     return (
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 gap-6'>
         {filteredKeys.map((apiKey) => (
           <ApiKeyCard
             key={apiKey.id}
@@ -482,91 +484,93 @@ function ApiKeysPageContent() {
   };
 
   return (
-    <div className='container mx-auto p-6 space-y-8'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center space-x-3'>
-          <div>
-            <h1 className='text-3xl font-bold tracking-tight'>API Keys</h1>
-            <p className='text-muted-foreground'>
-              Gestiona las claves de acceso programático a tu API
-            </p>
+    <div>
+      <DocHeader
+        title="API Keys"
+        description="Gestiona las claves de acceso programático y permisos de API de manera segura"
+        icon={Key}
+      />
+      
+      <DocContent>
+        <div className='container mx-auto p-6 space-y-8'>
+          {/* Action Button */}
+          <div className='flex justify-end'>
+            <Button onClick={() => setShowCreateDialog(true)}>
+              <Plus className='h-4 w-4 mr-2' />
+              Nueva API Key
+            </Button>
           </div>
+
+          {/* Stats */}
+          {renderStatsCards()}
+
+          {/* Filters */}
+          {renderFilters()}
+
+          {/* API Keys Grid */}
+          {renderApiKeys()}
+
+          {/* Pagination */}
+          {renderPagination()}
+
+          {/* Dialogs */}
+          <CreateApiKeyDialog
+            open={showCreateDialog}
+            onOpenChange={setShowCreateDialog}
+            onSubmit={handleCreateApiKey}
+            loading={creating}
+          />
+
+          {newApiKeyData && (
+            <ApiKeySuccessDialog
+              open={showSuccessDialog}
+              onOpenChange={setShowSuccessDialog}
+              apiKey={newApiKeyData.apiKey}
+              secretKey={newApiKeyData.key}
+            />
+          )}
+
+          {/* Edit Modal */}
+          <EditApiKeyModal
+            open={showEditModal}
+            onOpenChange={setShowEditModal}
+            apiKey={selectedApiKey}
+            onSubmit={handleUpdateApiKey}
+            loading={updating}
+          />
+
+          {/* View Modal */}
+          <ViewApiKeyModal
+            open={showViewModal}
+            onOpenChange={setShowViewModal}
+            apiKey={selectedApiKey}
+          />
+
+          {/* Security Notice */}
+          <Card className='border-warning bg-warning/10'>
+            <CardHeader>
+              <CardTitle className='flex items-center space-x-2 text-warning'>
+                <AlertCircle className='h-5 w-5' />
+                <span>Nota de Seguridad</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className='text-sm text-warning space-y-1'>
+                <li>• Las API Keys proporcionan acceso completo a tu cuenta</li>
+                <li>
+                  • Guárdalas de forma segura y nunca las compartas públicamente
+                </li>
+                <li>• Revisa regularmente qué aplicaciones tienen acceso</li>
+                <li>
+                  • Configura nombres descriptivos para identificar fácilmente cada
+                  key
+                </li>
+                <li>• Configura expiración automática para mayor seguridad</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
-        <Button onClick={() => setShowCreateDialog(true)}>
-          <Plus className='h-4 w-4 mr-2' />
-          Nueva API Key
-        </Button>
-      </div>
-
-      {/* Stats */}
-      {renderStatsCards()}
-
-      {/* Filters */}
-      {renderFilters()}
-
-      {/* API Keys Grid */}
-      {renderApiKeys()}
-
-      {/* Pagination */}
-      {renderPagination()}
-
-      {/* Dialogs */}
-      <CreateApiKeyDialog
-        open={showCreateDialog}
-        onOpenChange={setShowCreateDialog}
-        onSubmit={handleCreateApiKey}
-        loading={creating}
-      />
-
-      {newApiKeyData && (
-        <ApiKeySuccessDialog
-          open={showSuccessDialog}
-          onOpenChange={setShowSuccessDialog}
-          apiKey={newApiKeyData.apiKey}
-          secretKey={newApiKeyData.key}
-        />
-      )}
-
-      {/* Edit Modal */}
-      <EditApiKeyModal
-        open={showEditModal}
-        onOpenChange={setShowEditModal}
-        apiKey={selectedApiKey}
-        onSubmit={handleUpdateApiKey}
-        loading={updating}
-      />
-
-      {/* View Modal */}
-      <ViewApiKeyModal
-        open={showViewModal}
-        onOpenChange={setShowViewModal}
-        apiKey={selectedApiKey}
-      />
-
-      {/* Security Notice */}
-      <Card className='border-warning bg-warning/10'>
-        <CardHeader>
-          <CardTitle className='flex items-center space-x-2 text-warning'>
-            <AlertCircle className='h-5 w-5' />
-            <span>Nota de Seguridad</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className='text-sm text-warning space-y-1'>
-            <li>• Las API Keys proporcionan acceso completo a tu cuenta</li>
-            <li>
-              • Guárdalas de forma segura y nunca las compartas públicamente
-            </li>
-            <li>• Revisa regularmente qué aplicaciones tienen acceso</li>
-            <li>
-              • Configura nombres descriptivos para identificar fácilmente cada
-              key
-            </li>
-            <li>• Configura expiración automática para mayor seguridad</li>
-          </ul>
-        </CardContent>
-      </Card>
+      </DocContent>
     </div>
   );
 }

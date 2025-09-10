@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
@@ -194,19 +196,15 @@ export default function AccessMetricsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <BarChart3 className="h-8 w-8" />
-            Métricas de Control de Acceso
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Monitorea el rendimiento y uso del sistema de reglas complejas
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-4">
+    <div>
+      <DocHeader
+        title='Métricas de Control de Acceso'
+        description='Monitorea el rendimiento y uso del sistema de reglas complejas'
+        icon={BarChart3}
+      />
+
+      <DocContent>
+        <div className="flex justify-end items-center gap-4 mb-8">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger className="w-32">
               <SelectValue />
@@ -233,7 +231,6 @@ export default function AccessMetricsPage() {
             Exportar
           </Button>
         </div>
-      </div>
 
       {metrics && (
         <div className="grid gap-6">
@@ -268,10 +265,10 @@ export default function AccessMetricsPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Accesos Permitidos</CardTitle>
-                <CheckCircle className="h-4 w-4 text-green-500" />
+                <CheckCircle className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">
+                <div className="text-2xl font-bold text-primary">
                   {metrics.usage.allowedAccess.toLocaleString()}
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -283,10 +280,10 @@ export default function AccessMetricsPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Accesos Denegados</CardTitle>
-                <XCircle className="h-4 w-4 text-red-500" />
+                <XCircle className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">
+                <div className="text-2xl font-bold text-muted-foreground">
                   {metrics.usage.deniedAccess.toLocaleString()}
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -315,16 +312,16 @@ export default function AccessMetricsPage() {
                     <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{resource.resourceId}</h4>
-                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
-                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            <CheckCircle className="h-3 w-3 text-primary" />
                             {resource.allowed} permitidos
                           </span>
                           <span className="flex items-center gap-1">
-                            <XCircle className="h-3 w-3 text-red-500" />
+                            <XCircle className="h-3 w-3 text-muted-foreground" />
                             {resource.denied} denegados
                           </span>
-                          <span className="text-gray-500">
+                          <span className="text-muted-foreground">
                             Total: {resource.total}
                           </span>
                         </div>
@@ -333,7 +330,7 @@ export default function AccessMetricsPage() {
                         <div className="text-lg font-semibold">
                           {successRate.toFixed(1)}%
                         </div>
-                        <Badge variant={successRate > 80 ? "default" : successRate > 60 ? "secondary" : "destructive"}>
+                        <Badge variant={successRate > 80 ? "default" : "secondary"}>
                           {successRate > 80 ? "Excelente" : successRate > 60 ? "Bueno" : "Mejorable"}
                         </Badge>
                       </div>
@@ -356,10 +353,10 @@ export default function AccessMetricsPage() {
               <CardContent>
                 <div className="space-y-3">
                   {metrics.rules.mostUsed.map((rule, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                    <div key={index} className="flex items-center justify-between p-3 bg-card border border-border rounded-lg">
                       <div>
                         <div className="font-medium">{rule.ruleName}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-muted-foreground">
                           {rule.usageCount.toLocaleString()} usos
                         </div>
                       </div>
@@ -368,7 +365,7 @@ export default function AccessMetricsPage() {
                           {rule.successRate}%
                         </div>
                         <Badge 
-                          variant={rule.successRate > 90 ? "default" : rule.successRate > 70 ? "secondary" : "destructive"}
+                          variant={rule.successRate > 90 ? "default" : "secondary"}
                           className="text-xs"
                         >
                           éxito
@@ -391,23 +388,23 @@ export default function AccessMetricsPage() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                      <div className="text-lg font-bold text-red-600">
+                    <div className="p-3 bg-card border border-border rounded-lg">
+                      <div className="text-lg font-bold text-foreground">
                         {metrics.errors.evaluationErrors}
                       </div>
-                      <div className="text-xs text-red-600">Errores de evaluación</div>
+                      <div className="text-xs text-muted-foreground">Errores de evaluación</div>
                     </div>
-                    <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                      <div className="text-lg font-bold text-yellow-600">
+                    <div className="p-3 bg-card border border-border rounded-lg">
+                      <div className="text-lg font-bold text-foreground">
                         {metrics.errors.fallbacksToSimple}
                       </div>
-                      <div className="text-xs text-yellow-600">Fallbacks</div>
+                      <div className="text-xs text-muted-foreground">Fallbacks</div>
                     </div>
-                    <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                      <div className="text-lg font-bold text-orange-600">
+                    <div className="p-3 bg-card border border-border rounded-lg">
+                      <div className="text-lg font-bold text-foreground">
                         {metrics.errors.configurationErrors}
                       </div>
-                      <div className="text-xs text-orange-600">Config errores</div>
+                      <div className="text-xs text-muted-foreground">Config errores</div>
                     </div>
                   </div>
 
@@ -415,10 +412,10 @@ export default function AccessMetricsPage() {
                     <h5 className="font-medium mb-2">Errores Recientes:</h5>
                     <div className="space-y-2">
                       {metrics.errors.recentErrors.slice(0, 3).map((error, index) => (
-                        <div key={index} className="text-xs p-2 bg-red-50 dark:bg-red-900/20 rounded border-l-2 border-red-500">
-                          <div className="font-medium">{error.resourceId}</div>
-                          <div className="text-red-600">{error.error}</div>
-                          <div className="text-gray-500">
+                        <div key={index} className="text-xs p-2 bg-card border border-border rounded border-l-2 border-primary">
+                          <div className="font-medium text-foreground">{error.resourceId}</div>
+                          <div className="text-muted-foreground">{error.error}</div>
+                          <div className="text-muted-foreground">
                             {new Date(error.timestamp).toLocaleString()}
                           </div>
                         </div>
@@ -448,7 +445,7 @@ export default function AccessMetricsPage() {
                     <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                       <div>
                         <div className="font-medium">{rule.ruleName}</div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           Modificada: {new Date(rule.lastModified).toLocaleDateString()}
                         </div>
                       </div>
@@ -484,15 +481,15 @@ export default function AccessMetricsPage() {
                         })}
                       </div>
                       <div className="flex items-center gap-4">
-                        <div className="text-sm text-gray-600">
-                          <span className="text-green-600">{day.allowed}</span> / <span className="text-red-600">{day.denied}</span>
+                        <div className="text-sm text-muted-foreground">
+                          <span className="text-primary">{day.allowed}</span> / <span className="text-muted-foreground">{day.denied}</span>
                         </div>
                         <div className="text-sm font-medium">
                           {successRate.toFixed(1)}%
                         </div>
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div className="w-24 bg-border rounded-full h-2">
                           <div 
-                            className="bg-green-500 h-2 rounded-full" 
+                            className="bg-primary h-2 rounded-full" 
                             style={{ width: `${successRate}%` }}
                           ></div>
                         </div>
@@ -505,6 +502,7 @@ export default function AccessMetricsPage() {
           </Card>
         </div>
       )}
+      </DocContent>
     </div>
   );
 }

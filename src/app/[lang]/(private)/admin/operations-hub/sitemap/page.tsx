@@ -8,6 +8,9 @@ import React, {
 } from "react";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { MapIcon, InboxIcon } from "@heroicons/react/24/outline";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { Map as LucideMapIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
@@ -75,6 +78,9 @@ import {
   MoreHorizontal,
   Edit,
   Loader2,
+  FileText,
+  Globe,
+  Plus,
 } from "lucide-react";
 import { ScrollArea } from "@/src/components/ui/scroll-area";
 import {
@@ -599,10 +605,7 @@ export default function PageCreator({}) {
               <div className='flex items-center space-x-2'>
                 <span>{page.title}</span>
                 {page.status === "published" && (
-                  <Badge
-                    variant='secondary'
-                    className='bg-green-100 text-green-800'
-                  >
+                  <Badge variant='default'>
                     {t("status.published")}
                   </Badge>
                 )}
@@ -610,7 +613,7 @@ export default function PageCreator({}) {
                   <Badge variant='secondary'>{t("status.draft")}</Badge>
                 )}
                 {page.status === "deleted" && (
-                  <Badge variant='destructive'>{t("status.deleted")}</Badge>
+                  <Badge variant='outline'>{t("status.deleted")}</Badge>
                 )}
               </div>
             </div>
@@ -924,820 +927,822 @@ export default function PageCreator({}) {
   };
 
   return (
-    <>
-      <Toaster position='top-right' />
-      <div className='container mx-auto p-4'>
-        <div className='flex items-center gap-3 mb-6'>
-          <MapIcon className='h-8 w-8 text-blue-600' />
-          <div>
-            <h1 className='text-2xl font-bold'>Gestión de Sitemaps</h1>
-            <p className='text-muted-foreground'>
-              Administra los sitemaps de tu sitio web
-            </p>
+    <div>
+      <DocHeader
+        title='Gestión de Sitemaps'
+        description='Administra los sitemaps de tu sitio web con sistema de múltiples sitemaps para mejor organización'
+        icon={LucideMapIcon}
+      />
+
+      <DocContent>
+        <div className='container mx-auto p-4'>
+          <Toaster position='top-right' />
+
+          {/* Alert informativo sobre múltiples sitemaps */}
+          <Alert className='mb-6 border-primary/20 bg-primary/5'>
+            <InboxIcon className='h-4 w-4 text-primary' />
+            <AlertDescription className='text-foreground'>
+              <strong>Sistema de múltiples sitemaps:</strong> Esta opción te
+              permite crear diferentes sitemaps para organizar mejor tu
+              contenido. Puedes tener sitemaps específicos para el blog, la web
+              principal, y cualquier otra sección que necesites. Esto mejora el
+              SEO y facilita la indexación por parte de los motores de búsqueda.
+            </AlertDescription>
+          </Alert>
+
+          {/* Badges informativos */}
+          <div className='flex flex-wrap gap-2 mb-6'>
+            <Badge variant='outline' className='flex items-center gap-2'>
+              <MapIcon className='h-3 w-3' />
+              Sitemap General
+            </Badge>
+            <Badge variant='secondary' className='flex items-center gap-2'>
+              <FileText className='h-3 w-3' />
+              Sitemap del Blog
+            </Badge>
+            <Badge variant='secondary' className='flex items-center gap-2'>
+              <Globe className='h-3 w-3' />
+              Sitemap Web
+            </Badge>
+            <Badge variant='secondary' className='flex items-center gap-2'>
+              <Plus className='h-3 w-3' />
+              Sitemaps Personalizados
+            </Badge>
           </div>
-        </div>
 
-        {/* Alert informativo sobre múltiples sitemaps */}
-        <Alert className='mb-6 border-blue-500 bg-blue-50'>
-          <InboxIcon className='h-4 w-4 text-blue-600' />
-          <AlertDescription className='text-blue-800'>
-            <strong>Sistema de múltiples sitemaps:</strong> Esta opción te
-            permite crear diferentes sitemaps para organizar mejor tu contenido.
-            Puedes tener sitemaps específicos para el blog, la web principal, y
-            cualquier otra sección que necesites. Esto mejora el SEO y facilita
-            la indexación por parte de los motores de búsqueda.
-          </AlertDescription>
-        </Alert>
+          <div className='mb-4 flex space-x-2'>
+            <Button onClick={handleCreatePage}>{a("createNewPage")}</Button>
+          </div>
 
-        {/* Badges informativos */}
-        <div className='flex flex-wrap gap-2 mb-6'>
-          <Badge variant='outline' className='flex items-center gap-2'>
-            <MapIcon className='h-3 w-3' />
-            Sitemap General
-          </Badge>
-          <Badge
-            variant='outline'
-            className='flex items-center gap-2 bg-green-50 text-green-700 border-green-300'
-          >
-            📝 Sitemap del Blog
-          </Badge>
-          <Badge
-            variant='outline'
-            className='flex items-center gap-2 bg-purple-50 text-purple-700 border-purple-300'
-          >
-            🌐 Sitemap Web
-          </Badge>
-          <Badge
-            variant='outline'
-            className='flex items-center gap-2 bg-orange-50 text-orange-700 border-orange-300'
-          >
-            ➕ Sitemaps Personalizados
-          </Badge>
-        </div>
+          <div className='mb-6'>
+            <Tabs
+              value={selectedStatus}
+              onValueChange={(value) => setSelectedStatus(value as PageStatus)}
+              className='w-full'
+            >
+              <TabsList className='w-full justify-start'>
+                <TabsTrigger value='published'>
+                  {t("published")} ({getPageCountByStatus("published")})
+                </TabsTrigger>
+                <TabsTrigger value='draft'>
+                  {t("draft")} ({getPageCountByStatus("draft")})
+                </TabsTrigger>
+                <TabsTrigger value='deleted'>
+                  {t("deleted")} ({getPageCountByStatus("deleted")})
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
 
-        <div className='mb-4 flex space-x-2'>
-          <Button onClick={handleCreatePage}>{a("createNewPage")}</Button>
-        </div>
-
-        <div className='mb-6'>
-          <Tabs
-            value={selectedStatus}
-            onValueChange={(value) => setSelectedStatus(value as PageStatus)}
-            className='w-full'
-          >
-            <TabsList className='w-full justify-start'>
-              <TabsTrigger value='published'>
-                {t("published")} ({getPageCountByStatus("published")})
-              </TabsTrigger>
-              <TabsTrigger value='draft'>
-                {t("draft")} ({getPageCountByStatus("draft")})
-              </TabsTrigger>
-              <TabsTrigger value='deleted'>
-                {t("deleted")} ({getPageCountByStatus("deleted")})
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
-        <div className='mb-4 flex space-x-2'>
-          <Input
-            placeholder={s("searchPages")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className='max-w-sm'
-          />
-          <div className='w-[300px]'>
-            <TagInput
-              value={selectedTags}
-              onChange={setSelectedTags}
-              placeholder={s("searchTags")}
+          <div className='mb-4 flex space-x-2'>
+            <Input
+              placeholder={s("searchPages")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className='max-w-sm'
             />
+            <div className='w-[300px]'>
+              <TagInput
+                value={selectedTags}
+                onChange={setSelectedTags}
+                placeholder={s("searchTags")}
+              />
+            </div>
           </div>
-        </div>
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className='w-[50px]'>
-                <Checkbox
-                  checked={
-                    selectedPages.size > 0 &&
-                    selectedPages.size === pages.length
-                  }
-                  onCheckedChange={handleSelectAll}
-                  aria-label='Select all'
-                />
-              </TableHead>
-              <TableHead>{ta("title")}</TableHead>
-              <TableHead>{ta("author")}</TableHead>
-              <TableHead>{ta("status")}</TableHead>
-              <TableHead>{ta("lastModified")}</TableHead>
-              <TableHead>{ta("actions")}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={5} className='text-center'>
-                  {m("loading")}
-                </TableCell>
+                <TableHead className='w-[50px]'>
+                  <Checkbox
+                    checked={
+                      selectedPages.size > 0 &&
+                      selectedPages.size === pages.length
+                    }
+                    onCheckedChange={handleSelectAll}
+                    aria-label='Select all'
+                  />
+                </TableHead>
+                <TableHead>{ta("title")}</TableHead>
+                <TableHead>{ta("author")}</TableHead>
+                <TableHead>{ta("status")}</TableHead>
+                <TableHead>{ta("lastModified")}</TableHead>
+                <TableHead>{ta("actions")}</TableHead>
               </TableRow>
-            ) : pages.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className='text-center'>
-                  {m("noPages")}
-                </TableCell>
-              </TableRow>
-            ) : (
-              renderPageHierarchy(organizePages(pages))
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={5} className='text-center'>
+                    {m("loading")}
+                  </TableCell>
+                </TableRow>
+              ) : pages.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className='text-center'>
+                    {m("noPages")}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                renderPageHierarchy(organizePages(pages))
+              )}
+            </TableBody>
+          </Table>
 
-        {selectedPages.size > 0 && (
-          <div className='mt-4 flex gap-2'>
-            <Button
-              variant='secondary'
-              onClick={() => handleBulkAction("draft")}
-              disabled={isLoading}
-            >
-              {t("setBulkDraft")}
-            </Button>
-            <Button
-              variant='secondary'
-              onClick={() => handleBulkAction("published")}
-              disabled={isLoading}
-            >
-              {t("setBulkPublished")}
-            </Button>
-            <Button
-              variant='destructive'
-              onClick={() => handleBulkAction("deleted")}
-              disabled={isLoading}
-            >
-              {t("setBulkDeleted")}
-            </Button>
-          </div>
-        )}
+          {selectedPages.size > 0 && (
+            <div className='mt-4 flex gap-2'>
+              <Button
+                variant='secondary'
+                onClick={() => handleBulkAction("draft")}
+                disabled={isLoading}
+              >
+                {t("setBulkDraft")}
+              </Button>
+              <Button
+                variant='secondary'
+                onClick={() => handleBulkAction("published")}
+                disabled={isLoading}
+              >
+                {t("setBulkPublished")}
+              </Button>
+              <Button
+                variant='destructive'
+                onClick={() => handleBulkAction("deleted")}
+                disabled={isLoading}
+              >
+                {t("setBulkDeleted")}
+              </Button>
+            </div>
+          )}
 
-        {selectedStatus === "deleted" && pages.length > 0 && (
-          <div className='mt-4'>
-            <Button
-              variant='destructive'
-              onClick={handleEmptyTrash}
-              disabled={isLoading}
-            >
-              {t("emptyTrash")}
-            </Button>
-          </div>
-        )}
+          {selectedStatus === "deleted" && pages.length > 0 && (
+            <div className='mt-4'>
+              <Button
+                variant='destructive'
+                onClick={handleEmptyTrash}
+                disabled={isLoading}
+              >
+                {t("emptyTrash")}
+              </Button>
+            </div>
+          )}
 
-        <Dialog
-          open={isFormOpen}
-          onOpenChange={(open) => {
-            if (!open) {
-              setSelectedPage(null);
-              form.reset({
-                title: "",
-                slug: "",
-                content: "",
-                lang: "es",
-                parentId: null,
-                level: 1,
-                status: "draft",
-                indexable: true,
-                showInMenu: true,
-                tags: [],
-                author: "admin",
-                template: Template.sideMenuAndTabs,
-              });
-            }
-            setIsFormOpen(open);
-          }}
-        >
-          <DialogContent className='max-w-4xl'>
-            <DialogHeader>
-              <DialogTitle>
-                {selectedPage ? a("editPage") : a("createPage")}
-              </DialogTitle>
-            </DialogHeader>
-            <ScrollArea className='h-[80vh] pr-4'>
-              <FormProvider {...form}>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className='space-y-8'
-                  >
-                    <Tabs defaultValue='config'>
-                      <TabsList className='mb-4'>
-                        <TabsTrigger value='config'>Config</TabsTrigger>
-                        <TabsTrigger value='content'>Content</TabsTrigger>
-                        <TabsTrigger value='seo'>
-                          SEO
-                          <Badge variant='outline' className='ml-2'>
-                            {form.watch("slug") ? "0/3" : "0/3"}
-                          </Badge>
-                        </TabsTrigger>
-                      </TabsList>
+          <Dialog
+            open={isFormOpen}
+            onOpenChange={(open) => {
+              if (!open) {
+                setSelectedPage(null);
+                form.reset({
+                  title: "",
+                  slug: "",
+                  content: "",
+                  lang: "es",
+                  parentId: null,
+                  level: 1,
+                  status: "draft",
+                  indexable: true,
+                  showInMenu: true,
+                  tags: [],
+                  author: "admin",
+                  template: Template.sideMenuAndTabs,
+                });
+              }
+              setIsFormOpen(open);
+            }}
+          >
+            <DialogContent className='max-w-4xl'>
+              <DialogHeader>
+                <DialogTitle>
+                  {selectedPage ? a("editPage") : a("createPage")}
+                </DialogTitle>
+              </DialogHeader>
+              <ScrollArea className='h-[80vh] pr-4'>
+                <FormProvider {...form}>
+                  <Form {...form}>
+                    <form
+                      onSubmit={form.handleSubmit(onSubmit)}
+                      className='space-y-8'
+                    >
+                      <Tabs defaultValue='config'>
+                        <TabsList className='mb-4'>
+                          <TabsTrigger value='config'>Config</TabsTrigger>
+                          <TabsTrigger value='content'>Content</TabsTrigger>
+                          <TabsTrigger value='seo'>
+                            SEO
+                            <Badge variant='outline' className='ml-2'>
+                              {form.watch("slug") ? "0/3" : "0/3"}
+                            </Badge>
+                          </TabsTrigger>
+                        </TabsList>
 
-                      <TabsContent value='config'>
-                        <div className='space-y-4'>
-                          <FormField
-                            control={form.control}
-                            name='title'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("titleLabel")}</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder={f("titlePlaceholder")}
-                                    {...field}
-                                    onChange={(e) => {
-                                      field.onChange(e);
-                                      const currentSlug =
-                                        form.getValues("slug");
-                                      if (!currentSlug) {
-                                        form.setValue(
-                                          "slug",
-                                          generateSlug(e.target.value)
-                                        );
-                                      }
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='slug'
-                            render={({ field }) => {
-                              const status = form.watch("status");
-                              const pageId = form.watch("id");
-                              const isPublished = status === "published";
-                              const generatedSlug = generateSlug(
-                                form.watch("title")
-                              );
-                              const placeholderSlug = isPublished
-                                ? field.value || generatedSlug
-                                : pageId
-                                  ? `${pageId}-${status}`
-                                  : `[id]-${status}`;
-                              const currentValue = field.value || "";
-
-                              return (
+                        <TabsContent value='config'>
+                          <div className='space-y-4'>
+                            <FormField
+                              control={form.control}
+                              name='title'
+                              render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>{f("slugLabel")}</FormLabel>
+                                  <FormLabel>{f("titleLabel")}</FormLabel>
                                   <FormControl>
-                                    <div className='space-y-2'>
-                                      <Input
-                                        {...field}
-                                        placeholder={
-                                          isPublished
-                                            ? generatedSlug
-                                            : placeholderSlug
-                                        }
-                                        value={
-                                          isPublished
-                                            ? currentValue
-                                            : placeholderSlug
-                                        }
-                                        disabled={!isPublished}
-                                        className={
-                                          !isPublished ? "bg-muted" : ""
-                                        }
-                                        onClick={() => {
-                                          if (
-                                            isPublished &&
-                                            !currentValue &&
-                                            generatedSlug
-                                          ) {
-                                            field.onChange(generatedSlug);
-                                          }
-                                        }}
-                                        onChange={(e) => {
-                                          if (isPublished) {
-                                            const validSlug = generateSlug(
-                                              e.target.value
-                                            );
-                                            field.onChange(validSlug);
-                                          }
-                                        }}
-                                      />
-                                      <Progress
-                                        value={(currentValue.length / 60) * 100}
-                                        className={cn(
-                                          "h-1",
-                                          currentValue.length > 60
-                                            ? "bg-red-500"
-                                            : "bg-green-500"
-                                        )}
-                                      />
-                                      <div className='flex justify-between text-xs text-muted-foreground'>
-                                        <span>URL amigable</span>
-                                        <span>{currentValue.length}/60</span>
-                                      </div>
-                                    </div>
-                                  </FormControl>
-                                  <FormDescription className='text-xs'>
-                                    {isPublished ? (
-                                      <>
-                                        • Usa solo letras minúsculas, números y
-                                        guiones
-                                        <br />
-                                        • Evita palabras vacías (el, la, los,
-                                        de, etc.)
-                                        <br />
-                                        • Mantén el slug corto y descriptivo
-                                        <br />• Incluye palabras clave
-                                        relevantes
-                                      </>
-                                    ) : (
-                                      "El slug se generará automáticamente cuando la página sea publicada"
-                                    )}
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              );
-                            }}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='author'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("authorLabel")}</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue
-                                        placeholder={f("authorPlaceholder")}
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value='admin'>Admin</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='template'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("templateLabel")}</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                  disabled={selectedPage !== null}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue
-                                        placeholder={f("selectTemplate")}
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {renderTemplateOptions()}
-                                  </SelectContent>
-                                </Select>
-                                <FormDescription>
-                                  {f("templateDescription")}
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='parentId'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("parentPageLabel")}</FormLabel>
-                                <Select
-                                  onValueChange={handleParentChange}
-                                  value={field.value || "root"}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue
-                                        placeholder={f("selectParentPage")}
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {renderSelectOptions(organizePages(pages))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='status'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("statusLabel")}</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue
-                                        placeholder={f("selectStatus")}
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value='draft'>
-                                      {f("statusDraft")}
-                                    </SelectItem>
-                                    <SelectItem value='published'>
-                                      {f("statusPublished")}
-                                    </SelectItem>
-                                    <SelectItem value='deleted'>
-                                      {f("statusDeleted")}
-                                    </SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='indexable'
-                            render={({ field }) => (
-                              <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                                <div className='space-y-0.5'>
-                                  <FormLabel className='text-base'>
-                                    {f("indexableLabel")}
-                                  </FormLabel>
-                                  <FormDescription>
-                                    {f("indexableDescription")}
-                                  </FormDescription>
-                                </div>
-                                <FormControl>
-                                  <Switch
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='showInMenu'
-                            render={({ field }) => (
-                              <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
-                                <div className='space-y-0.5'>
-                                  <FormLabel className='text-base'>
-                                    {f("showInMenuLabel")}
-                                  </FormLabel>
-                                  <FormDescription>
-                                    {f("showInMenuDescription")}
-                                  </FormDescription>
-                                </div>
-                                <FormControl>
-                                  <Switch
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                  />
-                                </FormControl>
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='tags'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("tagsLabel")}</FormLabel>
-                                <FormControl>
-                                  <TagInput
-                                    value={field.value}
-                                    onChange={field.onChange}
-                                  />
-                                </FormControl>
-                                <FormDescription>
-                                  {f("tagsDescription")}
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value='content'>
-                        <div className='space-y-4'>
-                          <FormField
-                            control={form.control}
-                            name='content'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{f("contentLabel")}</FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder={f("contentPlaceholder")}
-                                    {...field}
-                                    className='min-h-[200px]'
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value='seo'>
-                        <div className='space-y-6'>
-                          <div className='flex items-center gap-2 text-muted-foreground'>
-                            <Info size={16} />
-                            <p className='text-sm'>
-                              Complete estos campos para mejorar el SEO de tu
-                              página
-                            </p>
-                          </div>
-
-                          <FormField
-                            control={form.control}
-                            name='metaTitle'
-                            render={({ field }) => {
-                              const currentValue = field.value || "";
-                              const pixelWidth =
-                                calculatePixelWidth(currentValue);
-
-                              return (
-                                <FormItem>
-                                  <FormLabel>Título SEO</FormLabel>
-                                  <FormControl>
-                                    <div className='space-y-2'>
-                                      <Input
-                                        {...field}
-                                        placeholder='Título optimizado para motores de búsqueda'
-                                        value={currentValue}
-                                      />
-                                      <Progress
-                                        value={(currentValue.length / 60) * 100}
-                                        className={cn(
-                                          "h-1",
-                                          currentValue.length < 50
-                                            ? "bg-red-500"
-                                            : currentValue.length > 60
-                                              ? "bg-red-500"
-                                              : "bg-green-500"
-                                        )}
-                                      />
-                                      <div className='flex justify-between text-xs text-muted-foreground'>
-                                        <span>Caracteres</span>
-                                        <span>
-                                          {currentValue.length}/60 (
-                                          {Math.round(pixelWidth)}px/580px)
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </FormControl>
-                                  <FormDescription className='text-xs'>
-                                    • Usa palabras clave relevantes al principio
-                                    <br />
-                                    • Incluye el nombre de la marca al final
-                                    <br />• Entre 50-60 caracteres para mejor
-                                    visibilidad
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              );
-                            }}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='metaDescription'
-                            render={({ field }) => {
-                              const currentValue = field.value || "";
-                              const pixelWidth =
-                                calculatePixelWidth(currentValue);
-
-                              return (
-                                <FormItem>
-                                  <FormLabel>Meta descripción</FormLabel>
-                                  <FormControl>
-                                    <div className='space-y-2'>
-                                      <Textarea
-                                        {...field}
-                                        placeholder='Descripción que aparecerá en los resultados de búsqueda'
-                                        value={currentValue}
-                                        className='h-20'
-                                      />
-                                      <Progress
-                                        value={
-                                          (currentValue.length / 160) * 100
-                                        }
-                                        className={cn(
-                                          "h-1",
-                                          currentValue.length < 120
-                                            ? "bg-red-500"
-                                            : currentValue.length > 160
-                                              ? "bg-red-500"
-                                              : "bg-green-500"
-                                        )}
-                                      />
-                                      <div className='flex justify-between text-xs text-muted-foreground'>
-                                        <span>Caracteres</span>
-                                        <span>
-                                          {currentValue.length}/160 (
-                                          {Math.round(pixelWidth)}px/920px)
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </FormControl>
-                                  <FormDescription className='text-xs'>
-                                    • Resume el contenido de forma atractiva
-                                    <br />
-                                    • Incluye un llamado a la acción
-                                    <br />• Entre 120-160 caracteres para mejor
-                                    visibilidad
-                                  </FormDescription>
-                                  <FormMessage />
-                                </FormItem>
-                              );
-                            }}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name='metaImage'
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Imagen social</FormLabel>
-                                <FormControl>
-                                  <div className='flex items-center gap-2'>
                                     <Input
+                                      placeholder={f("titlePlaceholder")}
                                       {...field}
-                                      placeholder='ID de la imagen (próximamente selector de media)'
-                                      value={field.value || ""}
-                                      disabled
-                                    />
-                                    <Button
-                                      type='button'
-                                      variant='outline'
-                                      disabled
-                                      onClick={() => {
-                                        // TODO: Implementar selector de media
+                                      onChange={(e) => {
+                                        field.onChange(e);
+                                        const currentSlug =
+                                          form.getValues("slug");
+                                        if (!currentSlug) {
+                                          form.setValue(
+                                            "slug",
+                                            generateSlug(e.target.value)
+                                          );
+                                        }
                                       }}
-                                    >
-                                      Seleccionar
-                                    </Button>
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='slug'
+                              render={({ field }) => {
+                                const status = form.watch("status");
+                                const pageId = form.watch("id");
+                                const isPublished = status === "published";
+                                const generatedSlug = generateSlug(
+                                  form.watch("title")
+                                );
+                                const placeholderSlug = isPublished
+                                  ? field.value || generatedSlug
+                                  : pageId
+                                    ? `${pageId}-${status}`
+                                    : `[id]-${status}`;
+                                const currentValue = field.value || "";
+
+                                return (
+                                  <FormItem>
+                                    <FormLabel>{f("slugLabel")}</FormLabel>
+                                    <FormControl>
+                                      <div className='space-y-2'>
+                                        <Input
+                                          {...field}
+                                          placeholder={
+                                            isPublished
+                                              ? generatedSlug
+                                              : placeholderSlug
+                                          }
+                                          value={
+                                            isPublished
+                                              ? currentValue
+                                              : placeholderSlug
+                                          }
+                                          disabled={!isPublished}
+                                          className={
+                                            !isPublished ? "bg-muted" : ""
+                                          }
+                                          onClick={() => {
+                                            if (
+                                              isPublished &&
+                                              !currentValue &&
+                                              generatedSlug
+                                            ) {
+                                              field.onChange(generatedSlug);
+                                            }
+                                          }}
+                                          onChange={(e) => {
+                                            if (isPublished) {
+                                              const validSlug = generateSlug(
+                                                e.target.value
+                                              );
+                                              field.onChange(validSlug);
+                                            }
+                                          }}
+                                        />
+                                        <Progress
+                                          value={
+                                            (currentValue.length / 60) * 100
+                                          }
+                                          className={cn(
+                                            "h-1",
+                                            currentValue.length > 60
+                                              ? "bg-red-500"
+                                              : "bg-green-500"
+                                          )}
+                                        />
+                                        <div className='flex justify-between text-xs text-muted-foreground'>
+                                          <span>URL amigable</span>
+                                          <span>{currentValue.length}/60</span>
+                                        </div>
+                                      </div>
+                                    </FormControl>
+                                    <FormDescription className='text-xs'>
+                                      {isPublished ? (
+                                        <>
+                                          • Usa solo letras minúsculas, números
+                                          y guiones
+                                          <br />
+                                          • Evita palabras vacías (el, la, los,
+                                          de, etc.)
+                                          <br />
+                                          • Mantén el slug corto y descriptivo
+                                          <br />• Incluye palabras clave
+                                          relevantes
+                                        </>
+                                      ) : (
+                                        "El slug se generará automáticamente cuando la página sea publicada"
+                                      )}
+                                    </FormDescription>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='author'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("authorLabel")}</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue
+                                          placeholder={f("authorPlaceholder")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value='admin'>
+                                        Admin
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='template'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("templateLabel")}</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={selectedPage !== null}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue
+                                          placeholder={f("selectTemplate")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {renderTemplateOptions()}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormDescription>
+                                    {f("templateDescription")}
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='parentId'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("parentPageLabel")}</FormLabel>
+                                  <Select
+                                    onValueChange={handleParentChange}
+                                    value={field.value || "root"}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue
+                                          placeholder={f("selectParentPage")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {renderSelectOptions(
+                                        organizePages(pages)
+                                      )}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='status'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("statusLabel")}</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue
+                                          placeholder={f("selectStatus")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value='draft'>
+                                        {f("statusDraft")}
+                                      </SelectItem>
+                                      <SelectItem value='published'>
+                                        {f("statusPublished")}
+                                      </SelectItem>
+                                      <SelectItem value='deleted'>
+                                        {f("statusDeleted")}
+                                      </SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='indexable'
+                              render={({ field }) => (
+                                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                                  <div className='space-y-0.5'>
+                                    <FormLabel className='text-base'>
+                                      {f("indexableLabel")}
+                                    </FormLabel>
+                                    <FormDescription>
+                                      {f("indexableDescription")}
+                                    </FormDescription>
                                   </div>
-                                </FormControl>
-                                <FormDescription className='text-xs'>
-                                  • Imagen que se mostrará al compartir en redes
-                                  sociales
-                                  <br />
-                                  • Tamaño recomendado: 1200x630 píxeles
-                                  <br />• Próximamente: Selector de medios
-                                </FormDescription>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                                  <FormControl>
+                                    <Switch
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
 
-                          <SeoProgress
-                            title={form.watch("title") || ""}
-                            slug={form.watch("slug") || ""}
-                            description={form.watch("content") || ""}
-                            tags={form.watch("tags") || []}
-                            metaTitle={form.watch("metaTitle") || ""}
-                            metaDescription={
-                              form.watch("metaDescription") || ""
-                            }
-                            metaImage={form.watch("metaImage") || ""}
-                            lang={form.watch("lang")}
-                          />
-                        </div>
-                      </TabsContent>
-                    </Tabs>
+                            <FormField
+                              control={form.control}
+                              name='showInMenu'
+                              render={({ field }) => (
+                                <FormItem className='flex flex-row items-center justify-between rounded-lg border p-4'>
+                                  <div className='space-y-0.5'>
+                                    <FormLabel className='text-base'>
+                                      {f("showInMenuLabel")}
+                                    </FormLabel>
+                                    <FormDescription>
+                                      {f("showInMenuDescription")}
+                                    </FormDescription>
+                                  </div>
+                                  <FormControl>
+                                    <Switch
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
 
-                    <Button type='submit' disabled={isLoading}>
+                            <FormField
+                              control={form.control}
+                              name='tags'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("tagsLabel")}</FormLabel>
+                                  <FormControl>
+                                    <TagInput
+                                      value={field.value}
+                                      onChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <FormDescription>
+                                    {f("tagsDescription")}
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value='content'>
+                          <div className='space-y-4'>
+                            <FormField
+                              control={form.control}
+                              name='content'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>{f("contentLabel")}</FormLabel>
+                                  <FormControl>
+                                    <Textarea
+                                      placeholder={f("contentPlaceholder")}
+                                      {...field}
+                                      className='min-h-[200px]'
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value='seo'>
+                          <div className='space-y-6'>
+                            <div className='flex items-center gap-2 text-muted-foreground'>
+                              <Info size={16} />
+                              <p className='text-sm'>
+                                Complete estos campos para mejorar el SEO de tu
+                                página
+                              </p>
+                            </div>
+
+                            <FormField
+                              control={form.control}
+                              name='metaTitle'
+                              render={({ field }) => {
+                                const currentValue = field.value || "";
+                                const pixelWidth =
+                                  calculatePixelWidth(currentValue);
+
+                                return (
+                                  <FormItem>
+                                    <FormLabel>Título SEO</FormLabel>
+                                    <FormControl>
+                                      <div className='space-y-2'>
+                                        <Input
+                                          {...field}
+                                          placeholder='Título optimizado para motores de búsqueda'
+                                          value={currentValue}
+                                        />
+                                        <Progress
+                                          value={
+                                            (currentValue.length / 60) * 100
+                                          }
+                                          className={cn(
+                                            "h-1",
+                                            currentValue.length < 50
+                                              ? "bg-red-500"
+                                              : currentValue.length > 60
+                                                ? "bg-red-500"
+                                                : "bg-green-500"
+                                          )}
+                                        />
+                                        <div className='flex justify-between text-xs text-muted-foreground'>
+                                          <span>Caracteres</span>
+                                          <span>
+                                            {currentValue.length}/60 (
+                                            {Math.round(pixelWidth)}px/580px)
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </FormControl>
+                                    <FormDescription className='text-xs'>
+                                      • Usa palabras clave relevantes al
+                                      principio
+                                      <br />
+                                      • Incluye el nombre de la marca al final
+                                      <br />• Entre 50-60 caracteres para mejor
+                                      visibilidad
+                                    </FormDescription>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='metaDescription'
+                              render={({ field }) => {
+                                const currentValue = field.value || "";
+                                const pixelWidth =
+                                  calculatePixelWidth(currentValue);
+
+                                return (
+                                  <FormItem>
+                                    <FormLabel>Meta descripción</FormLabel>
+                                    <FormControl>
+                                      <div className='space-y-2'>
+                                        <Textarea
+                                          {...field}
+                                          placeholder='Descripción que aparecerá en los resultados de búsqueda'
+                                          value={currentValue}
+                                          className='h-20'
+                                        />
+                                        <Progress
+                                          value={
+                                            (currentValue.length / 160) * 100
+                                          }
+                                          className={cn(
+                                            "h-1",
+                                            currentValue.length < 120
+                                              ? "bg-red-500"
+                                              : currentValue.length > 160
+                                                ? "bg-red-500"
+                                                : "bg-green-500"
+                                          )}
+                                        />
+                                        <div className='flex justify-between text-xs text-muted-foreground'>
+                                          <span>Caracteres</span>
+                                          <span>
+                                            {currentValue.length}/160 (
+                                            {Math.round(pixelWidth)}px/920px)
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </FormControl>
+                                    <FormDescription className='text-xs'>
+                                      • Resume el contenido de forma atractiva
+                                      <br />
+                                      • Incluye un llamado a la acción
+                                      <br />• Entre 120-160 caracteres para
+                                      mejor visibilidad
+                                    </FormDescription>
+                                    <FormMessage />
+                                  </FormItem>
+                                );
+                              }}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name='metaImage'
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Imagen social</FormLabel>
+                                  <FormControl>
+                                    <div className='flex items-center gap-2'>
+                                      <Input
+                                        {...field}
+                                        placeholder='ID de la imagen (próximamente selector de media)'
+                                        value={field.value || ""}
+                                        disabled
+                                      />
+                                      <Button
+                                        type='button'
+                                        variant='outline'
+                                        disabled
+                                        onClick={() => {
+                                          // TODO: Implementar selector de media
+                                        }}
+                                      >
+                                        Seleccionar
+                                      </Button>
+                                    </div>
+                                  </FormControl>
+                                  <FormDescription className='text-xs'>
+                                    • Imagen que se mostrará al compartir en
+                                    redes sociales
+                                    <br />
+                                    • Tamaño recomendado: 1200x630 píxeles
+                                    <br />• Próximamente: Selector de medios
+                                  </FormDescription>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <SeoProgress
+                              title={form.watch("title") || ""}
+                              slug={form.watch("slug") || ""}
+                              description={form.watch("content") || ""}
+                              tags={form.watch("tags") || []}
+                              metaTitle={form.watch("metaTitle") || ""}
+                              metaDescription={
+                                form.watch("metaDescription") || ""
+                              }
+                              metaImage={form.watch("metaImage") || ""}
+                              lang={form.watch("lang")}
+                            />
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+
+                      <Button type='submit' disabled={isLoading}>
+                        {isLoading ? (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        ) : selectedPage ? (
+                          a("updatePage")
+                        ) : (
+                          a("createPage")
+                        )}
+                      </Button>
+                    </form>
+                  </Form>
+                </FormProvider>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
+
+          <AlertDialog
+            open={deleteDialogState.isOpen}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                setDeleteDialogState({
+                  isOpen: false,
+                  hasChildren: false,
+                  childCount: 0,
+                  pageToDelete: null,
+                });
+              }
+            }}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{a("deletePage")}</AlertDialogTitle>
+                <AlertDialogDescription>
+                  {deleteDialogState.hasChildren
+                    ? m("deletePageWithChildrenDescription", {
+                        count: deleteDialogState.childCount,
+                      })
+                    : m("deleteConfirm")}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>{a("cancel")}</AlertDialogCancel>
+                {deleteDialogState.hasChildren ? (
+                  <>
+                    <Button
+                      variant='destructive'
+                      onClick={() => handleDeleteSubmit("cascade")}
+                      disabled={isLoading}
+                    >
                       {isLoading ? (
                         <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      ) : selectedPage ? (
-                        a("updatePage")
                       ) : (
-                        a("createPage")
+                        d("deleteCascade")
                       )}
                     </Button>
-                  </form>
-                </Form>
-              </FormProvider>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
-
-        <AlertDialog
-          open={deleteDialogState.isOpen}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) {
-              setDeleteDialogState({
-                isOpen: false,
-                hasChildren: false,
-                childCount: 0,
-                pageToDelete: null,
-              });
-            }
-          }}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{a("deletePage")}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {deleteDialogState.hasChildren
-                  ? m("deletePageWithChildrenDescription", {
-                      count: deleteDialogState.childCount,
-                    })
-                  : m("deleteConfirm")}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>{a("cancel")}</AlertDialogCancel>
-              {deleteDialogState.hasChildren ? (
-                <>
+                    <Button
+                      variant='destructive'
+                      onClick={() => handleDeleteSubmit("moveUp")}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        d("deleteMoveUp")
+                      )}
+                    </Button>
+                  </>
+                ) : (
                   <Button
                     variant='destructive'
-                    onClick={() => handleDeleteSubmit("cascade")}
+                    onClick={() => handleDeleteSubmit()}
                     disabled={isLoading}
                   >
                     {isLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                     ) : (
-                      d("deleteCascade")
+                      a("confirmDelete")
                     )}
                   </Button>
-                  <Button
-                    variant='destructive'
-                    onClick={() => handleDeleteSubmit("moveUp")}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    ) : (
-                      d("deleteMoveUp")
-                    )}
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant='destructive'
-                  onClick={() => handleDeleteSubmit()}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    a("confirmDelete")
-                  )}
-                </Button>
-              )}
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <AccessControlModule
-          isOpen={isAccessControlOpen}
-          onClose={() => setIsAccessControlOpen(false)}
-          pageId={selectedPage?.id || ""}
-        />
-        <MoveToModal
-          isOpen={isMoveToModalOpen}
-          onClose={() => {
-            setIsMoveToModalOpen(false);
-            setPageToMove(null);
-          }}
-          onMove={handleMoveToSubmit}
-          pages={pages}
-          currentPage={pageToMove}
-        />
-      </div>
-    </>
+                )}
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AccessControlModule
+            isOpen={isAccessControlOpen}
+            onClose={() => setIsAccessControlOpen(false)}
+            pageId={selectedPage?.id || ""}
+          />
+          <MoveToModal
+            isOpen={isMoveToModalOpen}
+            onClose={() => {
+              setIsMoveToModalOpen(false);
+              setPageToMove(null);
+            }}
+            onMove={handleMoveToSubmit}
+            pages={pages}
+            currentPage={pageToMove}
+          />
+        </div>
+      </DocContent>
+    </div>
   );
 }

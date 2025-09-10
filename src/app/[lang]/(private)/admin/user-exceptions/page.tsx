@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Badge } from '@/src/components/ui/badge';
@@ -9,7 +11,7 @@ import { Label } from '@/src/components/ui/label';
 import { Textarea } from '@/src/components/ui/textarea';
 import { Switch } from '@/src/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
-import { Trash2, Plus, Edit, Eye } from 'lucide-react';
+import { Trash2, Plus, Edit, Eye, UserX } from 'lucide-react';
 import { UserException, ExceptionAccessLevel } from '@prisma/client';
 
 export default function UserExceptionsPage() {
@@ -134,16 +136,17 @@ export default function UserExceptionsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Excepciones de Usuario</h1>
-          <p className="text-gray-600 mt-2">
-            Gestiona excepciones individuales de acceso por email
-          </p>
-        </div>
-        <Button 
-          onClick={() => setShowCreateForm(true)}
+    <div>
+      <DocHeader
+        title='Excepciones de Usuario'
+        description='Gestiona excepciones individuales de acceso por email'
+        icon={UserX}
+      />
+
+      <DocContent>
+        <div className="flex justify-end items-center mb-8">
+          <Button 
+            onClick={() => setShowCreateForm(true)}
           className="flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
@@ -348,6 +351,7 @@ export default function UserExceptionsPage() {
           ))
         )}
       </div>
+      </DocContent>
     </div>
   );
 }

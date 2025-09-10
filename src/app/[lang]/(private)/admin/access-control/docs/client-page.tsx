@@ -1,5 +1,7 @@
 "use client";
 
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Card,
   CardContent,
@@ -25,22 +27,14 @@ import {
 
 export default function AccessControlDocsClient() {
   return (
-    <div className='space-y-6'>
-      {/* Header */}
-      <div className='flex flex-col gap-4'>
-        <div className='flex items-center gap-3'>
-          <Shield className='h-8 w-8 text-primary' />
-          <div>
-            <h1 className='text-3xl font-bold tracking-tight'>
-              Documentación de Control de Acceso
-            </h1>
-            <p className='text-muted-foreground'>
-              Guía completa para crear páginas con autenticación en nuestra
-              aplicación
-            </p>
-          </div>
-        </div>
-      </div>
+    <div>
+      <DocHeader
+        title='Documentación de Control de Acceso'
+        description='Guía completa para crear páginas con autenticación en nuestra aplicación'
+        icon={Shield}
+      />
+
+      <DocContent>
 
       {/* Introducción */}
       <Card>
@@ -541,6 +535,7 @@ export async function GET(request: NextRequest) {
           </div>
         </CardContent>
       </Card>
+      </DocContent>
     </div>
   );
 }

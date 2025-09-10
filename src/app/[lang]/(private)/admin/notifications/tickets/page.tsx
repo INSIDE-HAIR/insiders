@@ -27,6 +27,8 @@ import {
   Bell,
 } from "lucide-react";
 import { DateTimePicker } from "@/src/components/ui/date-picker";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Table,
   TableBody,
@@ -1342,22 +1344,28 @@ export default function ErrorReportsPage() {
   }
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <Toaster />
-      <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-bold'>Gestión de Errores en Archivos</h1>
-
-        <div className='flex gap-2'>
-          <Button
-            variant='outline'
-            onClick={() => setIsConfigDialogOpen(true)}
-            className='flex items-center'
-          >
-            <Mail className='h-4 w-4 mr-2' />
-            Configurar Destinatarios
-          </Button>
-        </div>
-      </div>
+    <div>
+      <DocHeader
+        title="Gestión de Errores en Archivos"
+        description="Sistema de monitoreo, categorización y gestión de errores en el procesamiento de archivos"
+        icon={Flag}
+      />
+      
+      <DocContent>
+        <div className='container mx-auto px-4 py-8'>
+          <Toaster />
+          <div className='flex justify-between items-center mb-6'>
+            <div className='flex gap-2'>
+              <Button
+                variant='outline'
+                onClick={() => setIsConfigDialogOpen(true)}
+                className='flex items-center'
+              >
+                <Mail className='h-4 w-4 mr-2' />
+                Configurar Destinatarios
+              </Button>
+            </div>
+          </div>
 
       <Tabs
         defaultValue='reports'
@@ -2709,6 +2717,8 @@ export default function ErrorReportsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </div>
+      </DocContent>
     </div>
   );
 }

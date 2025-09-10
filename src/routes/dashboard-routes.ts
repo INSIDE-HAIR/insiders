@@ -74,6 +74,40 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
     },
     {
+      id: "users",
+      label: {
+        en: "Users",
+        es: "Usuarios",
+      },
+      href: "/admin/users",
+      icon: "Users",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "consultoria"],
+      },
+      subItems: [
+        {
+          id: "users-list",
+          label: {
+            en: "User List",
+            es: "Lista de Usuarios",
+          },
+          href: "/admin/users",
+          icon: "List",
+        },
+        {
+          id: "groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
+          },
+          href: "/admin/groups",
+          icon: "Users",
+        },
+      ],
+    },
+    {
       id: "products",
       label: {
         en: "Products",
@@ -108,92 +142,6 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
     {
-      id: "users",
-      label: {
-        en: "Users",
-        es: "Usuarios",
-      },
-      href: "/admin/users",
-      icon: "Users",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "consultoria"],
-      },
-      subItems: [
-        {
-          id: "users-list",
-          label: {
-            en: "User List",
-            es: "Lista de Usuarios",
-          },
-          href: "/admin/users",
-          icon: "List",
-        },
-        {
-          id: "users-create",
-          label: {
-            en: "Create User",
-            es: "Crear Usuario",
-          },
-          href: "/admin/users/create",
-          icon: "UserPlus",
-        },
-        {
-          id: "groups",
-          label: {
-            en: "Groups",
-            es: "Grupos",
-          },
-          href: "/admin/groups",
-          icon: "Users",
-        },
-      ],
-    },
-    {
-      id: "notifications",
-      label: {
-        en: "Notifications",
-        es: "Notificaciones",
-      },
-      href: "/admin/notifications",
-      icon: "BellRing",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion", "consultoria", "crecimiento"],
-      },
-      subItems: [
-        {
-          id: "notifications-tickets",
-          label: {
-            en: "Tickets",
-            es: "Tickets",
-          },
-          href: "/admin/notifications/tickets",
-          icon: "AlertTriangle",
-        },
-        {
-          id: "notifications-requests",
-          label: {
-            en: "Requests",
-            es: "Solicitudes",
-          },
-          href: "/admin/notifications/requests",
-          icon: "FileText",
-        },
-        {
-          id: "notifications-system",
-          label: {
-            en: "System Logs",
-            es: "Sistema",
-          },
-          href: "/admin/notifications/system",
-          icon: "Terminal",
-        },
-      ],
-    },
-    {
       id: "drive",
       label: {
         en: "Google Drive",
@@ -208,13 +156,13 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
       subItems: [
         {
-          id: "drive-explorer",
+          id: "drive-routes",
           label: {
-            en: "Drive Explorer",
-            es: "Explorador de Drive",
+            en: "Drive Routes",
+            es: "Rutas de Drive",
           },
-          href: "/admin/drive",
-          icon: "Folder",
+          href: "/admin/drive/routes",
+          icon: "Route",
         },
         {
           id: "drive-codes",
@@ -226,13 +174,13 @@ export const dashboardRoutesData: DashboardRoutes = {
           icon: "Code",
         },
         {
-          id: "drive-routes",
+          id: "drive-explorer",
           label: {
-            en: "Drive Routes",
-            es: "Rutas de Drive",
+            en: "Drive Explorer",
+            es: "Explorador de Drive",
           },
-          href: "/admin/drive/routes",
-          icon: "Route",
+          href: "/admin/drive",
+          icon: "Folder",
         },
         {
           id: "drive-docs",
@@ -242,31 +190,6 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           href: "/admin/drive/routes/docs",
           icon: "Book",
-        },
-      ],
-    },
-    {
-      id: "holded",
-      label: {
-        en: "Holded",
-        es: "Holded",
-      },
-      href: "/admin/holded",
-      icon: "Building",
-      type: "accordion",
-      access: {
-        roles: ["admin", "super-admin"],
-        teams: ["gestion"],
-      },
-      subItems: [
-        {
-          id: "holded-panel",
-          label: {
-            en: "Holded Panel",
-            es: "Panel de Holded",
-          },
-          href: "/admin/holded",
-          icon: "Building",
         },
       ],
     },
@@ -354,6 +277,83 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
     },
     {
+      id: "holded",
+      label: {
+        en: "Holded",
+        es: "Holded",
+      },
+      href: "/admin/holded",
+      icon: "Building",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion"],
+      },
+      subItems: [
+        {
+          id: "holded-panel",
+          label: {
+            en: "Holded Panel",
+            es: "Panel de Holded",
+          },
+          href: "/admin/holded",
+          icon: "Building",
+        },
+      ],
+    },
+    {
+      id: "operations-hub",
+      label: {
+        en: "Operations Hub",
+        es: "Centro de Operaciones",
+      },
+      href: "/admin/operations-hub",
+      icon: "Layers",
+      type: "accordion",
+      access: {
+        roles: ["admin", "super-admin"],
+        teams: ["gestion", "creativos"],
+      },
+      subItems: [
+        {
+          id: "operations-groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
+          },
+          href: "/admin/operations-hub/groups",
+          icon: "Users",
+        },
+        {
+          id: "operations-tags",
+          label: {
+            en: "Tags",
+            es: "Tags",
+          },
+          href: "/admin/operations-hub/tags",
+          icon: "Tag",
+        },
+        {
+          id: "operations-sitemap",
+          label: {
+            en: "Sitemap",
+            es: "Sitemap",
+          },
+          href: "/admin/operations-hub/sitemap",
+          icon: "Map",
+        },
+        {
+          id: "operations-navigation",
+          label: {
+            en: "Navigation",
+            es: "Navegación",
+          },
+          href: "/admin/operations-hub/navigation",
+          icon: "Navigation",
+        },
+      ],
+    },
+    {
       id: "access-control",
       label: {
         en: "Access Control",
@@ -415,54 +415,45 @@ export const dashboardRoutesData: DashboardRoutes = {
       ],
     },
     {
-      id: "operations-hub",
+      id: "notifications",
       label: {
-        en: "Operations Hub",
-        es: "Centro de Operaciones",
+        en: "Notifications",
+        es: "Notificaciones",
       },
-      href: "/admin/operations-hub",
-      icon: "Layers",
+      href: "/admin/notifications",
+      icon: "BellRing",
       type: "accordion",
       access: {
         roles: ["admin", "super-admin"],
-        teams: ["gestion", "creativos"],
+        teams: ["gestion", "consultoria", "crecimiento"],
       },
       subItems: [
         {
-          id: "operations-groups",
+          id: "notifications-tickets",
           label: {
-            en: "Groups",
-            es: "Grupos",
+            en: "Tickets",
+            es: "Tickets",
           },
-          href: "/admin/operations-hub/groups",
-          icon: "Users",
+          href: "/admin/notifications/tickets",
+          icon: "AlertTriangle",
         },
         {
-          id: "operations-tags",
+          id: "notifications-requests",
           label: {
-            en: "Tags",
-            es: "Tags",
+            en: "Requests",
+            es: "Solicitudes",
           },
-          href: "/admin/operations-hub/tags",
-          icon: "Tag",
+          href: "/admin/notifications/requests",
+          icon: "FileText",
         },
         {
-          id: "operations-sitemap",
+          id: "notifications-system",
           label: {
-            en: "Sitemap",
-            es: "Sitemap",
+            en: "System Logs",
+            es: "Sistema",
           },
-          href: "/admin/operations-hub/sitemap",
-          icon: "Map",
-        },
-        {
-          id: "operations-navigation",
-          label: {
-            en: "Navigation",
-            es: "Navegación",
-          },
-          href: "/admin/operations-hub/navigation",
-          icon: "Navigation",
+          href: "/admin/notifications/system",
+          icon: "Terminal",
         },
       ],
     },

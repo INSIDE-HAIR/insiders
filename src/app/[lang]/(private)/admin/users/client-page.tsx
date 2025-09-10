@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { DataTable } from "./components/DataTable"; // Importación directa
 import { useColumns } from "./columns";
@@ -9,6 +9,8 @@ import { useTranslations } from "@/src/context/TranslationContext";
 import { ServiceUser } from "./lib/types/user";
 import { UserSession } from "@/src/types/routes";
 import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 
 interface UsersPageClientProps {
   user: UserSession;
@@ -93,11 +95,16 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
   };
 
   return (
-    <TailwindGrid fullSize padding='' className='z-0'>
-      <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
-        <header className=' flex h-14 lg:h-[60px] items-center gap-4 border-b bg-gray-100/40 px-6 dark:bg-gray-800/40'>
-          <div className='flex flex-1 items-center justify-between'>
-            <h1 className='text-2xl font-bold'>{t("mainTitle")}</h1>
+    <div>
+      <DocHeader
+        title={t("mainTitle")}
+        description="Gestión de usuarios del sistema con sincronización automática desde Holded"
+        icon={Users}
+      />
+      
+      <DocContent>
+        <div className='container mx-auto px-4 py-8'>
+          <div className='flex flex-1 items-center justify-between mb-6'>
             <Button onClick={handleSync} disabled={isSyncing || isLoading}>
               {isSyncing ? (
                 <>
@@ -109,9 +116,7 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
               )}
             </Button>
           </div>
-        </header>
 
-        <main className='flex-1 p-6'>
           <Toaster position='top-right' />
 
           {isLoading ? (
@@ -123,8 +128,8 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
               <DataTable columns={columns} data={users} />
             </div>
           )}
-        </main>
-      </div>
-    </TailwindGrid>
+        </div>
+      </DocContent>
+    </div>
   );
 }

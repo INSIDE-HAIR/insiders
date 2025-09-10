@@ -21,6 +21,8 @@ import {
   Code
 } from "lucide-react";
 import Link from "next/link";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 
 interface SettingCard {
   title: string;
@@ -246,159 +248,154 @@ function SettingsPageContent() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      {/* Header */}
-      <div className="space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Settings className="h-8 w-8 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Configuración</h1>
-            <p className="text-muted-foreground">
-              Administra la configuración del sistema, integraciones y seguridad
-            </p>
-          </div>
-        </div>
-
-        {/* Category Filters */}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedCategory === null ? "default" : "outline"}
-            size="sm"
-            onClick={() => setSelectedCategory(null)}
-          >
-            Todas las configuraciones
-          </Button>
-          {Object.entries(categoryInfo).map(([key, info]) => (
-            <Button
-              key={key}
-              variant={selectedCategory === key ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedCategory(key)}
-              className="flex items-center space-x-2"
-            >
-              <span>{info.name}</span>
-              <Badge variant="secondary" className="ml-1">
-                {settingsCards.filter(card => card.category === key).length}
-              </Badge>
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* Featured Cards */}
-      {!selectedCategory && featuredCards.length > 0 && (
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Configuración Destacada</h2>
-            <p className="text-sm text-muted-foreground">
-              Configuraciones más importantes y utilizadas
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCards.map(card => renderSettingCard(card, true))}
-          </div>
-        </div>
-      )}
-
-      {/* All Settings by Category */}
-      {selectedCategory ? (
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">
-              {categoryInfo[selectedCategory as keyof typeof categoryInfo].name}
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              {categoryInfo[selectedCategory as keyof typeof categoryInfo].description}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCards.map(card => renderSettingCard(card))}
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          {categorizedCards.map(({ category, name, description, cards }) => (
-            <div key={category} className="space-y-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">{name}</h2>
-                <p className="text-sm text-muted-foreground">{description}</p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {cards.map(card => renderSettingCard(card))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Quick Stats */}
-      <Card className="bg-muted/50">
-        <CardHeader>
-          <CardTitle className="text-lg">Resumen de Configuración</CardTitle>
-          <CardDescription>
-            Estado actual de las configuraciones del sistema
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-primary">
-                {settingsCards.filter(c => !c.comingSoon).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Disponibles</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-orange-600">
-                {settingsCards.filter(c => c.comingSoon).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Próximamente</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-red-600">
-                {settingsCards.filter(c => c.adminOnly).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Solo Admin</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600">
-                {Object.keys(categoryInfo).length}
-              </div>
-              <div className="text-sm text-muted-foreground">Categorías</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Help Section */}
-      <Card className="border-primarys bg-primary/10">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2 text-primary">
-            <Activity className="h-5 w-5" />
-            <span>¿Necesitas ayuda?</span>
-          </CardTitle>
-          <CardDescription className="text-primary">
-            Si tienes dudas sobre alguna configuración, consulta la documentación
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/admin/access-control/docs">
-              <Button variant="outline" className="flex items-center space-x-2">
-                <Code className="h-4 w-4" />
-                <span>Documentación</span>
+    <div>
+      <DocHeader
+        title="Configuración"
+        description="Administra la configuración del sistema, integraciones y seguridad de manera centralizada"
+        icon={Settings}
+      />
+      
+      <DocContent>
+          <div className="container mx-auto p-6 space-y-8">
+            {/* Category Filters */}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={selectedCategory === null ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(null)}
+              >
+                Todas las configuraciones
               </Button>
-            </Link>
-            <Button variant="outline" disabled className="flex items-center space-x-2">
-              <Bell className="h-4 w-4" />
-              <span>Soporte (Próximamente)</span>
-            </Button>
+              {Object.entries(categoryInfo).map(([key, info]) => (
+                <Button
+                  key={key}
+                  variant={selectedCategory === key ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(key)}
+                  className="flex items-center space-x-2"
+                >
+                  <span>{info.name}</span>
+                  <Badge variant="secondary" className="ml-1">
+                    {settingsCards.filter(card => card.category === key).length}
+                  </Badge>
+                </Button>
+              ))}
+            </div>
+
+            {/* Featured Cards */}
+            {!selectedCategory && featuredCards.length > 0 && (
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">Configuración Destacada</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Configuraciones más importantes y utilizadas
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {featuredCards.map(card => renderSettingCard(card, true))}
+                </div>
+              </div>
+            )}
+
+            {/* All Settings by Category */}
+            {selectedCategory ? (
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-xl font-semibold mb-2">
+                    {categoryInfo[selectedCategory as keyof typeof categoryInfo].name}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {categoryInfo[selectedCategory as keyof typeof categoryInfo].description}
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredCards.map(card => renderSettingCard(card))}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                {categorizedCards.map(({ category, name, description, cards }) => (
+                  <div key={category} className="space-y-4">
+                    <div>
+                      <h2 className="text-xl font-semibold mb-2">{name}</h2>
+                      <p className="text-sm text-muted-foreground">{description}</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {cards.map(card => renderSettingCard(card))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Quick Stats */}
+            <Card className="bg-muted/50">
+              <CardHeader>
+                <CardTitle className="text-lg">Resumen de Configuración</CardTitle>
+                <CardDescription>
+                  Estado actual de las configuraciones del sistema
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-bold text-primary">
+                      {settingsCards.filter(c => !c.comingSoon).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Disponibles</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-orange-600">
+                      {settingsCards.filter(c => c.comingSoon).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Próximamente</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-red-600">
+                      {settingsCards.filter(c => c.adminOnly).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Solo Admin</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {Object.keys(categoryInfo).length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Categorías</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Help Section */}
+            <Card className="border-primarys bg-primary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2 text-primary">
+                  <Activity className="h-5 w-5" />
+                  <span>¿Necesitas ayuda?</span>
+                </CardTitle>
+                <CardDescription className="text-primary">
+                  Si tienes dudas sobre alguna configuración, consulta la documentación
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/admin/access-control/docs">
+                    <Button variant="outline" className="flex items-center space-x-2">
+                      <Code className="h-4 w-4" />
+                      <span>Documentación</span>
+                    </Button>
+                  </Link>
+                  <Button variant="outline" disabled className="flex items-center space-x-2">
+                    <Bell className="h-4 w-4" />
+                    <span>Soporte (Próximamente)</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+        </DocContent>
+      </div>
+    );
 }
 
 export default function SettingsPage() {

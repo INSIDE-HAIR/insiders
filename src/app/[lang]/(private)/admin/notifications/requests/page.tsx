@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Card,
   CardContent,
@@ -41,26 +43,36 @@ export default async function RequestsPage({ params }: RequestsPageProps) {
   const isSpanish = lang === "es";
 
   return (
-    <div className='container mx-auto p-6 space-y-6'>
-      {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <h1 className='text-3xl font-bold'>
-            {isSpanish
-              ? "Sistema de Solicitudes Internas"
-              : "Internal Request System"}
-          </h1>
-          <p className='text-muted-foreground mt-1'>
-            {isSpanish
-              ? "Gestión centralizada de solicitudes departamentales y recursos empresariales"
-              : "Centralized management of departmental requests and business resources"}
-          </p>
-        </div>
-        <Button className='gap-2'>
-          <PlusIcon className='h-4 w-4' />
-          {isSpanish ? "Nueva Solicitud" : "New Request"}
-        </Button>
-      </div>
+    <div>
+      <DocHeader
+        title={isSpanish
+          ? "Sistema de Solicitudes Internas"
+          : "Internal Requests System"}
+        description={isSpanish
+          ? "Gestión centralizada de solicitudes de recursos humanos, materiales, presupuesto y capacitación"
+          : "Centralized management of human resources, materials, budget and training requests"}
+        icon={InboxIcon}
+      />
+
+      <DocContent>
+        <div className='container mx-auto p-6 space-y-6'>
+          {/* Header */}
+          <div className='flex items-center justify-between'>
+            <div>
+              <h1 className='text-2xl font-bold'>
+                {isSpanish ? "Sistema de Solicitudes Internas" : "Internal Request System"}
+              </h1>
+              <p className='text-muted-foreground mt-1'>
+                {isSpanish
+                  ? "Gestión centralizada de solicitudes departamentales y recursos empresariales"
+                  : "Centralized management of departmental requests and business resources"}
+              </p>
+            </div>
+            <Button className='gap-2'>
+              <PlusIcon className='h-4 w-4' />
+              {isSpanish ? "Nueva Solicitud" : "New Request"}
+            </Button>
+          </div>
 
       {/* PRD Alert */}
       <Alert className='border-blue-500 bg-blue-50'>
@@ -445,6 +457,8 @@ export default async function RequestsPage({ params }: RequestsPageProps) {
           </div>
         </CardContent>
       </Card>
+        </div>
+      </DocContent>
     </div>
   );
 }

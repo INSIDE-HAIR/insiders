@@ -8,6 +8,8 @@
 
 import React, { useState } from "react";
 import { Toaster } from "sonner";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   Card,
   CardContent,
@@ -255,21 +257,17 @@ export const MeetRoomsClientRefactored: React.FC<
   };
 
   return (
-    <div className='container mx-auto p-6 space-y-6'>
-      {/* Header */}
-      <div className='flex items-center justify-between mb-6'>
-        <div>
-          <h1 className='text-3xl font-bold tracking-tight flex items-center gap-2'>
-            <VideoCameraIcon className='h-8 w-8 text-primary' />
-            Salas de Meet
-          </h1>
-          <p className='text-muted-foreground'>
-            Gestiona tus salas de reuniones de Google Meet
-          </p>
-        </div>
+    <div>
+      <DocHeader
+        title='Salas de Meet'
+        description='Gestiona tus salas de reuniones de Google Meet'
+        icon={VideoCameraIcon}
+      />
 
+      <DocContent>
         {/* Botón Crear Sala */}
-        <CreateRoomButton
+        <div className="flex justify-end mb-6">
+          <CreateRoomButton
           onRoomCreated={(room) => {
             console.log("Nueva sala creada:", room);
             // Refetch rooms para mostrar la nueva sala
@@ -534,6 +532,7 @@ export const MeetRoomsClientRefactored: React.FC<
 
       {/* Sonner Toaster para notificaciones */}
       <Toaster position='top-right' closeButton richColors />
+      </DocContent>
     </div>
   );
 };

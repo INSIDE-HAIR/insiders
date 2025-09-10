@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "@/src/context/TranslationContext";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { Button } from "@/src/components/ui/button";
 import {
   Dialog,
@@ -34,6 +36,7 @@ import {
   RefreshCw,
   Download,
   Upload,
+  Code,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Combobox, ComboboxOption } from "@/src/components/ui/combobox";
@@ -409,11 +412,17 @@ export default function CodesAdminPage() {
   };
 
   return (
-    <div className='container p-4'>
-      <h1 className='text-2xl font-bold mb-6'>Administración de Códigos</h1>
+    <div>
+      <DocHeader
+        title='Administración de Códigos'
+        description='Gestiona códigos y snippets de Drive'
+        icon={Code}
+      />
 
-      {/* Filtros y controles */}
-      <div className='flex flex-wrap gap-4 mb-6 items-center'>
+      <DocContent>
+        <div className='container p-4'>
+          {/* Filtros y controles */}
+          <div className='flex flex-wrap gap-4 mb-6 items-center'>
         <div className='grow max-w-xs'>
           <Combobox
             options={codeTypes}
@@ -1026,6 +1035,8 @@ export default function CodesAdminPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+        </div>
+      </DocContent>
     </div>
   );
 }

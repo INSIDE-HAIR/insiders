@@ -17,6 +17,8 @@ import React, {
 import { useDebounce } from "@/src/hooks/use-debounce";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import {
   CalendarIcon,
   PlusIcon,
@@ -1210,20 +1212,19 @@ const CalendarEventsPage: React.FC = () => {
   }
 
   return (
-    <TailwindGrid fullSize padding='' className='z-0'>
-      <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
-        <div className='flex-1 p-6'>
-          {/* Header */}
-          <div className='flex flex-col gap-4 md:flex-row md:justify-between md:items-center mb-6 md:mb-8'>
-            <div>
-              <h1 className='text-2xl md:text-3xl font-bold text-foreground mb-2'>
-                Eventos de Calendar
-              </h1>
-              <p className='text-muted-foreground'>
-                Gestiona y visualiza eventos de Google Calendar
-              </p>
-            </div>
-            <div className='flex flex-wrap items-center gap-2 md:gap-3'>
+    <div>
+      <DocHeader
+        title='Eventos de Calendar'
+        description='Gestiona y visualiza eventos de Google Calendar'
+        icon={CalendarIcon}
+      />
+
+      <DocContent>
+        <TailwindGrid fullSize padding='' className='z-0'>
+          <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
+            <div className='flex-1'>
+              {/* Controls */}
+              <div className='flex flex-wrap items-center justify-end gap-2 md:gap-3 mb-6'>
               {/* View Toggle */}
               <div className='flex items-center border border-border rounded-lg p-1 bg-background'>
                 <Button
@@ -1668,9 +1669,10 @@ const CalendarEventsPage: React.FC = () => {
             selectedEvents={state.selectedEventsForDateTime}
             onUpdate={handleConfirmBulkUpdateDateTime}
           />
-        </div>
-      </div>
-    </TailwindGrid>
+          </div>
+        </TailwindGrid>
+      </DocContent>
+    </div>
   );
 };
 

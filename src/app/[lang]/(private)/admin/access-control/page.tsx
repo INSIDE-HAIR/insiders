@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Badge } from '@/src/components/ui/badge';
@@ -285,22 +287,23 @@ export default function AccessControlPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Control de Acceso</h1>
-          <p className="text-gray-600 mt-2">
-            Gestiona permisos específicos para páginas y recursos
-          </p>
+    <div>
+      <DocHeader
+        title='Control de Acceso'
+        description='Gestiona permisos específicos para páginas y recursos'
+        icon={Shield}
+      />
+
+      <DocContent>
+        <div className="flex justify-end items-center mb-8">
+          <Button 
+            onClick={() => setShowCreateForm(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Nuevo Control
+          </Button>
         </div>
-        <Button 
-          onClick={() => setShowCreateForm(true)}
-          className="flex items-center gap-2"
-        >
-          <Plus className="h-4 w-4" />
-          Nuevo Control
-        </Button>
-      </div>
 
       {/* Create/Edit Form */}
       {showCreateForm && (
@@ -657,6 +660,7 @@ export default function AccessControlPage() {
           ))
         )}
       </div>
+      </DocContent>
     </div>
   );
 }

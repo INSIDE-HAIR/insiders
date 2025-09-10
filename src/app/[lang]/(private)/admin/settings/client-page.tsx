@@ -116,10 +116,12 @@ export default function SettingsClientPage({ children }: ClientPageProps) {
   // Authorized - render the page content
   return (
     <>
-      {/* Debug info in development */}
+      {children}
+      
+      {/* Debug info in development - moved to bottom */}
       {process.env.NODE_ENV === "development" && (
-        <div className='container mx-auto px-6 pt-2'>
-          <Alert className='mb-4 border-primarys bg-primary/10'>
+        <div className='container mx-auto px-6 pb-6'>
+          <Alert className='mt-6 border-primarys bg-primary/10'>
             <Settings className='h-4 w-4' />
             <AlertDescription className='text-primary'>
               <strong>Debug Info:</strong> Usuario autenticado correctamente
@@ -131,8 +133,6 @@ export default function SettingsClientPage({ children }: ClientPageProps) {
           </Alert>
         </div>
       )}
-
-      {children}
     </>
   );
 }

@@ -4,6 +4,9 @@ import { Icons } from "@/src/components/shared/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
+import { BarChart3 } from "lucide-react";
 
 export default async function AdminHomePage({
   params,
@@ -25,24 +28,24 @@ export default async function AdminHomePage({
   const isSpanish = lang === "es";
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">
-            {isSpanish ? "Dashboard Administrativo" : "Administrative Dashboard"}
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {isSpanish
-              ? "Panel de control principal para administradores"
-              : "Main control panel for administrators"}
-          </p>
-        </div>
-        <Badge variant="outline" className="text-primary">
-          <Icons.Shield className="w-3 h-3 mr-1" />
-          {session.user.role}
-        </Badge>
-      </div>
+    <div>
+      <DocHeader
+        title={isSpanish ? "Dashboard Administrativo" : "Administrative Dashboard"}
+        description={isSpanish
+          ? "Panel de control principal para administradores del sistema"
+          : "Main control panel for system administrators"}
+        icon={BarChart3}
+      />
+      
+      <DocContent>
+        <div className="container mx-auto p-6 space-y-6">
+          {/* User Role Badge */}
+          <div className="flex justify-end">
+            <Badge variant="outline" className="text-primary">
+              <Icons.Shield className="w-3 h-3 mr-1" />
+              {session.user.role}
+            </Badge>
+          </div>
 
       {/* Welcome Card */}
       <Card className="bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
@@ -279,6 +282,8 @@ export default async function AdminHomePage({
           </div>
         </CardContent>
       </Card>
+        </div>
+      </DocContent>
     </div>
   );
 }

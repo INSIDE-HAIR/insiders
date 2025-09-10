@@ -30,21 +30,15 @@ import {
   UsersIcon,
   ShieldCheckIcon,
   ArrowPathIcon,
-  DocumentTextIcon,
   Squares2X2Icon,
   UserGroupIcon,
-  TagIcon,
-  FolderIcon,
   ChartBarIcon,
   CheckCircleIcon,
-  ClockIcon,
   ExclamationTriangleIcon,
   SparklesIcon,
   RocketLaunchIcon,
   CubeTransparentIcon,
-  ArrowRightIcon,
   CodeBracketIcon,
-  PaintBrushIcon,
   LockClosedIcon,
   GlobeAltIcon,
   AdjustmentsHorizontalIcon,
@@ -52,61 +46,51 @@ import {
   CommandLineIcon,
   ServerStackIcon,
   CpuChipIcon,
-  BeakerIcon,
 } from "@heroicons/react/24/outline";
 import {
-  Menu,
   Columns3,
   Navigation,
   PanelLeft,
   Users,
   Shield,
   Settings,
-  Layers,
   GitBranch,
   Database,
   Globe,
   Palette,
   Zap,
   Target,
-  Package,
   FileText,
-  BarChart3,
+  CheckCircle,
 } from "lucide-react";
+import { MermaidDiagram } from "@/src/components/drive/docs/mermaid-diagram";
 
 interface MenuUnderConstructionProps {
   lang: string;
 }
 
-type MenuSection = "footer" | "header" | "sidebar" | "architecture";
-
 const rolesList = [
   {
     role: "ADMIN",
-    color: "bg-purple-500",
     description: "Administrador completo del sistema",
   },
   {
     role: "CLIENT",
-    color: "bg-blue-500",
     description: "Clientes con acceso a servicios",
   },
   {
     role: "EMPLOYEE",
-    color: "bg-green-500",
     description: "Empleados de la organización",
   },
   {
     role: "DEBTOR",
-    color: "bg-orange-500",
     description: "Deudores con acceso limitado",
   },
   {
     role: "PROVIDER",
-    color: "bg-indigo-500",
     description: "Proveedores de servicios",
   },
-  { role: "LEAD", color: "bg-pink-500", description: "Leads y prospectos" },
+  { role: "LEAD", description: "Leads y prospectos" },
 ];
 
 const teams = [
@@ -114,25 +98,21 @@ const teams = [
     key: "gestion",
     name: "Equipo de Gestión",
     modules: 16,
-    color: "bg-purple-500",
   },
   {
     key: "creativos",
     name: "Equipo Creativo",
     modules: 5,
-    color: "bg-pink-500",
   },
   {
     key: "consultoria",
     name: "Equipo de Consultoría",
     modules: 5,
-    color: "bg-blue-500",
   },
   {
     key: "crecimiento",
     name: "Equipo de Crecimiento",
     modules: 5,
-    color: "bg-green-500",
   },
 ];
 
@@ -174,53 +154,38 @@ const developmentPhases = [
   },
 ];
 
-export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
-  const [activeSection, setActiveSection] = useState<MenuSection>("footer");
+export function MenuUnderConstruction({ }: MenuUnderConstructionProps) {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [selectedTeam, setSelectedTeam] = useState<string | null>("gestion");
 
   return (
     <div className='space-y-6'>
-      {/* Header Section */}
-      <div className='relative overflow-hidden rounded-lg bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 p-8 text-white'>
-        <div className='relative z-10'>
-          <div className='flex items-center gap-3 mb-4'>
-            <WrenchScrewdriverIcon className='h-10 w-10' />
-            <Badge className='bg-yellow-500 text-black border-0'>
-              EN CONSTRUCCIÓN
-            </Badge>
+      {/* Status Badge and Features */}
+      <div className='flex items-center justify-between mb-6'>
+        <Badge className='bg-primary text-primary-foreground border-0 text-sm px-3 py-1'>
+          <WrenchScrewdriverIcon className='h-4 w-4 mr-2' />
+          EN CONSTRUCCIÓN
+        </Badge>
+        <div className='flex flex-wrap gap-3'>
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <CheckCircleIcon className='h-4 w-4 text-primary' />
+            <span>Multi-idioma (ES/EN)</span>
           </div>
-          <h1 className='text-4xl font-bold mb-3'>
-            Sistema de Gestión de Menús Dinámicos
-          </h1>
-          <p className='text-xl opacity-90 mb-6'>
-            Configuración centralizada de Headers, Footers y Sidebars por rol y
-            equipo
-          </p>
-          <div className='flex flex-wrap gap-4'>
-            <div className='flex items-center gap-2'>
-              <CheckCircleIcon className='h-5 w-5' />
-              <span>Multi-idioma (ES/EN)</span>
-            </div>
-            <div className='flex items-center gap-2'>
-              <ShieldCheckIcon className='h-5 w-5' />
-              <span>Control de acceso integrado</span>
-            </div>
-            <div className='flex items-center gap-2'>
-              <ArrowPathIcon className='h-5 w-5' />
-              <span>Herencia configurable</span>
-            </div>
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <ShieldCheckIcon className='h-4 w-4 text-primary' />
+            <span>Control de acceso integrado</span>
           </div>
-        </div>
-        <div className='absolute top-0 right-0 -mt-8 -mr-8 opacity-10'>
-          <Menu className='h-64 w-64' />
+          <div className='flex items-center gap-2 text-sm text-muted-foreground'>
+            <ArrowPathIcon className='h-4 w-4 text-primary' />
+            <span>Herencia configurable</span>
+          </div>
         </div>
       </div>
 
       {/* Alert de desarrollo */}
-      <Alert className='border-yellow-500 bg-yellow-50'>
-        <ExclamationTriangleIcon className='h-4 w-4 text-yellow-600' />
-        <AlertDescription className='text-yellow-800'>
+      <Alert className='border-primary/20 bg-primary/5'>
+        <ExclamationTriangleIcon className='h-4 w-4 text-primary' />
+        <AlertDescription className='text-foreground'>
           <strong>Sistema en desarrollo:</strong> Esta página muestra el diseño
           y funcionalidades planificadas del nuevo sistema de gestión de menús.
           Tiempo estimado de desarrollo: 5 semanas.
@@ -240,34 +205,34 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         <TabsContent value='overview' className='space-y-6'>
           <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
             {/* Footer Card */}
-            <Card className='border-2 hover:border-purple-500 transition-colors cursor-pointer'>
+            <Card className='border border-border hover:border-primary/50 transition-colors cursor-pointer'>
               <CardHeader>
                 <div className='flex items-center justify-between'>
-                  <Columns3 className='h-8 w-8 text-purple-500' />
+                  <Columns3 className='h-8 w-8 text-primary' />
                   <Badge variant='outline'>6 variantes</Badge>
                 </div>
-                <CardTitle>Gestión de Footers</CardTitle>
-                <CardDescription>
+                <CardTitle className='text-white'>Gestión de Footers</CardTitle>
+                <CardDescription className='text-white/80'>
                   Configura footers públicos, privados y específicos por rol
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
                   <div className='flex items-center gap-2'>
-                    <GlobeAltIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Footer Público</span>
+                    <GlobeAltIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Footer Público</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <LockClosedIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Footer Privado</span>
+                    <LockClosedIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Footer Privado</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <UsersIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Por Rol (6 roles)</span>
+                    <UsersIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Por Rol (6 roles)</span>
                   </div>
                   <Separator />
                   <div className='pt-2'>
-                    <p className='text-xs text-muted-foreground'>
+                    <p className='text-xs text-white/70'>
                       Sistema de herencia: Público → Privado → Rol
                     </p>
                   </div>
@@ -276,34 +241,34 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
             </Card>
 
             {/* Header Card */}
-            <Card className='border-2 hover:border-blue-500 transition-colors cursor-pointer'>
+            <Card className='border border-border hover:border-primary/50 transition-colors cursor-pointer'>
               <CardHeader>
                 <div className='flex items-center justify-between'>
-                  <Navigation className='h-8 w-8 text-blue-500' />
+                  <Navigation className='h-8 w-8 text-primary' />
                   <Badge variant='outline'>Mega-menús</Badge>
                 </div>
-                <CardTitle>Gestión de Headers</CardTitle>
-                <CardDescription>
+                <CardTitle className='text-white'>Gestión de Headers</CardTitle>
+                <CardDescription className='text-white/80'>
                   Navbars dinámicos con dropdowns y mega-menús
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
                   <div className='flex items-center gap-2'>
-                    <ViewColumnsIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Dropdowns multinivel</span>
+                    <ViewColumnsIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Dropdowns multinivel</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <AdjustmentsHorizontalIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>CTAs configurables</span>
+                    <AdjustmentsHorizontalIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>CTAs configurables</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <CubeTransparentIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Mobile responsive</span>
+                    <CubeTransparentIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Mobile responsive</span>
                   </div>
                   <Separator />
                   <div className='pt-2'>
-                    <p className='text-xs text-muted-foreground'>
+                    <p className='text-xs text-white/70'>
                       Soporte para badges y notificaciones
                     </p>
                   </div>
@@ -312,34 +277,34 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
             </Card>
 
             {/* Sidebar Card */}
-            <Card className='border-2 hover:border-green-500 transition-colors cursor-pointer'>
+            <Card className='border border-border hover:border-primary/50 transition-colors cursor-pointer'>
               <CardHeader>
                 <div className='flex items-center justify-between'>
-                  <PanelLeft className='h-8 w-8 text-green-500' />
+                  <PanelLeft className='h-8 w-8 text-primary' />
                   <Badge variant='outline'>4 equipos</Badge>
                 </div>
-                <CardTitle>Sidebars por Equipo</CardTitle>
-                <CardDescription>
+                <CardTitle className='text-white'>Sidebars por Equipo</CardTitle>
+                <CardDescription className='text-white/80'>
                   Módulos personalizados según equipo y permisos
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className='space-y-3'>
                   <div className='flex items-center gap-2'>
-                    <UserGroupIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Selector de equipo</span>
+                    <UserGroupIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Selector de equipo</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <Squares2X2Icon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Módulos disponibles</span>
+                    <Squares2X2Icon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Módulos disponibles</span>
                   </div>
                   <div className='flex items-center gap-2'>
-                    <ShieldCheckIcon className='h-4 w-4 text-gray-500' />
-                    <span className='text-sm'>Validación de permisos</span>
+                    <ShieldCheckIcon className='h-4 w-4 text-primary' />
+                    <span className='text-sm text-white'>Validación de permisos</span>
                   </div>
                   <Separator />
                   <div className='pt-2'>
-                    <p className='text-xs text-muted-foreground'>
+                    <p className='text-xs text-white/70'>
                       Prioridad: Equipo {">"} Rol {">"} General
                     </p>
                   </div>
@@ -351,11 +316,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           {/* Roles Section */}
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Users className='h-5 w-5' />
+              <CardTitle className='flex items-center gap-2 text-white'>
+                <Users className='h-5 w-5 text-primary' />
                 Sistema de Roles
               </CardTitle>
-              <CardDescription>
+              <CardDescription className='text-white/80'>
                 Cada rol puede tener su propia configuración de menús
               </CardDescription>
             </CardHeader>
@@ -364,10 +329,10 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                 {rolesList.map((role) => (
                   <div
                     key={role.role}
-                    className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                    className={`border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card cursor-pointer ${
                       selectedRole === role.role
-                        ? "border-purple-500 bg-purple-50"
-                        : "border-gray-200 hover:border-gray-400"
+                        ? "ring-2 ring-primary bg-primary/10"
+                        : ""
                     }`}
                     onClick={() =>
                       setSelectedRole(
@@ -375,22 +340,26 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                       )
                     }
                   >
-                    <div
-                      className={`h-2 w-2 rounded-full ${role.color} mb-2`}
-                    />
-                    <div className='font-medium text-sm'>{role.role}</div>
-                    <div className='text-xs text-muted-foreground mt-1'>
-                      {role.description}
+                    <div className='flex-1'>
+                      <div className='flex items-center gap-2 mb-2'>
+                        <h3 className='font-semibold text-foreground text-sm'>{role.role}</h3>
+                        {selectedRole === role.role && (
+                          <CheckCircle className='w-4 h-4 text-primary' />
+                        )}
+                      </div>
+                      <p className='text-xs text-muted-foreground leading-relaxed'>
+                        {role.description}
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
               {selectedRole && (
-                <Alert className='mt-4'>
-                  <AlertDescription>
-                    El rol <strong>{selectedRole}</strong> tendrá acceso a menús
-                    personalizados que heredan del menú privado pero pueden
-                    sobrescribirse completamente.
+                <Alert className='mt-4 border-primary/20 bg-primary/10'>
+                  <AlertDescription className='text-foreground'>
+                    <strong>Rol seleccionado: {selectedRole}</strong>
+                    <br />
+                    Este rol tendrá acceso a menús personalizados que heredan del menú privado pero pueden sobrescribirse completamente.
                   </AlertDescription>
                 </Alert>
               )}
@@ -400,11 +369,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           {/* Teams Section */}
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <UserGroupIcon className='h-5 w-5' />
+              <CardTitle className='flex items-center gap-2 text-white'>
+                <UserGroupIcon className='h-5 w-5 text-primary' />
                 Equipos y Sidebars
               </CardTitle>
-              <CardDescription>
+              <CardDescription className='text-white/80'>
                 Configuración de sidebars administrativos por equipo
               </CardDescription>
             </CardHeader>
@@ -413,29 +382,35 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                 {teams.map((team) => (
                   <div
                     key={team.key}
-                    className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                    className={`border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card cursor-pointer ${
                       selectedTeam === team.key
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-gray-400"
+                        ? "ring-2 ring-primary bg-primary/10"
+                        : ""
                     }`}
                     onClick={() => setSelectedTeam(team.key)}
                   >
-                    <div className='flex items-center justify-between mb-2'>
-                      <div className={`h-3 w-3 rounded-full ${team.color}`} />
-                      <Badge variant='secondary'>{team.modules} módulos</Badge>
+                    <div className='flex justify-between items-start mb-2'>
+                      {selectedTeam === team.key && (
+                        <CheckCircle className='w-4 h-4 text-primary' />
+                      )}
+                      <Badge variant='secondary'>
+                        {team.modules} módulos
+                      </Badge>
                     </div>
-                    <div className='font-medium'>{team.name}</div>
-                    <div className='text-xs text-muted-foreground mt-2'>
-                      dashboard-routes.ts
+                    <div className='flex-1'>
+                      <h3 className='font-semibold text-foreground mb-1'>{team.name}</h3>
+                      <p className='text-xs text-muted-foreground leading-relaxed'>
+                        dashboard-routes.ts
+                      </p>
                     </div>
                   </div>
                 ))}
               </div>
               {selectedTeam && (
-                <div className='mt-4 p-4 bg-gray-50 rounded-lg'>
-                  <h4 className='font-medium mb-2'>
+                <div className='mt-4 p-4 bg-primary/10 border border-primary/20 rounded-lg'>
+                  <h4 className='font-semibold text-foreground mb-3'>
                     Módulos disponibles para{" "}
-                    {teams.find((t) => t.key === selectedTeam)?.name}:
+                    <span className='text-primary'>{teams.find((t) => t.key === selectedTeam)?.name}</span>:
                   </h4>
                   <div className='flex flex-wrap gap-2'>
                     {[
@@ -448,7 +423,7 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                       "meet",
                       "calendar",
                     ].map((module) => (
-                      <Badge key={module} variant='outline'>
+                      <Badge key={module} variant='secondary' className='hover:bg-accent'>
                         {module}
                       </Badge>
                     ))}
@@ -464,56 +439,56 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <GitBranch className='h-5 w-5' />
+                <CardTitle className='flex items-center gap-2 text-white'>
+                  <GitBranch className='h-5 w-5 text-primary' />
                   Sistema de Herencia
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-4'>
                 <div className='space-y-2'>
                   <div className='flex items-center gap-2'>
-                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
-                      1
+                    <div className='h-8 w-8 rounded-full bg-primary flex items-center justify-center'>
+                      <span className='font-bold text-black'>1</span>
                     </div>
                     <div className='flex-1'>
-                      <div className='font-medium'>Menú Público</div>
-                      <div className='text-sm text-muted-foreground'>
+                      <div className='font-medium text-white'>Menú Público</div>
+                      <div className='text-sm text-white/80'>
                         Base para todos los usuarios
                       </div>
                     </div>
                   </div>
-                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='ml-4 border-l-2 border-dashed border-primary h-4' />
                   <div className='flex items-center gap-2'>
-                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
-                      2
+                    <div className='h-8 w-8 rounded-full bg-primary flex items-center justify-center'>
+                      <span className='font-bold text-black'>2</span>
                     </div>
                     <div className='flex-1'>
-                      <div className='font-medium'>Menú Privado</div>
-                      <div className='text-sm text-muted-foreground'>
+                      <div className='font-medium text-white'>Menú Privado</div>
+                      <div className='text-sm text-white/80'>
                         Hereda o rompe con público
                       </div>
                     </div>
                   </div>
-                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='ml-4 border-l-2 border-dashed border-primary h-4' />
                   <div className='flex items-center gap-2'>
-                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
-                      3
+                    <div className='h-8 w-8 rounded-full bg-primary flex items-center justify-center'>
+                      <span className='font-bold text-black'>3</span>
                     </div>
                     <div className='flex-1'>
-                      <div className='font-medium'>Menú por Rol</div>
-                      <div className='text-sm text-muted-foreground'>
+                      <div className='font-medium text-white'>Menú por Rol</div>
+                      <div className='text-sm text-white/80'>
                         6 roles disponibles
                       </div>
                     </div>
                   </div>
-                  <div className='ml-4 border-l-2 border-dashed h-4' />
+                  <div className='ml-4 border-l-2 border-dashed border-primary h-4' />
                   <div className='flex items-center gap-2'>
-                    <div className='h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center'>
-                      4
+                    <div className='h-8 w-8 rounded-full bg-primary flex items-center justify-center'>
+                      <span className='font-bold text-black'>4</span>
                     </div>
                     <div className='flex-1'>
-                      <div className='font-medium'>Sidebar por Equipo</div>
-                      <div className='text-sm text-muted-foreground'>
+                      <div className='font-medium text-white'>Sidebar por Equipo</div>
+                      <div className='text-sm text-white/80'>
                         Máxima prioridad
                       </div>
                     </div>
@@ -524,33 +499,33 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Shield className='h-5 w-5' />
+                <CardTitle className='flex items-center gap-2 text-white'>
+                  <Shield className='h-5 w-5 text-primary' />
                   Control de Acceso
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-3'>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Integración con AccessControl</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Integración con AccessControl</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Validación server-side</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Validación server-side</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>
                     Ocultación automática de items
                   </span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Logs de acceso denegado</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Logs de acceso denegado</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Warnings de permisos</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Warnings de permisos</span>
                 </div>
                 <Separator className='my-3' />
                 <Alert>
@@ -564,70 +539,70 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Palette className='h-5 w-5' />
+                <CardTitle className='flex items-center gap-2 text-white'>
+                  <Palette className='h-5 w-5 text-primary' />
                   Interfaz de Usuario
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-3'>
                 <div className='space-y-2'>
-                  <div className='text-sm font-medium'>
+                  <div className='text-sm font-medium text-white'>
                     Componentes reutilizados:
                   </div>
                   <div className='pl-4 space-y-1'>
                     <div className='flex items-center gap-2'>
-                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
-                      <span className='text-sm'>GroupsManagement</span>
+                      <CodeBracketIcon className='h-4 w-4 text-primary' />
+                      <span className='text-sm text-white'>GroupsManagement</span>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
-                      <span className='text-sm'>TagsManagement</span>
+                      <CodeBracketIcon className='h-4 w-4 text-primary' />
+                      <span className='text-sm text-white'>TagsManagement</span>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
-                      <span className='text-sm'>HierarchyTree</span>
+                      <CodeBracketIcon className='h-4 w-4 text-primary' />
+                      <span className='text-sm text-white'>HierarchyTree</span>
                     </div>
                     <div className='flex items-center gap-2'>
-                      <CodeBracketIcon className='h-4 w-4 text-gray-400' />
-                      <span className='text-sm'>ComplexRuleBuilder</span>
+                      <CodeBracketIcon className='h-4 w-4 text-primary' />
+                      <span className='text-sm text-white'>ComplexRuleBuilder</span>
                     </div>
                   </div>
                 </div>
                 <Separator />
                 <div className='flex items-center gap-2'>
-                  <SparklesIcon className='h-4 w-4 text-yellow-500' />
-                  <span className='text-sm'>UI consistente con Meet</span>
+                  <SparklesIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>UI consistente con Meet</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className='flex items-center gap-2'>
-                  <Globe className='h-5 w-5' />
+                <CardTitle className='flex items-center gap-2 text-white'>
+                  <Globe className='h-5 w-5 text-primary' />
                   Características Adicionales
                 </CardTitle>
               </CardHeader>
               <CardContent className='space-y-3'>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Multi-idioma (ES/EN)</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Multi-idioma (ES/EN)</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Preview antes de publicar</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Preview antes de publicar</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Sistema draft/published</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Sistema draft/published</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Iconos Lucide React</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Iconos Lucide React</span>
                 </div>
                 <div className='flex items-center gap-2'>
-                  <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                  <span className='text-sm'>Cache de menús</span>
+                  <CheckCircleIcon className='h-4 w-4 text-primary' />
+                  <span className='text-sm text-white'>Cache de menús</span>
                 </div>
               </CardContent>
             </Card>
@@ -638,8 +613,8 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         <TabsContent value='architecture' className='space-y-6'>
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <Database className='h-5 w-5' />
+              <CardTitle className='flex items-center gap-2 text-white'>
+                <Database className='h-5 w-5 text-primary' />
                 Arquitectura Técnica
               </CardTitle>
             </CardHeader>
@@ -647,45 +622,122 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
               <Accordion type='single' collapsible className='w-full'>
                 <AccordionItem value='models'>
                   <AccordionTrigger>
-                    <div className='flex items-center gap-2'>
-                      <ServerStackIcon className='h-4 w-4' />
+                    <div className='flex items-center gap-2 text-white'>
+                      <ServerStackIcon className='h-4 w-4 text-primary' />
                       Modelos de Datos (Prisma)
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className='space-y-3 p-4 bg-gray-50 rounded-lg'>
-                      <div className='font-mono text-sm'>
-                        <div className='font-bold text-purple-600'>
-                          MenuConfiguration
+                    <div className='space-y-6'>
+                      <MermaidDiagram
+                        chart={`
+erDiagram
+    MenuConfiguration {
+        string id PK "cuid()"
+        MenuType type "HEADER|FOOTER|SIDEBAR"
+        MenuScope scope "PUBLIC|PRIVATE|ROLE|TEAM"
+        string scopeValue "Role/Team identifier"
+        string inheritsFrom FK "Parent menu ID"
+        boolean isActive "Default: true"
+        int priority "Default: 0"
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    MenuItem {
+        string id PK "cuid()"
+        json label "Multi-language {es, en}"
+        string href "Optional URL"
+        string icon "Lucide icon name"
+        string parentId FK "Self-reference"
+        int order "Default: 0"
+        string[] requiredRoles "Role restrictions"
+        string[] requiredPermissions "Permission checks"
+        boolean isVisible "Default: true"
+        boolean openInNewTab "Default: false"
+        string menuConfigId FK
+    }
+
+    TeamSidebarConfig {
+        string id PK "cuid()"
+        string teamKey UK "Unique team identifier"
+        string[] availableRoutes "dashboard-routes modules"
+        string customMenuId FK "Override menu"
+        int priority "Default: 0"
+        string[] userIds "Assigned users"
+        boolean isActive "Default: true"
+        InheritanceMode inheritanceMode "Enum"
+    }
+
+    User {
+        string id PK
+        string email
+        string role "ADMIN|EMPLOYEE|CLIENT..."
+        string teamKey FK "Optional team assignment"
+    }
+
+    MenuConfiguration ||--o{ MenuItem : "contains"
+    MenuConfiguration ||--o| MenuConfiguration : "inherits from"
+    TeamSidebarConfig ||--o| MenuConfiguration : "custom menu"
+    User ||--o| TeamSidebarConfig : "assigned to"
+    MenuItem ||--o{ MenuItem : "children"
+                        `}
+                        className="mb-6"
+                      />
+                      
+                      <div className='bg-card p-4 rounded-lg border border-border'>
+                        <h4 className='font-semibold text-sm text-foreground mb-3 flex items-center gap-2'>
+                          <Database className='h-4 w-4 text-primary' />
+                          Esquema de Base de Datos - Características Clave
+                        </h4>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 text-sm'>
+                          <div className='space-y-2'>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-blue-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Herencia Configurable:</span>
+                                <div className='text-muted-foreground text-xs'>MenuConfiguration puede heredar de otro menú padre</div>
+                              </div>
+                            </div>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-purple-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Jerarquía de Items:</span>
+                                <div className='text-muted-foreground text-xs'>MenuItem soporta estructura de árbol con parentId</div>
+                              </div>
+                            </div>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-green-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Multi-idioma:</span>
+                                <div className='text-muted-foreground text-xs'>Labels almacenados como JSON {"{"}es, en{"}"}</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className='space-y-2'>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-orange-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Control de Acceso:</span>
+                                <div className='text-muted-foreground text-xs'>Roles y permisos granulares por item</div>
+                              </div>
+                            </div>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-red-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Equipos Específicos:</span>
+                                <div className='text-muted-foreground text-xs'>TeamSidebarConfig para sidebars personalizados</div>
+                              </div>
+                            </div>
+                            <div className='flex items-start gap-2'>
+                              <span className='text-indigo-600 font-semibold'>•</span>
+                              <div>
+                                <span className='font-medium text-foreground'>Prioridades:</span>
+                                <div className='text-muted-foreground text-xs'>Sistema de prioridades para resolución de conflictos</div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <ul className='ml-4 mt-2 space-y-1'>
-                          <li>• type: HEADER | FOOTER | SIDEBAR</li>
-                          <li>• scope: PUBLIC | PRIVATE | ROLE | TEAM</li>
-                          <li>• inheritsFrom: Herencia configurable</li>
-                          <li>• items: MenuItem[]</li>
-                          <li>• accessControl: Integración permisos</li>
-                        </ul>
-                      </div>
-                      <div className='font-mono text-sm'>
-                        <div className='font-bold text-blue-600'>MenuItem</div>
-                        <ul className='ml-4 mt-2 space-y-1'>
-                          <li>• label: Multi-idioma JSON</li>
-                          <li>• href: Ruta del enlace</li>
-                          <li>• icon: Lucide icon name</li>
-                          <li>• children: Jerarquía</li>
-                          <li>• requiredRoles: Permisos</li>
-                        </ul>
-                      </div>
-                      <div className='font-mono text-sm'>
-                        <div className='font-bold text-green-600'>
-                          TeamSidebar
-                        </div>
-                        <ul className='ml-4 mt-2 space-y-1'>
-                          <li>• teamKey: ID del equipo</li>
-                          <li>• availableRoutes: Módulos</li>
-                          <li>• priority: Orden de prioridad</li>
-                          <li>• userIds: Usuarios asignados</li>
-                        </ul>
                       </div>
                     </div>
                   </AccordionContent>
@@ -693,48 +745,157 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
                 <AccordionItem value='api'>
                   <AccordionTrigger>
-                    <div className='flex items-center gap-2'>
-                      <CommandLineIcon className='h-4 w-4' />
+                    <div className='flex items-center gap-2 text-white'>
+                      <CommandLineIcon className='h-4 w-4 text-primary' />
                       API Routes
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className='space-y-2 p-4 bg-gray-50 rounded-lg font-mono text-sm'>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          GET
-                        </Badge>
-                        <span>/api/admin/menu/[type]</span>
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          POST
-                        </Badge>
-                        <span>/api/admin/menu/[type]</span>
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          PUT
-                        </Badge>
-                        <span>/api/admin/menu/[type]/[id]</span>
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          DELETE
-                        </Badge>
-                        <span>/api/admin/menu/[type]/[id]</span>
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          POST
-                        </Badge>
-                        <span>/api/admin/menu/publish</span>
-                      </div>
-                      <div className='flex items-center gap-2'>
-                        <Badge variant='outline' className='font-mono'>
-                          GET
-                        </Badge>
-                        <span>/api/admin/menu/preview</span>
+                    <div className='space-y-4 p-4 bg-accent/20 rounded-lg border border-border'>
+                      <div className='space-y-3'>
+                        <div className='bg-card p-3 rounded border border-border'>
+                          <h4 className='font-semibold text-sm mb-2 text-foreground'>
+                            Gestión de Menús
+                          </h4>
+                          <div className='space-y-2 font-mono text-xs'>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-green-100 text-green-800 border-green-300'
+                              >
+                                GET
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/[type]</span>
+                              <span className='text-muted-foreground'>
+                                // Lista menús por tipo
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-blue-100 text-blue-800 border-blue-300'
+                              >
+                                POST
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/[type]</span>
+                              <span className='text-muted-foreground'>
+                                // Crear menú
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-yellow-100 text-yellow-800 border-yellow-300'
+                              >
+                                PUT
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/[type]/[id]</span>
+                              <span className='text-muted-foreground'>
+                                // Actualizar menú
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-red-100 text-red-800 border-red-300'
+                              >
+                                DELETE
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/[type]/[id]</span>
+                              <span className='text-muted-foreground'>
+                                // Eliminar menú
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className='bg-card p-3 rounded border border-border'>
+                          <h4 className='font-semibold text-sm mb-2 text-foreground'>
+                            Publishing & Preview
+                          </h4>
+                          <div className='space-y-2 font-mono text-xs'>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-purple-100 text-purple-800 border-purple-300'
+                              >
+                                POST
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/publish</span>
+                              <span className='text-muted-foreground'>
+                                // Publicar cambios
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-green-100 text-green-800 border-green-300'
+                              >
+                                GET
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/preview</span>
+                              <span className='text-muted-foreground'>
+                                // Vista previa
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-orange-100 text-orange-800 border-orange-300'
+                              >
+                                POST
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/rollback</span>
+                              <span className='text-muted-foreground'>
+                                // Revertir cambios
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className='bg-card p-3 rounded border border-border'>
+                          <h4 className='font-semibold text-sm mb-2 text-foreground'>
+                            Team & Inheritance
+                          </h4>
+                          <div className='space-y-2 font-mono text-xs'>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-green-100 text-green-800 border-green-300'
+                              >
+                                GET
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/team/[teamKey]</span>
+                              <span className='text-muted-foreground'>
+                                // Menú por equipo
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-blue-100 text-blue-800 border-blue-300'
+                              >
+                                POST
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/inherit</span>
+                              <span className='text-muted-foreground'>
+                                // Configurar herencia
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                              <Badge
+                                variant='outline'
+                                className='font-mono text-xs bg-yellow-100 text-yellow-800 border-yellow-300'
+                              >
+                                PUT
+                              </Badge>
+                              <span className='text-foreground'>/api/admin/menu/permissions</span>
+                              <span className='text-muted-foreground'>
+                                // Actualizar permisos
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -742,54 +903,156 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
 
                 <AccordionItem value='integration'>
                   <AccordionTrigger>
-                    <div className='flex items-center gap-2'>
-                      <CpuChipIcon className='h-4 w-4' />
+                    <div className='flex items-center gap-2 text-white'>
+                      <CpuChipIcon className='h-4 w-4 text-primary' />
                       Integraciones
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
-                      <div className='space-y-2'>
-                        <h4 className='font-medium'>Sistemas Existentes</h4>
-                        <ul className='space-y-1 text-sm'>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            dashboard-routes.ts
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            AccessControl
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            NextAuth roles
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            i18n system
-                          </li>
-                        </ul>
+                    <div className='space-y-4 p-4 bg-accent/20 rounded-lg border border-border'>
+                      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                        <div className='bg-card p-3 rounded border border-border space-y-3'>
+                          <h4 className='font-semibold text-sm text-foreground flex items-center gap-2'>
+                            <Settings className='h-4 w-4 text-primary' />
+                            Sistemas Backend
+                          </h4>
+                          <ul className='space-y-2 text-sm'>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  dashboard-routes.ts
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Configuración actual de rutas por equipo
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  ComplexAccessControl
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Sistema de permisos granulares
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  NextAuth.js roles
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  ADMIN, EMPLOYEE, CLIENT, etc.
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  i18n Context
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Sistema multi-idioma ES/EN
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+
+                        <div className='bg-card p-3 rounded border border-border space-y-3'>
+                          <h4 className='font-semibold text-sm text-foreground flex items-center gap-2'>
+                            <Palette className='h-4 w-4 text-primary' />
+                            Componentes UI
+                          </h4>
+                          <ul className='space-y-2 text-sm'>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  shadcn/ui
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Card, Button, Dialog, etc.
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  Radix UI
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Primitives accesibles
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  Lucide React
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Iconografía consistente
+                                </div>
+                              </div>
+                            </li>
+                            <li className='flex items-center gap-2'>
+                              <CheckCircleIcon className='h-4 w-4 text-primary' />
+                              <div>
+                                <span className='font-mono text-xs text-foreground'>
+                                  HeroIcons
+                                </span>
+                                <div className='text-xs text-muted-foreground'>
+                                  Iconos alternativos
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div className='space-y-2'>
-                        <h4 className='font-medium'>Componentes UI</h4>
-                        <ul className='space-y-1 text-sm'>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            shadcn/ui
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            Radix UI
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            Lucide icons
-                          </li>
-                          <li className='flex items-center gap-2'>
-                            <CheckCircleIcon className='h-4 w-4 text-green-500' />
-                            HeroIcons
-                          </li>
-                        </ul>
+
+                      <div className='bg-card p-3 rounded border border-border'>
+                        <h4 className='font-semibold text-sm text-foreground flex items-center gap-2 mb-3'>
+                          <GitBranch className='h-4 w-4 text-primary' />
+                          Arquitectura de Integración
+                        </h4>
+                        <div className='space-y-2 text-xs'>
+                          <div className='flex items-center gap-2 p-2 bg-accent/30 rounded border border-border'>
+                            <span className='font-mono text-foreground'>1. MenuResolver</span>
+                            <span className='text-muted-foreground'>
+                              → Determina qué menú mostrar según contexto
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-2 p-2 bg-accent/30 rounded border border-border'>
+                            <span className='font-mono text-foreground'>
+                              2. PermissionChecker
+                            </span>
+                            <span className='text-muted-foreground'>
+                              → Valida acceso usando ComplexAccessControl
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-2 p-2 bg-accent/30 rounded border border-border'>
+                            <span className='font-mono text-foreground'>
+                              3. InheritanceProcessor
+                            </span>
+                            <span className='text-muted-foreground'>
+                              → Aplica herencia y override de configuraciones
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-2 p-2 bg-accent/30 rounded border border-border'>
+                            <span className='font-mono text-foreground'>4. MenuRenderer</span>
+                            <span className='text-muted-foreground'>
+                              → Genera componentes React finales
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </AccordionContent>
@@ -803,11 +1066,11 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
         <TabsContent value='roadmap' className='space-y-6'>
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <RocketLaunchIcon className='h-5 w-5' />
+              <CardTitle className='flex items-center gap-2 text-white'>
+                <RocketLaunchIcon className='h-5 w-5 text-primary' />
                 Plan de Desarrollo
               </CardTitle>
-              <CardDescription>
+              <CardDescription className='text-white/80'>
                 5 sprints de 1 semana cada uno - Total: 5 semanas
               </CardDescription>
             </CardHeader>
@@ -828,8 +1091,8 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                         {phase.phase}
                       </div>
                       <div>
-                        <div className='font-medium'>{phase.name}</div>
-                        <div className='text-sm text-muted-foreground'>
+                        <div className='font-medium text-white'>{phase.name}</div>
+                        <div className='text-sm text-white/70'>
                           {phase.duration}
                         </div>
                       </div>
@@ -857,35 +1120,35 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
                   {/* Phase details */}
                   <div className='ml-13 pl-4 border-l-2 border-gray-200'>
                     {phase.phase === 1 && (
-                      <ul className='space-y-1 text-sm text-muted-foreground'>
+                      <ul className='space-y-1 text-sm text-white/80'>
                         <li>• Setup de esquema Prisma</li>
                         <li>• Página base de gestión</li>
                         <li>• API Routes CRUD</li>
                       </ul>
                     )}
                     {phase.phase === 2 && (
-                      <ul className='space-y-1 text-sm text-muted-foreground'>
+                      <ul className='space-y-1 text-sm text-white/80'>
                         <li>• Footer Management Component</li>
                         <li>• Footer Item Builder</li>
                         <li>• Footer Preview</li>
                       </ul>
                     )}
                     {phase.phase === 3 && (
-                      <ul className='space-y-1 text-sm text-muted-foreground'>
+                      <ul className='space-y-1 text-sm text-white/80'>
                         <li>• Header Management Component</li>
                         <li>• Header Navigation Builder</li>
                         <li>• Mega-menús y dropdowns</li>
                       </ul>
                     )}
                     {phase.phase === 4 && (
-                      <ul className='space-y-1 text-sm text-muted-foreground'>
+                      <ul className='space-y-1 text-sm text-white/80'>
                         <li>• Team Sidebar Manager</li>
                         <li>• Module Permission Checker</li>
                         <li>• Sidebar Priority System</li>
                       </ul>
                     )}
                     {phase.phase === 5 && (
-                      <ul className='space-y-1 text-sm text-muted-foreground'>
+                      <ul className='space-y-1 text-sm text-white/80'>
                         <li>• Menu Inheritance System</li>
                         <li>• Access Control Integration</li>
                         <li>• Publishing System</li>
@@ -903,85 +1166,85 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
           </Card>
 
           {/* KPIs Card */}
-          <Card className='bg-blue-500/5 border-blue-500/20'>
+          <Card className='bg-primary/5 border-primary/20'>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <ChartBarIcon className='h-5 w-5 text-blue-600' />
+              <CardTitle className='flex items-center gap-2 text-white'>
+                <ChartBarIcon className='h-5 w-5 text-primary' />
                 Métricas de Éxito
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                <div className='space-y-2 bg-emerald-500/5 p-3 rounded-md border border-emerald-500/20'>
-                  <h4 className='font-medium text-sm text-emerald-600'>
+                <div className='space-y-2 bg-card p-3 rounded-md border border-border'>
+                  <h4 className='font-medium text-sm text-white'>
                     KPIs Técnicos
                   </h4>
                   <ul className='space-y-1 text-sm'>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-emerald-600' />
-                      <span className='text-emerald-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Carga de menú {"<"} 100ms
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-emerald-600' />
-                      <span className='text-emerald-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Cache hit rate {">"} 90%
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-emerald-600' />
-                      <span className='text-emerald-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Error rate {"<"} 0.1%
                       </span>
                     </li>
                   </ul>
                 </div>
-                <div className='space-y-2 bg-yellow-500/5 p-3 rounded-md border border-yellow-500/20'>
-                  <h4 className='font-medium text-sm text-yellow-600'>
+                <div className='space-y-2 bg-card p-3 rounded-md border border-border'>
+                  <h4 className='font-medium text-sm text-white'>
                     KPIs de Negocio
                   </h4>
                   <ul className='space-y-1 text-sm'>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-yellow-600' />
-                      <span className='text-yellow-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Tiempo config -50%
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-yellow-600' />
-                      <span className='text-yellow-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Tickets soporte -30%
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
-                      <Target className='h-3 w-3 text-yellow-600' />
-                      <span className='text-yellow-700'>
+                      <Target className='h-3 w-3 text-primary' />
+                      <span className='text-white/90'>
                         Adopción 100% en 30 días
                       </span>
                     </li>
                   </ul>
                 </div>
-                <div className='space-y-2 bg-primary/5 p-3 rounded-md border border-primary/20'>
-                  <h4 className='font-medium text-sm text-primary'>
+                <div className='space-y-2 bg-card p-3 rounded-md border border-border'>
+                  <h4 className='font-medium text-sm text-white'>
                     Beneficios
                   </h4>
                   <ul className='space-y-1 text-sm'>
                     <li className='flex items-center gap-2'>
                       <Zap className='h-3 w-3 text-primary' />
-                      <span className='text-primary/80'>
+                      <span className='text-white/90'>
                         Gestión centralizada
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <Zap className='h-3 w-3 text-primary' />
-                      <span className='text-primary/80'>
+                      <span className='text-white/90'>
                         Permisos granulares
                       </span>
                     </li>
                     <li className='flex items-center gap-2'>
                       <Zap className='h-3 w-3 text-primary' />
-                      <span className='text-primary/80'>
+                      <span className='text-white/90'>
                         Herencia inteligente
                       </span>
                     </li>
@@ -994,14 +1257,14 @@ export function MenuUnderConstruction({ lang }: MenuUnderConstructionProps) {
       </Tabs>
 
       {/* Footer CTA */}
-      <Card className='bg-gradient-to-r from-purple-100/50 to-blue-100/50 border-purple-300 dark:from-purple-900/20 dark:to-blue-900/20 dark:border-purple-700'>
+      <Card className='bg-primary/5 border-primary/20'>
         <CardContent className='p-6'>
           <div className='flex items-center justify-between'>
             <div>
-              <h3 className='text-lg font-semibold mb-2'>
+              <h3 className='text-lg font-semibold mb-2 text-white'>
                 ¿Listo para comenzar el desarrollo?
               </h3>
-              <p className='text-sm text-muted-foreground'>
+              <p className='text-sm text-white/80'>
                 Este sistema reutilizará componentes existentes de Meet y
                 AccessControl
               </p>

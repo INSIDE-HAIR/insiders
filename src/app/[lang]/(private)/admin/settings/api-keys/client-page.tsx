@@ -153,10 +153,12 @@ export default function ApiKeysClientPage({ children }: ClientPageProps) {
   // Authorized - render the page content
   return (
     <>
-      {/* Debug info in development */}
+      {children}
+      
+      {/* Debug info in development - moved to bottom */}
       {process.env.NODE_ENV === "development" && (
-        <div className="container mx-auto px-6 pt-2">
-          <Alert className="mb-4 border-primarys bg-primary/10 text-primary">
+        <div className="container mx-auto px-6 pb-6">
+          <Alert className="mt-6 border-primarys bg-primary/10 text-primary">
             <Key className="h-6 w-6 p-1 stroke-primary bg-primary/20 " />
             <AlertDescription className="text-primary ml-2">
               <strong>API Keys Access:</strong> Usuario autorizado para gestionar API Keys
@@ -167,8 +169,6 @@ export default function ApiKeysClientPage({ children }: ClientPageProps) {
           </Alert>
         </div>
       )}
-      
-      {children}
     </>
   );
 }

@@ -10,12 +10,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { DocHeader } from "@/src/components/drive/docs/doc-header";
+import { DocContent } from "@/src/components/drive/docs/doc-content";
 import { Logger } from "@/src/features/drive/utils/logger";
 import { ViewSelector } from "./components/views";
 import { HierarchyItem } from "@drive/types/hierarchy";
 import { useNotifications, Toaster } from "./components/ui";
 import { UserSession } from "@/src/types/routes";
 import { Button } from "@/src/components/ui/button";
+import { Folder } from "lucide-react";
 
 const logger = new Logger("DriveExplorer");
 
@@ -201,12 +204,17 @@ export const DriveExplorerClient: React.FC<DriveExplorerClientProps> = ({
 
 
   return (
-    <>
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8 text-foreground">Drive Explorer</h1>
+    <div>
+      <DocHeader
+        title='Drive Explorer'
+        description='Explora el contenido de Google Drive y visualiza la jerarquía construida'
+        icon={Folder}
+      />
 
-        {/* Search Bar */}
-        <div className="flex gap-2 mb-6">
+      <DocContent>
+        <div className="container mx-auto px-4 py-8">
+          {/* Search Bar */}
+          <div className="flex gap-2 mb-6">
           <div className="relative flex-1">
             <input
               type="text"
@@ -248,10 +256,11 @@ export const DriveExplorerClient: React.FC<DriveExplorerClientProps> = ({
             </div>
           )
         )}
-      </div>
+        </div>
 
-      {/* Toaster para notificaciones */}
-      <Toaster />
-    </>
+        {/* Toaster para notificaciones */}
+        <Toaster />
+      </DocContent>
+    </div>
   );
 };
