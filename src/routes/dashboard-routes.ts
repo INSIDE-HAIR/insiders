@@ -97,12 +97,12 @@ export const dashboardRoutesData: DashboardRoutes = {
           icon: "List",
         },
         {
-          id: "groups",
+          id: "teams",
           label: {
-            en: "Groups",
-            es: "Grupos",
+            en: "Teams",
+            es: "Equipos",
           },
-          href: "/admin/groups",
+          href: "/admin/teams",
           icon: "Users",
         },
       ],
@@ -316,15 +316,6 @@ export const dashboardRoutesData: DashboardRoutes = {
       },
       subItems: [
         {
-          id: "operations-groups",
-          label: {
-            en: "Groups",
-            es: "Grupos",
-          },
-          href: "/admin/operations-hub/groups",
-          icon: "Users",
-        },
-        {
           id: "operations-tags",
           label: {
             en: "Tags",
@@ -332,6 +323,15 @@ export const dashboardRoutesData: DashboardRoutes = {
           },
           href: "/admin/operations-hub/tags",
           icon: "Tag",
+        },
+        {
+          id: "operations-groups",
+          label: {
+            en: "Groups",
+            es: "Grupos",
+          },
+          href: "/admin/operations-hub/groups",
+          icon: "Users",
         },
         {
           id: "operations-sitemap",
