@@ -767,7 +767,7 @@ erDiagram
                               </Badge>
                               <span className='text-foreground'>/api/admin/menu/[type]</span>
                               <span className='text-muted-foreground'>
-                                // Lista menús por tipo
+                                {/* Lista menús por tipo */}
                               </span>
                             </div>
                             <div className='flex items-center gap-2'>

@@ -101,9 +101,7 @@ function Dashboard({
             />
           </div>
         </div>
-        <div className='flex flex-1 flex-col gap-4'>
-          {children}
-        </div>
+        <div className='flex flex-1 flex-col gap-4'>{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

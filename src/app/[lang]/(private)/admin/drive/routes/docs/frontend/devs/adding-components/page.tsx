@@ -1034,10 +1034,10 @@ export default function AddingComponentsPage() {
         <div className='bg-primary/5 border-l-4 border-primary p-6 my-8 rounded-r-lg'>
           <p className='text-primary font-medium flex items-center gap-2'>
             <Lightbulb className='h-4 w-4' />
-            <strong>Consejo:</strong> Sigue este
-            patrón para añadir cualquier tipo de componente nuevo. La clave está
-            en mantener la coherencia con el sistema existente y documentar
-            adecuadamente el nuevo componente.
+            <strong>Consejo:</strong> Sigue este patrón para añadir cualquier
+            tipo de componente nuevo. La clave está en mantener la coherencia
+            con el sistema existente y documentar adecuadamente el nuevo
+            componente.
           </p>
         </div>
       </DocContent>

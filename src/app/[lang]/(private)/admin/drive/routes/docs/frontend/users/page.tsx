@@ -56,38 +56,38 @@ export default function FrontendUserGuide() {
               </CardDescription>
             </CardHeader>
             <CardContent className='space-y-4'>
-              <h3 className='text-lg font-medium text-white'>¿Qué es Rutas de Drive?</h3>
-              <p className='text-slate-300'>
+              <h3 className='text-lg font-medium text-foreground'>¿Qué es Rutas de Drive?</h3>
+              <p className='text-muted-foreground'>
                 Rutas de Drive es una funcionalidad que te permite conectar
                 carpetas de Google Drive con tu sitio web, creando rutas
                 personalizadas para acceder a contenido específico.
               </p>
 
-              <h3 className='text-lg font-medium text-white'>Requisitos previos</h3>
-              <ul className='list-disc pl-6 space-y-1 text-slate-300'>
+              <h3 className='text-lg font-medium text-foreground'>Requisitos previos</h3>
+              <ul className='list-disc pl-6 space-y-1 text-muted-foreground'>
                 <li>Una cuenta de Google con acceso a Google Drive</li>
                 <li>Permisos de administrador en la plataforma</li>
                 <li>Carpetas organizadas en Google Drive</li>
               </ul>
 
-              <h3 className='text-lg font-medium text-white'>Pasos iniciales</h3>
-              <ol className='list-decimal pl-6 space-y-2 text-slate-300'>
+              <h3 className='text-lg font-medium text-foreground'>Pasos iniciales</h3>
+              <ol className='list-decimal pl-6 space-y-2 text-muted-foreground'>
                 <li>
-                  <strong className='text-white'>Acceder al panel:</strong> Inicia sesión y navega a la
+                  <strong className='text-foreground'>Acceder al panel:</strong> Inicia sesión y navega a la
                   sección &quot;Rutas de Drive&quot; en el panel de
                   administración.
                 </li>
                 <li>
-                  <strong className='text-white'>Autenticación:</strong> Conecta tu cuenta de Google si
+                  <strong className='text-foreground'>Autenticación:</strong> Conecta tu cuenta de Google si
                   aún no lo has hecho, siguiendo los pasos de autenticación.
                 </li>
                 <li>
-                  <strong className='text-white'>Explorar la interfaz:</strong> Familiarízate con el
+                  <strong className='text-foreground'>Explorar la interfaz:</strong> Familiarízate con el
                   panel principal, que muestra tus rutas existentes y opciones
                   para crear nuevas.
                 </li>
                 <li>
-                  <strong className='text-white'>Crear tu primera ruta:</strong> Haz clic en
+                  <strong className='text-foreground'>Crear tu primera ruta:</strong> Haz clic en
                   &quot;Nueva ruta&quot; y sigue el asistente para conectar una
                   carpeta de Google Drive con una URL en tu sitio.
                 </li>

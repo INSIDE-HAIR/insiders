@@ -19,6 +19,7 @@ import { useNotifications, Toaster } from "./components/ui";
 import { UserSession } from "@/src/types/routes";
 import { Button } from "@/src/components/ui/button";
 import { Folder } from "lucide-react";
+import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 
 const logger = new Logger("DriveExplorer");
 
@@ -202,7 +203,6 @@ export const DriveExplorerClient: React.FC<DriveExplorerClientProps> = ({
     }
   };
 
-
   return (
     <div>
       <DocHeader
@@ -212,51 +212,53 @@ export const DriveExplorerClient: React.FC<DriveExplorerClientProps> = ({
       />
 
       <DocContent>
-        <div className="container mx-auto px-4 py-8">
-          {/* Search Bar */}
-          <div className="flex gap-2 mb-6">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchQueryChange}
-              placeholder="Search in drive..."
-              className="w-full px-4 py-2 pl-10 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-            />
-            <MagnifyingGlassIcon className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-          </div>
-          <button
-            onClick={handleSearch}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-          >
-            Search
-          </button>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-          </div>
-        ) : (
-          /* Content View */
-          folderDetails && (
-            <div className="bg-card text-card-foreground border border-border rounded-lg shadow-sm">
-              <ViewSelector
-                hierarchy={folderDetails.hierarchy}
-                onItemClick={handleItemClick}
-              />
+        <TailwindGrid fullSize>
+          <main className='col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full'>
+            {/* Search Bar */}
+            <div className='flex gap-2 mb-6'>
+              <div className='relative flex-1'>
+                <input
+                  type='text'
+                  value={searchQuery}
+                  onChange={handleSearchQueryChange}
+                  placeholder='Search in drive...'
+                  className='w-full px-4 py-2 pl-10 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
+                />
+                <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-5 w-5 text-muted-foreground' />
+              </div>
+              <button
+                onClick={handleSearch}
+                className='px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
+              >
+                Search
+              </button>
             </div>
-          )
-        )}
-        </div>
+
+            {/* Error Message */}
+            {error && (
+              <div className='mb-6 p-4 bg-destructive/10 text-destructive border border-destructive/20 rounded-lg'>
+                {error}
+              </div>
+            )}
+
+            {/* Loading State */}
+            {isLoading ? (
+              <div className='flex justify-center items-center h-64'>
+                <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary' />
+              </div>
+            ) : (
+              /* Content View */
+              folderDetails && (
+                <div className='bg-card text-card-foreground border border-border rounded-lg shadow-sm'>
+                  <ViewSelector
+                    hierarchy={folderDetails.hierarchy}
+                    onItemClick={handleItemClick}
+                  />
+                </div>
+              )
+            )}
+          </main>
+        </TailwindGrid>
 
         {/* Toaster para notificaciones */}
         <Toaster />

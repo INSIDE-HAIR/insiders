@@ -498,18 +498,10 @@ const CalendarEventsPage: React.FC = () => {
         break;
       case "month":
         // Current month: 1st to last day of month
-        const startOfMonth = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          1
-        );
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         startOfMonth.setHours(0, 0, 0, 0);
 
-        const endOfMonth = new Date(
-          now.getFullYear(),
-          now.getMonth() + 1,
-          0
-        );
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         endOfMonth.setHours(23, 59, 59, 999);
 
         start = startOfMonth.toISOString();
@@ -543,10 +535,13 @@ const CalendarEventsPage: React.FC = () => {
   }, [timeRange, customStartDate, customEndDate]);
 
   // Memoizar callback para evitar re-renders innecesarios
-  const handleRemoveAttendee = useCallback((email: string) => {
-    const newFilter = attendeesFilter.filter((a) => a !== email);
-    setAttendeesFilter(newFilter);
-  }, [attendeesFilter, setAttendeesFilter]);
+  const handleRemoveAttendee = useCallback(
+    (email: string) => {
+      const newFilter = attendeesFilter.filter((a) => a !== email);
+      setAttendeesFilter(newFilter);
+    },
+    [attendeesFilter, setAttendeesFilter]
+  );
 
   // Funciones para manejar el modal
   const handleRowClick = useCallback((event: GoogleCalendarEvent) => {
@@ -1212,7 +1207,7 @@ const CalendarEventsPage: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <DocHeader
         title='Eventos de Calendar'
         description='Gestiona y visualiza eventos de Google Calendar'
@@ -1220,459 +1215,465 @@ const CalendarEventsPage: React.FC = () => {
       />
 
       <DocContent>
-        <TailwindGrid fullSize padding='' className='z-0'>
-          <div className='z-0 col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 col-span-full'>
+        <TailwindGrid fullSize>
+          <main className='col-start-1 max-w-full w-full col-end-full md:col-start-1 lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full'>
             <div className='flex-1'>
               {/* Controls */}
               <div className='flex flex-wrap items-center justify-end gap-2 md:gap-3 mb-6'>
-              {/* View Toggle */}
-              <div className='flex items-center border border-border rounded-lg p-1 bg-background'>
-                <Button
-                  variant={viewMode === "table" ? "default" : "ghost"}
-                  size='sm'
-                  onClick={() => setViewMode("table")}
-                  className='h-8 px-2 text-xs md:text-sm'
-                >
-                  <TableCellsIcon className='h-4 w-4 mr-1' />
-                  Tabla
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size='sm'
-                  onClick={() => setViewMode("list")}
-                  className='h-8 px-2 text-xs md:text-sm'
-                >
-                  <ListBulletIcon className='h-4 w-4 mr-1' />
-                  Lista
-                </Button>
-                <Button
-                  variant={viewMode === "json" ? "default" : "ghost"}
-                  size='sm'
-                  onClick={() => setViewMode("json")}
-                  className='h-8 px-2 text-xs md:text-sm'
-                >
-                  <CodeBracketIcon className='h-4 w-4 mr-1' />
-                  JSON
-                </Button>
-              </div>
-
-              {/* Column Controller - Only show in table mode */}
-              {viewMode === "table" && (
-                <>
-                  <ColumnController
-                    visibleColumns={visibleColumns}
-                    onColumnVisibilityChange={setColumnVisibility}
-                  />
+                {/* View Toggle */}
+                <div className='flex items-center border border-border rounded-lg p-1 bg-background'>
                   <Button
-                    variant='outline'
+                    variant={viewMode === "table" ? "default" : "ghost"}
                     size='sm'
-                    onClick={() => {
-                      resetFilters();
-                      // Recargar después de resetear para aplicar los cambios
-                      setTimeout(() => window.location.reload(), 100);
-                    }}
-                    className='text-xs'
-                    title='Restaurar columnas por defecto incluyendo invitados'
+                    onClick={() => setViewMode("table")}
+                    className='h-8 px-2 text-xs md:text-sm'
                   >
-                    Restaurar Columnas
+                    <TableCellsIcon className='h-4 w-4 mr-1' />
+                    Tabla
                   </Button>
-                </>
-              )}
-
-              <Button
-                onClick={() => router.push("/admin/calendar/events/create")}
-                className='flex items-center gap-2'
-              >
-                <PlusIcon className='h-4 w-4' />
-                Crear Evento
-              </Button>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <Card className='mb-6'>
-            <CardContent className='p-4 md:p-6'>
-              <div className='space-y-4'>
-                {/* Primera fila: Calendarios, Período, Invitados */}
-                <div className='space-y-4'>
-                  {/* Row 1: Calendar Multi-Selection and Attendees Filter */}
-                  <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-                    {/* Calendar Multi-Selection */}
-                    <div>
-                      <label className='block text-sm font-medium text-foreground mb-2'>
-                        Calendarios
-                      </label>
-                      <CalendarMultiSelect
-                        calendars={state.calendars}
-                        selectedCalendars={activeCalendars}
-                        onSelectionChange={setActiveCalendars}
-                      />
-                    </div>
-
-                    {/* Attendees Filter */}
-                    <div>
-                      <label className='block text-sm font-medium text-foreground mb-2'>
-                        Filtrar por Invitados
-                      </label>
-                      <AttendeesFilter
-                        events={state.events}
-                        selectedAttendees={attendeesFilter}
-                        onSelectionChange={setAttendeesFilter}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Row 2: Time Range Presets */}
-                  <div>
-                    <label className='block text-sm font-medium text-foreground mb-2'>
-                      Período
-                    </label>
-                    <div className='flex flex-wrap gap-2'>
-                      <Button
-                        variant={timeRange === "all" ? "default" : "outline"}
-                        size='sm'
-                        onClick={() => setTimeRange("all")}
-                        className='text-xs'
-                      >
-                        Todos
-                      </Button>
-                      <Button
-                        variant={timeRange === "today" ? "default" : "outline"}
-                        size='sm'
-                        onClick={() => setTimeRange("today")}
-                        className='text-xs'
-                      >
-                        Hoy
-                      </Button>
-                      <Button
-                        variant={timeRange === "week" ? "default" : "outline"}
-                        size='sm'
-                        onClick={() => setTimeRange("week")}
-                        className='text-xs'
-                      >
-                        Esta semana
-                      </Button>
-                      <Button
-                        variant={timeRange === "month" ? "default" : "outline"}
-                        size='sm'
-                        onClick={() => setTimeRange("month")}
-                        className='text-xs'
-                      >
-                        Este mes
-                      </Button>
-                      <Button
-                        variant={
-                          timeRange === "upcoming" ? "default" : "outline"
-                        }
-                        size='sm'
-                        onClick={() => setTimeRange("upcoming")}
-                        className='text-xs'
-                      >
-                        Próximos
-                      </Button>
-                      <Button
-                        variant={timeRange === "custom" ? "default" : "outline"}
-                        size='sm'
-                        onClick={() => setTimeRange("custom")}
-                        className='text-xs'
-                      >
-                        <CalendarIcon className='h-3 w-3 mr-1' />
-                        Personalizado
-                      </Button>
-                    </div>
-                  </div>
+                  <Button
+                    variant={viewMode === "list" ? "default" : "ghost"}
+                    size='sm'
+                    onClick={() => setViewMode("list")}
+                    className='h-8 px-2 text-xs md:text-sm'
+                  >
+                    <ListBulletIcon className='h-4 w-4 mr-1' />
+                    Lista
+                  </Button>
+                  <Button
+                    variant={viewMode === "json" ? "default" : "ghost"}
+                    size='sm'
+                    onClick={() => setViewMode("json")}
+                    className='h-8 px-2 text-xs md:text-sm'
+                  >
+                    <CodeBracketIcon className='h-4 w-4 mr-1' />
+                    JSON
+                  </Button>
                 </div>
 
-                {/* Custom Date Range Picker - Only show when timeRange is 'custom' */}
-                {timeRange === "custom" && (
-                  <div className='mt-4'>
-                    <DateTimeRangePicker
-                      startValue={customStartDate}
-                      endValue={customEndDate}
-                      onStartChange={(date) => {
-                        setCustomDateRange(date, customEndDate);
-                      }}
-                      onEndChange={(date) => {
-                        setCustomDateRange(customStartDate, date);
-                      }}
-                      hourCycle={24}
-                      granularity='minute'
-                      startPlaceholder='Fecha y hora de inicio'
-                      endPlaceholder='Fecha y hora de fin'
-                      className='max-w-md'
+                {/* Column Controller - Only show in table mode */}
+                {viewMode === "table" && (
+                  <>
+                    <ColumnController
+                      visibleColumns={visibleColumns}
+                      onColumnVisibilityChange={setColumnVisibility}
                     />
-                  </div>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      onClick={() => {
+                        resetFilters();
+                        // Recargar después de resetear para aplicar los cambios
+                        setTimeout(() => window.location.reload(), 100);
+                      }}
+                      className='text-xs'
+                      title='Restaurar columnas por defecto incluyendo invitados'
+                    >
+                      Restaurar Columnas
+                    </Button>
+                  </>
                 )}
 
-                {/* Row 3: Search */}
-                <div>
-                  <label className='block text-sm font-medium text-foreground mb-2'>
-                    Buscar eventos
-                  </label>
-                  <div className='relative'>
-                    <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
-                    <input
-                      type='text'
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      placeholder='Buscar por título, descripción...'
-                      className='w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
-                    />
+                <Button
+                  onClick={() => router.push("/admin/calendar/events/create")}
+                  className='flex items-center gap-2'
+                >
+                  <PlusIcon className='h-4 w-4' />
+                  Crear Evento
+                </Button>
+              </div>
+            </div>
+
+            {/* Filters */}
+            <Card className='mb-6'>
+              <CardContent className='p-4 md:p-6'>
+                <div className='space-y-4'>
+                  {/* Primera fila: Calendarios, Período, Invitados */}
+                  <div className='space-y-4'>
+                    {/* Row 1: Calendar Multi-Selection and Attendees Filter */}
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                      {/* Calendar Multi-Selection */}
+                      <div>
+                        <label className='block text-sm font-medium text-foreground mb-2'>
+                          Calendarios
+                        </label>
+                        <CalendarMultiSelect
+                          calendars={state.calendars}
+                          selectedCalendars={activeCalendars}
+                          onSelectionChange={setActiveCalendars}
+                        />
+                      </div>
+
+                      {/* Attendees Filter */}
+                      <div>
+                        <label className='block text-sm font-medium text-foreground mb-2'>
+                          Filtrar por Invitados
+                        </label>
+                        <AttendeesFilter
+                          events={state.events}
+                          selectedAttendees={attendeesFilter}
+                          onSelectionChange={setAttendeesFilter}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Row 2: Time Range Presets */}
+                    <div>
+                      <label className='block text-sm font-medium text-foreground mb-2'>
+                        Período
+                      </label>
+                      <div className='flex flex-wrap gap-2'>
+                        <Button
+                          variant={timeRange === "all" ? "default" : "outline"}
+                          size='sm'
+                          onClick={() => setTimeRange("all")}
+                          className='text-xs'
+                        >
+                          Todos
+                        </Button>
+                        <Button
+                          variant={
+                            timeRange === "today" ? "default" : "outline"
+                          }
+                          size='sm'
+                          onClick={() => setTimeRange("today")}
+                          className='text-xs'
+                        >
+                          Hoy
+                        </Button>
+                        <Button
+                          variant={timeRange === "week" ? "default" : "outline"}
+                          size='sm'
+                          onClick={() => setTimeRange("week")}
+                          className='text-xs'
+                        >
+                          Esta semana
+                        </Button>
+                        <Button
+                          variant={
+                            timeRange === "month" ? "default" : "outline"
+                          }
+                          size='sm'
+                          onClick={() => setTimeRange("month")}
+                          className='text-xs'
+                        >
+                          Este mes
+                        </Button>
+                        <Button
+                          variant={
+                            timeRange === "upcoming" ? "default" : "outline"
+                          }
+                          size='sm'
+                          onClick={() => setTimeRange("upcoming")}
+                          className='text-xs'
+                        >
+                          Próximos
+                        </Button>
+                        <Button
+                          variant={
+                            timeRange === "custom" ? "default" : "outline"
+                          }
+                          size='sm'
+                          onClick={() => setTimeRange("custom")}
+                          className='text-xs'
+                        >
+                          <CalendarIcon className='h-3 w-3 mr-1' />
+                          Personalizado
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Custom Date Range Picker - Only show when timeRange is 'custom' */}
+                  {timeRange === "custom" && (
+                    <div className='mt-4'>
+                      <DateTimeRangePicker
+                        startValue={customStartDate}
+                        endValue={customEndDate}
+                        onStartChange={(date) => {
+                          setCustomDateRange(date, customEndDate);
+                        }}
+                        onEndChange={(date) => {
+                          setCustomDateRange(customStartDate, date);
+                        }}
+                        hourCycle={24}
+                        granularity='minute'
+                        startPlaceholder='Fecha y hora de inicio'
+                        endPlaceholder='Fecha y hora de fin'
+                        className='max-w-md'
+                      />
+                    </div>
+                  )}
+
+                  {/* Row 3: Search */}
+                  <div>
+                    <label className='block text-sm font-medium text-foreground mb-2'>
+                      Buscar eventos
+                    </label>
+                    <div className='relative'>
+                      <MagnifyingGlassIcon className='absolute left-3 top-2.5 h-4 w-4 text-muted-foreground' />
+                      <input
+                        type='text'
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder='Buscar por título, descripción...'
+                        className='w-full pl-10 pr-4 py-2 border border-input bg-background text-foreground placeholder:text-muted-foreground rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent'
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Participant KPI Cards - Only show when attendees are filtered */}
-          {attendeesFilter.length > 0 && (
-            <ParticipantKPIGrid
-              selectedAttendees={attendeesFilter}
-              events={state.events}
-              onRemoveAttendee={handleRemoveAttendee}
-              calendarIds={activeCalendars}
-              dateRange={memoizedDateRange}
-            />
-          )}
-
-          {/* Error Alert */}
-          {state.error && (
-            <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6'>
-              {state.error}
-            </div>
-          )}
-
-          {/* Events Display */}
-          {state.isLoading ? (
-            <div className='flex justify-center py-8'>
-              <Spinner size='lg' />
-            </div>
-          ) : filteredEvents.length === 0 ? (
-            <Card className='border-border bg-card'>
-              <CardContent className='text-center py-8 text-muted-foreground'>
-                {state.events.length === 0
-                  ? "No se encontraron eventos con los filtros aplicados"
-                  : `No se encontraron eventos para los ${attendeesFilter.length} invitados seleccionados`}
               </CardContent>
             </Card>
-          ) : (
-            <>
-              {viewMode === "json" && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className='flex items-center gap-2'>
-                      <CodeBracketIcon className='h-5 w-5' />
-                      JSON View - Eventos ({filteredEvents.length})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className='relative'>
-                      <Button
-                        variant='outline'
-                        size='sm'
-                        onClick={() => {
-                          navigator.clipboard.writeText(
-                            JSON.stringify(filteredEvents, null, 2)
-                          );
-                        }}
-                        className='absolute top-2 right-2 z-10'
-                      >
-                        Copiar JSON
-                      </Button>
-                      <pre className='bg-card text-card-foreground p-4 rounded-lg overflow-auto max-h-96 text-xs font-mono border border-border'>
-                        {JSON.stringify(filteredEvents, null, 2)}
-                      </pre>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-              {viewMode === "table" && (
-                <EventsDataTable
-                  columns={columns}
-                  data={filteredEvents}
-                  onRowClick={handleRowClick}
-                  onBulkAddParticipants={handleBulkAddParticipants}
-                  onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
-                  onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
-                  onBulkMoveCalendar={handleBulkMoveCalendar}
-                  onBulkUpdateDateTime={handleBulkUpdateDateTime}
-                  onBulkDelete={handleBulkDelete}
-                />
-              )}
-              {viewMode === "list" && (
-                <Card className='border-border bg-card'>
-                  <CardHeader>
-                    <CardTitle className='flex items-center gap-2 text-foreground'>
-                      <CalendarIcon className='h-5 w-5' />
-                      Eventos ({filteredEvents.length})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className='p-4 md:p-6'>
-                    <div className='space-y-4'>
-                      {filteredEvents.map((event) => {
-                        const eventStatus = getEventStatus(event);
 
-                        return (
-                          <div
-                            key={`${event.id}-${(event as any).calendarId || "default"}`}
-                            className='border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card'
-                          >
-                            <div className='flex justify-between items-start'>
-                              <div className='flex-1'>
-                                <div className='flex items-center gap-3 mb-2'>
-                                  <h3 className='font-semibold text-foreground'>
-                                    {event.summary}
-                                  </h3>
-                                  <Badge
-                                    variant={
-                                      eventStatus.color === "blue"
-                                        ? "default"
-                                        : eventStatus.color === "green"
+            {/* Participant KPI Cards - Only show when attendees are filtered */}
+            {attendeesFilter.length > 0 && (
+              <ParticipantKPIGrid
+                selectedAttendees={attendeesFilter}
+                events={state.events}
+                onRemoveAttendee={handleRemoveAttendee}
+                calendarIds={activeCalendars}
+                dateRange={memoizedDateRange}
+              />
+            )}
+
+            {/* Error Alert */}
+            {state.error && (
+              <div className='bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6'>
+                {state.error}
+              </div>
+            )}
+
+            {/* Events Display */}
+            {state.isLoading ? (
+              <div className='flex justify-center py-8'>
+                <Spinner size='lg' />
+              </div>
+            ) : filteredEvents.length === 0 ? (
+              <Card className='border-border bg-card'>
+                <CardContent className='text-center py-8 text-muted-foreground'>
+                  {state.events.length === 0
+                    ? "No se encontraron eventos con los filtros aplicados"
+                    : `No se encontraron eventos para los ${attendeesFilter.length} invitados seleccionados`}
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                {viewMode === "json" && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-2'>
+                        <CodeBracketIcon className='h-5 w-5' />
+                        JSON View - Eventos ({filteredEvents.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className='relative'>
+                        <Button
+                          variant='outline'
+                          size='sm'
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              JSON.stringify(filteredEvents, null, 2)
+                            );
+                          }}
+                          className='absolute top-2 right-2 z-10'
+                        >
+                          Copiar JSON
+                        </Button>
+                        <pre className='bg-card text-card-foreground p-4 rounded-lg overflow-auto max-h-96 text-xs font-mono border border-border'>
+                          {JSON.stringify(filteredEvents, null, 2)}
+                        </pre>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+                {viewMode === "table" && (
+                  <EventsDataTable
+                    columns={columns}
+                    data={filteredEvents}
+                    onRowClick={handleRowClick}
+                    onBulkAddParticipants={handleBulkAddParticipants}
+                    onBulkGenerateMeetLinks={handleBulkGenerateMeetLinks}
+                    onBulkGenerateDescriptions={handleBulkGenerateDescriptions}
+                    onBulkMoveCalendar={handleBulkMoveCalendar}
+                    onBulkUpdateDateTime={handleBulkUpdateDateTime}
+                    onBulkDelete={handleBulkDelete}
+                  />
+                )}
+                {viewMode === "list" && (
+                  <Card className='border-border bg-card'>
+                    <CardHeader>
+                      <CardTitle className='flex items-center gap-2 text-foreground'>
+                        <CalendarIcon className='h-5 w-5' />
+                        Eventos ({filteredEvents.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className='p-4 md:p-6'>
+                      <div className='space-y-4'>
+                        {filteredEvents.map((event) => {
+                          const eventStatus = getEventStatus(event);
+
+                          return (
+                            <div
+                              key={`${event.id}-${(event as any).calendarId || "default"}`}
+                              className='border border-border rounded-lg p-4 hover:bg-accent/50 transition-colors bg-card'
+                            >
+                              <div className='flex justify-between items-start'>
+                                <div className='flex-1'>
+                                  <div className='flex items-center gap-3 mb-2'>
+                                    <h3 className='font-semibold text-foreground'>
+                                      {event.summary}
+                                    </h3>
+                                    <Badge
+                                      variant={
+                                        eventStatus.color === "blue"
                                           ? "default"
-                                          : "secondary"
-                                    }
-                                  >
-                                    {eventStatus.status === "upcoming"
-                                      ? "Próximo"
-                                      : eventStatus.status === "ongoing"
-                                        ? "En curso"
-                                        : "Pasado"}
-                                  </Badge>
-                                </div>
-
-                                <p className='text-sm text-muted-foreground mb-2'>
-                                  {formatEventDate(event)}
-                                </p>
-
-                                {event.description && (
-                                  <div
-                                    className='text-sm text-muted-foreground mb-2 line-clamp-2 [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium'
-                                    dangerouslySetInnerHTML={{
-                                      __html: event.description,
-                                    }}
-                                  />
-                                )}
-
-                                {event.location && (
-                                  <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
-                                    <MapPin className='h-3.5 w-3.5' />
-                                    <span>{event.location}</span>
+                                          : eventStatus.color === "green"
+                                            ? "default"
+                                            : "secondary"
+                                      }
+                                    >
+                                      {eventStatus.status === "upcoming"
+                                        ? "Próximo"
+                                        : eventStatus.status === "ongoing"
+                                          ? "En curso"
+                                          : "Pasado"}
+                                    </Badge>
                                   </div>
-                                )}
 
-                                {event.attendees &&
-                                  event.attendees.length > 0 && (
+                                  <p className='text-sm text-muted-foreground mb-2'>
+                                    {formatEventDate(event)}
+                                  </p>
+
+                                  {event.description && (
+                                    <div
+                                      className='text-sm text-muted-foreground mb-2 line-clamp-2 [&_a]:text-primary [&_a]:underline [&_a:hover]:text-primary/80 [&_a]:font-medium'
+                                      dangerouslySetInnerHTML={{
+                                        __html: event.description,
+                                      }}
+                                    />
+                                  )}
+
+                                  {event.location && (
                                     <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
-                                      <Users className='h-3.5 w-3.5' />
-                                      <span>
-                                        {event.attendees.length} invitados
-                                      </span>
+                                      <MapPin className='h-3.5 w-3.5' />
+                                      <span>{event.location}</span>
                                     </div>
                                   )}
-                              </div>
 
-                              <div className='flex items-center gap-2 ml-4'>
-                                {event.htmlLink && (
+                                  {event.attendees &&
+                                    event.attendees.length > 0 && (
+                                      <div className='flex items-center gap-1.5 text-sm text-muted-foreground'>
+                                        <Users className='h-3.5 w-3.5' />
+                                        <span>
+                                          {event.attendees.length} invitados
+                                        </span>
+                                      </div>
+                                    )}
+                                </div>
+
+                                <div className='flex items-center gap-2 ml-4'>
+                                  {event.htmlLink && (
+                                    <Button
+                                      variant='outline'
+                                      size='sm'
+                                      onClick={() =>
+                                        window.open(event.htmlLink, "_blank")
+                                      }
+                                    >
+                                      <EyeIcon className='h-4 w-4' />
+                                    </Button>
+                                  )}
+
                                   <Button
                                     variant='outline'
                                     size='sm'
                                     onClick={() =>
-                                      window.open(event.htmlLink, "_blank")
+                                      router.push(
+                                        `/admin/calendar/events/${
+                                          event.id
+                                        }?calendarId=${
+                                          (event as any).calendarId ||
+                                          activeCalendars[0]
+                                        }`
+                                      )
                                     }
                                   >
-                                    <EyeIcon className='h-4 w-4' />
+                                    <PencilIcon className='h-4 w-4' />
                                   </Button>
-                                )}
 
-                                <Button
-                                  variant='outline'
-                                  size='sm'
-                                  onClick={() =>
-                                    router.push(
-                                      `/admin/calendar/events/${
-                                        event.id
-                                      }?calendarId=${
+                                  <Button
+                                    variant='outline'
+                                    size='sm'
+                                    onClick={() =>
+                                      handleDeleteEvent(
+                                        event.id!,
                                         (event as any).calendarId ||
-                                        activeCalendars[0]
-                                      }`
-                                    )
-                                  }
-                                >
-                                  <PencilIcon className='h-4 w-4' />
-                                </Button>
-
-                                <Button
-                                  variant='outline'
-                                  size='sm'
-                                  onClick={() =>
-                                    handleDeleteEvent(
-                                      event.id!,
-                                      (event as any).calendarId ||
-                                        activeCalendars[0]
-                                    )
-                                  }
-                                  className='text-destructive hover:text-destructive hover:bg-destructive/10'
-                                >
-                                  <TrashIcon className='h-4 w-4' />
-                                </Button>
+                                          activeCalendars[0]
+                                      )
+                                    }
+                                    className='text-destructive hover:text-destructive hover:bg-destructive/10'
+                                  >
+                                    <TrashIcon className='h-4 w-4' />
+                                  </Button>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </>
-          )}
+                          );
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </>
+            )}
 
-          {/* Event Details Modal */}
-          <EventDetailsModal
-            isOpen={state.isModalOpen}
-            onClose={handleCloseModal}
-            event={state.selectedEvent}
-            calendars={state.calendars}
-            calendarId={activeCalendars[0] || "primary"}
-            onSave={handleSaveEvent}
-            onDelete={handleDeleteEventFromModal}
-            initialSection={state.initialModalSection}
-          />
+            {/* Event Details Modal */}
+            <EventDetailsModal
+              isOpen={state.isModalOpen}
+              onClose={handleCloseModal}
+              event={state.selectedEvent}
+              calendars={state.calendars}
+              calendarId={activeCalendars[0] || "primary"}
+              onSave={handleSaveEvent}
+              onDelete={handleDeleteEventFromModal}
+              initialSection={state.initialModalSection}
+            />
 
-          {/* Bulk Add Participants Modal */}
-          <BulkAddParticipantsModal
-            isOpen={state.isBulkModalOpen}
-            onClose={handleCloseBulkModal}
-            selectedEvents={state.selectedEventsForBulk}
-            onConfirm={handleConfirmBulkAddParticipants}
-          />
+            {/* Bulk Add Participants Modal */}
+            <BulkAddParticipantsModal
+              isOpen={state.isBulkModalOpen}
+              onClose={handleCloseBulkModal}
+              selectedEvents={state.selectedEventsForBulk}
+              onConfirm={handleConfirmBulkAddParticipants}
+            />
 
-          {/* Bulk Generate Descriptions Modal */}
-          <BulkGenerateDescriptionsModal
-            isOpen={state.isBulkDescriptionsModalOpen}
-            onClose={handleCloseBulkDescriptionsModal}
-            selectedEvents={state.selectedEventsForDescriptions}
-            onConfirm={handleConfirmBulkGenerateDescriptions}
-          />
-          {/* Bulk Move Calendar Modal */}
-          <BulkMoveCalendarModal
-            isOpen={state.isBulkMoveModalOpen}
-            onClose={handleCloseBulkMoveModal}
-            selectedEvents={state.selectedEventsForMove}
-            calendars={state.calendars}
-            onMove={handleConfirmBulkMoveCalendar}
-          />
-          {/* Bulk Date/Time Update Modal */}
-          <BulkDateTimeModal
-            isOpen={state.isBulkDateTimeModalOpen}
-            onClose={handleCloseBulkDateTimeModal}
-            selectedEvents={state.selectedEventsForDateTime}
-            onUpdate={handleConfirmBulkUpdateDateTime}
-          />
-          </div>
+            {/* Bulk Generate Descriptions Modal */}
+            <BulkGenerateDescriptionsModal
+              isOpen={state.isBulkDescriptionsModalOpen}
+              onClose={handleCloseBulkDescriptionsModal}
+              selectedEvents={state.selectedEventsForDescriptions}
+              onConfirm={handleConfirmBulkGenerateDescriptions}
+            />
+            {/* Bulk Move Calendar Modal */}
+            <BulkMoveCalendarModal
+              isOpen={state.isBulkMoveModalOpen}
+              onClose={handleCloseBulkMoveModal}
+              selectedEvents={state.selectedEventsForMove}
+              calendars={state.calendars}
+              onMove={handleConfirmBulkMoveCalendar}
+            />
+            {/* Bulk Date/Time Update Modal */}
+            <BulkDateTimeModal
+              isOpen={state.isBulkDateTimeModalOpen}
+              onClose={handleCloseBulkDateTimeModal}
+              selectedEvents={state.selectedEventsForDateTime}
+              onUpdate={handleConfirmBulkUpdateDateTime}
+            />
+          </main>
         </TailwindGrid>
       </DocContent>
-    </div>
+    </>
   );
 };
 

@@ -8,6 +8,11 @@ import { NextRequest, NextResponse } from "next/server";
 export function withApiKeyAuth(middleware: Function) {
   return async (request: NextRequest, event: any) => {
     const pathname = request.nextUrl.pathname;
+    
+    // Solo ejecutar para rutas de API
+    if (!pathname.startsWith('/api/')) {
+      return middleware(request, event);
+    }
 
     console.log(`�� Middleware withApiKeyAuth ejecutándose para: ${pathname}`);
 

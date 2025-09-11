@@ -27,44 +27,60 @@ interface NavMainMultilevelProps {
   level?: number;
 }
 
-export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) {
+export function NavMainMultilevel({
+  items,
+  level = 0,
+}: NavMainMultilevelProps) {
   const pathname = usePathname();
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
 
   // Function to check if a route is currently active (exact match only)
-  const isRouteActive = useCallback((routePath: string): boolean => {
-    const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
-    return cleanPathname === routePath;
-  }, [pathname]);
+  const isRouteActive = useCallback(
+    (routePath: string): boolean => {
+      const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
+      return cleanPathname === routePath;
+    },
+    [pathname]
+  );
 
   // Function to check if any child route is active
-  const hasActiveChild = useCallback((item: NavItem): boolean => {
-    if (!item.items) return false;
-    
-    for (const child of item.items) {
-      if (isRouteActive(child.url)) return true;
-      if (hasActiveChild(child)) return true;
-    }
-    return false;
-  }, [isRouteActive]);
+  const hasActiveChild = useCallback(
+    (item: NavItem): boolean => {
+      if (!item.items) return false;
+
+      for (const child of item.items) {
+        if (isRouteActive(child.url)) return true;
+        if (hasActiveChild(child)) return true;
+      }
+      return false;
+    },
+    [isRouteActive]
+  );
 
   // Function to check if a parent route should be highlighted
-  const shouldHighlightParent = useCallback((item: NavItem): boolean => {
-    const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
-    
-    // If any subitem is exactly active, don't highlight parent
-    if (hasActiveChild(item)) return false;
-    
-    // If parent is exactly active, highlight it
-    if (item.url === cleanPathname) return true;
-    
-    // If we're in a child path but no specific subitem matches, highlight parent
-    if (item.url !== '/admin' && item.url !== '/' && cleanPathname.startsWith(item.url + '/')) {
-      return true;
-    }
-    
-    return false;
-  }, [pathname, hasActiveChild]);
+  const shouldHighlightParent = useCallback(
+    (item: NavItem): boolean => {
+      const cleanPathname = pathname ? pathname.replace(/^\/[a-z]{2}/, "") : "";
+
+      // If any subitem is exactly active, don't highlight parent
+      if (hasActiveChild(item)) return false;
+
+      // If parent is exactly active, highlight it
+      if (item.url === cleanPathname) return true;
+
+      // If we're in a child path but no specific subitem matches, highlight parent
+      if (
+        item.url !== "/admin" &&
+        item.url !== "/" &&
+        cleanPathname.startsWith(item.url + "/")
+      ) {
+        return true;
+      }
+
+      return false;
+    },
+    [pathname, hasActiveChild]
+  );
 
   // Auto-expand items that have active children
   useEffect(() => {
@@ -72,7 +88,7 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
     let hasChanges = false;
 
     const checkAndExpand = (items: NavItem[], prefix = "") => {
-      items.forEach(item => {
+      items.forEach((item) => {
         const key = `${prefix}${item.title}`;
         const shouldBeOpen = hasActiveChild(item) || isRouteActive(item.url);
         if (shouldBeOpen && !newOpenItems[key]) {
@@ -104,25 +120,31 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
     return navItems.map((item) => {
       const hasSubItems = item.items && item.items.length > 0;
       const itemKey = `${currentLevel}-${item.title}`;
-      
+
       if (!hasSubItems) {
         const isActive = isRouteActive(item.url);
-        const MenuComponent = currentLevel === 0 ? SidebarMenuItem : SidebarMenuSubItem;
-        const ButtonComponent = currentLevel === 0 ? SidebarMenuButton : SidebarMenuSubButton;
-        
+        const MenuComponent =
+          currentLevel === 0 ? SidebarMenuItem : SidebarMenuSubItem;
+        const ButtonComponent =
+          currentLevel === 0 ? SidebarMenuButton : SidebarMenuSubButton;
+
         return (
           <MenuComponent key={item.title}>
-            <ButtonComponent 
-              asChild 
+            <ButtonComponent
+              asChild
               tooltip={item.title}
-              className="touch-target android-click-fix"
+              className='touch-target android-click-fix'
             >
               <a href={item.url}>
                 {item.icon && currentLevel === 0 && <item.icon />}
-                <span className={cn(
-                  "transition-colors",
-                  isActive && "text-primary font-medium"
-                )}>{item.title}</span>
+                <span
+                  className={cn(
+                    "transition-colors",
+                    isActive && "text-primary font-medium"
+                  )}
+                >
+                  {item.title}
+                </span>
               </a>
             </ButtonComponent>
           </MenuComponent>
@@ -133,8 +155,9 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
       const isOpen = openItems[itemKey] || item.isActive;
       const itemIsActive = isRouteActive(item.url);
       const hasActiveSub = hasActiveChild(item);
-      const shouldHighlight = (itemIsActive || shouldHighlightParent(item)) && !hasActiveSub;
-      
+      const shouldHighlight =
+        (itemIsActive || shouldHighlightParent(item)) && !hasActiveSub;
+
       if (currentLevel === 0) {
         return (
           <Collapsible
@@ -142,26 +165,32 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
             asChild
             open={isOpen}
             onOpenChange={() => handleCollapsibleClick(itemKey)}
-            className="group/collapsible"
+            className='group/collapsible'
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip={item.title}
-                  data-collapsible-trigger="true"
-                  className="android-click-fix touch-target"
+                  data-collapsible-trigger='true'
+                  className='android-click-fix touch-target'
                 >
                   {item.icon && <item.icon />}
-                  <span className={cn(
-                    "transition-colors",
-                    shouldHighlight && "text-primary font-medium"
-                  )}>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <span
+                    className={cn(
+                      "transition-colors",
+                      shouldHighlight && "text-primary font-medium"
+                    )}
+                  >
+                    {item.title}
+                  </span>
+                  <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {renderNavItems(item.items, currentLevel + 1)}
+                  {item.items
+                    ? renderNavItems(item.items, currentLevel + 1)
+                    : null}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
@@ -174,23 +203,27 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
             asChild
             open={isOpen}
             onOpenChange={() => handleCollapsibleClick(itemKey)}
-            className="group/collapsible"
+            className='group/collapsible'
           >
             <SidebarMenuSubItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuSubButton
-                  className="android-click-fix touch-target"
-                >
-                  <span className={cn(
-                    "transition-colors",
-                    shouldHighlight && "text-primary font-medium"
-                  )}>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                <SidebarMenuSubButton className='android-click-fix touch-target'>
+                  <span
+                    className={cn(
+                      "transition-colors",
+                      shouldHighlight && "text-primary font-medium"
+                    )}
+                  >
+                    {item.title}
+                  </span>
+                  <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuSubButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {renderNavItems(item.items, currentLevel + 1)}
+                  {item.items
+                    ? renderNavItems(item.items, currentLevel + 1)
+                    : null}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuSubItem>
@@ -204,9 +237,7 @@ export function NavMainMultilevel({ items, level = 0 }: NavMainMultilevelProps) 
     return (
       <SidebarGroup>
         <SidebarGroupLabel>Documentación</SidebarGroupLabel>
-        <SidebarMenu>
-          {renderNavItems(items)}
-        </SidebarMenu>
+        <SidebarMenu>{renderNavItems(items)}</SidebarMenu>
       </SidebarGroup>
     );
   }

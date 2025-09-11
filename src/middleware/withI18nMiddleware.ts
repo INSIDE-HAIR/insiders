@@ -14,8 +14,8 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
       console.log(`[I18N DEBUG] Path: ${pathname}, Locale: ${currentLocale}`);
     }
 
-    // Si es una ruta de API o archivos estáticos, continuar
-    if (pathname.match(/^\/(?:api|_next|.*\..*)/) || pathname === "/not-found") {
+    // Si es una ruta de API, archivos estáticos o service worker, continuar
+    if (pathname.match(/^\/(?:api|_next|sw\.js|.*\..*)/) || pathname === "/not-found") {
       return next(request, event);
     }
 
@@ -24,7 +24,8 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
 
     // Manejar ruta raíz
     if (pathname === "/") {
-      response = NextResponse.redirect(new URL(`/${currentLocale}${search}`, request.url));
+      const redirectUrl = new URL(`/${currentLocale}${search}`, request.url);
+      response = NextResponse.redirect(redirectUrl, { status: 302 });
     }
     // Manejar rutas con prefijo de idioma soportado
     else if (pathLocale) {
@@ -43,7 +44,7 @@ export function withI18nMiddleware(next: NextMiddleware): NextMiddleware {
     // Manejar rutas sin prefijo de idioma
     else if (!pathLocale && pathname !== "/") {
       const newPathname = `/${currentLocale}${pathname}${search}`;
-      response = NextResponse.redirect(new URL(newPathname, request.url));
+      response = NextResponse.redirect(new URL(newPathname, request.url), { status: 302 });
     }
     // Para todos los demás casos
     else {

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
-import { Loader2, Users } from "lucide-react";
+import { InfoIcon, Loader2, Users } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import { DataTable } from "./components/DataTable"; // Importación directa
 import { useColumns } from "./columns";
@@ -32,12 +32,12 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
         `${
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
         }/users`,
-        { 
+        {
           method: "GET",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
 
@@ -68,12 +68,12 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
         `${
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"
         }/users/sync`,
-        { 
+        {
           method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
 
@@ -95,41 +95,42 @@ export function UsersPageClient({ user }: UsersPageClientProps) {
   };
 
   return (
-    <div>
+    <>
       <DocHeader
-        title={t("mainTitle")}
-        description="Gestión de usuarios del sistema con sincronización automática desde Holded"
+        title='Users'
+        description='Manage users in the system'
         icon={Users}
       />
-      
       <DocContent>
-        <div className='container mx-auto px-4 py-8'>
-          <div className='flex flex-1 items-center justify-between mb-6'>
-            <Button onClick={handleSync} disabled={isSyncing || isLoading}>
-              {isSyncing ? (
-                <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  {t("syncing")}
-                </>
-              ) : (
-                t("syncButton")
-              )}
-            </Button>
-          </div>
-
-          <Toaster position='top-right' />
-
-          {isLoading ? (
-            <div className='flex justify-center items-center h-64'>
-              <Loader2 className='h-8 w-8 animate-spin' />
-            </div>
-          ) : (
-            <div className='w-full'>
-              <DataTable columns={columns} data={users} />
-            </div>
-          )}
-        </div>
+        <TailwindGrid fullSize>
+          <main className='col-start-1 max-w-full w-full col-end-full md:col-start-1 lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full'>
+            {isLoading ? (
+              <div className='flex justify-center items-center h-64'>
+                <Loader2 className='h-8 w-8 animate-spin' />
+              </div>
+            ) : (
+              <div className='w-full'>
+                <DataTable columns={columns} data={users} />
+                <Button
+                  className='mt-4'
+                  onClick={handleSync}
+                  disabled={isSyncing || isLoading}
+                >
+                  {isSyncing ? (
+                    <>
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      {t("syncing")}
+                    </>
+                  ) : (
+                    t("syncButton")
+                  )}
+                </Button>
+              </div>
+            )}
+          </main>
+        </TailwindGrid>
       </DocContent>
-    </div>
+      <Toaster position='top-right' />
+    </>
   );
 }

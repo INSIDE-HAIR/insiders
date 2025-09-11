@@ -70,6 +70,7 @@ import {
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
 import { Separator } from "@/src/components/ui/separator";
+import TailwindGrid from "@/src/components/shared/grid/TailwindGrid";
 
 // Schema de validación para crear rutas
 const formSchema = z.object({
@@ -542,570 +543,605 @@ export default function DriveRoutesPage() {
       />
 
       <DocContent>
-        <div className='container py-4 md:py-10 px-4'>
-          <div className='flex justify-end items-center mb-6 gap-4'>
-            <div className='flex flex-wrap gap-2 md:space-x-2'>
-          <Button
-            variant='outline'
-            onClick={() => setLegendModalOpen(true)}
-            size='sm'
-          >
-            <InfoIcon className='h-4 w-4 mr-2' /> Leyenda
-          </Button>
-          <Button
-            variant='outline'
-            onClick={() => router.push("/admin/drive/routes/docs")}
-            size='sm'
-          >
-            Documentación
-          </Button>
-          <Button
-            variant='outline'
-            onClick={() => router.push("/admin/drive/codes")}
-            size='sm'
-          >
-            Códigos
-          </Button>
-          <Button onClick={() => setCreateModalOpen(true)}>
-            <PlusIcon className='h-4 w-4 mr-2' /> Crear Ruta
-          </Button>
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Todas las Rutas</CardTitle>
-          <CardDescription>
-            Gestiona las rutas de acceso a contenido de Google Drive
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0">
-          {isLoading ? (
-            <div className='flex justify-center py-10'>
-              <RefreshCw className='h-10 w-10 animate-spin text-muted-foreground' />
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableCaption>
-                  Lista de rutas configuradas para Drive
-                </TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[60px]">Estado</TableHead>
-                    <TableHead className="min-w-[120px]">Título</TableHead>
-                    <TableHead className="min-w-[100px]">Slug</TableHead>
-                    <TableHead className="min-w-[140px]">Estado Actualización</TableHead>
-                    <TableHead className="min-w-[120px]">Última Actualización</TableHead>
-                    <TableHead className="text-right min-w-[200px]">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-              <TableBody>
-                {routes.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className='text-center py-10'>
-                      No hay rutas configuradas.
-                      <div className='mt-2'>
-                        <Button
-                          variant='outline'
-                          onClick={() => setCreateModalOpen(true)}
-                        >
-                          <PlusIcon className='mr-2 h-4 w-4' /> Crear la primera
-                          ruta
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  routes.map((route) => {
-                    const updateStatus = getUpdateStatus(
-                      route.lastUpdated,
-                      route.isActive
-                    );
-                    return (
-                      <TableRow key={route.id}>
-                        <TableCell>
-                          <Switch
-                            checked={route.isActive}
-                            onCheckedChange={(checked) =>
-                              toggleRouteStatus(route.id, checked)
-                            }
-                            aria-label='Toggle route status'
-                          />
-                        </TableCell>
-                        <TableCell className='font-medium max-w-[150px] truncate'>
-                          <div className="truncate" title={route.title || "Sin título"}>
-                            {route.title || "Sin título"}
-                          </div>
-                        </TableCell>
-                        <TableCell className='font-mono text-sm max-w-[120px] truncate'>
-                          <div className="truncate" title={route.slug}>
-                            {route.slug}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className='cursor-help'>
-                                  <Badge
-                                    variant={updateStatus.variant}
-                                    className='flex items-center gap-1'
-                                  >
-                                    {updateStatus.icon}
-                                    {updateStatus.label}
-                                  </Badge>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{updateStatus.tooltipText}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </TableCell>
-                        <TableCell className='text-sm whitespace-nowrap'>
-                          <div className="hidden md:block">
-                            {format(
-                              new Date(route.lastUpdated),
-                              "dd/MM/yyyy HH:mm"
-                            )}
-                          </div>
-                          <div className="md:hidden">
-                            {format(
-                              new Date(route.lastUpdated),
-                              "dd/MM HH:mm"
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className='text-right'>
-                          <TooltipProvider>
-                            <div className='flex items-center justify-end gap-1 flex-nowrap'>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={() => handleEditRoute(route)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Pencil className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Editar</p>
-                                </TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={() => syncRoute(route.id)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <RefreshCw className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Sincronizar</p>
-                                </TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={() => viewJson(route)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <FileJson className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Ver JSON</p>
-                                </TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={() =>
-                                      window.open(`/${route.slug}`, "_blank")
-                                    }
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <ExternalLink className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Ver en nueva pestaña</p>
-                                </TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='outline'
-                                    size='sm'
-                                    onClick={() => duplicateRoute(route)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Copy className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Duplicar ruta</p>
-                                </TooltipContent>
-                              </Tooltip>
-
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant='destructive'
-                                    size='sm'
-                                    onClick={() => handleDeleteRoute(route.id)}
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <Trash2 className='h-3 w-3' />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Eliminar</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </div>
-                          </TooltipProvider>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Modal para la leyenda */}
-      <Dialog open={legendModalOpen} onOpenChange={setLegendModalOpen}>
-        <DialogContent className='max-w-md'>
-          <DialogHeader>
-            <DialogTitle className='text-xl flex items-center gap-2'>
-              <InfoIcon className='h-5 w-5' />
-              Leyenda de Estados
-            </DialogTitle>
-            <DialogDescription>
-              Información sobre el sistema de actualización automática
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className='space-y-4 pt-2'>
-            <div className='space-y-3'>
-              {/* Estado: Actualizada */}
-              <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
-                <Badge
-                  variant='default'
-                  className='flex items-center gap-1 mt-0.5'
-                >
-                  <CheckCircle className='h-4 w-4' />
-                  Actualizada
-                </Badge>
-                <div>
-                  <p className='font-medium text-sm'>
-                    Actualizada en las últimas 12 horas
-                  </p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    Los datos están actualizados y no requieren acción.
-                  </p>
-                </div>
-              </div>
-
-              {/* Estado: Actualización próxima */}
-              <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
-                <Badge
-                  variant='default'
-                  className='flex items-center gap-1 mt-0.5 bg-yellow-400'
-                >
-                  <Clock className='h-4 w-4' />
-                  Actualización próxima
-                </Badge>
-                <div>
-                  <p className='font-medium text-sm'>
-                    Entre 12-24 horas sin actualizar
-                  </p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    Se actualizará automáticamente cuando un usuario acceda a la
-                    ruta.
-                  </p>
-                </div>
-              </div>
-
-              {/* Estado: Necesita actualización */}
-              <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
-                <Badge
-                  variant='destructive'
-                  className='flex items-center gap-1 mt-0.5'
-                >
-                  <AlertCircle className='h-4 w-4' />
-                  Necesita actualización
-                </Badge>
-                <div>
-                  <p className='font-medium text-sm'>
-                    Más de 24 horas sin actualizar
-                  </p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    Requiere sincronización manual para garantizar que los datos
-                    estén al día.
-                  </p>
-                </div>
-              </div>
-
-              {/* Estado: Inactiva */}
-              <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
-                <Badge
+        <TailwindGrid fullSize>
+          <main className='col-start-1 max-w-full w-full col-end-full md:col-start-1  lg:col-start-1 lg:col-end-13  order-2 md:order-1 z-30  col-span-full'>
+            <div className='flex justify-end items-center mb-6 gap-4'>
+              <div className='flex flex-wrap gap-2 md:space-x-2'>
+                <Button
                   variant='outline'
-                  className='flex items-center gap-1 mt-0.5'
+                  onClick={() => setLegendModalOpen(true)}
+                  size='sm'
                 >
-                  <AlertCircle className='h-4 w-4' />
-                  Inactiva
-                </Badge>
-                <div>
-                  <p className='font-medium text-sm'>Ruta desactivada</p>
-                  <p className='text-xs text-muted-foreground mt-1'>
-                    No se actualiza automáticamente mientras esté desactivada.
-                  </p>
-                </div>
+                  <InfoIcon className='h-4 w-4 mr-2' /> Leyenda
+                </Button>
+                <Button
+                  variant='outline'
+                  onClick={() => router.push("/admin/drive/routes/docs")}
+                  size='sm'
+                >
+                  Documentación
+                </Button>
+                <Button
+                  variant='outline'
+                  onClick={() => router.push("/admin/drive/codes")}
+                  size='sm'
+                >
+                  Códigos
+                </Button>
+                <Button onClick={() => setCreateModalOpen(true)}>
+                  <PlusIcon className='h-4 w-4 mr-2' /> Crear Ruta
+                </Button>
               </div>
             </div>
 
-            <div className='bg-muted p-4 rounded-lg text-sm mt-4'>
-              <h4 className='font-semibold mb-2 flex items-center gap-1'>
-                <RefreshCw className='h-4 w-4' /> Actualización Automática
-              </h4>
-              <p className='text-sm mb-2'>
-                Las rutas con estado &quot;Actualización próxima&quot;
-                (amarillo) se actualizarán automáticamente cuando un usuario
-                acceda a ellas, siempre que estén activas.
-              </p>
-              <p className='text-sm'>
-                Las rutas con estado &quot;Necesita actualización&quot; (rojo)
-                requieren una sincronización manual para garantizar que los
-                datos estén al día.
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+            <Card>
+              <CardHeader>
+                <CardTitle>Todas las Rutas</CardTitle>
+                <CardDescription>
+                  Gestiona las rutas de acceso a contenido de Google Drive
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='p-0'>
+                {isLoading ? (
+                  <div className='flex justify-center py-10'>
+                    <RefreshCw className='h-10 w-10 animate-spin text-muted-foreground' />
+                  </div>
+                ) : (
+                  <div className='overflow-x-auto'>
+                    <Table>
+                      <TableCaption>
+                        Lista de rutas configuradas para Drive
+                      </TableCaption>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className='w-[60px]'>Estado</TableHead>
+                          <TableHead className='min-w-[120px]'>
+                            Título
+                          </TableHead>
+                          <TableHead className='min-w-[100px]'>Slug</TableHead>
+                          <TableHead className='min-w-[140px]'>
+                            Estado Actualización
+                          </TableHead>
+                          <TableHead className='min-w-[120px]'>
+                            Última Actualización
+                          </TableHead>
+                          <TableHead className='text-right min-w-[200px]'>
+                            Acciones
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {routes.length === 0 ? (
+                          <TableRow>
+                            <TableCell
+                              colSpan={6}
+                              className='text-center py-10'
+                            >
+                              No hay rutas configuradas.
+                              <div className='mt-2'>
+                                <Button
+                                  variant='outline'
+                                  onClick={() => setCreateModalOpen(true)}
+                                >
+                                  <PlusIcon className='mr-2 h-4 w-4' /> Crear la
+                                  primera ruta
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          routes.map((route) => {
+                            const updateStatus = getUpdateStatus(
+                              route.lastUpdated,
+                              route.isActive
+                            );
+                            return (
+                              <TableRow key={route.id}>
+                                <TableCell>
+                                  <Switch
+                                    checked={route.isActive}
+                                    onCheckedChange={(checked) =>
+                                      toggleRouteStatus(route.id, checked)
+                                    }
+                                    aria-label='Toggle route status'
+                                  />
+                                </TableCell>
+                                <TableCell className='font-medium max-w-[150px] truncate'>
+                                  <div
+                                    className='truncate'
+                                    title={route.title || "Sin título"}
+                                  >
+                                    {route.title || "Sin título"}
+                                  </div>
+                                </TableCell>
+                                <TableCell className='font-mono text-sm max-w-[120px] truncate'>
+                                  <div className='truncate' title={route.slug}>
+                                    {route.slug}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div className='cursor-help'>
+                                          <Badge
+                                            variant={updateStatus.variant}
+                                            className='flex items-center gap-1'
+                                          >
+                                            {updateStatus.icon}
+                                            {updateStatus.label}
+                                          </Badge>
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>{updateStatus.tooltipText}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                </TableCell>
+                                <TableCell className='text-sm whitespace-nowrap'>
+                                  <div className='hidden md:block'>
+                                    {format(
+                                      new Date(route.lastUpdated),
+                                      "dd/MM/yyyy HH:mm"
+                                    )}
+                                  </div>
+                                  <div className='md:hidden'>
+                                    {format(
+                                      new Date(route.lastUpdated),
+                                      "dd/MM HH:mm"
+                                    )}
+                                  </div>
+                                </TableCell>
+                                <TableCell className='text-right'>
+                                  <TooltipProvider>
+                                    <div className='flex items-center justify-end gap-1 flex-nowrap'>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() =>
+                                              handleEditRoute(route)
+                                            }
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <Pencil className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Editar</p>
+                                        </TooltipContent>
+                                      </Tooltip>
 
-      {/* Modal para ver JSON */}
-      <Dialog open={jsonModalOpen} onOpenChange={setJsonModalOpen}>
-        <DialogContent className='max-w-3xl max-h-[80vh] overflow-y-auto'>
-          <DialogHeader>
-            <DialogTitle>Datos JSON</DialogTitle>
-            <DialogDescription>
-              Representación JSON de los datos de la ruta
-            </DialogDescription>
-          </DialogHeader>
-          <pre className='bg-muted p-4 rounded-md overflow-x-auto text-xs'>
-            {JSON.stringify(selectedJson, null, 2)}
-          </pre>
-        </DialogContent>
-      </Dialog>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() => syncRoute(route.id)}
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <RefreshCw className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Sincronizar</p>
+                                        </TooltipContent>
+                                      </Tooltip>
 
-      {/* Modal para crear/editar ruta */}
-      <Dialog
-        open={createModalOpen || editModalOpen}
-        onOpenChange={(open) => {
-          if (!open) {
-            setCreateModalOpen(false);
-            setEditModalOpen(false);
-            setSelectedRoute(null);
-            form.reset();
-          }
-        }}
-      >
-        <DialogContent className='max-w-3xl'>
-          <DialogHeader>
-            <DialogTitle>
-              {selectedRoute ? "Editar Ruta" : "Crear Nueva Ruta"}
-            </DialogTitle>
-            <DialogDescription>
-              {selectedRoute
-                ? "Modifica los detalles de la ruta existente"
-                : "Completa los detalles para crear una nueva ruta de Drive"}
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='slug'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>URL (Slug)</FormLabel>
-                    <FormControl>
-                      <Input placeholder='mi-ruta-drive' {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      La URL donde se mostrará el contenido (ej: /mi-ruta-drive)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() => viewJson(route)}
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <FileJson className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Ver JSON</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() =>
+                                              window.open(
+                                                `/${route.slug}`,
+                                                "_blank"
+                                              )
+                                            }
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <ExternalLink className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Ver en nueva pestaña</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='outline'
+                                            size='sm'
+                                            onClick={() =>
+                                              duplicateRoute(route)
+                                            }
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <Copy className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Duplicar ruta</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant='destructive'
+                                            size='sm'
+                                            onClick={() =>
+                                              handleDeleteRoute(route.id)
+                                            }
+                                            className='h-8 w-8 p-0'
+                                          >
+                                            <Trash2 className='h-3 w-3' />
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Eliminar</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </div>
+                                  </TooltipProvider>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
                 )}
-              />
+              </CardContent>
+            </Card>
 
-              <FormField
-                control={form.control}
-                name='folderId'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ID de Carpeta de Google Drive</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='1ABC123_ejemploDeIdDeCarpeta'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      El ID de la carpeta de Google Drive a mostrar
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Modal para la leyenda */}
+            <Dialog open={legendModalOpen} onOpenChange={setLegendModalOpen}>
+              <DialogContent className='max-w-md'>
+                <DialogHeader>
+                  <DialogTitle className='text-xl flex items-center gap-2'>
+                    <InfoIcon className='h-5 w-5' />
+                    Leyenda de Estados
+                  </DialogTitle>
+                  <DialogDescription>
+                    Información sobre el sistema de actualización automática
+                  </DialogDescription>
+                </DialogHeader>
 
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título (Opcional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Contenido Drive'
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Un título descriptivo para esta ruta
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <div className='space-y-4 pt-2'>
+                  <div className='space-y-3'>
+                    {/* Estado: Actualizada */}
+                    <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
+                      <Badge
+                        variant='default'
+                        className='flex items-center gap-1 mt-0.5'
+                      >
+                        <CheckCircle className='h-4 w-4' />
+                        Actualizada
+                      </Badge>
+                      <div>
+                        <p className='font-medium text-sm'>
+                          Actualizada en las últimas 12 horas
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-1'>
+                          Los datos están actualizados y no requieren acción.
+                        </p>
+                      </div>
+                    </div>
 
-              <FormField
-                control={form.control}
-                name='subtitle'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Subtítulo (Opcional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='Explora nuestro contenido de Drive'
-                        {...field}
-                        value={field.value || ""}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    {/* Estado: Actualización próxima */}
+                    <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
+                      <Badge
+                        variant='default'
+                        className='flex items-center gap-1 mt-0.5 bg-yellow-400'
+                      >
+                        <Clock className='h-4 w-4' />
+                        Actualización próxima
+                      </Badge>
+                      <div>
+                        <p className='font-medium text-sm'>
+                          Entre 12-24 horas sin actualizar
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-1'>
+                          Se actualizará automáticamente cuando un usuario
+                          acceda a la ruta.
+                        </p>
+                      </div>
+                    </div>
 
-              <FormField
-                control={form.control}
-                name='description'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder='Descripción opcional' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    {/* Estado: Necesita actualización */}
+                    <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
+                      <Badge
+                        variant='destructive'
+                        className='flex items-center gap-1 mt-0.5'
+                      >
+                        <AlertCircle className='h-4 w-4' />
+                        Necesita actualización
+                      </Badge>
+                      <div>
+                        <p className='font-medium text-sm'>
+                          Más de 24 horas sin actualizar
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-1'>
+                          Requiere sincronización manual para garantizar que los
+                          datos estén al día.
+                        </p>
+                      </div>
+                    </div>
 
-              <FormField
-                control={form.control}
-                name='customSettings'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Configuraciones Personalizadas (JSON)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder='{"key": "value"}'
-                        className='font-mono'
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Configuraciones adicionales en formato JSON
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                    {/* Estado: Inactiva */}
+                    <div className='flex items-start gap-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors'>
+                      <Badge
+                        variant='outline'
+                        className='flex items-center gap-1 mt-0.5'
+                      >
+                        <AlertCircle className='h-4 w-4' />
+                        Inactiva
+                      </Badge>
+                      <div>
+                        <p className='font-medium text-sm'>Ruta desactivada</p>
+                        <p className='text-xs text-muted-foreground mt-1'>
+                          No se actualiza automáticamente mientras esté
+                          desactivada.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
 
-              <DialogFooter>
-                <Button type='submit' disabled={isSubmitting}>
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />{" "}
-                      Creando...
-                    </>
-                  ) : (
-                    "Crear Ruta"
-                  )}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+                  <div className='bg-muted p-4 rounded-lg text-sm mt-4'>
+                    <h4 className='font-semibold mb-2 flex items-center gap-1'>
+                      <RefreshCw className='h-4 w-4' /> Actualización Automática
+                    </h4>
+                    <p className='text-sm mb-2'>
+                      Las rutas con estado &quot;Actualización próxima&quot;
+                      (amarillo) se actualizarán automáticamente cuando un
+                      usuario acceda a ellas, siempre que estén activas.
+                    </p>
+                    <p className='text-sm'>
+                      Las rutas con estado &quot;Necesita actualización&quot;
+                      (rojo) requieren una sincronización manual para garantizar
+                      que los datos estén al día.
+                    </p>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
 
-      {/* Modal para confirmar eliminación */}
-      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent className='max-w-md'>
-          <DialogHeader>
-            <DialogTitle>Confirmar eliminación</DialogTitle>
-            <DialogDescription>
-              ¿Estás seguro de que deseas eliminar esta ruta? Esta acción no se
-              puede deshacer.
-            </DialogDescription>
-          </DialogHeader>
-          <div className='flex justify-end gap-3 mt-4'>
-            <Button
-              variant='outline'
-              onClick={() => setDeleteModalOpen(false)}
-              disabled={isDeleting}
+            {/* Modal para ver JSON */}
+            <Dialog open={jsonModalOpen} onOpenChange={setJsonModalOpen}>
+              <DialogContent className='max-w-3xl max-h-[80vh] overflow-y-auto'>
+                <DialogHeader>
+                  <DialogTitle>Datos JSON</DialogTitle>
+                  <DialogDescription>
+                    Representación JSON de los datos de la ruta
+                  </DialogDescription>
+                </DialogHeader>
+                <pre className='bg-muted p-4 rounded-md overflow-x-auto text-xs'>
+                  {JSON.stringify(selectedJson, null, 2)}
+                </pre>
+              </DialogContent>
+            </Dialog>
+
+            {/* Modal para crear/editar ruta */}
+            <Dialog
+              open={createModalOpen || editModalOpen}
+              onOpenChange={(open) => {
+                if (!open) {
+                  setCreateModalOpen(false);
+                  setEditModalOpen(false);
+                  setSelectedRoute(null);
+                  form.reset();
+                }
+              }}
             >
-              Cancelar
-            </Button>
-            <Button
-              variant='destructive'
-              onClick={confirmDeleteRoute}
-              disabled={isDeleting}
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className='mr-2 h-4 w-4 animate-spin' />{" "}
-                  Eliminando...
-                </>
-              ) : (
-                "Eliminar"
-              )}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-        </div>
+              <DialogContent className='max-w-3xl'>
+                <DialogHeader>
+                  <DialogTitle>
+                    {selectedRoute ? "Editar Ruta" : "Crear Nueva Ruta"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {selectedRoute
+                      ? "Modifica los detalles de la ruta existente"
+                      : "Completa los detalles para crear una nueva ruta de Drive"}
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='space-y-4'
+                  >
+                    <FormField
+                      control={form.control}
+                      name='slug'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>URL (Slug)</FormLabel>
+                          <FormControl>
+                            <Input placeholder='mi-ruta-drive' {...field} />
+                          </FormControl>
+                          <FormDescription>
+                            La URL donde se mostrará el contenido (ej:
+                            /mi-ruta-drive)
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='folderId'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>ID de Carpeta de Google Drive</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder='1ABC123_ejemploDeIdDeCarpeta'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            El ID de la carpeta de Google Drive a mostrar
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='title'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Título (Opcional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder='Contenido Drive'
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Un título descriptivo para esta ruta
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='subtitle'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subtítulo (Opcional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder='Explora nuestro contenido de Drive'
+                              {...field}
+                              value={field.value || ""}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='description'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descripción</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder='Descripción opcional'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name='customSettings'
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Configuraciones Personalizadas (JSON)
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder='{"key": "value"}'
+                              className='font-mono'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Configuraciones adicionales en formato JSON
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <DialogFooter>
+                      <Button type='submit' disabled={isSubmitting}>
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' />{" "}
+                            Creando...
+                          </>
+                        ) : (
+                          "Crear Ruta"
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+
+            {/* Modal para confirmar eliminación */}
+            <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+              <DialogContent className='max-w-md'>
+                <DialogHeader>
+                  <DialogTitle>Confirmar eliminación</DialogTitle>
+                  <DialogDescription>
+                    ¿Estás seguro de que deseas eliminar esta ruta? Esta acción
+                    no se puede deshacer.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className='flex justify-end gap-3 mt-4'>
+                  <Button
+                    variant='outline'
+                    onClick={() => setDeleteModalOpen(false)}
+                    disabled={isDeleting}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant='destructive'
+                    onClick={confirmDeleteRoute}
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? (
+                      <>
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />{" "}
+                        Eliminando...
+                      </>
+                    ) : (
+                      "Eliminar"
+                    )}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </main>
+        </TailwindGrid>
       </DocContent>
     </div>
   );

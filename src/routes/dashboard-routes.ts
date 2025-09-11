@@ -102,7 +102,7 @@ export const dashboardRoutesData: DashboardRoutes = {
             en: "Teams",
             es: "Equipos",
           },
-          href: "/admin/teams",
+          href: "/admin/users/teams",
           icon: "Users",
         },
       ],
