@@ -34,10 +34,10 @@ export default function AddingComponentsPage() {
         <div className='bg-slate-800 border border-slate-600 rounded-lg p-6 mb-6'>
           <pre className='text-sm bg-slate-900 p-4 border border-slate-700 rounded overflow-x-auto'>
             <code className='text-slate-500'>
-              // components/renderers/mi-componente-renderer.tsx
+              {/* components/renderers/mi-componente-renderer.tsx */}
             </code>
             <br />
-            <code className='text-green-300'>"use client"</code>
+            <code className='text-green-300'>&quot;use client&quot;</code>
             <br />
             <br />
             <code className='text-purple-300'>import</code>{" "}
@@ -553,7 +553,7 @@ export default function AddingComponentsPage() {
               // components/renderers/counter-renderer.tsx
             </code>
             <br />
-            <code className='text-green-300'>"use client"</code>
+            <code className='text-green-300'>&quot;use client&quot;</code>
             <br />
             <br />
             <code className='text-purple-300'>import</code>{" "}
